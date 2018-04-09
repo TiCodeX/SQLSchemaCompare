@@ -14,6 +14,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLCompare.Test", "SQLCompare.Test\SQLCompare.Test.csproj", "{0A716609-3C39-4B71-8B39-2CF59704F9D8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB87FDBE-CC7F-4AD6-BD06-1425586DEEDD}"
+	ProjectSection(SolutionItems) = preProject
+		CodeAnalysis.ruleset = CodeAnalysis.ruleset
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

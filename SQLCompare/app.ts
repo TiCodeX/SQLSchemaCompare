@@ -22,8 +22,18 @@ const BrowserWindow = electron.BrowserWindow
 let mainWindow
 
 function createWindow() {
+
+    const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+
     // Create the browser window.
-    mainWindow = new BrowserWindow({ width: 1500, height: 900, show: false })
+    mainWindow = new BrowserWindow({
+        width: width - 200,
+        height: height - 100,
+        show: false,
+        webPreferences: {
+            nodeIntegration: false
+        }
+    })
 
     const { session } = require('electron')
     const filter = {

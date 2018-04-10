@@ -125,8 +125,8 @@
     <Rule Id="CA1806" Action="Error" />
     <Rule Id="CA1809" Action="Error" />
     <Rule Id="CA1810" Action="Error" />
-    <Rule Id="CA1811" Action="Error" />
-    <Rule Id="CA1812" Action="Error" />
+    <Rule Id="CA1811" Action="Hidden" />
+    <Rule Id="CA1812" Action="Hidden" />
     <Rule Id="CA1813" Action="Error" />
     <Rule Id="CA1814" Action="Error" />
     <Rule Id="CA1815" Action="Error" />

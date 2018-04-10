@@ -44,7 +44,7 @@ function createWindow() {
         callback({ cancel: false, requestHeaders: details.requestHeaders })
     })
 
-    mainWindow.loadURL('http://localhost:5000')
+    mainWindow.loadURL('https://localhost:5000')
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
@@ -82,3 +82,11 @@ app.on('activate', function () {
         createWindow()
     }
 })
+
+// SSL/TSL: this is the self signed certificate support
+app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
+    // On certificate error we disable default behaviour (stop loading the page)
+    // and we then say "it is all fine - true" to the callback
+    event.preventDefault();
+    callback(true);
+});

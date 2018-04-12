@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    <TypeScriptToolsVersion>2.6</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -12,9 +13,26 @@
     <WarningsAsErrors />
   </PropertyGroup>
   <ItemGroup>
+    <!--Configure all TypeScript files to be compiled-->
+    <Content Remove="wwwroot\**\*.ts" />
+    <TypeScriptCompile Include="wwwroot\**\*.ts" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <!--Configure all the JavaScript/Css files as None-->
+    <Content Remove="wwwroot\**\*.js" />
+    <None Include="wwwroot\**\*.js" />
+    <Content Remove="wwwroot\**\*.css" />
+    <None Include="wwwroot\**\*.css" />
+    <!--Configure the *.min.js/*.min.css as EmbeddedResource-->
+    <EmbeddedResource Include="wwwroot\**\*.min.js" />
+    <EmbeddedResource Include="wwwroot\**\*.min.css" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="certificate.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="BuildBundlerMinifier" Version="2.6.375" />
+    <PackageReference Include="BuildWebCompiler" Version="1.11.326" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
@@ -26,6 +44,6 @@
     <EmbeddedResource Include="certificate.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <ProjectReference Include="..\SQLCompare.Core\SQLCompare.Core.csproj" />
   </ItemGroup>
 </Project>

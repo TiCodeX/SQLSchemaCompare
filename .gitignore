@@ -236,9 +236,6 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
-# Typescript v1 declaration files
-typings/
-
 # Visual Studio 6 build log
 *.plg
 
@@ -290,3 +287,6 @@ __pycache__/
 # Javascript generated files
 SQLCompare/app.js
 SQLCompare/app.js.map
+SQLCompare.UI/wwwroot/js/**/*.js
+# Css generated files
+SQLCompare.UI/wwwroot/css/**/*.css

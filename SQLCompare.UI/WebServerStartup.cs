@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using SQLCompare.Core;
+using System.Reflection;
 
 namespace SQLCompare.UI
 {
@@ -27,19 +29,22 @@ namespace SQLCompare.UI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (AppGlobal.IsDevelopment)
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
+                app.UseStaticFiles();
             }
             else
             {
                 app.UseExceptionHandler("/Error");
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new EmbeddedFileProvider(Assembly.GetExecutingAssembly(), "SQLCompare.UI.wwwroot")
+                });
             }
-
-            app.UseStaticFiles();
 
             app.UseMvc();
         }

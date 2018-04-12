@@ -1,13 +1,32 @@
-﻿<!DOCTYPE html>
+﻿@using Core
+<!DOCTYPE html>
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewData["Title"]</title>
+    @if (AppGlobal.IsDevelopment)
+    {
+        <link href="~/css/Index.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    }
+    else
+    {
+        <link href="~/css/site.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    }
 </head>
 <body>
     <div>
         @RenderBody()
     </div>
+
+    <script src="~/lib/jquery/jquery-3.3.1.min.js"></script>
+    @if (AppGlobal.IsDevelopment)
+    {
+        <script src="~/js/Index.js" asp-append-version="true"></script>
+    }
+    else
+    {
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    }
 </body>
 </html>

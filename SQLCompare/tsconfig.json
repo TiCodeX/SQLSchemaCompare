@@ -1,9 +1,9 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
-    "module": "commonjs",
     "target": "es5",
-    "lib": ["es5"],
-    "sourceMap": true
+    "sourceMap": false,
+    "removeComments": true
   },
   "exclude": [
     "node_modules"

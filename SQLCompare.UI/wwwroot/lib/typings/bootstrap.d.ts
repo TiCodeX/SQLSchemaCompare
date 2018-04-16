@@ -4,7 +4,7 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
-import * as Popper from "popper.js";
+import Popper = require("./popper.js");
 
 export as namespace Bootstrap;
 

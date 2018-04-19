@@ -4,4 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SQLCompare.Core\SQLCompare.Core.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using SQLCompare.Core;
+using SQLCompare.UI.Middleware;
 using System.Reflection;
 
 namespace SQLCompare.UI
@@ -24,6 +25,9 @@ namespace SQLCompare.UI
             {
                 options.Filters.Add(new RequireHttpsAttribute());
             });
+            services.Configure<RequestValidatorSettings>(options =>
+                options.AllowedRequestGuid = "aaa"
+            );
 
             services.AddMvc();
         }
@@ -44,8 +48,9 @@ namespace SQLCompare.UI
                 {
                     FileProvider = new EmbeddedFileProvider(Assembly.GetExecutingAssembly(), "SQLCompare.UI.wwwroot")
                 });
-            }
+                app.UseRequestValidator();
 
+            }
             app.UseMvc();
         }
     }

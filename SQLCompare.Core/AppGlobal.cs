@@ -13,5 +13,11 @@
 #endif
             }
         }
+
+        //Maybe to be refactored
+        public static int StartPortRange => 5000;
+        public static int EndPortRange => 6000;
+
+        public static string AuthorizationHeaderName => "AuthToken";
     }
 }

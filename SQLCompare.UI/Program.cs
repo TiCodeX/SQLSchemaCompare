@@ -71,5 +71,21 @@ namespace SQLCompare.UI
                 .Build();
             return host;
         }
+
+        private static int? GetFreePort(int start, int end)
+        {
+
+            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
+            IPEndPoint[] tcpEndPoints = properties.GetActiveTcpListeners();
+
+            List<int> usedPorts = tcpEndPoints.Select(p => p.Port).ToList<int>();
+
+            for (int port = start; port < end; port++)
+            {
+                if (!usedPorts.Contains(port))
+                    return port;
+            }
+            return null;
+        }
     }
 }

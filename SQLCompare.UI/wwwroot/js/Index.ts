@@ -1,7 +1,13 @@
+declare const amdRequire: any;
 declare const require: any;
 const electron: Electron.AllElectron = (typeof require !== "undefined" ? require("electron") : null);
 
 $(document).ready(() => {
+    //Configure the monaco editor loader
+    amdRequire.config({
+        baseUrl: 'lib/monaco-editor'
+    });
+
     // Enable bootstrap tooltips and popovers
     $("[data-toggle='tooltip']").tooltip();
     $("[data-toggle='popover']").popover();
@@ -81,5 +87,6 @@ $(document).ready(() => {
         ];
 
         electron.remote.Menu.setApplicationMenu(electron.remote.Menu.buildFromTemplate(template));
+
     }
 });

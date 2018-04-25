@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace SQLCompare.UI.Middleware
+namespace SQLCompare.UI.Middlewares
 {
     public class RequestValidatorMiddleware
     {

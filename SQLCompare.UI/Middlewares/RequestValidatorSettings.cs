@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SQLCompare.UI.Middleware
+namespace SQLCompare.UI.Middlewares
 {
     public class RequestValidatorSettings
     {

@@ -4,7 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using SQLCompare.Core;
-using SQLCompare.UI.Middleware;
+using SQLCompare.UI.Extensions;
+using SQLCompare.UI.Middlewares;
 using System.Reflection;
 
 namespace SQLCompare.UI

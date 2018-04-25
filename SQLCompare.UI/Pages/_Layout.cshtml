@@ -21,24 +21,25 @@
     </div>
 
     @* In order to make jquery work with both Chrome and Electron *@
+    @* Keep a reference to module and restore it after jquery is loaded *@
     <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
     <script src="~/lib/jquery/jquery-3.3.1.min.js"></script>
     <script>if (window.module) module = window.module;</script>
 
     <script src="~/lib/popperjs/popper.min.js"></script>
     <script src="~/lib/bootstrap/bootstrap.min.js"></script>
-    <script src="~/lib/bootstrap/bootstrap.min.js"></script>
+
+    @* Monaco uses a custom amd loader that overrides node's require. *@
+    @* Keep a reference to node's require (if exists) so we can restore it after executing the amd loader file. *@
     <script>
-        //Monaco uses a custom amd loader that overrides node's require.
-        //Keep a reference to node's require so we can restore it after executing the amd loader file.
         var nodeRequire = null;
         if (typeof require !== "undefined") {
             nodeRequire = require;
         }
     </script>
     <script src="~/lib/monaco-editor/vs/loader.js"></script>
+    @* Save Monaco's amd require and restore Node's require (or undefined if doesn't exist) *@
     <script>
-        // Save Monaco's amd require and restore Node's require
         var amdRequire = require;
         if (nodeRequire !== null) {
             require = nodeRequire;

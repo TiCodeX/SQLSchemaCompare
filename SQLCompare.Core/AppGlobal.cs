@@ -18,6 +18,6 @@
         public static int StartPortRange => 5000;
         public static int EndPortRange => 6000;
 
-        public static string AuthorizationHeaderName => "AuthToken";
+        public static string AuthorizationHeaderName => "CustomAuthToken";
     }
 }

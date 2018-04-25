@@ -25,8 +25,9 @@ namespace SQLCompare.UI.Middlewares
         {
             string authToken = context.Request.Headers[AppGlobal.AuthorizationHeaderName];
             string userAgent = context.Request.Headers["User-Agent"];
-            if (string.Equals(authToken, _options.AllowedRequestGuid, StringComparison.Ordinal) &&
-                string.Equals(userAgent, _options.AllowedRequestAgent, StringComparison.Ordinal))
+
+            if ((string.IsNullOrEmpty(_options.AllowedRequestGuid) || string.Equals(authToken, _options.AllowedRequestGuid, StringComparison.Ordinal)) &&
+                (string.IsNullOrEmpty(_options.AllowedRequestAgent) || string.Equals(userAgent, _options.AllowedRequestAgent, StringComparison.Ordinal)))
             {
 
                 await _next.Invoke(context).ConfigureAwait(false);

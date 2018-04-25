@@ -11,6 +11,7 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using SQLCompare.UI.WebServer;
 
 namespace SQLCompare.UI
 {

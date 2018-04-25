@@ -26,6 +26,7 @@
     <!--Configure the *.min.js/*.min.css as EmbeddedResource-->
     <EmbeddedResource Include="wwwroot\**\*.min.js" />
     <EmbeddedResource Include="wwwroot\**\*.min.css" />
+    <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="certificate.pfx" />

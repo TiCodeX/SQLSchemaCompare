@@ -8,7 +8,7 @@ using SQLCompare.UI.Extensions;
 using SQLCompare.UI.Middlewares;
 using System.Reflection;
 
-namespace SQLCompare.UI
+namespace SQLCompare.UI.WebServer
 {
     class WebServerStartup
     {
@@ -27,7 +27,7 @@ namespace SQLCompare.UI
                 options.Filters.Add(new RequireHttpsAttribute());
             });
             services.Configure<RequestValidatorSettings>(options =>
-                options.AllowedRequestGuid = "aaa"
+                options.AllowedRequestGuid = "prova"
             );
 
             services.AddMvc();
@@ -47,10 +47,9 @@ namespace SQLCompare.UI
                 app.UseExceptionHandler("/Error");
                 app.UseStaticFiles(new StaticFileOptions
                 {
-                    FileProvider = new EmbeddedFileProvider(Assembly.GetExecutingAssembly(), "SQLCompare.UI.wwwroot")
+                    FileProvider = new HyphenFriendlyEmbeddedFileProvider(new EmbeddedFileProvider(Assembly.GetExecutingAssembly(), "SQLCompare.UI.wwwroot"))
                 });
                 app.UseRequestValidator();
-
             }
             app.UseMvc();
         }

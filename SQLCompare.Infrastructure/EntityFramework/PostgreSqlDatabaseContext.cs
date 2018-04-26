@@ -12,8 +12,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionStr = $"Server={Server};Database={DatabaseName};User Id={Username};Password={Password}";
-            optionsBuilder.UseNpgsql(connectionStr);
+            optionsBuilder.UseNpgsql(ConnectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

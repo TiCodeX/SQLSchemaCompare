@@ -24,4 +24,8 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SQLCompare.Infrastructure\SQLCompare.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

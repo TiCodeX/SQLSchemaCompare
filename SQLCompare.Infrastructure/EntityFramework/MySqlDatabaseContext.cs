@@ -12,8 +12,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionStr = $"server={Server};database={DatabaseName};user={Username};password={Password}";
-            optionsBuilder.UseMySQL(connectionStr);
+            optionsBuilder.UseMySQL(ConnectionString + ";SslMode=none");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

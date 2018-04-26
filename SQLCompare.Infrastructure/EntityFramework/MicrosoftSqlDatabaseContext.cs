@@ -11,8 +11,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionStr = $"Server={Server};Database={DatabaseName};User Id={Username};Password={Password}";
-            optionsBuilder.UseSqlServer(connectionStr);
+            optionsBuilder.UseSqlServer(ConnectionString);
         }
     }
 }

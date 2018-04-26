@@ -3,23 +3,20 @@ using SQLCompare.Core.Entities.EntityFramework;
 
 namespace SQLCompare.Infrastructure.EntityFramework
 {
-    public class GenericDatabaseContext : DbContext
+
+    internal class GenericDatabaseContext : DbContext
     {
-        protected string Server;
-        protected string DatabaseName;
-        protected string Username;
-        protected string Password;
+        protected string DatabaseName { get; }
+        protected string ConnectionString { get; }
 
         public GenericDatabaseContext(string server, string databaseName, string username, string password)
         {
-            Server = server;
             DatabaseName = databaseName;
-            Username = username;
-            Password = password;
+            ConnectionString = $"Server={server};Database={DatabaseName};User Id={username};Password={password}";
         }
 
-        public virtual DbSet<InformationSchemaTable> Tables { get; set; }
-        public virtual DbSet<InformationSchemaColumn> Columns { get; set; }
+        public virtual DbSet<InformationSchemaTable> Tables { get; protected set; }
+        public virtual DbSet<InformationSchemaColumn> Columns { get; protected set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

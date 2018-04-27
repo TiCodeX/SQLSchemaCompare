@@ -20,7 +20,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
             base.OnModelCreating(modelBuilder);
 
             var table = modelBuilder.Entity<InformationSchemaTable>();
-            table.HasQueryFilter(x => x.TableType == "BASE TABLE" && x.TableSchema == DatabaseName);
+            table.HasQueryFilter(x => string.Equals(x.TableType, "BASE TABLE", System.StringComparison.Ordinal) && string.Equals(x.TableSchema, DatabaseName, System.StringComparison.Ordinal));
         }
 
     }

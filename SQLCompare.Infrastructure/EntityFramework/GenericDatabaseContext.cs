@@ -23,7 +23,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
             var table = modelBuilder.Entity<InformationSchemaTable>();
             table.ToTable("tables", "information_schema");
             table.HasKey(a => new { a.TableName, a.TableCatalog, a.TableSchema });
-            table.HasQueryFilter(x => x.TableType == "BASE TABLE");
+            table.HasQueryFilter(x => string.Equals(x.TableType, "BASE TABLE", System.StringComparison.Ordinal));
 
             var column = modelBuilder.Entity<InformationSchemaColumn>();
             column.ToTable("columns", "information_schema");

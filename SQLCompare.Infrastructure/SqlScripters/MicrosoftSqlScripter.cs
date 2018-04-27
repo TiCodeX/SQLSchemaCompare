@@ -22,7 +22,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             StringBuilder sql = new StringBuilder();
 
-            if (table.TableType == "BASE TABLE")
+            if (string.Equals(table.TableType, "BASE TABLE", StringComparison.Ordinal))
             {
                 sql.AppendLine($"CREATE TABLE {GetTableName(table)} (");
                 int i = 0;
@@ -47,7 +47,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             StringBuilder sql = new StringBuilder();
 
             sql.Append($"{col.ColumnName} {ScriptColumnDataType(col)} ");
-            if (col.IsNullable == "YES")
+            if (string.Equals(col.IsNullable, "YES", StringComparison.Ordinal))
                 sql.Append("NULL ");
             else
                 sql.Append("NOT NULL ");

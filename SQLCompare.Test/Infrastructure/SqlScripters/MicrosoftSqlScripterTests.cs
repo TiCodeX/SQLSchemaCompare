@@ -1,20 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Moq;
 using SQLCompare.Infrastructure.EntityFramework;
 using SQLCompare.Infrastructure.SqlScripters;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SQLCompare.Test
+namespace SQLCompare.Test.Infrastructure.SqlScripters
 {
-    public class UnitTest1
+    public class MicrosoftSqlScripterTests : BaseTests<MicrosoftSqlScripterTests>
     {
-        private readonly ITestOutputHelper _output;
-
-        public UnitTest1(ITestOutputHelper output)
+        public MicrosoftSqlScripterTests(ITestOutputHelper output) : base(output)
         {
-            _output = output;
         }
 
         [Fact]
@@ -22,20 +18,16 @@ namespace SQLCompare.Test
         {
             using (var c = new MicrosoftSqlDatabaseContext("localhost\\SQLEXPRESS", "BrokerPro", "brokerpro", "brokerpro05"))
             {
-                var mock = new Mock<ILogger>();
+                var x = new MicrosoftSqlScripter(Logger, null);
 
-                var x = new MicrosoftSqlScripter(mock.Object, null);
-                
-                _output.WriteLine("MicrosoftSqlDatabaseContext:");
+                Logger.LogInformation("MicrosoftSqlDatabaseContext:");
                 foreach (var table in c.Tables.Include(t => t.Columns))
                 {
-                    _output.WriteLine($"=> {table.TableName}");
-                    _output.WriteLine(x.ScriptCreateTable(table));
+                    Logger.LogInformation($"=> {table.TableName}");
+                    Logger.LogInformation(x.ScriptCreateTable(table));
                 }
-
-
-
             }
         }
+
     }
 }

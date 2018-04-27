@@ -1,16 +1,14 @@
-﻿using SQLCompare.Infrastructure.EntityFramework;
+﻿using Microsoft.Extensions.Logging;
+using SQLCompare.Infrastructure.EntityFramework;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace SQLCompare.Test.Infrastructure.EntityFramework
 {
-    public class DatabaseContextTests
+    public class DatabaseContextTests : BaseTests<DatabaseContextTests>
     {
-        private readonly ITestOutputHelper _output;
-
-        public DatabaseContextTests(ITestOutputHelper output)
+        public DatabaseContextTests(ITestOutputHelper output) : base(output)
         {
-            _output = output;
         }
 
         [Fact]
@@ -18,36 +16,35 @@ namespace SQLCompare.Test.Infrastructure.EntityFramework
         {
             using (var c = new MicrosoftSqlDatabaseContext("localhost\\SQLEXPRESS", "BrokerProGlobal", "brokerpro", "brokerpro05"))
             {
-                _output.WriteLine("MicrosoftSqlDatabaseContext:");
+                Logger.LogInformation("MicrosoftSqlDatabaseContext:");
                 foreach (var table in c.Tables)
                 {
-                    _output.WriteLine($"=> {table.TableName}");
+                    Logger.LogInformation($"=> {table.TableName}");
                 }
             }
 
-            _output.WriteLine(string.Empty);
+            Logger.LogInformation(string.Empty);
 
             using (var c = new PostgreSqlDatabaseContext("localhost", "world", "postgres", "test1234"))
             {
-                _output.WriteLine("PostgreSqlDatabaseContext:");
+                Logger.LogInformation("PostgreSqlDatabaseContext:");
                 foreach (var table in c.Tables)
                 {
-                    _output.WriteLine($"=> {table.TableName}");
+                    Logger.LogInformation($"=> {table.TableName}");
                 }
             }
 
-            _output.WriteLine(string.Empty);
+            Logger.LogInformation(string.Empty);
 
             using (var c = new MySqlDatabaseContext("localhost", "employees", "admin", "test1234"))
             {
-                _output.WriteLine("MySqlDatabaseContext:");
+                Logger.LogInformation("MySqlDatabaseContext:");
                 foreach (var table in c.Tables)
                 {
-                    _output.WriteLine($"=> {table.TableName}");
+                    Logger.LogInformation($"=> {table.TableName}");
                 }
             }
         }
-
 
     }
 }

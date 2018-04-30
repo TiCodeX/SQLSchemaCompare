@@ -22,6 +22,5 @@ namespace SQLCompare.Infrastructure.EntityFramework
             var table = modelBuilder.Entity<InformationSchemaTable>();
             table.HasQueryFilter(x => string.Equals(x.TableType, "BASE TABLE", System.StringComparison.Ordinal) && string.Equals(x.TableSchema, DatabaseName, System.StringComparison.Ordinal));
         }
-
     }
 }

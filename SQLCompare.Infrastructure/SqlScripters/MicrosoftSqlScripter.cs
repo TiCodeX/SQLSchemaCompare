@@ -5,9 +5,9 @@ using System.Text;
 
 namespace SQLCompare.Infrastructure.SqlScripters
 {
-    class MicrosoftSqlScripter
+    internal class MicrosoftSqlScripter
     {
-        private ILogger _logger;
+        private readonly ILogger _logger;
         private object _options;
 
         public MicrosoftSqlScripter(ILogger logger, object options)
@@ -18,33 +18,32 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
         public string ScriptCreateTable(InformationSchemaTable table)
         {
-            _logger.LogInformation("");
+            _logger.LogInformation(string.Empty);
 
-            StringBuilder sql = new StringBuilder();
+            var sql = new StringBuilder();
 
             if (string.Equals(table.TableType, "BASE TABLE", StringComparison.Ordinal))
             {
                 sql.AppendLine($"CREATE TABLE {GetTableName(table)} (");
-                int i = 0;
-                foreach(var col in table.Columns)
+                var i = 0;
+                foreach (var col in table.Columns)
                 {
                     sql.Append($"   {ScriptColumn(col)}");
-                    if (i++ < table.Columns.Count-1)
+                    if (i++ < table.Columns.Count - 1)
                         sql.AppendLine(",");
                 }
-                sql.AppendLine("");
-                sql.AppendLine(");");
 
+                sql.AppendLine(string.Empty);
+                sql.AppendLine(");");
             }
 
             return sql.ToString();
-
         }
 
         private string ScriptColumn(InformationSchemaColumn col)
         {
-            _logger.LogInformation("");
-            StringBuilder sql = new StringBuilder();
+            _logger.LogInformation(string.Empty);
+            var sql = new StringBuilder();
 
             sql.Append($"{col.ColumnName} {ScriptColumnDataType(col)} ");
             if (string.Equals(col.IsNullable, "YES", StringComparison.Ordinal))
@@ -60,23 +59,25 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
         private object ScriptColumnDataType(InformationSchemaColumn col)
         {
-            _logger.LogInformation("");
-            switch (col.DataType){
+            _logger.LogInformation(string.Empty);
+            switch (col.DataType)
+            {
                 case "varchar":
                 case "nvarchar":
                     return $"[{col.DataType}] ({col.CharacterMaximumLength})";
 
                 default:
                     return $"[{col.DataType}]";
-            };
+            }
         }
 
         private string GetTableName(InformationSchemaTable table)
         {
-            _logger.LogInformation("");
-            //Depending on options
-            bool useSimpleSintax = true;
-            string name = "";
+            _logger.LogInformation(string.Empty);
+
+            // Depending on options
+            var useSimpleSintax = true;
+            var name = string.Empty;
 
             if (!string.IsNullOrWhiteSpace(table.TableCatalog) || !useSimpleSintax)
                 name += $"[{table.TableCatalog}].";

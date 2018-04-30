@@ -5,7 +5,7 @@ namespace SQLCompare.Test
 {
     public abstract class BaseTests<T> : IDisposable
     {
-        protected readonly XunitLogger<T> Logger;
+        protected XunitLogger<T> Logger { get; }
 
         protected BaseTests(ITestOutputHelper output)
         {

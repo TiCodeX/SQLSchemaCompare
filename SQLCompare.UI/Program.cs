@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
+using SQLCompare.UI.WebServer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +12,6 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using SQLCompare.UI.WebServer;
 
 namespace SQLCompare.UI
 {
@@ -30,7 +30,7 @@ namespace SQLCompare.UI
             }
             catch (Exception ex)
             {
-                //NLog: catch setup errors
+                // NLog: catch setup errors
                 logger.Error(ex, "Stopped program because of exception");
                 throw;
             }
@@ -39,7 +39,6 @@ namespace SQLCompare.UI
                 // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
                 NLog.LogManager.Shutdown();
             }
-
         }
 
         private static IWebHost BuildWebHost()
@@ -49,7 +48,6 @@ namespace SQLCompare.UI
                 {
                     options.Listen(IPAddress.Any, WebServerPort, listenOptions =>
                     {
-
                         using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SQLCompare.UI.certificate.pfx"))
                         using (var memoryStream = new MemoryStream())
                         {
@@ -59,7 +57,8 @@ namespace SQLCompare.UI
                             {
                                 ServerCertificate = new X509Certificate2(memoryStream.ToArray(), "test1234"),
                                 SslProtocols = SslProtocols.Tls12
-                                //other settings???
+
+                                // other settings???
                             });
                         }
                     });
@@ -88,6 +87,7 @@ namespace SQLCompare.UI
                 if (!usedPorts.Contains(port))
                     return port;
             }
+
             return null;
         }
     }

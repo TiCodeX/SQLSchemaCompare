@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace SQLCompare.UI.WebServer
 {
-    class WebServerStartup
+    internal class WebServerStartup
     {
         public IConfiguration Configuration { get; }
 
@@ -27,8 +27,9 @@ namespace SQLCompare.UI.WebServer
                 options.Filters.Add(new RequireHttpsAttribute());
             });
             services.Configure<RequestValidatorSettings>(options =>
-                options.AllowedRequestGuid = "prova"
-            );
+            {
+                options.AllowedRequestGuid = "prova";
+            });
 
             services.AddMvc();
         }
@@ -51,6 +52,7 @@ namespace SQLCompare.UI.WebServer
                 });
                 app.UseRequestValidator();
             }
+
             app.UseMvc();
         }
     }

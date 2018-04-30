@@ -7,7 +7,8 @@ namespace SQLCompare.Test.Infrastructure.EntityFramework
 {
     public class DatabaseContextTests : BaseTests<DatabaseContextTests>
     {
-        public DatabaseContextTests(ITestOutputHelper output) : base(output)
+        public DatabaseContextTests(ITestOutputHelper output)
+            : base(output)
         {
         }
 
@@ -45,6 +46,5 @@ namespace SQLCompare.Test.Infrastructure.EntityFramework
                 }
             }
         }
-
     }
 }

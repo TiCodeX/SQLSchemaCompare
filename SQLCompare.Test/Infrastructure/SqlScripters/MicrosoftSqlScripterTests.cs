@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Infrastructure.EntityFramework;
 using SQLCompare.Infrastructure.SqlScripters;
@@ -9,7 +9,8 @@ namespace SQLCompare.Test.Infrastructure.SqlScripters
 {
     public class MicrosoftSqlScripterTests : BaseTests<MicrosoftSqlScripterTests>
     {
-        public MicrosoftSqlScripterTests(ITestOutputHelper output) : base(output)
+        public MicrosoftSqlScripterTests(ITestOutputHelper output)
+            : base(output)
         {
         }
 
@@ -28,6 +29,5 @@ namespace SQLCompare.Test.Infrastructure.SqlScripters
                 }
             }
         }
-
     }
 }

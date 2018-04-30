@@ -29,7 +29,6 @@ namespace SQLCompare.UI.Middlewares
             if ((string.IsNullOrEmpty(_options.AllowedRequestGuid) || string.Equals(authToken, _options.AllowedRequestGuid, StringComparison.Ordinal)) &&
                 (string.IsNullOrEmpty(_options.AllowedRequestAgent) || string.Equals(userAgent, _options.AllowedRequestAgent, StringComparison.Ordinal)))
             {
-
                 await _next.Invoke(context).ConfigureAwait(false);
             }
             else
@@ -37,8 +36,6 @@ namespace SQLCompare.UI.Middlewares
                 _logger.LogError($"Request refused. Token:{authToken}; UserAgent:{userAgent}");
                 context.Response.Body = new MemoryStream(0);
             }
-
-
         }
     }
 }

@@ -3,14 +3,15 @@ using Microsoft.Extensions.Logging;
 
 namespace SQLCompare.UI.Pages
 {
-    public class IndexModel : PageModel
+    public class Index : PageModel
     {
-        private ILogger<IndexModel> _logger;
+        private readonly ILogger<Index> _logger;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public Index(ILogger<Index> logger)
         {
             _logger = logger;
         }
+
         public void OnGet()
         {
             ViewData["Title"] = "Pluto";

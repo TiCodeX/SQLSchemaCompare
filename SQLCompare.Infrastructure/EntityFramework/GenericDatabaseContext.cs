@@ -5,10 +5,6 @@ namespace SQLCompare.Infrastructure.EntityFramework
 {
     internal class GenericDatabaseContext : DbContext
     {
-        protected string DatabaseName { get; }
-
-        protected string ConnectionString { get; }
-
         public GenericDatabaseContext(string server, string databaseName, string username, string password)
         {
             DatabaseName = databaseName;
@@ -18,6 +14,10 @@ namespace SQLCompare.Infrastructure.EntityFramework
         public virtual DbSet<InformationSchemaTable> Tables { get; protected set; }
 
         public virtual DbSet<InformationSchemaColumn> Columns { get; protected set; }
+
+        protected string DatabaseName { get; }
+
+        protected string ConnectionString { get; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

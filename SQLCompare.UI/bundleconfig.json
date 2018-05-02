@@ -8,7 +8,8 @@
   {
     "outputFileName": "wwwroot/js/site.min.js",
     "inputFiles": [
-      "wwwroot/js/Index.js"
+      "wwwroot/js/Index.js",
+      "wwwroot/js/Utility.js"
     ],
     "minify": {
       "enabled": true,

@@ -5,7 +5,7 @@ const electron: Electron.AllElectron = (typeof require !== "undefined" ? require
 $(document).ready(() => {
     //Configure the monaco editor loader
     amdRequire.config({
-        baseUrl: 'lib/monaco-editor'
+        baseUrl: "lib/monaco-editor"
     });
 
     // Enable bootstrap tooltips and popovers
@@ -16,6 +16,11 @@ $(document).ready(() => {
     window.addEventListener("contextmenu", (e) => {
         e.preventDefault();
     }, false);
+
+    // Preload the monaco-editor
+    setTimeout(() => {
+        amdRequire(["vs/editor/editor.main"], () => { });
+    }, 0);
 
     if (electron) {
 
@@ -89,4 +94,5 @@ $(document).ready(() => {
         electron.remote.Menu.setApplicationMenu(electron.remote.Menu.buildFromTemplate(template));
 
     }
+
 });

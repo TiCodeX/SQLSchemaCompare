@@ -1,6 +1,4 @@
-﻿#pragma warning disable SA1652 // Enable XML documentation output
-using Microsoft.Extensions.Logging;
-#pragma warning restore SA1652 // Enable XML documentation output
+﻿using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.EntityFramework;
 using System;
 using System.Text;
@@ -9,18 +7,18 @@ namespace SQLCompare.Infrastructure.SqlScripters
 {
     internal class MicrosoftSqlScripter
     {
-        private readonly ILogger logger;
-        private object options;
+        private readonly ILogger _logger;
+        private object _options;
 
         public MicrosoftSqlScripter(ILogger logger, object options)
         {
-            this.logger = logger;
-            this.options = options;
+            _logger = logger;
+            _options = options;
         }
 
         public string ScriptCreateTable(InformationSchemaTable table)
         {
-            logger.LogInformation(string.Empty);
+            _logger.LogInformation(string.Empty);
 
             var sql = new StringBuilder();
 
@@ -44,7 +42,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
         private string ScriptColumn(InformationSchemaColumn col)
         {
-            logger.LogInformation(string.Empty);
+            _logger.LogInformation(string.Empty);
             var sql = new StringBuilder();
 
             sql.Append($"{col.ColumnName} {ScriptColumnDataType(col)} ");
@@ -61,7 +59,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
         private object ScriptColumnDataType(InformationSchemaColumn col)
         {
-            logger.LogInformation(string.Empty);
+            _logger.LogInformation(string.Empty);
             switch (col.DataType)
             {
                 case "varchar":
@@ -75,7 +73,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
         private string GetTableName(InformationSchemaTable table)
         {
-            logger.LogInformation(string.Empty);
+            _logger.LogInformation(string.Empty);
 
             // Depending on options
             var useSimpleSintax = true;

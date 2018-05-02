@@ -15,7 +15,7 @@ namespace SQLCompare.Test.Infrastructure.SqlScripters
         }
 
         [Fact]
-        public void Test1()
+        public void ScriptCreateTables()
         {
             using (var c = new MicrosoftSqlDatabaseContext("localhost\\SQLEXPRESS", "BrokerPro", "brokerpro", "brokerpro05"))
             {

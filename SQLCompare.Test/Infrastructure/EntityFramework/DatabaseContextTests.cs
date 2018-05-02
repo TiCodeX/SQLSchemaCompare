@@ -13,7 +13,7 @@ namespace SQLCompare.Test.Infrastructure.EntityFramework
         }
 
         [Fact]
-        public void DatabaConnection()
+        public void DatabaseConnection()
         {
             using (var c = new MicrosoftSqlDatabaseContext("localhost\\SQLEXPRESS", "BrokerProGlobal", "brokerpro", "brokerpro05"))
             {

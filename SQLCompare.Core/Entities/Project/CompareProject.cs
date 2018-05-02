@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SQLCompare.Core.Entities.Project
 {
-    public class Project
+    public class CompareProject
     {
         public DatabaseProviderOptions Source { get; set; }
 

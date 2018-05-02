@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SQLCompare.Core.Entities.Database
 {
-    public class MicrosoftSqlDb: BaseDb
+    public class MicrosoftSqlDb : BaseDb
     {
     }
 }

@@ -8,6 +8,6 @@ namespace SQLCompare.Core.Interfaces.Services
 {
     public interface IDatabaseCompareService
     {
-        void Compare(BaseDb Source, BaseDb Target);
+        void Compare(BaseDb source, BaseDb sarget);
     }
 }

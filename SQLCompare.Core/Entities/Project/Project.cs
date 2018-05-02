@@ -14,10 +14,10 @@ namespace SQLCompare.Core.Entities.Project
 
         public ProjectOptions Options { get; set; }
 
-        private BaseDb _sourceDB { get; set; }
+        // private BaseDb _sourceDB;
 
-        private BaseDb _targetDB { get; set; }
+        // private BaseDb _targetDB;
 
-        //public int _Compareresult { get; set; }
+        // public int _Compareresult { get; set; }
     }
 }

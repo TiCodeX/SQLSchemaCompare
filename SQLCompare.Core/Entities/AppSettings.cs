@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SQLCompare.Core.Entities
 {
-    class AppSettings
+    public class AppSettings
     {
     }
 }

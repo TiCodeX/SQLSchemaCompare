@@ -6,5 +6,4 @@ namespace SQLCompare.Core.Interfaces
     {
         IDatabaseProvider Create(DatabaseProviderOptions dbpo);
     }
-
 }

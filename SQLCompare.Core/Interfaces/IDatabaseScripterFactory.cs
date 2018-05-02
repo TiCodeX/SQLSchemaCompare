@@ -8,6 +8,6 @@ namespace SQLCompare.Core.Interfaces
 {
     public interface IDatabaseScripterFactory
     {
-        void Create(BaseDb Database);
+        void Create(BaseDb database);
     }
 }

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SQLCompare.Core.Entities
+﻿namespace SQLCompare.Core.Entities
 {
+    /// <summary>
+    /// User configurable settings of the application
+    /// </summary>
     public class AppSettings
     {
     }

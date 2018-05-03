@@ -1,21 +1,27 @@
-﻿using System.Text;
-using Microsoft.Extensions.FileProviders;
+﻿using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
+using System.Text;
 
 namespace SQLCompare.UI.WebServer
 {
     /// <summary>
-    /// I have written this to workaround a present issue: https://github.com/aspnet/FileSystem/issues/184
+    /// EmbeddedFileProvider wrapper that properly handles the hyphen characters.
+    /// See: https://github.com/aspnet/FileSystem/issues/184
     /// </summary>
     public class HyphenFriendlyEmbeddedFileProvider : IFileProvider
     {
         private readonly EmbeddedFileProvider _embeddedFileProvider;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HyphenFriendlyEmbeddedFileProvider"/> class.
+        /// </summary>
+        /// <param name="embeddedFileProvider">The <see cref="EmbeddedFileProvider"/> to wrap</param>
         public HyphenFriendlyEmbeddedFileProvider(EmbeddedFileProvider embeddedFileProvider)
         {
             _embeddedFileProvider = embeddedFileProvider;
         }
 
+        /// <inheritdoc/>
         public IFileInfo GetFileInfo(string subpath)
         {
             if (string.IsNullOrEmpty(subpath))
@@ -49,7 +55,7 @@ namespace SQLCompare.UI.WebServer
             var builder = new StringBuilder(subpath.Length);
             builder.Append(subpath);
 
-            for (int i = indexOfFirstHyphen; i < indexOfLastSeperator; i++)
+            for (var i = indexOfFirstHyphen; i < indexOfLastSeperator; i++)
             {
                 if (builder[i] == '-')
                 {
@@ -61,12 +67,14 @@ namespace SQLCompare.UI.WebServer
             return _embeddedFileProvider.GetFileInfo(normalisedPath);
         }
 
+        /// <inheritdoc/>
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
             var contents = _embeddedFileProvider.GetDirectoryContents(subpath);
             return contents;
         }
 
+        /// <inheritdoc/>
         public IChangeToken Watch(string filter)
         {
             return _embeddedFileProvider.Watch(filter);

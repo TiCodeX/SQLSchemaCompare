@@ -40,7 +40,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return sql.ToString();
         }
 
-        private string ScriptColumn(InformationSchemaColumn col)
+        private static string ScriptColumn(InformationSchemaColumn col)
         {
             _logger.LogInformation(string.Empty);
             var sql = new StringBuilder();
@@ -57,7 +57,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return sql.ToString().TrimEnd();
         }
 
-        private object ScriptColumnDataType(InformationSchemaColumn col)
+        private static object ScriptColumnDataType(InformationSchemaColumn col)
         {
             _logger.LogInformation(string.Empty);
             switch (col.DataType)
@@ -71,7 +71,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
         }
 
-        private string GetTableName(InformationSchemaTable table)
+        private static string GetTableName(InformationSchemaTable table)
         {
             _logger.LogInformation(string.Empty);
 

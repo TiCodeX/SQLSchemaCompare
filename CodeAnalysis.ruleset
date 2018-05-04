@@ -402,10 +402,11 @@
     <Rule Id="CS8105" Action="Error" />
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
-    <Rule Id="SA1101" Action="None" />
+    <!--SA1200UsingDirectivesMustBePlacedCorrectly-->
     <Rule Id="SA1200" Action="None" />
+    <!--SA1208SystemUsingDirectivesMustBePlacedBeforeOtherUsingDirectives-->
     <Rule Id="SA1208" Action="None" />
-    <Rule Id="SA1309" Action="None" />
+    <!--SA1633FileMustHaveHeader-->
     <Rule Id="SA1633" Action="None" />
   </Rules>
 </RuleSet>

@@ -8,32 +8,46 @@ using System.Threading.Tasks;
 
 namespace SQLCompare.UI.Middlewares
 {
+    /// <summary>
+    /// Middleware that validate the header of each request
+    /// </summary>
     public class RequestValidatorMiddleware
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<RequestValidatorMiddleware> _logger;
-        private readonly RequestValidatorSettings _options;
+        private readonly RequestDelegate next;
+        private readonly ILogger<RequestValidatorMiddleware> logger;
+        private readonly RequestValidatorSettings options;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestValidatorMiddleware"/> class.
+        /// </summary>
+        /// <param name="next">The RequestDelegate instance</param>
+        /// <param name="logger">The injected Logger</param>
+        /// <param name="options">Configuration options for the validation</param>
         public RequestValidatorMiddleware(RequestDelegate next, ILogger<RequestValidatorMiddleware> logger, IOptions<RequestValidatorSettings> options)
         {
-            _next = next;
-            _logger = logger;
-            _options = options.Value;
+            this.next = next;
+            this.logger = logger;
+            this.options = options.Value;
         }
 
+        /// <summary>
+        /// Method that gets invoked when the middleware is executed
+        /// </summary>
+        /// <param name="context">The HttpContext of the current request</param>
+        /// <returns>The next task</returns>
         public async Task Invoke(HttpContext context)
         {
             string authToken = context.Request.Headers[AppGlobal.AuthorizationHeaderName];
             string userAgent = context.Request.Headers["User-Agent"];
 
-            if ((string.IsNullOrEmpty(_options.AllowedRequestGuid) || string.Equals(authToken, _options.AllowedRequestGuid, StringComparison.Ordinal)) &&
-                (string.IsNullOrEmpty(_options.AllowedRequestAgent) || string.Equals(userAgent, _options.AllowedRequestAgent, StringComparison.Ordinal)))
+            if ((string.IsNullOrEmpty(this.options.AllowedRequestGuid) || string.Equals(authToken, this.options.AllowedRequestGuid, StringComparison.Ordinal)) &&
+                (string.IsNullOrEmpty(this.options.AllowedRequestAgent) || string.Equals(userAgent, this.options.AllowedRequestAgent, StringComparison.Ordinal)))
             {
-                await _next.Invoke(context).ConfigureAwait(false);
+                await this.next.Invoke(context).ConfigureAwait(false);
             }
             else
             {
-                _logger.LogError($"Request refused. Token:{authToken}; UserAgent:{userAgent}");
+                this.logger.LogError($"Request refused. Token:{authToken}; UserAgent:{userAgent}");
                 context.Response.Body = new MemoryStream(0);
             }
         }

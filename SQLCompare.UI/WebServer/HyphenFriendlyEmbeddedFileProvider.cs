@@ -10,7 +10,7 @@ namespace SQLCompare.UI.WebServer
     /// </summary>
     public class HyphenFriendlyEmbeddedFileProvider : IFileProvider
     {
-        private readonly EmbeddedFileProvider _embeddedFileProvider;
+        private readonly EmbeddedFileProvider embeddedFileProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HyphenFriendlyEmbeddedFileProvider"/> class.
@@ -18,7 +18,7 @@ namespace SQLCompare.UI.WebServer
         /// <param name="embeddedFileProvider">The <see cref="EmbeddedFileProvider"/> to wrap</param>
         public HyphenFriendlyEmbeddedFileProvider(EmbeddedFileProvider embeddedFileProvider)
         {
-            _embeddedFileProvider = embeddedFileProvider;
+            this.embeddedFileProvider = embeddedFileProvider;
         }
 
         /// <inheritdoc/>
@@ -33,7 +33,7 @@ namespace SQLCompare.UI.WebServer
             var indexOfLastSeperator = subpath.LastIndexOf('/');
             if (indexOfLastSeperator == -1)
             {
-                return _embeddedFileProvider.GetFileInfo(subpath);
+                return this.embeddedFileProvider.GetFileInfo(subpath);
             }
 
             // Does it contain a hyphen?
@@ -41,14 +41,14 @@ namespace SQLCompare.UI.WebServer
             if (indexOfFirstHyphen == -1)
             {
                 // no hyphens.
-                return _embeddedFileProvider.GetFileInfo(subpath);
+                return this.embeddedFileProvider.GetFileInfo(subpath);
             }
 
             // is hyphen within the directory portion?
             if (indexOfFirstHyphen > indexOfLastSeperator)
             {
                 // nope
-                return _embeddedFileProvider.GetFileInfo(subpath);
+                return this.embeddedFileProvider.GetFileInfo(subpath);
             }
 
             // Ok, re-write directory portion, from the first hyphen, replacing hyphens!
@@ -64,20 +64,20 @@ namespace SQLCompare.UI.WebServer
             }
 
             var normalisedPath = builder.ToString();
-            return _embeddedFileProvider.GetFileInfo(normalisedPath);
+            return this.embeddedFileProvider.GetFileInfo(normalisedPath);
         }
 
         /// <inheritdoc/>
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
-            var contents = _embeddedFileProvider.GetDirectoryContents(subpath);
+            var contents = this.embeddedFileProvider.GetDirectoryContents(subpath);
             return contents;
         }
 
         /// <inheritdoc/>
         public IChangeToken Watch(string filter)
         {
-            return _embeddedFileProvider.Watch(filter);
+            return this.embeddedFileProvider.Watch(filter);
         }
     }
 }

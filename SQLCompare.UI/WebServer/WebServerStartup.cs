@@ -21,7 +21,7 @@ namespace SQLCompare.UI.WebServer
         /// <param name="configuration">The WebHost configuration</param>
         public WebServerStartup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         /// <summary>

@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using NLog.Web;
 using SQLCompare.UI.WebServer;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -15,10 +14,16 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace SQLCompare.UI
 {
+    /// <summary>
+    /// SQLCompare UI application, providing the WebServer
+    /// </summary>
     public static class Program
     {
         private const short WebServerPort = 5000;
 
+        /// <summary>
+        /// Entry point of the SQLCompare UI application
+        /// </summary>
         public static void Main()
         {
             // NLog: setup the logger first to catch all errors

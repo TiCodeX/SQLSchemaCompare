@@ -18,8 +18,8 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// <param name="password">The password for the login</param>
         protected GenericDatabaseContext(string server, string databaseName, string username, string password)
         {
-            DatabaseName = databaseName;
-            ConnectionString = $"Server={server};Database={DatabaseName};User Id={username};Password={password}";
+            this.DatabaseName = databaseName;
+            this.ConnectionString = $"Server={server};Database={this.DatabaseName};User Id={username};Password={password}";
         }
 
         /// <summary>

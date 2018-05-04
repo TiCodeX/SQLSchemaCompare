@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SQLCompare.Core.Entities.Database
+﻿namespace SQLCompare.Core.Entities.Database
 {
+    /// <summary>
+    /// Defines a MicrosoftSql database
+    /// </summary>
     public class MicrosoftSqlDb : BaseDb
     {
     }

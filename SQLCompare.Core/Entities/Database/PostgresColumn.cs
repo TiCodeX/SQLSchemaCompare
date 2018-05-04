@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SQLCompare.Core.Entities.Database
+﻿namespace SQLCompare.Core.Entities.Database
 {
-    public class PostgresColumn : BaseColumn
+    /// <summary>
+    /// Specific PostgresSql column definition
+    /// </summary>
+    public class PostgresColumn : BaseDbColumn
     {
     }
 }

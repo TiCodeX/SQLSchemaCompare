@@ -2,8 +2,15 @@
 
 namespace SQLCompare.Core.Interfaces
 {
+    /// <summary>
+    /// Defines a class that provides the mechanisms to script the database
+    /// </summary>
     public interface IDatabaseScripter
     {
-        BaseTable ScriptCreateTable();
+        /// <summary>
+        /// Script a database table
+        /// </summary>
+        /// <param name="table">The table that must be scripted</param>
+        void ScriptCreateTable(BaseDbTable table);
     }
 }

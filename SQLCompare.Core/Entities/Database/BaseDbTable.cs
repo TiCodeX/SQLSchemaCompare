@@ -4,23 +4,23 @@ using System.Collections.Generic;
 namespace SQLCompare.Core.Entities.Database
 {
     /// <summary>
-    /// Provides generic options of database classes
+    /// Provides generic options for database table classes
     /// </summary>
-    public abstract class BaseDb
+    public abstract class BaseDbTable
     {
         /// <summary>
-        /// Gets or sets the database name
+        /// Gets or sets database table name
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the database last modification date
+        /// Gets or sets database table last modification date
         /// </summary>
         public DateTime LastModified { get; set; }
 
         /// <summary>
-        /// Gets the database's tables
+        /// Gets the database table's columns
         /// </summary>
-        public List<BaseDbTable> Tables { get; private set; }
+        public List<BaseDbColumn> Columns { get; private set; }
     }
 }

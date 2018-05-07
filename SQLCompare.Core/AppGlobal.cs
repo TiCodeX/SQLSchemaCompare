@@ -1,4 +1,7 @@
-﻿namespace SQLCompare.Core
+﻿using System;
+using System.IO;
+
+namespace SQLCompare.Core
 {
     /// <summary>
     /// Global configuration of the application
@@ -34,5 +37,10 @@
         /// Gets the header attribute name for the authentication
         /// </summary>
         public static string AuthorizationHeaderName => "CustomAuthToken";
+
+        /// <summary>
+        /// Gets the full filename of the application settings file
+        /// </summary>
+        public static string AppSettingsFullFilename => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "SqlCompare", "Config.conf");
     }
 }

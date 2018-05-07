@@ -4,6 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using SQLCompare.Core;
+using SQLCompare.Core.Interfaces;
+using SQLCompare.Core.Interfaces.Services;
+using SQLCompare.Infrastructure;
+using SQLCompare.Services;
 using SQLCompare.UI.Extensions;
 using SQLCompare.UI.Middlewares;
 using System.Reflection;
@@ -45,6 +49,9 @@ namespace SQLCompare.UI.WebServer
             });
 
             services.AddMvc();
+
+            services.AddSingleton<IAppSettingsService, AppSettingsService>();
+            services.AddTransient<IAppSettingsRepository, AppSettingsRepository>();
         }
 
         /// <summary>

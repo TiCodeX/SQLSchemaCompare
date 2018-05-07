@@ -1,0 +1,34 @@
+﻿@page
+@model SQLCompare.UI.Pages.Welcome
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Welcome</title>
+    @Html.ActionLink("New project", "Index");
+    <br />
+    @Html.ActionLink("Load project", "")
+
+    <br />
+    <div>
+        @foreach (var recent in Model.RecentProjects)
+        {
+            <div>
+                project: @recent
+                <br />
+            </div>
+
+        }
+    </div>
+
+    <label for="exampleInputEmail1">Load</label>
+    <input type="file">
+</head>
+<body>
+</body>
+</html>

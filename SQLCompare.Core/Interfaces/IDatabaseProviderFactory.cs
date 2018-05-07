@@ -1,4 +1,4 @@
-﻿using SQLCompare.Core.Entities;
+﻿using SQLCompare.Core.Entities.DatabaseProvider;
 
 namespace SQLCompare.Core.Interfaces
 {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SQLCompare.Core.Entities.EntityFramework;
+using System.Collections.Generic;
 
 namespace SQLCompare.Infrastructure.EntityFramework
 {
@@ -41,6 +42,64 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// Gets the string used for the connection
         /// </summary>
         protected string ConnectionString { get; }
+
+        /// <summary>
+        /// Performs a query
+        /// </summary>
+        /// <typeparam name="T">The type of the result</typeparam>
+        /// <param name="query">The SQL query</param>
+        /// <returns>The list of specified type</returns>
+        public List<T> Query<T>(string query)
+            where T : new()
+        {
+            var result = new List<T>();
+            this.Database.OpenConnection();
+            using (var command = this.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = query;
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var t = new T();
+                        var type = t.GetType();
+                        for (var inc = 0; inc < reader.FieldCount; inc++)
+                        {
+                            var prop = type.GetProperty(reader.GetName(inc));
+                            prop.SetValue(t, reader.GetValue(inc), null);
+                        }
+
+                        result.Add(t);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a query
+        /// </summary>
+        /// <param name="query">The SQL query</param>
+        /// <returns>The list of the first column</returns>
+        public List<string> Query(string query)
+        {
+            var result = new List<string>();
+            this.Database.OpenConnection();
+            using (var command = this.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = query;
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        result.Add(reader.GetString(0));
+                    }
+                }
+            }
+
+            return result;
+        }
 
         /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder modelBuilder)

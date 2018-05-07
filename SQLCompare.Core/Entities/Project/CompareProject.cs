@@ -1,4 +1,6 @@
-﻿namespace SQLCompare.Core.Entities.Project
+﻿using SQLCompare.Core.Entities.DatabaseProvider;
+
+namespace SQLCompare.Core.Entities.Project
 {
     /// <summary>
     /// Defines a database comparison project

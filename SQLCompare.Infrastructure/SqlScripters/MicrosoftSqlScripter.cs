@@ -31,17 +31,17 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <returns>The create table script</returns>
         public string ScriptCreateTable(InformationSchemaTable table)
         {
-            this.logger.LogInformation(string.Empty);
+            this.logger.LogInformation($"Generating SQL script for table '{GetTableName(table)}'");
 
             var sql = new StringBuilder();
 
             if (string.Equals(table.TableType, "BASE TABLE", StringComparison.Ordinal))
             {
-                sql.AppendLine($"CREATE TABLE {this.GetTableName(table)} (");
+                sql.AppendLine($"CREATE TABLE {GetTableName(table)} (");
                 var i = 0;
                 foreach (var col in table.Columns)
                 {
-                    sql.Append($"   {this.ScriptColumn(col)}");
+                    sql.Append($"   {ScriptColumn(col)}");
                     if (i++ < table.Columns.Count - 1)
                     {
                         sql.AppendLine(",");
@@ -55,12 +55,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return sql.ToString();
         }
 
-        private string ScriptColumn(InformationSchemaColumn col)
+        private static string ScriptColumn(InformationSchemaColumn col)
         {
-            this.logger.LogInformation(string.Empty);
             var sql = new StringBuilder();
 
-            sql.Append($"{col.ColumnName} {this.ScriptColumnDataType(col)} ");
+            sql.Append($"{col.ColumnName} {ScriptColumnDataType(col)} ");
             if (string.Equals(col.IsNullable, "YES", StringComparison.Ordinal))
             {
                 sql.Append("NULL ");
@@ -78,9 +77,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return sql.ToString().TrimEnd();
         }
 
-        private object ScriptColumnDataType(InformationSchemaColumn col)
+        private static object ScriptColumnDataType(InformationSchemaColumn col)
         {
-            this.logger.LogInformation(string.Empty);
             switch (col.DataType)
             {
                 case "varchar":
@@ -92,10 +90,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
         }
 
-        private string GetTableName(InformationSchemaTable table)
+        private static string GetTableName(InformationSchemaTable table)
         {
-            this.logger.LogInformation(string.Empty);
-
             // Depending on options
             var useSimpleSintax = true;
             var name = string.Empty;

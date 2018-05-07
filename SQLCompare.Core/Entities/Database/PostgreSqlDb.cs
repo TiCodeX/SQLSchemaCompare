@@ -1,9 +1,9 @@
 ﻿namespace SQLCompare.Core.Entities.Database
 {
     /// <summary>
-    /// Specific PostgresSql table definition
+    /// Defines a PostgreSqlDb database
     /// </summary>
-    public class PostgresTable : BaseDbTable
+    public class PostgreSqlDb : BaseDb
     {
     }
 }

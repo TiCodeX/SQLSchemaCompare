@@ -54,6 +54,7 @@ namespace SQLCompare.UI.WebServer
             services.AddTransient<IAppSettingsRepository, AppSettingsRepository>();
             services.AddSingleton<IDatabaseService, DatabaseService>();
             services.AddSingleton<IDatabaseProviderFactory, DatabaseProviderFactory>();
+            services.AddSingleton<IAppGlobals, AppGlobals>();
         }
 
         /// <summary>
@@ -62,7 +63,9 @@ namespace SQLCompare.UI.WebServer
         /// <param name="app">The WebHost application builder</param>
         public void Configure(IApplicationBuilder app)
         {
-            if (AppGlobal.IsDevelopment)
+            // As we don't have IAppGlobals injected yet, we instantiate it directly.
+            AppGlobals appGlobals = new AppGlobals();
+            if (appGlobals.IsDevelopment)
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();

@@ -14,16 +14,27 @@ namespace SQLCompare.Infrastructure
     /// </summary>
     public class AppSettingsRepository : IAppSettingsRepository
     {
+        private IAppGlobals appGlobals;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AppSettingsRepository"/> class.
+        /// </summary>
+        /// <param name="appGlobals">Injected application global constants</param>
+        public AppSettingsRepository(IAppGlobals appGlobals)
+        {
+            this.appGlobals = appGlobals;
+        }
+
         /// <inheritdoc/>
         public void Write(AppSettings appSettings)
         {
-            if (!Directory.Exists(Path.GetDirectoryName(AppGlobal.AppSettingsFullFilename)))
+            if (!Directory.Exists(Path.GetDirectoryName(this.appGlobals.AppSettingsFullFilename)))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(AppGlobal.AppSettingsFullFilename));
+                Directory.CreateDirectory(Path.GetDirectoryName(this.appGlobals.AppSettingsFullFilename));
             }
 
             XmlSerializer xml = new XmlSerializer(typeof(AppSettings));
-            using (var f = File.OpenWrite(AppGlobal.AppSettingsFullFilename))
+            using (var f = File.OpenWrite(this.appGlobals.AppSettingsFullFilename))
             {
                 xml.Serialize(f, appSettings);
             }
@@ -33,7 +44,7 @@ namespace SQLCompare.Infrastructure
         public AppSettings Read()
         {
             XmlSerializer xml = new XmlSerializer(typeof(AppSettings));
-            using (var f = File.OpenRead(AppGlobal.AppSettingsFullFilename))
+            using (var f = File.OpenRead(this.appGlobals.AppSettingsFullFilename))
             {
                 return xml.Deserialize(f) as AppSettings;
             }

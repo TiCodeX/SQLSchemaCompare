@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SQLCompare.Core;
+using SQLCompare.Core.Interfaces;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace SQLCompare.UI.Middlewares
         private readonly RequestDelegate next;
         private readonly ILogger<RequestValidatorMiddleware> logger;
         private readonly RequestValidatorSettings options;
+        private readonly IAppGlobals appGlobals;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestValidatorMiddleware"/> class.
@@ -23,11 +25,13 @@ namespace SQLCompare.UI.Middlewares
         /// <param name="next">The RequestDelegate instance</param>
         /// <param name="logger">The injected Logger</param>
         /// <param name="options">Configuration options for the validation</param>
-        public RequestValidatorMiddleware(RequestDelegate next, ILogger<RequestValidatorMiddleware> logger, IOptions<RequestValidatorSettings> options)
+        /// <param name="appGlobals">The injected application global constants</param>
+        public RequestValidatorMiddleware(RequestDelegate next, ILogger<RequestValidatorMiddleware> logger, IOptions<RequestValidatorSettings> options, IAppGlobals appGlobals)
         {
             this.next = next;
             this.logger = logger;
             this.options = options.Value;
+            this.appGlobals = appGlobals;
         }
 
         /// <summary>
@@ -37,7 +41,7 @@ namespace SQLCompare.UI.Middlewares
         /// <returns>The next task</returns>
         public async Task Invoke(HttpContext context)
         {
-            string authToken = context.Request.Headers[AppGlobal.AuthorizationHeaderName];
+            string authToken = context.Request.Headers[this.appGlobals.AuthorizationHeaderName];
             string userAgent = context.Request.Headers["User-Agent"];
 
             if ((string.IsNullOrEmpty(this.options.AllowedRequestGuid) || string.Equals(authToken, this.options.AllowedRequestGuid, StringComparison.Ordinal)) &&

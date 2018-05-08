@@ -7,6 +7,7 @@ using SQLCompare.Core;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.Infrastructure;
+using SQLCompare.Infrastructure.DatabaseProviders;
 using SQLCompare.Services;
 using SQLCompare.UI.Extensions;
 using SQLCompare.UI.Middlewares;

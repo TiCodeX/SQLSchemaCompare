@@ -4,7 +4,7 @@ using SQLCompare.Core.Interfaces;
 using SQLCompare.Infrastructure.EntityFramework;
 using System.Collections.Generic;
 
-namespace SQLCompare.Infrastructure
+namespace SQLCompare.Infrastructure.DatabaseProviders
 {
     /// <summary>
     /// Retrieves various information from a Microsoft SQL Server

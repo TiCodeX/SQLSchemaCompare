@@ -1,34 +1,29 @@
 ﻿@page
+@using SQLCompare.Core.Interfaces
 @model SQLCompare.UI.Pages.Welcome
-@{
-    Layout = null;
-}
+@inject IAppGlobals appGlobals
 
-<!DOCTYPE html>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Welcome</title>
-    @Html.ActionLink("New project", "Index");
-    <br />
-    @Html.ActionLink("Load project", "")
+<h1>Welcome to @appGlobals.CompanyName @appGlobals.ProductName</h1>
+<br /><br />
+@Html.ActionLink("New project", "Index");
+<br />
+@Html.ActionLink("Load project", "")
 
-    <br />
-    <div>
-        @foreach (var recent in Model.RecentProjects)
-        {
-            <div>
-                project: @recent
-                <br />
-            </div>
+<br />
+<br />
+<div>
+    @foreach (var recent in Model.RecentProjects)
+    {
+        <div>
+            Recent project: @recent
+            <br />
+        </div>
 
-        }
-    </div>
+    }
+</div>
+<br />
+<br />
 
-    <label for="exampleInputEmail1">Load</label>
-    <input type="file">
-</head>
-<body>
-</body>
-</html>
+<label for="exampleInputEmail1">Load</label>
+<input type="file">

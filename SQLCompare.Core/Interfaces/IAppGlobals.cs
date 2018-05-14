@@ -10,6 +10,16 @@ namespace SQLCompare.Core.Interfaces
     public interface IAppGlobals
     {
         /// <summary>
+        /// Gets the company name
+        /// </summary>
+        string CompanyName { get; }
+
+        /// <summary>
+        /// Gets the product name
+        /// </summary>
+        string ProductName { get; }
+
+        /// <summary>
         /// Gets a value indicating whether the solution configuration is in Debug
         /// </summary>
         bool IsDevelopment { get; }

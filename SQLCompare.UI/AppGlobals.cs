@@ -10,6 +10,12 @@ namespace SQLCompare.Core
     internal class AppGlobals : IAppGlobals
     {
         /// <inheritdoc/>
+        public string CompanyName => "Ticodex SA";
+
+        /// <inheritdoc/>
+        public string ProductName => "SQLCompare";
+
+        /// <inheritdoc/>
         public bool IsDevelopment
         {
             get

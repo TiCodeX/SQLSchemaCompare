@@ -1,7 +1,4 @@
-﻿@using Core.Interfaces
-@inject IAppGlobals AppGlobal
-
-@* In order to make jquery work with both Chrome and Electron *@
+﻿@* In order to make jquery work with both Chrome and Electron *@
 @* Keep a reference to module and restore it after jquery is loaded *@
 <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
 <script src="~/lib/jquery/jquery-3.3.1.min.js"></script>

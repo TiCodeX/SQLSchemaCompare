@@ -1,10 +1,7 @@
 ﻿@page
-@using SQLCompare.Core.Interfaces
-@model SQLCompare.UI.Pages.Welcome
-@inject IAppGlobals appGlobals
+@model Welcome
 
-
-<h1>Welcome to @appGlobals.CompanyName @appGlobals.ProductName</h1>
+<h1>Welcome to @AppGlobal.CompanyName @AppGlobal.ProductName</h1>
 <br /><br />
 @Html.ActionLink("New project", "Index");
 <br />

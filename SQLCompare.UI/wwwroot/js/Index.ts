@@ -95,4 +95,5 @@ $(document).ready(() => {
 
     }
 
+    Utility.OpenModalDialog("/Welcome");
 });

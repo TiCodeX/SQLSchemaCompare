@@ -9,4 +9,13 @@ class Utility {
         return $("<div/>").html(s).text();
     }
 
+    static OpenModalDialog(url) {
+        $.ajax(url, {
+            type: "GET",
+            cache: false
+        }).done(result => {
+            $("#myModalBody").html(result);
+            $("#myModal").modal("show");
+        });
+    }
 }

@@ -1,9 +1,36 @@
 ﻿@page
 @model Index
+<!DOCTYPE html>
 
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/lib/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    @if (AppGlobal.IsDevelopment)
+    {
+        <link href="~/css/Index.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    }
+    else
+    {
+        <link href="~/css/site.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    }
+</head>
+<body>
+    <div class="container-fluid">
+        <!--TODO: add main program layout-->
+    </div>
 
-<h2>Home</h2>
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div id="myModalBody" class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
 
-<button type="button" class="btn btn-success" data-toggle="tooltip" data-html="true" title="<em>Tooltip</em> <u>with</u> <b>HTML</b>">
-    Tooltip with HTML
-</button>
+    @Html.Partial("_ScriptSetup")
+</body>
+</html>

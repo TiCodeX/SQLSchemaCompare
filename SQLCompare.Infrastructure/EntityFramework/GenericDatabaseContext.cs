@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Entities.EntityFramework;
 using System.Collections.Generic;
 
@@ -8,19 +9,17 @@ namespace SQLCompare.Infrastructure.EntityFramework
     /// <summary>
     /// Common EF database context
     /// </summary>
-    internal class GenericDatabaseContext : DbContext
+    internal abstract class GenericDatabaseContext<TDatabaseProviderOptions> : DbContext
+        where TDatabaseProviderOptions : DatabaseProviderOptions
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GenericDatabaseContext"/> class.
+        /// Initializes a new instance of the <see cref="GenericDatabaseContext{TDatabaseProviderOptions}"/> class.
         /// </summary>
-        /// <param name="server">The IP address/hostname of the server</param>
-        /// <param name="databaseName">The name of the database</param>
-        /// <param name="username">The username for the login</param>
-        /// <param name="password">The password for the login</param>
-        protected GenericDatabaseContext(string server, string databaseName, string username, string password)
+        /// <param name="dbpo">The database provider options</param>
+        protected GenericDatabaseContext(TDatabaseProviderOptions dbpo)
         {
-            this.DatabaseName = databaseName;
-            this.ConnectionString = $"Server={server};Database={this.DatabaseName};User Id={username};Password={password}";
+            this.DatabaseProviderOptions = dbpo;
+            this.ConnectionString = $"Server={dbpo.Hostname};Database={dbpo.Database};User Id={dbpo.Username};Password={dbpo.Password}";
         }
 
         /// <summary>
@@ -34,9 +33,9 @@ namespace SQLCompare.Infrastructure.EntityFramework
         public virtual DbSet<InformationSchemaColumn> Columns { get; protected set; }
 
         /// <summary>
-        /// Gets the name of the database
+        /// Gets the database provider options
         /// </summary>
-        protected string DatabaseName { get; }
+        protected TDatabaseProviderOptions DatabaseProviderOptions { get; }
 
         /// <summary>
         /// Gets the string used for the connection

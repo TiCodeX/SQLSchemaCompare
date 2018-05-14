@@ -31,7 +31,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc />
         public List<string> GetDatabaseList()
         {
-            using (var context = new MySqlDatabaseContext(this.options.Hostname, this.options.Database, this.options.Username, this.options.Password))
+            using (var context = new MySqlDatabaseContext(this.options))
             {
                 return context.Query("SHOW DATABASES");
             }

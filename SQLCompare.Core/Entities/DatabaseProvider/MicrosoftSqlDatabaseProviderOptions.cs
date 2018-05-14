@@ -5,5 +5,9 @@
     /// </summary>
     public class MicrosoftSqlDatabaseProviderOptions : DatabaseProviderOptions
     {
+        /// <summary>
+        /// Gets or sets a value indicating whether to use the Windows integrated authentication
+        /// </summary>
+        public bool UseWindowsAuthentication { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         public List<string> GetDatabaseList()
         {
-            using (var context = new MicrosoftSqlDatabaseContext(this.options.Hostname, this.options.Database, this.options.Username, this.options.Password))
+            using (var context = new MicrosoftSqlDatabaseContext(this.options))
             {
                 return context.Query("SELECT name FROM sysdatabases");
             }

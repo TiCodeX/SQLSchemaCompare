@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Infrastructure.EntityFramework;
 using SQLCompare.Infrastructure.SqlScripters;
 using Xunit;
@@ -27,7 +28,12 @@ namespace SQLCompare.Test.Infrastructure.SqlScripters
         [Fact]
         public void ScriptCreateTables()
         {
-            using (var c = new MicrosoftSqlDatabaseContext("localhost\\SQLEXPRESS", "BrokerPro", "brokerpro", "brokerpro05"))
+            using (var c = new MicrosoftSqlDatabaseContext(new MicrosoftSqlDatabaseProviderOptions
+            {
+                Hostname = "localhost\\SQLEXPRESS",
+                Database = "BrokerPro",
+                UseWindowsAuthentication = true
+            }))
             {
                 var x = new MicrosoftSqlScripter(this.Logger, null);
 

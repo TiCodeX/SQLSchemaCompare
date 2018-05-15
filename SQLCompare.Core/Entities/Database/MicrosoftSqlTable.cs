@@ -3,7 +3,7 @@
     /// <summary>
     /// Specific MicrosoftSql table definition
     /// </summary>
-    public class MicrosoftSqlTable
+    public class MicrosoftSqlTable : BaseDbTable
     {
     }
 }

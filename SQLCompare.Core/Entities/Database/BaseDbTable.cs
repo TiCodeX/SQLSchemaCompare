@@ -21,6 +21,6 @@ namespace SQLCompare.Core.Entities.Database
         /// <summary>
         /// Gets the database table's columns
         /// </summary>
-        public List<BaseDbColumn> Columns { get; private set; }
+        public List<BaseDbColumn> Columns { get; } = new List<BaseDbColumn>();
     }
 }

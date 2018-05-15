@@ -1,4 +1,5 @@
-﻿using SQLCompare.Core.Entities.DatabaseProvider;
+﻿using SQLCompare.Core.Entities.Database;
+using SQLCompare.Core.Entities.DatabaseProvider;
 using System.Collections.Generic;
 
 namespace SQLCompare.Core.Interfaces.Services
@@ -14,5 +15,12 @@ namespace SQLCompare.Core.Interfaces.Services
         /// <param name="options">The options for the database</param>
         /// <returns>The list of database names</returns>
         List<string> ListDatabases(DatabaseProviderOptions options);
+
+        /// <summary>
+        /// Gets the database structure
+        /// </summary>
+        /// <param name="options">The options for the database</param>
+        /// <returns>The database structure</returns>
+        BaseDb GetDatabase(DatabaseProviderOptions options);
     }
 }

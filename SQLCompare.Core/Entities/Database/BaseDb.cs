@@ -21,6 +21,6 @@ namespace SQLCompare.Core.Entities.Database
         /// <summary>
         /// Gets the database's tables
         /// </summary>
-        public List<BaseDbTable> Tables { get; private set; }
+        public List<BaseDbTable> Tables { get; } = new List<BaseDbTable>();
     }
 }

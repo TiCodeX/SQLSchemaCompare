@@ -1,6 +1,5 @@
 ﻿using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Core.Interfaces;
 using SQLCompare.Infrastructure.EntityFramework;
 using System.Collections.Generic;
 
@@ -9,29 +8,30 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// <summary>
     /// Retrieves various information from a Microsoft SQL Server
     /// </summary>
-    internal class MicrosoftSqlDatabaseProvider : IDatabaseProvider
+    internal class MicrosoftSqlDatabaseProvider : GenericDatabaseProvider<MicrosoftSqlDb, MicrosoftSqlTable, MicrosoftSqlColumn, MicrosoftSqlDatabaseProviderOptions>
     {
-        private readonly MicrosoftSqlDatabaseProviderOptions options;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MicrosoftSqlDatabaseProvider"/> class.
         /// </summary>
         /// <param name="options">The options to connect to the Microsoft SQL Database</param>
         public MicrosoftSqlDatabaseProvider(MicrosoftSqlDatabaseProviderOptions options)
+            : base(options)
         {
-            this.options = options;
         }
 
         /// <inheritdoc/>
-        public BaseDb GetDatabase()
+        public override BaseDb GetDatabase()
         {
-            throw new System.NotImplementedException();
+            using (var context = new MicrosoftSqlDatabaseContext(this.Options))
+            {
+                return GetCommonDatabase(context);
+            }
         }
 
         /// <inheritdoc/>
-        public List<string> GetDatabaseList()
+        public override List<string> GetDatabaseList()
         {
-            using (var context = new MicrosoftSqlDatabaseContext(this.options))
+            using (var context = new MicrosoftSqlDatabaseContext(this.Options))
             {
                 return context.Query("SELECT name FROM sysdatabases");
             }

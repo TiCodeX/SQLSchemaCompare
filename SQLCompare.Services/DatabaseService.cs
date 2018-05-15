@@ -1,4 +1,5 @@
-﻿using SQLCompare.Core.Entities.DatabaseProvider;
+﻿using SQLCompare.Core.Entities.Database;
+using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 using System.Collections.Generic;
@@ -24,6 +25,13 @@ namespace SQLCompare.Services
         {
             var provider = this.dbProviderFactory.Create(options);
             return provider.GetDatabaseList();
+        }
+
+        /// <inheritdoc />
+        public BaseDb GetDatabase(DatabaseProviderOptions options)
+        {
+            var provider = this.dbProviderFactory.Create(options);
+            return provider.GetDatabase();
         }
     }
 }

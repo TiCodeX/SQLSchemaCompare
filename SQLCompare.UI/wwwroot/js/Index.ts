@@ -95,5 +95,16 @@ $(document).ready(() => {
 
     }
 
-    Utility.OpenModalDialog("/Welcome");
+    Utility.OpenModalDialog("/Welcome", "GET");
+
+    // Register clickable attributes
+    $(document).on("click", "[load-modal]", function (e) {
+        e.preventDefault();
+        const $this = $(this);
+        const url = $this.attr("load-modal").toString();
+        const method = $this.attr("load-modal-method").toString();
+        const dataAttr = $this.attr("load-modal-data");
+        const data = dataAttr ? JSON.parse(JSON.parse("\"" + dataAttr.toString() + "\"")) : null;
+        Utility.OpenModalDialog(url, method, data);
+    });
 });

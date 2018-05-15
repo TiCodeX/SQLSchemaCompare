@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using SQLCompare.Core.Interfaces.Services;
+using System.Collections.Generic;
 
 namespace SQLCompare.UI.Pages
 {
@@ -15,18 +9,15 @@ namespace SQLCompare.UI.Pages
     /// </summary>
     public class Welcome : PageModel
     {
-        private IAppSettingsService appSettingsService;
-        private IAppGlobals appGlobals;
+        private readonly IAppSettingsService appSettingsService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Welcome"/> class.
         /// </summary>
         /// <param name="appSettingsService">The injected app settings service</param>
-        /// <param name="appGlobals">The injected application global constants</param>
-        public Welcome(IAppSettingsService appSettingsService, IAppGlobals appGlobals)
+        public Welcome(IAppSettingsService appSettingsService)
         {
             this.appSettingsService = appSettingsService;
-            this.appGlobals = appGlobals;
         }
 
         /// <summary>
@@ -39,8 +30,7 @@ namespace SQLCompare.UI.Pages
         /// </summary>
         public void OnGet()
         {
-            this.ViewData["Title"] = $"Welcome to {this.appGlobals.CompanyName} {this.appGlobals.ProductName}";
-            AppSettings settings = this.appSettingsService.GetAppSettings();
+            var settings = this.appSettingsService.GetAppSettings();
 
             this.RecentProjects = settings.RecentProjects;
         }

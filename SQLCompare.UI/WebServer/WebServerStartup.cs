@@ -51,6 +51,8 @@ namespace SQLCompare.UI.WebServer
 
             services.AddMvc();
 
+            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
+
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
             services.AddTransient<IAppSettingsRepository, AppSettingsRepository>();
             services.AddSingleton<IDatabaseService, DatabaseService>();

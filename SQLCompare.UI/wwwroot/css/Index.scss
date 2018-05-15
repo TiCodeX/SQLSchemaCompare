@@ -5,11 +5,3 @@ body {
     font: 100% $font-stack;
     color: $primary-color;
 }
-
-.modal {
-    max-height: calc(100% - 100px);
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}

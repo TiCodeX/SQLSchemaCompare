@@ -1,10 +1,10 @@
 ﻿@page
 @model Index
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>@ViewData["Title"]</title>
     <link href="~/lib/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css" />
     @if (AppGlobal.IsDevelopment)
@@ -17,13 +17,15 @@
     }
 </head>
 <body>
+    @Html.AntiForgeryToken()
+
     <div class="container-fluid">
         <!--TODO: add main program layout-->
     </div>
 
     <!-- Modal -->
-    <div id="myModal" class="modal">
-        <div class="modal-dialog">
+    <div id="myModal" class="modal" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div id="myModalBody" class="modal-body">
                 </div>

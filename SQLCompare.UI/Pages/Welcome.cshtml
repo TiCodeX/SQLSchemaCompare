@@ -1,4 +1,6 @@
 ﻿@page
+@using System.Web
+@using Core.Interfaces
 @model Welcome
 
 <h1>Welcome to @AppGlobal.CompanyName @AppGlobal.ProductName</h1>
@@ -10,13 +12,14 @@
 <br />
 <br />
 <div>
+    Recent projects:
     @foreach (var recent in Model.RecentProjects)
     {
-        <div>
-            Recent project: @recent
-            <br />
-        </div>
-
+        <br /> @:&bull;
+        <a href="#" load-modal="/CompareProject" load-modal-method="POST"
+           load-modal-data="@HttpUtility.JavaScriptStringEncode(Json.Serialize(recent).ToString())">
+            @recent
+        </a>
     }
 </div>
 <br />

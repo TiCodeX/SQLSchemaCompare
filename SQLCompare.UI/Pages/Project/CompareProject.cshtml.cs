@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace SQLCompare.UI.Pages
+namespace SQLCompare.UI.Pages.Project
 {
     /// <summary>
     /// PageModel of the CompareProject page

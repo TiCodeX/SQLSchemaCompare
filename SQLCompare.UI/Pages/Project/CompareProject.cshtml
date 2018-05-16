@@ -1,0 +1,51 @@
+﻿@page
+@model Project.CompareProject
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a data-toggle="tab" href="#tabDataSources" class="nav-link active">Data sources</a>
+    </li>
+    <li class="nav-item">
+        <a data-toggle="tab" href="#tabTableMapping" class="nav-link">Table mapping</a>
+    </li>
+    <li class="nav-item">
+        <a data-toggle="tab" href="#tabOwnerMapping" class="nav-link">Owner mapping</a>
+    </li>
+    <li class="nav-item">
+        <a data-toggle="tab" href="#tabOptions" class="nav-link">Options</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane active" id="tabDataSources">
+        <div class="row">
+            <div class="col-md-6">
+                @Html.Partial("_DatabaseProviderOptions", new ViewDataDictionary(this.ViewData)
+                {
+                    {"Title", "Source"},
+                    {"IdPrefix","src" }
+                })
+            </div>
+            <div class="col-md-6">
+                @Html.Partial("_DatabaseProviderOptions", new ViewDataDictionary(this.ViewData)
+                {
+                    {"Title", "Target"},
+                    {"IdPrefix","trg" }
+                })
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="tabTableMapping">
+        <p></p>
+    </div>
+    <div class="tab-pane" id="tabOwnerMapping">
+        <p></p>
+    </div>
+    <div class="tab-pane" id="tabOptions">
+        <p></p>
+    </div>
+</div>
+
+<div class="float-right">
+    <button type="button" class="btn btn-primary">Compare now</button>
+    <button type="button" class="btn btn-secondary">Cancel</button>
+</div>

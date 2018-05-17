@@ -10,7 +10,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// <summary>
     /// Retrieves various information from a Microsoft SQL Server
     /// </summary>
-    internal class MicrosoftSqlDatabaseProvider : GenericDatabaseProvider<MicrosoftSqlDatabaseProviderOptions>
+    internal class MicrosoftSqlDatabaseProvider : ADatabaseProvider<MicrosoftSqlDatabaseProviderOptions>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MicrosoftSqlDatabaseProvider"/> class.

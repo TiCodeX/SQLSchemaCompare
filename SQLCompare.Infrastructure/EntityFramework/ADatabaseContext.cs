@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Entities.EntityFramework;
-using SQLCompare.Core.Entities.EntityFramework.MicrosoftSql;
 using System;
 using System.Collections.Generic;
 
@@ -12,17 +11,17 @@ namespace SQLCompare.Infrastructure.EntityFramework
     /// <summary>
     /// Common EF database context
     /// </summary>
-    internal abstract class GenericDatabaseContext<TDatabaseProviderOptions> : DbContext
+    internal abstract class ADatabaseContext<TDatabaseProviderOptions> : DbContext
         where TDatabaseProviderOptions : DatabaseProviderOptions
     {
         private readonly ILoggerFactory loggerFactory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GenericDatabaseContext{TDatabaseProviderOptions}"/> class.
+        /// Initializes a new instance of the <see cref="ADatabaseContext{TDatabaseProviderOptions}"/> class.
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="dbpo">The database provider options</param>
-        protected GenericDatabaseContext(ILoggerFactory loggerFactory, TDatabaseProviderOptions dbpo)
+        protected ADatabaseContext(ILoggerFactory loggerFactory, TDatabaseProviderOptions dbpo)
         {
             this.loggerFactory = loggerFactory;
             this.DatabaseProviderOptions = dbpo;

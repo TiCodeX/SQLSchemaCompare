@@ -9,7 +9,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// <summary>
     /// Retrieves various information from a MySQL Server
     /// </summary>
-    internal class MySqlDatabaseProvider : GenericDatabaseProvider<MySqlDatabaseProviderOptions>
+    internal class MySqlDatabaseProvider : ADatabaseProvider<MySqlDatabaseProviderOptions>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlDatabaseProvider"/> class.

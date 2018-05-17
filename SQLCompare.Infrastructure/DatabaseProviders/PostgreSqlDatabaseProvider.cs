@@ -9,7 +9,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// <summary>
     /// Retrieves various information from a PostgreSQL Server
     /// </summary>
-    internal class PostgreSqlDatabaseProvider : GenericDatabaseProvider<PostgreSqlDatabaseProviderOptions>
+    internal class PostgreSqlDatabaseProvider : ADatabaseProvider<PostgreSqlDatabaseProviderOptions>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDatabaseProvider"/> class.

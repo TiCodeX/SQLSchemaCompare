@@ -8,7 +8,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
     /// <summary>
     /// Defines the MySql database context
     /// </summary>
-    internal class MySqlDatabaseContext : GenericDatabaseContext<MySqlDatabaseProviderOptions>
+    internal class MySqlDatabaseContext : ADatabaseContext<MySqlDatabaseProviderOptions>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlDatabaseContext"/> class.

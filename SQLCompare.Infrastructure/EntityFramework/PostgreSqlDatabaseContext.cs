@@ -8,7 +8,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
     /// <summary>
     /// Defines the PostgresSql database context
     /// </summary>
-    internal class PostgreSqlDatabaseContext : GenericDatabaseContext<PostgreSqlDatabaseProviderOptions>
+    internal class PostgreSqlDatabaseContext : ADatabaseContext<PostgreSqlDatabaseProviderOptions>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDatabaseContext"/> class.

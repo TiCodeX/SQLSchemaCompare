@@ -7,7 +7,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
     /// <summary>
     /// Defines the MicrosoftSql database context
     /// </summary>
-    internal class MicrosoftSqlDatabaseContext : GenericDatabaseContext<MicrosoftSqlDatabaseProviderOptions>
+    internal class MicrosoftSqlDatabaseContext : ADatabaseContext<MicrosoftSqlDatabaseProviderOptions>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MicrosoftSqlDatabaseContext"/> class.

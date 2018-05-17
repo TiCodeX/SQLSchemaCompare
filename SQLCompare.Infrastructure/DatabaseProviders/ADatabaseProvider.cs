@@ -10,16 +10,16 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// Retrieves common information from a Server
     /// </summary>
     /// <typeparam name="TDatabaseProviderOptions">Concrete type of the database provider options</typeparam>
-    public abstract class GenericDatabaseProvider<TDatabaseProviderOptions> : IDatabaseProvider
+    public abstract class ADatabaseProvider<TDatabaseProviderOptions> : IDatabaseProvider
         where TDatabaseProviderOptions : DatabaseProviderOptions
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GenericDatabaseProvider{TDatabaseProviderOptions}"/> class.
+        /// Initializes a new instance of the <see cref="ADatabaseProvider{TDatabaseProviderOptions}"/> class.
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory used when using DBContext</param>
         /// <param name="logger">The logger created in the concrete class</param>
         /// <param name="options">The options to connect to the Database</param>
-        protected GenericDatabaseProvider(ILoggerFactory loggerFactory, ILogger logger, TDatabaseProviderOptions options)
+        protected ADatabaseProvider(ILoggerFactory loggerFactory, ILogger logger, TDatabaseProviderOptions options)
         {
             this.Options = options;
             this.LoggerFactory = loggerFactory;

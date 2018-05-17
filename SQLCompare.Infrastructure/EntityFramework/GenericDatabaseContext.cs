@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Entities.EntityFramework;
+using SQLCompare.Core.Entities.EntityFramework.MicrosoftSql;
+using System;
 using System.Collections.Generic;
 
 namespace SQLCompare.Infrastructure.EntityFramework
@@ -12,12 +15,16 @@ namespace SQLCompare.Infrastructure.EntityFramework
     internal abstract class GenericDatabaseContext<TDatabaseProviderOptions> : DbContext
         where TDatabaseProviderOptions : DatabaseProviderOptions
     {
+        private readonly ILoggerFactory loggerFactory;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericDatabaseContext{TDatabaseProviderOptions}"/> class.
         /// </summary>
+        /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="dbpo">The database provider options</param>
-        protected GenericDatabaseContext(TDatabaseProviderOptions dbpo)
+        protected GenericDatabaseContext(ILoggerFactory loggerFactory, TDatabaseProviderOptions dbpo)
         {
+            this.loggerFactory = loggerFactory;
             this.DatabaseProviderOptions = dbpo;
             this.ConnectionString = $"Server={dbpo.Hostname};Database={dbpo.Database};User Id={dbpo.Username};Password={dbpo.Password}";
         }
@@ -65,7 +72,8 @@ namespace SQLCompare.Infrastructure.EntityFramework
                         for (var inc = 0; inc < reader.FieldCount; inc++)
                         {
                             var prop = type.GetProperty(reader.GetName(inc));
-                            prop.SetValue(t, reader.GetValue(inc), null);
+                            var value = reader.GetValue(inc);
+                            prop.SetValue(t, value is DBNull ? null : value, null);
                         }
 
                         result.Add(t);
@@ -98,6 +106,12 @@ namespace SQLCompare.Infrastructure.EntityFramework
             }
 
             return result;
+        }
+
+        /// <inheritdoc/>
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLoggerFactory(this.loggerFactory);
         }
 
         /// <inheritdoc/>

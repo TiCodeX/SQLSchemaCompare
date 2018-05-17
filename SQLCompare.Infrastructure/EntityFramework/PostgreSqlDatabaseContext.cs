@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Entities.EntityFramework;
 
@@ -12,15 +13,18 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDatabaseContext"/> class.
         /// </summary>
+        /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="dbpo">The PostgreSql database provider options</param>
-        public PostgreSqlDatabaseContext(PostgreSqlDatabaseProviderOptions dbpo)
-            : base(dbpo)
+        public PostgreSqlDatabaseContext(ILoggerFactory loggerFactory, PostgreSqlDatabaseProviderOptions dbpo)
+            : base(loggerFactory, dbpo)
         {
         }
 
         /// <inheritdoc/>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            base.OnConfiguring(optionsBuilder);
+
             optionsBuilder.UseNpgsql(this.ConnectionString);
         }
 

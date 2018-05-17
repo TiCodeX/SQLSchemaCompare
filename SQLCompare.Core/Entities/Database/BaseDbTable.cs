@@ -14,9 +14,19 @@ namespace SQLCompare.Core.Entities.Database
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets the database schema name
+        /// </summary>
+        public string SchemaName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the database catalog name
+        /// </summary>
+        public string CatalogName { get; set; }
+
+        /// <summary>
         /// Gets or sets database table last modification date
         /// </summary>
-        public DateTime LastModified { get; set; }
+        public DateTime? ModifyDate { get; set; }
 
         /// <summary>
         /// Gets the database table's columns

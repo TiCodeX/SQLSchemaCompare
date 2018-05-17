@@ -28,12 +28,9 @@ namespace SQLCompare.Test.Infrastructure.SqlScripters
         [Fact]
         public void ScriptCreateTables()
         {
-            using (var c = new MicrosoftSqlDatabaseContext(new MicrosoftSqlDatabaseProviderOptions
-            {
-                Hostname = "localhost\\SQLEXPRESS",
-                Database = "BrokerPro",
-                UseWindowsAuthentication = true
-            }))
+            using (var c = new MicrosoftSqlDatabaseContext(
+                this.LoggerFactory,
+                new MicrosoftSqlDatabaseProviderOptions { Hostname = "localhost\\SQLEXPRESS", Database = "BrokerPro", UseWindowsAuthentication = true }))
             {
                 var x = new MicrosoftSqlScripter(this.Logger, null);
 

@@ -15,13 +15,19 @@ namespace SQLCompare.Test
         /// <param name="output">The test output helper</param>
         protected BaseTests(ITestOutputHelper output)
         {
-            this.Logger = new XunitLogger<T>(output);
+            this.Logger = new XunitLogger(typeof(T).Name, output);
+            this.LoggerFactory = new XunitLoggerFactory(output);
         }
 
         /// <summary>
         /// Gets the Logger
         /// </summary>
-        protected XunitLogger<T> Logger { get; }
+        protected XunitLogger Logger { get; }
+
+        /// <summary>
+        /// Gets the LoggerFactory
+        /// </summary>
+        protected XunitLoggerFactory LoggerFactory { get; }
 
         /// <inheritdoc />
         public void Dispose()

@@ -31,4 +31,8 @@
     <ProjectReference Include="..\SQLCompare.Infrastructure\SQLCompare.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\DatabaseProviders\" />
+  </ItemGroup>
+
 </Project>

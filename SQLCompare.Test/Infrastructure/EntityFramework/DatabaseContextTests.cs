@@ -26,12 +26,9 @@ namespace SQLCompare.Test.Infrastructure.EntityFramework
         [Fact]
         public void DatabaseConnection()
         {
-            using (var c = new MicrosoftSqlDatabaseContext(new MicrosoftSqlDatabaseProviderOptions
-            {
-                Hostname = "localhost\\SQLEXPRESS",
-                Database = "BrokerProGlobal",
-                UseWindowsAuthentication = true
-            }))
+            using (var c = new MicrosoftSqlDatabaseContext(
+                this.LoggerFactory,
+                new MicrosoftSqlDatabaseProviderOptions { Hostname = "localhost\\SQLEXPRESS", Database = "BrokerProGlobal", UseWindowsAuthentication = true }))
             {
                 this.Logger.LogInformation("MicrosoftSqlDatabaseContext:");
                 foreach (var table in c.Tables)
@@ -42,13 +39,7 @@ namespace SQLCompare.Test.Infrastructure.EntityFramework
 
             this.Logger.LogInformation(string.Empty);
 
-            using (var c = new PostgreSqlDatabaseContext(new PostgreSqlDatabaseProviderOptions
-            {
-                Hostname = "localhost",
-                Database = "world",
-                Username = "postgres",
-                Password = "test1234"
-            }))
+            using (var c = new PostgreSqlDatabaseContext(this.LoggerFactory, new PostgreSqlDatabaseProviderOptions { Hostname = "localhost", Database = "world", Username = "postgres", Password = "test1234" }))
             {
                 this.Logger.LogInformation("PostgreSqlDatabaseContext:");
                 foreach (var table in c.Tables)
@@ -59,13 +50,7 @@ namespace SQLCompare.Test.Infrastructure.EntityFramework
 
             this.Logger.LogInformation(string.Empty);
 
-            using (var c = new MySqlDatabaseContext(new MySqlDatabaseProviderOptions
-            {
-                Hostname = "localhost",
-                Database = "employees",
-                Username = "admin",
-                Password = "test1234"
-            }))
+            using (var c = new MySqlDatabaseContext(this.LoggerFactory, new MySqlDatabaseProviderOptions { Hostname = "localhost", Database = "employees", Username = "admin", Password = "test1234", UseSSL = true }))
             {
                 this.Logger.LogInformation("MySqlDatabaseContext:");
                 foreach (var table in c.Tables)

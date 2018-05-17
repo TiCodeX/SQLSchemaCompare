@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SQLCompare.Core.Entities.EntityFramework.MicrosoftSql;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SQLCompare.Core.Entities.EntityFramework
@@ -23,6 +24,7 @@ namespace SQLCompare.Core.Entities.EntityFramework
         public string TableName { get; set; }
 
         public ICollection<InformationSchemaColumn> Columns { get; set; }
+
 #pragma warning restore SA1600 // Elements must be documented
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     }

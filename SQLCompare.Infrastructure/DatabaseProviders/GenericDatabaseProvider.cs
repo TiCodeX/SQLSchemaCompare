@@ -1,8 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Interfaces;
-using SQLCompare.Infrastructure.EntityFramework;
 using System.Collections.Generic;
 
 namespace SQLCompare.Infrastructure.DatabaseProviders
@@ -10,24 +9,32 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// <summary>
     /// Retrieves common information from a Server
     /// </summary>
-    /// <typeparam name="TDatabase">Concrete type of the Database</typeparam>
-    /// <typeparam name="TTable">Concrete type of the Table</typeparam>
-    /// <typeparam name="TColumn">Concrete type of the Column</typeparam>
     /// <typeparam name="TDatabaseProviderOptions">Concrete type of the database provider options</typeparam>
-    public abstract class GenericDatabaseProvider<TDatabase, TTable, TColumn, TDatabaseProviderOptions> : IDatabaseProvider
-        where TDatabase : BaseDb, new()
-        where TTable : BaseDbTable, new()
-        where TColumn : BaseDbColumn, new()
+    public abstract class GenericDatabaseProvider<TDatabaseProviderOptions> : IDatabaseProvider
         where TDatabaseProviderOptions : DatabaseProviderOptions
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GenericDatabaseProvider{TDatabase, TTable, TColumn, TDatabaseProviderOptions}"/> class.
+        /// Initializes a new instance of the <see cref="GenericDatabaseProvider{TDatabaseProviderOptions}"/> class.
         /// </summary>
+        /// <param name="loggerFactory">The injected logger factory used when using DBContext</param>
+        /// <param name="logger">The logger created in the concrete class</param>
         /// <param name="options">The options to connect to the Database</param>
-        protected GenericDatabaseProvider(TDatabaseProviderOptions options)
+        protected GenericDatabaseProvider(ILoggerFactory loggerFactory, ILogger logger, TDatabaseProviderOptions options)
         {
             this.Options = options;
+            this.LoggerFactory = loggerFactory;
+            this.Logger = logger;
         }
+
+        /// <summary>
+        /// Gets the injected logger
+        /// </summary>
+        protected ILogger Logger { get; }
+
+        /// <summary>
+        /// Gets the injected logger factory
+        /// </summary>
+        protected ILoggerFactory LoggerFactory { get; }
 
         /// <summary>
         /// Gets the options to connect to the Database
@@ -39,33 +46,5 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
         /// <inheritdoc/>
         public abstract List<string> GetDatabaseList();
-
-        /// <summary>
-        /// Gets the common database structure
-        /// </summary>
-        /// <param name="context">The database context</param>
-        /// <returns>The database structure</returns>
-        internal static BaseDb GetCommonDatabase(GenericDatabaseContext<TDatabaseProviderOptions> context)
-        {
-            var db = new TDatabase();
-            foreach (var t in context.Tables.Include(x => x.Columns))
-            {
-                var table = new TTable
-                {
-                    Name = t.TableName,
-                };
-                foreach (var c in t.Columns)
-                {
-                    table.Columns.Add(new TColumn
-                    {
-                        Name = c.ColumnName
-                    });
-                }
-
-                db.Tables.Add(table);
-            }
-
-            return db;
-        }
     }
 }

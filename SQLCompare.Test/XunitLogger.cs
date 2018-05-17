@@ -7,24 +7,26 @@ namespace SQLCompare.Test
     /// <summary>
     /// Implementation of the ILogger interface that uses the Xunit log system to write
     /// </summary>
-    /// <typeparam name="T">The type who's name is used for the logger category name</typeparam>
-    public sealed class XunitLogger<T> : ILogger<T>, IDisposable
+    public sealed class XunitLogger : ILogger, IDisposable
     {
+        private readonly string name;
         private readonly ITestOutputHelper output;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="XunitLogger{T}"/> class.
+        /// Initializes a new instance of the <see cref="XunitLogger"/> class.
         /// </summary>
+        /// <param name="name">The logger name</param>
         /// <param name="output">The Xunit logger</param>
-        public XunitLogger(ITestOutputHelper output)
+        public XunitLogger(string name, ITestOutputHelper output)
         {
+            this.name = name;
             this.output = output;
         }
 
         /// <inheritdoc/>
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            this.output.WriteLine(state.ToString());
+            this.output.WriteLine($"[{logLevel.ToString()}] [{eventId.ToString()}] [{this.name}]: " + formatter(state, exception));
         }
 
         /// <inheritdoc/>

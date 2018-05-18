@@ -45,14 +45,23 @@ class Utility {
     /**
      * Parse all the input elements in JSON format
      * @param element - The container to search for input elements
-     * @returns The serialized JSON string
+     * @returns The serialized JSON object
      */
-    public static SerializeJSON(element: JQuery): string {
+    public static SerializeJSON(element: JQuery): object {
         // Ref: https://github.com/marioizquierdo/jquery.serializeJSON#options
         const settings: SerializeJSONSettings = {
             useIntKeysAsArrayIndex: true,
         };
 
-        return <string>element.serializeJSON(settings);
+        // Wrap content with a form
+        const form: JQuery = element.wrapInner("<form></form>").find("> form");
+
+        // Serialize inputs
+        const result: object = <object>element.find("> form").serializeJSON(settings);
+
+        // Eliminate newly created form
+        form.contents().unwrap();
+
+        return result;
     }
 }

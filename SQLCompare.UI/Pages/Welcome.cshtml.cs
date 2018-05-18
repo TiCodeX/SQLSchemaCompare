@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Interfaces.Services;
-using SQLCompare.Infrastructure.DatabaseProviders;
 using System.Collections.Generic;
 
 namespace SQLCompare.UI.Pages
@@ -12,17 +10,14 @@ namespace SQLCompare.UI.Pages
     public class Welcome : PageModel
     {
         private readonly IAppSettingsService appSettingsService;
-        private readonly IDatabaseService s;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Welcome"/> class.
         /// </summary>
         /// <param name="appSettingsService">The injected app settings service</param>
-        /// <param name="s">s</param>
-        public Welcome(IAppSettingsService appSettingsService, IDatabaseService s)
+        public Welcome(IAppSettingsService appSettingsService)
         {
             this.appSettingsService = appSettingsService;
-            this.s = s;
         }
 
         /// <summary>
@@ -36,7 +31,7 @@ namespace SQLCompare.UI.Pages
         public void OnGet()
         {
             var settings = this.appSettingsService.GetAppSettings();
-            this.s.GetDatabase(new MicrosoftSqlDatabaseProviderOptions() { Database = "brokerpro", Hostname = "localhost\\SQLEXPRESS", UseWindowsAuthentication = true });
+
             this.RecentProjects = settings.RecentProjects;
         }
     }

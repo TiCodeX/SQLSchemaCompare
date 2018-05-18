@@ -19,6 +19,7 @@
 @* Save Monaco's amd require and restore Node's require (or undefined if doesn't exist) *@
 <script>
     var amdRequire = require;
+    define.amd = undefined;
     if (nodeRequire !== null) {
         require = nodeRequire;
     }

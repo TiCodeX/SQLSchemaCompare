@@ -118,4 +118,14 @@ $(() => {
         }
         Utility.OpenModalDialog(url, method, data);
     });
+
+    $(document).on("click", "[load-select]", (e: JQuery.Event) => {
+        e.preventDefault();
+        const target: JQuery = $(e.target);
+        const url: string = target.attr("load-select").toString();
+        const selectId: string = target.attr("load-select-target").toString();
+        const dataDivId: string = target.attr("load-select-data").toString();
+        const data: object = Utility.SerializeJSON($(`#${dataDivId}`));
+        alert(`TODO: perform ajax "${url}", with data "${JSON.stringify(data)}", save result in "${selectId}"`);
+    });
 });

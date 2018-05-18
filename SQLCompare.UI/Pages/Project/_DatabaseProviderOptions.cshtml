@@ -1,5 +1,7 @@
-﻿
-<div class="card">
+﻿@{
+    var divId = Guid.NewGuid();
+}
+<div class="card" id="@divId">
     <div class="card-body">
         <h5 class="card-title">@ViewBag.Title</h5>
         <p class="card-text">
@@ -8,7 +10,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Type</span>
                     </div>
-                    <select class="form-control" id="@(ViewBag.IdPrefix)DbType">
+                    <select class="form-control" name="@(ViewBag.IdPrefix)DbType">
                         <option value="1">Microsoft SQL</option>
                         <option value="2">MySQL</option>
                         <option value="3">PostgreSQL</option>
@@ -20,7 +22,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Hostname</span>
                     </div>
-                    <input type="text" class="form-control" id="@(ViewBag.IdPrefix)Hostname" value="localhost\SQLEXPRESS">
+                    <input type="text" class="form-control" name="@(ViewBag.IdPrefix)Hostname" value="localhost\SQLEXPRESS">
                 </div>
             </div>
             <div class="form-group">
@@ -28,7 +30,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Username</span>
                     </div>
-                    <input type="text" class="form-control" id="@(ViewBag.IdPrefix)Username" value="brokerpro">
+                    <input type="text" class="form-control" name="@(ViewBag.IdPrefix)Username" value="brokerpro">
                 </div>
             </div>
             <div class="form-group">
@@ -36,7 +38,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Password</span>
                     </div>
-                    <input type="password" class="form-control" id="@(ViewBag.IdPrefix)Password" value="brokerpro05">
+                    <input type="password" class="form-control" name="@(ViewBag.IdPrefix)Password" value="brokerpro05">
                 </div>
             </div>
             <div class="form-group">
@@ -46,7 +48,12 @@
                     </div>
                     <select class="form-control" id="@(ViewBag.IdPrefix)Database"></select>
                     <div class="input-group-append">
-                        <button class="btn btn-info" type="button">&#x21bb;</button>
+                        <button class="btn btn-info" type="button"
+                                load-select="/GetDatabaseList"
+                                load-select-target="@(ViewBag.IdPrefix)Database"
+                                load-select-data="@divId">
+                            &#x21bb;
+                        </button>
                     </div>
                 </div>
             </div>

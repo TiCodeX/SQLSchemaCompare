@@ -3,41 +3,51 @@
     <div class="card-body">
         <h5 class="card-title">@ViewBag.Title</h5>
         <p class="card-text">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text min-width-100">Type</span>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text min-width-100">Type</span>
+                    </div>
+                    <select class="form-control" id="@(ViewBag.IdPrefix)DbType">
+                        <option value="1">Microsoft SQL</option>
+                        <option value="2">MySQL</option>
+                        <option value="3">PostgreSQL</option>
+                    </select>
                 </div>
-                <select class="form-control" id="@(ViewBag.IdPrefix)DbType">
-                    <option value="1">Microsoft SQL</option>
-                    <option value="2">MySQL</option>
-                    <option value="3">PostgreSQL</option>
-                </select>
             </div>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text min-width-100">Hostname</span>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text min-width-100">Hostname</span>
+                    </div>
+                    <input type="text" class="form-control" id="@(ViewBag.IdPrefix)Hostname" value="localhost\SQLEXPRESS">
                 </div>
-                <input type="text" class="form-control" id="@(ViewBag.IdPrefix)Hostname" value="localhost\SQLEXPRESS">
             </div>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text min-width-100">Username</span>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text min-width-100">Username</span>
+                    </div>
+                    <input type="text" class="form-control" id="@(ViewBag.IdPrefix)Username" value="brokerpro">
                 </div>
-                <input type="text" class="form-control" id="@(ViewBag.IdPrefix)Username" value="brokerpro">
             </div>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text min-width-100">Password</span>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text min-width-100">Password</span>
+                    </div>
+                    <input type="password" class="form-control" id="@(ViewBag.IdPrefix)Password" value="brokerpro05">
                 </div>
-                <input type="password" class="form-control" id="@(ViewBag.IdPrefix)Password" value="brokerpro05">
             </div>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text min-width-100">Database</span>
-                </div>
-                <select class="form-control" id="@(ViewBag.IdPrefix)Database"></select>
-                <div class="input-group-append">
-                    <span class="input-group-text">&#x21bb;</span>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text min-width-100">Database</span>
+                    </div>
+                    <select class="form-control" id="@(ViewBag.IdPrefix)Database"></select>
+                    <div class="input-group-append">
+                        <button class="btn btn-info" type="button">&#x21bb;</button>
+                    </div>
                 </div>
             </div>
         </p>

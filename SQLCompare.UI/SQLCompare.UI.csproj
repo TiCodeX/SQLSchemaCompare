@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
     <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
+    <TSLintConfig>tslint.json</TSLintConfig>
+    <TSLintProject>tsconfig.json</TSLintProject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -21,6 +23,7 @@
     <Content Remove="wwwroot\**\*.ts" />
     <TypeScriptCompile Include="wwwroot\**\*.ts" />
   </ItemGroup>
+
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
     <!--Configure all the JavaScript/Css files as None-->
     <Content Remove="wwwroot\**\*.js" />
@@ -32,9 +35,12 @@
     <EmbeddedResource Include="wwwroot\**\*.min.css" />
     <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*" />
   </ItemGroup>
+
   <ItemGroup>
     <None Remove="certificate.pfx" />
+    <EmbeddedResource Include="certificate.pfx" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="2.6.375" />
     <PackageReference Include="BuildWebCompiler" Version="1.11.326" />
@@ -44,21 +50,30 @@
     <PackageReference Include="NLog" Version="4.5.3" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.5.2" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" />
+    <PackageReference Include="tslint" Version="5.9.1" />
   </ItemGroup>
+
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="certificate.pfx" />
-  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\SQLCompare.Core\SQLCompare.Core.csproj" />
     <ProjectReference Include="..\SQLCompare.Infrastructure\SQLCompare.Infrastructure.csproj" />
     <ProjectReference Include="..\SQLCompare.Services\SQLCompare.Services.csproj" />
   </ItemGroup>
+
   <ItemGroup>
     <Content Update="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+  <ItemGroup>
+    <TSLintExclude Include="wwwroot\lib\typings\%2A%2A\%2A.d.ts" />
+  </ItemGroup>
+
+  <ImportGroup>
+    <Import Project="tslint.targets" />
+  </ImportGroup>
 </Project>

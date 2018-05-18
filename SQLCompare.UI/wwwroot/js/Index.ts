@@ -1,11 +1,12 @@
-declare const amdRequire: any;
-declare const require: any;
-const electron: Electron.AllElectron = (typeof require !== "undefined" ? require("electron") : null);
+/* tslint:disable:no-require-imports no-implicit-dependencies */
+declare const amdRequire: Require;
+const electron: Electron.AllElectron = (typeof require !== "undefined" ? <Electron.AllElectron>require("electron") : undefined);
+/* tslint:enable:no-require-imports no-implicit-dependencies */
 
-$(document).ready(() => {
-    //Configure the monaco editor loader
+$(() => {
+    // Configure the monaco editor loader
     amdRequire.config({
-        baseUrl: "lib/monaco-editor"
+        baseUrl: "lib/monaco-editor",
     });
 
     // Enable bootstrap tooltips and popovers
@@ -13,35 +14,37 @@ $(document).ready(() => {
     $("[data-toggle='popover']").popover();
 
     // Disable context menu
-    window.addEventListener("contextmenu", (e) => {
+    window.addEventListener("contextmenu", (e: PointerEvent) => {
         e.preventDefault();
     }, false);
 
     // Preload the monaco-editor
-    setTimeout(() => {
-        amdRequire(["vs/editor/editor.main"], () => { });
+    setTimeout((): void => {
+        amdRequire(["vs/editor/editor.main"], (): void => {
+            // Nothing to do
+        });
     }, 0);
 
     if (electron) {
 
-        const template: Electron.MenuItemConstructorOptions[] = [
+        const template: Array<Electron.MenuItemConstructorOptions> = [
             {
                 label: "File",
                 submenu: [
                     {
-                        label: "Nuovo progetto"
+                        label: "Nuovo progetto",
                     },
                     {
-                        label: "Apri progetto"
+                        label: "Apri progetto",
                     },
                     {
-                        label: "Chiudi progetto"
+                        label: "Chiudi progetto",
                     },
                     {
                         role: "close",
-                        label: "Esci"
-                    }
-                ]
+                        label: "Esci",
+                    },
+                ],
             },
             {
                 label: "View",
@@ -49,46 +52,52 @@ $(document).ready(() => {
                     {
                         label: "Reload",
                         accelerator: "CmdOrCtrl+R",
-                        click(item, focusedWindow) {
-                            if (focusedWindow) focusedWindow.reload();
-                        }
+                        click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
+                            if (focusedWindow) {
+                                focusedWindow.reload();
+                            }
+                        },
                     },
                     {
                         label: "Toggle Developer Tools",
                         accelerator: "Ctrl+Shift+I",
-                        click(item, focusedWindow) {
-                            if (focusedWindow) focusedWindow.webContents.toggleDevTools();
-                        }
+                        click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
+                            if (focusedWindow) {
+                                focusedWindow.webContents.toggleDevTools();
+                            }
+                        },
                     },
                     {
-                        type: "separator"
+                        type: "separator",
                     },
                     {
-                        role: "resetzoom"
+                        role: "resetzoom",
                     },
                     {
-                        role: "zoomin"
+                        role: "zoomin",
                     },
                     {
-                        role: "zoomout"
+                        role: "zoomout",
                     },
                     {
-                        type: "separator"
+                        type: "separator",
                     },
                     {
-                        role: "togglefullscreen"
-                    }
-                ]
+                        role: "togglefullscreen",
+                    },
+                ],
             },
             {
                 role: "help",
                 submenu: [
                     {
                         label: "Learn More",
-                        click() { electron.shell.openExternal("http://electron.atom.io") }
-                    }
-                ]
-            }
+                        click(): void {
+                            electron.shell.openExternal("http://electron.atom.io");
+                        },
+                    },
+                ],
+            },
         ];
 
         electron.remote.Menu.setApplicationMenu(electron.remote.Menu.buildFromTemplate(template));
@@ -98,13 +107,15 @@ $(document).ready(() => {
     Utility.OpenModalDialog("/Welcome", "GET");
 
     // Register clickable attributes
-    $(document).on("click", "[load-modal]", function (e) {
+    $(document).on("click", "[load-modal]", (e: JQuery.Event) => {
         e.preventDefault();
-        const $this = $(this);
-        const url = $this.attr("load-modal").toString();
-        const method = $this.attr("load-modal-method").toString();
-        const dataAttr = $this.attr("load-modal-data");
-        const data = dataAttr ? JSON.parse(JSON.parse("\"" + dataAttr.toString() + "\"")) : null;
+        const target: JQuery = $(e.target);
+        const url: string = target.attr("load-modal").toString();
+        const method: string = target.attr("load-modal-method").toString();
+        let data: object;
+        if (target.attr("load-modal-data") !== undefined) {
+            data = <object>JSON.parse(<string>JSON.parse(`"${target.attr("load-modal-data").toString()}"`));
+        }
         Utility.OpenModalDialog(url, method, data);
     });
 });

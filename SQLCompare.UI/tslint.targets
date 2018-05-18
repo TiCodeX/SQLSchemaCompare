@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Target
+    AfterTargets="CompileTypeScript"
+    Condition="('@(TSLintInclude)' != '' or '@(TypeScriptCompile)' != '') and ('$(BuildingProject)' == 'true' or '$(TSLintRunWhenNotBuilding)' == 'true')"
+    Inputs="@(TSLintInclude);@(TypeScriptCompile)"
+    Name="TSLint"
+    Outputs="$([System.DateTime]::UtcNow.Ticks)">
+
+    <Message Text="Running TSLint..." Importance="high" />
+
+    <ItemGroup Condition="'$(TSLintExcludeTypeScriptCompile)' != 'true'">
+      <TSLintInclude Include="@(TypeScriptCompile)" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <TSLintBreakBuildOnError Condition="'$(TSLintBreakBuildOnError)' == ''">false</TSLintBreakBuildOnError>
+      <TSLintFormat Condition="'$(TSLintFormat)' == ''">msbuild</TSLintFormat>
+      <TSLintNodeExe Condition="'$(TSLintNodeExe)' == ''">node</TSLintNodeExe>
+      <TSLintTimeout Condition="'$(TSLintTimeout)' == ''">10000000</TSLintTimeout>
+      <TSLintVersion Condition="'$(TSLintVersion)' == ''">5.9.1</TSLintVersion>
+      <TSLintCli Condition="'$(TSLintCli)' == ''">$(NuGetPackageRoot)tslint\$(TSLintVersion)\tools\node_modules\tslint\lib\tslint-cli.js</TSLintCli>
+    </PropertyGroup>
+
+    <!-- TSLintExclude might include special characters, so those should be escaped -->
+    <PropertyGroup>
+      <TSLintExclude Condition="'@(TSLintExclude)' != ''">@(TSLintExclude.Replace("*", "%2A"))</TSLintExclude>
+      <TSLintExclude Condition="'@(TSLintExclude)' != ''">@(TSLintExclude.Replace(".", "%2E"))</TSLintExclude>
+      <TSLintExclude Condition="'@(TSLintExclude)' != ''">@(TSLintExclude.Replace('"', "%22"))</TSLintExclude>
+      
+      <TSLintExcludeJoined Condition="'@(TSLintExclude)' != ''">@(TSLintExclude, '" --exclude "')</TSLintExcludeJoined>
+    </PropertyGroup>
+
+    <!-- Build the TSLint arguments -->
+    <PropertyGroup>
+      <TSLintArgs></TSLintArgs>
+      <TSLintArgs Condition="'$(TSLintConfig)' != ''">$(TSLintArgs) --config "$(TSLintConfig)"</TSLintArgs>
+      <TSLintArgs Condition="'@(TSLintExclude)' != ''">$(TSLintArgs) --exclude "$(TSLintExcludeJoined)"</TSLintArgs>
+      <TSLintArgs>$(TSLintArgs) --format "$(TSLintFormat)"</TSLintArgs>
+      <TSLintArgs Condition="'$(TSLintProject)' != ''">$(TSLintArgs) --project "$(TSLintProject)"</TSLintArgs>
+      <TSLintArgs Condition="'$(TSLintTypeCheck)' != ''">$(TSLintArgs) --type-check "$(TSLintTypeCheck)"</TSLintArgs>
+      <TSLintArgs Condition="'@(TSLintRulesDirectory)' != ''">$(TSLintArgs) --rules-dir "@(TSLintRulesDirectory, '" --rules-dir "')"</TSLintArgs>
+      <TSLintArgs Condition="'$(TSLintExtraArgs)' != ''">$(TSLintArgs) $(TSLintExtraArgs)</TSLintArgs>
+      <TSLintArgs Condition="'$(TSLintFileListDisabled)' != 'true' And '@(TSLintInclude)' != ''">$(TSLintArgs) "@(TSLintInclude, '" "')"</TSLintArgs>
+    </PropertyGroup>
+
+    <Error Condition="'$(TSLintFileListDisabled)' == 'true' And '$(TSLintProject)' == ''" Text="You disabled file listing on the command line using TSLintFileDisabled, but did not specify a project file with TSLintProject." />
+
+    <!-- Run TSLint using the Node executable -->
+    <Exec
+      Command="&quot;$(TSLintNodeExe)&quot; &quot;$(TSLintCli)&quot; $(TSLintArgs)"
+      Condition="'$(TSLintDisabled)' != 'true'"
+      ConsoleToMsBuild="true"
+      EchoOff="true"
+      IgnoreExitCode="true"
+      Timeout="$(TSLintTimeout)">
+      <Output TaskParameter="ConsoleOutput" ItemName="TSLintOutput" />
+      <Output TaskParameter="ExitCode" PropertyName="TSLintErrorCode" />
+    </Exec>
+
+    <!-- Return an error if TSLint returned an exit code and we should break on errors -->
+    <Error Condition="'$(TSLintErrorCode)' != '0' and '$(TSLintBreakBuildOnError)' == 'true'" Text="TSLint checks failed" />
+  </Target>
+</Project>

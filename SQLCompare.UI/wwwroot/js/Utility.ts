@@ -36,9 +36,13 @@ class Utility {
             contentType: "application/json",
             data: data !== undefined ? JSON.stringify(data) : "",
             cache: false,
-        }).done((result: string): void => {
-            $("#myModalBody").html(result);
-            $("#myModal").modal("show");
+            success: (result: string): void => {
+                $("#myModalBody").html(result);
+                $("#myModal").modal("show");
+            },
+            error: (error: JQuery.jqXHR): void => {
+                alert(error.responseText);
+            },
         });
     }
 

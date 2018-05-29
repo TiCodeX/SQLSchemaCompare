@@ -123,9 +123,33 @@ $(() => {
         e.preventDefault();
         const target: JQuery = $(e.target);
         const url: string = target.attr("load-select").toString();
+        const method: string = target.attr("load-select-method").toString();
         const selectId: string = target.attr("load-select-target").toString();
         const dataDivId: string = target.attr("load-select-data").toString();
         const data: object = Utility.SerializeJSON($(`#${dataDivId}`));
-        alert(`TODO: perform ajax "${url}", with data "${JSON.stringify(data)}", save result in "${selectId}"`);
+
+        $.ajax(url, {
+            type: method,
+            beforeSend: (xhr: JQuery.jqXHR): void => {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $("input:hidden[name='__RequestVerificationToken']").val().toString());
+            },
+            contentType: "application/json",
+            dataType: "json",
+            data: data !== undefined ? JSON.stringify(data) : "",
+            cache: false,
+            success: (result: Array<string>): void => {
+                const select: JQuery = $(`#${selectId}`);
+                select.find("option").remove();
+                let options: string = "";
+                $.each(result, (index: number, value: string): void => {
+                    options += `<option value="${value}">${value}</option>`;
+                });
+                select.append(options);
+            },
+            error: (error: JQuery.jqXHR): void => {
+                alert(error.responseText);
+            },
+        });
     });
 });

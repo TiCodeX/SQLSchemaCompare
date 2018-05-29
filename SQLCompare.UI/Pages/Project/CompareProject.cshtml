@@ -21,15 +21,17 @@
             <div class="col-md-6">
                 @Html.Partial("_DatabaseProviderOptions", new ViewDataDictionary(this.ViewData)
                 {
-                    {"Title", "Source"},
-                    {"IdPrefix","src" }
+                    {"Title", "Source connection"},
+                    {"IdPrefix","Source" },
+                    {"Handler", "LoadSourceDatabaseList" },
                 })
             </div>
             <div class="col-md-6">
                 @Html.Partial("_DatabaseProviderOptions", new ViewDataDictionary(this.ViewData)
                 {
-                    {"Title", "Target"},
-                    {"IdPrefix","trg" }
+                    {"Title", "Target connection"},
+                    {"IdPrefix","Target" },
+                    {"Handler", "LoadTargetDatabaseList" },
                 })
             </div>
         </div>

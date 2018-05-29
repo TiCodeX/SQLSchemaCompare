@@ -1,4 +1,6 @@
-﻿@{
+﻿@using Core.Enums
+@using Core.Interfaces
+@{
     var divId = Guid.NewGuid();
 }
 <div class="card" id="@divId">
@@ -10,10 +12,11 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Type</span>
                     </div>
-                    <select class="form-control" name="@(ViewBag.IdPrefix)DbType">
-                        <option value="1">Microsoft SQL</option>
-                        <option value="2">MySQL</option>
-                        <option value="3">PostgreSQL</option>
+                    <select class="form-control" name="@(ViewBag.IdPrefix)DatabaseType">
+                        @foreach (var type in Enum.GetValues(typeof(DatabaseType)))
+                        {
+                            <option value="@((int)type)">@type</option>
+                        }
                     </select>
                 </div>
             </div>
@@ -49,7 +52,8 @@
                     <select class="form-control" id="@(ViewBag.IdPrefix)Database"></select>
                     <div class="input-group-append">
                         <button class="btn btn-info" type="button"
-                                load-select="/GetDatabaseList"
+                                load-select="/Project/CompareProject?handler=@(ViewBag.Handler)"
+                                load-select-method="POST"
                                 load-select-target="@(ViewBag.IdPrefix)Database"
                                 load-select-data="@divId">
                             &#x21bb;

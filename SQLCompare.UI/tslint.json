@@ -39,7 +39,7 @@
         "no-any": true,
         "no-empty-interface": true,
         "no-import-side-effect": true,
-        "no-inferrable-types": true,
+        "no-inferrable-types": false,
         "no-internal-module": true,
         "no-magic-numbers": true,
         "no-namespace": true,

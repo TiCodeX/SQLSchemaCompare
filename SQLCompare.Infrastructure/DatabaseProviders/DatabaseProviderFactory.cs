@@ -5,7 +5,9 @@ using System;
 
 namespace SQLCompare.Infrastructure.DatabaseProviders
 {
-    /// <inheritdoc/>
+    /// <summary>
+    /// Implementation that creates a database provider
+    /// </summary>
     public class DatabaseProviderFactory : IDatabaseProviderFactory
     {
         private readonly ILoggerFactory loggerFactory;

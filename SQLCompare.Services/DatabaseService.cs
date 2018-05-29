@@ -6,7 +6,9 @@ using System.Collections.Generic;
 
 namespace SQLCompare.Services
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Implementation that provides the mechanisms to read information from a database
+    /// </summary>
     public class DatabaseService : IDatabaseService
     {
         private readonly IDatabaseProviderFactory dbProviderFactory;

@@ -53,11 +53,13 @@ namespace SQLCompare.UI.WebServer
 
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
-            services.AddSingleton<IAppSettingsService, AppSettingsService>();
-            services.AddTransient<IAppSettingsRepository, AppSettingsRepository>();
-            services.AddSingleton<IDatabaseService, DatabaseService>();
-            services.AddSingleton<IDatabaseProviderFactory, DatabaseProviderFactory>();
             services.AddSingleton<IAppGlobals, AppGlobals>();
+            services.AddSingleton<IAppSettingsService, AppSettingsService>();
+            services.AddSingleton<IProjectService, ProjectService>();
+
+            services.AddTransient<IAppSettingsRepository, AppSettingsRepository>();
+            services.AddTransient<IDatabaseService, DatabaseService>();
+            services.AddTransient<IDatabaseProviderFactory, DatabaseProviderFactory>();
         }
 
         /// <summary>

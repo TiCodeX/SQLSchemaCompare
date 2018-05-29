@@ -1,16 +1,12 @@
-﻿using SQLCompare.Core;
-using SQLCompare.Core.Entities;
+﻿using SQLCompare.Core.Entities;
 using SQLCompare.Core.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace SQLCompare.Infrastructure
 {
     /// <summary>
-    /// Defines the application settings repository
+    /// Implementation that provides the mechanism to store and retrieve application settings
     /// </summary>
     public class AppSettingsRepository : IAppSettingsRepository
     {

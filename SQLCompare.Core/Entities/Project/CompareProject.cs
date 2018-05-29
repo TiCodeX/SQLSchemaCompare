@@ -1,4 +1,5 @@
-﻿using SQLCompare.Core.Entities.DatabaseProvider;
+﻿using SQLCompare.Core.Entities.Database;
+using SQLCompare.Core.Entities.DatabaseProvider;
 
 namespace SQLCompare.Core.Entities.Project
 {
@@ -10,21 +11,27 @@ namespace SQLCompare.Core.Entities.Project
         /// <summary>
         /// Gets or sets the database provider options for the source database
         /// </summary>
-        public DatabaseProviderOptions Source { get; set; }
+        public DatabaseProviderOptions SourceProviderOptions { get; set; }
 
         /// <summary>
         /// Gets or sets the database provider options for the target database
         /// </summary>
-        public DatabaseProviderOptions Target { get; set; }
+        public DatabaseProviderOptions TargetProviderOptions { get; set; }
 
         /// <summary>
         /// Gets or sets the project options
         /// </summary>
         public ProjectOptions Options { get; set; }
 
-        // private BaseDb _sourceDB;
+        /// <summary>
+        /// Gets or sets the retrieved source database
+        /// </summary>
+        public BaseDb RetrievedSourceDatabase { get; set; }
 
-        // private BaseDb _targetDB;
+        /// <summary>
+        /// Gets or sets the retrieved target database
+        /// </summary>
+        public BaseDb RetrievedTargetDatabase { get; set; }
 
         // public int _Compareresult { get; set; }
     }

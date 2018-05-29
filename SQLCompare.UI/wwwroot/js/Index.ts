@@ -115,6 +115,9 @@ $(() => {
         let data: object;
         if (target.attr("load-modal-data") !== undefined) {
             data = <object>JSON.parse(<string>JSON.parse(`"${target.attr("load-modal-data").toString()}"`));
+        } else if (target.attr("load-modal-data-from-div") !== undefined) {
+            const dataDivId: string = target.attr("load-modal-data-from-div").toString();
+            data = Utility.SerializeJSON($(`#${dataDivId}`));
         }
         Utility.OpenModalDialog(url, method, data);
     });
@@ -125,7 +128,7 @@ $(() => {
         const url: string = target.attr("load-select").toString();
         const method: string = target.attr("load-select-method").toString();
         const selectId: string = target.attr("load-select-target").toString();
-        const dataDivId: string = target.attr("load-select-data").toString();
+        const dataDivId: string = target.attr("load-select-data-from-div").toString();
         const data: object = Utility.SerializeJSON($(`#${dataDivId}`));
 
         $.ajax(url, {

@@ -5,7 +5,7 @@
 
 <h1>Welcome to @AppGlobal.CompanyName @AppGlobal.ProductName</h1>
 <br />
-<a href="#" load-modal="/Project/CompareProject" load-modal-method="POST">New project</a>
+<a href="#" load-modal="/Project/CompareProject" load-modal-method="GET">New project</a>
 
 <br />
 <br />
@@ -14,7 +14,7 @@
     @foreach (var recent in Model.RecentProjects)
     {
         <br /> @:&bull;
-        <a href="#" load-modal="/Project/CompareProject" load-modal-method="POST"
+        <a href="#" load-modal="/Project/CompareProject?handler=Load" load-modal-method="POST"
            load-modal-data="@HttpUtility.JavaScriptStringEncode(Json.Serialize(recent).ToString())">
             @recent
         </a>

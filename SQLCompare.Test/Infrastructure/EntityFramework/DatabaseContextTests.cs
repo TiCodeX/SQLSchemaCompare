@@ -39,7 +39,7 @@ namespace SQLCompare.Test.Infrastructure.EntityFramework
 
             this.Logger.LogInformation(string.Empty);
 
-            using (var c = new PostgreSqlDatabaseContext(this.LoggerFactory, new PostgreSqlDatabaseProviderOptions { Hostname = "localhost", Database = "world", Username = "postgres", Password = "test1234" }))
+            using (var c = new PostgreSqlDatabaseContext(this.LoggerFactory, new PostgreSqlDatabaseProviderOptions { Hostname = "localhost", Database = "pagila", Username = "postgres", Password = "test1234" }))
             {
                 this.Logger.LogInformation("PostgreSqlDatabaseContext:");
                 foreach (var table in c.Tables)

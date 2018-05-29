@@ -51,7 +51,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             PostgreSqlDatabaseProvider pgsqldbp = (PostgreSqlDatabaseProvider)dpf.Create(new PostgreSqlDatabaseProviderOptions { Hostname = "localhost", Username = "postgres", Password = "test1234" });
 
             dbList = pgsqldbp.GetDatabaseList();
-            Assert.Contains<string>("world", dbList);
+            Assert.Contains<string>("pagila", dbList);
             Assert.Contains<string>("postgres", dbList);
         }
 
@@ -80,7 +80,6 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             Assert.True(table.Columns.Count == 13);
             Assert.Contains(table.Columns, x => x.Name.Equals("language_id", StringComparison.Ordinal));
 
-            /*
             PostgreSqlDatabaseProvider pgsqldbp = (PostgreSqlDatabaseProvider)dpf.Create(new PostgreSqlDatabaseProviderOptions { Hostname = "localhost", Database = "pagila", Username = "postgres", Password = "test1234" });
 
             db = pgsqldbp.GetDatabase();
@@ -89,7 +88,6 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             table = db.Tables.Find(x => x.Name.Equals("film", StringComparison.Ordinal));
             Assert.True(table.Columns.Count == 14);
             Assert.Contains(table.Columns, x => x.Name.Equals("language_id", StringComparison.Ordinal));
-            */
         }
     }
 }

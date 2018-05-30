@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities.EntityFramework;
-using System;
+using SQLCompare.Core.Entities.Database;
 using System.Text;
 
 namespace SQLCompare.Infrastructure.SqlScripters
@@ -29,38 +28,35 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// </summary>
         /// <param name="table">The database table</param>
         /// <returns>The create table script</returns>
-        public string ScriptCreateTable(InformationSchemaTable table)
+        public string ScriptCreateTable(MicrosoftSqlTable table)
         {
             this.logger.LogInformation($"Generating SQL script for table '{GetTableName(table)}'");
 
             var sql = new StringBuilder();
 
-            if (string.Equals(table.TableType, "BASE TABLE", StringComparison.Ordinal))
+            sql.AppendLine($"CREATE TABLE {GetTableName(table)} (");
+            var i = 0;
+            foreach (var col in table.Columns)
             {
-                sql.AppendLine($"CREATE TABLE {GetTableName(table)} (");
-                var i = 0;
-                foreach (var col in table.Columns)
+                sql.Append($"   {ScriptColumn(col as MicrosoftSqlColumn)}");
+                if (i++ < table.Columns.Count - 1)
                 {
-                    sql.Append($"   {ScriptColumn(col)}");
-                    if (i++ < table.Columns.Count - 1)
-                    {
-                        sql.AppendLine(",");
-                    }
+                    sql.AppendLine(",");
                 }
-
-                sql.AppendLine(string.Empty);
-                sql.AppendLine(");");
             }
+
+            sql.AppendLine(string.Empty);
+            sql.AppendLine(");");
 
             return sql.ToString();
         }
 
-        private static string ScriptColumn(InformationSchemaColumn col)
+        private static string ScriptColumn(MicrosoftSqlColumn col)
         {
             var sql = new StringBuilder();
 
-            sql.Append($"{col.ColumnName} {ScriptColumnDataType(col)} ");
-            if (string.Equals(col.IsNullable, "YES", StringComparison.Ordinal))
+            sql.Append($"{col.Name} {ScriptColumnDataType(col)} ");
+            if (col.IsNullable)
             {
                 sql.Append("NULL ");
             }
@@ -77,36 +73,36 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return sql.ToString().TrimEnd();
         }
 
-        private static object ScriptColumnDataType(InformationSchemaColumn col)
+        private static object ScriptColumnDataType(MicrosoftSqlColumn col)
         {
             switch (col.DataType)
             {
                 case "varchar":
                 case "nvarchar":
-                    return $"[{col.DataType}] ({col.CharacterMaximumLength})";
+                    return $"[{col.DataType}] ({col.CharacterMaxLenght})";
 
                 default:
                     return $"[{col.DataType}]";
             }
         }
 
-        private static string GetTableName(InformationSchemaTable table)
+        private static string GetTableName(MicrosoftSqlTable table)
         {
             // Depending on options
             var useSimpleSintax = true;
             var name = string.Empty;
 
-            if (!string.IsNullOrWhiteSpace(table.TableCatalog) || !useSimpleSintax)
+            if (!string.IsNullOrWhiteSpace(table.CatalogName) || !useSimpleSintax)
             {
-                name += $"[{table.TableCatalog}].";
+                name += $"[{table.CatalogName}].";
             }
 
-            if (!string.IsNullOrWhiteSpace(table.TableSchema) || !useSimpleSintax)
+            if (!string.IsNullOrWhiteSpace(table.SchemaName) || !useSimpleSintax)
             {
-                name += $"[{table.TableSchema}].";
+                name += $"[{table.SchemaName}].";
             }
 
-            name += $"[{table.TableName}]";
+            name += $"[{table.Name}]";
 
             return name;
         }

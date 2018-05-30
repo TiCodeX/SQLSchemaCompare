@@ -32,11 +32,5 @@ namespace SQLCompare.Infrastructure.EntityFramework
 
             optionsBuilder.UseSqlServer(connectionString);
         }
-
-        /// <inheritdoc/>
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-        }
     }
 }

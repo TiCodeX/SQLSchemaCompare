@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Core.Entities.EntityFramework;
 
 namespace SQLCompare.Infrastructure.EntityFramework
 {
@@ -31,16 +30,6 @@ namespace SQLCompare.Infrastructure.EntityFramework
             }
 
             optionsBuilder.UseMySQL(connectionString);
-        }
-
-        /// <inheritdoc/>
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            var table = modelBuilder.Entity<InformationSchemaTable>();
-            table.HasQueryFilter(x => string.Equals(x.TableType, "BASE TABLE", System.StringComparison.Ordinal) &&
-                                      string.Equals(x.TableSchema, this.DatabaseProviderOptions.Database, System.StringComparison.Ordinal));
         }
     }
 }

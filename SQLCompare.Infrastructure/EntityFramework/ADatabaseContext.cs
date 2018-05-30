@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Core.Entities.EntityFramework;
 using System;
 using System.Collections.Generic;
 
@@ -27,16 +26,6 @@ namespace SQLCompare.Infrastructure.EntityFramework
             this.DatabaseProviderOptions = dbpo;
             this.ConnectionString = $"Server={dbpo.Hostname};Database={dbpo.Database};User Id={dbpo.Username};Password={dbpo.Password}";
         }
-
-        /// <summary>
-        /// Gets or sets the tables of the InformationSchema
-        /// </summary>
-        public virtual DbSet<InformationSchemaTable> Tables { get; protected set; }
-
-        /// <summary>
-        /// Gets or sets the columns of the InformationSchema
-        /// </summary>
-        public virtual DbSet<InformationSchemaColumn> Columns { get; protected set; }
 
         /// <summary>
         /// Gets the database provider options
@@ -111,22 +100,6 @@ namespace SQLCompare.Infrastructure.EntityFramework
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseLoggerFactory(this.loggerFactory);
-        }
-
-        /// <inheritdoc/>
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            var table = modelBuilder.Entity<InformationSchemaTable>();
-            table.ToTable("tables", "information_schema");
-            table.HasKey(a => new { a.TableName, a.TableCatalog, a.TableSchema });
-            table.HasQueryFilter(x => string.Equals(x.TableType, "BASE TABLE", System.StringComparison.Ordinal));
-
-            var column = modelBuilder.Entity<InformationSchemaColumn>();
-            column.ToTable("columns", "information_schema");
-            column.HasKey(a => new { a.TableName, a.TableCatalog, a.TableSchema, a.ColumnName });
-
-            // Create table/column relationship
-            table.HasMany(x => x.Columns).WithOne(x => x.Table).HasForeignKey(a => new { a.TableName, a.TableCatalog, a.TableSchema });
         }
     }
 }

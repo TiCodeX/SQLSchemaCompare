@@ -11,12 +11,12 @@ namespace SQLCompare.Core.Entities.Project
         /// <summary>
         /// Gets or sets the database provider options for the source database
         /// </summary>
-        public DatabaseProviderOptions SourceProviderOptions { get; set; }
+        public ADatabaseProviderOptions SourceProviderOptions { get; set; }
 
         /// <summary>
         /// Gets or sets the database provider options for the target database
         /// </summary>
-        public DatabaseProviderOptions TargetProviderOptions { get; set; }
+        public ADatabaseProviderOptions TargetProviderOptions { get; set; }
 
         /// <summary>
         /// Gets or sets the project options
@@ -26,12 +26,12 @@ namespace SQLCompare.Core.Entities.Project
         /// <summary>
         /// Gets or sets the retrieved source database
         /// </summary>
-        public BaseDb RetrievedSourceDatabase { get; set; }
+        public ABaseDb RetrievedSourceDatabase { get; set; }
 
         /// <summary>
         /// Gets or sets the retrieved target database
         /// </summary>
-        public BaseDb RetrievedTargetDatabase { get; set; }
+        public ABaseDb RetrievedTargetDatabase { get; set; }
 
         // public int _Compareresult { get; set; }
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
+using SQLCompare.Core.Interfaces;
 using System.Text;
 
 namespace SQLCompare.Infrastructure.SqlScripters
@@ -7,7 +8,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
     /// <summary>
     /// Sql scripter class specific for MicrosoftSql database
     /// </summary>
-    internal class MicrosoftSqlScripter
+    internal class MicrosoftSqlScripter : IDatabaseScripter
     {
         private readonly ILogger logger;
         private object options;
@@ -28,13 +29,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// </summary>
         /// <param name="table">The database table</param>
         /// <returns>The create table script</returns>
-        public string ScriptCreateTable(MicrosoftSqlTable table)
+        public string ScriptCreateTable(ABaseDbTable table)
         {
-            this.logger.LogInformation($"Generating SQL script for table '{GetTableName(table)}'");
+            this.logger.LogInformation($"Generating SQL script for table '{GetTableName(table as MicrosoftSqlTable)}'");
 
             var sql = new StringBuilder();
 
-            sql.AppendLine($"CREATE TABLE {GetTableName(table)} (");
+            sql.AppendLine($"CREATE TABLE {GetTableName(table as MicrosoftSqlTable)} (");
             var i = 0;
             foreach (var col in table.Columns)
             {

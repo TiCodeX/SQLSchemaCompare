@@ -23,14 +23,14 @@ namespace SQLCompare.Services
         }
 
         /// <inheritdoc />
-        public List<string> ListDatabases(DatabaseProviderOptions options)
+        public List<string> ListDatabases(ADatabaseProviderOptions options)
         {
             var provider = this.dbProviderFactory.Create(options);
             return provider.GetDatabaseList();
         }
 
         /// <inheritdoc />
-        public BaseDb GetDatabase(DatabaseProviderOptions options)
+        public ABaseDb GetDatabase(ADatabaseProviderOptions options)
         {
             var provider = this.dbProviderFactory.Create(options);
             return provider.GetDatabase();

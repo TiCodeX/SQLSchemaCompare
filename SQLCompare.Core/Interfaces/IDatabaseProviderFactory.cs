@@ -12,6 +12,6 @@ namespace SQLCompare.Core.Interfaces
         /// </summary>
         /// <param name="dbpo">The database provider options</param>
         /// <returns>The specific database provider</returns>
-        IDatabaseProvider Create(DatabaseProviderOptions dbpo);
+        IDatabaseProvider Create(ADatabaseProviderOptions dbpo);
     }
 }

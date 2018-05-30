@@ -23,7 +23,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc />
-        public override BaseDb GetDatabase()
+        public override ABaseDb GetDatabase()
         {
             using (var context = new MySqlDatabaseContext(this.LoggerFactory, this.Options))
             {
@@ -71,7 +71,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             return context.Query<MySqlTable>(query.ToString());
         }
 
-        private static List<MySqlColumn> GetColumns(BaseDbTable table, MySqlDatabaseContext context)
+        private static List<MySqlColumn> GetColumns(ABaseDbTable table, MySqlDatabaseContext context)
         {
             StringBuilder query = new StringBuilder();
             query.AppendLine("SELECT a.COLUMN_NAME as Name,");

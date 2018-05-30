@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides generic options of database column classes
     /// </summary>
-    public abstract class BaseDbColumn
+    public abstract class ABaseDbColumn
     {
         /// <summary>
         /// Gets or sets the database column name

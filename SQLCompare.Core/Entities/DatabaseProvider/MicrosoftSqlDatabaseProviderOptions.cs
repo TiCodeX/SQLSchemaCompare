@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides the options to connect to a Microsoft SQL Server
     /// </summary>
-    public class MicrosoftSqlDatabaseProviderOptions : DatabaseProviderOptions
+    public class MicrosoftSqlDatabaseProviderOptions : ADatabaseProviderOptions
     {
         /// <summary>
         /// Gets or sets a value indicating whether to use the Windows integrated authentication

@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines a MicrosoftSql database
     /// </summary>
-    public class MicrosoftSqlDb : BaseDb
+    public class MicrosoftSqlDb : ABaseDb
     {
     }
 }

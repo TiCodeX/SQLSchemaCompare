@@ -12,7 +12,7 @@ namespace SQLCompare.Core.Interfaces
         /// Gets the database structure
         /// </summary>
         /// <returns>The database structure</returns>
-        BaseDb GetDatabase();
+        ABaseDb GetDatabase();
 
         /// <summary>
         /// Gets the list of available database

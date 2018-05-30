@@ -3,7 +3,7 @@
     /// <summary>
     /// Specific PostgreSql table definition
     /// </summary>
-    public class PostgreSqlTable : BaseDbTable
+    public class PostgreSqlTable : ABaseDbTable
     {
         /// <summary>
         /// Gets or sets the table self referencing column name

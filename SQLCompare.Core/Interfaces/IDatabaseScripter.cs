@@ -11,6 +11,7 @@ namespace SQLCompare.Core.Interfaces
         /// Script a database table
         /// </summary>
         /// <param name="table">The table that must be scripted</param>
-        void ScriptCreateTable(BaseDbTable table);
+        /// <returns>The generated create script</returns>
+        string ScriptCreateTable(ABaseDbTable table);
     }
 }

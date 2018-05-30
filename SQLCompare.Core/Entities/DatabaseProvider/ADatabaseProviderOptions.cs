@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides generic options for Database Provider Class.
     /// </summary>
-    public abstract class DatabaseProviderOptions
+    public abstract class ADatabaseProviderOptions
     {
         /// <summary>
         /// Gets or sets the Hostname

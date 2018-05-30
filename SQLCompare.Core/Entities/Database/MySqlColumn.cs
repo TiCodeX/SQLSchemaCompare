@@ -3,7 +3,7 @@
     /// <summary>
     /// Specific MySql column definition
     /// </summary>
-    public class MySqlColumn : BaseDbColumn
+    public class MySqlColumn : ABaseDbColumn
     {
         /// <summary>
         /// Gets or sets the column ordinal position

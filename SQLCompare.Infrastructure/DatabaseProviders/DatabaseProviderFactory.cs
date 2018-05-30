@@ -22,7 +22,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        public IDatabaseProvider Create(DatabaseProviderOptions dbpo)
+        public IDatabaseProvider Create(ADatabaseProviderOptions dbpo)
         {
             if (dbpo is MicrosoftSqlDatabaseProviderOptions microsoftSqlOptions)
             {

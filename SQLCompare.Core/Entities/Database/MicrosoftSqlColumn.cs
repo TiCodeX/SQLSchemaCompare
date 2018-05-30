@@ -3,7 +3,7 @@
     /// <summary>
     /// Specific MicrosoftSql column definition
     /// </summary>
-    public class MicrosoftSqlColumn : BaseDbColumn
+    public class MicrosoftSqlColumn : ABaseDbColumn
     {
         /// <summary>
         /// Gets or sets the column ordinal position

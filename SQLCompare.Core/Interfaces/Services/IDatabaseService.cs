@@ -14,13 +14,13 @@ namespace SQLCompare.Core.Interfaces.Services
         /// </summary>
         /// <param name="options">The options for the database</param>
         /// <returns>The list of database names</returns>
-        List<string> ListDatabases(DatabaseProviderOptions options);
+        List<string> ListDatabases(ADatabaseProviderOptions options);
 
         /// <summary>
         /// Gets the database structure
         /// </summary>
         /// <param name="options">The options for the database</param>
         /// <returns>The database structure</returns>
-        BaseDb GetDatabase(DatabaseProviderOptions options);
+        ABaseDb GetDatabase(ADatabaseProviderOptions options);
     }
 }

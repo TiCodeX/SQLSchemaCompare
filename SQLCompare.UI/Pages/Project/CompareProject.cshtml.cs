@@ -103,7 +103,7 @@ namespace SQLCompare.UI.Pages.Project
         }
 
         // TODO: move somewhere else and add missing parameters
-        private DatabaseProviderOptions GetDatabaseProviderOptions(DatabaseType type, string hostname, string username, string password)
+        private ADatabaseProviderOptions GetDatabaseProviderOptions(DatabaseType type, string hostname, string username, string password)
         {
             switch (type)
             {

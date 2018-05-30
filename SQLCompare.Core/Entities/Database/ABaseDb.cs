@@ -6,7 +6,7 @@ namespace SQLCompare.Core.Entities.Database
     /// <summary>
     /// Provides generic options of database classes
     /// </summary>
-    public abstract class BaseDb
+    public abstract class ABaseDb
     {
         /// <summary>
         /// Gets or sets the database name
@@ -21,6 +21,6 @@ namespace SQLCompare.Core.Entities.Database
         /// <summary>
         /// Gets the database's tables
         /// </summary>
-        public List<BaseDbTable> Tables { get; } = new List<BaseDbTable>();
+        public List<ABaseDbTable> Tables { get; } = new List<ABaseDbTable>();
     }
 }

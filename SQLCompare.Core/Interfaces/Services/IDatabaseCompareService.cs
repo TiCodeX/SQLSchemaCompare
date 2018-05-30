@@ -12,6 +12,6 @@ namespace SQLCompare.Core.Interfaces.Services
         /// </summary>
         /// <param name="source">The source database</param>
         /// <param name="target">The target database</param>
-        void Compare(BaseDb source, BaseDb target);
+        void Compare(ABaseDb source, ABaseDb target);
     }
 }

@@ -5,7 +5,7 @@ namespace SQLCompare.Core.Entities.Database
     /// <summary>
     /// Specific MySql table definition
     /// </summary>
-    public class MySqlTable : BaseDbTable
+    public class MySqlTable : ABaseDbTable
     {
         /// <summary>
         /// Gets or sets the table engine

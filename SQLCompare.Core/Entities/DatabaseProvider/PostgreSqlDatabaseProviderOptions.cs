@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides the options to connect to a PostgreSQL Server
     /// </summary>
-    public class PostgreSqlDatabaseProviderOptions : DatabaseProviderOptions
+    public class PostgreSqlDatabaseProviderOptions : ADatabaseProviderOptions
     {
     }
 }

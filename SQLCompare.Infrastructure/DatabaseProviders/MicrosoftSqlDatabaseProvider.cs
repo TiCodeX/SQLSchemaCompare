@@ -23,7 +23,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        public override BaseDb GetDatabase()
+        public override ABaseDb GetDatabase()
         {
             using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.Options))
             {

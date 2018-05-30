@@ -11,7 +11,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// </summary>
     /// <typeparam name="TDatabaseProviderOptions">Concrete type of the database provider options</typeparam>
     public abstract class ADatabaseProvider<TDatabaseProviderOptions> : IDatabaseProvider
-        where TDatabaseProviderOptions : DatabaseProviderOptions
+        where TDatabaseProviderOptions : ADatabaseProviderOptions
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ADatabaseProvider{TDatabaseProviderOptions}"/> class.
@@ -42,7 +42,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected TDatabaseProviderOptions Options { get; }
 
         /// <inheritdoc/>
-        public abstract BaseDb GetDatabase();
+        public abstract ABaseDb GetDatabase();
 
         /// <inheritdoc/>
         public abstract List<string> GetDatabaseList();

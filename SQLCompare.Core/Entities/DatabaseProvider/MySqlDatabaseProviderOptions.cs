@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides the options to connect to a MySQL Server
     /// </summary>
-    public class MySqlDatabaseProviderOptions : DatabaseProviderOptions
+    public class MySqlDatabaseProviderOptions : ADatabaseProviderOptions
     {
         /// <summary>
         /// Gets or sets a value indicating whether to use SSL for the connection

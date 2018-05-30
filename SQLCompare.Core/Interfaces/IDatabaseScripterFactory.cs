@@ -11,6 +11,7 @@ namespace SQLCompare.Core.Interfaces
         /// Creates the database scripter depending on the database
         /// </summary>
         /// <param name="database">The database that must be scripted</param>
-        void Create(BaseDb database);
+        /// <returns>The specific database scripter</returns>
+        IDatabaseScripter Create(ABaseDb database);
     }
 }

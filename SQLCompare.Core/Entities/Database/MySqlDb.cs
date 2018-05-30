@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines a MySql database
     /// </summary>
-    public class MySqlDb : BaseDb
+    public class MySqlDb : ABaseDb
     {
     }
 }

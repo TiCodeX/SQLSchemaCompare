@@ -3,7 +3,7 @@
     /// <summary>
     /// Specific PostgreSqlColumn column definition
     /// </summary>
-    public class PostgreSqlColumn : BaseDbColumn
+    public class PostgreSqlColumn : ABaseDbColumn
     {
         /// <summary>
         /// Gets or sets the column ordinal position

@@ -23,7 +23,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc />
-        public override BaseDb GetDatabase()
+        public override ABaseDb GetDatabase()
         {
             using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.Options))
             {
@@ -76,7 +76,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             return context.Query<PostgreSqlTable>(query.ToString());
         }
 
-        private static List<PostgreSqlColumn> GetColumns(BaseDbTable table, PostgreSqlDatabaseContext context)
+        private static List<PostgreSqlColumn> GetColumns(ABaseDbTable table, PostgreSqlDatabaseContext context)
         {
             StringBuilder query = new StringBuilder();
 

@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines a PostgreSqlDb database
     /// </summary>
-    public class PostgreSqlDb : BaseDb
+    public class PostgreSqlDb : ABaseDb
     {
     }
 }

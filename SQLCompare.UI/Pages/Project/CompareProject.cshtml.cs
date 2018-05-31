@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Enums;
 using SQLCompare.Core.Interfaces.Services;
+using SQLCompare.UI.Enums;
 using SQLCompare.UI.Models.Project;
 using System;
 
@@ -28,11 +29,17 @@ namespace SQLCompare.UI.Pages.Project
         }
 
         /// <summary>
+        /// Gets the current project
+        /// </summary>
+        public Core.Entities.Project.CompareProject Project { get; private set; }
+
+        /// <summary>
         /// Get the CompareProject page for a new Project
         /// </summary>
-        public void OnGet()
+        public void OnGetNew()
         {
             this.projectService.NewProject();
+            this.Project = this.projectService.Project;
         }
 
         /// <summary>
@@ -79,30 +86,28 @@ namespace SQLCompare.UI.Pages.Project
         /// <summary>
         /// Connect to the server to retrieve the available databases
         /// </summary>
-        /// <param name="sourceOptions">The database provider options</param>
+        /// <param name="options">The database provider options</param>
         /// <returns>The list of database names in JSON</returns>
-        public ActionResult OnPostLoadSourceDatabaseList([FromBody] CompareProjectOptions sourceOptions)
+        public ActionResult OnPostLoadDatabaseList([FromBody] CompareProjectOptions options)
         {
-            var dbProviderOptions = this.GetDatabaseProviderOptions(
-                sourceOptions.SourceDatabaseType,
-                sourceOptions.SourceHostname,
-                sourceOptions.SourceUsername,
-                sourceOptions.SourcePassword);
-            return new JsonResult(this.databaseService.ListDatabases(dbProviderOptions));
-        }
+            ADatabaseProviderOptions dbProviderOptions;
+            if (options.Direction == CompareDirection.Source)
+            {
+                dbProviderOptions = this.GetDatabaseProviderOptions(
+                    options.SourceDatabaseType,
+                    options.SourceHostname,
+                    options.SourceUsername,
+                    options.SourcePassword);
+            }
+            else
+            {
+                dbProviderOptions = this.GetDatabaseProviderOptions(
+                    options.TargetDatabaseType,
+                    options.TargetHostname,
+                    options.TargetUsername,
+                    options.TargetPassword);
+            }
 
-        /// <summary>
-        /// Connect to the server to retrieve the available databases
-        /// </summary>
-        /// <param name="targetOptions">The database provider options</param>
-        /// <returns>The list of database names in JSON</returns>
-        public ActionResult OnPostLoadTargetDatabaseList([FromBody] CompareProjectOptions targetOptions)
-        {
-            var dbProviderOptions = this.GetDatabaseProviderOptions(
-                targetOptions.TargetDatabaseType,
-                targetOptions.TargetHostname,
-                targetOptions.TargetUsername,
-                targetOptions.TargetPassword);
             return new JsonResult(this.databaseService.ListDatabases(dbProviderOptions));
         }
 

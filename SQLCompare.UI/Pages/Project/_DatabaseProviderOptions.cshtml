@@ -1,9 +1,14 @@
 ﻿@using Core.Enums
 @using Core.Interfaces
+@using SQLCompare.UI.Enums
+@using Core.Entities.DatabaseProvider
+@model ADatabaseProviderOptions
 @{
     var divId = Guid.NewGuid();
+    CompareDirection prefix = (CompareDirection)ViewBag.Prefix;
 }
 <div class="card" id="@divId">
+    <input type="hidden" name="Direction" value="@prefix">
     <div class="card-body">
         <h5 class="card-title">@ViewBag.Title</h5>
         <p class="card-text">
@@ -12,10 +17,11 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Type</span>
                     </div>
-                    <select class="form-control" name="@(ViewBag.IdPrefix)DatabaseType">
-                        @foreach (var type in Enum.GetValues(typeof(DatabaseType)))
-                        {
-                            <option value="@((int)type)">@type</option>
+                    <select class="form-control" name="@(prefix.ToString())DatabaseType">
+                        @{
+                            @: <option value = "@DatabaseType.MicrosoftSql)" @(Model is MicrosoftSqlDatabaseProviderOptions ? "selected" : "") > Microsoft SQL Server </option >
+                            @: <option value = "@(DatabaseType.MySql)" @(Model is MySqlDatabaseProviderOptions ? "selected" : "")>Oracle MySQL Server</option>
+                            @: <option value = "@(DatabaseType.PostgreSql)" @(Model is PostgreSqlDatabaseProviderOptions ? "selected" : "")>PostgreSQL Server</option>
                         }
                     </select>
                 </div>
@@ -25,7 +31,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Hostname</span>
                     </div>
-                    <input type="text" class="form-control" name="@(ViewBag.IdPrefix)Hostname" value="localhost\SQLEXPRESS">
+                    <input type="text" class="form-control" name="@(prefix.ToString())Hostname" value="@Model.Hostname">
                 </div>
             </div>
             <div class="form-group">
@@ -33,7 +39,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Username</span>
                     </div>
-                    <input type="text" class="form-control" name="@(ViewBag.IdPrefix)Username" value="brokerpro">
+                    <input type="text" class="form-control" name="@(prefix.ToString())Username" value="@Model.Username">
                 </div>
             </div>
             <div class="form-group">
@@ -41,7 +47,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Password</span>
                     </div>
-                    <input type="password" class="form-control" name="@(ViewBag.IdPrefix)Password" value="brokerpro05">
+                    <input type="password" class="form-control" name="@(prefix.ToString())Password" value="@Model.Password">
                 </div>
             </div>
             <div class="form-group">
@@ -49,12 +55,12 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Database</span>
                     </div>
-                    <select class="form-control" name="@(ViewBag.IdPrefix)Database"></select>
+                    <select class="form-control" id="@(prefix.ToString())Database"></select>
                     <div class="input-group-append">
                         <button class="btn btn-info" type="button"
-                                load-select="/Project/CompareProject?handler=@(ViewBag.Handler)"
+                                load-select="/Project/CompareProject?handler=LoadDatabaseList"
                                 load-select-method="POST"
-                                load-select-target="@(ViewBag.IdPrefix)Database"
+                                load-select-target="@(prefix.ToString())Database"
                                 load-select-data-from-div="@divId">
                             &#x21bb;
                         </button>

@@ -1,4 +1,5 @@
 ﻿@page
+@using SQLCompare.UI.Enums
 @model Project.CompareProject
 
 <ul class="nav nav-tabs">
@@ -19,19 +20,15 @@
     <div class="tab-pane active" id="tabDataSources">
         <div class="row">
             <div class="col-md-6">
-                @Html.Partial("_DatabaseProviderOptions", new ViewDataDictionary(this.ViewData)
+                @Html.Partial("_DatabaseProviderOptions", Model.Project.SourceProviderOptions, new ViewDataDictionary(this.ViewData)
                 {
-                    {"Title", "Source connection"},
-                    {"IdPrefix","Source" },
-                    {"Handler", "LoadSourceDatabaseList" },
+                    {"Prefix", CompareDirection.Source},
                 })
             </div>
             <div class="col-md-6">
-                @Html.Partial("_DatabaseProviderOptions", new ViewDataDictionary(this.ViewData)
+                @Html.Partial("_DatabaseProviderOptions", Model.Project.TargetProviderOptions, new ViewDataDictionary(this.ViewData)
                 {
-                    {"Title", "Target connection"},
-                    {"IdPrefix","Target" },
-                    {"Handler", "LoadTargetDatabaseList" },
+                    {"Prefix", CompareDirection.Target},
                 })
             </div>
         </div>

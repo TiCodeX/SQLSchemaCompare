@@ -1,4 +1,5 @@
 ﻿using SQLCompare.Core.Enums;
+using SQLCompare.UI.Enums;
 
 namespace SQLCompare.UI.Models.Project
 {
@@ -7,6 +8,11 @@ namespace SQLCompare.UI.Models.Project
     /// </summary>
     public class CompareProjectOptions
     {
+        /// <summary>
+        /// Gets or sets the compare diraction
+        /// </summary>
+        public CompareDirection Direction { get; set; }
+
         /// <summary>
         /// Gets or sets the source database type
         /// </summary>

@@ -1,4 +1,5 @@
-﻿using SQLCompare.Core.Entities.Project;
+﻿using SQLCompare.Core.Entities.DatabaseProvider;
+using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Interfaces.Services;
 
 namespace SQLCompare.Services
@@ -19,7 +20,23 @@ namespace SQLCompare.Services
                 return false;
             }
 
-            this.Project = new CompareProject();
+            this.Project = new CompareProject()
+            {
+                SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions()
+                {
+                    Hostname = @"localhost\SQLEXPRESS",
+                    Password = "brokerpro05",
+                    Username = "brokerpro",
+                    UseWindowsAuthentication = true
+                },
+                TargetProviderOptions = new MicrosoftSqlDatabaseProviderOptions()
+                {
+                    Hostname = @"localhost\SQLEXPRESS",
+                    Password = "brokerpro05",
+                    Username = "brokerpro",
+                    UseWindowsAuthentication = true
+                }
+            };
             return true;
         }
 

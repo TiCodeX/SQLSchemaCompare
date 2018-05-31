@@ -63,10 +63,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc />
-        protected override List<MySqlColumn> GetColumns(MySqlTable table, MySqlDatabaseContext context)
+        protected override List<MySqlColumn> GetColumns(MySqlDb database, MySqlDatabaseContext context)
         {
             StringBuilder query = new StringBuilder();
-            query.AppendLine("SELECT a.COLUMN_NAME as Name,");
+            query.AppendLine("SELECT a.TABLE_CATALOG as CatalogName,");
+            query.AppendLine("       a.TABLE_SCHEMA as SchemaName,");
+            query.AppendLine("       a.TABLE_NAME as TableName,");
+            query.AppendLine("       a.COLUMN_NAME as Name,");
             query.AppendLine("       a.ORDINAL_POSITION as OrdinalPosition,");
             query.AppendLine("       a.COLUMN_DEFAULT as ColumnDefault,");
             query.AppendLine("       a.IS_NULLABLE as IsNullable,");
@@ -86,7 +89,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       a.COLUMN_KEY as ColumnKey,");
             query.AppendLine("       a.COLUMN_COMMENT as ColumnComment");
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
-            query.AppendLine($"WHERE TABLE_SCHEMA = '{table.SchemaName}' and TABLE_NAME = '{table.Name}' and TABLE_CATALOG = '{table.CatalogName}'");
+            query.AppendLine($"WHERE TABLE_SCHEMA = '{database.Name}'");
             return context.Query<MySqlColumn>(query.ToString());
         }
     }

@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Infrastructure.EntityFramework;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SQLCompare.Infrastructure.DatabaseProviders
 {
@@ -63,16 +65,18 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <returns>The discovered database structure</returns>
         protected TDatabase DiscoverDatabase(TDatabaseContext context)
         {
-            TDatabase db = new TDatabase() { Name = this.Options.Database };
+            TDatabase db = new TDatabase() { Name = context.Database.GetDbConnection().Database };
 
             var tables = this.GetTables(db, context);
+            var columns = this.GetColumns(db, context);
 
-            foreach (var table in tables)
-            {
-                table.Columns.AddRange(this.GetColumns(table, context));
-            }
+            tables.ForEach(x => x.Columns.AddRange(
+                columns.Where(y => string.Equals(x.CatalogName, y.CatalogName, System.StringComparison.Ordinal)
+                                       && string.Equals(x.SchemaName, y.SchemaName, System.StringComparison.Ordinal)
+                                       && string.Equals(x.Name, y.TableName, System.StringComparison.Ordinal))));
 
             db.Tables.AddRange(tables);
+
             return db;
         }
 
@@ -87,9 +91,9 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <summary>
         /// Get the table columns
         /// </summary>
-        /// <param name="table">The database table</param>
+        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of columns</returns>
-        protected abstract List<TColumn> GetColumns(TTable table, TDatabaseContext context);
+        protected abstract List<TColumn> GetColumns(TDatabase database, TDatabaseContext context);
     }
 }

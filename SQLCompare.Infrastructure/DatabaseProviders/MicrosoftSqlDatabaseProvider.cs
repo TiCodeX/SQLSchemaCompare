@@ -57,10 +57,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override List<MicrosoftSqlColumn> GetColumns(MicrosoftSqlTable table, MicrosoftSqlDatabaseContext context)
+        protected override List<MicrosoftSqlColumn> GetColumns(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
             StringBuilder query = new StringBuilder();
-            query.AppendLine("SELECT a.COLUMN_NAME as Name,");
+            query.AppendLine("SELECT a.TABLE_CATALOG as CatalogName,");
+            query.AppendLine("       a.TABLE_SCHEMA as SchemaName,");
+            query.AppendLine("       a.TABLE_NAME as TableName,");
+            query.AppendLine("       a.COLUMN_NAME as Name,");
             query.AppendLine("       a.ORDINAL_POSITION as OrdinalPosition,");
             query.AppendLine("       a.COLUMN_DEFAULT as ColumnDefault,");
             query.AppendLine("       CAST(IIF(a.IS_NULLABLE = 'no',0,1) as BIT) as IsNullable,");
@@ -85,7 +88,6 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       IsNull(b.increment_value, 0) as IdentityIncrement");
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
             query.AppendLine("LEFT JOIN sys.identity_columns b ON object_id(a.TABLE_NAME) = b.object_id and a.COLUMN_NAME = b.name");
-            query.AppendLine($"WHERE object_id(a.TABLE_NAME) = {table.ObjectId}");
 
             return context.Query<MicrosoftSqlColumn>(query.ToString());
         }

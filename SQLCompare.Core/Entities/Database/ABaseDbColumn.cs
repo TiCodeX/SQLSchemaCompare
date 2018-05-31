@@ -6,6 +6,21 @@
     public abstract class ABaseDbColumn
     {
         /// <summary>
+        /// Gets or sets the database catalog name
+        /// </summary>
+        public string CatalogName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the database schema name
+        /// </summary>
+        public string SchemaName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the database table name
+        /// </summary>
+        public string TableName { get; set; }
+
+        /// <summary>
         /// Gets or sets the database column name
         /// </summary>
         public string Name { get; set; }

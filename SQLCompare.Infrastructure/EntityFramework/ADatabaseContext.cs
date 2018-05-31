@@ -10,7 +10,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
     /// <summary>
     /// Common EF database context
     /// </summary>
-    internal abstract class ADatabaseContext<TDatabaseProviderOptions> : DbContext
+    public abstract class ADatabaseContext<TDatabaseProviderOptions> : DbContext
         where TDatabaseProviderOptions : ADatabaseProviderOptions
     {
         private readonly ILoggerFactory loggerFactory;

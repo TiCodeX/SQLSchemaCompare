@@ -10,7 +10,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// <summary>
     /// Retrieves various information from a Microsoft SQL Server
     /// </summary>
-    internal class MicrosoftSqlDatabaseProvider : ADatabaseProvider<MicrosoftSqlDatabaseProviderOptions>
+    internal class MicrosoftSqlDatabaseProvider : ADatabaseProvider<MicrosoftSqlDatabaseProviderOptions, MicrosoftSqlDatabaseContext, MicrosoftSqlDb, MicrosoftSqlTable, MicrosoftSqlColumn>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MicrosoftSqlDatabaseProvider"/> class.
@@ -27,17 +27,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.Options))
             {
-                MicrosoftSqlDb db = new MicrosoftSqlDb() { Name = this.Options.Database };
-
-                var tables = GetTables(context);
-
-                foreach (var table in tables)
-                {
-                    table.Columns.AddRange(GetColumns(table.ObjectId, context));
-                }
-
-                db.Tables.AddRange(tables);
-                return db;
+                return this.DiscoverDatabase(context);
             }
         }
 
@@ -50,7 +40,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             }
         }
 
-        private static List<MicrosoftSqlTable> GetTables(MicrosoftSqlDatabaseContext context)
+        /// <inheritdoc/>
+        protected override List<MicrosoftSqlTable> GetTables(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
             StringBuilder query = new StringBuilder();
             query.AppendLine("SELECT a.TABLE_NAME as Name,");
@@ -65,7 +56,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             return context.Query<MicrosoftSqlTable>(query.ToString());
         }
 
-        private static List<MicrosoftSqlColumn> GetColumns(long objectId, MicrosoftSqlDatabaseContext context)
+        /// <inheritdoc/>
+        protected override List<MicrosoftSqlColumn> GetColumns(MicrosoftSqlTable table, MicrosoftSqlDatabaseContext context)
         {
             StringBuilder query = new StringBuilder();
             query.AppendLine("SELECT a.COLUMN_NAME as Name,");
@@ -93,7 +85,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       IsNull(b.increment_value, 0) as IdentityIncrement");
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
             query.AppendLine("LEFT JOIN sys.identity_columns b ON object_id(a.TABLE_NAME) = b.object_id and a.COLUMN_NAME = b.name");
-            query.AppendLine($"WHERE object_id(a.TABLE_NAME) = {objectId}");
+            query.AppendLine($"WHERE object_id(a.TABLE_NAME) = {table.ObjectId}");
 
             return context.Query<MicrosoftSqlColumn>(query.ToString());
         }

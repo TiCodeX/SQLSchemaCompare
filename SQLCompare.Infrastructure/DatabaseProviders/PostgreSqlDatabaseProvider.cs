@@ -10,7 +10,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// <summary>
     /// Retrieves various information from a PostgreSQL Server
     /// </summary>
-    internal class PostgreSqlDatabaseProvider : ADatabaseProvider<PostgreSqlDatabaseProviderOptions>
+    internal class PostgreSqlDatabaseProvider : ADatabaseProvider<PostgreSqlDatabaseProviderOptions, PostgreSqlDatabaseContext, PostgreSqlDb, PostgreSqlTable, PostgreSqlColumn>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDatabaseProvider"/> class.
@@ -27,17 +27,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.Options))
             {
-                MySqlDb db = new MySqlDb() { Name = this.Options.Database };
-
-                var tables = GetTables(context);
-
-                foreach (var table in tables)
-                {
-                    table.Columns.AddRange(GetColumns(table, context));
-                }
-
-                db.Tables.AddRange(tables);
-                return db;
+                return this.DiscoverDatabase(context);
             }
         }
 
@@ -50,7 +40,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             }
         }
 
-        private static List<PostgreSqlTable> GetTables(PostgreSqlDatabaseContext context)
+        /// <inheritdoc />
+        protected override List<PostgreSqlTable> GetTables(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             StringBuilder query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as \"Name\",");
@@ -76,7 +67,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             return context.Query<PostgreSqlTable>(query.ToString());
         }
 
-        private static List<PostgreSqlColumn> GetColumns(ABaseDbTable table, PostgreSqlDatabaseContext context)
+        /// <inheritdoc />
+        protected override List<PostgreSqlColumn> GetColumns(PostgreSqlTable table, PostgreSqlDatabaseContext context)
         {
             StringBuilder query = new StringBuilder();
 

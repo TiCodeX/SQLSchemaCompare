@@ -10,7 +10,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// <summary>
     /// Retrieves various information from a MySQL Server
     /// </summary>
-    internal class MySqlDatabaseProvider : ADatabaseProvider<MySqlDatabaseProviderOptions>
+    internal class MySqlDatabaseProvider : ADatabaseProvider<MySqlDatabaseProviderOptions, MySqlDatabaseContext, MySqlDb, MySqlTable, MySqlColumn>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlDatabaseProvider"/> class.
@@ -27,17 +27,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             using (var context = new MySqlDatabaseContext(this.LoggerFactory, this.Options))
             {
-                MySqlDb db = new MySqlDb() { Name = this.Options.Database };
-
-                var tables = GetTables(db.Name, context);
-
-                foreach (var table in tables)
-                {
-                    table.Columns.AddRange(GetColumns(table, context));
-                }
-
-                db.Tables.AddRange(tables);
-                return db;
+                return this.DiscoverDatabase(context);
             }
         }
 
@@ -50,7 +40,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             }
         }
 
-        private static List<MySqlTable> GetTables(string databaseName, MySqlDatabaseContext context)
+        /// <inheritdoc />
+        protected override List<MySqlTable> GetTables(MySqlDb database, MySqlDatabaseContext context)
         {
             StringBuilder query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as Name,");
@@ -66,12 +57,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       CREATE_OPTIONS as CreateOptions,");
             query.AppendLine("       TABLE_COMMENT as TableComment");
             query.AppendLine("FROM INFORMATION_SCHEMA.TABLES");
-            query.AppendLine($"WHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = '{databaseName}'");
+            query.AppendLine($"WHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = '{database.Name}'");
 
             return context.Query<MySqlTable>(query.ToString());
         }
 
-        private static List<MySqlColumn> GetColumns(ABaseDbTable table, MySqlDatabaseContext context)
+        /// <inheritdoc />
+        protected override List<MySqlColumn> GetColumns(MySqlTable table, MySqlDatabaseContext context)
         {
             StringBuilder query = new StringBuilder();
             query.AppendLine("SELECT a.COLUMN_NAME as Name,");

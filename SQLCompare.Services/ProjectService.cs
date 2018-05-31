@@ -15,26 +15,23 @@ namespace SQLCompare.Services
         /// <inheritdoc/>
         public bool NewProject()
         {
-            if (this.Project != null)
-            {
-                return false;
-            }
-
+            // TODO: return false if project is still open
             this.Project = new CompareProject()
             {
-                SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions()
+                SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions
                 {
                     Hostname = @"localhost\SQLEXPRESS",
-                    Password = "brokerpro05",
                     Username = "brokerpro",
-                    UseWindowsAuthentication = true
+                    Password = "brokerpro05",
+                    Database = "brokerpro",
+                    UseWindowsAuthentication = true,
                 },
-                TargetProviderOptions = new MicrosoftSqlDatabaseProviderOptions()
+                TargetProviderOptions = new PostgreSqlDatabaseProviderOptions
                 {
-                    Hostname = @"localhost\SQLEXPRESS",
-                    Password = "brokerpro05",
-                    Username = "brokerpro",
-                    UseWindowsAuthentication = true
+                    Hostname = "localhost",
+                    Username = "postgres",
+                    Password = "test1234",
+                    Database = "world",
                 }
             };
             return true;
@@ -55,7 +52,6 @@ namespace SQLCompare.Services
         /// <inheritdoc/>
         public void LoadProject(string filename)
         {
-            this.Project = new CompareProject();
         }
     }
 }

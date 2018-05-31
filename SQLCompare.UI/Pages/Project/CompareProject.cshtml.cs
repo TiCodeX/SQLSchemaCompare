@@ -34,9 +34,17 @@ namespace SQLCompare.UI.Pages.Project
         public Core.Entities.Project.CompareProject Project { get; private set; }
 
         /// <summary>
+        /// Get the CompareProject page for the current Project
+        /// </summary>
+        public void OnGet()
+        {
+            this.Project = this.projectService.Project;
+        }
+
+        /// <summary>
         /// Get the CompareProject page for a new Project
         /// </summary>
-        public void OnGetNew()
+        public void OnGetNewProject()
         {
             this.projectService.NewProject();
             this.Project = this.projectService.Project;
@@ -46,7 +54,7 @@ namespace SQLCompare.UI.Pages.Project
         /// Get the CompareProject page
         /// </summary>
         /// <param name="projectFile">The project file to load</param>
-        public void OnPostLoad([FromBody] string projectFile)
+        public void OnPostLoadProject([FromBody] string projectFile)
         {
             this.projectService.LoadProject(projectFile);
         }

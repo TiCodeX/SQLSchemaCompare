@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Logging;
+using NLog;
+using NLog.Common;
+using NLog.Config;
+using NLog.Targets;
 using NLog.Web;
 using SQLCompare.UI.WebServer;
 using System;
@@ -11,6 +15,8 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using LoggingRule = NLog.Config.LoggingRule;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace SQLCompare.UI
 {
@@ -26,8 +32,53 @@ namespace SQLCompare.UI
         /// </summary>
         public static void Main()
         {
+            var appGlobals = new AppGlobals();
+
+            // Enable asp.net core layout renderers
+            // var assembly = Assembly.Load("NLog.Web.AspNetCore");
+            // ConfigurationItemFactory.Default.RegisterItemsFromAssembly(assembly);
+
             // NLog: setup the logger first to catch all errors
-            var logger = NLogBuilder.ConfigureNLog("NLog.config").GetCurrentClassLogger();
+            var loggerConfig = new LoggingConfiguration();
+
+            // The targets to write to
+            var consoleTarget = new ColoredConsoleTarget("Console")
+            {
+                Layout = appGlobals.LoggerLayout
+            };
+            loggerConfig.AddTarget(consoleTarget);
+
+            var fileTarget = new FileTarget("File")
+            {
+                Layout = appGlobals.LoggerLayout,
+                FileName = appGlobals.LoggerFile,
+            };
+            loggerConfig.AddTarget(fileTarget);
+
+            // Rules to map from logger name to target
+            var aspNetCoreRule = new LoggingRule
+            {
+                LoggerNamePattern = "Microsoft.AspNetCore.*",
+                Final = true,
+            };
+            aspNetCoreRule.SetLoggingLevels(NLog.LogLevel.Trace, NLog.LogLevel.Debug);
+            loggerConfig.LoggingRules.Add(aspNetCoreRule);
+
+            var allRule = new LoggingRule
+            {
+                LoggerNamePattern = "*"
+            };
+            allRule.SetLoggingLevels(NLog.LogLevel.Trace, NLog.LogLevel.Fatal);
+            allRule.Targets.Add(consoleTarget);
+            allRule.Targets.Add(fileTarget);
+            loggerConfig.LoggingRules.Add(allRule);
+
+            InternalLogger.LogLevel = NLog.LogLevel.Info;
+            InternalLogger.LogToConsole = true;
+
+            LogManager.Configuration = loggerConfig;
+
+            var logger = LogManager.GetCurrentClassLogger();
             try
             {
                 logger.Debug("init main");

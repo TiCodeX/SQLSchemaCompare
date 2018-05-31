@@ -64,12 +64,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <TSLintExclude Include="wwwroot\lib\typings\%2A%2A\%2A.d.ts" />
   </ItemGroup>
 

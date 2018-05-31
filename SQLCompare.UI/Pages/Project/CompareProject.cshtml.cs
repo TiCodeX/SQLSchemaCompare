@@ -48,19 +48,22 @@ namespace SQLCompare.UI.Pages.Project
         /// Perform the database comparison
         /// </summary>
         /// <param name="options">The project options</param>
-        public void OnPostCompare([FromBody] CompareProjectOptions options)
+        /// <returns>TODO: boh</returns>
+        public ActionResult OnPostCompare([FromBody] CompareProjectOptions options)
         {
             this.projectService.Project.SourceProviderOptions = this.GetDatabaseProviderOptions(
                 options.SourceDatabaseType,
                 options.SourceHostname,
                 options.SourceUsername,
-                options.SourcePassword);
+                options.SourcePassword,
+                options.SourceDatabase);
 
             this.projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(
                 options.TargetDatabaseType,
                 options.TargetHostname,
                 options.TargetUsername,
-                options.TargetPassword);
+                options.TargetPassword,
+                options.TargetDatabase);
 
             // Start showing modal dialog with progress bar
             this.projectService.Project.RetrievedSourceDatabase = this.databaseService.GetDatabase(this.projectService.Project.SourceProviderOptions);
@@ -70,6 +73,7 @@ namespace SQLCompare.UI.Pages.Project
             // Perform database compare
             // Close modal dialog
             // Show main page with result
+            return new JsonResult(null);
         }
 
         /// <summary>
@@ -103,7 +107,7 @@ namespace SQLCompare.UI.Pages.Project
         }
 
         // TODO: move somewhere else and add missing parameters
-        private ADatabaseProviderOptions GetDatabaseProviderOptions(DatabaseType type, string hostname, string username, string password)
+        private ADatabaseProviderOptions GetDatabaseProviderOptions(DatabaseType type, string hostname, string username, string password, string database = "")
         {
             switch (type)
             {
@@ -114,6 +118,7 @@ namespace SQLCompare.UI.Pages.Project
                         Username = username,
                         Password = password,
                         UseWindowsAuthentication = true,
+                        Database = database,
                     };
                 case DatabaseType.MySql:
                     return new MySqlDatabaseProviderOptions
@@ -122,6 +127,7 @@ namespace SQLCompare.UI.Pages.Project
                         Username = username,
                         Password = password,
                         UseSSL = false,
+                        Database = database,
                     };
                 case DatabaseType.PostgreSql:
                     return new PostgreSqlDatabaseProviderOptions
@@ -129,6 +135,7 @@ namespace SQLCompare.UI.Pages.Project
                         Hostname = hostname,
                         Username = username,
                         Password = password,
+                        Database = database,
                     };
                 default:
                     throw new ArgumentException("Unknown Database type");

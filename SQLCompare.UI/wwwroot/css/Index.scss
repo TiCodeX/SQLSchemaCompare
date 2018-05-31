@@ -9,3 +9,23 @@ body {
 .input-group-text.min-width-100 {
     min-width: 100px;
 }
+
+body > .container-fluid > .row {
+    height: 100vh;
+}
+
+.gutter {
+    background-color: gray;
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+
+.gutter.gutter-horizontal {
+    cursor: col-resize;
+    background-image: url("../img/gutter-horizontal.png");
+}
+
+.gutter.gutter-vertical {
+    cursor: row-resize;
+    background-image: url("../img/gutter-vertical.png");
+}

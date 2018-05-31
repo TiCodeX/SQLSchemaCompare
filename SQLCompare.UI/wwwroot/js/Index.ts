@@ -127,32 +127,62 @@ $(() => {
         const target: JQuery = $(e.target);
         const url: string = target.attr("load-select").toString();
         const method: string = target.attr("load-select-method").toString();
-        const selectId: string = target.attr("load-select-target").toString();
+        const selectName: string = target.attr("load-select-target").toString();
         const dataDivId: string = target.attr("load-select-data-from-div").toString();
         const data: object = Utility.SerializeJSON($(`#${dataDivId}`));
 
-        $.ajax(url, {
-            type: method,
-            beforeSend: (xhr: JQuery.jqXHR): void => {
-                xhr.setRequestHeader("XSRF-TOKEN",
-                    $("input:hidden[name='__RequestVerificationToken']").val().toString());
-            },
-            contentType: "application/json",
-            dataType: "json",
-            data: data !== undefined ? JSON.stringify(data) : "",
-            cache: false,
-            success: (result: Array<string>): void => {
-                const select: JQuery = $(`#${selectId}`);
-                select.find("option").remove();
-                let options: string = "";
-                $.each(result, (index: number, value: string): void => {
-                    options += `<option value="${value}">${value}</option>`;
+        Utility.AjaxCall(url, method, data, (result: Array<string>): void => {
+            const select: JQuery = $(`select[name=${selectName}]`);
+            select.find("option").remove();
+            let options: string = "";
+            $.each(result, (index: number, value: string): void => {
+                options += `<option value="${value}">${value}</option>`;
+            });
+            select.append(options);
+        });
+    });
+
+    $(document).on("click", "[load-main]", (e: JQuery.Event) => {
+        e.preventDefault();
+        const target: JQuery = $(e.target);
+        const url: string = target.attr("load-main").toString();
+        const method: string = target.attr("load-main-method").toString();
+        let data: object;
+        if (target.attr("load-main-data-from-div") !== undefined) {
+            const dataDivId: string = target.attr("load-main-data-from-div").toString();
+            data = Utility.SerializeJSON($(`#${dataDivId}`));
+        }
+
+        Utility.AjaxCall(url, method, data, (): void => {
+            $("#myModal").modal("hide");
+            Utility.AjaxCall("/Main", "GET", undefined, (result: string): void => {
+                $("#mainDiv").html(result);
+                Split(["#mainTop", "#mainBottom"], {
+                    direction: "vertical",
                 });
-                select.append(options);
-            },
-            error: (error: JQuery.jqXHR): void => {
-                alert(error.responseText);
-            },
+            });
+        });
+    });
+
+    $(document).on("click", "[load-sql]", (e: JQuery.Event) => {
+        e.preventDefault();
+        const target: JQuery = $(e.target).closest("tr");
+        const url: string = target.attr("load-sql").toString();
+        const method: string = target.attr("load-sql-method").toString();
+        let data: object;
+        if (target.attr("load-sql-data") !== undefined) {
+            data = <object>JSON.parse(<string>JSON.parse(`"${target.attr("load-sql-data").toString()}"`));
+        }
+        $("#mainBottom").empty();
+        Utility.AjaxCall(url, method, data, (result: { sourceSql: string; targetSql: string }): void => {
+            const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(document.getElementById("mainBottom"),
+                {
+                    automaticLayout: true,
+                });
+            diffEditor.setModel({
+                original: monaco.editor.createModel(result.sourceSql, "sql"),
+                modified: monaco.editor.createModel(result.targetSql, "sql"),
+            });
         });
     });
 });

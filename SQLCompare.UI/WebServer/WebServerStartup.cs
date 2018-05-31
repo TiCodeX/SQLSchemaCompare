@@ -8,6 +8,7 @@ using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.Infrastructure;
 using SQLCompare.Infrastructure.DatabaseProviders;
+using SQLCompare.Infrastructure.SqlScripters;
 using SQLCompare.Services;
 using SQLCompare.UI.Extensions;
 using SQLCompare.UI.Middlewares;
@@ -60,6 +61,7 @@ namespace SQLCompare.UI.WebServer
             services.AddTransient<IAppSettingsRepository, AppSettingsRepository>();
             services.AddTransient<IDatabaseService, DatabaseService>();
             services.AddTransient<IDatabaseProviderFactory, DatabaseProviderFactory>();
+            services.AddTransient<IDatabaseScripterFactory, DatabaseScripterFactory>();
         }
 
         /// <summary>

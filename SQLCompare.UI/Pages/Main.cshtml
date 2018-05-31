@@ -1,0 +1,104 @@
+﻿@page
+@using System.Web
+@using Core.Interfaces
+@model Main
+
+<div id="mainTop" style="overflow: auto;">
+    <div class="card">
+        <div class="card-header" data-toggle="collapse" data-target="#collapseBoth">
+            <h5 class="mb-0">in both, but different</h5>
+        </div>
+        <div id="collapseBoth" class="pre-scrollable collapse show">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">SourceTableName</th>
+                        <th scope="col">TargetTableName</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var table in Model.SameTables)
+                    {
+                        <tr load-sql="/Main?handler=SqlScript"
+                            load-sql-method="POST"
+                            load-sql-data="@HttpUtility.JavaScriptStringEncode(Json.Serialize(new { SourceTable = table, TargetTable = table}).ToString())">
+                            <th scope="row">Table</th>
+                            <td>@table</td>
+                            <td>@table</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header" data-toggle="collapse" data-target="#collapseLeft">
+            <h5 class="mb-0">only in Source</h5>
+        </div>
+        <div id="collapseLeft" class="pre-scrollable collapse hide">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">SourceTableName</th>
+                        <th scope="col">TargetTableName</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var table in Model.OnlySource)
+                    {
+                        <tr load-sql="/Main?handler=SqlScript"
+                            load-sql-method="POST"
+                            load-sql-data="@HttpUtility.JavaScriptStringEncode(Json.Serialize(new { SourceTable = table, TargetTable = ""}).ToString())">
+                            <th scope="row">Table</th>
+                            <td>@table</td>
+                            <td></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header" data-toggle="collapse" data-target="#collapseRight">
+            <h5 class="mb-0">only in Target</h5>
+        </div>
+        <div id="collapseRight" class="pre-scrollable collapse hide">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">SourceTableName</th>
+                        <th scope="col">TargetTableName</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var table in Model.OnlyTarget)
+                    {
+                        <tr load-sql="/Main?handler=SqlScript"
+                            load-sql-method="POST"
+                            load-sql-data="@HttpUtility.JavaScriptStringEncode(Json.Serialize(new { SourceTable = "", TargetTable = table}).ToString())">
+                            <th scope="row">Table</th>
+                            <td></td>
+                            <td>@table</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header" data-toggle="collapse" data-target="#collapseSame">
+            <h5 class="mb-0">identical</h5>
+        </div>
+        <div id="collapseSame" class="pre-scrollable collapse hide"></div>
+    </div>
+</div>
+
+<div id="mainBottom" style="overflow: auto;">
+    sql diff
+</div>

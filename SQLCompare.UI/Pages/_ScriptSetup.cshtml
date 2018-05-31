@@ -6,6 +6,8 @@
 
 <script src="~/lib/popperjs/popper.min.js"></script>
 <script src="~/lib/bootstrap/bootstrap.min.js"></script>
+<script src="~/lib/jquery/jquery.serializejson.min.js"></script>
+<script src="~/lib/splitjs/split.min.js"></script>
 
 @* Monaco uses a custom amd loader that overrides node's require. *@
 @* Keep a reference to node's require (if exists) so we can restore it after executing the amd loader file. *@
@@ -19,7 +21,6 @@
 @* Save Monaco's amd require and restore Node's require (or undefined if doesn't exist) *@
 <script>
     var amdRequire = require;
-    define.amd = undefined;
     if (nodeRequire !== null) {
         require = nodeRequire;
     }
@@ -27,8 +28,6 @@
         require = undefined;
     }
 </script>
-
-<script src="~/lib/jquery/jquery.serializejson.min.js"></script>
 
 @* SQLCompare scripts *@
 @if (AppGlobal.IsDevelopment)

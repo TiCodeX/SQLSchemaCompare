@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace SQLCompare.Core
+namespace SQLCompare.UI
 {
     /// <summary>
     /// Global configuration of the application

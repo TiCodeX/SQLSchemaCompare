@@ -57,14 +57,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var sql = new StringBuilder();
 
             sql.Append($"{col.Name} {ScriptColumnDataType(col)} ");
-            if (col.IsNullable)
-            {
-                sql.Append("NULL ");
-            }
-            else
-            {
-                sql.Append("NOT NULL ");
-            }
+            sql.Append(col.IsNullable ? "NULL " : "NOT NULL ");
 
             if (!string.IsNullOrWhiteSpace(col.ColumnDefault))
             {
@@ -90,15 +83,14 @@ namespace SQLCompare.Infrastructure.SqlScripters
         private static string GetTableName(MicrosoftSqlTable table)
         {
             // Depending on options
-            var useSimpleSintax = true;
             var name = string.Empty;
 
-            if (!string.IsNullOrWhiteSpace(table.CatalogName) || !useSimpleSintax)
+            if (!string.IsNullOrWhiteSpace(table.CatalogName))
             {
                 name += $"[{table.CatalogName}].";
             }
 
-            if (!string.IsNullOrWhiteSpace(table.SchemaName) || !useSimpleSintax)
+            if (!string.IsNullOrWhiteSpace(table.SchemaName))
             {
                 name += $"[{table.SchemaName}].";
             }

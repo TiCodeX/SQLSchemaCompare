@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SQLCompare.Core;
 using SQLCompare.Core.Interfaces;
 using System;
 using System.IO;

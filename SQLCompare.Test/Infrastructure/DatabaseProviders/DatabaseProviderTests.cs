@@ -1,10 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities.DatabaseProvider;
+﻿using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Infrastructure.DatabaseProviders;
-using SQLCompare.Infrastructure.EntityFramework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -34,25 +30,25 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 
             MicrosoftSqlDatabaseProvider mssqldbp = (MicrosoftSqlDatabaseProvider)dpf.Create(new MicrosoftSqlDatabaseProviderOptions { Hostname = "localhost\\SQLEXPRESS", UseWindowsAuthentication = true });
             var dbList = mssqldbp.GetDatabaseList();
-            Assert.Contains<string>("brokerpro", dbList);
-            Assert.Contains<string>("brokerpro_web", dbList);
-            Assert.Contains<string>("BrokerProGlobal", dbList);
-            Assert.Contains<string>("msdb", dbList);
-            Assert.Contains<string>("master", dbList);
+            Assert.Contains("brokerpro", dbList);
+            Assert.Contains("brokerpro_web", dbList);
+            Assert.Contains("BrokerProGlobal", dbList);
+            Assert.Contains("msdb", dbList);
+            Assert.Contains("master", dbList);
 
             MySqlDatabaseProvider mysqldbp = (MySqlDatabaseProvider)dpf.Create(new MySqlDatabaseProviderOptions { Hostname = "localhost", Username = "admin", Password = "test1234", UseSSL = true });
 
             dbList = mysqldbp.GetDatabaseList();
-            Assert.Contains<string>("sakila", dbList);
-            Assert.Contains<string>("employees", dbList);
-            Assert.Contains<string>("sys", dbList);
-            Assert.Contains<string>("mysql", dbList);
+            Assert.Contains("sakila", dbList);
+            Assert.Contains("employees", dbList);
+            Assert.Contains("sys", dbList);
+            Assert.Contains("mysql", dbList);
 
             PostgreSqlDatabaseProvider pgsqldbp = (PostgreSqlDatabaseProvider)dpf.Create(new PostgreSqlDatabaseProviderOptions { Hostname = "localhost", Username = "postgres", Password = "test1234" });
 
             dbList = pgsqldbp.GetDatabaseList();
-            Assert.Contains<string>("pagila", dbList);
-            Assert.Contains<string>("postgres", dbList);
+            Assert.Contains("pagila", dbList);
+            Assert.Contains("postgres", dbList);
         }
 
         /// <summary>

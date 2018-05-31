@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SQLCompare.Core.Interfaces
+﻿namespace SQLCompare.Core.Interfaces
 {
     /// <summary>
     /// Defines a class that provides global constants

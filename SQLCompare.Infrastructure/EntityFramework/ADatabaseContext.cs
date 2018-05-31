@@ -61,7 +61,10 @@ namespace SQLCompare.Infrastructure.EntityFramework
                         {
                             var prop = type.GetProperty(reader.GetName(inc));
                             var value = reader.GetValue(inc);
-                            prop.SetValue(t, value is DBNull ? null : value, null);
+                            if (prop != null)
+                            {
+                                prop.SetValue(t, value is DBNull ? null : value, null);
+                            }
                         }
 
                         result.Add(t);

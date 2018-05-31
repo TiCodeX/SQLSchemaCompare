@@ -1,5 +1,6 @@
 ﻿using SQLCompare.Core.Entities;
 using SQLCompare.Core.Interfaces;
+using System;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -10,7 +11,7 @@ namespace SQLCompare.Infrastructure
     /// </summary>
     public class AppSettingsRepository : IAppSettingsRepository
     {
-        private IAppGlobals appGlobals;
+        private readonly IAppGlobals appGlobals;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AppSettingsRepository"/> class.
@@ -26,7 +27,7 @@ namespace SQLCompare.Infrastructure
         {
             if (!Directory.Exists(Path.GetDirectoryName(this.appGlobals.AppSettingsFullFilename)))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(this.appGlobals.AppSettingsFullFilename));
+                Directory.CreateDirectory(Path.GetDirectoryName(this.appGlobals.AppSettingsFullFilename) ?? throw new InvalidOperationException());
             }
 
             XmlSerializer xml = new XmlSerializer(typeof(AppSettings));

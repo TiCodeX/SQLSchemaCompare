@@ -12,9 +12,9 @@ namespace SQLCompare.Services
     /// </summary>
     public class AppSettingsService : IAppSettingsService
     {
-        private ILogger<AppSettingsService> logger;
-        private IAppSettingsRepository appSettingsRepository;
-        private AppSettings currentAppSettings = null;
+        private readonly ILogger<AppSettingsService> logger;
+        private readonly IAppSettingsRepository appSettingsRepository;
+        private AppSettings currentAppSettings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AppSettingsService"/> class.

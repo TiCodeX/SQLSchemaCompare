@@ -85,7 +85,7 @@ namespace SQLCompare.UI
             var properties = IPGlobalProperties.GetIPGlobalProperties();
             var tcpEndPoints = properties.GetActiveTcpListeners();
 
-            var usedPorts = tcpEndPoints.Select(p => p.Port).ToList<int>();
+            var usedPorts = tcpEndPoints.Select(p => p.Port).ToList();
 
             for (var port = start; port < end; port++)
             {

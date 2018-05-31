@@ -62,7 +62,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("            END as \"IsTyped\",");
             query.AppendLine("       commit_action as \"CommitAction\"");
             query.AppendLine("FROM INFORMATION_SCHEMA.TABLES");
-            query.AppendLine($"WHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = 'public'");
+            query.AppendLine("WHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = 'public'");
 
             return context.Query<PostgreSqlTable>(query.ToString());
         }

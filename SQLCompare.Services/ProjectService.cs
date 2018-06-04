@@ -1,5 +1,6 @@
 ﻿using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Entities.Project;
+using SQLCompare.Core.Interfaces.Repository;
 using SQLCompare.Core.Interfaces.Services;
 
 namespace SQLCompare.Services
@@ -9,6 +10,17 @@ namespace SQLCompare.Services
     /// </summary>
     public class ProjectService : IProjectService
     {
+        private readonly IProjectRepository projectRepository;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProjectService"/> class.
+        /// </summary>
+        /// <param name="projectRepository">The injected project repository</param>
+        public ProjectService(IProjectRepository projectRepository)
+        {
+            this.projectRepository = projectRepository;
+        }
+
         /// <inheritdoc/>
         public CompareProject Project { get; private set; }
 
@@ -38,9 +50,12 @@ namespace SQLCompare.Services
         }
 
         /// <inheritdoc/>
-        public void SaveProject()
+        public void SaveProject(string filename)
         {
-            throw new System.NotImplementedException();
+            if (this.Project != null)
+            {
+                this.projectRepository.Write(this.Project, filename);
+            }
         }
 
         /// <inheritdoc/>
@@ -52,6 +67,7 @@ namespace SQLCompare.Services
         /// <inheritdoc/>
         public void LoadProject(string filename)
         {
+            this.Project = this.projectRepository.Read(filename);
         }
     }
 }

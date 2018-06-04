@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 {
     /// <summary>
-    /// Test class for the DatabaseProviderTests
+    /// Test class for the DatabaseProvider
     /// </summary>
     public class DatabaseProviderTests : BaseTests<DatabaseProviderTests>
     {

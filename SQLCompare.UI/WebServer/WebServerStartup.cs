@@ -4,9 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using SQLCompare.Core.Interfaces;
+using SQLCompare.Core.Interfaces.Repository;
 using SQLCompare.Core.Interfaces.Services;
-using SQLCompare.Infrastructure;
 using SQLCompare.Infrastructure.DatabaseProviders;
+using SQLCompare.Infrastructure.Repository;
 using SQLCompare.Infrastructure.SqlScripters;
 using SQLCompare.Services;
 using SQLCompare.UI.Extensions;
@@ -57,8 +58,14 @@ namespace SQLCompare.UI.WebServer
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
             services.AddSingleton<IProjectService, ProjectService>();
 
+            // Repository
             services.AddTransient<IAppSettingsRepository, AppSettingsRepository>();
+            services.AddTransient<IProjectRepository, ProjectRepository>();
+
+            // Service
             services.AddTransient<IDatabaseService, DatabaseService>();
+
+            // Factory
             services.AddTransient<IDatabaseProviderFactory, DatabaseProviderFactory>();
             services.AddTransient<IDatabaseScripterFactory, DatabaseScripterFactory>();
         }

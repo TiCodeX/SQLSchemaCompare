@@ -185,4 +185,55 @@ $(() => {
             });
         });
     });
+
+    $(document).on("click", "[save-project]", (e: JQuery.Event) => {
+        e.preventDefault();
+        const target: JQuery = $(e.target);
+        const url: string = target.attr("save-project").toString();
+        const method: string = target.attr("save-project-method").toString();
+        let data: object;
+        if (target.attr("save-project-data-from-div") !== undefined) {
+            const dataDivId: string = target.attr("save-project-data-from-div").toString();
+            data = Utility.SerializeJSON($(`#${dataDivId}`));
+        }
+
+        const saveProjectFilenameKey: string = "SaveProjectFilename";
+        data[saveProjectFilenameKey] = electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
+            {
+                title: "Save Project",
+                buttonLabel: "Save Project",
+                filters: [
+                    {
+                        name: "SQL Compare Project",
+                        extensions: ["xml"],
+                    },
+                ],
+            });
+
+        Utility.AjaxCall(url, method, data, (): void => {
+            alert("done");
+        });
+    });
+
+    $(document).on("click", "[load-project]", (e: JQuery.Event) => {
+        e.preventDefault();
+        const target: JQuery = $(e.target);
+        const url: string = target.attr("load-project").toString();
+        const method: string = target.attr("load-project-method").toString();
+
+        const filename: Array<string> = electron.remote.dialog.showOpenDialog(electron.remote.getCurrentWindow(),
+            {
+                title: "Load Project",
+                buttonLabel: "Load Project",
+                filters: [
+                    {
+                        name: "SQL Compare Project",
+                        extensions: ["xml"],
+                    },
+                ],
+                properties: ["openFile"],
+            });
+        Utility.OpenModalDialog(url, method, <object>JSON.parse(JSON.stringify(filename[0])));
+    });
+
 });

@@ -34,10 +34,6 @@ namespace SQLCompare.UI
         {
             var appGlobals = new AppGlobals();
 
-            // Enable asp.net core layout renderers
-            // var assembly = Assembly.Load("NLog.Web.AspNetCore");
-            // ConfigurationItemFactory.Default.RegisterItemsFromAssembly(assembly);
-
             // NLog: setup the logger first to catch all errors
             var loggerConfig = new LoggingConfiguration();
 

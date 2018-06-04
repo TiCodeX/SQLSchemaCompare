@@ -14,16 +14,19 @@ namespace SQLCompare.UI.Pages.Project
     /// </summary>
     public class CompareProject : PageModel
     {
+        private readonly IAppSettingsService appSettingsService;
         private readonly IProjectService projectService;
         private readonly IDatabaseService databaseService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CompareProject"/> class.
         /// </summary>
+        /// <param name="appSettingsService">The injected app settings service</param>
         /// <param name="projectService">The injected project service</param>
         /// <param name="databaseService">The injected database service</param>
-        public CompareProject(IProjectService projectService, IDatabaseService databaseService)
+        public CompareProject(IAppSettingsService appSettingsService, IProjectService projectService, IDatabaseService databaseService)
         {
+            this.appSettingsService = appSettingsService;
             this.projectService = projectService;
             this.databaseService = databaseService;
         }
@@ -57,6 +60,44 @@ namespace SQLCompare.UI.Pages.Project
         public void OnPostLoadProject([FromBody] string projectFile)
         {
             this.projectService.LoadProject(projectFile);
+
+            var appSettings = this.appSettingsService.GetAppSettings();
+            appSettings.RecentProjects.Remove(projectFile);
+            appSettings.RecentProjects.Add(projectFile);
+            this.appSettingsService.SaveAppSettings();
+
+            this.Project = this.projectService.Project;
+        }
+
+        /// <summary>
+        /// Save the project
+        /// </summary>
+        /// <param name="options">The project options</param>
+        /// <returns>TODO: boh</returns>
+        public ActionResult OnPostSave([FromBody] CompareProjectOptions options)
+        {
+            this.projectService.Project.SourceProviderOptions = this.GetDatabaseProviderOptions(
+                options.SourceDatabaseType,
+                options.SourceHostname,
+                options.SourceUsername,
+                options.SourcePassword,
+                options.SourceDatabase);
+
+            this.projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(
+                options.TargetDatabaseType,
+                options.TargetHostname,
+                options.TargetUsername,
+                options.TargetPassword,
+                options.TargetDatabase);
+
+            this.projectService.SaveProject(options.SaveProjectFilename);
+
+            var appSettings = this.appSettingsService.GetAppSettings();
+            appSettings.RecentProjects.Remove(options.SaveProjectFilename);
+            appSettings.RecentProjects.Add(options.SaveProjectFilename);
+            this.appSettingsService.SaveAppSettings();
+
+            return new JsonResult(null);
         }
 
         /// <summary>

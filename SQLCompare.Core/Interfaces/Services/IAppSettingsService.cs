@@ -16,7 +16,6 @@ namespace SQLCompare.Core.Interfaces.Services
         /// <summary>
         /// Save the new application settings
         /// </summary>
-        /// <param name="appSettings">The application settings to be saved</param>
-        void SaveAppSettings(AppSettings appSettings);
+        void SaveAppSettings();
     }
 }

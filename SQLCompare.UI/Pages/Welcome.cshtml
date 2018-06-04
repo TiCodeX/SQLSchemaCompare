@@ -5,25 +5,34 @@
 
 <h1>Welcome to @AppGlobal.CompanyName @AppGlobal.ProductName</h1>
 <br />
-<a href="#" load-modal="/Project/CompareProject?handler=NewProject" load-modal-method="GET">New Project</a>
-<br />
-<a href="#" load-modal="/Project/CompareProject" load-modal-method="GET">Open current Project</a>
+<button type="button" class="btn btn-primary"
+        load-modal="/Project/CompareProject?handler=NewProject"
+        load-modal-method="GET">
+    New Project
+</button>
+
+<button type="button" class="btn btn-primary"
+        load-project="/Project/CompareProject?handler=LoadProject"
+        load-project-method="POST">
+    Open Project
+</button>
+
+<button type="button" class="btn btn-primary"
+        load-modal="/Project/CompareProject"
+        load-modal-method="GET">
+    DEBUG: Open current Project
+</button>
 
 <br />
 <br />
 <div>
     Recent projects:
-    @foreach (var recent in Model.RecentProjects)
+    @for (var i = Model.RecentProjects.Count - 1; i >= 0; i--)
     {
         <br /> @:&bull;
         <a href="#" load-modal="/Project/CompareProject?handler=LoadProject" load-modal-method="POST"
-           load-modal-data="@HttpUtility.JavaScriptStringEncode(Json.Serialize(recent).ToString())">
-            @recent
+           load-modal-data="@HttpUtility.JavaScriptStringEncode(Json.Serialize(Model.RecentProjects[i]).ToString())">
+            @Model.RecentProjects[i]
         </a>
     }
 </div>
-<br />
-<br />
-
-<label>Load</label>
-<input type="file">

@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities;
-using SQLCompare.Core.Interfaces;
+using SQLCompare.Core.Interfaces.Repository;
 using SQLCompare.Core.Interfaces.Services;
-using System;
 using System.IO;
 
 namespace SQLCompare.Services
@@ -48,9 +47,12 @@ namespace SQLCompare.Services
         }
 
         /// <inheritdoc/>
-        public void SaveAppSettings(AppSettings appSettings)
+        public void SaveAppSettings()
         {
-            throw new NotImplementedException();
+            if (this.currentAppSettings != null)
+            {
+                this.appSettingsRepository.Write(this.currentAppSettings);
+            }
         }
     }
 }

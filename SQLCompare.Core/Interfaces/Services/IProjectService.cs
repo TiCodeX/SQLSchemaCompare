@@ -21,7 +21,8 @@ namespace SQLCompare.Core.Interfaces.Services
         /// <summary>
         /// Saves the project
         /// </summary>
-        void SaveProject();
+        /// <param name="filename">Path to save the project</param>
+        void SaveProject(string filename);
 
         /// <summary>
         /// Closes the project

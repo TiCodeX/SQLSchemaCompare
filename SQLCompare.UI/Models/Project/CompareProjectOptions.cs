@@ -62,5 +62,10 @@ namespace SQLCompare.UI.Models.Project
         /// Gets or sets the target database
         /// </summary>
         public string TargetDatabase { get; set; }
+
+        /// <summary>
+        /// Gets or sets the filename to save the project
+        /// </summary>
+        public string SaveProjectFilename { get; set; }
     }
 }

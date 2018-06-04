@@ -85,14 +85,14 @@ namespace SQLCompare.Infrastructure.SqlScripters
             // Depending on options
             var name = string.Empty;
 
-            if (!string.IsNullOrWhiteSpace(table.CatalogName))
+            if (!string.IsNullOrWhiteSpace(table.TableCatalog))
             {
-                name += $"[{table.CatalogName}].";
+                name += $"[{table.TableCatalog}].";
             }
 
-            if (!string.IsNullOrWhiteSpace(table.SchemaName))
+            if (!string.IsNullOrWhiteSpace(table.TableSchema))
             {
-                name += $"[{table.SchemaName}].";
+                name += $"[{table.TableSchema}].";
             }
 
             name += $"[{table.Name}]";

@@ -17,15 +17,19 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// <typeparam name="TDatabase">Concrete type of the database</typeparam>
     /// <typeparam name="TTable">Concrete type of the database table</typeparam>
     /// <typeparam name="TColumn">Concrete type of the database column</typeparam>
-    public abstract class ADatabaseProvider<TDatabaseProviderOptions, TDatabaseContext, TDatabase, TTable, TColumn> : IDatabaseProvider
+    /// <typeparam name="TPrimaryKey">Concrete type of the database primary key</typeparam>
+    /// <typeparam name="TForeignKey">Concrete type of the database foreign key</typeparam>
+    public abstract class ADatabaseProvider<TDatabaseProviderOptions, TDatabaseContext, TDatabase, TTable, TColumn, TPrimaryKey, TForeignKey> : IDatabaseProvider
         where TDatabaseProviderOptions : ADatabaseProviderOptions
         where TDatabaseContext : ADatabaseContext<TDatabaseProviderOptions>
         where TDatabase : ABaseDb, new()
         where TTable : ABaseDbTable, new()
         where TColumn : ABaseDbColumn, new()
+        where TPrimaryKey : ABaseDbConstraint, new()
+        where TForeignKey : ABaseDbConstraint, new()
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ADatabaseProvider{TDatabaseProviderOptions, TDatabaseContext, TDatabase, TTable, TColumn}"/> class.
+        /// Initializes a new instance of the <see cref="ADatabaseProvider{TDatabaseProviderOptions, TDatabaseContext, TDatabase, TTable, TColumn, TPrimaryKey, TForeignKey}"/> class.
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory used when using DBContext</param>
         /// <param name="logger">The logger created in the concrete class</param>
@@ -69,10 +73,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             var tables = this.GetTables(db, context);
             var columns = this.GetColumns(db, context);
+            var primaryKeys = this.GetPrimaryKeys(db, context);
+            var foreignKeys = this.GetForeignKeys(db, context);
 
             tables.ForEach(x => x.Columns.AddRange(
-                columns.Where(y => string.Equals(x.CatalogName, y.CatalogName, System.StringComparison.Ordinal)
-                                       && string.Equals(x.SchemaName, y.SchemaName, System.StringComparison.Ordinal)
+                columns.Where(y => string.Equals(x.TableCatalog, y.TableCatalog, System.StringComparison.Ordinal)
+                                       && string.Equals(x.TableSchema, y.TableSchema, System.StringComparison.Ordinal)
                                        && string.Equals(x.Name, y.TableName, System.StringComparison.Ordinal))));
 
             db.Tables.AddRange(tables);
@@ -95,5 +101,21 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="context">The database context</param>
         /// <returns>The list of columns</returns>
         protected abstract List<TColumn> GetColumns(TDatabase database, TDatabaseContext context);
+
+        /// <summary>
+        /// Get the table primary keys
+        /// </summary>
+        /// <param name="database">The database information</param>
+        /// <param name="context">The database context</param>
+        /// <returns>The list of primary keys</returns>
+        protected abstract List<TPrimaryKey> GetPrimaryKeys(TDatabase database, TDatabaseContext context);
+
+        /// <summary>
+        /// Get the table foreign keys
+        /// </summary>
+        /// <param name="database">The database information</param>
+        /// <param name="context">The database context</param>
+        /// <returns>The list of foreign keys</returns>
+        protected abstract List<TForeignKey> GetForeignKeys(TDatabase database, TDatabaseContext context);
     }
 }

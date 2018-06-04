@@ -10,7 +10,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// <summary>
     /// Retrieves various information from a MySQL Server
     /// </summary>
-    internal class MySqlDatabaseProvider : ADatabaseProvider<MySqlDatabaseProviderOptions, MySqlDatabaseContext, MySqlDb, MySqlTable, MySqlColumn>
+    internal class MySqlDatabaseProvider
+        : ADatabaseProvider<MySqlDatabaseProviderOptions, MySqlDatabaseContext, MySqlDb, MySqlTable, MySqlColumn, MySqlPrimaryKey, MySqlForeignKey>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlDatabaseProvider"/> class.
@@ -45,8 +46,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             StringBuilder query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as Name,");
-            query.AppendLine("       TABLE_CATALOG as CatalogName,");
-            query.AppendLine("       TABLE_SCHEMA as SchemaName,");
+            query.AppendLine("       TABLE_CATALOG as TableCatalog,");
+            query.AppendLine("       TABLE_SCHEMA as TableSchema,");
             query.AppendLine("       ENGINE as Engine,");
             query.AppendLine("       VERSION as Version,");
             query.AppendLine("       ROW_FORMAT as RowFormat,");
@@ -66,8 +67,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected override List<MySqlColumn> GetColumns(MySqlDb database, MySqlDatabaseContext context)
         {
             StringBuilder query = new StringBuilder();
-            query.AppendLine("SELECT a.TABLE_CATALOG as CatalogName,");
-            query.AppendLine("       a.TABLE_SCHEMA as SchemaName,");
+            query.AppendLine("SELECT a.TABLE_CATALOG as TableCatalog,");
+            query.AppendLine("       a.TABLE_SCHEMA as TableSchema,");
             query.AppendLine("       a.TABLE_NAME as TableName,");
             query.AppendLine("       a.COLUMN_NAME as Name,");
             query.AppendLine("       a.ORDINAL_POSITION as OrdinalPosition,");
@@ -91,6 +92,18 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
             query.AppendLine($"WHERE TABLE_SCHEMA = '{database.Name}'");
             return context.Query<MySqlColumn>(query.ToString());
+        }
+
+        /// <inheritdoc/>
+        protected override List<MySqlPrimaryKey> GetPrimaryKeys(MySqlDb database, MySqlDatabaseContext context)
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override List<MySqlForeignKey> GetForeignKeys(MySqlDb database, MySqlDatabaseContext context)
+        {
+            return null;
         }
     }
 }

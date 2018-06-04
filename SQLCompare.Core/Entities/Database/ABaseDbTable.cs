@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace SQLCompare.Core.Entities.Database
 {
     /// <summary>
-    /// Provides generic options for database table classes
+    /// Provides generic information for database table classes
     /// </summary>
     public abstract class ABaseDbTable
     {
@@ -14,14 +14,14 @@ namespace SQLCompare.Core.Entities.Database
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the database schema name
+        /// Gets or sets the database table schema
         /// </summary>
-        public string SchemaName { get; set; }
+        public string TableSchema { get; set; }
 
         /// <summary>
-        /// Gets or sets the database catalog name
+        /// Gets or sets the database table catalog
         /// </summary>
-        public string CatalogName { get; set; }
+        public string TableCatalog { get; set; }
 
         /// <summary>
         /// Gets or sets database table last modification date

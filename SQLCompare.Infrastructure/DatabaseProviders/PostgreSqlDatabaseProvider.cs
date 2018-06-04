@@ -10,7 +10,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// <summary>
     /// Retrieves various information from a PostgreSQL Server
     /// </summary>
-    internal class PostgreSqlDatabaseProvider : ADatabaseProvider<PostgreSqlDatabaseProviderOptions, PostgreSqlDatabaseContext, PostgreSqlDb, PostgreSqlTable, PostgreSqlColumn>
+    internal class PostgreSqlDatabaseProvider
+        : ADatabaseProvider<PostgreSqlDatabaseProviderOptions, PostgreSqlDatabaseContext, PostgreSqlDb, PostgreSqlTable, PostgreSqlColumn, PostgreSqlPrimaryKey, PostgreSqlForeignKey>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDatabaseProvider"/> class.
@@ -45,8 +46,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             StringBuilder query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as \"Name\",");
-            query.AppendLine("       TABLE_CATALOG as \"CatalogName\",");
-            query.AppendLine("       TABLE_SCHEMA as \"SchemaName\",");
+            query.AppendLine("       TABLE_CATALOG as \"TableCatalog\",");
+            query.AppendLine("       TABLE_SCHEMA as \"TableSchema\",");
             query.AppendLine("       self_referencing_column_name as \"SelfReferencingColumnName\",");
             query.AppendLine("       reference_generation as \"ReferenceGeneration\",");
             query.AppendLine("       user_defined_type_catalog as \"UserDefinedTypeCatalog\",");
@@ -72,8 +73,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             StringBuilder query = new StringBuilder();
 
-            query.AppendLine("SELECT table_catalog as \"CatalogName\",");
-            query.AppendLine("       table_schema as \"SchemaName\",");
+            query.AppendLine("SELECT table_catalog as \"TableCatalog\",");
+            query.AppendLine("       table_schema as \"TableSchema\",");
             query.AppendLine("       table_name as \"TableName\",");
             query.AppendLine("       column_name as \"Name\",");
             query.AppendLine("       ordinal_position as \"OrdinalPosition\",");
@@ -135,6 +136,18 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine($"WHERE TABLE_CATALOG = '{database.Name}'");
 
             return context.Query<PostgreSqlColumn>(query.ToString());
+        }
+
+        /// <inheritdoc/>
+        protected override List<PostgreSqlPrimaryKey> GetPrimaryKeys(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override List<PostgreSqlForeignKey> GetForeignKeys(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        {
+            return null;
         }
     }
 }

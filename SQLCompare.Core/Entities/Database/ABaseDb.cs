@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace SQLCompare.Core.Entities.Database
 {
     /// <summary>
-    /// Provides generic options of database classes
+    /// Provides generic information of database classes
     /// </summary>
     public abstract class ABaseDb
     {

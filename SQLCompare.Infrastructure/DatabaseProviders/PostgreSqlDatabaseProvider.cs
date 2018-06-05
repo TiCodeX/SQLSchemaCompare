@@ -141,13 +141,54 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override List<PostgreSqlPrimaryKey> GetPrimaryKeys(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
-            return null;
+            StringBuilder query = new StringBuilder();
+
+            query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as \"ConstraintCatalog\",");
+            query.AppendLine("       kcu.CONSTRAINT_SCHEMA as \"ConstraintSchema\",");
+            query.AppendLine("       kcu.CONSTRAINT_NAME as \"Name\",");
+            query.AppendLine("       kcu.TABLE_CATALOG as \"TableCatalog\",");
+            query.AppendLine("       kcu.TABLE_SCHEMA as \"TableSchema\",");
+            query.AppendLine("       kcu.TABLE_NAME as \"TableName\",");
+            query.AppendLine("       kcu.COLUMN_NAME as \"ColumnName\",");
+            query.AppendLine("       kcu.ORDINAL_POSITION as \"OrdinalPosition\",");
+            query.AppendLine("       kcu.POSITION_IN_UNIQUE_CONSTRAINT as \"PositionInUniqueConstraint\"");
+            query.AppendLine("FROM information_schema.key_column_usage kcu");
+            query.AppendLine("INNER JOIN information_schema.table_constraints tc ");
+            query.AppendLine("   ON tc.table_name = kcu.table_name AND tc.table_schema = kcu.table_schema AND tc.table_catalog = kcu.table_catalog AND tc.constraint_name = kcu.constraint_name");
+            query.AppendLine($"WHERE kcu.TABLE_CATALOG = '{database.Name}' AND tc.constraint_type = 'PRIMARY KEY'");
+            return context.Query<PostgreSqlPrimaryKey>(query.ToString());
         }
 
         /// <inheritdoc/>
         protected override List<PostgreSqlForeignKey> GetForeignKeys(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
-            return null;
+            StringBuilder query = new StringBuilder();
+
+            query.AppendLine("SELECT kcu.constraint_catalog AS \"ConstraintCatalog\",");
+            query.AppendLine("       kcu.constraint_schema AS \"ConstraintSchema\",");
+            query.AppendLine("       kcu.constraint_name AS \"Name\",");
+            query.AppendLine("       kcu.table_catalog AS \"TableCatalog\",");
+            query.AppendLine("       kcu.table_schema AS \"TableSchema\",");
+            query.AppendLine("       kcu.table_name AS \"TableName\",");
+            query.AppendLine("       kcu.column_name AS \"ColumnName\",");
+            query.AppendLine("       kcu.ordinal_position AS \"OrdinalPosition\",");
+            query.AppendLine("       kcu.position_in_unique_constraint AS \"PositionInUniqueConstraint\",");
+            query.AppendLine("       rc.match_option AS \"MatchOption\",");
+            query.AppendLine("       rc.update_rule AS \"UpdateRule\",");
+            query.AppendLine("       rc.delete_rule AS \"DeleteRule\",");
+            query.AppendLine("       ccu.table_catalog AS \"ReferencedTableCatalog\",");
+            query.AppendLine("       ccu.table_schema AS \"ReferencedTableSchema\",");
+            query.AppendLine("       ccu.table_name AS \"ReferencedTableName\",");
+            query.AppendLine("       ccu.column_name AS \"ReferencedColumnName\"");
+            query.AppendLine("FROM information_schema.key_column_usage kcu");
+            query.AppendLine("INNER JOIN information_schema.table_constraints tu");
+            query.AppendLine("    ON kcu.constraint_name = tu.constraint_name AND kcu.constraint_schema = tu.constraint_schema AND kcu.constraint_catalog = tu.constraint_catalog");
+            query.AppendLine("INNER JOIN information_schema.referential_constraints rc");
+            query.AppendLine("    ON kcu.constraint_name = rc.constraint_name AND kcu.constraint_schema = rc.constraint_schema AND kcu.constraint_catalog = rc.constraint_catalog");
+            query.AppendLine("INNER JOIN information_schema.constraint_column_usage ccu");
+            query.AppendLine("    ON kcu.constraint_name = ccu.constraint_name AND kcu.constraint_schema = ccu.constraint_schema AND kcu.constraint_catalog = ccu.constraint_catalog");
+            query.AppendLine($"WHERE kcu.constraint_catalog = '{database.Name}' AND tu.constraint_type = 'FOREIGN KEY'");
+            return context.Query<PostgreSqlForeignKey>(query.ToString());
         }
     }
 }

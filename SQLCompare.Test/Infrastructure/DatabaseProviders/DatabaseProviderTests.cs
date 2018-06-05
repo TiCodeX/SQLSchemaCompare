@@ -62,13 +62,17 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         {
             DatabaseProviderFactory dpf = new DatabaseProviderFactory(this.LoggerFactory);
 
-            MicrosoftSqlDatabaseProvider mssqldbp = (MicrosoftSqlDatabaseProvider)dpf.Create(new MicrosoftSqlDatabaseProviderOptions { Hostname = "localhost\\SQLEXPRESS", Database = "BrokerProGlobal", UseWindowsAuthentication = true });
+            MicrosoftSqlDatabaseProvider mssqldbp = (MicrosoftSqlDatabaseProvider)dpf.Create(new MicrosoftSqlDatabaseProviderOptions { Hostname = "localhost\\SQLEXPRESS", Database = "brokerpro", UseWindowsAuthentication = true });
             var db = mssqldbp.GetDatabase();
-            Assert.Equal("BrokerProGlobal", db.Name);
-            Assert.True(db.Tables.Count == 4);
-            var table = db.Tables.Find(x => x.Name.Equals("CloudBackupHistory", StringComparison.Ordinal));
-            Assert.True(table.Columns.Count == 17);
-            Assert.Contains(table.Columns, x => x.Name.Equals("ProcessStatus", StringComparison.Ordinal));
+            Assert.Equal("brokerpro", db.Name);
+            Assert.True(db.Tables.Count == 216);
+            var table = db.Tables.Find(x => x.Name.Equals("DeletedDocumentReference", StringComparison.Ordinal));
+            Assert.True(table.Columns.Count == 4);
+            Assert.Contains(table.Columns, x => x.Name.Equals("OriginalTable", StringComparison.Ordinal));
+            Assert.True(table.PrimaryKeys.Count == 3);
+            Assert.Contains(table.PrimaryKeys, x => x.Name.Equals("PK_DeletedDocumentReference", StringComparison.Ordinal));
+            Assert.True(table.ForeignKeys.Count == 2);
+            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("FK_DeletedDocumentReference_DeletedDocument", StringComparison.Ordinal));
 
             MySqlDatabaseProvider mysqldbp = (MySqlDatabaseProvider)dpf.Create(new MySqlDatabaseProviderOptions { Hostname = "localhost", Database = "sakila", Username = "admin", Password = "test1234", UseSSL = true });
 

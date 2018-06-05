@@ -3,7 +3,7 @@
     /// <summary>
     /// Specific PostgreSql primary key definition
     /// </summary>
-    public class PostgreSqlPrimaryKey : ABaseDbConstraint
+    public class PostgreSqlPrimaryKey : PostgreSqlIndex
     {
     }
 }

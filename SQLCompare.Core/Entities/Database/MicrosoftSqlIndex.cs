@@ -1,7 +1,7 @@
 ﻿namespace SQLCompare.Core.Entities.Database
 {
     /// <summary>
-    /// Specific MicrosoftSql primary key definition
+    /// Specific MicrosoftSql index definition
     /// </summary>
     public class MicrosoftSqlIndex : ABaseDbConstraint
     {

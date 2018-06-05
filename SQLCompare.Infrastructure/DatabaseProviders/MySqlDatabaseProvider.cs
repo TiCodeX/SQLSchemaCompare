@@ -97,13 +97,52 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override List<MySqlPrimaryKey> GetPrimaryKeys(MySqlDb database, MySqlDatabaseContext context)
         {
-            return null;
+            StringBuilder query = new StringBuilder();
+
+            query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as ConstraintCatalog,");
+            query.AppendLine("       kcu.CONSTRAINT_SCHEMA as ConstraintSchema,");
+            query.AppendLine("       kcu.CONSTRAINT_NAME as Name,");
+            query.AppendLine("       kcu.TABLE_CATALOG as TableCatalog,");
+            query.AppendLine("       kcu.TABLE_SCHEMA as TableSchema,");
+            query.AppendLine("       kcu.TABLE_NAME as TableName,");
+            query.AppendLine("       kcu.COLUMN_NAME as ColumnName,");
+            query.AppendLine("       kcu.ORDINAL_POSITION as OrdinalPosition,");
+            query.AppendLine("       kcu.POSITION_IN_UNIQUE_CONSTRAINT as PositionInUniqueConstraint,");
+            query.AppendLine("       kcu.REFERENCED_TABLE_SCHEMA as ReferencedTableSchema,");
+            query.AppendLine("       kcu.REFERENCED_TABLE_NAME as ReferencedTableName,");
+            query.AppendLine("       kcu.REFERENCED_COLUMN_NAME as ReferencedColumnName");
+            query.AppendLine("FROM information_schema.key_column_usage kcu");
+            query.AppendLine("INNER JOIN information_schema.table_constraints tc ");
+            query.AppendLine("   ON tc.table_name = kcu.table_name AND tc.table_schema = kcu.table_schema AND tc.constraint_name = kcu.constraint_name");
+            query.AppendLine($"WHERE kcu.TABLE_SCHEMA = '{database.Name}' AND tc.constraint_type = 'PRIMARY KEY'");
+            return context.Query<MySqlPrimaryKey>(query.ToString());
         }
 
         /// <inheritdoc/>
         protected override List<MySqlForeignKey> GetForeignKeys(MySqlDb database, MySqlDatabaseContext context)
         {
-            return null;
+            StringBuilder query = new StringBuilder();
+
+            query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as ConstraintCatalog,");
+            query.AppendLine("       kcu.CONSTRAINT_SCHEMA as ConstraintSchema,");
+            query.AppendLine("       kcu.CONSTRAINT_NAME as Name,");
+            query.AppendLine("       kcu.TABLE_CATALOG as TableCatalog,");
+            query.AppendLine("       kcu.TABLE_SCHEMA as TableSchema,");
+            query.AppendLine("       kcu.TABLE_NAME as TableName,");
+            query.AppendLine("       kcu.COLUMN_NAME as ColumnName,");
+            query.AppendLine("       kcu.ORDINAL_POSITION as OrdinalPosition,");
+            query.AppendLine("       kcu.POSITION_IN_UNIQUE_CONSTRAINT as PositionInUniqueConstraint,");
+            query.AppendLine("       kcu.REFERENCED_TABLE_SCHEMA as ReferencedTableSchema,");
+            query.AppendLine("       kcu.REFERENCED_TABLE_NAME as ReferencedTableName,");
+            query.AppendLine("       kcu.REFERENCED_COLUMN_NAME as ReferencedColumnName,");
+            query.AppendLine("       rc.MATCH_OPTION as MatchOption,");
+            query.AppendLine("       rc.UPDATE_RULE as UpdateRule,");
+            query.AppendLine("       rc.DELETE_RULE as DeleteRule");
+            query.AppendLine("FROM information_schema.key_column_usage kcu");
+            query.AppendLine("INNER JOIN information_schema.table_constraints tc ON tc.table_name = kcu.table_name and tc.table_schema = kcu.table_schema and tc.constraint_name = kcu.constraint_name");
+            query.AppendLine("INNER JOIN information_schema.REFERENTIAL_CONSTRAINTS rc ON rc.constraint_name = kcu.constraint_name ");
+            query.AppendLine($"WHERE kcu.TABLE_SCHEMA = '{database.Name}' AND tc.constraint_type = 'FOREIGN KEY'");
+            return context.Query<MySqlForeignKey>(query.ToString());
         }
     }
 }

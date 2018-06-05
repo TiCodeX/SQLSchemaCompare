@@ -76,10 +76,21 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var primaryKeys = this.GetPrimaryKeys(db, context);
             var foreignKeys = this.GetForeignKeys(db, context);
 
-            tables.ForEach(x => x.Columns.AddRange(
-                columns.Where(y => string.Equals(x.TableCatalog, y.TableCatalog, System.StringComparison.Ordinal)
-                                       && string.Equals(x.TableSchema, y.TableSchema, System.StringComparison.Ordinal)
-                                       && string.Equals(x.Name, y.TableName, System.StringComparison.Ordinal))));
+            tables.ForEach(x =>
+                    {
+                        x.Columns.AddRange(
+                            columns.Where(y => string.Equals(x.TableCatalog, y.TableCatalog, System.StringComparison.Ordinal)
+                                                   && string.Equals(x.TableSchema, y.TableSchema, System.StringComparison.Ordinal)
+                                                   && string.Equals(x.Name, y.TableName, System.StringComparison.Ordinal)));
+                        x.ForeignKeys.AddRange(
+                            foreignKeys.Where(y => string.Equals(x.TableCatalog, y.TableCatalog, System.StringComparison.Ordinal)
+                                                   && string.Equals(x.TableSchema, y.TableSchema, System.StringComparison.Ordinal)
+                                                   && string.Equals(x.Name, y.TableName, System.StringComparison.Ordinal)));
+                        x.PrimaryKeys.AddRange(
+                            primaryKeys.Where(y => string.Equals(x.TableCatalog, y.TableCatalog, System.StringComparison.Ordinal)
+                                                   && string.Equals(x.TableSchema, y.TableSchema, System.StringComparison.Ordinal)
+                                                   && string.Equals(x.Name, y.TableName, System.StringComparison.Ordinal)));
+                    });
 
             db.Tables.AddRange(tables);
 

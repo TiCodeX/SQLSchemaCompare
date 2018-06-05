@@ -21,6 +21,22 @@ class Utility {
     }
 
     /**
+     * Indicates whether the specified string is null or an Empty string.
+     * @param s - The string to test.
+     */
+    public static IsNullOrEmpty(s: string): boolean {
+        return s === null || typeof s === "undefined" || s.length < 1;
+    }
+
+    /**
+     * Indicates whether a specified string is null, empty, or consists only of white-space characters.
+     * @param s - The string to test.
+     */
+    public static IsNullOrWhitespace(s: string): boolean {
+        return this.IsNullOrEmpty(s) || s.trim().length < 1;
+    }
+
+    /**
      * Perform an ajax call and open the modal dialog filled with the response
      * @param url - The URL of the ajax call
      * @param method - The method (GET/POST)

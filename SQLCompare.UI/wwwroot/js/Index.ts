@@ -197,8 +197,7 @@ $(() => {
             data = Utility.SerializeJSON($(`#${dataDivId}`));
         }
 
-        const saveProjectFilenameKey: string = "SaveProjectFilename";
-        data[saveProjectFilenameKey] = electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
+        const filename: string = electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
             {
                 title: "Save Project",
                 buttonLabel: "Save Project",
@@ -209,6 +208,13 @@ $(() => {
                     },
                 ],
             });
+
+        if (Utility.IsNullOrWhitespace(filename)) {
+            return;
+        }
+
+        const saveProjectFilenameKey: string = "SaveProjectFilename";
+        data[saveProjectFilenameKey] = filename;
 
         Utility.AjaxCall(url, method, data, (): void => {
             alert("done");
@@ -233,6 +239,11 @@ $(() => {
                 ],
                 properties: ["openFile"],
             });
+
+        if (!Boolean(filename) || filename.length < 1 || Utility.IsNullOrWhitespace(filename[0])) {
+            return;
+        }
+
         Utility.OpenModalDialog(url, method, <object>JSON.parse(JSON.stringify(filename[0])));
     });
 

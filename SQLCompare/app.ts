@@ -23,6 +23,15 @@ function createWindow() {
 
     const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
 
+    const splashWindow = new electron.BrowserWindow({
+        width: 300,
+        height: 250,
+        transparent: true,
+        frame: false,
+        alwaysOnTop: true
+    });
+    splashWindow.loadURL(`file://${__dirname}/splash.html`);
+
     // Create the browser window.
     mainWindow = new electron.BrowserWindow({
         width: width - 200,
@@ -53,6 +62,7 @@ function createWindow() {
             loadFailed = false;
             mainWindow.loadURL("https://localhost:5000");
         } else {
+            splashWindow.destroy();
             mainWindow.show();
             // Open the DevTools.
             //mainWindow.webContents.openDevTools()

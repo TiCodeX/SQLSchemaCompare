@@ -3,6 +3,8 @@ declare const amdRequire: Require;
 const electron: Electron.AllElectron = (typeof require !== "undefined" ? <Electron.AllElectron>require("electron") : undefined);
 /* tslint:enable:no-require-imports no-implicit-dependencies */
 
+let mainSplitter: Split.Instance;
+
 $(() => {
     // Configure the monaco editor loader
     amdRequire.config({
@@ -157,9 +159,6 @@ $(() => {
             $("#myModal").modal("hide");
             Utility.AjaxCall("/Main", "GET", undefined, (result: string): void => {
                 $("#mainDiv").html(result);
-                Split(["#mainTop", "#mainBottom"], {
-                    direction: "vertical",
-                });
             });
         });
     });
@@ -173,9 +172,15 @@ $(() => {
         if (target.attr("load-sql-data") !== undefined) {
             data = <object>JSON.parse(<string>JSON.parse(`"${target.attr("load-sql-data").toString()}"`));
         }
-        $("#mainBottom").empty();
+        $("#mainBottom").show();
+        if ($(".gutter").length === 0) {
+            mainSplitter = Split(["#mainTop", "#mainBottom"], {
+                direction: "vertical",
+            });
+        }
+        $("#sqlDiff").empty();
         Utility.AjaxCall(url, method, data, (result: { sourceSql: string; targetSql: string }): void => {
-            const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(document.getElementById("mainBottom"),
+            const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(document.getElementById("sqlDiff"),
                 {
                     automaticLayout: true,
                 });
@@ -245,6 +250,12 @@ $(() => {
         }
 
         Utility.OpenModalDialog(url, method, <object>JSON.parse(JSON.stringify(filename[0])));
+    });
+
+    $(document).on("click", "[close-split]", (e: JQuery.Event) => {
+        e.preventDefault();
+        mainSplitter.destroy();
+        $("#mainBottom").hide();
     });
 
 });

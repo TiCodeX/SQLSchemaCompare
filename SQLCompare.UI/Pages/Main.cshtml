@@ -3,13 +3,13 @@
 @using Core.Interfaces
 @model Main
 
-<a href="#" load-modal="/Project/CompareProject" load-modal-method="GET">Open current Project</a>
 <div id="mainTop" style="overflow: auto;">
+    <a href="#" load-modal="/Project/CompareProject" load-modal-method="GET">Open current Project</a>
     <div class="card">
         <div class="card-header" data-toggle="collapse" data-target="#collapseBoth">
             <h5 class="mb-0">in both, but different</h5>
         </div>
-        <div id="collapseBoth" class="pre-scrollable collapse show">
+        <div id="collapseBoth" class="collapse show">
             <table class="table">
                 <thead>
                     <tr>
@@ -38,7 +38,7 @@
         <div class="card-header" data-toggle="collapse" data-target="#collapseLeft">
             <h5 class="mb-0">only in Source</h5>
         </div>
-        <div id="collapseLeft" class="pre-scrollable collapse hide">
+        <div id="collapseLeft" class="collapse hide">
             <table class="table">
                 <thead>
                     <tr>
@@ -67,7 +67,7 @@
         <div class="card-header" data-toggle="collapse" data-target="#collapseRight">
             <h5 class="mb-0">only in Target</h5>
         </div>
-        <div id="collapseRight" class="pre-scrollable collapse hide">
+        <div id="collapseRight" class="collapse hide">
             <table class="table">
                 <thead>
                     <tr>
@@ -96,10 +96,36 @@
         <div class="card-header" data-toggle="collapse" data-target="#collapseSame">
             <h5 class="mb-0">identical</h5>
         </div>
-        <div id="collapseSame" class="pre-scrollable collapse hide"></div>
+        <div id="collapseSame" class="collapse hide"></div>
     </div>
 </div>
 
-<div id="mainBottom" style="overflow: auto;">
-    sql diff
+<div id="mainBottom" style="overflow: auto; display: none;">
+    <div class="navbar p-0">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#sqlDiff">SQL</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#menu1">Menu 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#menu2">Menu 3</a>
+            </li>
+        </ul>
+        <button class="btn btn-outline-secondary btn-sm" close-split>X</button>
+    </div>
+
+    <div class="tab-content" style="height: 100%;">
+        <div id="sqlDiff" class="tab-pane fade show active" style="height: 100%;">
+        </div>
+        <div id="menu1" class="tab-pane fade" style="height: 100%;">
+            <h3>Menu 1</h3>
+            <p>Some content in menu 1.</p>
+        </div>
+        <div id="menu2" class="tab-pane fade" style="height: 100%;">
+            <h3>Menu 2</h3>
+            <p>Some content in menu 2.</p>
+        </div>
+    </div>
 </div>

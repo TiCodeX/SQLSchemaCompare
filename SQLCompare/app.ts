@@ -43,10 +43,20 @@ function createWindow() {
 
     mainWindow.loadURL("https://localhost:5000");
 
-    mainWindow.on("ready-to-show", () => {
-        mainWindow.show();
-        // Open the DevTools.
-        //mainWindow.webContents.openDevTools()
+    let loadFailed = false;
+    mainWindow.webContents.on("did-fail-load", () => {
+        loadFailed = true;
+    });
+    mainWindow.webContents.on("did-finish-load", () => {
+        if (loadFailed) {
+            // Reset the flag and trigger a new load
+            loadFailed = false;
+            mainWindow.loadURL("https://localhost:5000");
+        } else {
+            mainWindow.show();
+            // Open the DevTools.
+            //mainWindow.webContents.openDevTools()
+        }
     });
 
     // Emitted when the window is closed.

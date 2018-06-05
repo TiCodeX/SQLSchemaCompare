@@ -3,6 +3,7 @@ using SQLCompare.Infrastructure.DatabaseProviders;
 using System;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 
 namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 {
@@ -24,6 +25,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         /// Test the retrieval of database list with all the databases
         /// </summary>
         [Fact]
+        [IntegrationTest]
         public void GetDatabaseList()
         {
             DatabaseProviderFactory dpf = new DatabaseProviderFactory(this.LoggerFactory);
@@ -55,6 +57,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         /// Test the retrieval of specific database with all the databases
         /// </summary>
         [Fact]
+        [IntegrationTest]
         public void GetDatabase()
         {
             DatabaseProviderFactory dpf = new DatabaseProviderFactory(this.LoggerFactory);

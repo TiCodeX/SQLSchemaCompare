@@ -3,6 +3,7 @@ using SQLCompare.Infrastructure.Repository;
 using System.IO;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 
 namespace SQLCompare.Test.Infrastructure.Repository
 {
@@ -24,6 +25,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
         /// Test the read functionality
         /// </summary>
         [Fact]
+        [UnitTest]
         public static void Read()
         {
             var projectRepository = new ProjectRepository();

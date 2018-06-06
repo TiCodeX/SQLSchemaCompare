@@ -1,0 +1,17 @@
+﻿@page
+@model CompareStatus
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Task.Name</h5>
+        <h6 class="card-subtitle mb-2 text-muted">@Model.Task.Message</h6>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: @Model.Task.Percentage%;">@Model.Task.Percentage%</div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Task.Status == TaskStatus.RanToCompletion)
+{
+    <span id="stopPolling"></span>
+}

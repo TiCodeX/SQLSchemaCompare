@@ -57,6 +57,7 @@ namespace SQLCompare.UI.WebServer
             services.AddSingleton<IAppGlobals, AppGlobals>();
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
             services.AddSingleton<IProjectService, ProjectService>();
+            services.AddSingleton<ITaskService, TaskService>();
 
             // Repository
             services.AddTransient<IAppSettingsRepository, AppSettingsRepository>();

@@ -6,6 +6,7 @@ using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.UI.Enums;
 using SQLCompare.UI.Models.Project;
 using System;
+using System.Threading;
 
 namespace SQLCompare.UI.Pages.Project
 {
@@ -17,6 +18,7 @@ namespace SQLCompare.UI.Pages.Project
         private readonly IAppSettingsService appSettingsService;
         private readonly IProjectService projectService;
         private readonly IDatabaseService databaseService;
+        private readonly ITaskService taskService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CompareProject"/> class.
@@ -24,11 +26,17 @@ namespace SQLCompare.UI.Pages.Project
         /// <param name="appSettingsService">The injected app settings service</param>
         /// <param name="projectService">The injected project service</param>
         /// <param name="databaseService">The injected database service</param>
-        public CompareProject(IAppSettingsService appSettingsService, IProjectService projectService, IDatabaseService databaseService)
+        /// <param name="taskService">The injected task service</param>
+        public CompareProject(
+            IAppSettingsService appSettingsService,
+            IProjectService projectService,
+            IDatabaseService databaseService,
+            ITaskService taskService)
         {
             this.appSettingsService = appSettingsService;
             this.projectService = projectService;
             this.databaseService = databaseService;
+            this.taskService = taskService;
         }
 
         /// <summary>
@@ -121,14 +129,40 @@ namespace SQLCompare.UI.Pages.Project
                 options.TargetPassword,
                 options.TargetDatabase);
 
-            // Start showing modal dialog with progress bar
-            this.projectService.Project.RetrievedSourceDatabase = this.databaseService.GetDatabase(this.projectService.Project.SourceProviderOptions);
+            this.taskService.CreateNewTask("Perform Compare", taskInfo =>
+            {
+                taskInfo.Message = "Connecting to source server";
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+                taskInfo.Percentage = 10;
 
-            this.projectService.Project.RetrievedTargetDatabase = this.databaseService.GetDatabase(this.projectService.Project.TargetProviderOptions);
+                taskInfo.Message = "Reading source tables";
+                this.projectService.Project.RetrievedSourceDatabase = this.databaseService.GetDatabase(
+                    this.projectService.Project.SourceProviderOptions);
+                taskInfo.Percentage = 35;
 
-            // Perform database compare
-            // Close modal dialog
-            // Show main page with result
+                taskInfo.Message = "Connecting to target server";
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+                taskInfo.Percentage = 55;
+
+                taskInfo.Message = "Reading target tables";
+                this.projectService.Project.RetrievedTargetDatabase = this.databaseService.GetDatabase(
+                    this.projectService.Project.TargetProviderOptions);
+                taskInfo.Percentage = 70;
+
+                taskInfo.Message = "Mapping databases";
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+                taskInfo.Percentage = 85;
+
+                taskInfo.Message = "Comparing databases";
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+                taskInfo.Percentage = 92;
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+                taskInfo.Percentage = 96;
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+                taskInfo.Percentage = 100;
+                return true;
+            });
+
             return new JsonResult(null);
         }
 

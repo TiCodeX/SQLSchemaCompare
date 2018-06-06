@@ -156,10 +156,21 @@ $(() => {
         }
 
         Utility.AjaxCall(url, method, data, (): void => {
-            $("#myModal").modal("hide");
-            Utility.AjaxCall("/Main", "GET", undefined, (result: string): void => {
-                $("#mainDiv").html(result);
-            });
+            const pollingTime: number = 200;
+            const polling: VoidFunction = (): void => {
+                setTimeout(() => {
+                    if ($("#stopPolling").length > 0) {
+                        $("#myModal").modal("hide");
+                        Utility.AjaxCall("/Main", "GET", undefined, (result: string): void => {
+                            $("#mainDiv").html(result);
+                        });
+                    } else {
+                        Utility.OpenModalDialog("/Project/CompareStatus", "GET", undefined);
+                        polling();
+                    }
+                }, pollingTime);
+            };
+            polling();
         });
     });
 

@@ -1,4 +1,6 @@
-﻿using SQLCompare.Core.Entities.DatabaseProvider;
+﻿using SQLCompare.Core.Entities.Database.MySql;
+using SQLCompare.Core.Entities.Database.PostgreSql;
+using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Infrastructure.DatabaseProviders;
 using System;
 using Xunit;
@@ -82,6 +84,15 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             table = db.Tables.Find(x => x.Name.Equals("film", StringComparison.Ordinal));
             Assert.True(table.Columns.Count == 13);
             Assert.Contains(table.Columns, x => x.Name.Equals("language_id", StringComparison.Ordinal));
+            table = db.Tables.Find(x => x.Name.Equals("film_actor", StringComparison.Ordinal));
+            Assert.True(table.PrimaryKeys.Count == 2);
+            Assert.Contains(table.PrimaryKeys, x => ((MySqlPrimaryKey)x).ColumnName.Equals("actor_id", StringComparison.Ordinal));
+            Assert.Contains(table.PrimaryKeys, x => ((MySqlPrimaryKey)x).ColumnName.Equals("film_id", StringComparison.Ordinal));
+            table = db.Tables.Find(x => x.Name.Equals("payment", StringComparison.Ordinal));
+            Assert.True(table.ForeignKeys.Count == 3);
+            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("fk_payment_customer", StringComparison.Ordinal));
+            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("fk_payment_rental", StringComparison.Ordinal));
+            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("fk_payment_staff", StringComparison.Ordinal));
 
             PostgreSqlDatabaseProvider pgsqldbp = (PostgreSqlDatabaseProvider)dpf.Create(new PostgreSqlDatabaseProviderOptions { Hostname = "localhost", Database = "pagila", Username = "postgres", Password = "test1234" });
 
@@ -91,6 +102,15 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             table = db.Tables.Find(x => x.Name.Equals("film", StringComparison.Ordinal));
             Assert.True(table.Columns.Count == 14);
             Assert.Contains(table.Columns, x => x.Name.Equals("language_id", StringComparison.Ordinal));
+            table = db.Tables.Find(x => x.Name.Equals("film_category", StringComparison.Ordinal));
+            Assert.True(table.PrimaryKeys.Count == 2);
+            Assert.Contains(table.PrimaryKeys, x => ((PostgreSqlPrimaryKey)x).ColumnName.Equals("film_id", StringComparison.Ordinal) && x.Name.Equals("film_category_pkey", StringComparison.Ordinal));
+            Assert.Contains(table.PrimaryKeys, x => ((PostgreSqlPrimaryKey)x).ColumnName.Equals("category_id", StringComparison.Ordinal) && x.Name.Equals("film_category_pkey", StringComparison.Ordinal));
+            table = db.Tables.Find(x => x.Name.Equals("rental", StringComparison.Ordinal));
+            Assert.True(table.ForeignKeys.Count == 3);
+            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("rental_customer_id_fkey", StringComparison.Ordinal));
+            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("rental_inventory_id_fkey", StringComparison.Ordinal));
+            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("rental_staff_id_fkey", StringComparison.Ordinal));
         }
     }
 }

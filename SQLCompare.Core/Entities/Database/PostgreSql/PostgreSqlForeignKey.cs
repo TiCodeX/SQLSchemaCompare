@@ -1,24 +1,29 @@
-﻿namespace SQLCompare.Core.Entities.Database
+﻿namespace SQLCompare.Core.Entities.Database.PostgreSql
 {
     /// <summary>
-    /// Specific MySql index definition
+    /// Specific PostgreSql foreign key definition
     /// </summary>
-    public class MySqlIndex : ABaseDbConstraint
+    public class PostgreSqlForeignKey : PostgreSqlIndex
     {
         /// <summary>
-        /// Gets or sets the column name
+        /// Gets or sets the match option
         /// </summary>
-        public string ColumnName { get; set; }
+        public string MatchOption { get; set; }
 
         /// <summary>
-        /// Gets or sets ordinal position
+        /// Gets or sets the update rule
         /// </summary>
-        public uint OrdinalPosition { get; set; }
+        public string UpdateRule { get; set; }
 
         /// <summary>
-        /// Gets or sets the position in unique constraint
+        /// Gets or sets the delete rule
         /// </summary>
-        public uint? PositionInUniqueConstraint { get; set; }
+        public string DeleteRule { get; set; }
+
+        /// <summary>
+        /// Gets or sets the referenced table catalog
+        /// </summary>
+        public string ReferencedTableCatalog { get; set; }
 
         /// <summary>
         /// Gets or sets the referenced table schema

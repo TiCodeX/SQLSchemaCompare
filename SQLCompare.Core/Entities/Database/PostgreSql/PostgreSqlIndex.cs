@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Entities.Database
+﻿namespace SQLCompare.Core.Entities.Database.PostgreSql
 {
     /// <summary>
     /// Specific PostgreSql index definition

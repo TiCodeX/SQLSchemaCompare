@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SQLCompare.Core.Entities.Database
+namespace SQLCompare.Core.Entities.Database.MicrosoftSql
 {
     /// <summary>
     /// Specific MicrosoftSql table definition

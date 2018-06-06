@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
+using SQLCompare.Core.Entities.Database.MicrosoftSql;
 using SQLCompare.Core.Interfaces;
 using System.Text;
 

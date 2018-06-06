@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Entities.Database
+﻿namespace SQLCompare.Core.Entities.Database.MySql
 {
     /// <summary>
     /// Specific MySql primary key definition

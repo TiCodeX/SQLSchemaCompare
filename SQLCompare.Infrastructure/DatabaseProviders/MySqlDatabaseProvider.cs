@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
+using SQLCompare.Core.Entities.Database.MySql;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Infrastructure.EntityFramework;
 using System.Collections.Generic;

@@ -1,5 +1,6 @@
 ﻿using SQLCompare.Core.Entities;
-using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SQLCompare.Core.Interfaces.Services
 {
@@ -12,14 +13,12 @@ namespace SQLCompare.Core.Interfaces.Services
         /// Gets the information about the current Task
         /// </summary>
         /// <returns>The updated Task information</returns>
-        TaskInfo CurrentTaskInfo { get; }
+        ReadOnlyCollection<TaskInfo> CurrentTaskInfos { get; }
 
         /// <summary>
-        /// Create an asynchronous Task
+        /// Perform the execution of the Tasks
         /// </summary>
-        /// <param name="name">The name of the Task</param>
-        /// <param name="work">The function to be executed by the Task</param>
-        /// <returns>The initial Task information</returns>
-        TaskInfo CreateNewTask(string name, Func<TaskInfo, bool> work);
+        /// <param name="tasks">The list of Tasks to be executed</param>
+        void ExecuteTasks(List<TaskWork> tasks);
     }
 }

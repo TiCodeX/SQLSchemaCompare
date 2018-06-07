@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Enums;
 using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.UI.Enums;
 using SQLCompare.UI.Models.Project;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace SQLCompare.UI.Pages.Project
@@ -129,38 +131,70 @@ namespace SQLCompare.UI.Pages.Project
                 options.TargetPassword,
                 options.TargetDatabase);
 
-            this.taskService.CreateNewTask("Perform Compare", taskInfo =>
+            this.taskService.ExecuteTasks(new List<TaskWork>
             {
-                taskInfo.Message = "Connecting to source server";
-                Thread.Sleep(TimeSpan.FromSeconds(2));
-                taskInfo.Percentage = 10;
+                new TaskWork(
+                    new TaskInfo("Registering source database"),
+                    true,
+                    taskInfo =>
+                    {
+                        taskInfo.Message = "Connecting to source server";
+                        for (short i = 1; i < 3; i++)
+                        {
+                            Thread.Sleep(TimeSpan.FromSeconds(1));
+                            taskInfo.Percentage = (short)(i * 10);
+                        }
 
-                taskInfo.Message = "Reading source tables";
-                this.projectService.Project.RetrievedSourceDatabase = this.databaseService.GetDatabase(
-                    this.projectService.Project.SourceProviderOptions);
-                taskInfo.Percentage = 35;
+                        taskInfo.Message = "Reading source tables";
+                        this.projectService.Project.RetrievedSourceDatabase = this.databaseService.GetDatabase(
+                            this.projectService.Project.SourceProviderOptions);
+                        taskInfo.Percentage = 100;
 
-                taskInfo.Message = "Connecting to target server";
-                Thread.Sleep(TimeSpan.FromSeconds(2));
-                taskInfo.Percentage = 55;
+                        return true;
+                    }),
+                new TaskWork(
+                    new TaskInfo("Registering target database"),
+                    true,
+                    taskInfo =>
+                    {
+                        taskInfo.Message = "Connecting to target server";
+                        for (short i = 1; i < 3; i++)
+                        {
+                            Thread.Sleep(TimeSpan.FromMilliseconds(500));
+                            taskInfo.Percentage = (short)(i * 10);
+                        }
 
-                taskInfo.Message = "Reading target tables";
-                this.projectService.Project.RetrievedTargetDatabase = this.databaseService.GetDatabase(
-                    this.projectService.Project.TargetProviderOptions);
-                taskInfo.Percentage = 70;
+                        taskInfo.Message = "Reading target tables";
+                        this.projectService.Project.RetrievedTargetDatabase = this.databaseService.GetDatabase(
+                            this.projectService.Project.TargetProviderOptions);
+                        taskInfo.Percentage = 100;
 
-                taskInfo.Message = "Mapping databases";
-                Thread.Sleep(TimeSpan.FromSeconds(2));
-                taskInfo.Percentage = 85;
-
-                taskInfo.Message = "Comparing databases";
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-                taskInfo.Percentage = 92;
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-                taskInfo.Percentage = 96;
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-                taskInfo.Percentage = 100;
-                return true;
+                        return true;
+                    }),
+                new TaskWork(
+                    new TaskInfo("Mapping databases"),
+                    false,
+                    taskInfo =>
+                    {
+                        for (short i = 1; i <= 10; i++)
+                        {
+                            Thread.Sleep(TimeSpan.FromMilliseconds(100));
+                            taskInfo.Percentage = (short)(i * 10);
+                        }
+                        return true;
+                    }),
+                new TaskWork(
+                    new TaskInfo("Comparing databases"),
+                    false,
+                    taskInfo =>
+                    {
+                        for (short i = 1; i <= 10; i++)
+                        {
+                            Thread.Sleep(TimeSpan.FromMilliseconds(200));
+                            taskInfo.Percentage = (short)(i * 10);
+                        }
+                        return true;
+                    })
             });
 
             return new JsonResult(null);

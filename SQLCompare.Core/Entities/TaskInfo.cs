@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SQLCompare.Core.Entities
@@ -10,14 +9,23 @@ namespace SQLCompare.Core.Entities
     public class TaskInfo
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="TaskInfo"/> class.
+        /// </summary>
+        /// <param name="name">The name of the Task</param>
+        public TaskInfo(string name)
+        {
+            this.Name = name;
+        }
+
+        /// <summary>
         /// Gets the id of the Task
         /// </summary>
         public Guid Id { get; } = Guid.NewGuid();
 
         /// <summary>
-        /// Gets or sets the name of the Task
+        /// Gets the name of the Task
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; }
 
         /// <summary>
         /// Gets or sets the status of the Task
@@ -43,10 +51,5 @@ namespace SQLCompare.Core.Entities
         /// Gets or sets the time when the Task is finished
         /// </summary>
         public DateTime CompleteTime { get; set; }
-
-        /// <summary>
-        /// Gets the list of child Tasks
-        /// </summary>
-        public List<TaskInfo> Tasks { get; } = new List<TaskInfo>();
     }
 }

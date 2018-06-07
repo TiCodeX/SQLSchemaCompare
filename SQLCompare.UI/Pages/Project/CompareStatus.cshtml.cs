@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using SQLCompare.Core.Entities;
 using SQLCompare.Core.Interfaces.Services;
+using System.Collections.Generic;
 
 namespace SQLCompare.UI.Pages.Project
 {
@@ -21,16 +22,16 @@ namespace SQLCompare.UI.Pages.Project
         }
 
         /// <summary>
-        /// Gets or sets the current TaskInfo
+        /// Gets or sets the current list of TaskInfo
         /// </summary>
-        public TaskInfo Task { get; set; }
+        public IReadOnlyCollection<TaskInfo> TaskInfos { get; set; }
 
         /// <summary>
         /// Get the CompareStatus page for the current Task
         /// </summary>
         public void OnGet()
         {
-            this.Task = this.taskService.CurrentTaskInfo;
+            this.TaskInfos = this.taskService.CurrentTaskInfos;
         }
     }
 }

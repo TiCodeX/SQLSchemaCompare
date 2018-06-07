@@ -1,6 +1,9 @@
 ﻿using SQLCompare.Core.Entities;
 using SQLCompare.Core.Interfaces.Services;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,29 +15,44 @@ namespace SQLCompare.Services
     public class TaskService : ITaskService
     {
         /// <inheritdoc />
-        public TaskInfo CurrentTaskInfo { get; private set; }
+        public ReadOnlyCollection<TaskInfo> CurrentTaskInfos { get; private set; }
 
         /// <inheritdoc />
-        public TaskInfo CreateNewTask(string name, Func<TaskInfo, bool> work)
+        public void ExecuteTasks(List<TaskWork> tasks)
         {
-            this.CurrentTaskInfo = new TaskInfo
-            {
-                Name = name
-            };
+            this.CurrentTaskInfos = tasks.Select(x => x.Info).ToList().AsReadOnly();
 
-            var task = Task.Factory.StartNew(
+            Task.Factory.StartNew(
                 () =>
                 {
-                    this.CurrentTaskInfo.Status = TaskStatus.Running;
-                    work.Invoke(this.CurrentTaskInfo);
-                    this.CurrentTaskInfo.Status = TaskStatus.RanToCompletion;
-                    this.CurrentTaskInfo.CompleteTime = DateTime.Now;
+                    var parallelTasks = new List<Task>();
+                    foreach (var task in tasks)
+                    {
+                        if (!task.RunInParallel)
+                        {
+                            Task.WaitAll(parallelTasks.ToArray());
+                        }
+                        parallelTasks.Add(PerformTask(task));
+                    }
                 },
                 CancellationToken.None,
                 TaskCreationOptions.None,
                 TaskScheduler.Default);
+        }
 
-            return this.CurrentTaskInfo;
+        private static Task PerformTask(TaskWork task)
+        {
+            return Task.Factory.StartNew(
+                () =>
+                {
+                    task.Info.Status = TaskStatus.Running;
+                    task.Work.Invoke(task.Info);
+                    task.Info.Status = TaskStatus.RanToCompletion;
+                    task.Info.CompleteTime = DateTime.Now;
+                },
+                CancellationToken.None,
+                TaskCreationOptions.None,
+                TaskScheduler.Default);
         }
     }
 }

@@ -44,7 +44,8 @@ namespace SQLCompare.Services
                     Username = "postgres",
                     Password = "test1234",
                     Database = "world",
-                }
+                },
+                Options = new ProjectOptions()
             };
             return true;
         }

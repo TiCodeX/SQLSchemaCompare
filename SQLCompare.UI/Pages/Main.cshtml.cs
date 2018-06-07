@@ -47,9 +47,9 @@ namespace SQLCompare.UI.Pages
         /// </summary>
         public void OnGet()
         {
-            this.OnlyTarget.AddRange(this.projectService.Project.RetrievedTargetDatabase.Tables.Select(x => x.Name));
+            this.OnlyTarget.AddRange(this.projectService.Project.RetrievedTargetDatabase.Tables.Select(x => x.Name).OrderBy(x => x));
 
-            foreach (var sourceTable in this.projectService.Project.RetrievedSourceDatabase.Tables.ToList())
+            foreach (var sourceTable in this.projectService.Project.RetrievedSourceDatabase.Tables.OrderBy(x => x.Name).ToList())
             {
                 if (this.OnlyTarget.Contains(sourceTable.Name))
                 {
@@ -82,9 +82,9 @@ namespace SQLCompare.UI.Pages
             return new JsonResult(new
             {
                 SourceSql = sourceTable != null ? this.databaseScripterFactory.Create(
-                    this.projectService.Project.RetrievedSourceDatabase).ScriptCreateTable(sourceTable) : string.Empty,
+                    this.projectService.Project.RetrievedSourceDatabase, this.projectService.Project.Options).ScriptCreateTable(sourceTable) : string.Empty,
                 TargetSql = targetTable != null ? this.databaseScripterFactory.Create(
-                    this.projectService.Project.RetrievedTargetDatabase).ScriptCreateTable(targetTable) : string.Empty,
+                    this.projectService.Project.RetrievedTargetDatabase, this.projectService.Project.Options).ScriptCreateTable(targetTable) : string.Empty,
             });
         }
     }

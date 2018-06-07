@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MicrosoftSql;
+using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Interfaces;
 using System;
 
@@ -23,11 +24,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public IDatabaseScripter Create(ABaseDb database)
+        public IDatabaseScripter Create(ABaseDb database, ProjectOptions options)
         {
             if (database is MicrosoftSqlDb)
             {
-                return new MicrosoftSqlScripter(this.loggerFactory.CreateLogger("MicrosoftSqlScripter"), null);
+                return new MicrosoftSqlScripter(this.loggerFactory.CreateLogger("MicrosoftSqlScripter"), options);
             }
             else
             {

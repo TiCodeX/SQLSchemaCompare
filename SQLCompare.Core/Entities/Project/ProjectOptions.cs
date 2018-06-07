@@ -6,8 +6,8 @@
     public class ProjectOptions
     {
         /// <summary>
-        /// Gets or sets a value indicating whether collate must be ignored
+        /// Gets or sets the scripting options
         /// </summary>
-        public bool IgnoreCollate { get; set; }
+        public ScriptingOptions Scripting { get; set; } = new ScriptingOptions();
     }
 }

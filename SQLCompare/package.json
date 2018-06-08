@@ -1,14 +1,41 @@
 {
-  "name": "sqlcompare",
-  "version": "0.0.0",
-  "description": "SQLCompare",
-  "main": "app.js",
-  "author": {
-    "name": "Davide"
-  },
-  "devDependencies": {
-    "@types/node": "^6.0.104",
-    "electron": "^1.8.4",
-    "electron-builder": "^20.8.1"
-  }
+    "name": "sqlcompare",
+    "version": "1.0.0",
+    "description": "SQLCompare",
+    "main": "app.js",
+    "author": {
+        "name": "TiCodeX SA"
+    },
+    "build": {
+        "appId": "ch.ticodex.sqlcompare",
+        "win": {
+            "target": "nsis"
+        },
+        "linux": {
+            "target": "AppImage"
+        },
+        "mac": {
+            "target": "default",
+            "category": "public.app-category.productivity"
+        },
+        "copyright": "Copyright @ 2018 ${author}",
+        "extraFiles": [
+            {
+                "from": "../SQLCompare.UI/dist/release",
+                "to": "SQLCompare.UI",
+                "filter": [ "**/*" ]
+            }
+        ]
+    },
+    "scripts": {
+        "dist-win": "electron-builder --win",
+        "dist-linux": "electron-builder --linux",
+        "dist-mac": "electron-builder --mac"
+    },
+    "postinstall": "electron-builder install-app-deps",
+    "devDependencies": {
+        "@types/node": "^6.0.104",
+        "electron": "^1.8.4",
+        "electron-builder": "^20.8.1"
+    }
 }

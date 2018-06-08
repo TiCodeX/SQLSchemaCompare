@@ -6,6 +6,8 @@
     <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
     <TSLintConfig>tslint.json</TSLintConfig>
     <TSLintProject>tsconfig.json</TSLintProject>
+    <OutputType>Exe</OutputType>
+    <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -28,6 +30,8 @@
     <!--Configure all the JavaScript/Css files as None-->
     <Content Remove="wwwroot\**\*.js" />
     <None Include="wwwroot\**\*.js" />
+    <Content Remove="wwwroot\**\*.scss" />
+    <None Include="wwwroot\**\*.scss" />
     <Content Remove="wwwroot\**\*.css" />
     <None Include="wwwroot\**\*.css" />
     <!--Configure the *.min.js/*.min.css as EmbeddedResource-->
@@ -43,7 +47,7 @@
 
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="2.6.375" />
-    <PackageReference Include="BuildWebCompiler" Version="1.11.326" />
+    <PackageReference Include="BuildWebCompiler" Version="1.11.375" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />

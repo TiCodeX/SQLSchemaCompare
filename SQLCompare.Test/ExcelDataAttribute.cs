@@ -87,9 +87,9 @@ namespace SQLCompare.Test
 
                             this.RecursiveSetProperty(columnNames, wsRow, rowNum, parameterInfo.Name, obj);
                         }
-
-                        yield return objArr.ToArray();
                     }
+
+                    yield return objArr.ToArray();
                 }
             }
         }

@@ -33,4 +33,10 @@
     <ProjectReference Include="..\SQLCompare.Infrastructure\SQLCompare.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Datasources\ScriptColumnTest.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

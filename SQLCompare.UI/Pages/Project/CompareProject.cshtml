@@ -20,13 +20,13 @@
     <div class="tab-pane active" id="tabDataSources">
         <div class="row">
             <div class="col-md-6">
-                @Html.Partial("_DatabaseProviderOptions", Model.Project.SourceProviderOptions, new ViewDataDictionary(this.ViewData)
+                @await Html.PartialAsync("_DatabaseProviderOptions", Model.Project.SourceProviderOptions, new ViewDataDictionary(this.ViewData)
                 {
                     {"Prefix", CompareDirection.Source},
                 })
             </div>
             <div class="col-md-6">
-                @Html.Partial("_DatabaseProviderOptions", Model.Project.TargetProviderOptions, new ViewDataDictionary(this.ViewData)
+                @await Html.PartialAsync("_DatabaseProviderOptions", Model.Project.TargetProviderOptions, new ViewDataDictionary(this.ViewData)
                 {
                     {"Prefix", CompareDirection.Target},
                 })

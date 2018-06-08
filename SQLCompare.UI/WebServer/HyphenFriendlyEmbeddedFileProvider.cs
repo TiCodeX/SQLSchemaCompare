@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
+using System;
 using System.Text;
 
 namespace SQLCompare.UI.WebServer
@@ -37,7 +38,7 @@ namespace SQLCompare.UI.WebServer
             }
 
             // Does it contain a hyphen?
-            var indexOfFirstHyphen = subpath.IndexOf('-');
+            var indexOfFirstHyphen = subpath.IndexOf('-', StringComparison.InvariantCulture);
             if (indexOfFirstHyphen == -1)
             {
                 // no hyphens.

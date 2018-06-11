@@ -15,11 +15,11 @@
     </ItemGroup>
 
     <PropertyGroup>
-      <TSLintBreakBuildOnError Condition="'$(TSLintBreakBuildOnError)' == ''">false</TSLintBreakBuildOnError>
+      <TSLintBreakBuildOnError Condition="'$(TSLintBreakBuildOnError)' == ''">true</TSLintBreakBuildOnError>
       <TSLintFormat Condition="'$(TSLintFormat)' == ''">msbuild</TSLintFormat>
       <TSLintNodeExe Condition="'$(TSLintNodeExe)' == ''">node</TSLintNodeExe>
       <TSLintTimeout Condition="'$(TSLintTimeout)' == ''">10000000</TSLintTimeout>
-      <TSLintVersion Condition="'$(TSLintVersion)' == ''">5.9.1</TSLintVersion>
+      <TSLintVersion Condition="'$(TSLintVersion)' == ''">5.10.0</TSLintVersion>
       <TSLintCli Condition="'$(TSLintCli)' == ''">$(NuGetPackageRoot)tslint\$(TSLintVersion)\tools\node_modules\tslint\lib\tslint-cli.js</TSLintCli>
     </PropertyGroup>
 

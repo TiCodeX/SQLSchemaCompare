@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.DatabaseProvider;
+using SQLCompare.Core.Entities.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace SQLCompare.Infrastructure.EntityFramework
 {
@@ -53,17 +55,28 @@ namespace SQLCompare.Infrastructure.EntityFramework
                 command.CommandText = query;
                 using (var reader = command.ExecuteReader())
                 {
+                    T t;
+                    Type type;
+                    string columnName;
+                    PropertyInfo prop;
+                    object value;
+
                     while (reader.Read())
                     {
-                        var t = new T();
-                        var type = t.GetType();
+                        t = new T();
+                        type = t.GetType();
                         for (var inc = 0; inc < reader.FieldCount; inc++)
                         {
-                            var prop = type.GetProperty(reader.GetName(inc));
-                            var value = reader.GetValue(inc);
+                            columnName = reader.GetName(inc);
+                            prop = type.GetProperty(columnName);
+                            value = reader.GetValue(inc);
                             if (prop != null)
                             {
                                 prop.SetValue(t, value is DBNull ? null : value, null);
+                            }
+                            else
+                            {
+                                throw new PropertyNotFoundException(type, columnName);
                             }
                         }
 

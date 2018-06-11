@@ -140,28 +140,49 @@
         /// </summary>
         public bool IsUpdatable { get; set; }
 
-#pragma warning disable SA1600 // Elements must be documented
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+        /// <summary>
+        /// Gets or sets the numeric precision
+        /// </summary>
         public int? NumericPrecision { get; set; }
 
+        /// <summary>
+        /// Gets or sets the numeric precision radix
+        /// </summary>
         public int? NumericPrecisionRadix { get; set; }
 
-        public string CharachterSetCatalog { get; set; }
+        /// <summary>
+        /// Gets or sets the character set catalog
+        /// </summary>
+        public string CharacterSetCatalog { get; set; }
 
+        /// <summary>
+        /// Gets or sets the character set schema
+        /// </summary>
         public string CharacterSetSchema { get; set; }
 
+        /// <summary>
+        /// Gets or sets the collation catalog
+        /// </summary>
         public string CollationCatalog { get; set; }
 
+        /// <summary>
+        /// Gets or sets the collation schema
+        /// </summary>
         public string CollationSchema { get; set; }
 
+        /// <summary>
+        /// Gets or sets the domain catalog
+        /// </summary>
         public string DomainCatalog { get; set; }
 
+        /// <summary>
+        /// Gets or sets the domain schema
+        /// </summary>
         public string DomainSchema { get; set; }
 
+        /// <summary>
+        /// Gets or sets the domain name
+        /// </summary>
         public string DomainName { get; set; }
-
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
-#pragma warning restore SA1600 // Elements must be documented
-
     }
 }

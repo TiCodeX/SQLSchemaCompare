@@ -93,7 +93,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       datetime_precision as \"DateTimePrecision\",");
             query.AppendLine("       interval_type as \"IntervalType\",");
             query.AppendLine("       interval_precision as \"IntervalPrecision\",");
-            query.AppendLine("       character_set_catalog as \"CharachterSetCatalog\",");
+            query.AppendLine("       character_set_catalog as \"CharacterSetCatalog\",");
             query.AppendLine("       character_set_schema as \"CharacterSetSchema\",");
             query.AppendLine("       character_set_name as \"CharacterSetName\",");
             query.AppendLine("       collation_catalog as \"CollationCatalog\",");

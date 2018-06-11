@@ -5,6 +5,7 @@
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
     <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
     <TypeScriptSourceMap>false</TypeScriptSourceMap>
+    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
     <TSLintConfig>tslint.json</TSLintConfig>
     <TSLintProject>tsconfig.json</TSLintProject>
     <OutputType>Exe</OutputType>

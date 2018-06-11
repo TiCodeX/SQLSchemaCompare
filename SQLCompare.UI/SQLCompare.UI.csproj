@@ -21,6 +21,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!--Remove dist folder from the project-->
+    <Compile Remove="dist\**" />
+    <Content Remove="dist\**" />
+    <EmbeddedResource Remove="dist\**" />
+    <None Remove="dist\**" />
+    <!--Configure json files as None-->
+    <Content Remove="bundleconfig.json" />
+    <None Include="bundleconfig.json" />
+    <Content Remove="compilerconfig.json" />
+    <None Include="compilerconfig.json" />
+    <Content Remove="tsconfig.json" />
+    <None Include="tsconfig.json" />
+    <Content Remove="tslint.json" />
+    <None Include="tslint.json" />
     <!--Configure all TypeScript files to be compiled-->
     <Content Remove="wwwroot\**\*.ts" />
     <TypeScriptCompile Include="wwwroot\**\*.ts" />
@@ -37,7 +51,15 @@
     <!--Configure the *.min.js/*.min.css as EmbeddedResource-->
     <EmbeddedResource Include="wwwroot\**\*.min.js" />
     <EmbeddedResource Include="wwwroot\**\*.min.css" />
-    <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*" />
+    <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*.js" />
+    <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*.css" />
+    <!--Configure the images as EmbeddedResource-->
+    <Content Remove="wwwroot\**\*.png" />
+    <EmbeddedResource Include="wwwroot\**\*.png" />
+    <Content Remove="wwwroot\**\*.jpg" />
+    <EmbeddedResource Include="wwwroot\**\*.jpg" />
+    <Content Remove="wwwroot\**\*.svg" />
+    <EmbeddedResource Include="wwwroot\**\*.svg" />
   </ItemGroup>
 
   <ItemGroup>

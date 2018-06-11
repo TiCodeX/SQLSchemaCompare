@@ -30,7 +30,7 @@ echo.
 
 set PublishOutputPath="dist\%configuration%"
 
-dotnet publish %~dp0SQLCompare.UI\SQLCompare.UI.csproj -f netcoreapp2.0 -o %PublishOutputPath% -r %targetdotnet% -c %configuration%
+dotnet publish %~dp0SQLCompare.UI\SQLCompare.UI.csproj -f netcoreapp2.1 -o %PublishOutputPath% -r %targetdotnet% -c %configuration%
 
 if ERRORLEVEL 1 goto:error
 

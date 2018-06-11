@@ -4,6 +4,7 @@
     <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
     <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
     <TSLintConfig>tslint.json</TSLintConfig>
     <TSLintProject>tsconfig.json</TSLintProject>
     <OutputType>Exe</OutputType>

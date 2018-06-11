@@ -1,19 +1,23 @@
 ﻿import electron = require("electron");
+import childProcess = require("child_process");
+import fs = require("fs");
 // Module to control application life.
 const app = electron.app;
 
-//const servicePath = "../SQLCompare.UI/bin/Debug/netcoreapp2.0/SQLCompare.UI.dll";
-//const childProcess = require("child_process");
-//const serviceProcess = childProcess.spawn("dotnet", [servicePath]);
-//serviceProcess.stdout.on("data", data => {
-//    console.log("stdout: " + data);
-//});
-//serviceProcess.stderr.on("data", data => {
-//    console.log("stderr: " + data);
-//});
-//serviceProcess.on("close", code => {
-//    console.log("closing code: " + code);
-//});
+const servicePath = `./SQLCompare.UI/SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`;
+let serviceProcess: childProcess.ChildProcess;
+if (fs.existsSync(servicePath)) {
+    serviceProcess = childProcess.spawn(servicePath);
+    //serviceProcess.stdout.on("data", data => {
+    //    console.log("stdout: " + data);
+    //});
+    //serviceProcess.stderr.on("data", data => {
+    //    console.log("stderr: " + data);
+    //});
+    //serviceProcess.on("close", code => {
+    //    console.log("closing code: " + code);
+    //});
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -75,6 +79,9 @@ function createWindow() {
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         mainWindow = null;
+        if (serviceProcess) {
+            serviceProcess.kill();
+        }
     });
 }
 

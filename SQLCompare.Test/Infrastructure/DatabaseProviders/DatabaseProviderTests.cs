@@ -2,7 +2,9 @@
 using SQLCompare.Core.Entities.Database.PostgreSql;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Infrastructure.DatabaseProviders;
+using SQLCompare.Infrastructure.SqlScripters;
 using System;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -75,6 +77,11 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             Assert.Contains(table.PrimaryKeys, x => x.Name.Equals("PK_DeletedDocumentReference", StringComparison.Ordinal));
             Assert.True(table.ForeignKeys.Count == 2);
             Assert.Contains(table.ForeignKeys, x => x.Name.Equals("FK_DeletedDocumentReference_DeletedDocument", StringComparison.Ordinal));
+            table = db.Tables.Find(x => x.Name.Equals("debitors", StringComparison.Ordinal));
+            DatabaseScripterFactory dsf = new DatabaseScripterFactory(this.LoggerFactory);
+            var script = dsf.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
+            var t = script.ScriptCreateTable(table);
+            Assert.True(t != null);
 
             MySqlDatabaseProvider mysqldbp = (MySqlDatabaseProvider)dpf.Create(new MySqlDatabaseProviderOptions { Hostname = "localhost", Database = "sakila", Username = "admin", Password = "test1234", UseSSL = true });
 

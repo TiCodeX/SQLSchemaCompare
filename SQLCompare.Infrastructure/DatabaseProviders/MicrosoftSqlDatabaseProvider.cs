@@ -144,6 +144,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       tc.TABLE_NAME as TableName,");
             query.AppendLine("       col.name as TableColumn,");
             query.AppendLine("       reftb.name as ReferencedTableName,");
+            query.AppendLine("       refs.name as ReferencedTableSchema,");
             query.AppendLine("       refcol.name as ReferencedTableColumn,");
             query.AppendLine("       CAST(IIF(tc.IS_DEFERRABLE = 'NO', 0, 1) as BIT) as IsDeferrable,");
             query.AppendLine("       CAST(IIF(tc.INITIALLY_DEFERRED = 'NO', 0, 1) as BIT) as InitiallyDeferred,");
@@ -155,9 +156,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       fk.is_not_for_replication as IsNotForReplication,");
             query.AppendLine("       fk.is_not_trusted as IsNotTrusted,");
             query.AppendLine("       fk.delete_referential_action as DeleteReferentialAction,");
-            query.AppendLine("       fk.delete_referential_action_desc as DeleteReferentialActionDescription,");
             query.AppendLine("       fk.update_referential_action as UpdateReferentialAction,");
-            query.AppendLine("       fk.update_referential_action_desc as UpdateReferentialActionDescription,");
             query.AppendLine("       fk.is_system_named as IsSystemNamed");
             query.AppendLine("FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc");
             query.AppendLine("INNER JOIN sys.foreign_keys fk");
@@ -170,6 +169,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("	ON col.column_id = fkc.parent_column_id and col.object_id = tb.object_id");
             query.AppendLine("INNER JOIN sys.tables reftb");
             query.AppendLine("	ON reftb.object_id = fkc.referenced_object_id");
+            query.AppendLine("INNER JOIN sys.schemas refs");
+            query.AppendLine("	ON reftb.schema_id = refs.schema_id");
             query.AppendLine("INNER JOIN sys.columns refcol");
             query.AppendLine("	ON refcol.column_id = fkc.referenced_column_id and refcol.object_id = reftb.object_id");
             query.AppendLine($"WHERE tc.TABLE_CATALOG = '{database.Name}'");

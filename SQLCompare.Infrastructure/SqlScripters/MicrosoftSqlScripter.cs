@@ -3,6 +3,7 @@ using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MicrosoftSql;
 using SQLCompare.Core.Entities.Project;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -25,6 +26,34 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             this.logger = logger;
             this.options = options;
+        }
+
+        /// <summary>
+        /// Script a comment text
+        /// </summary>
+        /// <param name="comment">The comment text</param>
+        /// <returns>The scripted comment</returns>
+        public static string ScriptComment(string comment)
+        {
+            return $"/****** {comment} ******/";
+        }
+
+        /// <summary>
+        /// Script the foreign key reference action
+        /// </summary>
+        /// <param name="action">The reference action</param>
+        /// <returns>The scripted action</returns>
+        public static string ScriptForeignKeyAction(MicrosoftSqlForeignKey.ReferentialAction action)
+        {
+            switch (action)
+            {
+                case MicrosoftSqlForeignKey.ReferentialAction.NOACTION: return "NO ACTION";
+                case MicrosoftSqlForeignKey.ReferentialAction.CASCADE: return "CASCADE";
+                case MicrosoftSqlForeignKey.ReferentialAction.SETDEFAULT: return "SET DEFAULT";
+                case MicrosoftSqlForeignKey.ReferentialAction.SETNULL: return "SET NULL";
+                default:
+                    throw new ArgumentException("Invalid referential action: " + action.ToString(), nameof(action));
+            }
         }
 
         /// <summary>
@@ -57,25 +86,92 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine((++i == ncol) ? string.Empty : ",");
             }
 
-            sb.AppendLine(");");
+            sb.AppendLine(")");
+            sb.AppendLine("GO");
+            sb.AppendLine();
+            sb.AppendLine();
+            sb.AppendLine(ScriptComment("Constraints and Indexes"));
+            sb.AppendLine(this.ScriptPrimaryKeys(table));
+            sb.AppendLine(ScriptComment("Foreign keys"));
+            sb.AppendLine(this.ScriptForeignKeys(table));
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Script the table primary keys
+        /// </summary>
+        /// <param name="table">The table</param>
+        /// <returns>The create primary keys script </returns>
+        public string ScriptPrimaryKeys(ABaseDbTable table)
+        {
+            StringBuilder sb = new StringBuilder();
+            IEnumerable<string> columnList;
+            foreach (var keys in table.PrimaryKeys.GroupBy(x => x.Name))
+            {
+                var key = keys.FirstOrDefault() as MicrosoftSqlPrimaryKey;
+                columnList = keys.OrderBy(x => ((MicrosoftSqlPrimaryKey)x).OrdinalPosition).Select(x => $"[{((MicrosoftSqlPrimaryKey)x).ColumnName}]");
+
+                sb.AppendLine($"ALTER TABLE {this.ScriptTableName(table)}");
+                sb.AppendLine($"ADD CONSTRAINT [{key.Name}] PRIMARY KEY {key.TypeDescription}({string.Join(",", columnList)});");
+                sb.AppendLine("GO");
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Script the table foreign keys
+        /// </summary>
+        /// <param name="table">The table</param>
+        /// <returns>The create foreign keys script </returns>
+        public string ScriptForeignKeys(ABaseDbTable table)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (MicrosoftSqlForeignKey key in table.ForeignKeys.OrderBy(x => x.Name))
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptTableName(table)} WITH CHECK ADD CONSTRAINT [{key.Name}] FOREIGN KEY([{key.TableColumn}])");
+                sb.AppendLine($"REFERENCES {this.ScriptTableName(key.ReferencedTableSchema, key.ReferencedTableName)}([{key.ReferencedTableColumn}])");
+                sb.AppendLine($"ON DELETE {ScriptForeignKeyAction(key.DeleteReferentialAction)}");
+                sb.AppendLine($"ON UPDATE {ScriptForeignKeyAction(key.UpdateReferentialAction)}");
+                sb.AppendLine("GO");
+                sb.AppendLine();
+                sb.AppendLine($"ALTER TABLE {this.ScriptTableName(table)} CHECK CONSTRAINT[{key.Name}]");
+                sb.AppendLine("GO");
+                sb.AppendLine();
+            }
+
             return sb.ToString();
         }
 
         /// <summary>
         /// Get the table name
         /// </summary>
-        /// <param name="table">The table</param>
-        /// <returns>The column script</returns>
-        public string ScriptTableName(ABaseDbTable table)
+        /// <param name="tableSchema">The table schema</param>
+        /// <param name="tableName">The table name</param>
+        /// <returns>The normalized table name</returns>
+        public string ScriptTableName(string tableSchema, string tableName)
         {
             if (this.options.Scripting.UseSchemaName)
             {
-                return $"[{table.TableSchema}].[{table.Name}]";
+                return $"[{tableSchema}].[{tableName}]";
             }
             else
             {
-                return $"[{table.Name}]";
+                return $"[{tableName}]";
             }
+        }
+
+        /// <summary>
+        /// Get the table name
+        /// </summary>
+        /// <param name="table">The table</param>
+        /// <returns>The normalized table name</returns>
+        public string ScriptTableName(ABaseDbTable table)
+        {
+            return this.ScriptTableName(table.TableSchema, table.Name);
         }
 
         /// <summary>

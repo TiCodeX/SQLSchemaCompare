@@ -8,8 +8,14 @@
     },
     "build": {
         "appId": "ch.ticodex.sqlcompare",
+        "remoteBuild": false,
         "win": {
             "target": "nsis"
+        },
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true,
+            "runAfterFinish": false
         },
         "linux": {
             "target": "AppImage"

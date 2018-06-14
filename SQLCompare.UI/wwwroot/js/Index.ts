@@ -34,22 +34,25 @@ $(() => {
                 label: "File",
                 submenu: [
                     {
-                        label: "Nuovo progetto",
+                        label: "New Project",
                     },
                     {
-                        label: "Apri progetto",
+                        label: "Open Project",
+                        click(): void {
+                            Project.Load();
+                        },
                     },
                     {
-                        label: "Chiudi progetto",
+                        label: "Close Project",
                     },
                     {
                         role: "close",
-                        label: "Esci",
+                        label: "Exit",
                     },
                 ],
             },
             {
-                label: "View",
+                label: "DEBUG",
                 submenu: [
                     {
                         label: "Reload",
@@ -93,9 +96,9 @@ $(() => {
                 role: "help",
                 submenu: [
                     {
-                        label: "Learn More",
+                        label: "About",
                         click(): void {
-                            electron.shell.openExternal("http://electron.atom.io");
+                            electron.shell.openExternal("https://ticodex.ch/");
                         },
                     },
                 ],
@@ -150,7 +153,9 @@ $(() => {
         const url: string = target.attr("load-main").toString();
         const method: string = target.attr("load-main-method").toString();
         let data: object;
-        if (target.attr("load-main-data-from-div") !== undefined) {
+        if (target.attr("load-main-data") !== undefined) {
+            data = <object>JSON.parse(<string>JSON.parse(`"${target.attr("load-main-data").toString()}"`));
+        } else if (target.attr("load-main-data-from-div") !== undefined) {
             const dataDivId: string = target.attr("load-main-data-from-div").toString();
             data = Utility.SerializeJSON($(`#${dataDivId}`));
         }
@@ -200,67 +205,6 @@ $(() => {
                 modified: monaco.editor.createModel(result.targetSql, "sql"),
             });
         });
-    });
-
-    $(document).on("click", "[save-project]", (e: JQuery.Event) => {
-        e.preventDefault();
-        const target: JQuery = $(e.target);
-        const url: string = target.attr("save-project").toString();
-        const method: string = target.attr("save-project-method").toString();
-        let data: object;
-        if (target.attr("save-project-data-from-div") !== undefined) {
-            const dataDivId: string = target.attr("save-project-data-from-div").toString();
-            data = Utility.SerializeJSON($(`#${dataDivId}`));
-        }
-
-        const filename: string = electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
-            {
-                title: "Save Project",
-                buttonLabel: "Save Project",
-                filters: [
-                    {
-                        name: "SQL Compare Project",
-                        extensions: ["xml"],
-                    },
-                ],
-            });
-
-        if (Utility.IsNullOrWhitespace(filename)) {
-            return;
-        }
-
-        const saveProjectFilenameKey: string = "SaveProjectFilename";
-        data[saveProjectFilenameKey] = filename;
-
-        Utility.AjaxCall(url, method, data, (): void => {
-            alert("done");
-        });
-    });
-
-    $(document).on("click", "[load-project]", (e: JQuery.Event) => {
-        e.preventDefault();
-        const target: JQuery = $(e.target);
-        const url: string = target.attr("load-project").toString();
-        const method: string = target.attr("load-project-method").toString();
-
-        const filename: Array<string> = electron.remote.dialog.showOpenDialog(electron.remote.getCurrentWindow(),
-            {
-                title: "Load Project",
-                buttonLabel: "Load Project",
-                filters: [
-                    {
-                        name: "SQL Compare Project",
-                        extensions: ["xml"],
-                    },
-                ],
-                properties: ["openFile"],
-            });
-
-        if (!Boolean(filename) || filename.length < 1 || Utility.IsNullOrWhitespace(filename[0])) {
-            return;
-        }
-
-        Utility.OpenModalDialog(url, method, <object>JSON.parse(JSON.stringify(filename[0])));
     });
 
     $(document).on("click", "[close-split]", (e: JQuery.Event) => {

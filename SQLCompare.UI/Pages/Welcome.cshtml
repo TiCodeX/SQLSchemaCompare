@@ -1,26 +1,27 @@
 ﻿@page
+@using System.Net.Http
 @using System.Web
 @using Core.Interfaces
+@using Enums
+@using Models
 @model Welcome
+@{
+    var newProjectRequest = new WebRequest
+    {
+        Url = new Uri("/Project/CompareProject?handler=NewProject", UriKind.Relative),
+        Method = HttpMethod.Get
+    };
+}
 
 <h1>Welcome to @AppGlobal.CompanyName @AppGlobal.ProductName</h1>
 <br />
-<button type="button" class="btn btn-primary"
-        load-modal="/Project/CompareProject?handler=NewProject"
-        load-modal-method="GET">
+
+<button style="@ButtonStyle.Primary" onclick-open-modal="@newProjectRequest">
     New Project
 </button>
 
-<button type="button" class="btn btn-primary"
-        load-project="/Project/CompareProject?handler=LoadProject"
-        load-project-method="POST">
+<button style="@ButtonStyle.Primary" onclick="Project.Load()">
     Open Project
-</button>
-
-<button type="button" class="btn btn-primary"
-        load-modal="/Project/CompareProject"
-        load-modal-method="GET">
-    DEBUG: Open current Project
 </button>
 
 <br />
@@ -29,10 +30,16 @@
     Recent projects:
     @for (var i = Model.RecentProjects.Count - 1; i >= 0; i--)
     {
+        var loadProjectRequest = new WebRequest
+        {
+            Url = new Uri("/Project/CompareProject?handler=LoadProject", UriKind.Relative),
+            Method = HttpMethod.Post,
+            Data = Model.RecentProjects[i]
+        };
+
         <br /> @:&bull;
-        <a href="#" load-modal="/Project/CompareProject?handler=LoadProject" load-modal-method="POST"
-           load-modal-data="@HttpUtility.JavaScriptStringEncode(Json.Serialize(Model.RecentProjects[i]).ToString())">
+        <button style="@ButtonStyle.Link" onclick-open-modal="@loadProjectRequest" class="p-0">
             @Model.RecentProjects[i]
-        </a>
+        </button>
     }
 </div>

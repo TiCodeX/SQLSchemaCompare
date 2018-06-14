@@ -1,7 +1,21 @@
 ﻿@page
+@using System.Net.Http
 @using Enums
+@using Models
 @model CompareProject
-
+@{
+    var compareRequest = new WebRequest
+    {
+        Url = new Uri("/Project/CompareProject?handler=Compare", UriKind.Relative),
+        Method = HttpMethod.Post,
+        SerializeDataFromDiv = "tabDataSources"
+    };
+    var cancelRequest = new WebRequest
+    {
+        Url = new Uri("/Welcome", UriKind.Relative),
+        Method = HttpMethod.Get
+    };
+}
 <ul class="nav nav-tabs">
     <li class="nav-item">
         <a data-toggle="tab" href="#tabDataSources" class="nav-link active">Data sources</a>
@@ -45,16 +59,8 @@
 </div>
 
 <div class="float-right">
-    <button type="button" class="btn btn-primary"
-            load-main="/Project/CompareProject?handler=Compare" load-main-method="POST"
-            load-main-data-from-div="tabDataSources">
+    <button style="@ButtonStyle.Primary" onclick-open-main="@compareRequest">
         Compare now
     </button>
-    <button type="button" class="btn btn-primary"
-            save-project="/Project/CompareProject?handler=Save"
-            save-project-method="POST"
-            save-project-data-from-div="tabDataSources">
-        Save
-    </button>
-    <button type="button" class="btn btn-secondary" load-modal="/Welcome" load-modal-method="GET">Cancel</button>
+    <button style="@ButtonStyle.Secondary" onclick-open-modal="@cancelRequest">Cancel</button>
 </div>

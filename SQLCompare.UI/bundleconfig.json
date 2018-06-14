@@ -1,20 +1,21 @@
 ﻿[
-  {
-    "outputFileName": "wwwroot/css/site.min.css",
-    "inputFiles": [
-      "wwwroot/css/Index.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/js/site.min.js",
-    "inputFiles": [
-      "wwwroot/js/Index.js",
-      "wwwroot/js/Utility.js"
-    ],
-    "minify": {
-      "enabled": true,
-      "renameLocals": true
+    {
+        "outputFileName": "wwwroot/css/site.min.css",
+        "inputFiles": [
+            "wwwroot/css/Index.css"
+        ]
     },
-    "sourceMap": false
-  }
+    {
+        "outputFileName": "wwwroot/js/site.min.js",
+        "inputFiles": [
+            "wwwroot/js/Index.js",
+            "wwwroot/js/Utility.js",
+            "wwwroot/js/Project.js"
+        ],
+        "minify": {
+            "enabled": true,
+            "renameLocals": true
+        },
+        "sourceMap": false
+    }
 ]

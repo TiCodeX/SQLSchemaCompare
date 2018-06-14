@@ -29,7 +29,7 @@ function createWindow() {
 
     const splashWindow = new electron.BrowserWindow({
         width: 300,
-        height: 250,
+        height: 330,
         transparent: true,
         frame: false,
         alwaysOnTop: true
@@ -45,6 +45,16 @@ function createWindow() {
             nodeIntegration: true,
         }
     });
+
+    mainWindow.setMenu(electron.Menu.buildFromTemplate([{
+        label: "File",
+        submenu: [
+            {
+                role: "close",
+                label: "Exit",
+            }
+        ],
+    }]));
 
     const filter = {
         urls: ["http://*/*", "https://*/*"]

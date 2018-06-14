@@ -82,29 +82,15 @@ namespace SQLCompare.UI.Pages.Project
         /// <summary>
         /// Save the project
         /// </summary>
-        /// <param name="options">The project options</param>
+        /// <param name="filename">The filename</param>
         /// <returns>TODO: boh</returns>
-        public ActionResult OnPostSave([FromBody] CompareProjectOptions options)
+        public ActionResult OnPostSaveProject([FromBody] string filename)
         {
-            this.projectService.Project.SourceProviderOptions = this.GetDatabaseProviderOptions(
-                options.SourceDatabaseType,
-                options.SourceHostname,
-                options.SourceUsername,
-                options.SourcePassword,
-                options.SourceDatabase);
-
-            this.projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(
-                options.TargetDatabaseType,
-                options.TargetHostname,
-                options.TargetUsername,
-                options.TargetPassword,
-                options.TargetDatabase);
-
-            this.projectService.SaveProject(options.SaveProjectFilename);
+            this.projectService.SaveProject(filename);
 
             var appSettings = this.appSettingsService.GetAppSettings();
-            appSettings.RecentProjects.Remove(options.SaveProjectFilename);
-            appSettings.RecentProjects.Add(options.SaveProjectFilename);
+            appSettings.RecentProjects.Remove(filename);
+            appSettings.RecentProjects.Add(filename);
             this.appSettingsService.SaveAppSettings();
 
             return new JsonResult(null);

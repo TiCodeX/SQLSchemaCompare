@@ -199,6 +199,7 @@ $(() => {
             const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(document.getElementById("sqlDiff"),
                 {
                     automaticLayout: true,
+                    scrollBeyondLastLine: false,
                 });
             diffEditor.setModel({
                 original: monaco.editor.createModel(result.sourceSql, "sql"),

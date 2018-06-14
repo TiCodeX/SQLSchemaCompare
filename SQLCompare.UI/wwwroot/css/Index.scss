@@ -29,3 +29,7 @@ body > .container-fluid > .row {
     cursor: row-resize;
     background-image: url("../img/gutter-vertical.png");
 }
+
+.monaco-diff-editor * {
+    max-height: 100%
+}

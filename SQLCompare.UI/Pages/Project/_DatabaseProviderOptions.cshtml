@@ -1,11 +1,20 @@
-﻿@using Core.Enums
+﻿@using System.Net.Http
+@using Core.Enums
 @using Core.Interfaces
 @using Enums
 @using Core.Entities.DatabaseProvider
+@using Models
 @model ADatabaseProviderOptions
 @{
-    var divId = Guid.NewGuid();
+    var divId = Guid.NewGuid().ToString();
     var prefix = ((CompareDirection)ViewBag.Prefix).ToString();
+    var loadSelectRequest = new WebRequest
+    {
+        Url = new Uri("/Project/CompareProject?handler=LoadDatabaseList", UriKind.Relative),
+        Method = HttpMethod.Post,
+        SerializeDataFromDiv = divId,
+        Target = $"{prefix}Database"
+    };
 }
 <div class="card" id="@divId">
     <input type="hidden" name="Direction" value="@prefix">
@@ -62,11 +71,7 @@
                         }
                     </select>
                     <div class="input-group-append">
-                        <button style="@ButtonStyle.Info"
-                                load-select="/Project/CompareProject?handler=LoadDatabaseList"
-                                load-select-method="POST"
-                                load-select-target="@(prefix)Database"
-                                load-select-data-from-div="@divId">
+                        <button style="@ButtonStyle.Info" onclick-load-select-values="@loadSelectRequest">
                             &#x21bb;
                         </button>
                     </div>

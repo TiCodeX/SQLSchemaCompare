@@ -27,5 +27,10 @@ namespace SQLCompare.UI.Models
         /// Gets or sets the div name to serialize the data from
         /// </summary>
         public string SerializeDataFromDiv { get; set; }
+
+        /// <summary>
+        /// Gets or sets the target of the operation
+        /// </summary>
+        public string Target { get; set; }
     }
 }

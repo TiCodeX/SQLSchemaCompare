@@ -43,6 +43,11 @@ namespace SQLCompare.UI.TagHelpers
         /// </summary>
         public WebRequest OnclickOpenMain { get; set; }
 
+        /// <summary>
+        /// Gets or sets the WebRequest to load the select values
+        /// </summary>
+        public WebRequest OnclickLoadSelectValues { get; set; }
+
         /// <inheritdoc />
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -151,6 +156,22 @@ namespace SQLCompare.UI.TagHelpers
                 if (!string.IsNullOrWhiteSpace(this.OnclickOpenMain.SerializeDataFromDiv))
                 {
                     output.Attributes.SetAttribute("load-main-data-from-div", this.OnclickOpenMain.SerializeDataFromDiv);
+                }
+            }
+
+            if (this.OnclickLoadSelectValues != null)
+            {
+                output.Attributes.SetAttribute("load-select", this.OnclickLoadSelectValues.Url);
+                output.Attributes.SetAttribute("load-select-method", this.OnclickLoadSelectValues.Method.Method);
+                output.Attributes.SetAttribute("load-select-target", this.OnclickLoadSelectValues.Target);
+                if (this.OnclickLoadSelectValues.Data != null)
+                {
+                    output.Attributes.SetAttribute("load-select-data", HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(this.OnclickLoadSelectValues.Data)));
+                }
+
+                if (!string.IsNullOrWhiteSpace(this.OnclickLoadSelectValues.SerializeDataFromDiv))
+                {
+                    output.Attributes.SetAttribute("load-select-data-from-div", this.OnclickLoadSelectValues.SerializeDataFromDiv);
                 }
             }
         }

@@ -3,6 +3,11 @@
  */
 class Project {
     /**
+     * Service URL for a new Project
+     */
+    private static readonly newUrl: string = "/Project/CompareProject?handler=NewProject";
+
+    /**
      * Service URL for saving the Project
      */
     private static readonly saveUrl: string = "/Project/CompareProject?handler=SaveProject";
@@ -11,6 +16,19 @@ class Project {
      * Service URL for loading a Project
      */
     private static readonly loadUrl: string = "/Project/CompareProject?handler=LoadProject";
+
+    /**
+     * Service URL for loading a Project
+     */
+    private static readonly closeUrl: string = "/Project/CompareProject?handler=CloseProject";
+
+    /**
+     * Open the new Project page
+     */
+    public static New(): void {
+        Utility.OpenModalDialog(this.newUrl, "GET");
+        Menu.ToggleProjectRelatedMenuStatus(true);
+    }
 
     /**
      * Show the save dialog and save the Project
@@ -41,29 +59,49 @@ class Project {
     }
 
     /**
-     * Show the open file dialog and load the Project
+     * Load the Project from the file, if not specified show the open file dialog
+     * @param filename The Project file path
      */
-    public static Load(): void {
+    public static Load(filename?: string): void {
+        let file: string = filename;
+        if (file === undefined) {
 
-        const filename: Array<string> = electron.remote.dialog.showOpenDialog(electron.remote.getCurrentWindow(),
-            {
-                title: "Load Project",
-                buttonLabel: "Load Project",
-                filters: [
-                    {
-                        name: "SQL Compare Project",
-                        extensions: ["xml"],
-                    },
-                ],
-                properties: ["openFile"],
-            });
+            const filenames: Array<string> = electron.remote.dialog.showOpenDialog(electron.remote.getCurrentWindow(),
+                {
+                    title: "Load Project",
+                    buttonLabel: "Load Project",
+                    filters: [
+                        {
+                            name: "SQL Compare Project",
+                            extensions: ["xml"],
+                        },
+                    ],
+                    properties: ["openFile"],
+                });
 
-        if (!Boolean(filename) || filename.length < 1 || Utility.IsNullOrWhitespace(filename[0])) {
-            return;
+            if (!Boolean(filenames) || filenames.length < 1 || Utility.IsNullOrWhitespace(filenames[0])) {
+                return;
+            }
+
+            file = filenames[0];
         }
 
-        const data: object = <object>JSON.parse(JSON.stringify(filename[0]));
+        const data: object = <object>JSON.parse(JSON.stringify(file));
 
         Utility.OpenModalDialog(this.loadUrl, "POST", data);
+        Menu.ToggleProjectRelatedMenuStatus(true);
+    }
+
+    /**
+     * Close the project, prompt for save
+     */
+    public static Close(showWelcome: boolean = false): void {
+        Utility.AjaxCall(this.closeUrl, "GET", undefined, () => {
+            $("#mainDiv").empty();
+            if (showWelcome) {
+                Utility.OpenModalDialog("/Welcome", "GET");
+            }
+            Menu.ToggleProjectRelatedMenuStatus(false);
+        });
     }
 }

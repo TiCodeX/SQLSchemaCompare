@@ -8,7 +8,6 @@ using SQLCompare.UI.Enums;
 using SQLCompare.UI.Models.Project;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace SQLCompare.UI.Pages.Project
 {
@@ -97,6 +96,17 @@ namespace SQLCompare.UI.Pages.Project
         }
 
         /// <summary>
+        /// Close the project
+        /// </summary>
+        /// <returns>TODO: boh</returns>
+        public ActionResult OnGetCloseProject()
+        {
+            this.projectService.CloseProject();
+
+            return new JsonResult(null);
+        }
+
+        /// <summary>
         /// Perform the database comparison
         /// </summary>
         /// <param name="options">The project options</param>
@@ -127,7 +137,6 @@ namespace SQLCompare.UI.Pages.Project
                         taskInfo.Message = "Connecting to source server";
                         for (short i = 1; i < 3; i++)
                         {
-                            Thread.Sleep(TimeSpan.FromSeconds(1));
                             taskInfo.Percentage = (short)(i * 10);
                         }
 
@@ -146,7 +155,6 @@ namespace SQLCompare.UI.Pages.Project
                         taskInfo.Message = "Connecting to target server";
                         for (short i = 1; i < 3; i++)
                         {
-                            Thread.Sleep(TimeSpan.FromMilliseconds(500));
                             taskInfo.Percentage = (short)(i * 10);
                         }
 
@@ -164,7 +172,6 @@ namespace SQLCompare.UI.Pages.Project
                     {
                         for (short i = 1; i <= 10; i++)
                         {
-                            Thread.Sleep(TimeSpan.FromMilliseconds(100));
                             taskInfo.Percentage = (short)(i * 10);
                         }
                         return true;
@@ -176,7 +183,6 @@ namespace SQLCompare.UI.Pages.Project
                     {
                         for (short i = 1; i <= 10; i++)
                         {
-                            Thread.Sleep(TimeSpan.FromMilliseconds(200));
                             taskInfo.Percentage = (short)(i * 10);
                         }
                         return true;

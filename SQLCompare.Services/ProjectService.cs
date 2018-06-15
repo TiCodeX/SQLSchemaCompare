@@ -62,7 +62,7 @@ namespace SQLCompare.Services
         /// <inheritdoc/>
         public void CloseProject()
         {
-            throw new System.NotImplementedException();
+            this.Project = null;
         }
 
         /// <inheritdoc/>

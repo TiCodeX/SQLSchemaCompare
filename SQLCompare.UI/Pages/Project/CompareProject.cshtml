@@ -10,11 +10,6 @@
         Method = HttpMethod.Post,
         SerializeDataFromDiv = "tabDataSources"
     };
-    var cancelRequest = new WebRequest
-    {
-        Url = new Uri("/Welcome", UriKind.Relative),
-        Method = HttpMethod.Get
-    };
 }
 <ul class="nav nav-tabs">
     <li class="nav-item">
@@ -62,5 +57,12 @@
     <button style="@ButtonStyle.Primary" onclick-open-main="@compareRequest">
         Compare now
     </button>
-    <button style="@ButtonStyle.Secondary" onclick-open-modal="@cancelRequest">Cancel</button>
+    @if (Model.Project.RetrievedSourceDatabase != null)
+    {
+        <button style="@ButtonStyle.Secondary" onclick="Utility.CloseModalDialog()">Cancel</button>
+    }
+    else
+    {
+        <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">Cancel</button>
+    }
 </div>

@@ -50,6 +50,13 @@ class Utility {
     }
 
     /**
+     * Close the modal dialog
+     */
+    public static CloseModalDialog(): void {
+        $("#myModal").modal("hide");
+    }
+
+    /**
      * Parse all the input elements in JSON format
      * @param element - The container to search for input elements
      * @returns The serialized JSON object

@@ -1,22 +1,13 @@
 ﻿@page
-@using System.Net.Http
 @using System.Web
 @using Core.Interfaces
 @using Enums
-@using Models
 @model Welcome
-@{
-    var newProjectRequest = new WebRequest
-    {
-        Url = new Uri("/Project/CompareProject?handler=NewProject", UriKind.Relative),
-        Method = HttpMethod.Get
-    };
-}
 
 <h1>Welcome to @AppGlobal.CompanyName @AppGlobal.ProductName</h1>
 <br />
 
-<button style="@ButtonStyle.Primary" onclick-open-modal="@newProjectRequest">
+<button style="@ButtonStyle.Primary" onclick="Project.New()">
     New Project
 </button>
 
@@ -30,15 +21,8 @@
     Recent projects:
     @for (var i = Model.RecentProjects.Count - 1; i >= 0; i--)
     {
-        var loadProjectRequest = new WebRequest
-        {
-            Url = new Uri("/Project/CompareProject?handler=LoadProject", UriKind.Relative),
-            Method = HttpMethod.Post,
-            Data = Model.RecentProjects[i]
-        };
-
         <br /> @:&bull;
-        <button style="@ButtonStyle.Link" onclick-open-modal="@loadProjectRequest" class="p-0">
+        <button style="@ButtonStyle.Link" onclick="Project.Load('@HttpUtility.JavaScriptStringEncode(Model.RecentProjects[i])')" class="p-0">
             @Model.RecentProjects[i]
         </button>
     }

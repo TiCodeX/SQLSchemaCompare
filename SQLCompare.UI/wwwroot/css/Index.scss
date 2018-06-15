@@ -30,6 +30,11 @@ body > .container-fluid > .row {
     background-image: url("../img/gutter-vertical.png");
 }
 
-.monaco-diff-editor * {
-    max-height: 100%
+.monaco-diff-editor .diffOverview,
+.monaco-diff-editor .diffOverviewRuler,
+.monaco-diff-editor .overflow-guard,
+.monaco-diff-editor .monaco-sash,
+.monaco-diff-editor .monaco-editor,
+.monaco-diff-editor .scrollbar {
+    max-height: 100%;
 }

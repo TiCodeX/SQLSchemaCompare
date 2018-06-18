@@ -94,5 +94,15 @@
         /// Gets or sets the identity increment
         /// </summary>
         public long IdentityIncrement { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the column is computed
+        /// </summary>
+        public bool IsComputed { get; set; }
+
+        /// <summary>
+        /// Gets or sets the definition of a computed column
+        /// </summary>
+        public string Definition { get; set; }
     }
 }

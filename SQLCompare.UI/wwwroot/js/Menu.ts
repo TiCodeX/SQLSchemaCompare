@@ -36,6 +36,9 @@ class Menu {
                         id: "menuSaveProject",
                         label: "Save Project...",
                         enabled: false,
+                        click(): void {
+                            Project.Save();
+                        },
                     },
                     {
                         id: "menuCloseProject",

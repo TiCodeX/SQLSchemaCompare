@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MicrosoftSql;
+using SQLCompare.Core.Entities.Database.MySql;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Interfaces;
 using System;
@@ -29,6 +30,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (database is MicrosoftSqlDb)
             {
                 return new MicrosoftSqlScripter(this.loggerFactory.CreateLogger("MicrosoftSqlScripter"), options);
+            }
+            else if (database is MySqlDb)
+            {
+                return new MySqlScripter(this.loggerFactory.CreateLogger("MySqlScripter"), options);
             }
             else
             {

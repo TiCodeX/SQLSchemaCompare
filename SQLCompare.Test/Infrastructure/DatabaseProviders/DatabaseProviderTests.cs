@@ -69,7 +69,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             MicrosoftSqlDatabaseProvider mssqldbp = (MicrosoftSqlDatabaseProvider)dpf.Create(new MicrosoftSqlDatabaseProviderOptions { Hostname = "localhost\\SQLEXPRESS", Database = "brokerpro", UseWindowsAuthentication = true });
             var db = mssqldbp.GetDatabase();
             Assert.Equal("brokerpro", db.Name);
-            Assert.True(db.Tables.Count == 216);
+            Assert.True(db.Tables.Count == 217);
             var table = db.Tables.Find(x => x.Name.Equals("DeletedDocumentReference", StringComparison.Ordinal));
             Assert.True(table.Columns.Count == 4);
             Assert.Contains(table.Columns, x => x.Name.Equals("OriginalTable", StringComparison.Ordinal));
@@ -80,7 +80,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             table = db.Tables.Find(x => x.Name.Equals("debitors", StringComparison.Ordinal));
             DatabaseScripterFactory dsf = new DatabaseScripterFactory(this.LoggerFactory);
             var script = dsf.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
-            var t = script.ScriptCreateTable(table);
+            var t = script.GenerateCreateTableScript(table);
             Assert.True(t != null);
 
             MySqlDatabaseProvider mysqldbp = (MySqlDatabaseProvider)dpf.Create(new MySqlDatabaseProviderOptions { Hostname = "localhost", Database = "sakila", Username = "admin", Password = "test1234", UseSSL = true });

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
-using SQLCompare.Core.Entities.Database.MicrosoftSql;
+using SQLCompare.Core.Entities.Database.MySql;
 using SQLCompare.Core.Entities.Project;
 using System;
 using System.Collections.Generic;
@@ -10,17 +10,17 @@ using System.Text;
 namespace SQLCompare.Infrastructure.SqlScripters
 {
     /// <summary>
-    /// Sql scripter class specific for MicrosoftSql database
+    /// Sql scripter class specific for MySql database
     /// </summary>
-    internal class MicrosoftSqlScripter : ADatabaseScripter<MicrosoftSqlScriptHelper>
+    internal class MySqlScripter : ADatabaseScripter<MySqlScriptHelper>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MicrosoftSqlScripter"/> class.
+        /// Initializes a new instance of the <see cref="MySqlScripter"/> class.
         /// </summary>
         /// <param name="logger">The injected logger instance</param>
         /// <param name="options">The project options</param>
-        public MicrosoftSqlScripter(ILogger logger, ProjectOptions options)
-            : base(logger, options, new MicrosoftSqlScriptHelper(options))
+        public MySqlScripter(ILogger logger, ProjectOptions options)
+            : base(logger, options, new MySqlScriptHelper(options))
         {
         }
 
@@ -35,7 +35,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 columns = table.Columns.OrderBy(x => x.Name);
             }
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             sb.AppendLine($"CREATE TABLE {this.ScriptHelper.ScriptTableName(table)}(");
 
             int i = 0;
@@ -45,23 +45,22 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine((++i == ncol) ? string.Empty : ",");
             }
 
-            sb.AppendLine(")");
-            sb.AppendLine("GO");
+            sb.AppendLine(");");
             return sb.ToString();
         }
 
         /// <inheritdoc/>
         protected override string ScriptPrimaryKeysAlterTable(ABaseDbTable table)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             IEnumerable<string> columnList;
             foreach (var keys in table.PrimaryKeys.GroupBy(x => x.Name))
             {
-                var key = (MicrosoftSqlPrimaryKey)keys.First();
-                columnList = keys.OrderBy(x => ((MicrosoftSqlPrimaryKey)x).OrdinalPosition).Select(x => $"[{((MicrosoftSqlPrimaryKey)x).ColumnName}]");
+                var key = keys.FirstOrDefault() as MySqlPrimaryKey;
+                columnList = keys.OrderBy(x => ((MySqlPrimaryKey)x).OrdinalPosition).Select(x => $"[{((MySqlPrimaryKey)x).ColumnName}]");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT [{key.Name}] PRIMARY KEY {key.TypeDescription}({string.Join(",", columnList)});");
+                sb.AppendLine($"ADD CONSTRAINT [{key.Name}] PRIMARY KEY ({string.Join(",", columnList)});");
                 sb.AppendLine("GO");
                 sb.AppendLine();
             }
@@ -74,12 +73,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             StringBuilder sb = new StringBuilder();
 
-            foreach (MicrosoftSqlForeignKey key in table.ForeignKeys.OrderBy(x => x.Name))
+            foreach (MySqlForeignKey key in table.ForeignKeys.OrderBy(x => x.Name))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)} WITH CHECK ADD CONSTRAINT [{key.Name}] FOREIGN KEY([{key.TableColumn}])");
-                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptTableName(key.ReferencedTableSchema, key.ReferencedTableName)}([{key.ReferencedTableColumn}])");
-                sb.AppendLine($"ON DELETE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.DeleteReferentialAction)}");
-                sb.AppendLine($"ON UPDATE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.UpdateReferentialAction)}");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)} WITH CHECK ADD CONSTRAINT [{key.Name}] FOREIGN KEY([{key.ColumnName}])");
+                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptTableName(key.ReferencedTableSchema, key.ReferencedTableName)}([{key.ReferencedColumnName}])");
+                sb.AppendLine($"ON DELETE {key.DeleteRule}");
+                sb.AppendLine($"ON UPDATE {key.UpdateRule}");
                 sb.AppendLine("GO");
                 sb.AppendLine();
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)} CHECK CONSTRAINT[{key.Name}]");

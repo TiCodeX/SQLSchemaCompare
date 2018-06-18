@@ -82,9 +82,9 @@ namespace SQLCompare.UI.Pages
             return new JsonResult(new
             {
                 SourceSql = sourceTable != null ? this.databaseScripterFactory.Create(
-                    this.projectService.Project.RetrievedSourceDatabase, this.projectService.Project.Options).ScriptCreateTable(sourceTable) : string.Empty,
+                    this.projectService.Project.RetrievedSourceDatabase, this.projectService.Project.Options).GenerateCreateTableScript(sourceTable) : string.Empty,
                 TargetSql = targetTable != null ? this.databaseScripterFactory.Create(
-                    this.projectService.Project.RetrievedTargetDatabase, this.projectService.Project.Options).ScriptCreateTable(targetTable) : string.Empty,
+                    this.projectService.Project.RetrievedTargetDatabase, this.projectService.Project.Options).GenerateCreateTableScript(targetTable) : string.Empty,
             });
         }
     }

@@ -87,9 +87,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       a.DOMAIN_NAME as DomainName,");
             query.AppendLine("       IsNull(b.is_identity, 0) as IsIdentity,");
             query.AppendLine("       IsNull(b.seed_value, 0) as IdentitySeed,");
-            query.AppendLine("       IsNull(b.increment_value, 0) as IdentityIncrement");
+            query.AppendLine("       IsNull(b.increment_value, 0) as IdentityIncrement,");
+            query.AppendLine("       IsNull(c.is_computed, 0) as IsComputed,");
+            query.AppendLine("       c.definition as Definition");
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
-            query.AppendLine("LEFT JOIN sys.identity_columns b ON object_id(a.TABLE_NAME) = b.object_id and a.COLUMN_NAME = b.name");
+            query.AppendLine("LEFT JOIN sys.identity_columns b ON object_id(a.TABLE_NAME) = b.object_id AND a.COLUMN_NAME = b.name");
+            query.AppendLine("LEFT JOIN sys.computed_columns c ON object_id(a.TABLE_NAME) = c.object_id AND a.COLUMN_NAME = c.name");
             query.AppendLine($"WHERE a.TABLE_CATALOG = '{database.Name}'");
 
             return context.Query<MicrosoftSqlColumn>(query.ToString());
@@ -125,7 +128,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       b.compression_delay as CompressionDelay,");
             query.AppendLine("       b.suppress_dup_key_messages as SuppressDupKeyMessages,");
             query.AppendLine("       b.auto_created as AutoCreated");
-            query.AppendLine("FROM brokerpro.INFORMATION_SCHEMA.KEY_COLUMN_USAGE a ");
+            query.AppendLine("FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE a ");
             query.AppendLine("JOIN Sys.Indexes b ON a.CONSTRAINT_NAME = b.name ");
             query.AppendLine($"WHERE a.TABLE_CATALOG = '{database.Name}' and b.is_primary_key = 'true'");
 

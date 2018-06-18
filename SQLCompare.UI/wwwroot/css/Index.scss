@@ -4,6 +4,7 @@ $primary-color: #0094ff;
 body {
     font: 100% $font-stack;
     color: $primary-color;
+    overflow: hidden;
 }
 
 .input-group-text.min-width-100 {
@@ -12,6 +13,11 @@ body {
 
 body > .container-fluid > .row {
     height: 100vh;
+}
+
+#mainTop {
+    overflow: auto;
+    height: 100%;
 }
 
 .gutter {
@@ -28,13 +34,4 @@ body > .container-fluid > .row {
 .gutter.gutter-vertical {
     cursor: row-resize;
     background-image: url("../img/gutter-vertical.png");
-}
-
-.monaco-diff-editor .diffOverview,
-.monaco-diff-editor .diffOverviewRuler,
-.monaco-diff-editor .overflow-guard,
-.monaco-diff-editor .monaco-sash,
-.monaco-diff-editor .monaco-editor,
-.monaco-diff-editor .scrollbar {
-    max-height: 100%;
 }

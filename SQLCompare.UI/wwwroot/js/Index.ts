@@ -108,12 +108,20 @@ $(() => {
         if (target.attr("load-sql-data") !== undefined) {
             data = <object>JSON.parse(<string>JSON.parse(`"${target.attr("load-sql-data").toString()}"`));
         }
+
+        // Highlight the selected row only
+        target.addClass("table-info").siblings().removeClass("table-info");
+
         $("#mainBottom").show();
         if ($(".gutter").length === 0) {
             mainSplitter = Split(["#mainTop", "#mainBottom"], {
                 direction: "vertical",
             });
+            const mainTop: JQuery = $("#mainTop");
+            const half: number = 0.5;
+            mainTop.scrollTop(mainTop.scrollTop() + target.offset().top - mainTop.innerHeight() * half);
         }
+
         $("#sqlDiff").empty();
         Utility.AjaxCall(url, method, data, (result: { sourceSql: string; targetSql: string }): void => {
             const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(document.getElementById("sqlDiff"),
@@ -131,6 +139,7 @@ $(() => {
     $(document).on("click", "[close-split]", (e: JQuery.Event) => {
         e.preventDefault();
         mainSplitter.destroy();
+        $("#mainTop .table-info").removeClass("table-info");
         $("#mainBottom").hide();
     });
 

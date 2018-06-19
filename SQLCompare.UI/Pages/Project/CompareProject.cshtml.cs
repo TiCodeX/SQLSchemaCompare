@@ -1,13 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SQLCompare.Core.Entities;
+using SQLCompare.Core.Entities.Compare;
+using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Enums;
+using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.UI.Enums;
 using SQLCompare.UI.Models.Project;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SQLCompare.UI.Pages.Project
 {
@@ -19,6 +23,8 @@ namespace SQLCompare.UI.Pages.Project
         private readonly IAppSettingsService appSettingsService;
         private readonly IProjectService projectService;
         private readonly IDatabaseService databaseService;
+        private readonly IDatabaseCompareService databaseCompareService;
+        private readonly IDatabaseScripterFactory databaseScripterFactory;
         private readonly ITaskService taskService;
 
         /// <summary>
@@ -27,16 +33,22 @@ namespace SQLCompare.UI.Pages.Project
         /// <param name="appSettingsService">The injected app settings service</param>
         /// <param name="projectService">The injected project service</param>
         /// <param name="databaseService">The injected database service</param>
+        /// <param name="databaseCompareService">The injected database compare service</param>
+        /// <param name="databaseScripterFactory">The injected database scripter factory</param>
         /// <param name="taskService">The injected task service</param>
         public CompareProject(
             IAppSettingsService appSettingsService,
             IProjectService projectService,
             IDatabaseService databaseService,
+            IDatabaseCompareService databaseCompareService,
+            IDatabaseScripterFactory databaseScripterFactory,
             ITaskService taskService)
         {
             this.appSettingsService = appSettingsService;
             this.projectService = projectService;
             this.databaseService = databaseService;
+            this.databaseCompareService = databaseCompareService;
+            this.databaseScripterFactory = databaseScripterFactory;
             this.taskService = taskService;
         }
 
@@ -170,10 +182,32 @@ namespace SQLCompare.UI.Pages.Project
                     false,
                     taskInfo =>
                     {
-                        for (short i = 1; i <= 10; i++)
+                        // TODO: Perform mapping with user config from project
+                        var result = new CompareResult();
+
+                        foreach (var table in this.projectService.Project.RetrievedSourceDatabase.Tables)
                         {
-                            taskInfo.Percentage = (short)(i * 10);
+                            result.Tables.Add(new CompareResultItem<ABaseDbTable>
+                            {
+                                SourceItem = table,
+                                TargetItem = this.projectService.Project.RetrievedTargetDatabase.Tables.FirstOrDefault(x => x.Name == table.Name)
+                            });
                         }
+
+                        taskInfo.Percentage = 50;
+
+                        foreach (var table in this.projectService.Project.RetrievedTargetDatabase.Tables.Where(x => result.Tables.All(y => y.SourceItem.Name != x.Name)).ToList())
+                        {
+                            result.Tables.Add(new CompareResultItem<ABaseDbTable>
+                            {
+                                TargetItem = table
+                            });
+                        }
+
+                        this.projectService.Project.Result = result;
+
+                        taskInfo.Percentage = 100;
+
                         return true;
                     }),
                 new TaskWork(
@@ -181,10 +215,32 @@ namespace SQLCompare.UI.Pages.Project
                     false,
                     taskInfo =>
                     {
-                        for (short i = 1; i <= 10; i++)
+                        taskInfo.Message = "Comparing tables...";
+                        for (var i = 0; i < this.projectService.Project.Result.Tables.Count; i++)
                         {
-                            taskInfo.Percentage = (short)(i * 10);
+                            var resultTable = this.projectService.Project.Result.Tables[i];
+
+                            resultTable.Equal = this.databaseCompareService.CompareTable(resultTable.SourceItem, resultTable.TargetItem);
+
+                            if (resultTable.SourceItem != null)
+                            {
+                                resultTable.SourceCreateScript = this.databaseScripterFactory.Create(
+                                        this.projectService.Project.RetrievedSourceDatabase,
+                                        this.projectService.Project.Options)
+                                    .GenerateCreateTableScript(resultTable.SourceItem);
+                            }
+
+                            if (resultTable.TargetItem != null)
+                            {
+                                resultTable.TargetCreateScript = this.databaseScripterFactory.Create(
+                                        this.projectService.Project.RetrievedTargetDatabase,
+                                        this.projectService.Project.Options)
+                                    .GenerateCreateTableScript(resultTable.TargetItem);
+                            }
+
+                            taskInfo.Percentage = (short)((double)(i + 1) / this.projectService.Project.Result.Tables.Count * 100);
                         }
+
                         return true;
                     })
             });

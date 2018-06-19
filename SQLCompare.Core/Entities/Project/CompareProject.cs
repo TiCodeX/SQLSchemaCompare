@@ -1,4 +1,5 @@
-﻿using SQLCompare.Core.Entities.Database;
+﻿using SQLCompare.Core.Entities.Compare;
+using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using System.Xml.Serialization;
 
@@ -41,6 +42,9 @@ namespace SQLCompare.Core.Entities.Project
         [XmlIgnore]
         public ABaseDb RetrievedTargetDatabase { get; set; }
 
-        // public int _Compareresult { get; set; }
+        /// <summary>
+        /// Gets or sets the result of the comparison
+        /// </summary>
+        public CompareResult Result { get; set; }
     }
 }

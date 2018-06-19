@@ -2,30 +2,35 @@
 @using System.Web
 @using Core.Interfaces
 @model Main
+@{
+    var different = Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).ToList();
+    var onlySource = Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem == null).ToList();
+    var onlyTarget = Model.CompareResult.Tables.Where(x => x.TargetItem != null && x.SourceItem == null).ToList();
+    var same = Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).ToList();
+}
 
 <div id="mainTop">
     <div class="card">
         <div class="card-header" data-toggle="collapse" data-target="#collapseBoth">
-            <h5 class="mb-0">in both, but different (@Model.SameTables.Count)</h5>
+            <h5 class="mb-0">in both, but different (@different.Count)</h5>
         </div>
         <div id="collapseBoth" class="collapse show">
             <table class="table">
-                <thead>
+                <thead class="thead-light">
                     <tr>
-                        <th scope="col">Type</th>
-                        <th scope="col">SourceTableName</th>
-                        <th scope="col">TargetTableName</th>
+                        <th style="width: 10%">Type</th>
+                        <th style="width: 45%">Name</th>
+                        <th style="width: 45%">Name</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var table in Model.SameTables)
+                    @foreach (var item in different)
                     {
-                        <tr load-sql="/Main?handler=SqlScript"
-                            load-sql-method="POST"
-                            load-sql-data="@HttpUtility.JavaScriptStringEncode(Json.Serialize(new { SourceTable = table, TargetTable = table}).ToString())">
-                            <th scope="row">Table</th>
-                            <td>@table</td>
-                            <td>@table</td>
+                        <tr load-sql="/Main?handler=CreateScript&id=@item.Id"
+                            load-sql-method="GET">
+                            <td>Table</td>
+                            <td>@item.SourceItem?.Name</td>
+                            <td>@item.TargetItem?.Name</td>
                         </tr>
                     }
                 </tbody>
@@ -35,26 +40,25 @@
 
     <div class="card">
         <div class="card-header" data-toggle="collapse" data-target="#collapseLeft">
-            <h5 class="mb-0">only in Source (@Model.OnlySource.Count)</h5>
+            <h5 class="mb-0">only in Source (@onlySource.Count)</h5>
         </div>
         <div id="collapseLeft" class="collapse hide">
             <table class="table">
-                <thead>
+                <thead class="thead-light">
                     <tr>
-                        <th scope="col">Type</th>
-                        <th scope="col">SourceTableName</th>
-                        <th scope="col">TargetTableName</th>
+                        <th style="width: 10%">Type</th>
+                        <th style="width: 45%">Name</th>
+                        <th style="width: 45%">Name</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var table in Model.OnlySource)
+                    @foreach (var item in onlySource)
                     {
-                        <tr load-sql="/Main?handler=SqlScript"
-                            load-sql-method="POST"
-                            load-sql-data="@HttpUtility.JavaScriptStringEncode(Json.Serialize(new { SourceTable = table, TargetTable = ""}).ToString())">
-                            <th scope="row">Table</th>
-                            <td>@table</td>
-                            <td></td>
+                        <tr load-sql="/Main?handler=CreateScript&id=@item.Id"
+                            load-sql-method="GET">
+                            <td>Table</td>
+                            <td>@item.SourceItem?.Name</td>
+                            <td>@item.TargetItem?.Name</td>
                         </tr>
                     }
                 </tbody>
@@ -64,26 +68,25 @@
 
     <div class="card">
         <div class="card-header" data-toggle="collapse" data-target="#collapseRight">
-            <h5 class="mb-0">only in Target (@Model.OnlyTarget.Count)</h5>
+            <h5 class="mb-0">only in Target (@onlyTarget.Count)</h5>
         </div>
         <div id="collapseRight" class="collapse hide">
             <table class="table">
-                <thead>
+                <thead class="thead-light">
                     <tr>
-                        <th scope="col">Type</th>
-                        <th scope="col">SourceTableName</th>
-                        <th scope="col">TargetTableName</th>
+                        <th style="width: 10%">Type</th>
+                        <th style="width: 45%">Name</th>
+                        <th style="width: 45%">Name</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var table in Model.OnlyTarget)
+                    @foreach (var item in onlyTarget)
                     {
-                        <tr load-sql="/Main?handler=SqlScript"
-                            load-sql-method="POST"
-                            load-sql-data="@HttpUtility.JavaScriptStringEncode(Json.Serialize(new { SourceTable = "", TargetTable = table}).ToString())">
-                            <th scope="row">Table</th>
-                            <td></td>
-                            <td>@table</td>
+                        <tr load-sql="/Main?handler=CreateScript&id=@item.Id"
+                            load-sql-method="GET">
+                            <td>Table</td>
+                            <td>@item.SourceItem?.Name</td>
+                            <td>@item.TargetItem?.Name</td>
                         </tr>
                     }
                 </tbody>
@@ -93,9 +96,30 @@
 
     <div class="card">
         <div class="card-header" data-toggle="collapse" data-target="#collapseSame">
-            <h5 class="mb-0">identical (0)</h5>
+            <h5 class="mb-0">identical (@same.Count)</h5>
         </div>
-        <div id="collapseSame" class="collapse hide"></div>
+        <div id="collapseSame" class="collapse hide">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in same)
+                    {
+                        <tr load-sql="/Main?handler=CreateScript&id=@item.Id"
+                            load-sql-method="GET">
+                            <th scope="row">Table</th>
+                            <td>@item.SourceItem?.Name</td>
+                            <td>@item.TargetItem?.Name</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

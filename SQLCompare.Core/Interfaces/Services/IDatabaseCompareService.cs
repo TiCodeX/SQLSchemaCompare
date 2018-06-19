@@ -8,10 +8,11 @@ namespace SQLCompare.Core.Interfaces.Services
     public interface IDatabaseCompareService
     {
         /// <summary>
-        /// Compares two databases
+        /// Compares two tables
         /// </summary>
-        /// <param name="source">The source database</param>
-        /// <param name="target">The target database</param>
-        void Compare(ABaseDb source, ABaseDb target);
+        /// <param name="source">The source table</param>
+        /// <param name="target">The target table</param>
+        /// <returns>Returns whether the tables are equal</returns>
+        bool CompareTable(ABaseDbTable source, ABaseDbTable target);
     }
 }

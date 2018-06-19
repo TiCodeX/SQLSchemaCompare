@@ -65,6 +65,7 @@ namespace SQLCompare.UI.WebServer
 
             // Service
             services.AddTransient<IDatabaseService, DatabaseService>();
+            services.AddTransient<IDatabaseCompareService, DatabaseCompareService>();
 
             // Factory
             services.AddTransient<IDatabaseProviderFactory, DatabaseProviderFactory>();

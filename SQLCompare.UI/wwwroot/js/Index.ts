@@ -104,10 +104,6 @@ $(() => {
         const target: JQuery = $(e.target).closest("tr");
         const url: string = target.attr("load-sql").toString();
         const method: string = target.attr("load-sql-method").toString();
-        let data: object;
-        if (target.attr("load-sql-data") !== undefined) {
-            data = <object>JSON.parse(<string>JSON.parse(`"${target.attr("load-sql-data").toString()}"`));
-        }
 
         // Highlight the selected row only
         target.addClass("table-info").siblings().removeClass("table-info");
@@ -123,7 +119,7 @@ $(() => {
         }
 
         $("#sqlDiff").empty();
-        Utility.AjaxCall(url, method, data, (result: { sourceSql: string; targetSql: string }): void => {
+        Utility.AjaxCall(url, method, undefined, (result: { sourceSql: string; targetSql: string }): void => {
             const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(document.getElementById("sqlDiff"),
                 {
                     automaticLayout: true,

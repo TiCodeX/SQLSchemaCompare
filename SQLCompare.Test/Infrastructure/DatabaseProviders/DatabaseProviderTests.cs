@@ -4,7 +4,6 @@ using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Infrastructure.DatabaseProviders;
 using SQLCompare.Infrastructure.SqlScripters;
 using System;
-using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -32,9 +31,9 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         [IntegrationTest]
         public void GetDatabaseList()
         {
-            DatabaseProviderFactory dpf = new DatabaseProviderFactory(this.LoggerFactory);
+            var dpf = new DatabaseProviderFactory(this.LoggerFactory);
 
-            MicrosoftSqlDatabaseProvider mssqldbp = (MicrosoftSqlDatabaseProvider)dpf.Create(new MicrosoftSqlDatabaseProviderOptions { Hostname = "localhost\\SQLEXPRESS", UseWindowsAuthentication = true });
+            var mssqldbp = (MicrosoftSqlDatabaseProvider)dpf.Create(new MicrosoftSqlDatabaseProviderOptions { Hostname = "localhost\\SQLEXPRESS", UseWindowsAuthentication = true });
             var dbList = mssqldbp.GetDatabaseList();
             Assert.Contains("brokerpro", dbList);
             Assert.Contains("brokerpro_web", dbList);
@@ -42,7 +41,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             Assert.Contains("msdb", dbList);
             Assert.Contains("master", dbList);
 
-            MySqlDatabaseProvider mysqldbp = (MySqlDatabaseProvider)dpf.Create(new MySqlDatabaseProviderOptions { Hostname = "localhost", Username = "admin", Password = "test1234", UseSSL = true });
+            var mysqldbp = (MySqlDatabaseProvider)dpf.Create(new MySqlDatabaseProviderOptions { Hostname = "localhost", Username = "admin", Password = "test1234", UseSSL = true });
 
             dbList = mysqldbp.GetDatabaseList();
             Assert.Contains("sakila", dbList);
@@ -50,7 +49,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             Assert.Contains("sys", dbList);
             Assert.Contains("mysql", dbList);
 
-            PostgreSqlDatabaseProvider pgsqldbp = (PostgreSqlDatabaseProvider)dpf.Create(new PostgreSqlDatabaseProviderOptions { Hostname = "localhost", Username = "postgres", Password = "test1234" });
+            var pgsqldbp = (PostgreSqlDatabaseProvider)dpf.Create(new PostgreSqlDatabaseProviderOptions { Hostname = "localhost", Username = "postgres", Password = "test1234" });
 
             dbList = pgsqldbp.GetDatabaseList();
             Assert.Contains("pagila", dbList);
@@ -64,9 +63,9 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         [IntegrationTest]
         public void GetDatabase()
         {
-            DatabaseProviderFactory dpf = new DatabaseProviderFactory(this.LoggerFactory);
+            var dpf = new DatabaseProviderFactory(this.LoggerFactory);
 
-            MicrosoftSqlDatabaseProvider mssqldbp = (MicrosoftSqlDatabaseProvider)dpf.Create(new MicrosoftSqlDatabaseProviderOptions { Hostname = "localhost\\SQLEXPRESS", Database = "brokerpro", UseWindowsAuthentication = true });
+            var mssqldbp = (MicrosoftSqlDatabaseProvider)dpf.Create(new MicrosoftSqlDatabaseProviderOptions { Hostname = "localhost\\SQLEXPRESS", Database = "brokerpro", UseWindowsAuthentication = true });
             var db = mssqldbp.GetDatabase();
             Assert.Equal("brokerpro", db.Name);
             Assert.True(db.Tables.Count == 217);
@@ -78,12 +77,12 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             Assert.True(table.ForeignKeys.Count == 2);
             Assert.Contains(table.ForeignKeys, x => x.Name.Equals("FK_DeletedDocumentReference_DeletedDocument", StringComparison.Ordinal));
             table = db.Tables.Find(x => x.Name.Equals("debitors", StringComparison.Ordinal));
-            DatabaseScripterFactory dsf = new DatabaseScripterFactory(this.LoggerFactory);
+            var dsf = new DatabaseScripterFactory(this.LoggerFactory);
             var script = dsf.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
             var t = script.GenerateCreateTableScript(table);
             Assert.True(t != null);
 
-            MySqlDatabaseProvider mysqldbp = (MySqlDatabaseProvider)dpf.Create(new MySqlDatabaseProviderOptions { Hostname = "localhost", Database = "sakila", Username = "admin", Password = "test1234", UseSSL = true });
+            var mysqldbp = (MySqlDatabaseProvider)dpf.Create(new MySqlDatabaseProviderOptions { Hostname = "localhost", Database = "sakila", Username = "admin", Password = "test1234", UseSSL = true });
 
             db = mysqldbp.GetDatabase();
             Assert.Equal("sakila", db.Name);
@@ -101,7 +100,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             Assert.Contains(table.ForeignKeys, x => x.Name.Equals("fk_payment_rental", StringComparison.Ordinal));
             Assert.Contains(table.ForeignKeys, x => x.Name.Equals("fk_payment_staff", StringComparison.Ordinal));
 
-            PostgreSqlDatabaseProvider pgsqldbp = (PostgreSqlDatabaseProvider)dpf.Create(new PostgreSqlDatabaseProviderOptions { Hostname = "localhost", Database = "pagila", Username = "postgres", Password = "test1234" });
+            var pgsqldbp = (PostgreSqlDatabaseProvider)dpf.Create(new PostgreSqlDatabaseProviderOptions { Hostname = "localhost", Database = "pagila", Username = "postgres", Password = "test1234" });
 
             db = pgsqldbp.GetDatabase();
             Assert.Equal("pagila", db.Name);

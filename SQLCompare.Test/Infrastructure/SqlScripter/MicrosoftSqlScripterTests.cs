@@ -32,7 +32,7 @@ namespace SQLCompare.Test.Infrastructure.SqlScripter
         [ExcelData(@"Datasources\ScriptColumnTest.xlsx")]
         public void ScriptColumn(ProjectOptions options, MicrosoftSqlColumn column, string expectedResult)
         {
-            MicrosoftSqlScriptHelper helper = new MicrosoftSqlScriptHelper(options);
+            var helper = new MicrosoftSqlScriptHelper(options);
             Assert.Equal(helper.ScriptColumn(column), expectedResult);
         }
     }

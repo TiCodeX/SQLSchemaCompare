@@ -45,7 +45,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc />
         protected override List<MySqlTable> GetTables(MySqlDb database, MySqlDatabaseContext context)
         {
-            StringBuilder query = new StringBuilder();
+            var query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as Name,");
             query.AppendLine("       TABLE_CATALOG as TableCatalog,");
             query.AppendLine("       TABLE_SCHEMA as TableSchema,");
@@ -67,7 +67,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc />
         protected override List<MySqlColumn> GetColumns(MySqlDb database, MySqlDatabaseContext context)
         {
-            StringBuilder query = new StringBuilder();
+            var query = new StringBuilder();
             query.AppendLine("SELECT a.TABLE_CATALOG as TableCatalog,");
             query.AppendLine("       a.TABLE_SCHEMA as TableSchema,");
             query.AppendLine("       a.TABLE_NAME as TableName,");
@@ -98,7 +98,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override List<MySqlPrimaryKey> GetPrimaryKeys(MySqlDb database, MySqlDatabaseContext context)
         {
-            StringBuilder query = new StringBuilder();
+            var query = new StringBuilder();
 
             query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as ConstraintCatalog,");
             query.AppendLine("       kcu.CONSTRAINT_SCHEMA as ConstraintSchema,");
@@ -122,7 +122,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override List<MySqlForeignKey> GetForeignKeys(MySqlDb database, MySqlDatabaseContext context)
         {
-            StringBuilder query = new StringBuilder();
+            var query = new StringBuilder();
 
             query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as ConstraintCatalog,");
             query.AppendLine("       kcu.CONSTRAINT_SCHEMA as ConstraintSchema,");

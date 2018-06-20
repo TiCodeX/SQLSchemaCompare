@@ -28,7 +28,7 @@ namespace SQLCompare.Test.Core.Exceptions
         [UnitTest]
         public void ExceptionMessage()
         {
-            PropertyNotFoundException ex = new PropertyNotFoundException(typeof(PropertyNotFoundException), "Test");
+            var ex = new PropertyNotFoundException(typeof(PropertyNotFoundException), "Test");
             Assert.True(ex.ClassType != null && ex.PropopertyName == "Test");
             Assert.Equal($"The property has not been found in the class.{Environment.NewLine}Class: PropertyNotFoundException; Property: Test", ex.Message);
 
@@ -43,7 +43,7 @@ namespace SQLCompare.Test.Core.Exceptions
 
             ex = new PropertyNotFoundException("Test message 3");
             Assert.True(ex.ClassType == null && ex.PropopertyName == null);
-            Assert.Equal($"Test message 3", ex.Message);
+            Assert.Equal("Test message 3", ex.Message);
         }
     }
 }

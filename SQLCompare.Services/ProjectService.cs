@@ -28,7 +28,7 @@ namespace SQLCompare.Services
         public bool NewProject()
         {
             // TODO: return false if project is still open
-            this.Project = new CompareProject()
+            this.Project = new CompareProject
             {
                 SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions
                 {

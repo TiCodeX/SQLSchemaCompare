@@ -117,7 +117,7 @@ namespace SQLCompare.Test
                 (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>) && IsSimpleType(type.GetGenericArguments()[0]));
         }
 
-        private void RecursiveSetProperty(Dictionary<string, int> columnNames, ExcelRange wsRow, int rowNum, string parameterPrefix, object obj)
+        private void RecursiveSetProperty(IReadOnlyDictionary<string, int> columnNames, ExcelRange wsRow, int rowNum, string parameterPrefix, object obj)
         {
             foreach (var propertyInfo in obj.GetType().GetProperties())
             {

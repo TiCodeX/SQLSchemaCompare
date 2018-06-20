@@ -2,8 +2,6 @@
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MicrosoftSql;
 using SQLCompare.Core.Entities.Project;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -38,7 +36,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE TABLE {this.ScriptHelper.ScriptTableName(table)}(");
 
-            int i = 0;
+            var i = 0;
             foreach (var col in columns)
             {
                 sb.Append($"{this.Indent}{this.ScriptHelper.ScriptColumn(col)}");
@@ -54,11 +52,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptPrimaryKeysAlterTable(ABaseDbTable table)
         {
             var sb = new StringBuilder();
-            IEnumerable<string> columnList;
             foreach (var keys in table.PrimaryKeys.GroupBy(x => x.Name))
             {
                 var key = (MicrosoftSqlPrimaryKey)keys.First();
-                columnList = keys.OrderBy(x => ((MicrosoftSqlPrimaryKey)x).OrdinalPosition).Select(x => $"[{((MicrosoftSqlPrimaryKey)x).ColumnName}]");
+                var columnList = keys.OrderBy(x => ((MicrosoftSqlPrimaryKey)x).OrdinalPosition).Select(x => $"[{((MicrosoftSqlPrimaryKey)x).ColumnName}]");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT [{key.Name}] PRIMARY KEY {key.TypeDescription}({string.Join(",", columnList)});");
@@ -72,10 +69,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptForeignKeysAlterTable(ABaseDbTable table)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            foreach (MicrosoftSqlForeignKey key in table.ForeignKeys.OrderBy(x => x.Name))
+            foreach (var aBaseDbConstraint in table.ForeignKeys.OrderBy(x => x.Name))
             {
+                var key = (MicrosoftSqlForeignKey)aBaseDbConstraint;
+
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)} WITH CHECK ADD CONSTRAINT [{key.Name}] FOREIGN KEY([{key.TableColumn}])");
                 sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptTableName(key.ReferencedTableSchema, key.ReferencedTableName)}([{key.ReferencedTableColumn}])");
                 sb.AppendLine($"ON DELETE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.DeleteReferentialAction)}");

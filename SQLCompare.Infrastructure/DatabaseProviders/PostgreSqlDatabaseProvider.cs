@@ -45,7 +45,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc />
         protected override List<PostgreSqlTable> GetTables(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
-            StringBuilder query = new StringBuilder();
+            var query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as \"Name\",");
             query.AppendLine("       TABLE_CATALOG as \"TableCatalog\",");
             query.AppendLine("       TABLE_SCHEMA as \"TableSchema\",");
@@ -72,7 +72,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc />
         protected override List<PostgreSqlColumn> GetColumns(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
-            StringBuilder query = new StringBuilder();
+            var query = new StringBuilder();
 
             query.AppendLine("SELECT table_catalog as \"TableCatalog\",");
             query.AppendLine("       table_schema as \"TableSchema\",");
@@ -142,7 +142,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override List<PostgreSqlPrimaryKey> GetPrimaryKeys(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
-            StringBuilder query = new StringBuilder();
+            var query = new StringBuilder();
 
             query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as \"ConstraintCatalog\",");
             query.AppendLine("       kcu.CONSTRAINT_SCHEMA as \"ConstraintSchema\",");
@@ -163,7 +163,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override List<PostgreSqlForeignKey> GetForeignKeys(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
-            StringBuilder query = new StringBuilder();
+            var query = new StringBuilder();
 
             query.AppendLine("SELECT kcu.constraint_catalog AS \"ConstraintCatalog\",");
             query.AppendLine("       kcu.constraint_schema AS \"ConstraintSchema\",");

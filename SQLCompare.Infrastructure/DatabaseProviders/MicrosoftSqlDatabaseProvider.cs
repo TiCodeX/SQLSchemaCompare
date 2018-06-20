@@ -45,7 +45,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override List<MicrosoftSqlTable> GetTables(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
-            StringBuilder query = new StringBuilder();
+            var query = new StringBuilder();
             query.AppendLine("SELECT a.TABLE_NAME as Name,");
             query.AppendLine("       a.TABLE_CATALOG as TableCatalog,");
             query.AppendLine("       a.TABLE_SCHEMA as TableSchema,");
@@ -61,7 +61,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override List<MicrosoftSqlColumn> GetColumns(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
-            StringBuilder query = new StringBuilder();
+            var query = new StringBuilder();
             query.AppendLine("SELECT a.TABLE_CATALOG as TableCatalog,");
             query.AppendLine("       a.TABLE_SCHEMA as TableSchema,");
             query.AppendLine("       a.TABLE_NAME as TableName,");
@@ -101,7 +101,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override List<MicrosoftSqlPrimaryKey> GetPrimaryKeys(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
-            StringBuilder query = new StringBuilder();
+            var query = new StringBuilder();
             query.AppendLine("SELECT a.CONSTRAINT_CATALOG as ConstraintCatalog,");
             query.AppendLine("       a.CONSTRAINT_SCHEMA as ConstraintSchema,");
             query.AppendLine("       a.CONSTRAINT_NAME as Name,");
@@ -138,7 +138,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override List<MicrosoftSqlForeignKey> GetForeignKeys(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
-            StringBuilder query = new StringBuilder();
+            var query = new StringBuilder();
             query.AppendLine("SELECT tc.CONSTRAINT_CATALOG as ConstraintCatalog,");
             query.AppendLine("       tc.CONSTRAINT_SCHEMA as ConstraintSchema,");
             query.AppendLine("       tc.CONSTRAINT_NAME as Name,");

@@ -2,7 +2,6 @@
 using SQLCompare.Core.Entities.Database.MicrosoftSql;
 using SQLCompare.Core.Entities.Project;
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace SQLCompare.Infrastructure.SqlScripters
@@ -35,7 +34,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 case MicrosoftSqlForeignKey.ReferentialAction.SETDEFAULT: return "SET DEFAULT";
                 case MicrosoftSqlForeignKey.ReferentialAction.SETNULL: return "SET NULL";
                 default:
-                    throw new ArgumentException("Invalid referential action: " + action.ToString(), nameof(action));
+                    throw new ArgumentException("Invalid referential action: " + action, nameof(action));
             }
         }
 
@@ -46,10 +45,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
             {
                 return $"[{tableSchema}].[{tableName}]";
             }
-            else
-            {
-                return $"[{tableName}]";
-            }
+
+            return $"[{tableName}]";
         }
 
         /// <inheritdoc/>
@@ -60,9 +57,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 throw new ArgumentNullException(nameof(column));
             }
 
-            var col = column as MicrosoftSqlColumn;
+            var col = (MicrosoftSqlColumn)column;
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             sb.Append($"[{col.Name}] {this.ScriptDataType(col)} ");
 
@@ -78,14 +75,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     sb.Append($"DEFAULT {col.ColumnDefault} ");
                 }
 
-                if (col.IsNullable)
-                {
-                    sb.Append($"NULL");
-                }
-                else
-                {
-                    sb.Append($"NOT NULL");
-                }
+                sb.Append(col.IsNullable ? "NULL" : "NOT NULL");
             }
 
             return sb.ToString();
@@ -135,15 +125,15 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 case "char":
                 case "nchar":
                     {
-                        string collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
+                        var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
                         return $"[{column.DataType}]({column.CharacterMaxLenght}){collate}";
                     }
 
                 case "varchar":
                 case "nvarchar":
                     {
-                        string length = column.CharacterMaxLenght == -1 ? "max" : $"{column.CharacterMaxLenght}";
-                        string collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
+                        var length = column.CharacterMaxLenght == -1 ? "max" : $"{column.CharacterMaxLenght}";
+                        var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
 
                         return $"[{column.DataType}]({length}){collate}";
                     }
@@ -151,7 +141,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 case "text":
                 case "ntext":
                     {
-                        string collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
+                        var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
                         return $"[{column.DataType}]{collate}";
                     }
 
@@ -160,7 +150,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     return $"[{column.DataType}]({column.CharacterMaxLenght})";
                 case "varbinary":
                     {
-                        string length = column.CharacterMaxLenght == -1 ? "max" : $"{column.CharacterMaxLenght}";
+                        var length = column.CharacterMaxLenght == -1 ? "max" : $"{column.CharacterMaxLenght}";
                         return $"[{column.DataType}]({length})";
                     }
 

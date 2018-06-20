@@ -1,8 +1,5 @@
 ﻿using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Project;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SQLCompare.Infrastructure.SqlScripters
 {

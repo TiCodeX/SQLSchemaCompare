@@ -27,17 +27,14 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         public IDatabaseScripter Create(ABaseDb database, ProjectOptions options)
         {
-            if (database is MicrosoftSqlDb)
+            switch (database)
             {
-                return new MicrosoftSqlScripter(this.loggerFactory.CreateLogger("MicrosoftSqlScripter"), options);
-            }
-            else if (database is MySqlDb)
-            {
-                return new MySqlScripter(this.loggerFactory.CreateLogger("MySqlScripter"), options);
-            }
-            else
-            {
-                throw new NotImplementedException();
+                case MicrosoftSqlDb _:
+                    return new MicrosoftSqlScripter(this.loggerFactory.CreateLogger("MicrosoftSqlScripter"), options);
+                case MySqlDb _:
+                    return new MySqlScripter(this.loggerFactory.CreateLogger("MySqlScripter"), options);
+                default:
+                    throw new NotImplementedException();
             }
         }
     }

@@ -24,22 +24,17 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         public IDatabaseProvider Create(ADatabaseProviderOptions dbpo)
         {
-            if (dbpo is MicrosoftSqlDatabaseProviderOptions microsoftSqlOptions)
+            switch (dbpo)
             {
-                return new MicrosoftSqlDatabaseProvider(this.loggerFactory, microsoftSqlOptions);
+                case MicrosoftSqlDatabaseProviderOptions microsoftSqlOptions:
+                    return new MicrosoftSqlDatabaseProvider(this.loggerFactory, microsoftSqlOptions);
+                case MySqlDatabaseProviderOptions mySqlOptions:
+                    return new MySqlDatabaseProvider(this.loggerFactory, mySqlOptions);
+                case PostgreSqlDatabaseProviderOptions postgreSqlOptions:
+                    return new PostgreSqlDatabaseProvider(this.loggerFactory, postgreSqlOptions);
+                default:
+                    throw new NotImplementedException();
             }
-
-            if (dbpo is MySqlDatabaseProviderOptions mySqlOptions)
-            {
-                return new MySqlDatabaseProvider(this.loggerFactory, mySqlOptions);
-            }
-
-            if (dbpo is PostgreSqlDatabaseProviderOptions postgreSqlOptions)
-            {
-                return new PostgreSqlDatabaseProvider(this.loggerFactory, postgreSqlOptions);
-            }
-
-            throw new NotImplementedException();
         }
     }
 }

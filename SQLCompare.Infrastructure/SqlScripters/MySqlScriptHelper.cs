@@ -2,7 +2,6 @@
 using SQLCompare.Core.Entities.Database.MySql;
 using SQLCompare.Core.Entities.Project;
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace SQLCompare.Infrastructure.SqlScripters
@@ -46,10 +45,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
             {
                 return $"`{tableSchema}`.`{tableName}`";
             }
-            else
-            {
-                return $"`{tableName}`";
-            }
+
+            return $"`{tableName}`";
         }
 
         /// <inheritdoc/>
@@ -60,7 +57,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 throw new ArgumentNullException(nameof(column));
             }
 
-            var col = column as MySqlColumn;
+            var col = (MySqlColumn)column;
 
             var sb = new StringBuilder();
 
@@ -68,14 +65,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             if (!col.Extra.Equals("VIRTUAL GENERATED", StringComparison.OrdinalIgnoreCase) && !col.Extra.Equals("VIRTUAL GENERATED", StringComparison.OrdinalIgnoreCase))
             {
-                if (string.Equals(col.IsNullable, "YES", StringComparison.Ordinal))
-                {
-                    sb.Append($"NULL ");
-                }
-                else
-                {
-                    sb.Append($"NOT NULL ");
-                }
+                sb.Append(string.Equals(col.IsNullable, "YES", StringComparison.Ordinal) ? "NULL " : "NOT NULL ");
 
                 if (col.ColumnDefault != null)
                 {
@@ -97,7 +87,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
             {
                 return $"{column.ColumnType} AS {column.GenerationExpression} VIRTUAL";
             }
-            else if (column.Extra.Equals("STORED GENERATED", StringComparison.OrdinalIgnoreCase))
+
+            if (column.Extra.Equals("STORED GENERATED", StringComparison.OrdinalIgnoreCase))
             {
                 return $"{column.ColumnType} AS {column.GenerationExpression} PERSISTENT";
             }
@@ -156,8 +147,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 case "mediumtext":
                 case "longtext":
                     {
-                        string collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
-                        string charachterSet = $" CHARACTER SET {column.CharacterSetName}";
+                        var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
+                        var charachterSet = $" CHARACTER SET {column.CharacterSetName}";
                         return $"{column.ColumnType}({column.CharacterMaxLenght}){charachterSet}{collate}";
                     }
 

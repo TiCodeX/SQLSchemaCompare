@@ -89,7 +89,7 @@ namespace SQLCompare.UI
             finally
             {
                 // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-                NLog.LogManager.Shutdown();
+                LogManager.Shutdown();
             }
         }
 
@@ -105,7 +105,7 @@ namespace SQLCompare.UI
                         {
                             resourceStream.CopyTo(memoryStream);
 
-                            listenOptions.UseHttps(new HttpsConnectionAdapterOptions()
+                            listenOptions.UseHttps(new HttpsConnectionAdapterOptions
                             {
                                 ServerCertificate = new X509Certificate2(memoryStream.ToArray(), "test1234"),
                                 SslProtocols = SslProtocols.Tls12

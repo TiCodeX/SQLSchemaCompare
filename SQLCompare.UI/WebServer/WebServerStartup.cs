@@ -79,7 +79,7 @@ namespace SQLCompare.UI.WebServer
         public void Configure(IApplicationBuilder app)
         {
             // As we don't have IAppGlobals injected yet, we instantiate it directly.
-            AppGlobals appGlobals = new AppGlobals();
+            var appGlobals = new AppGlobals();
             if (appGlobals.IsDevelopment)
             {
                 app.UseBrowserLink();

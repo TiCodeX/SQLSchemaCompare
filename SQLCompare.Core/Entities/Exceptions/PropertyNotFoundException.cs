@@ -69,7 +69,6 @@ namespace SQLCompare.Core.Entities.Exceptions
         /// Initializes a new instance of the <see cref="PropertyNotFoundException"/> class.
         /// </summary>
         public PropertyNotFoundException()
-            : base()
         {
         }
 
@@ -82,10 +81,8 @@ namespace SQLCompare.Core.Entities.Exceptions
                 {
                     return base.Message + Environment.NewLine + $"Class: {this.ClassType.Name}; Property: {this.PropopertyName}";
                 }
-                else
-                {
-                    return base.Message;
-                }
+
+                return base.Message;
             }
         }
 

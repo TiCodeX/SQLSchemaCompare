@@ -3,7 +3,6 @@ using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace SQLCompare.Infrastructure.SqlScripters
@@ -60,7 +59,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 throw new ArgumentNullException(nameof(table));
             }
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             // Script the CREATE TABLE
             sb.Append(this.ScriptCreateTable(table));

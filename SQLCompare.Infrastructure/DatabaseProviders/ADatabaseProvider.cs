@@ -69,7 +69,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <returns>The discovered database structure</returns>
         protected TDatabase DiscoverDatabase(TDatabaseContext context)
         {
-            TDatabase db = new TDatabase() { Name = context.Database.GetDbConnection().Database };
+            var db = new TDatabase { Name = context.Database.GetDbConnection().Database };
 
             var tables = this.GetTables(db, context);
             var columns = this.GetColumns(db, context);

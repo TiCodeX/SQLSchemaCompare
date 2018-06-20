@@ -32,12 +32,7 @@ namespace SQLCompare.Services
                 return false;
             }
 
-            if (source.ForeignKeys.Count != target.ForeignKeys.Count)
-            {
-                return false;
-            }
-
-            return true;
+            return source.ForeignKeys.Count == target.ForeignKeys.Count;
         }
     }
 }

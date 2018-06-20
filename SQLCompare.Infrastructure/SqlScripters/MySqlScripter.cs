@@ -2,7 +2,6 @@
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MySql;
 using SQLCompare.Core.Entities.Project;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -34,10 +33,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 columns = table.Columns.OrderBy(x => x.Name);
             }
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendLine($"CREATE TABLE {this.ScriptHelper.ScriptTableName(table)}(");
 
-            int i = 0;
+            var i = 0;
             foreach (var col in columns)
             {
                 sb.Append($"{this.Indent}{this.ScriptHelper.ScriptColumn(col)}");
@@ -52,11 +51,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptPrimaryKeysAlterTable(ABaseDbTable table)
         {
             var sb = new StringBuilder();
-            IEnumerable<string> columnList;
             foreach (var keys in table.PrimaryKeys.GroupBy(x => x.Name))
             {
                 var key = (MySqlPrimaryKey)keys.First();
-                columnList = keys.OrderBy(x => ((MySqlPrimaryKey)x).OrdinalPosition).Select(x => $"`{((MySqlPrimaryKey)x).ColumnName}`");
+                var columnList = keys.OrderBy(x => ((MySqlPrimaryKey)x).OrdinalPosition).Select(x => $"`{((MySqlPrimaryKey)x).ColumnName}`");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT `{key.Name}` PRIMARY KEY ({string.Join(",", columnList)});");

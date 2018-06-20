@@ -2,7 +2,6 @@
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MySql;
 using SQLCompare.Core.Entities.Project;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -52,16 +51,15 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptPrimaryKeysAlterTable(ABaseDbTable table)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             IEnumerable<string> columnList;
             foreach (var keys in table.PrimaryKeys.GroupBy(x => x.Name))
             {
-                var key = keys.FirstOrDefault() as MySqlPrimaryKey;
-                columnList = keys.OrderBy(x => ((MySqlPrimaryKey)x).OrdinalPosition).Select(x => $"[{((MySqlPrimaryKey)x).ColumnName}]");
+                var key = (MySqlPrimaryKey)keys.First();
+                columnList = keys.OrderBy(x => ((MySqlPrimaryKey)x).OrdinalPosition).Select(x => $"`{((MySqlPrimaryKey)x).ColumnName}`");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT [{key.Name}] PRIMARY KEY ({string.Join(",", columnList)});");
-                sb.AppendLine("GO");
+                sb.AppendLine($"ADD CONSTRAINT `{key.Name}` PRIMARY KEY ({string.Join(",", columnList)});");
                 sb.AppendLine();
             }
 
@@ -71,18 +69,19 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptForeignKeysAlterTable(ABaseDbTable table)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            foreach (MySqlForeignKey key in table.ForeignKeys.OrderBy(x => x.Name))
+            foreach (var keys in table.ForeignKeys.GroupBy(x => x.Name))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)} WITH CHECK ADD CONSTRAINT [{key.Name}] FOREIGN KEY([{key.ColumnName}])");
-                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptTableName(key.ReferencedTableSchema, key.ReferencedTableName)}([{key.ReferencedColumnName}])");
+                var key = (MySqlForeignKey)keys.First();
+                var columnList = keys.OrderBy(x => ((MySqlForeignKey)x).OrdinalPosition).Select(x => $"`{((MySqlForeignKey)x).ColumnName}`");
+                var referencedColumnList = keys.OrderBy(x => ((MySqlForeignKey)x).OrdinalPosition).Select(x => $"`{((MySqlForeignKey)x).ReferencedColumnName}`");
+
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)}");
+                sb.AppendLine($"ADD CONSTRAINT `{key.Name}` FOREIGN KEY ({string.Join(",", columnList)})");
+                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptTableName(key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)})");
                 sb.AppendLine($"ON DELETE {key.DeleteRule}");
-                sb.AppendLine($"ON UPDATE {key.UpdateRule}");
-                sb.AppendLine("GO");
-                sb.AppendLine();
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)} CHECK CONSTRAINT[{key.Name}]");
-                sb.AppendLine("GO");
+                sb.AppendLine($"ON UPDATE {key.UpdateRule};");
                 sb.AppendLine();
             }
 

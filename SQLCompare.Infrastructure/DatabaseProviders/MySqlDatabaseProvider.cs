@@ -100,6 +100,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
 
+            // TODO: join with information_schema.statistics to get index additional information
             query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as ConstraintCatalog,");
             query.AppendLine("       kcu.CONSTRAINT_SCHEMA as ConstraintSchema,");
             query.AppendLine("       kcu.CONSTRAINT_NAME as Name,");

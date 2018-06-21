@@ -20,24 +20,6 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
         }
 
-        ///// <summary>
-        ///// Script the foreign key reference action
-        ///// </summary>
-        ///// <param name="action">The reference action</param>
-        ///// <returns>The scripted action</returns>
-        // public static string ScriptForeignKeyAction(MySqlForeignKey.ReferentialAction action)
-        // {
-        //    switch (action)
-        //    {
-        //        case MySqlForeignKey.ReferentialAction.NOACTION: return "NO ACTION";
-        //        case MySqlForeignKey.ReferentialAction.CASCADE: return "CASCADE";
-        //        case MySqlForeignKey.ReferentialAction.SETDEFAULT: return "SET DEFAULT";ed
-        //        case MySqlForeignKey.ReferentialAction.SETNULL: return "SET NULL";
-        //        default:
-        //            throw new ArgumentException("Invalid referential action: " + action.ToString(), nameof(action));
-        //    }
-        // }
-
         /// <inheritdoc/>
         public override string ScriptTableName(string tableSchema, string tableName)
         {

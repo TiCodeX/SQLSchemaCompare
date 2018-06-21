@@ -4,6 +4,7 @@ using SQLCompare.UI.Enums;
 using SQLCompare.UI.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 
 namespace SQLCompare.UI.TagHelpers
@@ -32,6 +33,11 @@ namespace SQLCompare.UI.TagHelpers
         /// Gets or sets a value indicating whether the button should span the full width of a parent
         /// </summary>
         public bool BlockLevel { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the button should be outlined
+        /// </summary>
+        public bool Outline { get; set; }
 
         /// <summary>
         /// Gets or sets the WebRequest to load the page in the modal dialog
@@ -67,38 +73,40 @@ namespace SQLCompare.UI.TagHelpers
 
             if (output.Attributes["class"] != null)
             {
-                className.Add(output.Attributes["class"].Value.ToString());
+                output.Attributes["class"].Value.ToString().Trim().Split(' ').ToList().ForEach(x => className.Add(x));
             }
 
             className.Add("btn");
+
+            var outline = this.Outline ? "outline-" : string.Empty;
             switch (this.Style)
             {
                 case ButtonStyle.Primary:
-                    className.Add("btn-primary");
+                    className.Add($"btn-{outline}primary");
                     break;
                 case ButtonStyle.Secondary:
-                    className.Add("btn-secondary");
+                    className.Add($"btn-{outline}secondary");
                     break;
                 case ButtonStyle.Success:
-                    className.Add("btn-success");
+                    className.Add($"btn-{outline}success");
                     break;
                 case ButtonStyle.Danger:
-                    className.Add("btn-danger");
+                    className.Add($"btn-{outline}danger");
                     break;
                 case ButtonStyle.Warning:
-                    className.Add("btn-warning");
+                    className.Add($"btn-{outline}warning");
                     break;
                 case ButtonStyle.Info:
-                    className.Add("btn-info");
+                    className.Add($"btn-{outline}info");
                     break;
                 case ButtonStyle.Light:
-                    className.Add("btn-light");
+                    className.Add($"btn-{outline}light");
                     break;
                 case ButtonStyle.Dark:
-                    className.Add("btn-dark");
+                    className.Add($"btn-{outline}dark");
                     break;
                 case ButtonStyle.Link:
-                    className.Add("btn-link");
+                    className.Add($"btn-{outline}link");
                     break;
             }
 

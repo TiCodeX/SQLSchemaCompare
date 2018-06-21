@@ -1,5 +1,6 @@
 ﻿@page
 @using Core.Interfaces
+@using Enums
 @model Main
 @{
     var different = Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).ToList();
@@ -135,7 +136,7 @@
                 <a class="nav-link" data-toggle="tab" href="#menu2">Menu 3</a>
             </li>
         </ul>
-        <button class="btn btn-outline-secondary btn-sm" close-split>X</button>
+        <button style="@ButtonStyle.Secondary" outline="@true" size="@ButtonSize.Small" close-split>X</button>
     </div>
 
     <div class="tab-content" style="height: calc(100% - 36px);">

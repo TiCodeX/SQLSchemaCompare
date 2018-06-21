@@ -25,19 +25,21 @@
         <a data-toggle="tab" href="#tabOptions" class="nav-link">Options</a>
     </li>
 </ul>
-<div class="tab-content">
+<div class="tab-content px-3 pt-3 mb-3">
     <div class="tab-pane active" id="tabDataSources">
         <div class="row">
             <div class="col-md-6">
                 @await Html.PartialAsync("_DatabaseProviderOptions", Model.Project.SourceProviderOptions, new ViewDataDictionary(this.ViewData)
                 {
-                    {"Prefix", CompareDirection.Source},
+                    { "Title", "Source" },
+                    { "Prefix", CompareDirection.Source},
                 })
             </div>
             <div class="col-md-6">
                 @await Html.PartialAsync("_DatabaseProviderOptions", Model.Project.TargetProviderOptions, new ViewDataDictionary(this.ViewData)
                 {
-                    {"Prefix", CompareDirection.Target},
+                    { "Title", "Target" },
+                    { "Prefix", CompareDirection.Target},
                 })
             </div>
         </div>

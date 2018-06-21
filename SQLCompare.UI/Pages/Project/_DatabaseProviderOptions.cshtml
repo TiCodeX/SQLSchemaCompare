@@ -18,15 +18,15 @@
 }
 <div class="card" id="@divId">
     <input type="hidden" name="Direction" value="@prefix">
-    <div class="card-body">
-        <h5 class="card-title">@ViewBag.Title</h5>
+    <div class="card-body pb-0">
+        <h5 class="card-title text-center">@ViewBag.Title</h5>
         <p class="card-text">
             <div class="form-group">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Type</span>
                     </div>
-                    <select class="form-control" name="@(prefix)DatabaseType">
+                    <select name="@(prefix)DatabaseType">
                         @{
                             @:<option value="@DatabaseType.MicrosoftSql" @(Model is MicrosoftSqlDatabaseProviderOptions ? "selected" : "")>Microsoft SQL Server</option>
                             @:<option value="@DatabaseType.MySql" @(Model is MySqlDatabaseProviderOptions ? "selected" : "")>Oracle MySQL Server</option>
@@ -40,7 +40,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Hostname</span>
                     </div>
-                    <input type="text" class="form-control" name="@(prefix)Hostname" value="@Model.Hostname">
+                    <input type="text" name="@(prefix)Hostname" value="@Model.Hostname">
                 </div>
             </div>
             <div class="form-group">
@@ -48,7 +48,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Username</span>
                     </div>
-                    <input type="text" class="form-control" name="@(prefix)Username" value="@Model.Username">
+                    <input type="text" name="@(prefix)Username" value="@Model.Username">
                 </div>
             </div>
             <div class="form-group">
@@ -56,7 +56,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Password</span>
                     </div>
-                    <input type="password" class="form-control" name="@(prefix)Password" value="@Model.Password">
+                    <input type="password" name="@(prefix)Password" value="@Model.Password">
                 </div>
             </div>
             <div class="form-group">
@@ -64,7 +64,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text min-width-100">Database</span>
                     </div>
-                    <select class="form-control" name="@(prefix)Database">
+                    <select name="@(prefix)Database">
                         @if (!string.IsNullOrEmpty(Model.Database))
                         {
                             <option value="@Model.Database">@Model.Database</option>

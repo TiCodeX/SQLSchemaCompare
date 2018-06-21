@@ -35,3 +35,22 @@ body > .container-fluid > .row {
     cursor: row-resize;
     background-image: url("../img/gutter-vertical.png");
 }
+
+.nav-tabs {
+    margin-bottom: 0;
+}
+
+.tab-content {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab-content > .tab-pane {
+    display: block;
+    visibility: hidden;
+}
+
+.tab-content > .active {
+    visibility: visible;
+}

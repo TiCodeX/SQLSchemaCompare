@@ -29,7 +29,9 @@
             {
                 "from": "../SQLCompare.UI/dist/release",
                 "to": "SQLCompare.UI",
-                "filter": [ "**/*" ]
+                "filter": [
+                    "**/*"
+                ]
             }
         ]
     },
@@ -43,5 +45,8 @@
         "@types/node": "^6.0.104",
         "electron": "^1.8.4",
         "electron-builder": "^20.8.1"
+    },
+    "dependencies": {
+        "electron-window-state": "^4.1.1"
     }
 }

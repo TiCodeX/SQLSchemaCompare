@@ -1,6 +1,7 @@
 ﻿import electron = require("electron");
 import childProcess = require("child_process");
 import fs = require("fs");
+import windowStateKeeper = require("electron-window-state");
 
 electron.app.setAppUserModelId("ch.ticodex.sqlcompare");
 
@@ -27,6 +28,12 @@ function createWindow() {
 
     const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
 
+    // Load the previous state with fall-back to defaults
+    const mainWindowState = windowStateKeeper({
+        defaultWidth: width - 200,
+        defaultHeight: height - 100
+    });
+
     const splashWindow = new electron.BrowserWindow({
         width: 300,
         height: 330,
@@ -38,8 +45,10 @@ function createWindow() {
 
     // Create the browser window.
     mainWindow = new electron.BrowserWindow({
-        width: width - 200,
-        height: height - 100,
+        x: mainWindowState.x,
+        y: mainWindowState.y,
+        width: mainWindowState.width,
+        height: mainWindowState.height,
         show: false,
         webPreferences: {
             nodeIntegration: true,
@@ -78,6 +87,12 @@ function createWindow() {
         } else {
             splashWindow.destroy();
             mainWindow.show();
+
+            // Let us register listeners on the window, so we can update the state
+            // automatically (the listeners will be removed when the window is closed)
+            // and restore the maximized or full screen state
+            mainWindowState.manage(mainWindow);
+
             // Open the DevTools.
             //mainWindow.webContents.openDevTools()
         }

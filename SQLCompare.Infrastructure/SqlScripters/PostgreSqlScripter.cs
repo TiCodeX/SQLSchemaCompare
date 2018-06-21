@@ -52,6 +52,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptPrimaryKeysAlterTable(ABaseDbTable table)
         {
             var sb = new StringBuilder();
+            if (sb != null)
+            {
+                return "Not implemented";
+            }
+
             IEnumerable<string> columnList;
             foreach (var keys in table.PrimaryKeys.GroupBy(x => x.Name))
             {
@@ -70,6 +75,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptForeignKeysAlterTable(ABaseDbTable table)
         {
             var sb = new StringBuilder();
+            if (sb != null)
+            {
+                return "Not implemented";
+            }
 
             foreach (var keys in table.ForeignKeys.GroupBy(x => x.Name))
             {

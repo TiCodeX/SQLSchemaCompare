@@ -22,5 +22,10 @@ namespace SQLCompare.Core.Entities.Database
         /// Gets the database's tables
         /// </summary>
         public List<ABaseDbTable> Tables { get; } = new List<ABaseDbTable>();
+
+        /// <summary>
+        /// Gets the database's views
+        /// </summary>
+        public List<ABaseDbView> Views { get; } = new List<ABaseDbView>();
     }
 }

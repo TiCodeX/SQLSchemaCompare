@@ -12,7 +12,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// Retrieves various information from a Microsoft SQL Server
     /// </summary>
     internal class MicrosoftSqlDatabaseProvider
-        : ADatabaseProvider<MicrosoftSqlDatabaseProviderOptions, MicrosoftSqlDatabaseContext, MicrosoftSqlDb, MicrosoftSqlTable, MicrosoftSqlColumn, MicrosoftSqlPrimaryKey, MicrosoftSqlForeignKey>
+        : ADatabaseProvider<MicrosoftSqlDatabaseProviderOptions, MicrosoftSqlDatabaseContext, MicrosoftSqlDb, MicrosoftSqlTable, MicrosoftSqlColumn, MicrosoftSqlPrimaryKey, MicrosoftSqlForeignKey, MicrosoftSqlView>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MicrosoftSqlDatabaseProvider"/> class.
@@ -178,6 +178,19 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("	ON refcol.column_id = fkc.referenced_column_id and refcol.object_id = reftb.object_id");
             query.AppendLine($"WHERE tc.TABLE_CATALOG = '{database.Name}'");
             return context.Query<MicrosoftSqlForeignKey>(query.ToString());
+        }
+
+        /// <inheritdoc/>
+        protected override List<MicrosoftSqlView> GetViews(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT TABLE_NAME as Name,");
+            query.AppendLine("       TABLE_CATALOG as TableCatalog,");
+            query.AppendLine("       TABLE_SCHEMA as TableSchema,");
+            query.AppendLine("       VIEW_DEFINITION as ViewDefinition");
+            query.AppendLine("FROM INFORMATION_SCHEMA.VIEWS");
+
+            return context.Query<MicrosoftSqlView>(query.ToString());
         }
     }
 }

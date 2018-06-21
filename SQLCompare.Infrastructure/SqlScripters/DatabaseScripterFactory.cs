@@ -2,6 +2,7 @@
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MicrosoftSql;
 using SQLCompare.Core.Entities.Database.MySql;
+using SQLCompare.Core.Entities.Database.PostgreSql;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Interfaces;
 using System;
@@ -33,6 +34,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     return new MicrosoftSqlScripter(this.loggerFactory.CreateLogger("MicrosoftSqlScripter"), options);
                 case MySqlDb _:
                     return new MySqlScripter(this.loggerFactory.CreateLogger("MySqlScripter"), options);
+                case PostgreSqlDb _:
+                    return new PostgreSqlScripter(this.loggerFactory.CreateLogger("PostgreSqlScripter"), options);
                 default:
                     throw new NotImplementedException();
             }

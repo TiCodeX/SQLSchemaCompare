@@ -19,7 +19,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// <typeparam name="TColumn">Concrete type of the database column</typeparam>
     /// <typeparam name="TPrimaryKey">Concrete type of the database primary key</typeparam>
     /// <typeparam name="TForeignKey">Concrete type of the database foreign key</typeparam>
-    public abstract class ADatabaseProvider<TDatabaseProviderOptions, TDatabaseContext, TDatabase, TTable, TColumn, TPrimaryKey, TForeignKey> : IDatabaseProvider
+    /// <typeparam name="TView">Concrete type of the database view</typeparam>
+    public abstract class ADatabaseProvider<TDatabaseProviderOptions, TDatabaseContext, TDatabase, TTable, TColumn, TPrimaryKey, TForeignKey, TView> : IDatabaseProvider
         where TDatabaseProviderOptions : ADatabaseProviderOptions
         where TDatabaseContext : ADatabaseContext<TDatabaseProviderOptions>
         where TDatabase : ABaseDb, new()
@@ -27,9 +28,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         where TColumn : ABaseDbColumn, new()
         where TPrimaryKey : ABaseDbConstraint, new()
         where TForeignKey : ABaseDbConstraint, new()
+        where TView : ABaseDbView, new()
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ADatabaseProvider{TDatabaseProviderOptions, TDatabaseContext, TDatabase, TTable, TColumn, TPrimaryKey, TForeignKey}"/> class.
+        /// Initializes a new instance of the <see cref="ADatabaseProvider{TDatabaseProviderOptions, TDatabaseContext, TDatabase, TTable, TColumn, TPrimaryKey, TForeignKey, TView}"/> class.
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory used when using DBContext</param>
         /// <param name="logger">The logger created in the concrete class</param>
@@ -75,6 +77,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var columns = this.GetColumns(db, context);
             var primaryKeys = this.GetPrimaryKeys(db, context);
             var foreignKeys = this.GetForeignKeys(db, context);
+            var views = this.GetViews(db, context);
 
             tables.ForEach(x =>
                     {
@@ -93,6 +96,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                     });
 
             db.Tables.AddRange(tables);
+            db.Views.AddRange(views);
 
             return db;
         }
@@ -128,5 +132,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="context">The database context</param>
         /// <returns>The list of foreign keys</returns>
         protected abstract List<TForeignKey> GetForeignKeys(TDatabase database, TDatabaseContext context);
+
+        /// <summary>
+        /// Get the database views
+        /// </summary>
+        /// <param name="db">The database information</param>
+        /// <param name="context">The database context</param>
+        /// <returns>The list of views</returns>
+        protected abstract List<TView> GetViews(TDatabase db, TDatabaseContext context);
     }
 }

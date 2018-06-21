@@ -152,7 +152,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 case "bit varying":
                     {
                         var precision = (column.CharacterMaxLenght != null) ? $"({column.CharacterMaxLenght})" : string.Empty;
-                        return $"{column.DataType}({column.NumericPrecision}";
+                        return $"{column.DataType}{precision}";
                     }
 
                 case "bytea":

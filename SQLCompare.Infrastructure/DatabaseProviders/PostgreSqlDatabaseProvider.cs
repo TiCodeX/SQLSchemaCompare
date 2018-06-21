@@ -12,7 +12,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// Retrieves various information from a PostgreSQL Server
     /// </summary>
     internal class PostgreSqlDatabaseProvider
-        : ADatabaseProvider<PostgreSqlDatabaseProviderOptions, PostgreSqlDatabaseContext, PostgreSqlDb, PostgreSqlTable, PostgreSqlColumn, PostgreSqlPrimaryKey, PostgreSqlForeignKey>
+        : ADatabaseProvider<PostgreSqlDatabaseProviderOptions, PostgreSqlDatabaseContext, PostgreSqlDb, PostgreSqlTable, PostgreSqlColumn, PostgreSqlPrimaryKey, PostgreSqlForeignKey, PostgreSqlView>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDatabaseProvider"/> class.
@@ -190,6 +190,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("    ON kcu.constraint_name = ccu.constraint_name AND kcu.constraint_schema = ccu.constraint_schema AND kcu.constraint_catalog = ccu.constraint_catalog");
             query.AppendLine($"WHERE kcu.constraint_catalog = '{database.Name}' AND tu.constraint_type = 'FOREIGN KEY'");
             return context.Query<PostgreSqlForeignKey>(query.ToString());
+        }
+
+        /// <inheritdoc/>
+        protected override List<PostgreSqlView> GetViews(PostgreSqlDb db, PostgreSqlDatabaseContext context)
+        {
+            // TODO: implement
+            return new List<PostgreSqlView>();
         }
     }
 }

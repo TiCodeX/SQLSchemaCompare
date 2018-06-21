@@ -12,7 +12,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// Retrieves various information from a MySQL Server
     /// </summary>
     internal class MySqlDatabaseProvider
-        : ADatabaseProvider<MySqlDatabaseProviderOptions, MySqlDatabaseContext, MySqlDb, MySqlTable, MySqlColumn, MySqlPrimaryKey, MySqlForeignKey>
+        : ADatabaseProvider<MySqlDatabaseProviderOptions, MySqlDatabaseContext, MySqlDb, MySqlTable, MySqlColumn, MySqlPrimaryKey, MySqlForeignKey, MySqlView>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlDatabaseProvider"/> class.
@@ -145,6 +145,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("INNER JOIN information_schema.REFERENTIAL_CONSTRAINTS rc ON rc.constraint_name = kcu.constraint_name ");
             query.AppendLine($"WHERE kcu.TABLE_SCHEMA = '{database.Name}' AND tc.constraint_type = 'FOREIGN KEY'");
             return context.Query<MySqlForeignKey>(query.ToString());
+        }
+
+        /// <inheritdoc/>
+        protected override List<MySqlView> GetViews(MySqlDb db, MySqlDatabaseContext context)
+        {
+            // TODO: implement
+            return new List<MySqlView>();
         }
     }
 }

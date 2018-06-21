@@ -1,8 +1,8 @@
 ﻿import electron = require("electron");
 import childProcess = require("child_process");
 import fs = require("fs");
-// Module to control application life.
-const app = electron.app;
+
+electron.app.setAppUserModelId("ch.ticodex.sqlcompare");
 
 const servicePath = `./SQLCompare.UI/SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`;
 let serviceProcess: childProcess.ChildProcess;
@@ -98,18 +98,18 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", createWindow);
+electron.app.on("ready", createWindow);
 
 // Quit when all windows are closed.
-app.on("window-all-closed", () => {
+electron.app.on("window-all-closed", () => {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== "darwin") {
-        app.quit();
+        electron.app.quit();
     }
 });
 
-app.on("activate", () => {
+electron.app.on("activate", () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
@@ -118,7 +118,7 @@ app.on("activate", () => {
 });
 
 // SSL/TSL: this is the self signed certificate support
-app.on("certificate-error", (event, webContents, url, error, certificate, callback) => {
+electron.app.on("certificate-error", (event, webContents, url, error, certificate, callback) => {
     // On certificate error we disable default behaviour (stop loading the page)
     // and we then say "it is all fine - true" to the callback
     event.preventDefault();

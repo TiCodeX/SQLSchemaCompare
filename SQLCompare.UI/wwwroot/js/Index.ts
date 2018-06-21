@@ -20,6 +20,12 @@ $(() => {
         e.preventDefault();
     }, false);
 
+    // Prevent app zooming
+    if (electron !== undefined) {
+        electron.webFrame.setVisualZoomLevelLimits(1, 1);
+        electron.webFrame.setLayoutZoomLevelLimits(0, 0);
+    }
+
     // Preload the monaco-editor
     setTimeout((): void => {
         amdRequire(["vs/editor/editor.main"], (): void => {

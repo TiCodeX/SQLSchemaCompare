@@ -12,7 +12,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// Retrieves various information from a Microsoft SQL Server
     /// </summary>
     internal class MicrosoftSqlDatabaseProvider
-        : ADatabaseProvider<MicrosoftSqlDatabaseProviderOptions, MicrosoftSqlDatabaseContext, MicrosoftSqlDb, MicrosoftSqlTable, MicrosoftSqlColumn, MicrosoftSqlPrimaryKey, MicrosoftSqlForeignKey, MicrosoftSqlView>
+        : ADatabaseProvider<MicrosoftSqlDatabaseProviderOptions, MicrosoftSqlDatabaseContext, MicrosoftSqlDb>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MicrosoftSqlDatabaseProvider"/> class.
@@ -43,12 +43,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override List<MicrosoftSqlTable> GetTables(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbTable> GetTables(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT a.TABLE_NAME as Name,");
-            query.AppendLine("       a.TABLE_CATALOG as TableCatalog,");
-            query.AppendLine("       a.TABLE_SCHEMA as TableSchema,");
+            query.AppendLine("       a.TABLE_CATALOG as 'Catalog',");
+            query.AppendLine("       a.TABLE_SCHEMA as 'Schema',");
             query.AppendLine("       b.object_id as ObjectId,");
             query.AppendLine("       b.create_date as CreateDate,");
             query.AppendLine("       b.modify_date as ModifyDate");
@@ -59,11 +59,11 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override List<MicrosoftSqlColumn> GetColumns(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbColumn> GetColumns(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT a.TABLE_CATALOG as TableCatalog,");
-            query.AppendLine("       a.TABLE_SCHEMA as TableSchema,");
+            query.AppendLine("SELECT a.TABLE_CATALOG as 'Catalog',");
+            query.AppendLine("       a.TABLE_SCHEMA as 'Schema',");
             query.AppendLine("       a.TABLE_NAME as TableName,");
             query.AppendLine("       a.COLUMN_NAME as Name,");
             query.AppendLine("       a.ORDINAL_POSITION as OrdinalPosition,");
@@ -99,11 +99,11 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override List<MicrosoftSqlPrimaryKey> GetPrimaryKeys(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbConstraint> GetPrimaryKeys(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT a.CONSTRAINT_CATALOG as ConstraintCatalog,");
-            query.AppendLine("       a.CONSTRAINT_SCHEMA as ConstraintSchema,");
+            query.AppendLine("SELECT a.CONSTRAINT_CATALOG as 'Catalog',");
+            query.AppendLine("       a.CONSTRAINT_SCHEMA as 'Schema',");
             query.AppendLine("       a.CONSTRAINT_NAME as Name,");
             query.AppendLine("       a.TABLE_CATALOG as TableCatalog,");
             query.AppendLine("       a.TABLE_SCHEMA as TableSchema,");
@@ -136,11 +136,11 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override List<MicrosoftSqlForeignKey> GetForeignKeys(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT tc.CONSTRAINT_CATALOG as ConstraintCatalog,");
-            query.AppendLine("       tc.CONSTRAINT_SCHEMA as ConstraintSchema,");
+            query.AppendLine("SELECT tc.CONSTRAINT_CATALOG as 'Catalog',");
+            query.AppendLine("       tc.CONSTRAINT_SCHEMA as 'Schema',");
             query.AppendLine("       tc.CONSTRAINT_NAME as Name,");
             query.AppendLine("       tc.TABLE_CATALOG as TableCatalog,");
             query.AppendLine("       tc.TABLE_SCHEMA as TableSchema,");
@@ -181,16 +181,44 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override List<MicrosoftSqlView> GetViews(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbView> GetViews(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as Name,");
-            query.AppendLine("       TABLE_CATALOG as TableCatalog,");
-            query.AppendLine("       TABLE_SCHEMA as TableSchema,");
+            query.AppendLine("       TABLE_CATALOG as 'Catalog',");
+            query.AppendLine("       TABLE_SCHEMA as 'Schema',");
             query.AppendLine("       VIEW_DEFINITION as ViewDefinition");
             query.AppendLine("FROM INFORMATION_SCHEMA.VIEWS");
 
             return context.Query<MicrosoftSqlView>(query.ToString());
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbRoutine> GetFunctions(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT ROUTINE_NAME as Name,");
+            query.AppendLine("       ROUTINE_CATALOG as 'Catalog',");
+            query.AppendLine("       ROUTINE_SCHEMA as 'Schema',");
+            query.AppendLine("       ROUTINE_DEFINITION as RoutineDefinition");
+            query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
+            query.AppendLine("WHERE routine_type = 'FUNCTION'");
+
+            return context.Query<MicrosoftSqlFunction>(query.ToString());
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbRoutine> GetStoreProcedures(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT ROUTINE_NAME as Name,");
+            query.AppendLine("       ROUTINE_CATALOG as 'Catalog',");
+            query.AppendLine("       ROUTINE_SCHEMA as 'Schema',");
+            query.AppendLine("       ROUTINE_DEFINITION as RoutineDefinition");
+            query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
+            query.AppendLine("WHERE routine_type = 'PROCEDURE'");
+
+            return context.Query<MicrosoftSqlFunction>(query.ToString());
         }
     }
 }

@@ -12,7 +12,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// Retrieves various information from a PostgreSQL Server
     /// </summary>
     internal class PostgreSqlDatabaseProvider
-        : ADatabaseProvider<PostgreSqlDatabaseProviderOptions, PostgreSqlDatabaseContext, PostgreSqlDb, PostgreSqlTable, PostgreSqlColumn, PostgreSqlPrimaryKey, PostgreSqlForeignKey, PostgreSqlView>
+        : ADatabaseProvider<PostgreSqlDatabaseProviderOptions, PostgreSqlDatabaseContext, PostgreSqlDb>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDatabaseProvider"/> class.
@@ -43,12 +43,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc />
-        protected override List<PostgreSqlTable> GetTables(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbTable> GetTables(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as \"Name\",");
-            query.AppendLine("       TABLE_CATALOG as \"TableCatalog\",");
-            query.AppendLine("       TABLE_SCHEMA as \"TableSchema\",");
+            query.AppendLine("       TABLE_CATALOG as \"Catalog\",");
+            query.AppendLine("       TABLE_SCHEMA as \"Schema\",");
             query.AppendLine("       self_referencing_column_name as \"SelfReferencingColumnName\",");
             query.AppendLine("       reference_generation as \"ReferenceGeneration\",");
             query.AppendLine("       user_defined_type_catalog as \"UserDefinedTypeCatalog\",");
@@ -70,12 +70,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc />
-        protected override List<PostgreSqlColumn> GetColumns(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbColumn> GetColumns(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
 
-            query.AppendLine("SELECT table_catalog as \"TableCatalog\",");
-            query.AppendLine("       table_schema as \"TableSchema\",");
+            query.AppendLine("SELECT table_catalog as \"Catalog\",");
+            query.AppendLine("       table_schema as \"Schema\",");
             query.AppendLine("       table_name as \"TableName\",");
             query.AppendLine("       column_name as \"Name\",");
             query.AppendLine("       ordinal_position as \"OrdinalPosition\",");
@@ -140,12 +140,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override List<PostgreSqlPrimaryKey> GetPrimaryKeys(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbConstraint> GetPrimaryKeys(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
 
-            query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as \"ConstraintCatalog\",");
-            query.AppendLine("       kcu.CONSTRAINT_SCHEMA as \"ConstraintSchema\",");
+            query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as \"Catalog\",");
+            query.AppendLine("       kcu.CONSTRAINT_SCHEMA as \"Schema\",");
             query.AppendLine("       kcu.CONSTRAINT_NAME as \"Name\",");
             query.AppendLine("       kcu.TABLE_CATALOG as \"TableCatalog\",");
             query.AppendLine("       kcu.TABLE_SCHEMA as \"TableSchema\",");
@@ -161,12 +161,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override List<PostgreSqlForeignKey> GetForeignKeys(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
 
-            query.AppendLine("SELECT kcu.constraint_catalog AS \"ConstraintCatalog\",");
-            query.AppendLine("       kcu.constraint_schema AS \"ConstraintSchema\",");
+            query.AppendLine("SELECT kcu.constraint_catalog AS \"Catalog\",");
+            query.AppendLine("       kcu.constraint_schema AS \"Schema\",");
             query.AppendLine("       kcu.constraint_name AS \"Name\",");
             query.AppendLine("       kcu.table_catalog AS \"TableCatalog\",");
             query.AppendLine("       kcu.table_schema AS \"TableSchema\",");
@@ -193,10 +193,24 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override List<PostgreSqlView> GetViews(PostgreSqlDb db, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbView> GetViews(PostgreSqlDb db, PostgreSqlDatabaseContext context)
         {
             // TODO: implement
             return new List<PostgreSqlView>();
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbRoutine> GetFunctions(PostgreSqlDb db, PostgreSqlDatabaseContext context)
+        {
+            // TODO: implement
+            return new List<PostgreSqlFunction>();
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbRoutine> GetStoreProcedures(PostgreSqlDb db, PostgreSqlDatabaseContext context)
+        {
+            // TODO: implement
+            return new List<PostgreSqlFunction>();
         }
     }
 }

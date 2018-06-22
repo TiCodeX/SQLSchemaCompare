@@ -15,23 +15,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// <typeparam name="TDatabaseProviderOptions">Concrete type of the database provider options</typeparam>
     /// <typeparam name="TDatabaseContext">Concrete type of the database context</typeparam>
     /// <typeparam name="TDatabase">Concrete type of the database</typeparam>
-    /// <typeparam name="TTable">Concrete type of the database table</typeparam>
-    /// <typeparam name="TColumn">Concrete type of the database column</typeparam>
-    /// <typeparam name="TPrimaryKey">Concrete type of the database primary key</typeparam>
-    /// <typeparam name="TForeignKey">Concrete type of the database foreign key</typeparam>
-    /// <typeparam name="TView">Concrete type of the database view</typeparam>
-    public abstract class ADatabaseProvider<TDatabaseProviderOptions, TDatabaseContext, TDatabase, TTable, TColumn, TPrimaryKey, TForeignKey, TView> : IDatabaseProvider
+    public abstract class ADatabaseProvider<TDatabaseProviderOptions, TDatabaseContext, TDatabase> : IDatabaseProvider
         where TDatabaseProviderOptions : ADatabaseProviderOptions
         where TDatabaseContext : ADatabaseContext<TDatabaseProviderOptions>
         where TDatabase : ABaseDb, new()
-        where TTable : ABaseDbTable, new()
-        where TColumn : ABaseDbColumn, new()
-        where TPrimaryKey : ABaseDbConstraint, new()
-        where TForeignKey : ABaseDbConstraint, new()
-        where TView : ABaseDbView, new()
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ADatabaseProvider{TDatabaseProviderOptions, TDatabaseContext, TDatabase, TTable, TColumn, TPrimaryKey, TForeignKey, TView}"/> class.
+        /// Initializes a new instance of the <see cref="ADatabaseProvider{TDatabaseProviderOptions, TDatabaseContext, TDatabase}"/> class.
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory used when using DBContext</param>
         /// <param name="logger">The logger created in the concrete class</param>
@@ -78,25 +68,29 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var primaryKeys = this.GetPrimaryKeys(db, context);
             var foreignKeys = this.GetForeignKeys(db, context);
             var views = this.GetViews(db, context);
+            var functions = this.GetFunctions(db, context);
+            var storeProcedures = this.GetStoreProcedures(db, context);
 
-            tables.ForEach(x =>
-                    {
-                        x.Columns.AddRange(
-                            columns.Where(y => string.Equals(x.TableCatalog, y.TableCatalog, System.StringComparison.Ordinal)
-                                                   && string.Equals(x.TableSchema, y.TableSchema, System.StringComparison.Ordinal)
-                                                   && string.Equals(x.Name, y.TableName, System.StringComparison.Ordinal)));
-                        x.ForeignKeys.AddRange(
-                            foreignKeys.Where(y => string.Equals(x.TableCatalog, y.TableCatalog, System.StringComparison.Ordinal)
-                                                   && string.Equals(x.TableSchema, y.TableSchema, System.StringComparison.Ordinal)
-                                                   && string.Equals(x.Name, y.TableName, System.StringComparison.Ordinal)));
-                        x.PrimaryKeys.AddRange(
-                            primaryKeys.Where(y => string.Equals(x.TableCatalog, y.TableCatalog, System.StringComparison.Ordinal)
-                                                   && string.Equals(x.TableSchema, y.TableSchema, System.StringComparison.Ordinal)
-                                                   && string.Equals(x.Name, y.TableName, System.StringComparison.Ordinal)));
-                    });
+            foreach (var table in tables)
+            {
+                table.Columns.AddRange(
+                    columns.Where(y => string.Equals(table.Catalog, y.Catalog, System.StringComparison.Ordinal)
+                                           && string.Equals(table.Schema, y.Schema, System.StringComparison.Ordinal)
+                                           && string.Equals(table.Name, y.TableName, System.StringComparison.Ordinal)));
+                table.ForeignKeys.AddRange(
+                    foreignKeys.Where(y => string.Equals(table.Catalog, y.TableCatalog, System.StringComparison.Ordinal)
+                                           && string.Equals(table.Schema, y.TableSchema, System.StringComparison.Ordinal)
+                                           && string.Equals(table.Name, y.TableName, System.StringComparison.Ordinal)));
+                table.PrimaryKeys.AddRange(
+                    primaryKeys.Where(y => string.Equals(table.Catalog, y.TableCatalog, System.StringComparison.Ordinal)
+                                           && string.Equals(table.Schema, y.TableSchema, System.StringComparison.Ordinal)
+                                           && string.Equals(table.Name, y.TableName, System.StringComparison.Ordinal)));
+            }
 
             db.Tables.AddRange(tables);
             db.Views.AddRange(views);
+            db.Functions.AddRange(functions);
+            db.StoreProcedures.AddRange(storeProcedures);
 
             return db;
         }
@@ -107,7 +101,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of tables</returns>
-        protected abstract List<TTable> GetTables(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbTable> GetTables(TDatabase database, TDatabaseContext context);
 
         /// <summary>
         /// Get the table columns
@@ -115,7 +109,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of columns</returns>
-        protected abstract List<TColumn> GetColumns(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbColumn> GetColumns(TDatabase database, TDatabaseContext context);
 
         /// <summary>
         /// Get the table primary keys
@@ -123,7 +117,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of primary keys</returns>
-        protected abstract List<TPrimaryKey> GetPrimaryKeys(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbConstraint> GetPrimaryKeys(TDatabase database, TDatabaseContext context);
 
         /// <summary>
         /// Get the table foreign keys
@@ -131,7 +125,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of foreign keys</returns>
-        protected abstract List<TForeignKey> GetForeignKeys(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbConstraint> GetForeignKeys(TDatabase database, TDatabaseContext context);
 
         /// <summary>
         /// Get the database views
@@ -139,6 +133,22 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="db">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of views</returns>
-        protected abstract List<TView> GetViews(TDatabase db, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbView> GetViews(TDatabase db, TDatabaseContext context);
+
+        /// <summary>
+        /// Get the database functions
+        /// </summary>
+        /// <param name="db">The database information</param>
+        /// <param name="context">The database context</param>
+        /// <returns>The list of functions</returns>
+        protected abstract IEnumerable<ABaseDbRoutine> GetFunctions(TDatabase db, TDatabaseContext context);
+
+        /// <summary>
+        /// Get the database store procedure
+        /// </summary>
+        /// <param name="db">The database information</param>
+        /// <param name="context">The database context</param>
+        /// <returns>The list of store procedures</returns>
+        protected abstract IEnumerable<ABaseDbRoutine> GetStoreProcedures(TDatabase db, TDatabaseContext context);
     }
 }

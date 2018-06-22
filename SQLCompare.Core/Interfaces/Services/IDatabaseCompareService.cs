@@ -14,5 +14,13 @@ namespace SQLCompare.Core.Interfaces.Services
         /// <param name="target">The target table</param>
         /// <returns>Returns whether the tables are equal</returns>
         bool CompareTable(ABaseDbTable source, ABaseDbTable target);
+
+        /// <summary>
+        /// Compares two views
+        /// </summary>
+        /// <param name="sourceItem">The source view</param>
+        /// <param name="targetItem">The target view</param>
+        /// <returns>Returns whether the views are equal</returns>
+        bool CompareView(ABaseDbView sourceItem, ABaseDbView targetItem);
     }
 }

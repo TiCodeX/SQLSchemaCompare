@@ -34,5 +34,21 @@ namespace SQLCompare.Services
 
             return source.ForeignKeys.Count == target.ForeignKeys.Count;
         }
+
+        /// <inheritdoc/>
+        public bool CompareView(ABaseDbView sourceItem, ABaseDbView targetItem)
+        {
+            if (sourceItem == null && targetItem == null)
+            {
+                throw new ArgumentException("Both arguments are null");
+            }
+
+            if (sourceItem == null || targetItem == null)
+            {
+                return false;
+            }
+
+            return sourceItem.ViewDefinition.Equals(targetItem.ViewDefinition, StringComparison.Ordinal);
+        }
     }
 }

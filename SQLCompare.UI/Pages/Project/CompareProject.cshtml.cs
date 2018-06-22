@@ -194,13 +194,30 @@ namespace SQLCompare.UI.Pages.Project
                             });
                         }
 
-                        taskInfo.Percentage = 50;
-
                         foreach (var table in this.projectService.Project.RetrievedTargetDatabase.Tables.Where(x => result.Tables.All(y => y.SourceItem.Name != x.Name)).ToList())
                         {
                             result.Tables.Add(new CompareResultItem<ABaseDbTable>
                             {
                                 TargetItem = table
+                            });
+                        }
+
+                        taskInfo.Percentage = 50;
+
+                        foreach (var view in this.projectService.Project.RetrievedSourceDatabase.Views)
+                        {
+                            result.Views.Add(new CompareResultItem<ABaseDbView>
+                            {
+                                SourceItem = view,
+                                TargetItem = this.projectService.Project.RetrievedTargetDatabase.Views.FirstOrDefault(x => x.Name == view.Name)
+                            });
+                        }
+
+                        foreach (var view in this.projectService.Project.RetrievedTargetDatabase.Views.Where(x => result.Views.All(y => y.SourceItem.Name != x.Name)).ToList())
+                        {
+                            result.Views.Add(new CompareResultItem<ABaseDbView>
+                            {
+                                TargetItem = view
                             });
                         }
 
@@ -216,6 +233,8 @@ namespace SQLCompare.UI.Pages.Project
                     taskInfo =>
                     {
                         taskInfo.Message = "Comparing tables...";
+                        var totalItems = this.projectService.Project.Result.Tables.Count + this.projectService.Project.Result.Views.Count;
+                        var processed = 1;
                         for (var i = 0; i < this.projectService.Project.Result.Tables.Count; i++)
                         {
                             var resultTable = this.projectService.Project.Result.Tables[i];
@@ -238,7 +257,27 @@ namespace SQLCompare.UI.Pages.Project
                                     .GenerateCreateTableScript(resultTable.TargetItem);
                             }
 
-                            taskInfo.Percentage = (short)((double)(i + 1) / this.projectService.Project.Result.Tables.Count * 100);
+                            taskInfo.Percentage = (short)((double)(processed++) / totalItems * 100);
+                        }
+
+                        taskInfo.Message = "Comparing views...";
+                        for (var i = 0; i < this.projectService.Project.Result.Views.Count; i++)
+                        {
+                            var resultView = this.projectService.Project.Result.Views[i];
+
+                            resultView.Equal = this.databaseCompareService.CompareView(resultView.SourceItem, resultView.TargetItem);
+
+                            if (resultView.SourceItem != null)
+                            {
+                                resultView.SourceCreateScript = resultView.SourceItem.ViewDefinition;
+                            }
+
+                            if (resultView.TargetItem != null)
+                            {
+                                resultView.TargetCreateScript = resultView.TargetItem.ViewDefinition;
+                            }
+
+                            taskInfo.Percentage = (short)((double)(processed++) / totalItems * 100);
                         }
 
                         return true;

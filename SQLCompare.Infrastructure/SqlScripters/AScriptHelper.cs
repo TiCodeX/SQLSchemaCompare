@@ -39,7 +39,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <returns>The normalized table name</returns>
         public string ScriptTableName(ABaseDbTable table)
         {
-            return this.ScriptTableName(table.TableSchema, table.Name);
+            return this.ScriptTableName(table.Schema, table.Name);
         }
 
         /// <summary>

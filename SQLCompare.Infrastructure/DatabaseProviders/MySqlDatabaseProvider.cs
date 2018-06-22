@@ -12,7 +12,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
     /// Retrieves various information from a MySQL Server
     /// </summary>
     internal class MySqlDatabaseProvider
-        : ADatabaseProvider<MySqlDatabaseProviderOptions, MySqlDatabaseContext, MySqlDb, MySqlTable, MySqlColumn, MySqlPrimaryKey, MySqlForeignKey, MySqlView>
+        : ADatabaseProvider<MySqlDatabaseProviderOptions, MySqlDatabaseContext, MySqlDb>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlDatabaseProvider"/> class.
@@ -43,12 +43,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc />
-        protected override List<MySqlTable> GetTables(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbTable> GetTables(MySqlDb database, MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as Name,");
-            query.AppendLine("       TABLE_CATALOG as TableCatalog,");
-            query.AppendLine("       TABLE_SCHEMA as TableSchema,");
+            query.AppendLine("       TABLE_CATALOG as 'Catalog',");
+            query.AppendLine("       TABLE_SCHEMA as 'Schema',");
             query.AppendLine("       ENGINE as Engine,");
             query.AppendLine("       VERSION as Version,");
             query.AppendLine("       ROW_FORMAT as RowFormat,");
@@ -65,11 +65,11 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc />
-        protected override List<MySqlColumn> GetColumns(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbColumn> GetColumns(MySqlDb database, MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT a.TABLE_CATALOG as TableCatalog,");
-            query.AppendLine("       a.TABLE_SCHEMA as TableSchema,");
+            query.AppendLine("SELECT a.TABLE_CATALOG as 'Catalog',");
+            query.AppendLine("       a.TABLE_SCHEMA as 'Schema',");
             query.AppendLine("       a.TABLE_NAME as TableName,");
             query.AppendLine("       a.COLUMN_NAME as Name,");
             query.AppendLine("       a.ORDINAL_POSITION as OrdinalPosition,");
@@ -96,13 +96,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override List<MySqlPrimaryKey> GetPrimaryKeys(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbConstraint> GetPrimaryKeys(MySqlDb database, MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
 
             // TODO: join with information_schema.statistics to get index additional information
-            query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as ConstraintCatalog,");
-            query.AppendLine("       kcu.CONSTRAINT_SCHEMA as ConstraintSchema,");
+            query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as 'Catalog',");
+            query.AppendLine("       kcu.CONSTRAINT_SCHEMA as 'Schema',");
             query.AppendLine("       kcu.CONSTRAINT_NAME as Name,");
             query.AppendLine("       kcu.TABLE_CATALOG as TableCatalog,");
             query.AppendLine("       kcu.TABLE_SCHEMA as TableSchema,");
@@ -121,12 +121,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override List<MySqlForeignKey> GetForeignKeys(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(MySqlDb database, MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
 
-            query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as ConstraintCatalog,");
-            query.AppendLine("       kcu.CONSTRAINT_SCHEMA as ConstraintSchema,");
+            query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as 'Catalog',");
+            query.AppendLine("       kcu.CONSTRAINT_SCHEMA as 'Schema',");
             query.AppendLine("       kcu.CONSTRAINT_NAME as Name,");
             query.AppendLine("       kcu.TABLE_CATALOG as TableCatalog,");
             query.AppendLine("       kcu.TABLE_SCHEMA as TableSchema,");
@@ -148,10 +148,24 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override List<MySqlView> GetViews(MySqlDb db, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbView> GetViews(MySqlDb db, MySqlDatabaseContext context)
         {
             // TODO: implement
             return new List<MySqlView>();
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbRoutine> GetFunctions(MySqlDb db, MySqlDatabaseContext context)
+        {
+            // TODO: implement
+            return new List<MySqlFunction>();
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbRoutine> GetStoreProcedures(MySqlDb db, MySqlDatabaseContext context)
+        {
+            // TODO: implement
+            return new List<MySqlStoreProcedure>();
         }
     }
 }

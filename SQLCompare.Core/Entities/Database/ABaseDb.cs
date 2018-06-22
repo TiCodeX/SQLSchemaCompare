@@ -6,13 +6,8 @@ namespace SQLCompare.Core.Entities.Database
     /// <summary>
     /// Provides generic information of database classes
     /// </summary>
-    public abstract class ABaseDb
+    public abstract class ABaseDb : ABaseDbObject
     {
-        /// <summary>
-        /// Gets or sets the database name
-        /// </summary>
-        public string Name { get; set; }
-
         /// <summary>
         /// Gets or sets the database last modification date
         /// </summary>
@@ -27,5 +22,15 @@ namespace SQLCompare.Core.Entities.Database
         /// Gets the database's views
         /// </summary>
         public List<ABaseDbView> Views { get; } = new List<ABaseDbView>();
+
+        /// <summary>
+        /// Gets the database's functions
+        /// </summary>
+        public List<ABaseDbRoutine> Functions { get; } = new List<ABaseDbRoutine>();
+
+        /// <summary>
+        /// Gets the database's store procedures
+        /// </summary>
+        public List<ABaseDbRoutine> StoreProcedures { get; } = new List<ABaseDbRoutine>();
     }
 }

@@ -3,23 +3,8 @@
     /// <summary>
     /// Provides generic information for database constraint classes
     /// </summary>
-    public class ABaseDbConstraint
+    public class ABaseDbConstraint : ABaseDbObject
     {
-        /// <summary>
-        /// Gets or sets the constraint catalog
-        /// </summary>
-        public string ConstraintCatalog { get; set; }
-
-        /// <summary>
-        /// Gets or sets the constraint schema
-        /// </summary>
-        public string ConstraintSchema { get; set; }
-
-        /// <summary>
-        /// Gets or sets the primary key name
-        /// </summary>
-        public string Name { get; set; }
-
         /// <summary>
         /// Gets or sets the table catalog
         /// </summary>

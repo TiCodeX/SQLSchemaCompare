@@ -3,27 +3,12 @@
     /// <summary>
     /// Provides generic information of database column classes
     /// </summary>
-    public abstract class ABaseDbColumn
+    public abstract class ABaseDbColumn : ABaseDbObject
     {
-        /// <summary>
-        /// Gets or sets the database table catalog
-        /// </summary>
-        public string TableCatalog { get; set; }
-
-        /// <summary>
-        /// Gets or sets the database table schema
-        /// </summary>
-        public string TableSchema { get; set; }
-
         /// <summary>
         /// Gets or sets the database table name
         /// </summary>
         public string TableName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the database column name
-        /// </summary>
-        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the column default value

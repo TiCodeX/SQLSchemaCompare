@@ -68,7 +68,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var mssqldbp = (MicrosoftSqlDatabaseProvider)dpf.Create(new MicrosoftSqlDatabaseProviderOptions { Hostname = "localhost\\SQLEXPRESS", Database = "brokerpro", UseWindowsAuthentication = true });
             var db = mssqldbp.GetDatabase();
             Assert.Equal("brokerpro", db.Name);
-            Assert.True(db.Tables.Count == 217);
+            Assert.Equal(218, db.Tables.Count);
             var table = db.Tables.Find(x => x.Name.Equals("DeletedDocumentReference", StringComparison.Ordinal));
             Assert.True(table.Columns.Count == 4);
             Assert.Contains(table.Columns, x => x.Name.Equals("OriginalTable", StringComparison.Ordinal));
@@ -86,7 +86,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 
             db = mysqldbp.GetDatabase();
             Assert.Equal("sakila", db.Name);
-            Assert.True(db.Tables.Count == 16);
+            Assert.Equal(18, db.Tables.Count);
             table = db.Tables.Find(x => x.Name.Equals("film", StringComparison.Ordinal));
             Assert.True(table.Columns.Count == 13);
             Assert.Contains(table.Columns, x => x.Name.Equals("language_id", StringComparison.Ordinal));
@@ -104,9 +104,9 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 
             db = pgsqldbp.GetDatabase();
             Assert.Equal("pagila", db.Name);
-            Assert.True(db.Tables.Count == 21);
+            Assert.Equal(22, db.Tables.Count);
             table = db.Tables.Find(x => x.Name.Equals("film", StringComparison.Ordinal));
-            Assert.True(table.Columns.Count == 14);
+            Assert.Equal(14, table.Columns.Count);
             Assert.Contains(table.Columns, x => x.Name.Equals("language_id", StringComparison.Ordinal));
             table = db.Tables.Find(x => x.Name.Equals("film_category", StringComparison.Ordinal));
             Assert.True(table.PrimaryKeys.Count == 2);

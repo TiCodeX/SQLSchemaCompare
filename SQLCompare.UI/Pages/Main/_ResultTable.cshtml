@@ -1,0 +1,34 @@
+﻿@using Core.Entities.Compare
+@using Core.Entities.Database
+@using Core.Interfaces
+@model List<CompareResultItem<ABaseDbTable>>
+@{
+    var divId = Guid.NewGuid();
+}
+<div class="card">
+    <div class="card-header" data-toggle="collapse" data-target="#@divId">
+        <h5 class="mb-0">@ViewBag.Title (@Model.Count)</h5>
+    </div>
+    <div id="@divId" class="collapse @(ViewBag.Show is bool && ViewBag.Show ? "show" : "")">
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th style="width: 10%">Type</th>
+                    <th style="width: 45%">Name</th>
+                    <th style="width: 45%">Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr load-sql="/Main/MainPageModel?handler=CreateScript&id=@item.Id"
+                        load-sql-method="GET">
+                        <td>Table</td>
+                        <td>@item.SourceItem?.Name</td>
+                        <td>@item.TargetItem?.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

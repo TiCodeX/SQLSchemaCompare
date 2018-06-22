@@ -73,7 +73,7 @@ function createWindow() {
         callback({ cancel: false, requestHeaders: details.requestHeaders });
     });
 
-    mainWindow.loadURL("https://localhost:5000");
+    mainWindow.loadURL("https://127.0.0.1:5000");
 
     let loadFailed = false;
     mainWindow.webContents.on("did-fail-load", () => {
@@ -83,7 +83,7 @@ function createWindow() {
         if (loadFailed) {
             // Reset the flag and trigger a new load
             loadFailed = false;
-            mainWindow.loadURL("https://localhost:5000");
+            mainWindow.loadURL("https://127.0.0.1:5000");
         } else {
             splashWindow.destroy();
             mainWindow.show();

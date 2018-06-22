@@ -5,20 +5,20 @@ using SQLCompare.Core.Interfaces.Services;
 using System;
 using System.Linq;
 
-namespace SQLCompare.UI.Pages
+namespace SQLCompare.UI.Pages.Main
 {
     /// <summary>
     /// PageModel of the Main page
     /// </summary>
-    public class Main : PageModel
+    public class MainPageModel : PageModel
     {
         private readonly IProjectService projectService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Main"/> class.
+        /// Initializes a new instance of the <see cref="MainPageModel"/> class.
         /// </summary>
         /// <param name="projectService">The injected project service</param>
-        public Main(IProjectService projectService)
+        public MainPageModel(IProjectService projectService)
         {
             this.projectService = projectService;
         }

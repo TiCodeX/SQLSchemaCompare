@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLCompare.Core.Entities.Database;
+using System;
 
 namespace SQLCompare.Core.Entities.Compare
 {
@@ -7,6 +8,7 @@ namespace SQLCompare.Core.Entities.Compare
     /// </summary>
     /// <typeparam name="T">Type of the item compared</typeparam>
     public class CompareResultItem<T>
+        where T : ABaseDbObject
     {
         /// <summary>
         /// Gets the unique identifier of the result item

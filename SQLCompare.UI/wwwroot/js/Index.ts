@@ -92,7 +92,7 @@ $(() => {
                 setTimeout(() => {
                     if ($("#stopPolling").length > 0) {
                         $("#myModal").modal("hide");
-                        Utility.AjaxCall("/Main", "GET", undefined, (result: string): void => {
+                        Utility.AjaxCall("/Main/MainPageModel", "GET", undefined, (result: string): void => {
                             $("#mainDiv").html(result);
                         });
                     } else {

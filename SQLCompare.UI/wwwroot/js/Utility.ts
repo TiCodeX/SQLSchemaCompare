@@ -98,7 +98,8 @@ class Utility {
             cache: false,
             success: successCallback,
             error: (error: JQuery.jqXHR): void => {
-                alert(error.responseText);
+                $("#myModalBody").html(error.responseText);
+                $("#myModal").modal("show");
             },
         });
     }

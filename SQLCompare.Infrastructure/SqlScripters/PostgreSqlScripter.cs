@@ -54,6 +54,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
             if (sb != null)
             {
+                // TODO: implement
                 return "Not implemented";
             }
 
@@ -77,6 +78,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
             if (sb != null)
             {
+                // TODO: implement
                 return "Not implemented";
             }
 

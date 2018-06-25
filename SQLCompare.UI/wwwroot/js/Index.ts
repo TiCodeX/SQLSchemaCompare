@@ -91,8 +91,8 @@ $(() => {
             const polling: VoidFunction = (): void => {
                 setTimeout(() => {
                     if ($("#stopPolling").length > 0) {
-                        $("#myModal").modal("hide");
                         Utility.AjaxCall("/Main/MainPageModel", "GET", undefined, (result: string): void => {
+                            Utility.CloseModalDialog();
                             $("#mainDiv").html(result);
                         });
                     } else {

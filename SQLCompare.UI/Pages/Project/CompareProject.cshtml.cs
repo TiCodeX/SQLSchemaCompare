@@ -255,6 +255,9 @@ namespace SQLCompare.UI.Pages.Project
                                     .GenerateCreateTableScript(resultTable.TargetItem);
                             }
 
+                            // Workaround: compare the generated sql script
+                            resultTable.Equal = resultTable.SourceCreateScript == resultTable.TargetCreateScript;
+
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 

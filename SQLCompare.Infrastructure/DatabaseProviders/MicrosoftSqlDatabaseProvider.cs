@@ -53,7 +53,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       b.create_date as CreateDate,");
             query.AppendLine("       b.modify_date as ModifyDate");
             query.AppendLine("FROM INFORMATION_SCHEMA.TABLES a");
-            query.AppendLine("JOIN SYS.objects b ON b.object_id = object_id(a.TABLE_NAME)");
+            query.AppendLine("JOIN SYS.objects b ON b.object_id = object_id(a.TABLE_SCHEMA + '.' + a.TABLE_NAME)");
 
             return context.Query<MicrosoftSqlTable>(query.ToString());
         }
@@ -91,8 +91,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       IsNull(c.is_computed, 0) as IsComputed,");
             query.AppendLine("       c.definition as Definition");
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
-            query.AppendLine("LEFT JOIN sys.identity_columns b ON object_id(a.TABLE_NAME) = b.object_id AND a.COLUMN_NAME = b.name");
-            query.AppendLine("LEFT JOIN sys.computed_columns c ON object_id(a.TABLE_NAME) = c.object_id AND a.COLUMN_NAME = c.name");
+            query.AppendLine("LEFT JOIN sys.identity_columns b ON object_id(a.TABLE_SCHEMA + '.' + a.TABLE_NAME) = b.object_id AND a.COLUMN_NAME = b.name");
+            query.AppendLine("LEFT JOIN sys.computed_columns c ON object_id(a.TABLE_SCHEMA + '.' + a.TABLE_NAME) = c.object_id AND a.COLUMN_NAME = c.name");
             query.AppendLine($"WHERE a.TABLE_CATALOG = '{database.Name}'");
 
             return context.Query<MicrosoftSqlColumn>(query.ToString());

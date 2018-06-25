@@ -45,6 +45,7 @@ namespace SQLCompare.Core.Entities.Project
         /// <summary>
         /// Gets or sets the result of the comparison
         /// </summary>
+        [XmlIgnore]
         public CompareResult Result { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SQLCompare.Core.Entities.DatabaseProvider;
+using SQLCompare.Core.Entities.Project;
 using SQLCompare.Infrastructure.Repository;
 using System.IO;
 using Xunit;
@@ -75,6 +76,81 @@ namespace SQLCompare.Test.Infrastructure.Repository
             Assert.Equal(targetUsername, project.TargetProviderOptions.Username);
             Assert.Equal(targetPassword, project.TargetProviderOptions.Password);
             Assert.Equal(targetDatabase, project.TargetProviderOptions.Database);
+        }
+
+        /// <summary>
+        /// The the write functionality
+        /// </summary>
+        [Fact]
+        [UnitTest]
+        public static void Write()
+        {
+            const string sourceHostname = "localhost";
+            const string sourceUsername = "admin";
+            const string sourcePassword = "test";
+            const string sourceDatabase = "database1";
+            const string targetHostname = "192.168.1.1";
+            const string targetUsername = "pippo";
+            const string targetPassword = "pluto";
+            const string targetDatabase = "database2";
+
+            var compareProject = new CompareProject
+            {
+                SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions
+                {
+                    Hostname = sourceHostname,
+                    Database = sourceDatabase,
+                    Username = sourceUsername,
+                    Password = sourcePassword,
+                },
+                TargetProviderOptions = new PostgreSqlDatabaseProviderOptions
+                {
+                    Hostname = targetHostname,
+                    Database = targetDatabase,
+                    Username = targetUsername,
+                    Password = targetPassword,
+                },
+                Options = new ProjectOptions
+                {
+                    Scripting = new ScriptingOptions
+                    {
+                        IgnoreCollate = true,
+                        OrderColumnAlphabetically = true,
+                        UseSchemaName = false,
+                    }
+                }
+            };
+
+            var filename = Path.GetTempFileName();
+            new ProjectRepository().Write(compareProject, filename);
+
+            var xmlFile = File.ReadAllText(filename);
+
+            var xmlFileExpected = $@"<?xml version=""1.0""?>
+<CompareProject xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <SourceProviderOptions xsi:type=""MicrosoftSqlDatabaseProviderOptions"">
+    <Hostname>{sourceHostname}</Hostname>
+    <Database>{sourceDatabase}</Database>
+    <Username>{sourceUsername}</Username>
+    <Password>{sourcePassword}</Password>
+    <UseWindowsAuthentication>false</UseWindowsAuthentication>
+  </SourceProviderOptions>
+  <TargetProviderOptions xsi:type=""PostgreSqlDatabaseProviderOptions"">
+    <Hostname>{targetHostname}</Hostname>
+    <Database>{targetDatabase}</Database>
+    <Username>{targetUsername}</Username>
+    <Password>{targetPassword}</Password>
+  </TargetProviderOptions>
+  <Options>
+    <Scripting>
+      <IgnoreCollate>true</IgnoreCollate>
+      <OrderColumnAlphabetically>true</OrderColumnAlphabetically>
+      <UseSchemaName>false</UseSchemaName>
+    </Scripting>
+  </Options>
+</CompareProject>";
+
+            Assert.Equal(xmlFileExpected, xmlFile);
         }
     }
 }

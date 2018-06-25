@@ -1,11 +1,23 @@
 ﻿@page
+@using Core.Entities.Compare
 @using Enums
 @model MainPageModel
 @{
-    var different = Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).ToList();
-    var onlySource = Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem == null).ToList();
-    var onlyTarget = Model.CompareResult.Tables.Where(x => x.TargetItem != null && x.SourceItem == null).ToList();
-    var same = Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).ToList();
+    var different = new List<ABaseCompareResultItem>();
+    different.AddRange(Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+    different.AddRange(Model.CompareResult.Views.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+
+    var onlySource = new List<ABaseCompareResultItem>();
+    onlySource.AddRange(Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem == null));
+    onlySource.AddRange(Model.CompareResult.Views.Where(x => x.SourceItem != null && x.TargetItem == null));
+
+    var onlyTarget = new List<ABaseCompareResultItem>();
+    onlyTarget.AddRange(Model.CompareResult.Tables.Where(x => x.TargetItem != null && x.SourceItem == null));
+    onlyTarget.AddRange(Model.CompareResult.Views.Where(x => x.TargetItem != null && x.SourceItem == null));
+
+    var same = new List<ABaseCompareResultItem>();
+    same.AddRange(Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal));
+    same.AddRange(Model.CompareResult.Views.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal));
 }
 
 <div id="mainTop">

@@ -234,11 +234,9 @@ namespace SQLCompare.UI.Pages.Project
                     {
                         taskInfo.Message = "Comparing tables...";
                         var totalItems = this.projectService.Project.Result.Tables.Count + this.projectService.Project.Result.Views.Count;
-                        var processed = 1;
-                        for (var i = 0; i < this.projectService.Project.Result.Tables.Count; i++)
+                        var processedItems = 1;
+                        foreach (var resultTable in this.projectService.Project.Result.Tables)
                         {
-                            var resultTable = this.projectService.Project.Result.Tables[i];
-
                             resultTable.Equal = this.databaseCompareService.CompareTable(resultTable.SourceItem, resultTable.TargetItem);
 
                             if (resultTable.SourceItem != null)
@@ -257,14 +255,12 @@ namespace SQLCompare.UI.Pages.Project
                                     .GenerateCreateTableScript(resultTable.TargetItem);
                             }
 
-                            taskInfo.Percentage = (short)((double)(processed++) / totalItems * 100);
+                            taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
                         taskInfo.Message = "Comparing views...";
-                        for (var i = 0; i < this.projectService.Project.Result.Views.Count; i++)
+                        foreach (var resultView in this.projectService.Project.Result.Views)
                         {
-                            var resultView = this.projectService.Project.Result.Views[i];
-
                             resultView.Equal = this.databaseCompareService.CompareView(resultView.SourceItem, resultView.TargetItem);
 
                             if (resultView.SourceItem != null)
@@ -277,7 +273,7 @@ namespace SQLCompare.UI.Pages.Project
                                 resultView.TargetCreateScript = resultView.TargetItem.ViewDefinition;
                             }
 
-                            taskInfo.Percentage = (short)((double)(processed++) / totalItems * 100);
+                            taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
                         return true;

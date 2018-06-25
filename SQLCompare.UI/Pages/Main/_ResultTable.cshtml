@@ -1,7 +1,7 @@
 ﻿@using Core.Entities.Compare
 @using Core.Entities.Database
 @using Core.Interfaces
-@model List<CompareResultItem<ABaseDbTable>>
+@model List<ABaseCompareResultItem>
 @{
     var divId = Guid.NewGuid();
 }
@@ -23,9 +23,17 @@
                 {
                     <tr load-sql="/Main/MainPageModel?handler=CreateScript&id=@item.Id"
                         load-sql-method="GET">
-                        <td>Table</td>
-                        <td>@item.SourceItem?.Name</td>
-                        <td>@item.TargetItem?.Name</td>
+
+                        @if (item.ItemType == typeof(ABaseDbTable))
+                        {
+                            <td>Table</td>
+                        }
+                        else if (item.ItemType == typeof(ABaseDbView))
+                        {
+                            <td>View</td>
+                        }
+                        <td>@item.SourceItemName</td>
+                        <td>@item.TargetItemName</td>
                     </tr>
                 }
             </tbody>

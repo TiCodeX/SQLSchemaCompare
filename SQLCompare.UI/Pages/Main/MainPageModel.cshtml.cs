@@ -43,13 +43,16 @@ namespace SQLCompare.UI.Pages.Main
         /// <returns>A JSON object with the source and target create scripts</returns>
         public ActionResult OnGetCreateScript(Guid id)
         {
-            // TODO: get a generic result item (table, view, role,...)
-            var resultItem = this.projectService.Project.Result.Tables.FirstOrDefault(x => x.Id == id);
+            ABaseCompareResultItem resultItem = this.projectService.Project.Result.Tables.FirstOrDefault(x => x.Id == id);
+            if (resultItem == null)
+            {
+                resultItem = this.projectService.Project.Result.Views.FirstOrDefault(x => x.Id == id);
+            }
 
             return new JsonResult(new
             {
                 SourceSql = resultItem?.SourceCreateScript,
-                TargetSql = resultItem?.TargetCreateScript
+                TargetSql = resultItem?.TargetCreateScript,
             });
         }
     }

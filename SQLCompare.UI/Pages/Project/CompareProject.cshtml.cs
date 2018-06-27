@@ -130,6 +130,8 @@ namespace SQLCompare.UI.Pages.Project
                 options.SourceHostname,
                 options.SourceUsername,
                 options.SourcePassword,
+                options.SourceUseWindowsAuthentication,
+                options.SourceUseSSL,
                 options.SourceDatabase);
 
             this.projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(
@@ -137,6 +139,8 @@ namespace SQLCompare.UI.Pages.Project
                 options.TargetHostname,
                 options.TargetUsername,
                 options.TargetPassword,
+                options.TargetUseWindowsAuthentication,
+                options.TargetUseSSL,
                 options.TargetDatabase);
 
             this.taskService.ExecuteTasks(new List<TaskWork>
@@ -300,7 +304,9 @@ namespace SQLCompare.UI.Pages.Project
                     options.SourceDatabaseType,
                     options.SourceHostname,
                     options.SourceUsername,
-                    options.SourcePassword);
+                    options.SourcePassword,
+                    options.SourceUseWindowsAuthentication,
+                    options.SourceUseSSL);
             }
             else
             {
@@ -308,14 +314,23 @@ namespace SQLCompare.UI.Pages.Project
                     options.TargetDatabaseType,
                     options.TargetHostname,
                     options.TargetUsername,
-                    options.TargetPassword);
+                    options.TargetPassword,
+                    options.TargetUseWindowsAuthentication,
+                    options.TargetUseSSL);
             }
 
             return new JsonResult(this.databaseService.ListDatabases(dbProviderOptions));
         }
 
         // TODO: move somewhere else and add missing parameters
-        private ADatabaseProviderOptions GetDatabaseProviderOptions(DatabaseType type, string hostname, string username, string password, string database = "")
+        private ADatabaseProviderOptions GetDatabaseProviderOptions(
+            DatabaseType type,
+            string hostname,
+            string username,
+            string password,
+            bool useWindowsAuthentication,
+            bool useSSL,
+            string database = "")
         {
             switch (type)
             {
@@ -325,7 +340,7 @@ namespace SQLCompare.UI.Pages.Project
                         Hostname = hostname,
                         Username = username,
                         Password = password,
-                        UseWindowsAuthentication = true,
+                        UseWindowsAuthentication = useWindowsAuthentication,
                         Database = database,
                     };
                 case DatabaseType.MySql:
@@ -334,7 +349,7 @@ namespace SQLCompare.UI.Pages.Project
                         Hostname = hostname,
                         Username = username,
                         Password = password,
-                        UseSSL = false,
+                        UseSSL = useSSL,
                         Database = database,
                     };
                 case DatabaseType.PostgreSql:

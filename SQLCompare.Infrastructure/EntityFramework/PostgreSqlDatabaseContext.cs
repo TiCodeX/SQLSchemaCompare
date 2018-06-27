@@ -24,7 +24,13 @@ namespace SQLCompare.Infrastructure.EntityFramework
         {
             base.OnConfiguring(optionsBuilder);
 
-            optionsBuilder.UseNpgsql(this.ConnectionString);
+            var connectionString = this.ConnectionString;
+            if (this.DatabaseProviderOptions.UseSSL)
+            {
+                connectionString += "SSL Mode=Require;";
+            }
+
+            optionsBuilder.UseNpgsql(connectionString);
         }
     }
 }

@@ -27,8 +27,16 @@ namespace SQLCompare.Infrastructure.EntityFramework
             var connectionString = this.ConnectionString;
             if (this.DatabaseProviderOptions.UseWindowsAuthentication)
             {
-                connectionString = $"Server={this.DatabaseProviderOptions.Hostname};Database={this.DatabaseProviderOptions.Database};Integrated Security=SSPI";
+                connectionString = $"Server={this.DatabaseProviderOptions.Hostname};Database={this.DatabaseProviderOptions.Database};Integrated Security=SSPI;";
             }
+
+            if (this.DatabaseProviderOptions.UseSSL)
+            {
+                connectionString += "Encrypt=true;";
+            }
+
+            connectionString += "Connection Timeout=30;";
+            connectionString += "Persist Security Info=False;";
 
             optionsBuilder.UseSqlServer(connectionString);
         }

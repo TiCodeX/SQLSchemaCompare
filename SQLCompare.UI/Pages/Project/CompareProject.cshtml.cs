@@ -341,6 +341,7 @@ namespace SQLCompare.UI.Pages.Project
                         Username = username,
                         Password = password,
                         UseWindowsAuthentication = useWindowsAuthentication,
+                        UseSSL = useSSL,
                         Database = database,
                     };
                 case DatabaseType.MySql:

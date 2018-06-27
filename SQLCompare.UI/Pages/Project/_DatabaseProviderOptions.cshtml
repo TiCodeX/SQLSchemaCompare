@@ -65,13 +65,8 @@
                         <span class="input-group-text min-width-100">Use Windows Authentication</span>
                     </div>
                     <label class="switch">
-                        @if (Model is MicrosoftSqlDatabaseProviderOptions msSqlModel && msSqlModel.UseWindowsAuthentication)
-                        {
-                            <input type="checkbox" name="@(prefix)UseWindowsAuthentication" data-value-type="boolean" checked="checked">
-                        }
-                        else
-                        {
-                            <input type="checkbox" name="@(prefix)UseWindowsAuthentication" data-value-type="boolean">
+                        @{
+                            @:<input type="checkbox" name="@(prefix)UseWindowsAuthentication" data-value-type="boolean" @(Model is MicrosoftSqlDatabaseProviderOptions options && options.UseWindowsAuthentication ? "checked=\"checked\"" : "")>
                         }
                         <span class="slider round"></span>
                     </label>
@@ -83,13 +78,8 @@
                         <span class="input-group-text min-width-100">Use SSL</span>
                     </div>
                     <label class="switch">
-                        @if (Model is MySqlDatabaseProviderOptions mySqlModel && mySqlModel.UseSSL)
-                        {
-                            <input type="checkbox" name="@(prefix)UseSSL" data-value-type="boolean" checked="checked">
-                        }
-                        else
-                        {
-                            <input type="checkbox" name="@(prefix)UseSSL" data-value-type="boolean">
+                        @{
+                            @:<input type="checkbox" name="@(prefix)UseSSL" data-value-type="boolean" @(Model.UseSSL ? "checked=\"checked\"" : "")>
                         }
                         <span class="slider round"></span>
                     </label>

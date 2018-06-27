@@ -24,5 +24,10 @@
         /// Gets or sets the password
         /// </summary>
         public string Password { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use SSL for the connection
+        /// </summary>
+        public bool UseSSL { get; set; }
     }
 }

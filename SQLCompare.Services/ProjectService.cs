@@ -30,21 +30,8 @@ namespace SQLCompare.Services
             // TODO: return false if project is still open
             this.Project = new CompareProject
             {
-                SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions
-                {
-                    Hostname = @"localhost\SQLEXPRESS",
-                    Username = "brokerpro",
-                    Password = "brokerpro05",
-                    Database = "brokerpro",
-                    UseWindowsAuthentication = true,
-                },
-                TargetProviderOptions = new PostgreSqlDatabaseProviderOptions
-                {
-                    Hostname = "localhost",
-                    Username = "postgres",
-                    Password = "test1234",
-                    Database = "world",
-                },
+                SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
+                TargetProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
                 Options = new ProjectOptions()
             };
             return true;

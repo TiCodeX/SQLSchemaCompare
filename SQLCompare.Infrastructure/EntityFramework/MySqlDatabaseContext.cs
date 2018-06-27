@@ -23,10 +23,15 @@ namespace SQLCompare.Infrastructure.EntityFramework
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
+
             var connectionString = this.ConnectionString;
-            if (!this.DatabaseProviderOptions.UseSSL)
+            if (this.DatabaseProviderOptions.UseSSL)
             {
-                connectionString += ";SslMode=None";
+                connectionString += "SslMode=Required;";
+            }
+            else
+            {
+                connectionString += "SslMode=None;";
             }
 
             optionsBuilder.UseMySQL(connectionString);

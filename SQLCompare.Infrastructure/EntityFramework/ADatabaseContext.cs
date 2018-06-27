@@ -25,7 +25,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
         {
             this.loggerFactory = loggerFactory;
             this.DatabaseProviderOptions = dbpo;
-            this.ConnectionString = $"Server={dbpo.Hostname};Database={dbpo.Database};User Id={dbpo.Username};Password={dbpo.Password}";
+            this.ConnectionString = $"Server={dbpo.Hostname};Database={dbpo.Database};User Id={dbpo.Username};Password={dbpo.Password};";
         }
 
         /// <summary>

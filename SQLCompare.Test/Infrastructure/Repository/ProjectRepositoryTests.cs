@@ -2,6 +2,7 @@
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Infrastructure.Repository;
 using System.IO;
+using System.Xml;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -89,10 +90,13 @@ namespace SQLCompare.Test.Infrastructure.Repository
             const string sourceUsername = "admin";
             const string sourcePassword = "test";
             const string sourceDatabase = "database1";
+            const bool sourceUseWindowsAuthentication = true;
+            const bool sourceUseSSL = false;
             const string targetHostname = "192.168.1.1";
             const string targetUsername = "pippo";
             const string targetPassword = "pluto";
             const string targetDatabase = "database2";
+            const bool targetUseSSL = true;
 
             var compareProject = new CompareProject
             {
@@ -102,6 +106,8 @@ namespace SQLCompare.Test.Infrastructure.Repository
                     Database = sourceDatabase,
                     Username = sourceUsername,
                     Password = sourcePassword,
+                    UseWindowsAuthentication = sourceUseWindowsAuthentication,
+                    UseSSL = sourceUseSSL
                 },
                 TargetProviderOptions = new PostgreSqlDatabaseProviderOptions
                 {
@@ -109,6 +115,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
                     Database = targetDatabase,
                     Username = targetUsername,
                     Password = targetPassword,
+                    UseSSL = targetUseSSL
                 },
                 Options = new ProjectOptions
                 {
@@ -133,13 +140,15 @@ namespace SQLCompare.Test.Infrastructure.Repository
     <Database>{sourceDatabase}</Database>
     <Username>{sourceUsername}</Username>
     <Password>{sourcePassword}</Password>
-    <UseWindowsAuthentication>false</UseWindowsAuthentication>
+    <UseSSL>{XmlConvert.ToString(sourceUseSSL)}</UseSSL>
+    <UseWindowsAuthentication>{XmlConvert.ToString(sourceUseWindowsAuthentication)}</UseWindowsAuthentication>
   </SourceProviderOptions>
   <TargetProviderOptions xsi:type=""PostgreSqlDatabaseProviderOptions"">
     <Hostname>{targetHostname}</Hostname>
     <Database>{targetDatabase}</Database>
     <Username>{targetUsername}</Username>
     <Password>{targetPassword}</Password>
+    <UseSSL>{XmlConvert.ToString(targetUseSSL)}</UseSSL>
   </TargetProviderOptions>
   <Options>
     <Scripting>

@@ -1,0 +1,27 @@
+﻿using System.Collections.Generic;
+
+namespace SQLCompare.Core.Interfaces.Services
+{
+    /// <summary>
+    /// Defines a class that provides the mechanisms to handle the localization
+    /// </summary>
+    public interface ILocalizationService
+    {
+        /// <summary>
+        /// Initializes the service with English language
+        /// </summary>
+        void Init();
+
+        /// <summary>
+        /// Sets the language
+        /// </summary>
+        /// <param name="language">The desired language</param>
+        void SetLanguage(string language);
+
+        /// <summary>
+        /// Gets the localization dictionary
+        /// </summary>
+        /// <returns>The dictionary with the tokens as key and their localized strings as values</returns>
+        Dictionary<string, string> GetLocalizationDictionary();
+    }
+}

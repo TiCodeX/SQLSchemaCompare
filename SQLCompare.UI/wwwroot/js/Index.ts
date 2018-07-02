@@ -33,6 +33,8 @@ $(() => {
         });
     }, 0);
 
+    Localization.Load();
+
     Menu.CreateMenu();
 
     Utility.OpenModalDialog("/Welcome", "GET");

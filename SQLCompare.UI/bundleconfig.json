@@ -9,6 +9,7 @@
         "outputFileName": "wwwroot/js/site.min.js",
         "inputFiles": [
             "wwwroot/js/Index.js",
+            "wwwroot/js/Localization.js",
             "wwwroot/js/Utility.js",
             "wwwroot/js/Menu.js",
             "wwwroot/js/Project.js"

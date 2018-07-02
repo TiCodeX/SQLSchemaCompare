@@ -2,17 +2,18 @@
 @using System.Web
 @using Core.Interfaces
 @using Enums
+@using Services
 @model Welcome
 
 <h1>Welcome to @AppGlobal.CompanyName @AppGlobal.ProductName</h1>
 <br />
 
 <button style="@ButtonStyle.Primary" onclick="Project.New()">
-    New Project
+    @Localization.ButtonNewProject
 </button>
 
 <button style="@ButtonStyle.Primary" onclick="Project.Load()">
-    Open Project
+    @Localization.ButtonOpenProject
 </button>
 
 <br />

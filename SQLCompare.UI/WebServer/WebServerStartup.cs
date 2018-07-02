@@ -55,6 +55,7 @@ namespace SQLCompare.UI.WebServer
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
             services.AddSingleton<IAppGlobals, AppGlobals>();
+            services.AddSingleton<ILocalizationService, LocalizationService>();
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
             services.AddSingleton<IProjectService, ProjectService>();
             services.AddSingleton<ITaskService, TaskService>();
@@ -76,10 +77,12 @@ namespace SQLCompare.UI.WebServer
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </summary>
         /// <param name="app">The WebHost application builder</param>
-        public void Configure(IApplicationBuilder app)
+        /// <param name="appGlobals">The application globals</param>
+        /// <param name="localizationService">The localization service</param>
+        public void Configure(IApplicationBuilder app, IAppGlobals appGlobals, ILocalizationService localizationService)
         {
-            // As we don't have IAppGlobals injected yet, we instantiate it directly.
-            var appGlobals = new AppGlobals();
+            localizationService.Init();
+
             if (appGlobals.IsDevelopment)
             {
                 app.UseBrowserLink();

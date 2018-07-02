@@ -32,6 +32,7 @@ namespace SQLCompare.UI
         /// </summary>
         public static void Main()
         {
+            // As we don't have IAppGlobals injected yet, we instantiate it directly
             var appGlobals = new AppGlobals();
 
             // NLog: setup the logger first to catch all errors

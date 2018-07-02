@@ -17,7 +17,7 @@ class Menu {
                 submenu: [
                     {
                         id: "menuNewProject",
-                        label: "New Project",
+                        label: Localization.Get("ButtonNewProject"),
                         click(): void {
                             Project.New();
                         },

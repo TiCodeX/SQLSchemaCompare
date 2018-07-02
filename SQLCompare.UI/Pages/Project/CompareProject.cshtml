@@ -2,6 +2,7 @@
 @using System.Net.Http
 @using Enums
 @using Models
+@using Services
 @model CompareProject
 @{
     var compareRequest = new WebRequest
@@ -57,14 +58,14 @@
 
 <div class="float-right">
     <button style="@ButtonStyle.Primary" onclick-open-main="@compareRequest">
-        Compare now
+        @Localization.ButtonCompareNow
     </button>
     @if (Model.Project.RetrievedSourceDatabase != null)
     {
-        <button style="@ButtonStyle.Secondary" onclick="Utility.CloseModalDialog()">Cancel</button>
+        <button style="@ButtonStyle.Secondary" onclick="Utility.CloseModalDialog()">@Localization.ButtonCancel</button>
     }
     else
     {
-        <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">Cancel</button>
+        <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">@Localization.ButtonCancel</button>
     }
 </div>

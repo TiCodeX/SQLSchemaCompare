@@ -80,13 +80,36 @@ class Utility {
     }
 
     /**
-     * Perform an ajax call
+     * Perform an asynchronous ajax call
      * @param url - The URL of the ajax call
      * @param method - The method (GET/POST)
      * @param data - The object data to send when the method is POST
      * @param successCallback - The callback function in case of success
      */
     public static AjaxCall(url: string, method: string, data: object, successCallback: JQuery.Ajax.SuccessCallback<object>): void {
+        this.AjaxCallInternal(url, method, true, data, successCallback);
+    }
+
+    /**
+     * Perform an synchronous ajax call
+     * @param url - The URL of the ajax call
+     * @param method - The method (GET/POST)
+     * @param data - The object data to send when the method is POST
+     * @param successCallback - The callback function in case of success
+     */
+    public static AjaxSyncCall(url: string, method: string, data: object, successCallback: JQuery.Ajax.SuccessCallback<object>): void {
+        this.AjaxCallInternal(url, method, false, data, successCallback);
+    }
+
+    /**
+     * Perform an ajax call
+     * @param url - The URL of the ajax call
+     * @param method - The method (GET/POST)
+     * @param async - Whether to perform a synchronous or asynchronous call
+     * @param data - The object data to send when the method is POST
+     * @param successCallback - The callback function in case of success
+     */
+    private static AjaxCallInternal(url: string, method: string, async: boolean, data: object, successCallback: JQuery.Ajax.SuccessCallback<object>): void {
         $.ajax(url, {
             type: method,
             beforeSend: (xhr: JQuery.jqXHR): void => {
@@ -96,6 +119,7 @@ class Utility {
             contentType: "application/json",
             data: data !== undefined ? JSON.stringify(data) : "",
             cache: false,
+            async: async,
             success: successCallback,
             error: (error: JQuery.jqXHR): void => {
                 $("#myModalBody").html(error.responseText);

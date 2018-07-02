@@ -4,6 +4,7 @@ using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Compare;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
+using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Enums;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
@@ -16,9 +17,9 @@ using System.Linq;
 namespace SQLCompare.UI.Pages.Project
 {
     /// <summary>
-    /// PageModel of the CompareProject page
+    /// PageModel of the Project page
     /// </summary>
-    public class CompareProject : PageModel
+    public class ProjectPageModel : PageModel
     {
         private readonly IAppSettingsService appSettingsService;
         private readonly IProjectService projectService;
@@ -28,7 +29,7 @@ namespace SQLCompare.UI.Pages.Project
         private readonly ITaskService taskService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompareProject"/> class.
+        /// Initializes a new instance of the <see cref="ProjectPageModel"/> class.
         /// </summary>
         /// <param name="appSettingsService">The injected app settings service</param>
         /// <param name="projectService">The injected project service</param>
@@ -36,7 +37,7 @@ namespace SQLCompare.UI.Pages.Project
         /// <param name="databaseCompareService">The injected database compare service</param>
         /// <param name="databaseScripterFactory">The injected database scripter factory</param>
         /// <param name="taskService">The injected task service</param>
-        public CompareProject(
+        public ProjectPageModel(
             IAppSettingsService appSettingsService,
             IProjectService projectService,
             IDatabaseService databaseService,
@@ -55,10 +56,10 @@ namespace SQLCompare.UI.Pages.Project
         /// <summary>
         /// Gets the current project
         /// </summary>
-        public Core.Entities.Project.CompareProject Project { get; private set; }
+        public CompareProject Project { get; private set; }
 
         /// <summary>
-        /// Get the CompareProject page for the current Project
+        /// Get the Project page for the current Project
         /// </summary>
         public void OnGet()
         {
@@ -66,7 +67,7 @@ namespace SQLCompare.UI.Pages.Project
         }
 
         /// <summary>
-        /// Get the CompareProject page for a new Project
+        /// Get the Project page for a new Project
         /// </summary>
         public void OnGetNewProject()
         {
@@ -75,7 +76,7 @@ namespace SQLCompare.UI.Pages.Project
         }
 
         /// <summary>
-        /// Get the CompareProject page
+        /// Get the Project page
         /// </summary>
         /// <param name="projectFile">The project file to load</param>
         public void OnPostLoadProject([FromBody] string projectFile)

@@ -3,24 +3,29 @@
  */
 class Project {
     /**
+     * Service URL for a Project page
+     */
+    public static readonly pageUrl: string = "/Project/ProjectPageModel";
+
+    /**
      * Service URL for a new Project
      */
-    private static readonly newUrl: string = "/Project/CompareProject?handler=NewProject";
+    private static readonly newUrl: string = `${Project.pageUrl}?handler=NewProject`;
 
     /**
      * Service URL for saving the Project
      */
-    private static readonly saveUrl: string = "/Project/CompareProject?handler=SaveProject";
+    private static readonly saveUrl: string = `${Project.pageUrl}?handler=SaveProject`;
 
     /**
      * Service URL for loading a Project
      */
-    private static readonly loadUrl: string = "/Project/CompareProject?handler=LoadProject";
+    private static readonly loadUrl: string = `${Project.pageUrl}?handler=LoadProject`;
 
     /**
      * Service URL for loading a Project
      */
-    private static readonly closeUrl: string = "/Project/CompareProject?handler=CloseProject";
+    private static readonly closeUrl: string = `${Project.pageUrl}?handler=CloseProject`;
 
     /**
      * Open the new Project page

@@ -3,11 +3,11 @@
 @using Enums
 @using Models
 @using Services
-@model CompareProject
+@model ProjectPageModel
 @{
     var compareRequest = new WebRequest
     {
-        Url = new Uri("/Project/CompareProject?handler=Compare", UriKind.Relative),
+        Url = new Uri("/Project/ProjectPageModel?handler=Compare", UriKind.Relative),
         Method = HttpMethod.Post,
         SerializeDataFromDiv = "tabDataSources"
     };

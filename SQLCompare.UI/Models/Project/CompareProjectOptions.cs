@@ -4,7 +4,7 @@ using SQLCompare.UI.Enums;
 namespace SQLCompare.UI.Models.Project
 {
     /// <summary>
-    /// Model class for the CompareProject page
+    /// Model class for the Project page
     /// </summary>
     public class CompareProjectOptions
     {

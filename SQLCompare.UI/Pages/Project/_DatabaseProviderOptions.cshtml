@@ -10,7 +10,7 @@
     var prefix = ((CompareDirection)ViewBag.Prefix).ToString();
     var loadSelectRequest = new WebRequest
     {
-        Url = new Uri("/Project/CompareProject?handler=LoadDatabaseList", UriKind.Relative),
+        Url = new Uri("/Project/ProjectPageModel?handler=LoadDatabaseList", UriKind.Relative),
         Method = HttpMethod.Post,
         SerializeDataFromDiv = divId,
         Target = $"{prefix}Database"

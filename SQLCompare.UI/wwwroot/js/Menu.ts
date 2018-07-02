@@ -65,7 +65,7 @@ class Menu {
                         label: "Edit",
                         enabled: false,
                         click(): void {
-                            Utility.OpenModalDialog("/Project/CompareProject", "GET");
+                            Utility.OpenModalDialog(Project.pageUrl, "GET");
                         },
                     },
                 ],

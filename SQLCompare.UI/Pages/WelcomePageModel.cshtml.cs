@@ -7,15 +7,15 @@ namespace SQLCompare.UI.Pages
     /// <summary>
     /// PageModel of the Welcome page
     /// </summary>
-    public class Welcome : PageModel
+    public class WelcomePageModel : PageModel
     {
         private readonly IAppSettingsService appSettingsService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Welcome"/> class.
+        /// Initializes a new instance of the <see cref="WelcomePageModel"/> class.
         /// </summary>
         /// <param name="appSettingsService">The injected app settings service</param>
-        public Welcome(IAppSettingsService appSettingsService)
+        public WelcomePageModel(IAppSettingsService appSettingsService)
         {
             this.appSettingsService = appSettingsService;
         }

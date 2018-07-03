@@ -3,20 +3,20 @@ using SQLCompare.Core.Entities;
 using SQLCompare.Core.Interfaces.Services;
 using System.Collections.Generic;
 
-namespace SQLCompare.UI.Pages.Project
+namespace SQLCompare.UI.Pages
 {
     /// <summary>
-    /// PageModel of the CompareStatus page
+    /// PageModel of the TaskStatus page
     /// </summary>
-    public class CompareStatus : PageModel
+    public class TaskStatusPageModel : PageModel
     {
         private readonly ITaskService taskService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompareStatus"/> class.
+        /// Initializes a new instance of the <see cref="TaskStatusPageModel"/> class.
         /// </summary>
         /// <param name="taskService">The injected task service</param>
-        public CompareStatus(ITaskService taskService)
+        public TaskStatusPageModel(ITaskService taskService)
         {
             this.taskService = taskService;
         }
@@ -27,7 +27,7 @@ namespace SQLCompare.UI.Pages.Project
         public IReadOnlyCollection<TaskInfo> TaskInfos { get; set; }
 
         /// <summary>
-        /// Get the CompareStatus page for the current Task
+        /// Get the TaskStatus page for the current Task
         /// </summary>
         public void OnGet()
         {

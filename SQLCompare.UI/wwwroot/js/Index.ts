@@ -37,7 +37,7 @@ $(() => {
 
     Menu.CreateMenu();
 
-    Utility.OpenModalDialog("/Welcome", "GET");
+    Utility.OpenModalDialog("/WelcomePageModel", "GET");
 
     // Register clickable attributes
     $(document).on("click", "[load-modal]", (e: JQuery.Event) => {
@@ -98,7 +98,7 @@ $(() => {
                             $("#mainDiv").html(result);
                         });
                     } else {
-                        Utility.OpenModalDialog("/Project/CompareStatus", "GET", undefined);
+                        Utility.OpenModalDialog("/TaskStatusPageModel", "GET", undefined);
                         polling();
                     }
                 }, pollingTime);

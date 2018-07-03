@@ -104,7 +104,7 @@ class Project {
         Utility.AjaxCall(this.closeUrl, "GET", undefined, () => {
             $("#mainDiv").empty();
             if (showWelcome) {
-                Utility.OpenModalDialog("/Welcome", "GET");
+                Utility.OpenModalDialog("/WelcomePageModel", "GET");
             }
             Menu.ToggleProjectRelatedMenuStatus(false);
         });

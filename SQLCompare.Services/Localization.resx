@@ -132,4 +132,106 @@
   <data name="ButtonSave" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="LabelDatabase" xml:space="preserve">
+    <value>Database</value>
+  </data>
+  <data name="LabelHostname" xml:space="preserve">
+    <value>Hostname</value>
+  </data>
+  <data name="LabelLanguage" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="LabelPassword" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="LabelRecentProjects" xml:space="preserve">
+    <value>Recent Projects</value>
+  </data>
+  <data name="LabelType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="LabelUsername" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="LabelUseSSL" xml:space="preserve">
+    <value>Use SSL</value>
+  </data>
+  <data name="LabelUseWindowsAuthentication" xml:space="preserve">
+    <value>Use Windows Authentication</value>
+  </data>
+  <data name="TitleWelcome" xml:space="preserve">
+    <value>Welcome to {0}</value>
+  </data>
+  <data name="LabelDataSources" xml:space="preserve">
+    <value>Data sources</value>
+  </data>
+  <data name="LabelIdentical" xml:space="preserve">
+    <value>Identical</value>
+  </data>
+  <data name="LabelInBothButDifferent" xml:space="preserve">
+    <value>In both, but different</value>
+  </data>
+  <data name="LabelName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="LabelOnlyInSource" xml:space="preserve">
+    <value>Only in Source</value>
+  </data>
+  <data name="LabelOnlyInTarget" xml:space="preserve">
+    <value>Only in Target</value>
+  </data>
+  <data name="LabelOptions" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="LabelOwnerMapping" xml:space="preserve">
+    <value>Owner mapping</value>
+  </data>
+  <data name="LabelSource" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="LabelTable" xml:space="preserve">
+    <value>Table</value>
+  </data>
+  <data name="LabelTableMapping" xml:space="preserve">
+    <value>Table mapping</value>
+  </data>
+  <data name="LabelTarget" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="LabelView" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="MenuAbout" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="MenuCloseProject" xml:space="preserve">
+    <value>Close Project</value>
+  </data>
+  <data name="MenuExit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="MenuFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="MenuHelp" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="MenuNewProject" xml:space="preserve">
+    <value>New Project</value>
+  </data>
+  <data name="MenuOpenProject" xml:space="preserve">
+    <value>Open Project</value>
+  </data>
+  <data name="MenuProject" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="MenuSaveProject" xml:space="preserve">
+    <value>Save Project</value>
+  </data>
+  <data name="MenuSettings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="MenuEditProject" xml:space="preserve">
+    <value>Edit</value>
+  </data>
 </root>

@@ -10,10 +10,10 @@ namespace SQLCompare.UI
     internal class AppGlobals : IAppGlobals
     {
         /// <inheritdoc/>
-        public string CompanyName => "Ticodex SA";
+        public string CompanyName => "TiCodeX SA";
 
         /// <inheritdoc/>
-        public string ProductName => "SQLCompare";
+        public string ProductName => "SQL Compare";
 
         /// <inheritdoc/>
         public bool IsDevelopment

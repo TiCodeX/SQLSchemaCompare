@@ -5,7 +5,7 @@
 @using Services
 @model WelcomePageModel
 
-<h1>Welcome to @AppGlobal.CompanyName @AppGlobal.ProductName</h1>
+<h1>@string.Format(Localization.TitleWelcome, @AppGlobal.CompanyName + " " + @AppGlobal.ProductName)</h1>
 <br />
 
 <button style="@ButtonStyle.Primary" onclick="Project.New()">
@@ -19,7 +19,7 @@
 <br />
 <br />
 <div>
-    Recent projects:
+    @Localization.LabelRecentProjects:
     @for (var i = Model.RecentProjects.Count - 1; i >= 0; i--)
     {
         <br /> @:&bull;

@@ -4,6 +4,7 @@
 @using Enums
 @using Core.Entities.DatabaseProvider
 @using Models
+@using Services
 @model ADatabaseProviderOptions
 @{
     var divId = Guid.NewGuid().ToString();
@@ -24,7 +25,7 @@
             <div class="form-group">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">Type</span>
+                        <span class="input-group-text min-width-100">@Localization.LabelType</span>
                     </div>
                     <select name="@(prefix)DatabaseType">
                         @{
@@ -38,7 +39,7 @@
             <div class="form-group">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">Hostname</span>
+                        <span class="input-group-text min-width-100">@Localization.LabelHostname</span>
                     </div>
                     <input type="text" name="@(prefix)Hostname" value="@Model.Hostname">
                 </div>
@@ -46,7 +47,7 @@
             <div class="form-group">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">Username</span>
+                        <span class="input-group-text min-width-100">@Localization.LabelUsername</span>
                     </div>
                     <input type="text" name="@(prefix)Username" value="@Model.Username">
                 </div>
@@ -54,7 +55,7 @@
             <div class="form-group">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">Password</span>
+                        <span class="input-group-text min-width-100">@Localization.LabelPassword</span>
                     </div>
                     <input type="password" name="@(prefix)Password" value="@Model.Password">
                 </div>
@@ -62,7 +63,7 @@
             <div class="form-group">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">Use Windows Authentication</span>
+                        <span class="input-group-text min-width-100">@Localization.LabelUseWindowsAuthentication</span>
                     </div>
                     <label class="switch">
                         @{
@@ -75,7 +76,7 @@
             <div class="form-group">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">Use SSL</span>
+                        <span class="input-group-text min-width-100">@Localization.LabelUseSSL</span>
                     </div>
                     <label class="switch">
                         @{
@@ -88,7 +89,7 @@
             <div class="form-group">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">Database</span>
+                        <span class="input-group-text min-width-100">@Localization.LabelDatabase</span>
                     </div>
                     <select name="@(prefix)Database">
                         @if (!string.IsNullOrEmpty(Model.Database))

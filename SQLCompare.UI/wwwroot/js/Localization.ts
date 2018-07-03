@@ -19,7 +19,7 @@ class Localization {
             }
         }
 
-        return token;
+        return `[[${token}]]`;
     }
 
     /**

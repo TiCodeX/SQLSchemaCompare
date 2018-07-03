@@ -6,11 +6,10 @@
 @using Services
 @model SQLCompare.UI.Pages.SettingsPageModel
 
-
 <div class="form-group" id="Settings">
     <div class="input-group">
         <div class="input-group-prepend">
-            <span class="input-group-text min-width-100">Language</span>
+            <span class="input-group-text min-width-100">@Localization.LabelLanguage</span>
         </div>
         <select name="Language">
             @{

@@ -39,7 +39,7 @@ function createWindow() {
         height: 330,
         transparent: true,
         frame: false,
-        alwaysOnTop: true
+        alwaysOnTop: false
     });
     splashWindow.loadURL(`file://${__dirname}/splash.html`);
 

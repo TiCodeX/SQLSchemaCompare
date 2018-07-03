@@ -1,6 +1,8 @@
 ﻿@page
 @using Core.Entities.Compare
+@using Core.Interfaces
 @using Enums
+@using Services
 @model MainPageModel
 @{
     var different = new List<ABaseCompareResultItem>();
@@ -23,20 +25,20 @@
 <div id="mainTop">
     @await Html.PartialAsync("_ResultTable", different, new ViewDataDictionary(this.ViewData)
     {
-        { "Title", "In both, but different" },
+        { "Title", Localization.LabelInBothButDifferent },
         { "Show", true }
     })
     @await Html.PartialAsync("_ResultTable", onlySource, new ViewDataDictionary(this.ViewData)
     {
-        { "Title", "Only in Source" }
+        { "Title", Localization.LabelOnlyInSource }
     })
     @await Html.PartialAsync("_ResultTable", onlyTarget, new ViewDataDictionary(this.ViewData)
     {
-        { "Title", "Only in Target" }
+        { "Title", Localization.LabelOnlyInTarget }
     })
     @await Html.PartialAsync("_ResultTable", same, new ViewDataDictionary(this.ViewData)
     {
-        { "Title", "Identical" }
+        { "Title", Localization.LabelIdentical }
     })
 </div>
 

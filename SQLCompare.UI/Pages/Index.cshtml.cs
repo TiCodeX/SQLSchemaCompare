@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
+using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 
 namespace SQLCompare.UI.Pages
@@ -10,17 +10,17 @@ namespace SQLCompare.UI.Pages
     /// </summary>
     public class Index : PageModel
     {
-        private readonly ILogger<Index> logger;
+        private readonly IAppGlobals appGlobals;
         private readonly ILocalizationService localizationService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Index"/> class.
         /// </summary>
-        /// <param name="logger">The injected Logger</param>
+        /// <param name="appGlobals">The injected app globals</param>
         /// <param name="localizationService">The injected LocalizationService</param>
-        public Index(ILogger<Index> logger, ILocalizationService localizationService)
+        public Index(IAppGlobals appGlobals, ILocalizationService localizationService)
         {
-            this.logger = logger;
+            this.appGlobals = appGlobals;
             this.localizationService = localizationService;
         }
 
@@ -38,7 +38,7 @@ namespace SQLCompare.UI.Pages
         /// </summary>
         public void OnGet()
         {
-            this.ViewData["Title"] = "Pluto";
+            this.ViewData["Title"] = $"{this.appGlobals.ProductName} - {this.appGlobals.CompanyName}";
         }
     }
 }

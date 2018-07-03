@@ -13,18 +13,18 @@ class Menu {
 
         const template: Array<Electron.MenuItemConstructorOptions> = [
             {
-                label: "File",
+                label: Localization.Get("MenuFile"),
                 submenu: [
                     {
                         id: "menuNewProject",
-                        label: Localization.Get("ButtonNewProject"),
+                        label: Localization.Get("MenuNewProject"),
                         click(): void {
                             Project.New();
                         },
                     },
                     {
                         id: "menuOpenProject",
-                        label: "Open Project...",
+                        label: `${Localization.Get("MenuOpenProject")}...`,
                         click(): void {
                             Project.Load();
                         },
@@ -34,7 +34,7 @@ class Menu {
                     },
                     {
                         id: "menuSaveProject",
-                        label: "Save Project...",
+                        label: `${Localization.Get("MenuSaveProject")}...`,
                         enabled: false,
                         click(): void {
                             Project.Save();
@@ -42,7 +42,7 @@ class Menu {
                     },
                     {
                         id: "menuCloseProject",
-                        label: "Close Project",
+                        label: Localization.Get("MenuCloseProject"),
                         enabled: false,
                         click(): void {
                             Project.Close(true);
@@ -53,7 +53,7 @@ class Menu {
                     },
                     {
                         id: "menuSettings",
-                        label: "Settings",
+                        label: Localization.Get("MenuSettings"),
                         click(): void {
                             Settings.Open();
                         },
@@ -63,16 +63,16 @@ class Menu {
                     },
                     {
                         role: "close",
-                        label: "Exit",
+                        label: Localization.Get("MenuExit"),
                     },
                 ],
             },
             {
-                label: "Project",
+                label: Localization.Get("MenuProject"),
                 submenu: [
                     {
                         id: "menuEditProject",
-                        label: "Edit",
+                        label: Localization.Get("MenuEditProject"),
                         enabled: false,
                         click(): void {
                             Utility.OpenModalDialog(Project.pageUrl, "GET");
@@ -110,10 +110,10 @@ class Menu {
                 ],
             },
             {
-                role: "help",
+                label: Localization.Get("MenuHelp"),
                 submenu: [
                     {
-                        label: "About",
+                        label: Localization.Get("MenuAbout"),
                         click(): void {
                             electron.shell.openExternal("https://ticodex.ch/");
                         },

@@ -93,8 +93,45 @@ namespace SQLCompare.Services
             {
                 var it = new Dictionary<string, string>
                 {
-                    { nameof(Localization.ButtonNewProject), "Nuovo Progetto" },
                     { nameof(Localization.ButtonCancel), "Annulla" },
+                    { nameof(Localization.ButtonCompareNow), "Compara adesso" },
+                    { nameof(Localization.ButtonNewProject), "Nuovo Progetto" },
+                    { nameof(Localization.ButtonOpenProject), "Apri Progetto" },
+                    { nameof(Localization.ButtonSave), "Salva" },
+                    { nameof(Localization.LabelDatabase), "Database" },
+                    { nameof(Localization.LabelDataSources), "Sorgenti dati" },
+                    { nameof(Localization.LabelHostname), "Hostname" },
+                    { nameof(Localization.LabelIdentical), "Uguali" },
+                    { nameof(Localization.LabelInBothButDifferent), "In tutti e due, ma differenti" },
+                    { nameof(Localization.LabelLanguage), "Lingua" },
+                    { nameof(Localization.LabelName), "Nome" },
+                    { nameof(Localization.LabelOnlyInSource), "Solo in origine" },
+                    { nameof(Localization.LabelOnlyInTarget), "Solo in destinazione" },
+                    { nameof(Localization.LabelOptions), "Opzioni" },
+                    { nameof(Localization.LabelOwnerMapping), "Mappatura proprietari" },
+                    { nameof(Localization.LabelPassword), "Password" },
+                    { nameof(Localization.LabelRecentProjects), "Progetti recenti" },
+                    { nameof(Localization.LabelSource), "Origine" },
+                    { nameof(Localization.LabelTable), "Tabella" },
+                    { nameof(Localization.LabelTableMapping), "Mappatura tabelle" },
+                    { nameof(Localization.LabelTarget), "Destinazione" },
+                    { nameof(Localization.LabelType), "Tipo" },
+                    { nameof(Localization.LabelUsername), "Utente" },
+                    { nameof(Localization.LabelUseSSL), "Usa SSL" },
+                    { nameof(Localization.LabelUseWindowsAuthentication), "Usa Autenticazione Windows" },
+                    { nameof(Localization.LabelView), "Vista" },
+                    { nameof(Localization.MenuAbout), "Informazioni" },
+                    { nameof(Localization.MenuCloseProject), "Chiudi Progetto" },
+                    { nameof(Localization.MenuEditProject), "Modifica" },
+                    { nameof(Localization.MenuExit), "Esci" },
+                    { nameof(Localization.MenuFile), "File" },
+                    { nameof(Localization.MenuHelp), "Aiuto" },
+                    { nameof(Localization.MenuNewProject), "Nuovo Progetto" },
+                    { nameof(Localization.MenuOpenProject), "Apri Progetto" },
+                    { nameof(Localization.MenuProject), "Progetto" },
+                    { nameof(Localization.MenuSaveProject), "Salva Progetto" },
+                    { nameof(Localization.MenuSettings), "Impostazioni" },
+                    { nameof(Localization.TitleWelcome), "Benvenuti in {0}" },
                 };
 
                 if (it.ContainsKey(name))
@@ -103,7 +140,7 @@ namespace SQLCompare.Services
                 }
             }
 
-            return name;
+            return $"[[{name}]]";
         }
     }
 }

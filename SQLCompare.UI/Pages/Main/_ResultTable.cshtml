@@ -1,6 +1,7 @@
 ﻿@using Core.Entities.Compare
 @using Core.Entities.Database
 @using Core.Interfaces
+@using Services
 @model List<ABaseCompareResultItem>
 @{
     var divId = Guid.NewGuid();
@@ -13,9 +14,9 @@
         <table class="table">
             <thead class="thead-light">
                 <tr>
-                    <th style="width: 10%">Type</th>
-                    <th style="width: 45%">Name</th>
-                    <th style="width: 45%">Name</th>
+                    <th style="width: 10%">@Localization.LabelType</th>
+                    <th style="width: 45%">@Localization.LabelName</th>
+                    <th style="width: 45%">@Localization.LabelName</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,11 +27,11 @@
 
                         @if (item.ItemType == typeof(ABaseDbTable))
                         {
-                            <td>Table</td>
+                            <td>@Localization.LabelTable</td>
                         }
                         else if (item.ItemType == typeof(ABaseDbView))
                         {
-                            <td>View</td>
+                            <td>@Localization.LabelView</td>
                         }
                         <td>@item.SourceItemName</td>
                         <td>@item.TargetItemName</td>

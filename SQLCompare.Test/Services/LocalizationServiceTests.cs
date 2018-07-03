@@ -1,4 +1,5 @@
-﻿using SQLCompare.Services;
+﻿using SQLCompare.Core.Enums;
+using SQLCompare.Services;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -20,7 +21,7 @@ namespace SQLCompare.Test.Services
             : base(output)
         {
             this.localizationService = new LocalizationService();
-            this.localizationService.Init();
+            this.localizationService.Init(Language.English);
         }
 
         /// <summary>
@@ -33,7 +34,7 @@ namespace SQLCompare.Test.Services
             Assert.Equal("New Project", Localization.ButtonNewProject);
             Assert.Equal("Cancel", Localization.ButtonCancel);
 
-            this.localizationService.SetLanguage("it");
+            this.localizationService.SetLanguage(Language.Italian);
 
             Assert.Equal("Nuovo Progetto", Localization.ButtonNewProject);
             Assert.Equal("Annulla", Localization.ButtonCancel);

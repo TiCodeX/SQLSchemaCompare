@@ -129,4 +129,7 @@
   <data name="ButtonOpenProject" xml:space="preserve">
     <value>Open Project</value>
   </data>
+  <data name="ButtonSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
 </root>

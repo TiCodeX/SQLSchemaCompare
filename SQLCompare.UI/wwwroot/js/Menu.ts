@@ -52,6 +52,16 @@ class Menu {
                         type: "separator",
                     },
                     {
+                        id: "menuSettings",
+                        label: "Settings",
+                        click(): void {
+                            Settings.Open();
+                        },
+                    },
+                    {
+                        type: "separator",
+                    },
+                    {
                         role: "close",
                         label: "Exit",
                     },

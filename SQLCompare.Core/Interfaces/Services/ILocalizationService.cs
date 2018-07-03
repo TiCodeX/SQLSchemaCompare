@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SQLCompare.Core.Enums;
+using System.Collections.Generic;
 
 namespace SQLCompare.Core.Interfaces.Services
 {
@@ -10,13 +11,14 @@ namespace SQLCompare.Core.Interfaces.Services
         /// <summary>
         /// Initializes the service with English language
         /// </summary>
-        void Init();
+        /// <param name="language">The desired language</param>
+        void Init(Language language);
 
         /// <summary>
         /// Sets the language
         /// </summary>
         /// <param name="language">The desired language</param>
-        void SetLanguage(string language);
+        void SetLanguage(Language language);
 
         /// <summary>
         /// Gets the localization dictionary

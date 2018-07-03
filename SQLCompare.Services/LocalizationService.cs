@@ -1,4 +1,5 @@
-﻿using SQLCompare.Core.Interfaces.Services;
+﻿using SQLCompare.Core.Enums;
+using SQLCompare.Core.Interfaces.Services;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace SQLCompare.Services
         }
 
         /// <inheritdoc />
-        public void Init()
+        public void Init(Language language)
         {
             // Prevent multiple initializations
             if (this.originalResourceManager != null)
@@ -44,13 +45,30 @@ namespace SQLCompare.Services
                 innerField.SetValue(null, this);
             }
 
-            this.SetLanguage("en");
+            this.SetLanguage(language);
         }
 
         /// <inheritdoc />
-        public void SetLanguage(string language)
+        public void SetLanguage(Language language)
         {
-            Localization.Culture = new CultureInfo(language);
+            CultureInfo culture;
+            switch (language)
+            {
+                case Language.English:
+                    culture = new CultureInfo("en");
+                    break;
+                case Language.German:
+                    culture = new CultureInfo("de");
+                    break;
+                case Language.Italian:
+                    culture = new CultureInfo("it");
+                    break;
+                default:
+                    culture = new CultureInfo("en");
+                    break;
+            }
+
+            Localization.Culture = culture;
         }
 
         /// <inheritdoc />

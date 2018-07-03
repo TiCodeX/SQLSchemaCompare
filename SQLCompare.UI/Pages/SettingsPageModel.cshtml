@@ -1,0 +1,28 @@
+﻿@page
+@using Core.Entities.DatabaseProvider
+@using Core.Enums
+@using Core.Interfaces
+@using Enums
+@using Services
+@model SQLCompare.UI.Pages.SettingsPageModel
+
+
+<div class="form-group" id="Settings">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text min-width-100">Language</span>
+        </div>
+        <select name="Language">
+            @{
+                @:<option value="@Language.English" @(Model.Settings.Language == Language.English ? "selected" : "")>English</option>
+                @:<option value="@Language.German" @(Model.Settings.Language == Language.German ? "selected" : "")>German</option>
+                @:<option value="@Language.Italian" @(Model.Settings.Language == Language.Italian ? "selected" : "")>Italian</option>
+            }
+        </select>
+    </div>
+</div>
+
+<div class="float-right">
+    <button style="@ButtonStyle.Primary" onclick="Settings.Save()">@Localization.ButtonSave</button>
+    <button style="@ButtonStyle.Secondary" onclick="Utility.CloseModalDialog()">@Localization.ButtonCancel</button>
+</div>

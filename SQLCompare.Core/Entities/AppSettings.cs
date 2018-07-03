@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SQLCompare.Core.Enums;
+using System.Collections.Generic;
 
 namespace SQLCompare.Core.Entities
 {
@@ -7,6 +8,11 @@ namespace SQLCompare.Core.Entities
     /// </summary>
     public class AppSettings
     {
+        /// <summary>
+        /// Gets or sets the language of the application
+        /// </summary>
+        public Language Language { get; set; } = Language.English;
+
         /// <summary>
         /// Gets the recently opened projects
         /// </summary>

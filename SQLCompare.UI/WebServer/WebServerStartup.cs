@@ -79,9 +79,14 @@ namespace SQLCompare.UI.WebServer
         /// <param name="app">The WebHost application builder</param>
         /// <param name="appGlobals">The application globals</param>
         /// <param name="localizationService">The localization service</param>
-        public void Configure(IApplicationBuilder app, IAppGlobals appGlobals, ILocalizationService localizationService)
+        /// <param name="appSettingsService">The app settings service</param>
+        public void Configure(
+            IApplicationBuilder app,
+            IAppGlobals appGlobals,
+            ILocalizationService localizationService,
+            IAppSettingsService appSettingsService)
         {
-            localizationService.Init();
+            localizationService.Init(appSettingsService.GetAppSettings().Language);
 
             if (appGlobals.IsDevelopment)
             {

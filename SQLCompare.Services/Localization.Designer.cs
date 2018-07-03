@@ -95,5 +95,14 @@ namespace SQLCompare.Services {
                 return ResourceManager.GetString("ButtonOpenProject", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string ButtonSave {
+            get {
+                return ResourceManager.GetString("ButtonSave", resourceCulture);
+            }
+        }
     }
 }

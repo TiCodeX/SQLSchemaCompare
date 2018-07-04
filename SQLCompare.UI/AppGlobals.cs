@@ -38,13 +38,20 @@ namespace SQLCompare.UI
         public string AuthorizationHeaderName => "CustomAuthToken";
 
         /// <inheritdoc/>
-        public string AppSettingsFullFilename => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "SqlCompare", "Config.conf");
+        public string AppSettingsFullFilename => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            "SqlCompare",
+            "Config.conf");
 
         /// <inheritdoc/>
         public string LoggerLayout =>
             "${longdate}|${event-properties:item=EventId_Id}|${uppercase:${level}}|${logger}|${message} ${exception:format=tostring}";
 
         /// <inheritdoc/>
-        public string LoggerFile => @"c:\temp\nlog-all-${shortdate}.log";
+        public string LoggerFile => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            "SqlCompare",
+            "log",
+            @"nlog-all-${shortdate}.log");
     }
 }

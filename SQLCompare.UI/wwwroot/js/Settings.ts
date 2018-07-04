@@ -16,7 +16,7 @@ class Settings {
      * Open the Settings page
      */
     public static Open(): void {
-        Utility.OpenModalDialog(this.pageUrl, "GET");
+        Utility.OpenModalDialog(this.pageUrl, Utility.HttpMethod.Get);
     }
 
     /**
@@ -24,13 +24,13 @@ class Settings {
      */
     public static Save(): void {
         const data: object = Utility.SerializeJSON($("#Settings"));
-        Utility.AjaxCall(this.saveUrl, "POST", data, (): void => {
+        Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data, (): void => {
             // Load the new localization
             Localization.Load();
             // Recreate the menu with the new language
             Menu.CreateMenu();
 
-            Utility.OpenModalDialog("/WelcomePageModel", "GET");
+            Utility.OpenModalDialog("/WelcomePageModel", Utility.HttpMethod.Get);
         });
     }
 }

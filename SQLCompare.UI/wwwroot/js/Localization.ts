@@ -26,7 +26,7 @@ class Localization {
      * Load the localization
      */
     public static Load(): void {
-        Utility.AjaxSyncCall("/Index?handler=LoadLocalization", "GET", undefined, (result: object): void => {
+        Utility.AjaxSyncCall("/Index?handler=LoadLocalization", Utility.HttpMethod.Get, undefined, (result: object): void => {
 
             // Remove old localization
             this.dictionary = new Array<[string, string]>();

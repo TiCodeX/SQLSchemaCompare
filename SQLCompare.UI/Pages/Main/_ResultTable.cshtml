@@ -22,8 +22,7 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr load-sql="/Main/MainPageModel?handler=CreateScript&id=@item.Id"
-                        load-sql-method="GET">
+                    <tr onclick="Main.SelectRow(event, '@item.Id')">
 
                         @if (item.ItemType == typeof(ABaseDbTable))
                         {

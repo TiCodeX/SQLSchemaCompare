@@ -5,7 +5,7 @@ class Project {
     /**
      * Service URL for a Project page
      */
-    public static readonly pageUrl: string = "/Project/ProjectPageModel";
+    private static readonly pageUrl: string = "/Project/ProjectPageModel";
 
     /**
      * Service URL for a new Project
@@ -28,10 +28,27 @@ class Project {
     private static readonly closeUrl: string = `${Project.pageUrl}?handler=CloseProject`;
 
     /**
+     * Service URL for retrieving the list of databases
+     */
+    private static readonly loadDatabaseListUrl: string = `${Project.pageUrl}?handler=LoadDatabaseList`;
+
+    /**
+     * Service URL for starting the comparation
+     */
+    private static readonly compareUrl: string = `${Project.pageUrl}?handler=Compare`;
+
+    /**
+     * Open the Project page
+     */
+    public static Open(): void {
+        Utility.OpenModalDialog(this.pageUrl, Utility.HttpMethod.Get);
+    }
+
+    /**
      * Open the new Project page
      */
     public static New(): void {
-        Utility.OpenModalDialog(this.newUrl, "GET");
+        Utility.OpenModalDialog(this.newUrl, Utility.HttpMethod.Get);
         Menu.ToggleProjectRelatedMenuStatus(true);
     }
 
@@ -58,7 +75,7 @@ class Project {
 
         const data: object = <object>JSON.parse(JSON.stringify(filename));
 
-        Utility.AjaxCall(this.saveUrl, "POST", data, (): void => {
+        Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data, (): void => {
             alert("Saved successfully!");
         });
     }
@@ -93,7 +110,7 @@ class Project {
 
         const data: object = <object>JSON.parse(JSON.stringify(file));
 
-        Utility.OpenModalDialog(this.loadUrl, "POST", data);
+        Utility.OpenModalDialog(this.loadUrl, Utility.HttpMethod.Post, data);
         Menu.ToggleProjectRelatedMenuStatus(true);
     }
 
@@ -101,12 +118,48 @@ class Project {
      * Close the project, prompt for save
      */
     public static Close(showWelcome: boolean = false): void {
-        Utility.AjaxCall(this.closeUrl, "GET", undefined, () => {
+        Utility.AjaxCall(this.closeUrl, Utility.HttpMethod.Get, undefined, () => {
             $("#mainDiv").empty();
             if (showWelcome) {
-                Utility.OpenModalDialog("/WelcomePageModel", "GET");
+                Utility.OpenModalDialog("/WelcomePageModel", Utility.HttpMethod.Get);
             }
             Menu.ToggleProjectRelatedMenuStatus(false);
+        });
+    }
+
+    /**
+     * Load the database values of the select
+     * @param selectId The id of the select
+     * @param dataDivId The id of the div with the data to serialize
+     */
+    public static LoadDatabaseSelectValues(selectId: string, dataDivId: string): void {
+        Utility.LoadSelectValues($(`select[name=${selectId}]`), Project.loadDatabaseListUrl, Utility.HttpMethod.Post, $(`#${dataDivId}`));
+    }
+
+    /**
+     * Perform the comparison
+     */
+    public static Compare(): void {
+
+        const data: object = Utility.SerializeJSON($("#tabDataSources"));
+
+        Utility.AjaxCall(this.compareUrl, Utility.HttpMethod.Post, data, (): void => {
+            // TODO: move the polling functionality in Utility
+            const pollingTime: number = 200;
+            const polling: VoidFunction = (): void => {
+                setTimeout(() => {
+                    if ($("#stopPolling").length > 0) {
+                        Utility.AjaxCall(Main.pageUrl, Utility.HttpMethod.Get, undefined, (result: string): void => {
+                            Utility.CloseModalDialog();
+                            $("#mainDiv").html(result);
+                        });
+                    } else {
+                        Utility.OpenModalDialog("/TaskStatusPageModel", Utility.HttpMethod.Get, undefined);
+                        polling();
+                    }
+                }, pollingTime);
+            };
+            polling();
         });
     }
 }

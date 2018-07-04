@@ -75,7 +75,7 @@ class Menu {
                         label: Localization.Get("MenuEditProject"),
                         enabled: false,
                         click(): void {
-                            Utility.OpenModalDialog(Project.pageUrl, "GET");
+                            Project.Open();
                         },
                     },
                 ],

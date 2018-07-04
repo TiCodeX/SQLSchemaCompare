@@ -42,7 +42,7 @@ class Utility {
      * @param method - The method (GET/POST)
      * @param data? - The object data to send when the method is POST
      */
-    public static OpenModalDialog(url: string, method: string, data?: object): void {
+    public static OpenModalDialog(url: string, method: Utility.HttpMethod, data?: object): void {
         this.AjaxCall(url, method, data, (result: string): void => {
             $("#myModalBody").html(result);
             $("#myModal").modal("show");
@@ -80,13 +80,34 @@ class Utility {
     }
 
     /**
+     * Perform an ajax call to retrieve the select values
+     * @param element The select jQuery element
+     * @param url The URL of the ajax call
+     * @param method The method (GET/POST)
+     * @param dataDiv The div with the data to serialize
+     */
+    public static LoadSelectValues(element: JQuery, url: string, method: Utility.HttpMethod, dataDiv: JQuery): void {
+
+        const data: object = Utility.SerializeJSON(dataDiv);
+
+        Utility.AjaxCall(url, method, data, (result: Array<string>): void => {
+            element.find("option").remove();
+            let options: string = "";
+            $.each(result, (index: number, value: string): void => {
+                options += `<option value="${value}">${value}</option>`;
+            });
+            element.append(options);
+        });
+    }
+
+    /**
      * Perform an asynchronous ajax call
      * @param url - The URL of the ajax call
      * @param method - The method (GET/POST)
      * @param data - The object data to send when the method is POST
      * @param successCallback - The callback function in case of success
      */
-    public static AjaxCall(url: string, method: string, data: object, successCallback: JQuery.Ajax.SuccessCallback<object>): void {
+    public static AjaxCall(url: string, method: Utility.HttpMethod, data: object, successCallback: JQuery.Ajax.SuccessCallback<object>): void {
         this.AjaxCallInternal(url, method, true, data, successCallback);
     }
 
@@ -97,7 +118,7 @@ class Utility {
      * @param data - The object data to send when the method is POST
      * @param successCallback - The callback function in case of success
      */
-    public static AjaxSyncCall(url: string, method: string, data: object, successCallback: JQuery.Ajax.SuccessCallback<object>): void {
+    public static AjaxSyncCall(url: string, method: Utility.HttpMethod, data: object, successCallback: JQuery.Ajax.SuccessCallback<object>): void {
         this.AjaxCallInternal(url, method, false, data, successCallback);
     }
 
@@ -109,9 +130,22 @@ class Utility {
      * @param data - The object data to send when the method is POST
      * @param successCallback - The callback function in case of success
      */
-    private static AjaxCallInternal(url: string, method: string, async: boolean, data: object, successCallback: JQuery.Ajax.SuccessCallback<object>): void {
+    private static AjaxCallInternal(url: string, method: Utility.HttpMethod, async: boolean, data: object, successCallback: JQuery.Ajax.SuccessCallback<object>): void {
+
+        let ajaxMethod: string;
+        switch (method) {
+        case Utility.HttpMethod.Get:
+                ajaxMethod = "GET";
+                break;
+            case Utility.HttpMethod.Post:
+                ajaxMethod = "POST";
+                break;
+            default:
+                ajaxMethod = "GET";
+        }
+
         $.ajax(url, {
-            type: method,
+            type: ajaxMethod,
             beforeSend: (xhr: JQuery.jqXHR): void => {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $("input:hidden[name='__RequestVerificationToken']").val().toString());
@@ -126,5 +160,21 @@ class Utility {
                 $("#myModal").modal("show");
             },
         });
+    }
+}
+
+namespace Utility {
+    /**
+     * HTTP Method for the ajax call
+     */
+    export enum HttpMethod {
+        /**
+         * HTTP Method GET
+         */
+        Get,
+        /**
+         * HTTP Method POST
+         */
+        Post,
     }
 }

@@ -4,14 +4,7 @@
 @using Models
 @using Services
 @model ProjectPageModel
-@{
-    var compareRequest = new WebRequest
-    {
-        Url = new Uri("/Project/ProjectPageModel?handler=Compare", UriKind.Relative),
-        Method = HttpMethod.Post,
-        SerializeDataFromDiv = "tabDataSources"
-    };
-}
+
 <ul class="nav nav-tabs">
     <li class="nav-item">
         <a data-toggle="tab" href="#tabDataSources" class="nav-link active">@Localization.LabelDataSources</a>
@@ -57,7 +50,7 @@
 </div>
 
 <div class="float-right">
-    <button style="@ButtonStyle.Primary" onclick-open-main="@compareRequest">
+    <button style="@ButtonStyle.Primary" onclick="Project.Compare()">
         @Localization.ButtonCompareNow
     </button>
     @if (Model.Project.RetrievedSourceDatabase != null)

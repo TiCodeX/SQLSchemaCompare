@@ -11,6 +11,7 @@
             "wwwroot/js/Index.js",
             "wwwroot/js/Localization.js",
             "wwwroot/js/Utility.js",
+            "wwwroot/js/Main.js",
             "wwwroot/js/Menu.js",
             "wwwroot/js/Project.js",
             "wwwroot/js/Settings.js"

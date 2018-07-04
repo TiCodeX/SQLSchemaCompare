@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
-using Newtonsoft.Json;
 using SQLCompare.UI.Enums;
-using SQLCompare.UI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace SQLCompare.UI.TagHelpers
 {
@@ -38,21 +35,6 @@ namespace SQLCompare.UI.TagHelpers
         /// Gets or sets a value indicating whether the button should be outlined
         /// </summary>
         public bool Outline { get; set; }
-
-        /// <summary>
-        /// Gets or sets the WebRequest to load the page in the modal dialog
-        /// </summary>
-        public WebRequest OnclickOpenModal { get; set; }
-
-        /// <summary>
-        /// Gets or sets the WebRequest to load the page in the main layout
-        /// </summary>
-        public WebRequest OnclickOpenMain { get; set; }
-
-        /// <summary>
-        /// Gets or sets the WebRequest to load the select values
-        /// </summary>
-        public WebRequest OnclickLoadSelectValues { get; set; }
 
         /// <inheritdoc />
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -136,52 +118,6 @@ namespace SQLCompare.UI.TagHelpers
             }
 
             output.Attributes.SetAttribute("class", string.Join(" ", className));
-
-            if (this.OnclickOpenModal != null)
-            {
-                output.Attributes.SetAttribute("load-modal", this.OnclickOpenModal.Url);
-                output.Attributes.SetAttribute("load-modal-method", this.OnclickOpenModal.Method.Method);
-                if (this.OnclickOpenModal.Data != null)
-                {
-                    output.Attributes.SetAttribute("load-modal-data", HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(this.OnclickOpenModal.Data)));
-                }
-
-                if (!string.IsNullOrWhiteSpace(this.OnclickOpenModal.SerializeDataFromDiv))
-                {
-                    output.Attributes.SetAttribute("load-modal-data-from-div", this.OnclickOpenModal.SerializeDataFromDiv);
-                }
-            }
-
-            if (this.OnclickOpenMain != null)
-            {
-                output.Attributes.SetAttribute("load-main", this.OnclickOpenMain.Url);
-                output.Attributes.SetAttribute("load-main-method", this.OnclickOpenMain.Method.Method);
-                if (this.OnclickOpenMain.Data != null)
-                {
-                    output.Attributes.SetAttribute("load-main-data", HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(this.OnclickOpenMain.Data)));
-                }
-
-                if (!string.IsNullOrWhiteSpace(this.OnclickOpenMain.SerializeDataFromDiv))
-                {
-                    output.Attributes.SetAttribute("load-main-data-from-div", this.OnclickOpenMain.SerializeDataFromDiv);
-                }
-            }
-
-            if (this.OnclickLoadSelectValues != null)
-            {
-                output.Attributes.SetAttribute("load-select", this.OnclickLoadSelectValues.Url);
-                output.Attributes.SetAttribute("load-select-method", this.OnclickLoadSelectValues.Method.Method);
-                output.Attributes.SetAttribute("load-select-target", this.OnclickLoadSelectValues.Target);
-                if (this.OnclickLoadSelectValues.Data != null)
-                {
-                    output.Attributes.SetAttribute("load-select-data", HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(this.OnclickLoadSelectValues.Data)));
-                }
-
-                if (!string.IsNullOrWhiteSpace(this.OnclickLoadSelectValues.SerializeDataFromDiv))
-                {
-                    output.Attributes.SetAttribute("load-select-data-from-div", this.OnclickLoadSelectValues.SerializeDataFromDiv);
-                }
-            }
         }
     }
 }

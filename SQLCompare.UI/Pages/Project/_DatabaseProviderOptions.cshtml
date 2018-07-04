@@ -9,13 +9,6 @@
 @{
     var divId = Guid.NewGuid().ToString();
     var prefix = ((CompareDirection)ViewBag.Prefix).ToString();
-    var loadSelectRequest = new WebRequest
-    {
-        Url = new Uri("/Project/ProjectPageModel?handler=LoadDatabaseList", UriKind.Relative),
-        Method = HttpMethod.Post,
-        SerializeDataFromDiv = divId,
-        Target = $"{prefix}Database"
-    };
 }
 <div class="card" id="@divId">
     <input type="hidden" name="Direction" value="@prefix">
@@ -98,7 +91,7 @@
                         }
                     </select>
                     <div class="input-group-append">
-                        <button style="@ButtonStyle.Info" onclick-load-select-values="@loadSelectRequest">
+                        <button style="@ButtonStyle.Info" onclick="Project.LoadDatabaseSelectValues('@(prefix)Database', '@divId');">
                             &#x21bb;
                         </button>
                     </div>

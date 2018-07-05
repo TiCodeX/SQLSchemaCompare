@@ -41,6 +41,14 @@ class Menu {
                         },
                     },
                     {
+                        id: "menuSaveProjectAs",
+                        label: `${Localization.Get("MenuSaveProjectAs")}...`,
+                        enabled: false,
+                        click(): void {
+                            Project.Save(true);
+                        },
+                    },
+                    {
                         id: "menuCloseProject",
                         label: Localization.Get("MenuCloseProject"),
                         enabled: false,
@@ -137,6 +145,7 @@ class Menu {
         const menu: Electron.Menu = electron.remote.Menu.getApplicationMenu();
 
         menu.getMenuItemById("menuSaveProject").enabled = enable;
+        menu.getMenuItemById("menuSaveProjectAs").enabled = enable;
         menu.getMenuItemById("menuCloseProject").enabled = enable;
         menu.getMenuItemById("menuEditProject").enabled = enable;
     }

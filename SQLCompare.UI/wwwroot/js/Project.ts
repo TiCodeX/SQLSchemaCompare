@@ -38,6 +38,11 @@ class Project {
     private static readonly compareUrl: string = `${Project.pageUrl}?handler=Compare`;
 
     /**
+     * Current opened project file
+     */
+    private static filename: string;
+
+    /**
      * Open the Project page
      */
     public static Open(): void {
@@ -53,22 +58,24 @@ class Project {
     }
 
     /**
-     * Show the save dialog and save the Project
+     * Save the Project
+     * @param showDialog Whether to show the save dialog
      */
-    public static Save(): void {
-
-        const filename: string = electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
-            {
-                title: "Save Project",
-                buttonLabel: "Save Project",
-                filters: [
-                    {
-                        name: "SQL Compare Project",
-                        extensions: ["xml"],
-                    },
-                ],
-            });
-
+    public static Save(showDialog: boolean = false): void {
+        let filename: string = this.filename;
+        if (filename === undefined || showDialog) {
+            filename = electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
+                {
+                    title: "Save Project",
+                    buttonLabel: "Save Project",
+                    filters: [
+                        {
+                            name: "SQL Compare Project",
+                            extensions: ["xml"],
+                        },
+                    ],
+                });
+        }
         if (Utility.IsNullOrWhitespace(filename)) {
             return;
         }
@@ -76,6 +83,7 @@ class Project {
         const data: object = <object>JSON.parse(JSON.stringify(filename));
 
         Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data, (): void => {
+            this.filename = filename;
             alert("Saved successfully!");
         });
     }
@@ -111,6 +119,8 @@ class Project {
         const data: object = <object>JSON.parse(JSON.stringify(file));
 
         Utility.OpenModalDialog(this.loadUrl, Utility.HttpMethod.Post, data);
+
+        this.filename = filename;
         Menu.ToggleProjectRelatedMenuStatus(true);
     }
 
@@ -119,6 +129,7 @@ class Project {
      */
     public static Close(showWelcome: boolean = false): void {
         Utility.AjaxCall(this.closeUrl, Utility.HttpMethod.Get, undefined, () => {
+            this.filename = undefined;
             $("#mainDiv").empty();
             if (showWelcome) {
                 Utility.OpenModalDialog("/WelcomePageModel", Utility.HttpMethod.Get);

@@ -234,4 +234,7 @@
   <data name="MenuEditProject" xml:space="preserve">
     <value>Edit</value>
   </data>
+  <data name="MenuSaveProjectAs" xml:space="preserve">
+    <value>Save Project As</value>
+  </data>
 </root>

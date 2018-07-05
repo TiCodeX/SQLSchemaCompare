@@ -32,7 +32,7 @@ namespace SQLCompare.Infrastructure.Repository
             }
 
             var xml = new XmlSerializer(typeof(AppSettings));
-            using (var f = File.OpenWrite(this.appGlobals.AppSettingsFullFilename))
+            using (var f = File.Create(this.appGlobals.AppSettingsFullFilename))
             {
                 xml.Serialize(f, appSettings);
             }

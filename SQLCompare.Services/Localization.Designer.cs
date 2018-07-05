@@ -394,6 +394,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save Project As.
+        /// </summary>
+        public static string MenuSaveProjectAs {
+            get {
+                return ResourceManager.GetString("MenuSaveProjectAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         public static string MenuSettings {

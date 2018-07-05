@@ -30,7 +30,7 @@ namespace SQLCompare.Infrastructure.Repository
             }
 
             var xml = new XmlSerializer(typeof(CompareProject));
-            using (var f = File.OpenWrite(filename))
+            using (var f = File.Create(filename))
             {
                 xml.Serialize(f, project);
             }

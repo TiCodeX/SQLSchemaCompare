@@ -140,11 +140,12 @@ class Project {
 
     /**
      * Load the database values of the select
+     * @param button The button jQuery element that triggered the load
      * @param selectId The id of the select
      * @param dataDivId The id of the div with the data to serialize
      */
-    public static LoadDatabaseSelectValues(selectId: string, dataDivId: string): void {
-        Utility.LoadSelectValues($(`select[name=${selectId}]`), Project.loadDatabaseListUrl, Utility.HttpMethod.Post, $(`#${dataDivId}`));
+    public static LoadDatabaseSelectValues(button: JQuery, selectId: string, dataDivId: string): void {
+        Utility.LoadSelectValues(button, $(`select[name=${selectId}]`), Project.loadDatabaseListUrl, Utility.HttpMethod.Post, $(`#${dataDivId}`));
     }
 
     /**

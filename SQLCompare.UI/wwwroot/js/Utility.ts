@@ -81,22 +81,29 @@ class Utility {
 
     /**
      * Perform an ajax call to retrieve the select values
-     * @param element The select jQuery element
+     * @param button The button jQuery element that triggered the load
+     * @param select The select jQuery element
      * @param url The URL of the ajax call
      * @param method The method (GET/POST)
      * @param dataDiv The div with the data to serialize
      */
-    public static LoadSelectValues(element: JQuery, url: string, method: Utility.HttpMethod, dataDiv: JQuery): void {
+    public static LoadSelectValues(button: JQuery, select: JQuery, url: string, method: Utility.HttpMethod, dataDiv: JQuery): void {
+        // Disable the button and start rotating it
+        button.attr("disabled", "disabled").addClass("spin");
+        // Close the dropdown and disable it temporarily
+        select.trigger("blur").attr("disabled", "disabled");
 
         const data: object = Utility.SerializeJSON(dataDiv);
 
         Utility.AjaxCall(url, method, data, (result: Array<string>): void => {
-            element.find("option").remove();
+            select.find("option").remove();
             let options: string = "";
             $.each(result, (index: number, value: string): void => {
                 options += `<option value="${value}">${value}</option>`;
             });
-            element.append(options);
+            select.append(options);
+            select.removeAttr("disabled");
+            button.removeClass("spin").removeAttr("disabled");
         });
     }
 

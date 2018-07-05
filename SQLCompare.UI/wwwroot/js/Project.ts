@@ -23,6 +23,11 @@ class Project {
     private static readonly loadUrl: string = `${Project.pageUrl}?handler=LoadProject`;
 
     /**
+     * Service URL for editing a Project
+     */
+    private static readonly editUrl: string = `${Project.pageUrl}?handler=EditProject`;
+
+    /**
      * Service URL for loading a Project
      */
     private static readonly closeUrl: string = `${Project.pageUrl}?handler=CloseProject`;
@@ -33,14 +38,22 @@ class Project {
     private static readonly loadDatabaseListUrl: string = `${Project.pageUrl}?handler=LoadDatabaseList`;
 
     /**
-     * Service URL for starting the comparation
+     * Service URL for starting the comparison
      */
-    private static readonly compareUrl: string = `${Project.pageUrl}?handler=Compare`;
+    private static readonly startCompareUrl: string = `${Project.pageUrl}?handler=StartCompare`;
 
     /**
      * Current opened project file
      */
     private static filename: string;
+
+    /**
+     * Check if the project is open
+     * @returns Whether the project is open
+     */
+    public static IsProjectPageOpen(): boolean {
+        return Utility.IsModalDialogOpen() && $("#ProjectPage").is(":visible");
+    }
 
     /**
      * Open the Project page
@@ -53,8 +66,9 @@ class Project {
      * Open the new Project page
      */
     public static New(): void {
-        Utility.OpenModalDialog(this.newUrl, Utility.HttpMethod.Get);
-        Menu.ToggleProjectRelatedMenuStatus(true);
+        Utility.OpenModalDialog(this.newUrl, Utility.HttpMethod.Get, undefined, (): void => {
+            Menu.ToggleProjectRelatedMenuStatus(true);
+        });
     }
 
     /**
@@ -80,12 +94,23 @@ class Project {
             return;
         }
 
-        const data: object = <object>JSON.parse(JSON.stringify(filename));
+        const saveCall: () => void = (): void => {
+            const data: object = <object>JSON.parse(JSON.stringify(filename));
 
-        Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data, (): void => {
-            this.filename = filename;
-            alert("Saved successfully!");
-        });
+            Utility.AjaxCall(this.saveUrl,
+                Utility.HttpMethod.Post,
+                data,
+                (): void => {
+                    this.filename = filename;
+                    alert("Saved successfully!");
+                });
+        };
+
+        if (this.IsProjectPageOpen()) {
+            this.Edit(saveCall);
+        } else {
+            saveCall();
+        }
     }
 
     /**
@@ -118,10 +143,20 @@ class Project {
 
         const data: object = <object>JSON.parse(JSON.stringify(file));
 
-        Utility.OpenModalDialog(this.loadUrl, Utility.HttpMethod.Post, data);
+        Utility.OpenModalDialog(this.loadUrl, Utility.HttpMethod.Post, data, (): void => {
+            this.filename = filename;
+            Menu.ToggleProjectRelatedMenuStatus(true);
+        });
+    }
 
-        this.filename = filename;
-        Menu.ToggleProjectRelatedMenuStatus(true);
+    /**
+     * Serialize the project values in the UI and send them to the service
+     * @param successCallback - The callback function in case of success
+     */
+    public static Edit(successCallback: JQuery.Ajax.SuccessCallback<object>): void {
+        const data: object = Utility.SerializeJSON($("#tabDataSources"));
+
+        Utility.AjaxCall(this.editUrl, Utility.HttpMethod.Post, data, successCallback);
     }
 
     /**
@@ -152,26 +187,25 @@ class Project {
      * Perform the comparison
      */
     public static Compare(): void {
-
-        const data: object = Utility.SerializeJSON($("#tabDataSources"));
-
-        Utility.AjaxCall(this.compareUrl, Utility.HttpMethod.Post, data, (): void => {
-            // TODO: move the polling functionality in Utility
-            const pollingTime: number = 200;
-            const polling: VoidFunction = (): void => {
-                setTimeout(() => {
-                    if ($("#stopPolling").length > 0) {
-                        Utility.AjaxCall(Main.pageUrl, Utility.HttpMethod.Get, undefined, (result: string): void => {
-                            Utility.CloseModalDialog();
-                            $("#mainDiv").html(result);
-                        });
-                    } else {
-                        Utility.OpenModalDialog("/TaskStatusPageModel", Utility.HttpMethod.Get, undefined);
-                        polling();
-                    }
-                }, pollingTime);
-            };
-            polling();
+        this.Edit((): void => {
+            Utility.AjaxCall(this.startCompareUrl, Utility.HttpMethod.Get, undefined, (): void => {
+                // TODO: move the polling functionality in Utility
+                const pollingTime: number = 200;
+                const polling: VoidFunction = (): void => {
+                    setTimeout(() => {
+                        if ($("#stopPolling").length > 0) {
+                            Utility.AjaxCall(Main.pageUrl, Utility.HttpMethod.Get, undefined, (result: string): void => {
+                                Utility.CloseModalDialog();
+                                $("#mainDiv").html(result);
+                            });
+                        } else {
+                            Utility.OpenModalDialog("/TaskStatusPageModel", Utility.HttpMethod.Get);
+                            polling();
+                        }
+                    }, pollingTime);
+                };
+                polling();
+            });
         });
     }
 }

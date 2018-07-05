@@ -38,15 +38,27 @@ class Utility {
 
     /**
      * Perform an ajax call and open the modal dialog filled with the response
-     * @param url - The URL of the ajax call
-     * @param method - The method (GET/POST)
-     * @param data? - The object data to send when the method is POST
+     * @param url The URL of the ajax call
+     * @param method The method (GET/POST)
+     * @param data? The object data to send when the method is POST
+     * @param callbackFunction? A function which will be called after opening the dialog
      */
-    public static OpenModalDialog(url: string, method: Utility.HttpMethod, data?: object): void {
+    public static OpenModalDialog(url: string, method: Utility.HttpMethod, data?: object, callbackFunction?: () => void): void {
         this.AjaxCall(url, method, data, (result: string): void => {
             $("#myModalBody").html(result);
             $("#myModal").modal("show");
+            if (callbackFunction !== undefined) {
+                callbackFunction();
+            }
         });
+    }
+
+    /**
+     * Check if the modal dialog is open
+     * @returns Whether the modal dialog is open
+     */
+    public static IsModalDialogOpen(): boolean {
+        return $("#myModal").is(":visible");
     }
 
     /**

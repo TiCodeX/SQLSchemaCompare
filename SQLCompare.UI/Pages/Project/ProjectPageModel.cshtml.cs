@@ -120,30 +120,24 @@ namespace SQLCompare.UI.Pages.Project
         }
 
         /// <summary>
-        /// Perform the database comparison
+        /// Edit the project with the new values from the UI
         /// </summary>
         /// <param name="options">The project options</param>
         /// <returns>TODO: boh</returns>
-        public ActionResult OnPostCompare([FromBody] CompareProjectOptions options)
+        public ActionResult OnPostEditProject([FromBody] CompareProjectOptions options)
         {
-            this.projectService.Project.SourceProviderOptions = this.GetDatabaseProviderOptions(
-                options.SourceDatabaseType,
-                options.SourceHostname,
-                options.SourceUsername,
-                options.SourcePassword,
-                options.SourceUseWindowsAuthentication,
-                options.SourceUseSSL,
-                options.SourceDatabase);
+            this.projectService.Project.SourceProviderOptions = this.GetDatabaseProviderOptions(options, CompareDirection.Source);
+            this.projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(options, CompareDirection.Target);
 
-            this.projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(
-                options.TargetDatabaseType,
-                options.TargetHostname,
-                options.TargetUsername,
-                options.TargetPassword,
-                options.TargetUseWindowsAuthentication,
-                options.TargetUseSSL,
-                options.TargetDatabase);
+            return new JsonResult(null);
+        }
 
+        /// <summary>
+        /// Perform the database comparison
+        /// </summary>
+        /// <returns>TODO: boh</returns>
+        public ActionResult OnGetStartCompare()
+        {
             this.taskService.ExecuteTasks(new List<TaskWork>
             {
                 new TaskWork(
@@ -298,41 +292,20 @@ namespace SQLCompare.UI.Pages.Project
         /// <returns>The list of database names in JSON</returns>
         public ActionResult OnPostLoadDatabaseList([FromBody] CompareProjectOptions options)
         {
-            ADatabaseProviderOptions dbProviderOptions;
-            if (options.Direction == CompareDirection.Source)
-            {
-                dbProviderOptions = this.GetDatabaseProviderOptions(
-                    options.SourceDatabaseType,
-                    options.SourceHostname,
-                    options.SourceUsername,
-                    options.SourcePassword,
-                    options.SourceUseWindowsAuthentication,
-                    options.SourceUseSSL);
-            }
-            else
-            {
-                dbProviderOptions = this.GetDatabaseProviderOptions(
-                    options.TargetDatabaseType,
-                    options.TargetHostname,
-                    options.TargetUsername,
-                    options.TargetPassword,
-                    options.TargetUseWindowsAuthentication,
-                    options.TargetUseSSL);
-            }
-
-            return new JsonResult(this.databaseService.ListDatabases(dbProviderOptions));
+            return new JsonResult(this.databaseService.ListDatabases(this.GetDatabaseProviderOptions(options, options.Direction)));
         }
 
         // TODO: move somewhere else and add missing parameters
-        private ADatabaseProviderOptions GetDatabaseProviderOptions(
-            DatabaseType type,
-            string hostname,
-            string username,
-            string password,
-            bool useWindowsAuthentication,
-            bool useSSL,
-            string database = "")
+        private ADatabaseProviderOptions GetDatabaseProviderOptions(CompareProjectOptions options, CompareDirection direction)
         {
+            var type = direction == CompareDirection.Source ? options.SourceDatabaseType : options.TargetDatabaseType;
+            var hostname = direction == CompareDirection.Source ? options.SourceHostname : options.TargetHostname;
+            var username = direction == CompareDirection.Source ? options.SourceUsername : options.TargetUsername;
+            var password = direction == CompareDirection.Source ? options.SourcePassword : options.TargetPassword;
+            var useWindowsAuthentication = direction == CompareDirection.Source ? options.SourceUseWindowsAuthentication : options.TargetUseWindowsAuthentication;
+            var useSSL = direction == CompareDirection.Source ? options.SourceUseSSL : options.TargetUseSSL;
+            var database = direction == CompareDirection.Source ? options.SourceDatabase : options.TargetDatabase;
+
             switch (type)
             {
                 case DatabaseType.MicrosoftSql:

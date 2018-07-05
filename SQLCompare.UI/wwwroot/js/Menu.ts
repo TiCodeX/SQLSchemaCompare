@@ -34,7 +34,7 @@ class Menu {
                     },
                     {
                         id: "menuSaveProject",
-                        label: `${Localization.Get("MenuSaveProject")}...`,
+                        label: `${Localization.Get("MenuSaveProject")}`,
                         enabled: false,
                         click(): void {
                             Project.Save();

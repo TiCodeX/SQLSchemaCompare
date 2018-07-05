@@ -25,6 +25,8 @@ namespace SQLCompare.Services
         /// <inheritdoc />
         public List<string> ListDatabases(ADatabaseProviderOptions options)
         {
+            // Remove the database since we want to retrieve all of them
+            options.Database = string.Empty;
             var provider = this.dbProviderFactory.Create(options);
             return provider.GetDatabaseList();
         }

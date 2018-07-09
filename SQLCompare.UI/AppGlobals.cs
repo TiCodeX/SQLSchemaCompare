@@ -1,6 +1,6 @@
-﻿using SQLCompare.Core.Interfaces;
-using System;
+﻿using System;
 using System.IO;
+using SQLCompare.Core.Interfaces;
 
 namespace SQLCompare.UI
 {

@@ -1,8 +1,8 @@
-﻿using SQLCompare.Core.Entities.DatabaseProvider;
+﻿using System.IO;
+using System.Xml;
+using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Infrastructure.Repository;
-using System.IO;
-using System.Xml;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;

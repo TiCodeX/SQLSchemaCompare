@@ -1,6 +1,6 @@
-﻿using SQLCompare.Core.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using SQLCompare.Core.Entities;
 
 namespace SQLCompare.Core.Interfaces.Services
 {

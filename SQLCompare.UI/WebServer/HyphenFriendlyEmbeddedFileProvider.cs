@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Primitives;
-using System;
+﻿using System;
 using System.Text;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Primitives;
 
 namespace SQLCompare.UI.WebServer
 {

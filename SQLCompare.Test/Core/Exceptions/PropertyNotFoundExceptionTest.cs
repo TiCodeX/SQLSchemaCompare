@@ -1,6 +1,6 @@
-﻿using SQLCompare.Core.Entities.Exceptions;
+﻿using System;
+using SQLCompare.Core.Entities.Exceptions;
 using SQLCompare.Test.Infrastructure.DatabaseProviders;
-using System;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;

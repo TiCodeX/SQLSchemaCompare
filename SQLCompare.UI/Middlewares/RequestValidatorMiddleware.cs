@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SQLCompare.Core.Interfaces;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace SQLCompare.UI.Middlewares
 {

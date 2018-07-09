@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Infrastructure.EntityFramework;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SQLCompare.Infrastructure.DatabaseProviders
 {

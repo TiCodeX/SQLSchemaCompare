@@ -1,11 +1,11 @@
-﻿using SQLCompare.Core.Entities;
-using SQLCompare.Core.Interfaces.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SQLCompare.Core.Entities;
+using SQLCompare.Core.Interfaces.Services;
 
 namespace SQLCompare.Services
 {

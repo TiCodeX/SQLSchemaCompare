@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Interfaces;
-using System;
 
 namespace SQLCompare.Infrastructure.DatabaseProviders
 {

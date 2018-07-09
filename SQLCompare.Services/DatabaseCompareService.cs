@@ -1,6 +1,6 @@
-﻿using SQLCompare.Core.Entities.Database;
+﻿using System;
+using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Interfaces.Services;
-using System;
 
 namespace SQLCompare.Services
 {

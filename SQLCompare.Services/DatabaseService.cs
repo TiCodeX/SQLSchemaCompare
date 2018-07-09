@@ -1,8 +1,8 @@
-﻿using SQLCompare.Core.Entities.Database;
+﻿using System.Collections.Generic;
+using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
-using System.Collections.Generic;
 
 namespace SQLCompare.Services
 {

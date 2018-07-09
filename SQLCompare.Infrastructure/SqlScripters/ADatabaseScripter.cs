@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Text;
+using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Interfaces;
-using System;
-using System.Text;
 
 namespace SQLCompare.Infrastructure.SqlScripters
 {

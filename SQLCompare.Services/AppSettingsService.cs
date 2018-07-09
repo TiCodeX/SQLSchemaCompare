@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.IO;
+using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities;
 using SQLCompare.Core.Interfaces.Repository;
 using SQLCompare.Core.Interfaces.Services;
-using System.IO;
 
 namespace SQLCompare.Services
 {

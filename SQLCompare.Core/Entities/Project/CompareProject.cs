@@ -1,7 +1,7 @@
-﻿using SQLCompare.Core.Entities.Compare;
+﻿using System.Xml.Serialization;
+using SQLCompare.Core.Entities.Compare;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
-using System.Xml.Serialization;
 
 namespace SQLCompare.Core.Entities.Project
 {

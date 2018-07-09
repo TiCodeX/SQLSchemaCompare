@@ -1,5 +1,5 @@
-﻿using SQLCompare.Core.Entities.Database;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using SQLCompare.Core.Entities.Database;
 
 namespace SQLCompare.Core.Entities.Compare
 {

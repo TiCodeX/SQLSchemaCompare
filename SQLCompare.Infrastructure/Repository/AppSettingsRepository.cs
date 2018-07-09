@@ -1,9 +1,9 @@
-﻿using SQLCompare.Core.Entities;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Core.Interfaces.Repository;
-using System;
+﻿using System;
 using System.IO;
 using System.Xml.Serialization;
+using SQLCompare.Core.Entities;
+using SQLCompare.Core.Interfaces;
+using SQLCompare.Core.Interfaces.Repository;
 
 namespace SQLCompare.Infrastructure.Repository
 {

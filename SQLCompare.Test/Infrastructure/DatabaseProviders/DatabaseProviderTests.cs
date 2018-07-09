@@ -1,9 +1,9 @@
-﻿using SQLCompare.Core.Entities.Database.MySql;
+﻿using System;
+using SQLCompare.Core.Entities.Database.MySql;
 using SQLCompare.Core.Entities.Database.PostgreSql;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Infrastructure.DatabaseProviders;
 using SQLCompare.Infrastructure.SqlScripters;
-using System;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;

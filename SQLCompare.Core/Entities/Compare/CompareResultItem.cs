@@ -1,5 +1,5 @@
-﻿using SQLCompare.Core.Entities.Database;
-using System;
+﻿using System;
+using SQLCompare.Core.Entities.Database;
 
 namespace SQLCompare.Core.Entities.Compare
 {

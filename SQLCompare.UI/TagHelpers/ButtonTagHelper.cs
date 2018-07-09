@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
-using SQLCompare.UI.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using SQLCompare.UI.Enums;
 
 namespace SQLCompare.UI.TagHelpers
 {

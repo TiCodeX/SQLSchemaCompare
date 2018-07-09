@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Linq;
+using System.Text;
+using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MySql;
 using SQLCompare.Core.Entities.Project;
-using System.Linq;
-using System.Text;
 
 namespace SQLCompare.Infrastructure.SqlScripters
 {

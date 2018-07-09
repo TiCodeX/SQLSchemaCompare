@@ -1,4 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Reflection;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Logging;
 using NLog;
@@ -7,14 +15,6 @@ using NLog.Config;
 using NLog.Targets;
 using NLog.Web;
 using SQLCompare.UI.WebServer;
-using System;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Reflection;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
 using LoggingRule = NLog.Config.LoggingRule;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 

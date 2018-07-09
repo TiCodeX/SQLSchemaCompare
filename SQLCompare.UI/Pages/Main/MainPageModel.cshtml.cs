@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SQLCompare.Core.Entities.Compare;
 using SQLCompare.Core.Interfaces.Services;
-using System;
-using System.Linq;
 
 namespace SQLCompare.UI.Pages.Main
 {

@@ -1,12 +1,12 @@
-﻿using SQLCompare.Core.Enums;
-using SQLCompare.Core.Interfaces.Services;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
+using SQLCompare.Core.Enums;
+using SQLCompare.Core.Interfaces.Services;
 
 namespace SQLCompare.Services
 {

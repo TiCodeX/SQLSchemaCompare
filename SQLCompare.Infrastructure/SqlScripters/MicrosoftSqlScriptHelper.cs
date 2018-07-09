@@ -1,8 +1,8 @@
-﻿using SQLCompare.Core.Entities.Database;
+﻿using System;
+using System.Text;
+using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MicrosoftSql;
 using SQLCompare.Core.Entities.Project;
-using System;
-using System.Text;
 
 namespace SQLCompare.Infrastructure.SqlScripters
 {

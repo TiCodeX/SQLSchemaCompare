@@ -1,5 +1,5 @@
-﻿using SQLCompare.Core.Enums;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using SQLCompare.Core.Enums;
 
 namespace SQLCompare.Core.Entities
 {

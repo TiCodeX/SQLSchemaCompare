@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using SQLCompare.Core.Interfaces.Services;
-using System.Collections.Generic;
 
 namespace SQLCompare.UI.Pages
 {

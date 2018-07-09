@@ -22,13 +22,10 @@ class Main {
      * @param rowId The id of the database object to show
      */
     public static ShowBottomPanel(rowId: string): void {
-        if (this.mainSplitter !== undefined) {
-            return;
-        }
 
         $("#mainBottom").show();
 
-        if ($(".gutter").length === 0) {
+        if (this.mainSplitter === undefined) {
             this.mainSplitter = Split(["#mainTop", "#mainBottom"], {
                 direction: "vertical",
             });

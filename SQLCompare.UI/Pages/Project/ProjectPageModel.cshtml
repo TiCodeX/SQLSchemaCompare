@@ -20,17 +20,17 @@
             <a data-toggle="tab" href="#tabOptions" class="nav-link">@Localization.LabelOptions</a>
         </li>
     </ul>
-    <div class="tab-content px-3 pt-3 mb-3">
+    <div class="tab-content p-3 mb-3">
         <div class="tab-pane active" id="tabDataSources">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-6">
                     @await Html.PartialAsync("_DatabaseProviderOptions", Model.Project.SourceProviderOptions, new ViewDataDictionary(this.ViewData)
                     {
                         { "Title", Localization.LabelSource },
                         { "Prefix", CompareDirection.Source},
                     })
                 </div>
-                <div class="col-md-6">
+                <div class="col-6">
                     @await Html.PartialAsync("_DatabaseProviderOptions", Model.Project.TargetProviderOptions, new ViewDataDictionary(this.ViewData)
                     {
                         { "Title", Localization.LabelTarget },
@@ -40,27 +40,73 @@
             </div>
         </div>
         <div class="tab-pane" id="tabTableMapping">
-            <p></p>
+            <p>TODO</p>
         </div>
         <div class="tab-pane" id="tabOwnerMapping">
-            <p></p>
+            <p>TODO</p>
         </div>
         <div class="tab-pane" id="tabOptions">
-            <p></p>
+            <div class="row">
+                <div class="col-12">
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text min-width-100">@Localization.LabelIgnoreCollate</span>
+                            </div>
+                            <label class="switch">
+                                @{
+                                    @:<input type="checkbox" name="ProjectOptions[Scripting[IgnoreCollate]]" data-value-type="boolean" @(Model.Project.Options.Scripting.IgnoreCollate ? "checked=\"checked\"" : "")>
+                                }
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text min-width-100">@Localization.LabelOrderColumnAlphabetically</span>
+                            </div>
+                            <label class="switch">
+                                @{
+                                    @:<input type="checkbox" name="ProjectOptions[Scripting[OrderColumnAlphabetically]]" data-value-type="boolean" @(Model.Project.Options.Scripting.OrderColumnAlphabetically ? "checked=\"checked\"" : "")>
+                                }
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text min-width-100">@Localization.LabelUseSchemaName</span>
+                            </div>
+                            <label class="switch">
+                                @{
+                                    @:<input type="checkbox" name="ProjectOptions[Scripting[UseSchemaName]]" data-value-type="boolean" @(Model.Project.Options.Scripting.UseSchemaName ? "checked=\"checked\"" : "")>
+                                }
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <div class="float-right">
-        <button style="@ButtonStyle.Primary" onclick="Project.Compare()">
-            @Localization.ButtonCompareNow
-        </button>
-        @if (Model.Project.RetrievedSourceDatabase != null)
-        {
-            <button style="@ButtonStyle.Secondary" onclick="Utility.CloseModalDialog()">@Localization.ButtonCancel</button>
-        }
-        else
-        {
-            <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">@Localization.ButtonCancel</button>
-        }
-    </div>
+<div class="float-right">
+    <button style="@ButtonStyle.Primary" onclick="Project.Compare()">
+        @Localization.ButtonCompareNow
+    </button>
+    @if (Model.Project.RetrievedSourceDatabase != null)
+    {
+        <button style="@ButtonStyle.Secondary" onclick="Utility.CloseModalDialog()">@Localization.ButtonCancel</button>
+    }
+    else
+    {
+        <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">@Localization.ButtonCancel</button>
+    }
 </div>

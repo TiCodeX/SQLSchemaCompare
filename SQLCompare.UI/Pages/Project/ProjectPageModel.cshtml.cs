@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Compare;
@@ -10,9 +13,6 @@ using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.UI.Enums;
 using SQLCompare.UI.Models.Project;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SQLCompare.UI.Pages.Project
 {
@@ -128,6 +128,7 @@ namespace SQLCompare.UI.Pages.Project
         {
             this.projectService.Project.SourceProviderOptions = this.GetDatabaseProviderOptions(options, CompareDirection.Source);
             this.projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(options, CompareDirection.Target);
+            this.projectService.Project.Options = options.ProjectOptions;
 
             return new JsonResult(null);
         }

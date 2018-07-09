@@ -47,6 +47,9 @@ class Utility {
         this.AjaxCall(url, method, data, (result: string): void => {
             $("#myModalBody").html(result);
             $("#myModal").modal("show");
+            $(".tab-pane").matchHeight({
+                byRow: false,
+            });
             if (callbackFunction !== undefined) {
                 callbackFunction();
             }
@@ -77,6 +80,7 @@ class Utility {
         // Ref: https://github.com/marioizquierdo/jquery.serializeJSON#options
         const settings: SerializeJSONSettings = {
             useIntKeysAsArrayIndex: true,
+            checkboxUncheckedValue: "false",
         };
 
         // Wrap content with a form

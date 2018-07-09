@@ -93,6 +93,9 @@ function createWindow() {
             // and restore the maximized or full screen state
             mainWindowState.manage(mainWindow);
 
+            // Bring the window to front
+            mainWindow.focus();
+
             // Open the DevTools.
             //mainWindow.webContents.openDevTools()
         }

@@ -1,4 +1,5 @@
-﻿using SQLCompare.Core.Enums;
+﻿using SQLCompare.Core.Entities.Project;
+using SQLCompare.Core.Enums;
 using SQLCompare.UI.Enums;
 
 namespace SQLCompare.UI.Models.Project
@@ -84,8 +85,8 @@ namespace SQLCompare.UI.Models.Project
         public string TargetDatabase { get; set; }
 
         /// <summary>
-        /// Gets or sets the filename to save the project
+        /// Gets or sets the project options
         /// </summary>
-        public string SaveProjectFilename { get; set; }
+        public ProjectOptions ProjectOptions { get; set; }
     }
 }

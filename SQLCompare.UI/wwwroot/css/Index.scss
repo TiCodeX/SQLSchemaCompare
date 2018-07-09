@@ -50,15 +50,6 @@ body > .container-fluid > .row {
     border-bottom: 1px solid #ddd;
 }
 
-.tab-content > .tab-pane {
-    display: block;
-    visibility: hidden;
-}
-
-.tab-content > .active {
-    visibility: visible;
-}
-
 .btn.spin > span {
     display: block;
     animation: spin 2s linear infinite;

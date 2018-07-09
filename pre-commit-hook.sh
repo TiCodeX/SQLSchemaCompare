@@ -2,6 +2,8 @@
 changedFiles=$(git diff --cached --name-only)
 
 for file in $changedFiles; do
+    [ -z "${file##"SQLCompare.UI/wwwroot/lib/"*}" ] && continue;
+    
     unix2dos < "$file" | cmp -s - "$file"
     if [ ! $? -eq 0 ]; then
         error=1

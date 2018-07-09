@@ -237,4 +237,13 @@
   <data name="MenuSaveProjectAs" xml:space="preserve">
     <value>Save Project As</value>
   </data>
+  <data name="LabelIgnoreCollate" xml:space="preserve">
+    <value>Ignore Collate</value>
+  </data>
+  <data name="LabelOrderColumnAlphabetically" xml:space="preserve">
+    <value>Order columns alphabetically</value>
+  </data>
+  <data name="LabelUseSchemaName" xml:space="preserve">
+    <value>Use schema name</value>
+  </data>
 </root>

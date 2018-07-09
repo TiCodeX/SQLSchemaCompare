@@ -142,6 +142,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore Collate.
+        /// </summary>
+        public static string LabelIgnoreCollate {
+            get {
+                return ResourceManager.GetString("LabelIgnoreCollate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In both, but different.
         /// </summary>
         public static string LabelInBothButDifferent {
@@ -192,6 +201,15 @@ namespace SQLCompare.Services {
         public static string LabelOptions {
             get {
                 return ResourceManager.GetString("LabelOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Order columns alphabetically.
+        /// </summary>
+        public static string LabelOrderColumnAlphabetically {
+            get {
+                return ResourceManager.GetString("LabelOrderColumnAlphabetically", resourceCulture);
             }
         }
         
@@ -273,6 +291,15 @@ namespace SQLCompare.Services {
         public static string LabelUsername {
             get {
                 return ResourceManager.GetString("LabelUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use schema name.
+        /// </summary>
+        public static string LabelUseSchemaName {
+            get {
+                return ResourceManager.GetString("LabelUseSchemaName", resourceCulture);
             }
         }
         

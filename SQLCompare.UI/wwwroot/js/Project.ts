@@ -154,7 +154,7 @@ class Project {
      * @param successCallback - The callback function in case of success
      */
     public static Edit(successCallback: JQuery.Ajax.SuccessCallback<object>): void {
-        const data: object = Utility.SerializeJSON($("#tabDataSources"));
+        const data: object = Utility.SerializeJSON($("#ProjectPage"));
 
         Utility.AjaxCall(this.editUrl, Utility.HttpMethod.Post, data, successCallback);
     }

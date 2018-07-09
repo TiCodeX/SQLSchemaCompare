@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="4.5.2.1" />
+    <PackageReference Include="FluentAssertions" Version="5.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.1.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.2" />
     <PackageReference Include="Moq" Version="4.8.2" />
@@ -31,6 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SQLCompare.Infrastructure\SQLCompare.Infrastructure.csproj" />
+    <ProjectReference Include="..\SQLCompare.UI\SQLCompare.UI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

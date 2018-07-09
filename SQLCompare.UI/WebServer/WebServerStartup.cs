@@ -19,7 +19,7 @@ namespace SQLCompare.UI.WebServer
     /// <summary>
     /// WebServer configuration class used during the startup
     /// </summary>
-    internal class WebServerStartup
+    public class WebServerStartup
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WebServerStartup"/> class.

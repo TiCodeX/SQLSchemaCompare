@@ -6,6 +6,7 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Logging;
@@ -79,7 +80,9 @@ namespace SQLCompare.UI
             try
             {
                 logger.Debug("init main");
-                BuildWebHost().Run();
+                CreateWebHostBuilder(null)
+                    .Build()
+                    .Run();
             }
             catch (Exception ex)
             {
@@ -94,9 +97,9 @@ namespace SQLCompare.UI
             }
         }
 
-        private static IWebHost BuildWebHost()
+        private static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
-            var host = new WebHostBuilder()
+            return WebHost.CreateDefaultBuilder(args)
                 .UseKestrel(options =>
                 {
                     options.Listen(IPAddress.Any, WebServerPort, listenOptions =>
@@ -123,9 +126,7 @@ namespace SQLCompare.UI
                     logging.ClearProviders();
                     logging.SetMinimumLevel(LogLevel.Trace);
                 })
-                .UseNLog()
-                .Build();
-            return host;
+                .UseNLog();
         }
 
         private static int? GetFreePort(int start, int end)

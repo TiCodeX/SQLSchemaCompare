@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
@@ -47,12 +49,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// </summary>
         protected TScriptHelper ScriptHelper { get; }
 
-        /// <summary>
-        /// Generates the create table script
-        /// </summary>
-        /// <param name="table">The table to be scripted</param>
-        /// <returns>The create script</returns>
-        public string GenerateCreateTableScript(ABaseDbTable table)
+        /// <inheritdoc/>
+        public string GenerateCreateTableScript(ABaseDbTable table, ABaseDbTable sourceTable)
         {
             if (table == null)
             {
@@ -62,7 +60,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
 
             // Script the CREATE TABLE
-            sb.Append(this.ScriptCreateTable(table));
+            sb.Append(this.ScriptCreateTable(table, sourceTable));
             sb.AppendLine();
             sb.AppendLine();
 
@@ -82,8 +80,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// Generates the create table script
         /// </summary>
         /// <param name="table">The table to script</param>
+        /// <param name="sourceTable">The source table for comparison, used for column order</param>
         /// <returns>The create table script</returns>
-        protected abstract string ScriptCreateTable(ABaseDbTable table);
+        protected abstract string ScriptCreateTable(ABaseDbTable table, ABaseDbTable sourceTable);
 
         /// <summary>
         /// Generates the alter table for adding primary keys after create table
@@ -98,5 +97,51 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="table">The table to alter</param>
         /// <returns>The alter table script</returns>
         protected abstract string ScriptForeignKeysAlterTable(ABaseDbTable table);
+
+        /// <summary>
+        /// Get the table columns sorted depending on options and source table
+        /// </summary>
+        /// <param name="table">The table with columns to script</param>
+        /// <param name="sourceTable">The source table for comparison</param>
+        /// <returns>The sorted columns</returns>
+        protected IEnumerable<ABaseDbColumn> GetSortedTableColumns(ABaseDbTable table, ABaseDbTable sourceTable)
+        {
+            if (sourceTable != null && !this.Options.Scripting.IgnoreSourceTableColumnOrder)
+            {
+                var columns = table.Columns.ToList();
+                var sourceColumns = sourceTable.Columns.AsEnumerable();
+                if (this.Options.Scripting.OrderColumnAlphabetically)
+                {
+                    sourceColumns = sourceTable.Columns.OrderBy(x => x.Name);
+                }
+
+                var sortedColumns = new List<ABaseDbColumn>();
+
+                foreach (var s in sourceColumns)
+                {
+                    foreach (var c in columns)
+                    {
+                        if (string.Equals(s.Name, c.Name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            sortedColumns.Add(c);
+                            columns.Remove(c);
+                            break;
+                        }
+                    }
+                }
+
+                sortedColumns.AddRange(columns);
+
+                return sortedColumns;
+            }
+            else if (this.Options.Scripting.OrderColumnAlphabetically)
+            {
+                return table.Columns.OrderBy(x => x.Name);
+            }
+            else
+            {
+                return table.Columns;
+            }
+        }
     }
 }

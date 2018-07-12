@@ -8,10 +8,11 @@ namespace SQLCompare.Core.Interfaces
     public interface IDatabaseScripter
     {
         /// <summary>
-        /// Generates the a database create table script with indexes and constraints
+        /// Generates the create table script
         /// </summary>
-        /// <param name="table">The table that must be scripted</param>
-        /// <returns>The generated create script</returns>
-        string GenerateCreateTableScript(ABaseDbTable table);
+        /// <param name="table">The table to be scripted</param>
+        /// <param name="sourceTable">The source table for comparison, used for column order</param>
+        /// <returns>The create script</returns>
+        string GenerateCreateTableScript(ABaseDbTable table, ABaseDbTable sourceTable = null);
     }
 }

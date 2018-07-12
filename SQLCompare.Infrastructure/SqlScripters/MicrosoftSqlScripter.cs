@@ -23,15 +23,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateTable(ABaseDbTable table)
+        protected override string ScriptCreateTable(ABaseDbTable table, ABaseDbTable sourceTable)
         {
             var ncol = table.Columns.Count;
 
-            var columns = table.Columns.AsEnumerable();
-            if (this.Options.Scripting.OrderColumnAlphabetically)
-            {
-                columns = table.Columns.OrderBy(x => x.Name);
-            }
+            var columns = this.GetSortedTableColumns(table, sourceTable);
 
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE TABLE {this.ScriptHelper.ScriptTableName(table)}(");

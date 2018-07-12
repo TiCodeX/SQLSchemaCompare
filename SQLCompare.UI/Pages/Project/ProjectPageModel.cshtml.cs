@@ -252,7 +252,7 @@ namespace SQLCompare.UI.Pages.Project
                                 resultTable.TargetCreateScript = this.databaseScripterFactory.Create(
                                         this.projectService.Project.RetrievedTargetDatabase,
                                         this.projectService.Project.Options)
-                                    .GenerateCreateTableScript(resultTable.TargetItem);
+                                    .GenerateCreateTableScript(resultTable.TargetItem, resultTable.SourceItem);
                             }
 
                             // Workaround: compare the generated sql script

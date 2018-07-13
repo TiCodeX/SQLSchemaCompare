@@ -1,4 +1,5 @@
-﻿using SQLCompare.Core.Enums;
+﻿using FluentAssertions;
+using SQLCompare.Core.Enums;
 using SQLCompare.Services;
 using Xunit;
 using Xunit.Abstractions;
@@ -25,32 +26,35 @@ namespace SQLCompare.Test.Services
         }
 
         /// <summary>
-        /// Test changing language
+        /// Test changing the language
         /// </summary>
         [Fact]
         [UnitTest]
-        public void SetLanguageTest()
+        public void LocalizationTest()
         {
-            Assert.Equal("New Project", Localization.ButtonNewProject);
-            Assert.Equal("Cancel", Localization.ButtonCancel);
+            this.localizationService.SetLanguage(Language.English);
+
+            Localization.ButtonNewProject.Should().Be("New Project");
+            Localization.ButtonCancel.Should().Be("Cancel");
+
+            var dict = this.localizationService.GetLocalizationDictionary();
+            dict.Should().ContainKey(nameof(Localization.ButtonNewProject));
+            dict[nameof(Localization.ButtonNewProject)].Should().Be("New Project");
+            dict.Should().ContainKey(nameof(Localization.ButtonCancel));
+            dict[nameof(Localization.ButtonCancel)].Should().Be("Cancel");
 
             this.localizationService.SetLanguage(Language.Italian);
 
-            Assert.Equal("Nuovo Progetto", Localization.ButtonNewProject);
-            Assert.Equal("Annulla", Localization.ButtonCancel);
-        }
+            Localization.ButtonNewProject.Should().Be("Nuovo Progetto");
+            Localization.ButtonCancel.Should().Be("Annulla");
 
-        /// <summary>
-        /// Test the GetLocalizationDictionary
-        /// </summary>
-        [Fact]
-        [UnitTest]
-        public void GetLocalizationDictionaryTest()
-        {
-            var dict = this.localizationService.GetLocalizationDictionary();
+            dict = this.localizationService.GetLocalizationDictionary();
+            dict.Should().ContainKey(nameof(Localization.ButtonNewProject));
+            dict[nameof(Localization.ButtonNewProject)].Should().Be("Nuovo Progetto");
+            dict.Should().ContainKey(nameof(Localization.ButtonCancel));
+            dict[nameof(Localization.ButtonCancel)].Should().Be("Annulla");
 
-            Assert.Equal("New Project", dict[nameof(Localization.ButtonNewProject)]);
-            Assert.Equal("Compare Now", dict[nameof(Localization.ButtonCompareNow)]);
+            this.localizationService.SetLanguage(Language.English);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
@@ -148,24 +149,63 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbView> GetViews(MySqlDb db, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbView> GetViews(MySqlDb database, MySqlDatabaseContext context)
         {
-            // TODO: implement
-            return new List<MySqlView>();
+            var query = new StringBuilder();
+            query.AppendLine("SELECT TABLE_NAME as Name,");
+            query.AppendLine("       TABLE_CATALOG as 'Catalog',");
+            query.AppendLine("       TABLE_SCHEMA as 'Schema'");
+            query.AppendLine("FROM INFORMATION_SCHEMA.VIEWS");
+            query.AppendLine($"WHERE TABLE_SCHEMA = '{database.Name}'");
+
+            var result = context.Query<MySqlView>(query.ToString());
+            foreach (var view in result)
+            {
+                var createView = context.Query($"SHOW CREATE VIEW {view.Schema}.{view.Name}", 1).FirstOrDefault();
+                view.ViewDefinition = createView;
+            }
+
+            return result;
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbRoutine> GetFunctions(MySqlDb db, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbRoutine> GetFunctions(MySqlDb database, MySqlDatabaseContext context)
         {
-            // TODO: implement
-            return new List<MySqlFunction>();
+            var query = new StringBuilder();
+            query.AppendLine("SELECT ROUTINE_NAME as Name,");
+            query.AppendLine("       ROUTINE_CATALOG as 'Catalog',");
+            query.AppendLine("       ROUTINE_SCHEMA as 'Schema'");
+            query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
+            query.AppendLine($"WHERE routine_type = 'FUNCTION' and ROUTINE_SCHEMA = '{database.Name}'");
+
+            var result = context.Query<MySqlFunction>(query.ToString());
+            foreach (var function in result)
+            {
+                var createFunction = context.Query($"SHOW CREATE FUNCTION {function.Schema}.{function.Name}", 2).FirstOrDefault();
+                function.RoutineDefinition = createFunction;
+            }
+
+            return result;
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbRoutine> GetStoreProcedures(MySqlDb db, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbRoutine> GetStoreProcedures(MySqlDb database, MySqlDatabaseContext context)
         {
-            // TODO: implement
-            return new List<MySqlStoreProcedure>();
+            var query = new StringBuilder();
+            query.AppendLine("SELECT ROUTINE_NAME as Name,");
+            query.AppendLine("       ROUTINE_CATALOG as 'Catalog',");
+            query.AppendLine("       ROUTINE_SCHEMA as 'Schema'");
+            query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
+            query.AppendLine($"WHERE routine_type = 'PROCEDURE' and ROUTINE_SCHEMA = '{database.Name}'");
+
+            var result = context.Query<MySqlFunction>(query.ToString());
+            foreach (var procedure in result)
+            {
+                var createProcedure = context.Query($"SHOW CREATE PROCEDURE {procedure.Schema}.{procedure.Name}", 2).FirstOrDefault();
+                procedure.RoutineDefinition = createProcedure;
+            }
+
+            return result;
         }
     }
 }

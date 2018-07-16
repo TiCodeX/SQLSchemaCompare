@@ -61,6 +61,20 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         /// </summary>
         [Fact]
         [IntegrationTest]
+        public void GetMySqlDatabase()
+        {
+            var dpf = new DatabaseProviderFactory(this.LoggerFactory);
+
+            var mysqldbp = (MySqlDatabaseProvider)dpf.Create(new MySqlDatabaseProviderOptions { Hostname = "localhost", Database = "sakila", Username = "root", Password = "test1234", UseSSL = true });
+
+            var db = mysqldbp.GetDatabase();
+        }
+
+        /// <summary>
+        /// Test the retrieval of specific database with all the databases
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
         public void GetDatabase()
         {
             var dpf = new DatabaseProviderFactory(this.LoggerFactory);

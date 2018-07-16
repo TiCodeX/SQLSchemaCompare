@@ -85,8 +85,9 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// Performs a query
         /// </summary>
         /// <param name="query">The SQL query</param>
-        /// <returns>The list of the first column</returns>
-        public List<string> Query(string query)
+        /// <param name="columnIndex">The desired column</param>
+        /// <returns>The list of the requested column</returns>
+        public List<string> Query(string query, int columnIndex = 0)
         {
             var result = new List<string>();
             this.Database.OpenConnection();
@@ -97,7 +98,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
                 {
                     while (reader.Read())
                     {
-                        result.Add(reader.GetString(0));
+                        result.Add(reader.GetString(columnIndex));
                     }
                 }
             }

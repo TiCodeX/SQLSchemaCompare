@@ -104,6 +104,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 case "binary":
                 case "varbinary":
                 case "tinyblob":
+                case "blob":
                 case "mediumblob":
                 case "longblob":
 

@@ -130,25 +130,25 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <summary>
         /// Get the database views
         /// </summary>
-        /// <param name="db">The database information</param>
+        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of views</returns>
-        protected abstract IEnumerable<ABaseDbView> GetViews(TDatabase db, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbView> GetViews(TDatabase database, TDatabaseContext context);
 
         /// <summary>
         /// Get the database functions
         /// </summary>
-        /// <param name="db">The database information</param>
+        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of functions</returns>
-        protected abstract IEnumerable<ABaseDbRoutine> GetFunctions(TDatabase db, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbRoutine> GetFunctions(TDatabase database, TDatabaseContext context);
 
         /// <summary>
         /// Get the database store procedure
         /// </summary>
-        /// <param name="db">The database information</param>
+        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of store procedures</returns>
-        protected abstract IEnumerable<ABaseDbRoutine> GetStoreProcedures(TDatabase db, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbRoutine> GetStoreProcedures(TDatabase database, TDatabaseContext context);
     }
 }

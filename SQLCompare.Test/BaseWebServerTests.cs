@@ -1,5 +1,7 @@
 ﻿using System.Net.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
+using SQLCompare.Core.Enums;
+using SQLCompare.Services;
 using SQLCompare.UI.WebServer;
 using Xunit;
 using Xunit.Abstractions;
@@ -22,6 +24,10 @@ namespace SQLCompare.Test
         {
             this.HttpClient = webApplicationFactory.CreateDefaultClient();
             this.HttpClient.DefaultRequestHeaders.Add("CustomAuthToken", "prova");
+
+            // Ensure the webserver starts with the english localization
+            var localizationService = new LocalizationService();
+            localizationService.SetLanguage(Language.English);
         }
 
         /// <summary>

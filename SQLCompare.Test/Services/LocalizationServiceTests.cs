@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Globalization;
+using FluentAssertions;
 using SQLCompare.Core.Enums;
 using SQLCompare.Services;
 using Xunit;
@@ -22,7 +23,7 @@ namespace SQLCompare.Test.Services
             : base(output)
         {
             this.localizationService = new LocalizationService();
-            this.localizationService.Init(Language.English);
+            this.localizationService.SetLanguage(Language.English);
         }
 
         /// <summary>
@@ -32,29 +33,82 @@ namespace SQLCompare.Test.Services
         [UnitTest]
         public void LocalizationTest()
         {
-            this.localizationService.SetLanguage(Language.English);
+            try
+            {
+                this.localizationService.SetLanguage(Language.English);
 
-            Localization.ButtonNewProject.Should().Be("New Project");
-            Localization.ButtonCancel.Should().Be("Cancel");
+                Localization.ButtonNewProject.Should().Be("New Project");
+                Localization.ButtonCancel.Should().Be("Cancel");
 
-            var dict = this.localizationService.GetLocalizationDictionary();
-            dict.Should().ContainKey(nameof(Localization.ButtonNewProject));
-            dict[nameof(Localization.ButtonNewProject)].Should().Be("New Project");
-            dict.Should().ContainKey(nameof(Localization.ButtonCancel));
-            dict[nameof(Localization.ButtonCancel)].Should().Be("Cancel");
+                this.localizationService.SetLanguage(Language.Italian);
 
-            this.localizationService.SetLanguage(Language.Italian);
+                Localization.ButtonNewProject.Should().Be("Nuovo Progetto");
+                Localization.ButtonCancel.Should().Be("Annulla");
+            }
+            finally
+            {
+                // Restore the English language
+                this.localizationService.SetLanguage(Language.English);
+            }
+        }
 
-            Localization.ButtonNewProject.Should().Be("Nuovo Progetto");
-            Localization.ButtonCancel.Should().Be("Annulla");
+        /// <summary>
+        /// Test getting the translation of specific language
+        /// </summary>
+        [Fact]
+        [UnitTest]
+        public void GetSpecificStringTest()
+        {
+            try
+            {
+#pragma warning disable CA1304 // Specify CultureInfo
+                this.localizationService.SetLanguage(Language.English);
+                this.localizationService.GetString("ButtonNewProject").Should().Be("New Project");
+                this.localizationService.SetLanguage(Language.Italian);
+                this.localizationService.GetString("ButtonNewProject").Should().Be("Nuovo Progetto");
+#pragma warning restore CA1304 // Specify CultureInfo
 
-            dict = this.localizationService.GetLocalizationDictionary();
-            dict.Should().ContainKey(nameof(Localization.ButtonNewProject));
-            dict[nameof(Localization.ButtonNewProject)].Should().Be("Nuovo Progetto");
-            dict.Should().ContainKey(nameof(Localization.ButtonCancel));
-            dict[nameof(Localization.ButtonCancel)].Should().Be("Annulla");
+                this.localizationService.GetString("ButtonNewProject", CultureInfo.GetCultureInfo("en")).Should().Be("New Project");
+                this.localizationService.GetString("ButtonNewProject", CultureInfo.GetCultureInfo("it")).Should().Be("Nuovo Progetto");
+                this.localizationService.GetString("ButtonNewProject", CultureInfo.GetCultureInfo("cz")).Should().Be("[[ButtonNewProject]]");
+            }
+            finally
+            {
+                // Restore the English language
+                this.localizationService.SetLanguage(Language.English);
+            }
+        }
 
-            this.localizationService.SetLanguage(Language.English);
+        /// <summary>
+        /// Test the GetLocalizationDictionary
+        /// </summary>
+        [Fact]
+        [UnitTest]
+        public void GetLocalizationDictionaryTest()
+        {
+            try
+            {
+                this.localizationService.SetLanguage(Language.English);
+
+                var dict = this.localizationService.GetLocalizationDictionary();
+                dict.Should().ContainKey(nameof(Localization.ButtonNewProject));
+                dict[nameof(Localization.ButtonNewProject)].Should().Be("New Project");
+                dict.Should().ContainKey(nameof(Localization.ButtonCancel));
+                dict[nameof(Localization.ButtonCancel)].Should().Be("Cancel");
+
+                this.localizationService.SetLanguage(Language.Italian);
+
+                dict = this.localizationService.GetLocalizationDictionary();
+                dict.Should().ContainKey(nameof(Localization.ButtonNewProject));
+                dict[nameof(Localization.ButtonNewProject)].Should().Be("Nuovo Progetto");
+                dict.Should().ContainKey(nameof(Localization.ButtonCancel));
+                dict[nameof(Localization.ButtonCancel)].Should().Be("Annulla");
+            }
+            finally
+            {
+                // Restore the English language
+                this.localizationService.SetLanguage(Language.English);
+            }
         }
     }
 }

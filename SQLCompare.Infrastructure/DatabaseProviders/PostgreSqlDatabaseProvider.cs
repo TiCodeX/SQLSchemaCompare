@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
@@ -193,24 +194,83 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbView> GetViews(PostgreSqlDb db, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbView> GetViews(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
-            // TODO: implement
-            return new List<PostgreSqlView>();
+            var query = new StringBuilder();
+            query.AppendLine("SELECT TABLE_NAME as \"Name\",");
+            query.AppendLine("       TABLE_CATALOG as \"Catalog\",");
+            query.AppendLine("       TABLE_SCHEMA as \"Schema\",");
+            query.AppendLine("       VIEW_DEFINITION as \"ViewDefinition\"");
+            query.AppendLine("FROM INFORMATION_SCHEMA.VIEWS");
+
+            return context.Query<PostgreSqlView>(query.ToString());
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbRoutine> GetFunctions(PostgreSqlDb db, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbRoutine> GetFunctions(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
-            // TODO: implement
-            return new List<PostgreSqlFunction>();
+            var query = new StringBuilder();
+            query.AppendLine("SELECT r.routine_catalog as \"Catalog\",");
+            query.AppendLine("       r.routine_schema as \"Schema\",");
+            query.AppendLine("       r.routine_name as \"Name\",");
+            query.AppendLine("       r.routine_definition as \"RoutineDefinition\",");
+            query.AppendLine("       r.external_language as \"ExternalLanguage\",");
+            query.AppendLine("       r.security_type as \"SecurityType\",");
+            query.AppendLine("       p.procost as \"Cost\",");
+            query.AppendLine("       p.prorows as \"Rows\",");
+            query.AppendLine("       p.proisstrict as \"IsStrict\",");
+            query.AppendLine("       p.proretset as \"ReturnSet\",");
+            query.AppendLine("       p.provolatile as \"Volatile\",");
+            query.AppendLine("       p.pronargs as \"ArgsCount\",");
+            query.AppendLine("       p.prorettype as \"ReturnType\",");
+            query.AppendLine("       p.proargtypes as \"ArgTypes\",");
+            query.AppendLine("       p.proallargtypes as \"AllArgTypes\",");
+            query.AppendLine("       p.proargmodes as \"ArgModes\",");
+            query.AppendLine("       p.proargnames as \"ArgNames\"");
+            query.AppendLine("FROM information_schema.routines r");
+            query.AppendLine("INNER JOIN pg_proc p");
+            query.AppendLine("    ON r.routine_name = p.proname");
+            query.AppendLine($"WHERE routine_catalog = '{database.Name}' AND r.routine_schema = 'public' AND p.proisagg = 'false'");
+            return context.Query<PostgreSqlFunction>(query.ToString());
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbRoutine> GetStoreProcedures(PostgreSqlDb db, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbRoutine> GetStoreProcedures(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
-            // TODO: implement
-            return new List<PostgreSqlFunction>();
+            // In PostgreSql Store Procedures doesn't exists. Therefore we will return an empty list;
+            return Enumerable.Empty<ABaseDbRoutine>();
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbObject> GetDataTypes(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+
+            query.AppendLine("SELECT current_database()::information_schema.sql_identifier AS \"Catalog\", ");
+            query.AppendLine("        nc.nspname AS \"Schema\", ");
+            query.AppendLine("        a.oid AS \"TypeId\", ");
+            query.AppendLine("        a.typname AS \"Name\",");
+            query.AppendLine("        a.typarray AS \"ArrayTypeId\",");
+            query.AppendLine("       CASE");
+            query.AppendLine("              WHEN a.typcategory = 'A' THEN true");
+            query.AppendLine("              ELSE false");
+            query.AppendLine("       END AS \"IsArray\"");
+            query.AppendLine("FROM pg_type a");
+            query.AppendLine("INNER JOIN pg_namespace nc ON a.typnamespace = nc.oid");
+            var types = context.Query<PostgreSqlDataType>(query.ToString());
+
+            // Get all types that have an ArrayTypeId, those types need to be referenced by the array type
+            // E.g.: type 'bool' has id 1 and ArrayTypeId 1000
+            // type '_bool' has id 1000 and will reference type 'bool'
+            var referencedTypes = types.Where(x => x.ArrayTypeId != 0);
+
+            foreach (var t in types)
+            {
+                // If the current type is referenced by some other type as ArrayTypeId, set the array tape to it or null.
+                t.ArrayType = referencedTypes.FirstOrDefault(x => x.ArrayTypeId == t.TypeId);
+            }
+
+            return types;
         }
     }
 }

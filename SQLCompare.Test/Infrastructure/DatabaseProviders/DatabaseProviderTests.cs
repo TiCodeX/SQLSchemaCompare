@@ -75,6 +75,20 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         /// </summary>
         [Fact]
         [IntegrationTest]
+        public void GetPostgreSqlDatabase()
+        {
+            var dpf = new DatabaseProviderFactory(this.LoggerFactory);
+
+            var pgsqldbp = (PostgreSqlDatabaseProvider)dpf.Create(new PostgreSqlDatabaseProviderOptions { Hostname = "localhost", Database = "pagila", Username = "postgres", Password = "test1234" });
+
+            var db = pgsqldbp.GetDatabase();
+        }
+
+        /// <summary>
+        /// Test the retrieval of specific database with all the databases
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
         public void GetDatabase()
         {
             var dpf = new DatabaseProviderFactory(this.LoggerFactory);

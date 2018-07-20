@@ -67,9 +67,6 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var columns = this.GetColumns(db, context);
             var primaryKeys = this.GetPrimaryKeys(db, context);
             var foreignKeys = this.GetForeignKeys(db, context);
-            var views = this.GetViews(db, context);
-            var functions = this.GetFunctions(db, context);
-            var storeProcedures = this.GetStoreProcedures(db, context);
 
             foreach (var table in tables)
             {
@@ -88,9 +85,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             }
 
             db.Tables.AddRange(tables);
-            db.Views.AddRange(views);
-            db.Functions.AddRange(functions);
-            db.StoreProcedures.AddRange(storeProcedures);
+            db.Views.AddRange(this.GetViews(db, context));
+            db.Functions.AddRange(this.GetFunctions(db, context));
+            db.StoreProcedures.AddRange(this.GetStoreProcedures(db, context));
+            db.DataTypes.AddRange(this.GetDataTypes(db, context));
 
             return db;
         }
@@ -144,11 +142,19 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected abstract IEnumerable<ABaseDbRoutine> GetFunctions(TDatabase database, TDatabaseContext context);
 
         /// <summary>
-        /// Get the database store procedure
+        /// Get the database store procedures
         /// </summary>
         /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of store procedures</returns>
         protected abstract IEnumerable<ABaseDbRoutine> GetStoreProcedures(TDatabase database, TDatabaseContext context);
+
+        /// <summary>
+        /// Get the database data types
+        /// </summary>
+        /// <param name="database">The database information</param>
+        /// <param name="context">The database context</param>
+        /// <returns>The list of data types</returns>
+        protected abstract IEnumerable<ABaseDbObject> GetDataTypes(TDatabase database, TDatabaseContext context);
     }
 }

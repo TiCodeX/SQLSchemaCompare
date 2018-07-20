@@ -198,7 +198,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
             query.AppendLine($"WHERE routine_type = 'PROCEDURE' and ROUTINE_SCHEMA = '{database.Name}'");
 
-            var result = context.Query<MySqlFunction>(query.ToString());
+            var result = context.Query<MySqlStoreProcedure>(query.ToString());
             foreach (var procedure in result)
             {
                 var createProcedure = context.Query($"SHOW CREATE PROCEDURE {procedure.Schema}.{procedure.Name}", 2).FirstOrDefault();
@@ -206,6 +206,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             }
 
             return result;
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbObject> GetDataTypes(MySqlDb database, MySqlDatabaseContext context)
+        {
+            return Enumerable.Empty<ABaseDbObject>();
         }
     }
 }

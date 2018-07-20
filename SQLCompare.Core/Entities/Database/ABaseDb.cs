@@ -32,5 +32,10 @@ namespace SQLCompare.Core.Entities.Database
         /// Gets the database's store procedures
         /// </summary>
         public List<ABaseDbRoutine> StoreProcedures { get; } = new List<ABaseDbRoutine>();
+
+        /// <summary>
+        /// Gets the database's data types
+        /// </summary>
+        public List<ABaseDbObject> DataTypes { get; } = new List<ABaseDbObject>();
     }
 }

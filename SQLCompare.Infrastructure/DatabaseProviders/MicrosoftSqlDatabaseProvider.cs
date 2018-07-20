@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
@@ -219,6 +220,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("WHERE routine_type = 'PROCEDURE'");
 
             return context.Query<MicrosoftSqlFunction>(query.ToString());
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbObject> GetDataTypes(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        {
+            return Enumerable.Empty<ABaseDbObject>();
         }
     }
 }

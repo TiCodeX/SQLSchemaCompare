@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Datasources\ScriptColumnTest.xlsx">
+    <None Update="Datasources\**\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

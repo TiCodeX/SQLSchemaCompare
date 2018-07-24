@@ -27,5 +27,10 @@ namespace SQLCompare.Core.Entities.Database
         /// Gets the database table's primary keys
         /// </summary>
         public List<ABaseDbConstraint> PrimaryKeys { get; } = new List<ABaseDbConstraint>();
+
+        /// <summary>
+        /// Gets the database table's indexes
+        /// </summary>
+        public List<ABaseDbConstraint> Indexes { get; } = new List<ABaseDbConstraint>();
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -51,8 +52,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
             IEnumerable<string> columnList;
             foreach (var keys in table.PrimaryKeys.GroupBy(x => x.Name))
             {
-                var key = (PostgreSqlPrimaryKey)keys.First();
-                columnList = keys.OrderBy(x => ((PostgreSqlPrimaryKey)x).OrdinalPosition).Select(x => $"\"{((PostgreSqlPrimaryKey)x).ColumnName}\"");
+                var key = (PostgreSqlIndex)keys.First();
+                columnList = keys.OrderBy(x => ((PostgreSqlIndex)x).OrdinalPosition).Select(x => $"\"{((PostgreSqlIndex)x).ColumnName}\"");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT \"{key.Name}\" PRIMARY KEY ({string.Join(",", columnList)});");
@@ -82,6 +83,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
 
             return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptIndexesAlterTable(ABaseDbTable table)
+        {
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc/>

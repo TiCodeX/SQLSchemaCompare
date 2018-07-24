@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -21,7 +21,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="options">The options to connect to the Microsoft SQL Database</param>
         public MicrosoftSqlDatabaseProvider(ILoggerFactory loggerFactory, MicrosoftSqlDatabaseProviderOptions options)
-            : base(loggerFactory, loggerFactory.CreateLogger("MicrosoftSqlDatabaseProvider"), options)
+            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MicrosoftSqlDatabaseProvider)), options)
         {
         }
 
@@ -100,43 +100,6 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbConstraint> GetPrimaryKeys(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
-        {
-            var query = new StringBuilder();
-            query.AppendLine("SELECT a.CONSTRAINT_CATALOG as 'Catalog',");
-            query.AppendLine("       a.CONSTRAINT_SCHEMA as 'Schema',");
-            query.AppendLine("       a.CONSTRAINT_NAME as Name,");
-            query.AppendLine("       a.TABLE_CATALOG as TableCatalog,");
-            query.AppendLine("       a.TABLE_SCHEMA as TableSchema,");
-            query.AppendLine("       a.TABLE_NAME as TableName,");
-            query.AppendLine("       a.COLUMN_NAME as ColumnName,");
-            query.AppendLine("       a.ORDINAL_POSITION as OrdinalPosition,");
-            query.AppendLine("       b.type as Type,");
-            query.AppendLine("       b.type_desc as TypeDescription,");
-            query.AppendLine("       b.is_unique as IsUnique,");
-            query.AppendLine("       b.ignore_dup_key as IgnoreDupKey,");
-            query.AppendLine("       b.is_primary_key as IsPrimaryKey,");
-            query.AppendLine("       b.is_unique_constraint as IsUniqueContraint,");
-            query.AppendLine("       b.fill_factor as IndexFillFactor,");
-            query.AppendLine("       b.is_padded as IsPadded,");
-            query.AppendLine("       b.is_disabled as IsDisabled,");
-            query.AppendLine("       b.is_hypothetical as IsHypothetical,");
-            query.AppendLine("       b.is_ignored_in_optimization as IsIgnoredInOptimization,");
-            query.AppendLine("       b.allow_row_locks as AllowRowLocks,");
-            query.AppendLine("       b.allow_page_locks as AllowPageLocks,");
-            query.AppendLine("       b.has_filter as HasFilter,");
-            query.AppendLine("       b.filter_definition as FilterDefinition,");
-            query.AppendLine("       b.compression_delay as CompressionDelay,");
-            query.AppendLine("       b.suppress_dup_key_messages as SuppressDupKeyMessages,");
-            query.AppendLine("       b.auto_created as AutoCreated");
-            query.AppendLine("FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE a ");
-            query.AppendLine("JOIN Sys.Indexes b ON a.CONSTRAINT_NAME = b.name ");
-            query.AppendLine($"WHERE a.TABLE_CATALOG = '{database.Name}' and b.is_primary_key = 'true'");
-
-            return context.Query<MicrosoftSqlPrimaryKey>(query.ToString());
-        }
-
-        /// <inheritdoc/>
         protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
@@ -146,7 +109,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       tc.TABLE_CATALOG as TableCatalog,");
             query.AppendLine("       tc.TABLE_SCHEMA as TableSchema,");
             query.AppendLine("       tc.TABLE_NAME as TableName,");
-            query.AppendLine("       col.name as TableColumn,");
+            query.AppendLine("       col.name as ColumnName,");
             query.AppendLine("       reftb.name as ReferencedTableName,");
             query.AppendLine("       refs.name as ReferencedTableSchema,");
             query.AppendLine("       refcol.name as ReferencedTableColumn,");
@@ -179,6 +142,45 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("	ON refcol.column_id = fkc.referenced_column_id and refcol.object_id = reftb.object_id");
             query.AppendLine($"WHERE tc.TABLE_CATALOG = '{database.Name}'");
             return context.Query<MicrosoftSqlForeignKey>(query.ToString());
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbIndex> GetIndexes(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT DB_NAME() AS 'Catalog',");
+            query.AppendLine("       object_schema_name(i.object_id) AS 'Schema',");
+            query.AppendLine("       i.name AS 'Name',");
+            query.AppendLine("       DB_NAME() AS 'TableCatalog',");
+            query.AppendLine("       object_schema_name(i.object_id) AS 'TableSchema',");
+            query.AppendLine("       object_name(i.object_id) AS 'TableName',");
+            query.AppendLine("       c.name AS 'ColumnName',");
+            query.AppendLine("       i.is_primary_key AS 'IsPrimaryKey',");
+            query.AppendLine("       ic.is_descending_key as 'IsDescending',");
+            query.AppendLine("       ic.key_ordinal AS 'OrdinalPosition',");
+            query.AppendLine("       i.type AS Type,");
+            query.AppendLine("       i.type_desc AS 'TypeDescription',");
+            query.AppendLine("       i.is_unique AS 'IsUnique',");
+            query.AppendLine("       i.ignore_dup_key AS 'IgnoreDupKey',");
+            query.AppendLine("       i.is_unique_constraint AS 'IsUniqueContraint',");
+            query.AppendLine("       i.fill_factor AS 'IndexFillFactor',");
+            query.AppendLine("       i.is_padded AS 'IsPadded',");
+            query.AppendLine("       i.is_disabled AS 'IsDisabled',");
+            query.AppendLine("       i.is_hypothetical AS 'IsHypothetical',");
+            query.AppendLine("       i.is_ignored_in_optimization AS 'IsIgnoredInOptimization',");
+            query.AppendLine("       i.allow_row_locks AS 'AllowRowLocks',");
+            query.AppendLine("       i.allow_page_locks AS 'AllowPageLocks',");
+            query.AppendLine("       i.has_filter AS 'HasFilter',");
+            query.AppendLine("       i.filter_definition AS 'FilterDefinition',");
+            query.AppendLine("       i.compression_delay AS 'CompressionDelay',");
+            query.AppendLine("       i.suppress_dup_key_messages AS 'SuppressDupKeyMessages',");
+            query.AppendLine("       i.auto_created AS 'AutoCreated'");
+            query.AppendLine("FROM sys.indexes i");
+            query.AppendLine("JOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id");
+            query.AppendLine("JOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id");
+            query.AppendLine("WHERE object_schema_name(i.object_id) <> 'sys'");
+
+            return context.Query<MicrosoftSqlIndex>(query.ToString());
         }
 
         /// <inheritdoc/>

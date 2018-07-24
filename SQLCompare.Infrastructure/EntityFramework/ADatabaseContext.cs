@@ -65,7 +65,24 @@ namespace SQLCompare.Infrastructure.EntityFramework
                             var value = reader.GetValue(inc);
                             if (prop != null)
                             {
-                                prop.SetValue(t, value is DBNull ? null : value, null);
+                                if (prop.PropertyType == typeof(bool) && !(value is bool))
+                                {
+                                    switch (value.ToString())
+                                    {
+                                        case "1":
+                                            prop.SetValue(t, true, null);
+                                            break;
+                                        case "0":
+                                            prop.SetValue(t, false, null);
+                                            break;
+                                        default:
+                                            throw new WrongTypeException();
+                                    }
+                                }
+                                else
+                                {
+                                    prop.SetValue(t, value is DBNull ? null : value, null);
+                                }
                             }
                             else
                             {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -50,8 +51,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
             foreach (var keys in table.PrimaryKeys.GroupBy(x => x.Name))
             {
-                var key = (MySqlPrimaryKey)keys.First();
-                var columnList = keys.OrderBy(x => ((MySqlPrimaryKey)x).OrdinalPosition).Select(x => $"`{((MySqlPrimaryKey)x).ColumnName}`");
+                var key = (MySqlIndex)keys.First();
+                var columnList = keys.OrderBy(x => ((MySqlIndex)x).OrdinalPosition).Select(x => $"`{((MySqlIndex)x).ColumnName}`");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT `{key.Name}` PRIMARY KEY ({string.Join(",", columnList)});");
@@ -81,6 +82,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
 
             return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptIndexesAlterTable(ABaseDbTable table)
+        {
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc/>

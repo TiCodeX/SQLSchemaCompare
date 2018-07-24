@@ -6,6 +6,11 @@
     public class PostgreSqlForeignKey : PostgreSqlIndex
     {
         /// <summary>
+        /// Gets or sets the position in unique constraint
+        /// </summary>
+        public int? PositionInUniqueConstraint { get; set; }
+
+        /// <summary>
         /// Gets or sets the match option
         /// </summary>
         public string MatchOption { get; set; }

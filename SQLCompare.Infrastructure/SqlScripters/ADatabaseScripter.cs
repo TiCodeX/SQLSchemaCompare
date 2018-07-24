@@ -137,6 +137,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected abstract string ScriptForeignKeysAlterTable(ABaseDbTable table);
 
         /// <summary>
+        /// Generates the alter table for adding indexes after create table
+        /// </summary>
+        /// <param name="table">The table to alter</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptIndexesAlterTable(ABaseDbTable table);
+
+        /// <summary>
         /// Generates the create view script
         /// </summary>
         /// <param name="view">The view to script</param>

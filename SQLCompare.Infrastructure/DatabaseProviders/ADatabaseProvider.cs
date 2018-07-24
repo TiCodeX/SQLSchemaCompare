@@ -63,10 +63,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             var db = new TDatabase { Name = context.Database.GetDbConnection().Database };
 
-            var tables = this.GetTables(db, context);
-            var columns = this.GetColumns(db, context);
-            var primaryKeys = this.GetPrimaryKeys(db, context);
-            var foreignKeys = this.GetForeignKeys(db, context);
+            var tables = this.GetTables(db, context).ToList();
+            var columns = this.GetColumns(db, context).ToList();
+            var foreignKeys = this.GetForeignKeys(db, context).ToList();
+            var indexes = this.GetIndexes(db, context).ToList().ToList();
 
             foreach (var table in tables)
             {
@@ -79,9 +79,15 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                                            && string.Equals(table.Schema, y.TableSchema, System.StringComparison.Ordinal)
                                            && string.Equals(table.Name, y.TableName, System.StringComparison.Ordinal)));
                 table.PrimaryKeys.AddRange(
-                    primaryKeys.Where(y => string.Equals(table.Catalog, y.TableCatalog, System.StringComparison.Ordinal)
+                    indexes.Where(y => y.IsPrimaryKey == true
+                                           && string.Equals(table.Catalog, y.TableCatalog, System.StringComparison.Ordinal)
                                            && string.Equals(table.Schema, y.TableSchema, System.StringComparison.Ordinal)
                                            && string.Equals(table.Name, y.TableName, System.StringComparison.Ordinal)));
+                table.Indexes.AddRange(
+                    indexes.Where(y => y.IsPrimaryKey == false
+                                       && string.Equals(table.Catalog, y.TableCatalog, System.StringComparison.Ordinal)
+                                       && string.Equals(table.Schema, y.TableSchema, System.StringComparison.Ordinal)
+                                       && string.Equals(table.Name, y.TableName, System.StringComparison.Ordinal)));
             }
 
             db.Tables.AddRange(tables);
@@ -110,20 +116,20 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected abstract IEnumerable<ABaseDbColumn> GetColumns(TDatabase database, TDatabaseContext context);
 
         /// <summary>
-        /// Get the table primary keys
-        /// </summary>
-        /// <param name="database">The database information</param>
-        /// <param name="context">The database context</param>
-        /// <returns>The list of primary keys</returns>
-        protected abstract IEnumerable<ABaseDbConstraint> GetPrimaryKeys(TDatabase database, TDatabaseContext context);
-
-        /// <summary>
         /// Get the table foreign keys
         /// </summary>
         /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of foreign keys</returns>
         protected abstract IEnumerable<ABaseDbConstraint> GetForeignKeys(TDatabase database, TDatabaseContext context);
+
+        /// <summary>
+        /// Get the table indexes
+        /// </summary>
+        /// <param name="database">The database information</param>
+        /// <param name="context">The database context</param>
+        /// <returns>The list of indexes</returns>
+        protected abstract IEnumerable<ABaseDbIndex> GetIndexes(TDatabase database, TDatabaseContext context);
 
         /// <summary>
         /// Get the database views

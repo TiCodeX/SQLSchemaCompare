@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -21,7 +21,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="options">The options to connect to the PostgreSQL Database</param>
         public PostgreSqlDatabaseProvider(ILoggerFactory loggerFactory, PostgreSqlDatabaseProviderOptions options)
-            : base(loggerFactory, loggerFactory.CreateLogger("PostgreSqlDatabaseProvider"), options)
+            : base(loggerFactory, loggerFactory.CreateLogger(nameof(PostgreSqlDatabaseProvider)), options)
         {
         }
 
@@ -141,27 +141,6 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbConstraint> GetPrimaryKeys(PostgreSqlDb database, PostgreSqlDatabaseContext context)
-        {
-            var query = new StringBuilder();
-
-            query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as \"Catalog\",");
-            query.AppendLine("       kcu.CONSTRAINT_SCHEMA as \"Schema\",");
-            query.AppendLine("       kcu.CONSTRAINT_NAME as \"Name\",");
-            query.AppendLine("       kcu.TABLE_CATALOG as \"TableCatalog\",");
-            query.AppendLine("       kcu.TABLE_SCHEMA as \"TableSchema\",");
-            query.AppendLine("       kcu.TABLE_NAME as \"TableName\",");
-            query.AppendLine("       kcu.COLUMN_NAME as \"ColumnName\",");
-            query.AppendLine("       kcu.ORDINAL_POSITION as \"OrdinalPosition\",");
-            query.AppendLine("       kcu.POSITION_IN_UNIQUE_CONSTRAINT as \"PositionInUniqueConstraint\"");
-            query.AppendLine("FROM information_schema.key_column_usage kcu");
-            query.AppendLine("INNER JOIN information_schema.table_constraints tc ");
-            query.AppendLine("   ON tc.table_name = kcu.table_name AND tc.table_schema = kcu.table_schema AND tc.table_catalog = kcu.table_catalog AND tc.constraint_name = kcu.constraint_name");
-            query.AppendLine($"WHERE kcu.TABLE_CATALOG = '{database.Name}' AND tc.constraint_type = 'PRIMARY KEY'");
-            return context.Query<PostgreSqlPrimaryKey>(query.ToString());
-        }
-
-        /// <inheritdoc/>
         protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
@@ -191,6 +170,31 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("    ON kcu.constraint_name = ccu.constraint_name AND kcu.constraint_schema = ccu.constraint_schema AND kcu.constraint_catalog = ccu.constraint_catalog");
             query.AppendLine($"WHERE kcu.constraint_catalog = '{database.Name}' AND tu.constraint_type = 'FOREIGN KEY'");
             return context.Query<PostgreSqlForeignKey>(query.ToString());
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbIndex> GetIndexes(PostgreSqlDb db, PostgreSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Catalog\",");
+            query.AppendLine("       ni.nspname AS \"Schema\",");
+            query.AppendLine("       ci.relname AS \"Name\",");
+            query.AppendLine("       (current_database())::information_schema.sql_identifier AS \"TableCatalog\",");
+            query.AppendLine("       nt.nspname AS \"TableSchema\",");
+            query.AppendLine("       ct.relname AS \"TableName\",");
+            query.AppendLine("       a.attname AS \"ColumnName\",");
+            query.AppendLine("       i.indisprimary AS \"IsPrimaryKey\",");
+            query.AppendLine("       a.attnum AS \"OrdinalPosition\",");
+            query.AppendLine("       CASE WHEN i.indoption[a.attnum-1] & 1 = 1 THEN TRUE ELSE FALSE END AS \"IsDescending\"");
+            query.AppendLine("FROM pg_catalog.pg_index i");
+            query.AppendLine("JOIN pg_catalog.pg_class ct ON i.indrelid = ct.oid");
+            query.AppendLine("JOIN pg_catalog.pg_class ci ON i.indexrelid = ci.oid");
+            query.AppendLine("JOIN pg_catalog.pg_namespace nt ON ct.relnamespace = nt.oid");
+            query.AppendLine("JOIN pg_catalog.pg_namespace ni ON ci.relnamespace = ni.oid");
+            query.AppendLine("JOIN pg_catalog.pg_attribute a ON i.indexrelid = a.attrelid");
+            query.AppendLine("WHERE nt.nspname = 'public'");
+
+            return context.Query<PostgreSqlIndex>(query.ToString());
         }
 
         /// <inheritdoc/>

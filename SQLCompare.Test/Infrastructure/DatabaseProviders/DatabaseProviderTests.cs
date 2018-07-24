@@ -1,10 +1,4 @@
-﻿using System;
-using FluentAssertions;
-using SQLCompare.Core.Entities.Database.MySql;
-using SQLCompare.Core.Entities.Database.PostgreSql;
-using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Infrastructure.DatabaseProviders;
-using SQLCompare.Infrastructure.SqlScripters;
+﻿using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -59,103 +53,39 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         }
 
         /// <summary>
-        /// Test the retrieval of specific database with all the databases
+        /// Test the retrieval of the MicrosoftSQL 'sakila' database
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void GetMicrosoftSqlDatabase()
+        {
+            var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider();
+            var db = mssqldbp.GetDatabase();
+            db.Should().NotBeNull();
+        }
+
+        /// <summary>
+        /// Test the retrieval of the MySQL 'sakila' database
         /// </summary>
         [Fact]
         [IntegrationTest]
         public void GetMySqlDatabase()
         {
-            var dpf = new DatabaseProviderFactory(this.LoggerFactory);
-
             var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider();
-
             var db = mysqldbp.GetDatabase();
+            db.Should().NotBeNull();
         }
 
         /// <summary>
-        /// Test the retrieval of specific database with all the databases
+        /// Test the retrieval of PostgreSQL 'sakila' database
         /// </summary>
         [Fact]
         [IntegrationTest]
         public void GetPostgreSqlDatabase()
         {
-            var dpf = new DatabaseProviderFactory(this.LoggerFactory);
-            var pgsqldbp = dpf.Create(new PostgreSqlDatabaseProviderOptions
-            {
-                Hostname = "localhost",
-                Database = "pagila",
-                Username = "postgres",
-                Password = "test1234",
-            });
-
-            var db = pgsqldbp.GetDatabase();
-            var factory = new DatabaseScripterFactory(this.LoggerFactory);
-            var s = factory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
-            foreach (var f in db.Functions)
-            {
-                Console.WriteLine("#############################################################");
-                var script = s.GenerateCreateFunctionScript(f, db.DataTypes);
-                Console.WriteLine(script);
-            }
-        }
-
-        /// <summary>
-        /// Test the retrieval of specific database with all the databases
-        /// </summary>
-        [Fact]
-        [IntegrationTest]
-        public void GetDatabase()
-        {
-            var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider();
-            var db = mssqldbp.GetDatabase();
-            Assert.Equal("brokerpro", db.Name);
-            Assert.Equal(218, db.Tables.Count);
-            var table = db.Tables.Find(x => x.Name.Equals("DeletedDocumentReference", StringComparison.Ordinal));
-            Assert.True(table.Columns.Count == 4);
-            Assert.Contains(table.Columns, x => x.Name.Equals("OriginalTable", StringComparison.Ordinal));
-            Assert.True(table.PrimaryKeys.Count == 3);
-            Assert.Contains(table.PrimaryKeys, x => x.Name.Equals("PK_DeletedDocumentReference", StringComparison.Ordinal));
-            Assert.True(table.ForeignKeys.Count == 2);
-            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("FK_DeletedDocumentReference_DeletedDocument", StringComparison.Ordinal));
-            table = db.Tables.Find(x => x.Name.Equals("debitors", StringComparison.Ordinal));
-            var dsf = new DatabaseScripterFactory(this.LoggerFactory);
-            var script = dsf.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
-            var t = script.GenerateCreateTableScript(table);
-            Assert.True(t != null);
-
-            var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider();
-            db = mysqldbp.GetDatabase();
-            Assert.Equal("sakila", db.Name);
-            Assert.Equal(18, db.Tables.Count);
-            table = db.Tables.Find(x => x.Name.Equals("film", StringComparison.Ordinal));
-            Assert.True(table.Columns.Count == 13);
-            Assert.Contains(table.Columns, x => x.Name.Equals("language_id", StringComparison.Ordinal));
-            table = db.Tables.Find(x => x.Name.Equals("film_actor", StringComparison.Ordinal));
-            Assert.True(table.PrimaryKeys.Count == 2);
-            Assert.Contains(table.PrimaryKeys, x => ((MySqlPrimaryKey)x).ColumnName.Equals("actor_id", StringComparison.Ordinal));
-            Assert.Contains(table.PrimaryKeys, x => ((MySqlPrimaryKey)x).ColumnName.Equals("film_id", StringComparison.Ordinal));
-            table = db.Tables.Find(x => x.Name.Equals("payment", StringComparison.Ordinal));
-            Assert.True(table.ForeignKeys.Count == 3);
-            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("fk_payment_customer", StringComparison.Ordinal));
-            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("fk_payment_rental", StringComparison.Ordinal));
-            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("fk_payment_staff", StringComparison.Ordinal));
-
             var pgsqldbp = this.dbFixture.GetPostgreDatabaseProvider();
-            db = pgsqldbp.GetDatabase();
-            Assert.Equal("pagila", db.Name);
-            Assert.Equal(22, db.Tables.Count);
-            table = db.Tables.Find(x => x.Name.Equals("film", StringComparison.Ordinal));
-            Assert.Equal(14, table.Columns.Count);
-            Assert.Contains(table.Columns, x => x.Name.Equals("language_id", StringComparison.Ordinal));
-            table = db.Tables.Find(x => x.Name.Equals("film_category", StringComparison.Ordinal));
-            Assert.True(table.PrimaryKeys.Count == 2);
-            Assert.Contains(table.PrimaryKeys, x => ((PostgreSqlPrimaryKey)x).ColumnName.Equals("film_id", StringComparison.Ordinal) && x.Name.Equals("film_category_pkey", StringComparison.Ordinal));
-            Assert.Contains(table.PrimaryKeys, x => ((PostgreSqlPrimaryKey)x).ColumnName.Equals("category_id", StringComparison.Ordinal) && x.Name.Equals("film_category_pkey", StringComparison.Ordinal));
-            table = db.Tables.Find(x => x.Name.Equals("rental", StringComparison.Ordinal));
-            Assert.True(table.ForeignKeys.Count == 3);
-            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("rental_customer_id_fkey", StringComparison.Ordinal));
-            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("rental_inventory_id_fkey", StringComparison.Ordinal));
-            Assert.Contains(table.ForeignKeys, x => x.Name.Equals("rental_staff_id_fkey", StringComparison.Ordinal));
+            var db = pgsqldbp.GetDatabase();
+            db.Should().NotBeNull();
         }
     }
 }

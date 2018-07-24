@@ -21,7 +21,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="options">The options to connect to the MySQL Database</param>
         public MySqlDatabaseProvider(ILoggerFactory loggerFactory, MySqlDatabaseProviderOptions options)
-            : base(loggerFactory, loggerFactory.CreateLogger("MySqlDatabaseProvider"), options)
+            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MySqlDatabaseProvider)), options)
         {
         }
 
@@ -97,35 +97,9 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbConstraint> GetPrimaryKeys(MySqlDb database, MySqlDatabaseContext context)
-        {
-            var query = new StringBuilder();
-
-            // TODO: join with information_schema.statistics to get index additional information
-            query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as 'Catalog',");
-            query.AppendLine("       kcu.CONSTRAINT_SCHEMA as 'Schema',");
-            query.AppendLine("       kcu.CONSTRAINT_NAME as Name,");
-            query.AppendLine("       kcu.TABLE_CATALOG as TableCatalog,");
-            query.AppendLine("       kcu.TABLE_SCHEMA as TableSchema,");
-            query.AppendLine("       kcu.TABLE_NAME as TableName,");
-            query.AppendLine("       kcu.COLUMN_NAME as ColumnName,");
-            query.AppendLine("       kcu.ORDINAL_POSITION as OrdinalPosition,");
-            query.AppendLine("       kcu.POSITION_IN_UNIQUE_CONSTRAINT as PositionInUniqueConstraint,");
-            query.AppendLine("       kcu.REFERENCED_TABLE_SCHEMA as ReferencedTableSchema,");
-            query.AppendLine("       kcu.REFERENCED_TABLE_NAME as ReferencedTableName,");
-            query.AppendLine("       kcu.REFERENCED_COLUMN_NAME as ReferencedColumnName");
-            query.AppendLine("FROM information_schema.key_column_usage kcu");
-            query.AppendLine("INNER JOIN information_schema.table_constraints tc ");
-            query.AppendLine("   ON tc.table_name = kcu.table_name AND tc.table_schema = kcu.table_schema AND tc.constraint_name = kcu.constraint_name");
-            query.AppendLine($"WHERE kcu.TABLE_SCHEMA = '{database.Name}' AND tc.constraint_type = 'PRIMARY KEY'");
-            return context.Query<MySqlPrimaryKey>(query.ToString());
-        }
-
-        /// <inheritdoc/>
         protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(MySqlDb database, MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
-
             query.AppendLine("SELECT kcu.CONSTRAINT_CATALOG as 'Catalog',");
             query.AppendLine("       kcu.CONSTRAINT_SCHEMA as 'Schema',");
             query.AppendLine("       kcu.CONSTRAINT_NAME as Name,");
@@ -145,7 +119,30 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("INNER JOIN information_schema.table_constraints tc ON tc.table_name = kcu.table_name and tc.table_schema = kcu.table_schema and tc.constraint_name = kcu.constraint_name");
             query.AppendLine("INNER JOIN information_schema.REFERENTIAL_CONSTRAINTS rc ON rc.constraint_name = kcu.constraint_name ");
             query.AppendLine($"WHERE kcu.TABLE_SCHEMA = '{database.Name}' AND tc.constraint_type = 'FOREIGN KEY'");
+
             return context.Query<MySqlForeignKey>(query.ToString());
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbIndex> GetIndexes(MySqlDb database, MySqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT s.TABLE_CATALOG AS 'Catalog',");
+            query.AppendLine("       s.TABLE_SCHEMA AS 'Schema',");
+            query.AppendLine("       s.index_name AS Name,");
+            query.AppendLine("       s.TABLE_CATALOG AS 'TableCatalog',");
+            query.AppendLine("       s.TABLE_SCHEMA AS 'TableSchema',");
+            query.AppendLine("       s.TABLE_NAME AS 'TableName',");
+            query.AppendLine("       s.COLUMN_NAME AS 'ColumnName',");
+            query.AppendLine("       CASE WHEN tc.CONSTRAINT_TYPE = 'PRIMARY KEY' THEN TRUE ELSE FALSE END AS 'IsPrimaryKey',");
+            query.AppendLine("       s.SEQ_IN_INDEX AS 'OrdinalPosition',");
+            query.AppendLine("       CASE WHEN s.COLLATION = 'D' THEN TRUE ELSE FALSE END as 'IsDescending'");
+            query.AppendLine("FROM INFORMATION_SCHEMA.STATISTICS s");
+            query.AppendLine("LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc");
+            query.AppendLine("  ON tc.table_name = s.table_name AND tc.table_schema = s.table_schema AND tc.constraint_name = s.index_name");
+            query.AppendLine($"WHERE s.table_schema = '{database.Name}'");
+
+            return context.Query<MySqlIndex>(query.ToString());
         }
 
         /// <inheritdoc/>

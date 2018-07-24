@@ -60,15 +60,15 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.GetPostgreSqlDatabaseProviderOptions(false)))
             {
                 var dropDbQuery = new StringBuilder();
-                dropDbQuery.AppendLine("select pg_terminate_backend(pid) from pg_stat_activity where datname='sakila';");
+                dropDbQuery.AppendLine("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='sakila';");
                 dropDbQuery.AppendLine("DROP DATABASE IF EXISTS sakila;");
                 dropDbQuery.AppendLine("CREATE DATABASE sakila;");
-                context.Query(dropDbQuery.ToString());
+                context.Query<bool>(dropDbQuery.ToString());
             }
 
             using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.GetPostgreSqlDatabaseProviderOptions(true)))
             {
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\pagila-schema-postgresql.sql");
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-postgresql.sql");
                 context.Query(File.ReadAllText(path));
             }
         }

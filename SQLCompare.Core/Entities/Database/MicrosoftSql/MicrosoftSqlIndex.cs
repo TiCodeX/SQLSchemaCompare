@@ -3,17 +3,12 @@
     /// <summary>
     /// Specific MicrosoftSql index definition
     /// </summary>
-    public class MicrosoftSqlIndex : ABaseDbConstraint
+    public class MicrosoftSqlIndex : ABaseDbIndex
     {
-        /// <summary>
-        /// Gets or sets the column name
-        /// </summary>
-        public string ColumnName { get; set; }
-
         /// <summary>
         /// Gets or sets ordinal position
         /// </summary>
-        public int? OrdinalPosition { get; set; }
+        public int OrdinalPosition { get; set; }
 
         /// <summary>
         /// Gets or sets the index type
@@ -34,11 +29,6 @@
         /// Gets or sets a value indicating whether the index ignore duplicate key
         /// </summary>
         public bool? IgnoreDupKey { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the index is primary key
-        /// </summary>
-        public bool? IsPrimaryKey { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the index is unique constraint

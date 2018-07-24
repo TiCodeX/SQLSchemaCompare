@@ -32,11 +32,6 @@
         }
 
         /// <summary>
-        /// Gets or sets table column
-        /// </summary>
-        public string TableColumn { get; set; }
-
-        /// <summary>
         /// Gets or sets referenced table schema
         /// </summary>
         public string ReferencedTableSchema { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
@@ -30,7 +31,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var columns = this.GetSortedTableColumns(table, sourceTable);
 
             var sb = new StringBuilder();
-            sb.AppendLine($"CREATE TABLE {this.ScriptHelper.ScriptTableName(table)}(");
+            sb.AppendLine($"CREATE TABLE {this.ScriptHelper.ScriptObjectName(table)}(");
 
             var i = 0;
             foreach (var col in columns)
@@ -52,7 +53,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 var key = (MySqlPrimaryKey)keys.First();
                 var columnList = keys.OrderBy(x => ((MySqlPrimaryKey)x).OrdinalPosition).Select(x => $"`{((MySqlPrimaryKey)x).ColumnName}`");
 
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)}");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT `{key.Name}` PRIMARY KEY ({string.Join(",", columnList)});");
                 sb.AppendLine();
             }
@@ -71,15 +72,33 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 var columnList = keys.OrderBy(x => ((MySqlForeignKey)x).OrdinalPosition).Select(x => $"`{((MySqlForeignKey)x).ColumnName}`");
                 var referencedColumnList = keys.OrderBy(x => ((MySqlForeignKey)x).OrdinalPosition).Select(x => $"`{((MySqlForeignKey)x).ReferencedColumnName}`");
 
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)}");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT `{key.Name}` FOREIGN KEY ({string.Join(",", columnList)})");
-                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptTableName(key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)})");
+                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)})");
                 sb.AppendLine($"ON DELETE {key.DeleteRule}");
                 sb.AppendLine($"ON UPDATE {key.UpdateRule};");
                 sb.AppendLine();
             }
 
             return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateView(ABaseDbView view)
+        {
+            return view.ViewDefinition;
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateFunction(ABaseDbRoutine sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
+        {
+            return sqlFunction.RoutineDefinition;
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateStoreProcedure(ABaseDbRoutine storeProcedure)
+        {
+            return storeProcedure.RoutineDefinition;
         }
     }
 }

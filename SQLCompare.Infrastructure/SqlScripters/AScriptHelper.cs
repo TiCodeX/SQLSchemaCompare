@@ -33,22 +33,22 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <summary>
-        /// Get the table name
+        /// Get the database object name
         /// </summary>
-        /// <param name="table">The table</param>
-        /// <returns>The normalized table name</returns>
-        public string ScriptTableName(ABaseDbTable table)
+        /// <param name="dbObject">The database object</param>
+        /// <returns>The normalized database object name</returns>
+        public string ScriptObjectName(ABaseDbObject dbObject)
         {
-            return this.ScriptTableName(table.Schema, table.Name);
+            return this.ScriptObjectName(dbObject.Schema, dbObject.Name);
         }
 
         /// <summary>
-        /// Get the table name
+        /// Get the database object name
         /// </summary>
-        /// <param name="tableSchema">The table schema</param>
-        /// <param name="tableName">The table name</param>
-        /// <returns>The normalized table name</returns>
-        public abstract string ScriptTableName(string tableSchema, string tableName);
+        /// <param name="objectSchema">The database object schema</param>
+        /// <param name="objectName">The database object name</param>
+        /// <returns>The normalized database object name</returns>
+        public abstract string ScriptObjectName(string objectSchema, string objectName);
 
         /// <summary>
         /// Script the given table column

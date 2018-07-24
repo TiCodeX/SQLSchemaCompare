@@ -39,14 +39,14 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public override string ScriptTableName(string tableSchema, string tableName)
+        public override string ScriptObjectName(string objectSchema, string objectName)
         {
             if (this.Options.Scripting.UseSchemaName)
             {
-                return $"[{tableSchema}].[{tableName}]";
+                return $"[{objectSchema}].[{objectName}]";
             }
 
-            return $"[{tableName}]";
+            return $"[{objectName}]";
         }
 
         /// <inheritdoc/>

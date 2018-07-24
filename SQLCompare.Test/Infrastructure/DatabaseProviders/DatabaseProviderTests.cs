@@ -2,6 +2,7 @@
 using FluentAssertions;
 using SQLCompare.Core.Entities.Database.MySql;
 using SQLCompare.Core.Entities.Database.PostgreSql;
+using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Infrastructure.DatabaseProviders;
 using SQLCompare.Infrastructure.SqlScripters;
 using Xunit;
@@ -79,10 +80,23 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         public void GetPostgreSqlDatabase()
         {
             var dpf = new DatabaseProviderFactory(this.LoggerFactory);
-
-            var pgsqldbp = this.dbFixture.GetPostgreDatabaseProvider();
+            var pgsqldbp = dpf.Create(new PostgreSqlDatabaseProviderOptions
+            {
+                Hostname = "localhost",
+                Database = "pagila",
+                Username = "postgres",
+                Password = "test1234",
+            });
 
             var db = pgsqldbp.GetDatabase();
+            var factory = new DatabaseScripterFactory(this.LoggerFactory);
+            var s = factory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
+            foreach (var f in db.Functions)
+            {
+                Console.WriteLine("#############################################################");
+                var script = s.GenerateCreateFunctionScript(f, db.DataTypes);
+                Console.WriteLine(script);
+            }
         }
 
         /// <summary>

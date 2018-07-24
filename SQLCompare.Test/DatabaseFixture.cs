@@ -46,7 +46,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var pathMySql = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-mysql.sql");
             var process = Process.Start(new ProcessStartInfo
             {
-                FileName = "C:\\Program Files\\MySQL\\MySQL Server 5.7\\bin\\mysql.exe",
+                FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe",
                 Arguments = $"--user root -ptest1234 -e \"SOURCE {pathMySql}\"",
                 UseShellExecute = false,
                 RedirectStandardError = true,

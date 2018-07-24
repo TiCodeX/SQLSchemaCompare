@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.PostgreSql;
@@ -20,16 +22,111 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
         }
 
+        /// <summary>
+        /// Scripts the function argument data type
+        /// </summary>
+        /// <param name="argType">The argument data type</param>
+        /// <param name="dataTypes">The list of database data types</param>
+        /// <returns>The scripted function argument data type</returns>
+        public static string ScriptFunctionArgumentType(uint argType, IEnumerable<ABaseDbObject> dataTypes)
+        {
+            var type = (PostgreSqlDataType)dataTypes.FirstOrDefault(x => ((PostgreSqlDataType)x).TypeId == argType);
+            if (type == null)
+            {
+                throw new ArgumentException($"Unknown argument data type: {argType}");
+            }
+
+            if (type.IsArray && type.ArrayType != null)
+            {
+                return $"{ScriptDataTypeName(type.ArrayType.Name)}[]";
+            }
+
+            return ScriptDataTypeName(type.Name);
+        }
+
+        /// <summary>
+        /// Scripts the function attributes
+        /// </summary>
+        /// <param name="function">The function</param>
+        /// <returns>The scripted function attributes</returns>
+        public static string ScriptFunctionAttributes(PostgreSqlFunction function)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            switch (function.Volatile)
+            {
+                case 'i':
+                    sb.Append("IMMUTABLE");
+                    break;
+                case 's':
+                    sb.Append("STABLE");
+                    break;
+                case 'v':
+                    sb.Append("VOLATILE");
+                    break;
+                default: throw new ArgumentException($"Unknown function volatile: {function.Volatile}");
+            }
+
+            if (function.SecurityType == "DEFINER")
+            {
+                sb.Append(" SECURITY DEFINER");
+            }
+
+            if (function.IsStrict)
+            {
+                sb.Append(" STRICT");
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Scripts the function arguments
+        /// </summary>
+        /// <param name="argType">The argument type</param>
+        /// <param name="argMode">The argument mode</param>
+        /// <param name="argName">The argument name</param>
+        /// <param name="dataTypes">The list of database data types</param>
+        /// <returns>The scripted function argument</returns>
+        public static string ScriptFunctionArgument(uint argType, char argMode, string argName, IEnumerable<ABaseDbObject> dataTypes)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            switch (argMode)
+            {
+                case 'o':
+                    sb.Append("OUT ");
+                    break;
+                case 'b':
+                    sb.Append("INOUT ");
+                    break;
+                case 'v':
+                    sb.Append("VARIADIC ");
+                    break;
+                case 'i':
+                default:
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(argName))
+            {
+                sb.Append($"{argName} ");
+            }
+
+            sb.Append(PostgreSqlScriptHelper.ScriptFunctionArgumentType(argType, dataTypes));
+            return sb.ToString();
+        }
+
         /// <inheritdoc/>
-        public override string ScriptTableName(string tableSchema, string tableName)
+        public override string ScriptObjectName(string objectSchema, string objectName)
         {
             if (this.Options.Scripting.UseSchemaName)
             {
-                return $"\"{tableSchema}\".\"{tableName}\"";
+                return $"\"{objectSchema}\".\"{objectName}\"";
             }
             else
             {
-                return $"\"{tableName}\"";
+                return $"\"{objectName}\"";
             }
         }
 
@@ -62,6 +159,33 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
 
             return sb.ToString();
+        }
+
+        private static string ScriptDataTypeName(string dataTypeName)
+        {
+            switch (dataTypeName)
+            {
+                case "int8": return "bigint";
+                case "serial8": return "bigserial";
+                case "varbit": return "bit varying";
+                case "bool": return "boolean";
+                case "char": return "character";
+                case "varchar": return "character varying";
+                case "float8": return "double precision";
+                case "int":
+                case "int4": return "integer";
+                case "decimal": return "numeric";
+                case "float4": return "real";
+                case "int2": return "smallint";
+                case "serial2": return "smallserial";
+                case "serial4": return "serial";
+                case "time": return "time without time zone";
+                case "timetz": return "time with time zone";
+                case "timestamp": return "timestamp without time zone";
+                case "timestamptz": return "timestamp with time zone";
+                default:
+                    return dataTypeName;
+            }
         }
 
         private string ScriptDataType(PostgreSqlColumn column)

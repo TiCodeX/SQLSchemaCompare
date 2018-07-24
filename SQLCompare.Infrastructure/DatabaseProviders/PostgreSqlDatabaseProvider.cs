@@ -200,8 +200,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("SELECT TABLE_NAME as \"Name\",");
             query.AppendLine("       TABLE_CATALOG as \"Catalog\",");
             query.AppendLine("       TABLE_SCHEMA as \"Schema\",");
-            query.AppendLine("       VIEW_DEFINITION as \"ViewDefinition\"");
+            query.AppendLine("       VIEW_DEFINITION as \"ViewDefinition\",");
+            query.AppendLine("       CHECK_OPTION as \"CheckOption\"");
             query.AppendLine("FROM INFORMATION_SCHEMA.VIEWS");
+            query.AppendLine($"WHERE TABLE_CATALOG = '{database.Name}' AND TABLE_SCHEMA = 'public'");
 
             return context.Query<PostgreSqlView>(query.ToString());
         }

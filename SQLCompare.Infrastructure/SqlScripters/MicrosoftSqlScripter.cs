@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
@@ -30,7 +31,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var columns = this.GetSortedTableColumns(table, sourceTable);
 
             var sb = new StringBuilder();
-            sb.AppendLine($"CREATE TABLE {this.ScriptHelper.ScriptTableName(table)}(");
+            sb.AppendLine($"CREATE TABLE {this.ScriptHelper.ScriptObjectName(table)}(");
 
             var i = 0;
             foreach (var col in columns)
@@ -53,7 +54,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 var key = (MicrosoftSqlPrimaryKey)keys.First();
                 var columnList = keys.OrderBy(x => ((MicrosoftSqlPrimaryKey)x).OrdinalPosition).Select(x => $"[{((MicrosoftSqlPrimaryKey)x).ColumnName}]");
 
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)}");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT [{key.Name}] PRIMARY KEY {key.TypeDescription}({string.Join(",", columnList)});");
                 sb.AppendLine("GO");
                 sb.AppendLine();
@@ -71,18 +72,36 @@ namespace SQLCompare.Infrastructure.SqlScripters
             {
                 var key = (MicrosoftSqlForeignKey)aBaseDbConstraint;
 
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)} WITH CHECK ADD CONSTRAINT [{key.Name}] FOREIGN KEY([{key.TableColumn}])");
-                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptTableName(key.ReferencedTableSchema, key.ReferencedTableName)}([{key.ReferencedTableColumn}])");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} WITH CHECK ADD CONSTRAINT [{key.Name}] FOREIGN KEY([{key.TableColumn}])");
+                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)}([{key.ReferencedTableColumn}])");
                 sb.AppendLine($"ON DELETE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.DeleteReferentialAction)}");
                 sb.AppendLine($"ON UPDATE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.UpdateReferentialAction)}");
                 sb.AppendLine("GO");
                 sb.AppendLine();
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptTableName(table)} CHECK CONSTRAINT[{key.Name}]");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} CHECK CONSTRAINT[{key.Name}]");
                 sb.AppendLine("GO");
                 sb.AppendLine();
             }
 
             return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateView(ABaseDbView view)
+        {
+            return view.ViewDefinition;
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateFunction(ABaseDbRoutine sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
+        {
+            return sqlFunction.RoutineDefinition;
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateStoreProcedure(ABaseDbRoutine storeProcedure)
+        {
+            return storeProcedure.RoutineDefinition;
         }
     }
 }

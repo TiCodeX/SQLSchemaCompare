@@ -76,6 +76,44 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return sb.ToString();
         }
 
+        /// <inheritdoc/>
+        public string GenerateCreateViewScript(ABaseDbView view)
+        {
+            if (view == null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            return this.ScriptCreateView(view);
+        }
+
+        /// <inheritdoc/>
+        public string GenerateCreateFunctionScript(ABaseDbRoutine sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
+        {
+            if (sqlFunction == null)
+            {
+                throw new ArgumentNullException(nameof(sqlFunction));
+            }
+
+            if (dataTypes == null)
+            {
+                throw new ArgumentNullException(nameof(dataTypes));
+            }
+
+            return this.ScriptCreateFunction(sqlFunction, dataTypes);
+        }
+
+        /// <inheritdoc/>
+        public string GenerateCreateStoreProcedureScript(ABaseDbRoutine storeProcedure)
+        {
+            if (storeProcedure == null)
+            {
+                throw new ArgumentNullException(nameof(storeProcedure));
+            }
+
+            return this.ScriptCreateStoreProcedure(storeProcedure);
+        }
+
         /// <summary>
         /// Generates the create table script
         /// </summary>
@@ -97,6 +135,28 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="table">The table to alter</param>
         /// <returns>The alter table script</returns>
         protected abstract string ScriptForeignKeysAlterTable(ABaseDbTable table);
+
+        /// <summary>
+        /// Generates the create view script
+        /// </summary>
+        /// <param name="view">The view to script</param>
+        /// <returns>The create view script</returns>
+        protected abstract string ScriptCreateView(ABaseDbView view);
+
+        /// <summary>
+        /// Generates the create function script
+        /// </summary>
+        /// <param name="sqlFunction">The function to script</param>
+        /// <param name="dataTypes">The list of database data types</param>
+        /// <returns>The create function script</returns>
+        protected abstract string ScriptCreateFunction(ABaseDbRoutine sqlFunction, IEnumerable<ABaseDbObject> dataTypes);
+
+        /// <summary>
+        /// Generates the create store procedure script
+        /// </summary>
+        /// <param name="storeProcedure">The store procedure to script</param>
+        /// <returns>The create store procedure script</returns>
+        protected abstract string ScriptCreateStoreProcedure(ABaseDbRoutine storeProcedure);
 
         /// <summary>
         /// Get the table columns sorted depending on options and source table

@@ -5,7 +5,7 @@ class Main {
     /**
      * Service URL for the Main page
      */
-    public static readonly pageUrl: string = "/Main/MainPageModel";
+    private static readonly pageUrl: string = "/Main/MainPageModel";
 
     /**
      * Service URL for retrieving the create script
@@ -16,6 +16,20 @@ class Main {
      * Contains a reference to the splitter instance
      */
     private static mainSplitter: Split.Instance;
+
+    /**
+     * Open the Main page
+     */
+    public static Open(): void {
+        Utility.AjaxCall(this.pageUrl, Utility.HttpMethod.Get, undefined, (result: string): void => {
+            Utility.CloseModalDialog();
+            if (this.mainSplitter !== undefined) {
+                this.mainSplitter.destroy();
+                this.mainSplitter = undefined;
+            }
+            $("#mainDiv").html(result);
+        });
+    }
 
     /**
      * Show the bottom panel

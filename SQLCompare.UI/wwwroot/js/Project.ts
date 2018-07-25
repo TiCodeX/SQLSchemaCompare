@@ -194,10 +194,7 @@ class Project {
                 const polling: VoidFunction = (): void => {
                     setTimeout(() => {
                         if ($("#stopPolling").length > 0) {
-                            Utility.AjaxCall(Main.pageUrl, Utility.HttpMethod.Get, undefined, (result: string): void => {
-                                Utility.CloseModalDialog();
-                                $("#mainDiv").html(result);
-                            });
+                            Main.Open();
                         } else {
                             Utility.OpenModalDialog("/TaskStatusPageModel", Utility.HttpMethod.Get);
                             polling();

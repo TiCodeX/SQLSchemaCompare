@@ -86,7 +86,44 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptIndexesAlterTable(ABaseDbTable table)
         {
-            return "NOT IMPLEMENTED YET";
+            var sb = new StringBuilder();
+
+            foreach (var indexes in table.Indexes.Cast<MySqlIndex>().GroupBy(x => x.Name))
+            {
+                var index = indexes.First();
+
+                // If there is a column with descending order, specify the order on all columns
+                var scriptOrder = indexes.Any(x => x.IsDescending);
+                var columnList = indexes.OrderBy(x => x.OrdinalPosition).Select(x =>
+                    scriptOrder ? $"`{x.ColumnName}` {(x.IsDescending ? "DESC" : "ASC")}" : $"`{x.ColumnName}`");
+
+                sb.Append("CREATE ");
+                if (index.IndexType == "FULLTEXT")
+                {
+                    sb.Append("FULLTEXT ");
+                }
+                else if (index.IndexType == "SPATIAL")
+                {
+                    sb.Append("SPATIAL ");
+                }
+                else if (index.ConstraintType == "UNIQUE")
+                {
+                    sb.Append("UNIQUE ");
+                }
+
+                sb.Append($"INDEX {index.Name} ");
+
+                // If not specified it will use the BTREE
+                if (index.IndexType == "HASH")
+                {
+                    sb.Append("USING HASH ");
+                }
+
+                sb.AppendLine($"ON {this.ScriptHelper.ScriptObjectName(table)}({string.Join(",", columnList)});");
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc/>

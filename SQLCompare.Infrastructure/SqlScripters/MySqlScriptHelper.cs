@@ -132,7 +132,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     {
                         var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
                         var charachterSet = $" CHARACTER SET {column.CharacterSetName}";
-                        return $"{column.ColumnType}({column.CharacterMaxLenght}){charachterSet}{collate}";
+                        return $"{column.ColumnType}{charachterSet}{collate}";
                     }
 
                 default: throw new ArgumentException($"Unknown column data type: {column.DataType}");

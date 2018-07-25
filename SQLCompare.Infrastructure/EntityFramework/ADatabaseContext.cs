@@ -123,6 +123,21 @@ namespace SQLCompare.Infrastructure.EntityFramework
             return result;
         }
 
+        /// <summary>
+        /// Performs a non query command
+        /// </summary>
+        /// <param name="query">The SQL query</param>
+        public void ExecuteNonQuery(string query)
+        {
+            var result = new List<string>();
+            this.Database.OpenConnection();
+            using (var command = this.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = query;
+                command.ExecuteNonQuery();
+            }
+        }
+
         /// <inheritdoc/>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

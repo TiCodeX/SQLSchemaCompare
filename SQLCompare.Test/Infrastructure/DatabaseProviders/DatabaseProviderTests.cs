@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using FluentAssertions;
+using SQLCompare.Core.Entities.Database.MySql;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -33,9 +35,6 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         {
             var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider(false);
             var dbList = mssqldbp.GetDatabaseList();
-            dbList.Should().Contain("brokerpro");
-            dbList.Should().Contain("brokerpro_web");
-            dbList.Should().Contain("BrokerProGlobal");
             dbList.Should().Contain("msdb");
             dbList.Should().Contain("master");
             dbList.Should().Contain("sakila");
@@ -62,6 +61,34 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider();
             var db = mssqldbp.GetDatabase();
             db.Should().NotBeNull();
+            db.Name.Should().Be("sakila");
+
+            db.DataTypes.Should().BeEmpty();
+
+            db.Tables.Count.Should().Be(16);
+            var table = db.Tables.FirstOrDefault(x => x.Name == "film");
+            table.Should().NotBeNull();
+            table.Columns.Count.Should().Be(13);
+            table.Columns.Select(x => x.Name).Should().Contain("language_id");
+
+            table = db.Tables.FirstOrDefault(x => x.Name == "film_category");
+            table.Should().NotBeNull();
+            table.PrimaryKeys.Count.Should().Be(2);
+            table.PrimaryKeys.Should().Contain(x => x.ColumnName == "film_id");
+            table.PrimaryKeys.Should().Contain(x => x.ColumnName == "category_id");
+
+            table = db.Tables.FirstOrDefault(x => x.Name == "rental");
+            table.ForeignKeys.Count.Should().Be(3);
+            table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_customer");
+            table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_inventory");
+            table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_staff");
+
+            db.Views.Count.Should().Be(5);
+            db.Views.Should().ContainSingle(x => x.Name == "film_list");
+
+            db.Functions.Should().BeEmpty();
+
+            db.StoreProcedures.Should().BeEmpty();
         }
 
         /// <summary>
@@ -74,6 +101,36 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider();
             var db = mysqldbp.GetDatabase();
             db.Should().NotBeNull();
+            db.Name.Should().Be("sakila");
+
+            db.DataTypes.Should().BeEmpty();
+
+            db.Tables.Count.Should().Be(16);
+            var table = db.Tables.FirstOrDefault(x => x.Name == "film");
+            table.Should().NotBeNull();
+            table.Columns.Count.Should().Be(13);
+            table.Columns.Select(x => x.Name).Should().Contain("language_id");
+
+            table = db.Tables.FirstOrDefault(x => x.Name == "film_actor");
+            table.Should().NotBeNull();
+            table.PrimaryKeys.Count.Should().Be(2);
+            table.PrimaryKeys.Should().Contain(x => x.ColumnName == "actor_id");
+            table.PrimaryKeys.Should().Contain(x => x.ColumnName == "film_id");
+
+            table = db.Tables.FirstOrDefault(x => x.Name == "payment");
+            table.ForeignKeys.Count.Should().Be(3);
+            table.ForeignKeys.Should().Contain(x => x.Name == "fk_payment_customer");
+            table.ForeignKeys.Should().Contain(x => x.Name == "fk_payment_rental");
+            table.ForeignKeys.Should().Contain(x => x.Name == "fk_payment_staff");
+
+            db.Views.Count.Should().Be(7);
+            db.Views.Should().ContainSingle(x => x.Name == "film_list");
+
+            db.Functions.Count.Should().Be(3);
+            db.Functions.Should().ContainSingle(x => x.Name == "get_customer_balance");
+
+            db.StoreProcedures.Count.Should().Be(3);
+            db.StoreProcedures.Should().ContainSingle(x => x.Name == "film_in_stock");
         }
 
         /// <summary>
@@ -86,6 +143,35 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var pgsqldbp = this.dbFixture.GetPostgreDatabaseProvider();
             var db = pgsqldbp.GetDatabase();
             db.Should().NotBeNull();
+            db.Name.Should().Be("sakila");
+
+            db.DataTypes.Count.Should().Be(449);
+
+            db.Tables.Count.Should().Be(21);
+            var table = db.Tables.FirstOrDefault(x => x.Name == "film");
+            table.Should().NotBeNull();
+            table.Columns.Count.Should().Be(14);
+            table.Columns.Select(x => x.Name).Should().Contain("language_id");
+
+            table = db.Tables.FirstOrDefault(x => x.Name == "film_category");
+            table.Should().NotBeNull();
+            table.PrimaryKeys.Count.Should().Be(2);
+            table.PrimaryKeys.Should().Contain(x => x.ColumnName == "film_id");
+            table.PrimaryKeys.Should().Contain(x => x.ColumnName == "category_id");
+
+            table = db.Tables.FirstOrDefault(x => x.Name == "rental");
+            table.ForeignKeys.Count.Should().Be(3);
+            table.ForeignKeys.Should().Contain(x => x.Name == "rental_customer_id_fkey");
+            table.ForeignKeys.Should().Contain(x => x.Name == "rental_inventory_id_fkey");
+            table.ForeignKeys.Should().Contain(x => x.Name == "rental_staff_id_fkey");
+
+            db.Views.Count.Should().Be(7);
+            db.Views.Should().ContainSingle(x => x.Name == "film_list");
+
+            db.Functions.Count.Should().Be(9);
+            db.Functions.Should().ContainSingle(x => x.Name == "last_day");
+
+            db.StoreProcedures.Should().BeEmpty();
         }
     }
 }

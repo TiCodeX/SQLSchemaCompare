@@ -38,7 +38,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 var queries = File.ReadAllText(path).Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
                 foreach (var query in queries)
                 {
-                    context.Query(query);
+                    context.ExecuteNonQuery(query);
                 }
             }
 
@@ -63,7 +63,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 dropDbQuery.AppendLine("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='sakila';");
                 dropDbQuery.AppendLine("DROP DATABASE IF EXISTS sakila;");
                 dropDbQuery.AppendLine("CREATE DATABASE sakila;");
-                context.Query<bool>(dropDbQuery.ToString());
+                context.ExecuteNonQuery(dropDbQuery.ToString());
             }
 
             using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.GetPostgreSqlDatabaseProviderOptions(true)))

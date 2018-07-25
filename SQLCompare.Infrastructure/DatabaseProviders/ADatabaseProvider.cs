@@ -71,23 +71,23 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             foreach (var table in tables)
             {
                 table.Columns.AddRange(
-                    columns.Where(y => string.Equals(table.Catalog, y.Catalog, System.StringComparison.Ordinal)
-                                           && string.Equals(table.Schema, y.Schema, System.StringComparison.Ordinal)
-                                           && string.Equals(table.Name, y.TableName, System.StringComparison.Ordinal)));
+                    columns.Where(y => table.Catalog == y.Catalog
+                                           && table.Schema == y.Schema
+                                           && table.Name == y.TableName));
                 table.ForeignKeys.AddRange(
-                    foreignKeys.Where(y => string.Equals(table.Catalog, y.TableCatalog, System.StringComparison.Ordinal)
-                                           && string.Equals(table.Schema, y.TableSchema, System.StringComparison.Ordinal)
-                                           && string.Equals(table.Name, y.TableName, System.StringComparison.Ordinal)));
+                    foreignKeys.Where(y => table.Catalog == y.TableCatalog
+                                           && table.Schema == y.TableSchema
+                                           && table.Name == y.TableName));
                 table.PrimaryKeys.AddRange(
                     indexes.Where(y => y.IsPrimaryKey == true
-                                           && string.Equals(table.Catalog, y.TableCatalog, System.StringComparison.Ordinal)
-                                           && string.Equals(table.Schema, y.TableSchema, System.StringComparison.Ordinal)
-                                           && string.Equals(table.Name, y.TableName, System.StringComparison.Ordinal)));
+                                           && table.Catalog == y.TableCatalog
+                                           && table.Schema == y.TableSchema
+                                           && table.Name == y.TableName));
                 table.Indexes.AddRange(
                     indexes.Where(y => y.IsPrimaryKey == false
-                                       && string.Equals(table.Catalog, y.TableCatalog, System.StringComparison.Ordinal)
-                                       && string.Equals(table.Schema, y.TableSchema, System.StringComparison.Ordinal)
-                                       && string.Equals(table.Name, y.TableName, System.StringComparison.Ordinal)));
+                                       && table.Catalog == y.TableCatalog
+                                       && table.Schema == y.TableSchema
+                                       && table.Name == y.TableName));
             }
 
             db.Tables.AddRange(tables);

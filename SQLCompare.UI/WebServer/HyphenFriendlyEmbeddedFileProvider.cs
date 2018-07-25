@@ -38,7 +38,7 @@ namespace SQLCompare.UI.WebServer
             }
 
             // Does it contain a hyphen?
-            var indexOfFirstHyphen = subpath.IndexOf('-', StringComparison.InvariantCulture);
+            var indexOfFirstHyphen = subpath.IndexOf('-', StringComparison.Ordinal);
             if (indexOfFirstHyphen == -1)
             {
                 // no hyphens.

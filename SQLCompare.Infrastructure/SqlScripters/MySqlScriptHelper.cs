@@ -43,20 +43,20 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             var sb = new StringBuilder();
 
-            sb.Append($"`{col.Name}` {this.ScriptDataType(col)} ");
+            sb.Append($"`{col.Name}` {this.ScriptDataType(col)}");
 
             if (!col.Extra.Equals("VIRTUAL GENERATED", StringComparison.OrdinalIgnoreCase) && !col.Extra.Equals("VIRTUAL GENERATED", StringComparison.OrdinalIgnoreCase))
             {
-                sb.Append(string.Equals(col.IsNullable, "YES", StringComparison.Ordinal) ? "NULL " : "NOT NULL ");
+                sb.Append(col.IsNullable == "YES" ? " NULL" : " NOT NULL");
 
                 if (col.ColumnDefault != null)
                 {
-                    sb.Append($"DEFAULT {col.ColumnDefault} ");
+                    sb.Append($" DEFAULT {col.ColumnDefault}");
                 }
 
                 if (col.Extra != null)
                 {
-                    sb.Append($"{col.Extra}");
+                    sb.Append($" {col.Extra}");
                 }
             }
 

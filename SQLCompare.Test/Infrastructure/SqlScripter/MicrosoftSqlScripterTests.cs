@@ -29,7 +29,7 @@ namespace SQLCompare.Test.Infrastructure.SqlScripter
         /// <param name="expectedResult">The expected sql result</param>
         [Theory]
         [UnitTest]
-        [ExcelData(@"Datasources\ScriptColumnTest.xlsx")]
+        [ExcelData(@"Datasources\ScriptMicrosoftSqlColumnTest.xlsx")]
         public void ScriptColumn(ProjectOptions options, MicrosoftSqlColumn column, string expectedResult)
         {
             var helper = new MicrosoftSqlScriptHelper(options);

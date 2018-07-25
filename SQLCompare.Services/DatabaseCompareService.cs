@@ -48,7 +48,7 @@ namespace SQLCompare.Services
                 return false;
             }
 
-            return sourceItem.ViewDefinition.Equals(targetItem.ViewDefinition, StringComparison.Ordinal);
+            return sourceItem.ViewDefinition == targetItem.ViewDefinition;
         }
     }
 }

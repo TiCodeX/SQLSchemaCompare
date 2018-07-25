@@ -142,20 +142,20 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             var sb = new StringBuilder();
 
-            sb.Append($"\"{col.Name}\" {this.ScriptDataType(col)} ");
+            sb.Append($"\"{col.Name}\" {this.ScriptDataType(col)}");
 
             if (col.IsNullable)
             {
-                sb.Append($"NULL ");
+                sb.Append($" NULL");
             }
             else
             {
-                sb.Append($"NOT NULL ");
+                sb.Append($" NOT NULL");
             }
 
             if (col.ColumnDefault != null)
             {
-                sb.Append($"DEFAULT {col.ColumnDefault} ");
+                sb.Append($" DEFAULT {col.ColumnDefault}");
             }
 
             return sb.ToString();

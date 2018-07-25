@@ -90,7 +90,59 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptIndexesAlterTable(ABaseDbTable table)
         {
-            throw new NotImplementedException();
+            var sb = new StringBuilder();
+
+            // Reorder: Clustered indexes must be created before Nonclustered
+            var orderedIndexes = new List<MicrosoftSqlIndex>();
+            orderedIndexes.AddRange(table.Indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type == MicrosoftSqlIndex.IndexType.Clustered));
+            orderedIndexes.AddRange(table.Indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type != MicrosoftSqlIndex.IndexType.Clustered));
+
+            foreach (var indexes in orderedIndexes.GroupBy(x => x.Name))
+            {
+                var index = indexes.First();
+
+                // If there is a column with descending order, specify the order on all columns
+                var scriptOrder = indexes.Any(x => x.IsDescending);
+                var columnList = indexes.OrderBy(x => x.OrdinalPosition).Select(x =>
+                    scriptOrder ? $"[{x.ColumnName}] {(x.IsDescending ? "DESC" : "ASC")}" : $"[{x.ColumnName}]");
+
+                sb.Append("CREATE ");
+                switch (index.Type)
+                {
+                    case MicrosoftSqlIndex.IndexType.Clustered:
+                    case MicrosoftSqlIndex.IndexType.Nonclustered:
+
+                        if (index.IsUnique.HasValue && index.IsUnique == true)
+                        {
+                            sb.Append("UNIQUE ");
+                        }
+
+                        // If CLUSTERED is not specified, a NONCLUSTERED index is created
+                        if (index.Type == MicrosoftSqlIndex.IndexType.Clustered)
+                        {
+                            sb.Append("CLUSTERED ");
+                        }
+
+                        break;
+
+                    case MicrosoftSqlIndex.IndexType.XML:
+                        sb.Append("XML ");
+                        break;
+
+                    case MicrosoftSqlIndex.IndexType.Spatial:
+                        sb.Append("SPATIAL ");
+                        break;
+
+                    default:
+                        throw new NotSupportedException($"Index of type '{index.Type.ToString()}' is not supported");
+                }
+
+                sb.AppendLine($"INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(table)}({string.Join(",", columnList)});");
+                sb.AppendLine("GO");
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc/>

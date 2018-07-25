@@ -5,6 +5,18 @@
 @model List<ABaseCompareResultItem>
 @{
     var divId = Guid.NewGuid();
+    var orderedItems = Model.OrderBy(x =>
+    {
+        if (x.ItemType == typeof(ABaseDbTable))
+        {
+            return 0;
+        }
+        if (x.ItemType == typeof(ABaseDbView))
+        {
+            return 1;
+        }
+        return 2;
+    }).ThenBy(x => x.SourceItemName);
 }
 <div class="card">
     <div class="card-header" data-toggle="collapse" data-target="#@divId">
@@ -20,7 +32,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var item in orderedItems)
                 {
                     <tr onclick="Main.SelectRow(event, '@item.Id')">
 

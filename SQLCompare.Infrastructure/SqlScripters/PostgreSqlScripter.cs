@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -88,7 +87,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptIndexesAlterTable(ABaseDbTable table)
         {
-            throw new NotImplementedException();
+            return "NOT IMPLEMENTED YET";
         }
 
         /// <inheritdoc/>

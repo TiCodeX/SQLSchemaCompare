@@ -64,10 +64,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
             sb.AppendLine();
             sb.AppendLine();
 
-            // TODO: and indexes
             // Script the ALTER TABLE for primary keys and indexes
             sb.AppendLine(AScriptHelper.ScriptComment("Constraints and Indexes"));
             sb.AppendLine(this.ScriptPrimaryKeysAlterTable(table));
+            sb.AppendLine(this.ScriptIndexesAlterTable(table));
 
             // Script the ALTER TABLE for foreign keys
             sb.AppendLine(AScriptHelper.ScriptComment("Foreign keys"));

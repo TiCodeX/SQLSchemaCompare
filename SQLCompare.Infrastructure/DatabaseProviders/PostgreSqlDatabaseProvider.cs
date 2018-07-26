@@ -193,13 +193,16 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       a.attname AS \"ColumnName\",");
             query.AppendLine("       i.indisprimary AS \"IsPrimaryKey\",");
             query.AppendLine("       a.attnum AS \"OrdinalPosition\",");
-            query.AppendLine("       CASE WHEN i.indoption[a.attnum-1] & 1 = 1 THEN TRUE ELSE FALSE END AS \"IsDescending\"");
+            query.AppendLine("       CASE WHEN i.indoption[a.attnum-1] & 1 = 1 THEN TRUE ELSE FALSE END AS \"IsDescending\",");
+            query.AppendLine("       i.indisunique AS \"IsUnique\",");
+            query.AppendLine("       am.amname AS \"Type\"");
             query.AppendLine("FROM pg_catalog.pg_index i");
             query.AppendLine("JOIN pg_catalog.pg_class ct ON i.indrelid = ct.oid");
             query.AppendLine("JOIN pg_catalog.pg_class ci ON i.indexrelid = ci.oid");
             query.AppendLine("JOIN pg_catalog.pg_namespace nt ON ct.relnamespace = nt.oid");
             query.AppendLine("JOIN pg_catalog.pg_namespace ni ON ci.relnamespace = ni.oid");
             query.AppendLine("JOIN pg_catalog.pg_attribute a ON i.indexrelid = a.attrelid");
+            query.AppendLine("JOIN pg_catalog.pg_am am ON ci.relam = am.oid");
             query.AppendLine("WHERE nt.nspname = 'public'");
 
             return context.Query<PostgreSqlIndex>(query.ToString());

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -106,7 +107,48 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptIndexesAlterTable(ABaseDbTable table)
         {
-            return "NOT IMPLEMENTED YET";
+            var sb = new StringBuilder();
+
+            foreach (var indexes in table.Indexes.Cast<PostgreSqlIndex>().GroupBy(x => x.Name))
+            {
+                var index = indexes.First();
+
+                // If there is a column with descending order, specify the order on all columns
+                var scriptOrder = indexes.Any(x => x.IsDescending);
+                var columnList = indexes.OrderBy(x => x.OrdinalPosition).Select(x =>
+                    scriptOrder ? $"\"{x.ColumnName}\" {(x.IsDescending ? "DESC" : "ASC")}" : $"\"{x.ColumnName}\"");
+
+                sb.Append("CREATE ");
+                if (index.IsUnique)
+                {
+                    sb.Append("UNIQUE ");
+                }
+
+                sb.Append($"INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(table)} ");
+
+                switch (index.Type)
+                {
+                    case "btree":
+                        // If not specified it will use the BTREE
+                        break;
+
+                    case "gist":
+                        sb.Append("USING gist ");
+                        break;
+
+                    case "hash":
+                        sb.Append("USING hash ");
+                        break;
+
+                    default:
+                        throw new NotSupportedException($"Index of type '{index.Type}' is not supported");
+                }
+
+                sb.AppendLine($"({string.Join(",", columnList)});");
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc/>

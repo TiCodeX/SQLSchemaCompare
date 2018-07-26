@@ -56,7 +56,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 var columnList = keys.OrderBy(x => ((MicrosoftSqlIndex)x).OrdinalPosition).Select(x => $"[{((MicrosoftSqlIndex)x).ColumnName}]");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT [{key.Name}] PRIMARY KEY {key.TypeDescription}({string.Join(",", columnList)});");
+                sb.AppendLine($"ADD CONSTRAINT [{key.Name}] PRIMARY KEY {key.TypeDescription}({string.Join(",", columnList)})");
                 sb.AppendLine("GO");
                 sb.AppendLine();
             }
@@ -137,7 +137,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                         throw new NotSupportedException($"Index of type '{index.Type.ToString()}' is not supported");
                 }
 
-                sb.AppendLine($"INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(table)}({string.Join(",", columnList)});");
+                sb.AppendLine($"INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(table)}({string.Join(",", columnList)})");
                 sb.AppendLine("GO");
                 sb.AppendLine();
             }
@@ -148,19 +148,43 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptCreateView(ABaseDbView view)
         {
-            return view.ViewDefinition;
+            var sb = new StringBuilder();
+            sb.Append($"{view.ViewDefinition}");
+            if (!view.ViewDefinition.EndsWith("\n", StringComparison.Ordinal))
+            {
+                sb.AppendLine();
+            }
+
+            sb.AppendLine("GO");
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
         protected override string ScriptCreateFunction(ABaseDbRoutine sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
         {
-            return sqlFunction.RoutineDefinition;
+            var sb = new StringBuilder();
+            sb.Append($"{sqlFunction.RoutineDefinition}");
+            if (!sqlFunction.RoutineDefinition.EndsWith("\n", StringComparison.Ordinal))
+            {
+                sb.AppendLine();
+            }
+
+            sb.AppendLine("GO");
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateStoreProcedure(ABaseDbRoutine storeProcedure)
+        protected override string ScriptCreateStoredProcedure(ABaseDbRoutine storedProcedure)
         {
-            return storeProcedure.RoutineDefinition;
+            var sb = new StringBuilder();
+            sb.Append($"{storedProcedure.RoutineDefinition}");
+            if (!storedProcedure.RoutineDefinition.EndsWith("\n", StringComparison.Ordinal))
+            {
+                sb.AppendLine();
+            }
+
+            sb.AppendLine("GO");
+            return sb.ToString();
         }
     }
 }

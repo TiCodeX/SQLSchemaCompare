@@ -139,9 +139,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateStoreProcedure(ABaseDbRoutine storeProcedure)
+        protected override string ScriptCreateStoredProcedure(ABaseDbRoutine storedProcedure)
         {
-            return storeProcedure.RoutineDefinition;
+            return storedProcedure.RoutineDefinition;
         }
     }
 }

@@ -216,9 +216,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateStoreProcedure(ABaseDbRoutine storeProcedure)
+        protected override string ScriptCreateStoredProcedure(ABaseDbRoutine storedProcedure)
         {
-            // PostgreSql doesn't have store procedures, only functions.
+            // PostgreSql doesn't have stored procedures, only functions.
             return string.Empty;
         }
     }

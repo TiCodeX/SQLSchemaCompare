@@ -1,6 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using FluentAssertions;
-using SQLCompare.Core.Entities.Database.MySql;
+using SQLCompare.Infrastructure.DatabaseProviders;
+using SQLCompare.Infrastructure.EntityFramework;
+using SQLCompare.Infrastructure.SqlScripters;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -88,7 +93,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 
             db.Functions.Should().BeEmpty();
 
-            db.StoreProcedures.Should().BeEmpty();
+            db.StoredProcedures.Should().BeEmpty();
         }
 
         /// <summary>
@@ -129,8 +134,8 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             db.Functions.Count.Should().Be(3);
             db.Functions.Should().ContainSingle(x => x.Name == "get_customer_balance");
 
-            db.StoreProcedures.Count.Should().Be(3);
-            db.StoreProcedures.Should().ContainSingle(x => x.Name == "film_in_stock");
+            db.StoredProcedures.Count.Should().Be(3);
+            db.StoredProcedures.Should().ContainSingle(x => x.Name == "film_in_stock");
         }
 
         /// <summary>
@@ -171,7 +176,86 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             db.Functions.Count.Should().Be(9);
             db.Functions.Should().ContainSingle(x => x.Name == "last_day");
 
-            db.StoreProcedures.Should().BeEmpty();
+            db.StoredProcedures.Should().BeEmpty();
+        }
+
+        /// <summary>
+        /// Test cloning MicrosoftSQL 'sakila' database
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void CloneMicrosoftDatabase()
+        {
+            var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider();
+            var db = mssqldbp.GetDatabase();
+
+            var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
+            var scripter = scripterFactory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
+            var fullScript = scripter.GenerateFullScript(db);
+
+            var mssqldbpo = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions();
+
+            var clonedDatabaseName = $"{mssqldbpo.Database}_clone";
+
+            // Connect without a database to drop/create the cloned one
+            mssqldbpo.Database = string.Empty;
+            using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, mssqldbpo))
+            {
+                var dropDbQuery = new StringBuilder();
+                dropDbQuery.AppendLine($"IF EXISTS(select * from sys.databases where name= '{clonedDatabaseName}')");
+                dropDbQuery.AppendLine("BEGIN");
+                dropDbQuery.AppendLine($"  ALTER DATABASE {clonedDatabaseName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE"); // Close existing connections
+                dropDbQuery.AppendLine($"  DROP DATABASE {clonedDatabaseName}");
+                dropDbQuery.AppendLine("END");
+                context.ExecuteNonQuery(dropDbQuery.ToString());
+
+                context.ExecuteNonQuery($"CREATE DATABASE {clonedDatabaseName}");
+                context.ExecuteNonQuery($"USE {clonedDatabaseName}");
+
+                var queries = fullScript.Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
+                foreach (var query in queries)
+                {
+                    context.ExecuteNonQuery(query);
+                }
+            }
+
+            var dpf = new DatabaseProviderFactory(this.LoggerFactory);
+            mssqldbpo.Database = clonedDatabaseName;
+            mssqldbp = (MicrosoftSqlDatabaseProvider)dpf.Create(mssqldbpo);
+
+            var clonedDb = mssqldbp.GetDatabase();
+
+            var tables = db.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name).ToList();
+            var clonedTables = clonedDb.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name).ToList();
+            tables.Should().BeEquivalentTo(clonedTables, options =>
+            {
+                options.Excluding(x => x.Catalog);
+                options.Excluding(x => x.ModifyDate);
+                options.Excluding(x => new Regex("^Columns\\[.+\\]\\.Catalog$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^PrimaryKeys\\[.+\\]\\.TableCatalog$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^PrimaryKeys\\[.+\\]\\.Catalog$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^ForeignKeys\\[.+\\]\\.TableCatalog$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^ForeignKeys\\[.+\\]\\.Catalog$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^Indexes\\[.+\\]\\.TableCatalog$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^Indexes\\[.+\\]\\.Catalog$").IsMatch(x.SelectedMemberPath));
+                return options;
+            });
+
+            var views = db.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+            var clonedViews = clonedDb.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+            views.Should().BeEquivalentTo(clonedViews, options => options.Excluding(x => x.Catalog));
+
+            var functions = db.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+            var clonedFunctions = clonedDb.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+            functions.Should().BeEquivalentTo(clonedFunctions, options => options.Excluding(x => x.Catalog));
+
+            var storedProcedures = db.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+            var clonedStoredProcedures = clonedDb.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+            storedProcedures.Should().BeEquivalentTo(clonedStoredProcedures, options => options.Excluding(x => x.Catalog));
+
+            var dataTypes = db.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+            var clonedDataTypes = clonedDb.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+            dataTypes.Should().BeEquivalentTo(clonedDataTypes, options => options.Excluding(x => x.Catalog));
         }
     }
 }

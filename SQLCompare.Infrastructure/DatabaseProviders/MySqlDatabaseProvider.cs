@@ -188,7 +188,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbRoutine> GetStoreProcedures(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbRoutine> GetStoredProcedures(MySqlDb database, MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT ROUTINE_NAME as Name,");
@@ -197,7 +197,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
             query.AppendLine($"WHERE routine_type = 'PROCEDURE' and ROUTINE_SCHEMA = '{database.Name}'");
 
-            var result = context.Query<MySqlStoreProcedure>(query.ToString());
+            var result = context.Query<MySqlStoredProcedure>(query.ToString());
             foreach (var procedure in result)
             {
                 var createProcedure = context.Query($"SHOW CREATE PROCEDURE {procedure.Schema}.{procedure.Name}", 2).FirstOrDefault();

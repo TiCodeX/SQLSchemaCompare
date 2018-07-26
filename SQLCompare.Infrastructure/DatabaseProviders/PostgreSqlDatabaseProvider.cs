@@ -252,9 +252,9 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbRoutine> GetStoreProcedures(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbRoutine> GetStoredProcedures(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
-            // In PostgreSql Store Procedures doesn't exists. Therefore we will return an empty list;
+            // In PostgreSql Stored Procedures doesn't exists. Therefore we will return an empty list;
             return Enumerable.Empty<ABaseDbRoutine>();
         }
 

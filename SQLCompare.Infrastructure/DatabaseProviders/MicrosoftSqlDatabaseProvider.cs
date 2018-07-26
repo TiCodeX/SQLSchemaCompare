@@ -212,7 +212,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbRoutine> GetStoreProcedures(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbRoutine> GetStoredProcedures(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT ROUTINE_NAME as Name,");

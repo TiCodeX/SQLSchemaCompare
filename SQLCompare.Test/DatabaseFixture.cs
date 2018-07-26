@@ -32,7 +32,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 dropDbQuery.AppendLine("  ALTER DATABASE sakila SET SINGLE_USER WITH ROLLBACK IMMEDIATE"); // Close existing connections
                 dropDbQuery.AppendLine("  DROP DATABASE sakila");
                 dropDbQuery.AppendLine("END");
-                context.Query(dropDbQuery.ToString());
+                context.ExecuteNonQuery(dropDbQuery.ToString());
 
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-microsoftsql.sql");
                 var queries = File.ReadAllText(path).Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
@@ -121,7 +121,12 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             return (PostgreSqlDatabaseProvider)dpf.Create(this.GetPostgreSqlDatabaseProviderOptions(connectToDatabase));
         }
 
-        private MicrosoftSqlDatabaseProviderOptions GetMicrosoftSqlDatabaseProviderOptions(bool connectToDatabase = true)
+        /// <summary>
+        /// Gets the Microsoft SQL database provider options
+        /// </summary>
+        /// <param name="connectToDatabase">if set to <c>true</c> it will connect directly to the test database</param>
+        /// <returns>The Microsoft SQL database provider options</returns>
+        internal MicrosoftSqlDatabaseProviderOptions GetMicrosoftSqlDatabaseProviderOptions(bool connectToDatabase = true)
         {
             return new MicrosoftSqlDatabaseProviderOptions
             {

@@ -9,6 +9,13 @@ namespace SQLCompare.Core.Interfaces
     public interface IDatabaseScripter
     {
         /// <summary>
+        /// Generates the full script to create the whole database
+        /// </summary>
+        /// <param name="database">The database</param>
+        /// <returns>The full script</returns>
+        string GenerateFullScript(ABaseDb database);
+
+        /// <summary>
         /// Generates the create table script
         /// </summary>
         /// <param name="table">The table to be scripted</param>
@@ -32,10 +39,10 @@ namespace SQLCompare.Core.Interfaces
         string GenerateCreateFunctionScript(ABaseDbRoutine sqlFunction, IEnumerable<ABaseDbObject> dataTypes);
 
         /// <summary>
-        /// Generates the create store procedure script
+        /// Generates the create stored procedure script
         /// </summary>
-        /// <param name="storeProcedure">The store procedure to be scripted</param>
+        /// <param name="storedProcedure">The stored procedure to be scripted</param>
         /// <returns>The create script</returns>
-        string GenerateCreateStoreProcedureScript(ABaseDbRoutine storeProcedure);
+        string GenerateCreateStoredProcedureScript(ABaseDbRoutine storedProcedure);
     }
 }

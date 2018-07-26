@@ -93,7 +93,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             db.Tables.AddRange(tables);
             db.Views.AddRange(this.GetViews(db, context));
             db.Functions.AddRange(this.GetFunctions(db, context));
-            db.StoreProcedures.AddRange(this.GetStoreProcedures(db, context));
+            db.StoredProcedures.AddRange(this.GetStoredProcedures(db, context));
             db.DataTypes.AddRange(this.GetDataTypes(db, context));
 
             return db;
@@ -148,12 +148,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected abstract IEnumerable<ABaseDbRoutine> GetFunctions(TDatabase database, TDatabaseContext context);
 
         /// <summary>
-        /// Get the database store procedures
+        /// Get the database stored procedures
         /// </summary>
         /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
-        /// <returns>The list of store procedures</returns>
-        protected abstract IEnumerable<ABaseDbRoutine> GetStoreProcedures(TDatabase database, TDatabaseContext context);
+        /// <returns>The list of stored procedures</returns>
+        protected abstract IEnumerable<ABaseDbRoutine> GetStoredProcedures(TDatabase database, TDatabaseContext context);
 
         /// <summary>
         /// Get the database data types

@@ -75,9 +75,28 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT \"{key.Name}\" FOREIGN KEY ({string.Join(",", columnList)})");
-                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)})");
+                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)}) {PostgreSqlScriptHelper.ScriptForeignKeyMatchOption(key.MatchOption)}");
                 sb.AppendLine($"ON DELETE {key.DeleteRule}");
-                sb.AppendLine($"ON UPDATE {key.UpdateRule};");
+                sb.AppendLine($"ON UPDATE {key.UpdateRule}");
+
+                if (key.IsDeferrable)
+                {
+                    sb.AppendLine("DEFERRABLE");
+                }
+                else
+                {
+                    sb.AppendLine("NOT DEFERRABLE");
+                }
+
+                if (key.IsInitiallyDeferred)
+                {
+                    sb.AppendLine("INITIALLY DEFERRED;");
+                }
+                else
+                {
+                    sb.AppendLine("INITIALLY IMMEDIATE;");
+                }
+
                 sb.AppendLine();
             }
 

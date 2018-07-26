@@ -117,6 +117,26 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Script the foreign key match option
+        /// </summary>
+        /// <param name="matchOption">The match option string</param>
+        /// <returns>The scripted match option</returns>
+        public static object ScriptForeignKeyMatchOption(string matchOption)
+        {
+            switch (matchOption)
+            {
+                case "NONE":
+                    return "MATCH SIMPLE";
+                case "FULL":
+                    return "MATCH FULL";
+                case "PARTIAL":
+                    return "MATCH PARTIAL";
+                default:
+                    throw new ArgumentException($"Unknown foreign key match option: {matchOption}");
+            }
+        }
+
         /// <inheritdoc/>
         public override string ScriptObjectName(string objectSchema, string objectName)
         {

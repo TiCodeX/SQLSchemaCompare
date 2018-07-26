@@ -160,7 +160,15 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       ccu.table_catalog AS \"ReferencedTableCatalog\",");
             query.AppendLine("       ccu.table_schema AS \"ReferencedTableSchema\",");
             query.AppendLine("       ccu.table_name AS \"ReferencedTableName\",");
-            query.AppendLine("       ccu.column_name AS \"ReferencedColumnName\"");
+            query.AppendLine("       ccu.column_name AS \"ReferencedColumnName\",");
+            query.AppendLine("       CASE ");
+            query.AppendLine("            WHEN tu.is_deferrable = 'YES' THEN true");
+            query.AppendLine("            ELSE false");
+            query.AppendLine("            END AS \"IsDeferrable\",");
+            query.AppendLine("       CASE ");
+            query.AppendLine("            WHEN tu.initially_deferred = 'YES' THEN true");
+            query.AppendLine("            ELSE false");
+            query.AppendLine("            END AS \"IsInitiallyDeferred\"");
             query.AppendLine("FROM information_schema.key_column_usage kcu");
             query.AppendLine("INNER JOIN information_schema.table_constraints tu");
             query.AppendLine("    ON kcu.constraint_name = tu.constraint_name AND kcu.constraint_schema = tu.constraint_schema AND kcu.constraint_catalog = tu.constraint_catalog");

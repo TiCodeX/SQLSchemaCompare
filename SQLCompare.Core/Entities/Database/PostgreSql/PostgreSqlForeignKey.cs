@@ -44,5 +44,15 @@
         /// Gets or sets the referenced column name
         /// </summary>
         public string ReferencedColumnName { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the foreign key is deferrable
+        /// </summary>
+        public bool IsDeferrable { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the foreign key is initially deferred
+        /// </summary>
+        public bool IsInitiallyDeferred { get; set; }
     }
 }

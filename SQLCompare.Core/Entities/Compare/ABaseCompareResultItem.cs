@@ -23,9 +23,9 @@ namespace SQLCompare.Core.Entities.Compare
         public abstract string TargetItemName { get; }
 
         /// <summary>
-        /// Gets the item type
+        /// Gets or sets the item type label
         /// </summary>
-        public abstract Type ItemType { get; }
+        public string ItemTypeLabel { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the items are equal

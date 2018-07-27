@@ -30,7 +30,11 @@ class Settings {
             // Recreate the menu with the new language
             Menu.CreateMenu();
 
-            Utility.OpenModalDialog("/WelcomePageModel", Utility.HttpMethod.Get);
+            if ($("#mainTop").length > 0) {
+                Main.Open();
+            } else {
+                Utility.OpenModalDialog("/WelcomePageModel", Utility.HttpMethod.Get);
+            }
         });
     }
 }

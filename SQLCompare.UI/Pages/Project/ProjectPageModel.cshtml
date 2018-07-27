@@ -98,10 +98,10 @@
 </div>
 
 <div class="float-right">
-    <button style="@ButtonStyle.Primary" onclick="Project.Compare()">
+    <button style="@ButtonStyle.Primary" onclick="Project.EditAndCompare()">
         @Localization.ButtonCompareNow
     </button>
-    @if (Model.Project.RetrievedSourceDatabase != null)
+    @if (Model.Project.Result != null)
     {
         <button style="@ButtonStyle.Secondary" onclick="Utility.CloseModalDialog()">@Localization.ButtonCancel</button>
     }

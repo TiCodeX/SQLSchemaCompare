@@ -17,5 +17,15 @@ namespace SQLCompare.Core.Entities.Compare
         /// Gets the list of View results
         /// </summary>
         public List<CompareResultItem<ABaseDbView>> Views { get; } = new List<CompareResultItem<ABaseDbView>>();
+
+        /// <summary>
+        /// Gets the list of Function results
+        /// </summary>
+        public List<CompareResultItem<ABaseDbRoutine>> Functions { get; } = new List<CompareResultItem<ABaseDbRoutine>>();
+
+        /// <summary>
+        /// Gets the list of Stored Procedures results
+        /// </summary>
+        public List<CompareResultItem<ABaseDbRoutine>> StoredProcedures { get; } = new List<CompareResultItem<ABaseDbRoutine>>();
     }
 }

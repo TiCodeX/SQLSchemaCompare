@@ -1,5 +1,4 @@
-﻿using System;
-using SQLCompare.Core.Entities.Database;
+﻿using SQLCompare.Core.Entities.Database;
 
 namespace SQLCompare.Core.Entities.Compare
 {
@@ -25,8 +24,5 @@ namespace SQLCompare.Core.Entities.Compare
 
         /// <inheritdoc />
         public override string TargetItemName => this.TargetItem == null ? string.Empty : $"{this.TargetItem.Schema}.{this.TargetItem.Name}";
-
-        /// <inheritdoc />
-        public override Type ItemType => typeof(T);
     }
 }

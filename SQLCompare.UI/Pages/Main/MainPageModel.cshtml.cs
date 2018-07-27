@@ -44,9 +44,20 @@ namespace SQLCompare.UI.Pages.Main
         public ActionResult OnGetCreateScript(Guid id)
         {
             ABaseCompareResultItem resultItem = this.projectService.Project.Result.Tables.FirstOrDefault(x => x.Id == id);
+
             if (resultItem == null)
             {
                 resultItem = this.projectService.Project.Result.Views.FirstOrDefault(x => x.Id == id);
+            }
+
+            if (resultItem == null)
+            {
+                resultItem = this.projectService.Project.Result.Functions.FirstOrDefault(x => x.Id == id);
+            }
+
+            if (resultItem == null)
+            {
+                resultItem = this.projectService.Project.Result.StoredProcedures.FirstOrDefault(x => x.Id == id);
             }
 
             return new JsonResult(new

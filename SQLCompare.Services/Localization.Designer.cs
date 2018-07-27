@@ -124,6 +124,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Function.
+        /// </summary>
+        public static string LabelFunction {
+            get {
+                return ResourceManager.GetString("LabelFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hostname.
         /// </summary>
         public static string LabelHostname {
@@ -250,6 +259,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stored Procedure.
+        /// </summary>
+        public static string LabelStoredProcedure {
+            get {
+                return ResourceManager.GetString("LabelStoredProcedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Table.
         /// </summary>
         public static string LabelTable {
@@ -345,6 +363,15 @@ namespace SQLCompare.Services {
         public static string MenuCloseProject {
             get {
                 return ResourceManager.GetString("MenuCloseProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compare.
+        /// </summary>
+        public static string MenuCompare {
+            get {
+                return ResourceManager.GetString("MenuCompare", resourceCulture);
             }
         }
         

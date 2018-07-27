@@ -246,4 +246,13 @@
   <data name="LabelUseSchemaName" xml:space="preserve">
     <value>Use schema name</value>
   </data>
+  <data name="LabelFunction" xml:space="preserve">
+    <value>Function</value>
+  </data>
+  <data name="LabelStoredProcedure" xml:space="preserve">
+    <value>Stored Procedure</value>
+  </data>
+  <data name="MenuCompare" xml:space="preserve">
+    <value>Compare</value>
+  </data>
 </root>

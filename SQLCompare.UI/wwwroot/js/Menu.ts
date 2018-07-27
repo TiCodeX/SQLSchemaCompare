@@ -86,6 +86,14 @@ class Menu {
                             Project.Open();
                         },
                     },
+                    {
+                        id: "menuPerformCompare",
+                        label: Localization.Get("MenuCompare"),
+                        enabled: false,
+                        click(): void {
+                            Project.Compare();
+                        },
+                    },
                 ],
             },
             {
@@ -102,7 +110,7 @@ class Menu {
                     },
                     {
                         label: "Toggle Developer Tools",
-                        accelerator: "Ctrl+Shift+I",
+                        accelerator: "F12",
                         click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
                             if (focusedWindow) {
                                 focusedWindow.webContents.toggleDevTools();
@@ -148,5 +156,6 @@ class Menu {
         menu.getMenuItemById("menuSaveProjectAs").enabled = enable;
         menu.getMenuItemById("menuCloseProject").enabled = enable;
         menu.getMenuItemById("menuEditProject").enabled = enable;
+        menu.getMenuItemById("menuPerformCompare").enabled = enable;
     }
 }

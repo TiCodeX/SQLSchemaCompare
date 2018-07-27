@@ -1,22 +1,13 @@
 ﻿@using Core.Entities.Compare
 @using Core.Entities.Database
+@using Core.Entities.Database.MicrosoftSql
+@using Core.Entities.Database.MySql
+@using Core.Entities.Database.PostgreSql
 @using Core.Interfaces
 @using Services
 @model List<ABaseCompareResultItem>
 @{
     var divId = Guid.NewGuid();
-    var orderedItems = Model.OrderBy(x =>
-    {
-        if (x.ItemType == typeof(ABaseDbTable))
-        {
-            return 0;
-        }
-        if (x.ItemType == typeof(ABaseDbView))
-        {
-            return 1;
-        }
-        return 2;
-    }).ThenBy(x => x.SourceItemName);
 }
 <div class="card">
     <div class="card-header" data-toggle="collapse" data-target="#@divId">
@@ -32,18 +23,10 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in orderedItems)
+                @foreach (var item in Model)
                 {
                     <tr onclick="Main.SelectRow(event, '@item.Id')">
-
-                        @if (item.ItemType == typeof(ABaseDbTable))
-                        {
-                            <td>@Localization.LabelTable</td>
-                        }
-                        else if (item.ItemType == typeof(ABaseDbView))
-                        {
-                            <td>@Localization.LabelView</td>
-                        }
+                        <td>@item.ItemTypeLabel</td>
                         <td>@item.SourceItemName</td>
                         <td>@item.TargetItemName</td>
                     </tr>

@@ -201,4 +201,19 @@
   <data name="TitleWelcome" xml:space="preserve">
     <value>Benvenuti in {0}</value>
   </data>
+  <data name="LabelType" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="MenuSaveProjectAs" xml:space="preserve">
+    <value>Salva Progetto come</value>
+  </data>
+  <data name="LabelOrderColumnAlphabetically" xml:space="preserve">
+    <value>Ordina le colonne alfabeticamente</value>
+  </data>
+  <data name="LabelFunction" xml:space="preserve">
+    <value>Funzione</value>
+  </data>
+  <data name="LabelStoredProcedure" xml:space="preserve">
+    <value>Procedura</value>
+  </data>
 </root>

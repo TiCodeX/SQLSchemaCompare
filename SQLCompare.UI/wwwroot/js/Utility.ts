@@ -69,6 +69,7 @@ class Utility {
      */
     public static CloseModalDialog(): void {
         $("#myModal").modal("hide");
+        $("#myModalBody").empty();
     }
 
     /**

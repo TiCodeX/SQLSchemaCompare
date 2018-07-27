@@ -184,25 +184,32 @@ class Project {
     }
 
     /**
+     * Save the project and perform the comparison
+     */
+    public static EditAndCompare(): void {
+        this.Edit((): void => {
+            Project.Compare();
+        });
+    }
+
+    /**
      * Perform the comparison
      */
     public static Compare(): void {
-        this.Edit((): void => {
-            Utility.AjaxCall(this.startCompareUrl, Utility.HttpMethod.Get, undefined, (): void => {
-                // TODO: move the polling functionality in Utility
-                const pollingTime: number = 200;
-                const polling: VoidFunction = (): void => {
-                    setTimeout(() => {
-                        if ($("#stopPolling").length > 0) {
-                            Main.Open();
-                        } else {
-                            Utility.OpenModalDialog("/TaskStatusPageModel", Utility.HttpMethod.Get);
-                            polling();
-                        }
-                    }, pollingTime);
-                };
-                polling();
-            });
+        Utility.AjaxCall(this.startCompareUrl, Utility.HttpMethod.Get, undefined, (): void => {
+            // TODO: move the polling functionality in Utility
+            const pollingTime: number = 200;
+            const polling: VoidFunction = (): void => {
+                setTimeout(() => {
+                    if ($("#stopPolling").length > 0) {
+                        Main.Open();
+                    } else {
+                        Utility.OpenModalDialog("/TaskStatusPageModel", Utility.HttpMethod.Get);
+                        polling();
+                    }
+                }, pollingTime);
+            };
+            polling();
         });
     }
 }

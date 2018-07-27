@@ -1,6 +1,5 @@
 ﻿using System.Xml.Serialization;
 using SQLCompare.Core.Entities.Compare;
-using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
 
 namespace SQLCompare.Core.Entities.Project
@@ -29,18 +28,6 @@ namespace SQLCompare.Core.Entities.Project
         /// Gets or sets the project options
         /// </summary>
         public ProjectOptions Options { get; set; }
-
-        /// <summary>
-        /// Gets or sets the retrieved source database
-        /// </summary>
-        [XmlIgnore]
-        public ABaseDb RetrievedSourceDatabase { get; set; }
-
-        /// <summary>
-        /// Gets or sets the retrieved target database
-        /// </summary>
-        [XmlIgnore]
-        public ABaseDb RetrievedTargetDatabase { get; set; }
 
         /// <summary>
         /// Gets or sets the result of the comparison

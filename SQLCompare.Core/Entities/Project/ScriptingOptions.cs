@@ -18,7 +18,7 @@
         /// <summary>
         /// Gets or sets a value indicating whether the source table columns order should be ignored when scripting columns
         /// </summary>
-        public bool IgnoreSourceTableColumnOrder { get; set; } = false;
+        public bool IgnoreReferenceTableColumnOrder { get; set; } = false;
 
         /// <summary>
         /// Gets or sets a value indicating whether use schema name in scripting objects

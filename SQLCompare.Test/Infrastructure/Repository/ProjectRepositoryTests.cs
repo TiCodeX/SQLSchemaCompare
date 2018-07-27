@@ -123,7 +123,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
                     {
                         IgnoreCollate = true,
                         OrderColumnAlphabetically = true,
-                        IgnoreSourceTableColumnOrder = true,
+                        IgnoreReferenceTableColumnOrder = true,
                         UseSchemaName = false,
                     }
                 }

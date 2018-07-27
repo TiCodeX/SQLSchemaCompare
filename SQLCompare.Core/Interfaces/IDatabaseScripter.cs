@@ -19,9 +19,9 @@ namespace SQLCompare.Core.Interfaces
         /// Generates the create table script
         /// </summary>
         /// <param name="table">The table to be scripted</param>
-        /// <param name="sourceTable">The source table for comparison, used for column order</param>
+        /// <param name="referenceTable">The source table for comparison, used for column order</param>
         /// <returns>The create script</returns>
-        string GenerateCreateTableScript(ABaseDbTable table, ABaseDbTable sourceTable = null);
+        string GenerateCreateTableScript(ABaseDbTable table, ABaseDbTable referenceTable = null);
 
         /// <summary>
         /// Generates the create view script

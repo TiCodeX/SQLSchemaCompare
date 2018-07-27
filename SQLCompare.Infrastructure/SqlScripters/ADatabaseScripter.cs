@@ -62,7 +62,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             // Script the CREATE TABLE
             foreach (var table in database.Tables)
             {
-                sb.Append(this.ScriptCreateTable(table, table));
+                sb.Append(this.ScriptCreateTable(table));
             }
 
             sb.AppendLine();
@@ -132,7 +132,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateCreateTableScript(ABaseDbTable table, ABaseDbTable sourceTable)
+        public string GenerateCreateTableScript(ABaseDbTable table, ABaseDbTable referenceTable)
         {
             if (table == null)
             {
@@ -142,7 +142,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
 
             // Script the CREATE TABLE
-            sb.Append(this.ScriptCreateTable(table, sourceTable));
+            sb.Append(this.ScriptCreateTable(table, referenceTable));
             sb.AppendLine();
             sb.AppendLine();
 
@@ -200,9 +200,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// Generates the create table script
         /// </summary>
         /// <param name="table">The table to script</param>
-        /// <param name="sourceTable">The source table for comparison, used for column order</param>
+        /// <param name="referenceTable">The reference table for comparison, used for column order</param>
         /// <returns>The create table script</returns>
-        protected abstract string ScriptCreateTable(ABaseDbTable table, ABaseDbTable sourceTable);
+        protected abstract string ScriptCreateTable(ABaseDbTable table, ABaseDbTable referenceTable = null);
 
         /// <summary>
         /// Generates the alter table for adding primary keys after create table
@@ -251,46 +251,56 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// Get the table columns sorted depending on options and source table
         /// </summary>
         /// <param name="table">The table with columns to script</param>
-        /// <param name="sourceTable">The source table for comparison</param>
+        /// <param name="referenceTable">The reference table for comparison</param>
         /// <returns>The sorted columns</returns>
-        protected IEnumerable<ABaseDbColumn> GetSortedTableColumns(ABaseDbTable table, ABaseDbTable sourceTable)
+        protected IEnumerable<ABaseDbColumn> GetSortedTableColumns(ABaseDbTable table, ABaseDbTable referenceTable)
         {
-            if (sourceTable != null && !this.Options.Scripting.IgnoreSourceTableColumnOrder)
+            // Order table columns alphabetically or by ordinal position
+            var columns = this.Options.Scripting.OrderColumnAlphabetically ? table.Columns.OrderBy(x => x.Name).ToList() : this.OrderColumnsByOrdinalPosition(table).ToList();
+
+            // If there is no source table or ignore source table column order, returns the columns
+            if (referenceTable == null || this.Options.Scripting.IgnoreReferenceTableColumnOrder)
             {
-                var columns = table.Columns.ToList();
-                var sourceColumns = sourceTable.Columns.AsEnumerable();
-                if (this.Options.Scripting.OrderColumnAlphabetically)
-                {
-                    sourceColumns = sourceTable.Columns.OrderBy(x => x.Name);
-                }
-
-                var sortedColumns = new List<ABaseDbColumn>();
-
-                foreach (var s in sourceColumns)
-                {
-                    foreach (var c in columns)
-                    {
-                        if (string.Equals(s.Name, c.Name, StringComparison.OrdinalIgnoreCase))
-                        {
-                            sortedColumns.Add(c);
-                            columns.Remove(c);
-                            break;
-                        }
-                    }
-                }
-
-                sortedColumns.AddRange(columns);
-
-                return sortedColumns;
+                return columns;
             }
-            else if (this.Options.Scripting.OrderColumnAlphabetically)
+
+            // If there is a source table and the option IgnoreSourceTableColumnOrder is set to false there are 2 sorting outcome:
+            // 1) reference table is sorted alphabetically
+            // 2) reference table is sorted by column ordinal position
+            var referenceColumns = referenceTable.Columns.AsEnumerable();
+            if (this.Options.Scripting.OrderColumnAlphabetically)
             {
-                return table.Columns.OrderBy(x => x.Name);
+                referenceColumns = referenceTable.Columns.OrderBy(x => x.Name);
             }
             else
             {
-                return table.Columns;
+                referenceColumns = this.OrderColumnsByOrdinalPosition(referenceTable);
             }
+
+            var sortedColumns = new List<ABaseDbColumn>();
+
+            // Navigate the referenceColumns sorted list
+            foreach (var s in referenceColumns)
+            {
+                var c = columns.FirstOrDefault(x => string.Equals(s.Name, x.Name, StringComparison.OrdinalIgnoreCase));
+                if (c != null)
+                {
+                    sortedColumns.Add(c);
+                    columns.Remove(c);
+                }
+            }
+
+            // Add remaining columns
+            sortedColumns.AddRange(columns);
+
+            return sortedColumns;
         }
+
+        /// <summary>
+        /// Order the table columns by their ordinal position
+        /// </summary>
+        /// <param name="table">The table with the columns to order</param>
+        /// <returns>The list of columns ordered by ordinal position</returns>
+        protected abstract IEnumerable<ABaseDbColumn> OrderColumnsByOrdinalPosition(ABaseDbTable table);
     }
 }

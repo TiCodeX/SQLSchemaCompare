@@ -24,11 +24,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateTable(ABaseDbTable table, ABaseDbTable sourceTable)
+        protected override string ScriptCreateTable(ABaseDbTable table, ABaseDbTable referenceTable)
         {
             var ncol = table.Columns.Count;
 
-            var columns = this.GetSortedTableColumns(table, sourceTable);
+            var columns = this.GetSortedTableColumns(table, referenceTable);
 
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE TABLE {this.ScriptHelper.ScriptObjectName(table)}(");
@@ -142,6 +142,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptCreateStoredProcedure(ABaseDbRoutine storedProcedure)
         {
             return storedProcedure.RoutineDefinition;
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbColumn> OrderColumnsByOrdinalPosition(ABaseDbTable table)
+        {
+            return table.Columns.OrderBy(x => ((MySqlColumn)x).OrdinalPosition);
         }
     }
 }

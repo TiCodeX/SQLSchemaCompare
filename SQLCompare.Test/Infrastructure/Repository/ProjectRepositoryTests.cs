@@ -155,7 +155,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
     <Scripting>
       <IgnoreCollate>true</IgnoreCollate>
       <OrderColumnAlphabetically>true</OrderColumnAlphabetically>
-      <IgnoreSourceTableColumnOrder>true</IgnoreSourceTableColumnOrder>
+      <IgnoreReferenceTableColumnOrder>true</IgnoreReferenceTableColumnOrder>
       <UseSchemaName>false</UseSchemaName>
     </Scripting>
   </Options>

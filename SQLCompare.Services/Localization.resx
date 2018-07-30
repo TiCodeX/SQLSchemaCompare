@@ -255,4 +255,7 @@
   <data name="MenuCompare" xml:space="preserve">
     <value>Compare</value>
   </data>
+  <data name="LabelIgnoreReferenceTableColumnOrder" xml:space="preserve">
+    <value>Ignore source table column order</value>
+  </data>
 </root>

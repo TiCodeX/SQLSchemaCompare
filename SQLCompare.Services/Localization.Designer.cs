@@ -160,6 +160,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore source table column order.
+        /// </summary>
+        public static string LabelIgnoreReferenceTableColumnOrder {
+            get {
+                return ResourceManager.GetString("LabelIgnoreReferenceTableColumnOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In both, but different.
         /// </summary>
         public static string LabelInBothButDifferent {

@@ -91,6 +91,20 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text min-width-100">@Localization.LabelIgnoreReferenceTableColumnOrder</span>
+                            </div>
+                            <label class="switch">
+                                @{
+                                    @:<input type="checkbox" name="ProjectOptions[Scripting[IgnoreReferenceTableColumnOrder]]" data-value-type="boolean" @(Model.Project.Options.Scripting.IgnoreReferenceTableColumnOrder ? "checked=\"checked\"" : "")>
+                                }
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

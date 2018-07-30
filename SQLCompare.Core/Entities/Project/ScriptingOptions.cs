@@ -16,7 +16,7 @@
         public bool OrderColumnAlphabetically { get; set; } = false;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the source table columns order should be ignored when scripting columns
+        /// Gets or sets a value indicating whether the reference table columns order should be ignored when scripting columns
         /// </summary>
         public bool IgnoreReferenceTableColumnOrder { get; set; } = false;
 

@@ -111,6 +111,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       tc.TABLE_SCHEMA as TableSchema,");
             query.AppendLine("       tc.TABLE_NAME as TableName,");
             query.AppendLine("       col.name as ColumnName,");
+            query.AppendLine("       tc.CONSTRAINT_TYPE as ConstraintType,");
             query.AppendLine("       reftb.name as ReferencedTableName,");
             query.AppendLine("       refs.name as ReferencedTableSchema,");
             query.AppendLine("       refcol.name as ReferencedTableColumn,");
@@ -146,6 +147,27 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbConstraint> GetConstraints(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT tc.TABLE_CATALOG AS TableCatalog,");
+            query.AppendLine("       tc.TABLE_SCHEMA AS TableSchema,");
+            query.AppendLine("       tc.TABLE_NAME AS TableName,");
+            query.AppendLine("       tc.CONSTRAINT_CATALOG AS Catalog,");
+            query.AppendLine("       tc.CONSTRAINT_SCHEMA AS 'Schema',");
+            query.AppendLine("       tc.CONSTRAINT_NAME AS Name,");
+            query.AppendLine("       ccu.COLUMN_NAME AS ColumnName,");
+            query.AppendLine("       tc.CONSTRAINT_TYPE AS ConstraintType,");
+            query.AppendLine("       cc.definition AS Definition");
+            query.AppendLine("FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc");
+            query.AppendLine("JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu ON tc.CONSTRAINT_NAME = ccu.CONSTRAINT_NAME");
+            query.AppendLine("JOIN sys.objects o ON tc.CONSTRAINT_NAME = o.name");
+            query.AppendLine("LEFT OUTER JOIN sys.check_constraints cc ON o.object_id = cc.object_id");
+            query.AppendLine("WHERE tc.CONSTRAINT_TYPE != 'PRIMARY KEY' and tc.CONSTRAINT_TYPE != 'FOREIGN KEY'");
+            return context.Query<ABaseDbConstraint>(query.ToString());
+        }
+
+        /// <inheritdoc/>
         protected override IEnumerable<ABaseDbIndex> GetIndexes(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
@@ -156,6 +178,11 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       object_schema_name(i.object_id) AS 'TableSchema',");
             query.AppendLine("       object_name(i.object_id) AS 'TableName',");
             query.AppendLine("       c.name AS 'ColumnName',");
+            query.AppendLine("       CASE");
+            query.AppendLine("           WHEN i.is_primary_key = 1 THEN 'PRIMARY KEY'");
+            query.AppendLine("           WHEN i.is_unique = 1 THEN 'UNIQUE'");
+            query.AppendLine("           ELSE 'INDEX'");
+            query.AppendLine("       END AS 'ConstraintType',");
             query.AppendLine("       i.is_primary_key AS 'IsPrimaryKey',");
             query.AppendLine("       ic.is_descending_key as 'IsDescending',");
             query.AppendLine("       ic.key_ordinal AS 'OrdinalPosition',");

@@ -24,5 +24,15 @@
         /// Gets or sets the column name
         /// </summary>
         public string ColumnName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the constraint type
+        /// </summary>
+        public string ConstraintType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the constraint definition
+        /// </summary>
+        public string Definition { get; set; }
     }
 }

@@ -107,6 +107,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       kcu.TABLE_SCHEMA as TableSchema,");
             query.AppendLine("       kcu.TABLE_NAME as TableName,");
             query.AppendLine("       kcu.COLUMN_NAME as ColumnName,");
+            query.AppendLine("       tc.constraint_type as ConstraintType,");
             query.AppendLine("       kcu.ORDINAL_POSITION as OrdinalPosition,");
             query.AppendLine("       kcu.POSITION_IN_UNIQUE_CONSTRAINT as PositionInUniqueConstraint,");
             query.AppendLine("       kcu.REFERENCED_TABLE_SCHEMA as ReferencedTableSchema,");
@@ -124,6 +125,15 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbConstraint> GetConstraints(MySqlDb database, MySqlDatabaseContext context)
+        {
+            // An empty list is returned because:
+            // - CHECK constraints doesn't exist
+            // - UNIQUE constraints are the same things as UNIQUE indexes
+            return Enumerable.Empty<ABaseDbConstraint>();
+        }
+
+        /// <inheritdoc/>
         protected override IEnumerable<ABaseDbIndex> GetIndexes(MySqlDb database, MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
@@ -138,7 +148,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       s.SEQ_IN_INDEX AS 'OrdinalPosition',");
             query.AppendLine("       CASE WHEN s.COLLATION = 'D' THEN TRUE ELSE FALSE END as 'IsDescending',");
             query.AppendLine("       s.INDEX_TYPE AS 'IndexType',");
-            query.AppendLine("       tc.CONSTRAINT_TYPE AS 'ConstraintType'");
+            query.AppendLine("       COALESCE(tc.CONSTRAINT_TYPE, 'INDEX') AS 'ConstraintType'");
             query.AppendLine("FROM INFORMATION_SCHEMA.STATISTICS s");
             query.AppendLine("LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc");
             query.AppendLine("  ON tc.table_name = s.table_name AND tc.table_schema = s.table_schema AND tc.constraint_name = s.index_name");

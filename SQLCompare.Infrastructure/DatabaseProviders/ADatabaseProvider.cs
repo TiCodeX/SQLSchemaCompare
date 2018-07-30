@@ -66,7 +66,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var tables = this.GetTables(db, context).ToList();
             var columns = this.GetColumns(db, context).ToList();
             var foreignKeys = this.GetForeignKeys(db, context).ToList();
-            var indexes = this.GetIndexes(db, context).ToList().ToList();
+            var indexes = this.GetIndexes(db, context).ToList();
+            var constraints = this.GetConstraints(db, context).ToList();
 
             foreach (var table in tables)
             {
@@ -86,6 +87,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 table.Indexes.AddRange(
                     indexes.Where(y => y.IsPrimaryKey == false
                                        && table.Catalog == y.TableCatalog
+                                       && table.Schema == y.TableSchema
+                                       && table.Name == y.TableName));
+                table.Constraints.AddRange(
+                    constraints.Where(y => table.Catalog == y.TableCatalog
                                        && table.Schema == y.TableSchema
                                        && table.Name == y.TableName));
             }
@@ -122,6 +127,14 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="context">The database context</param>
         /// <returns>The list of foreign keys</returns>
         protected abstract IEnumerable<ABaseDbConstraint> GetForeignKeys(TDatabase database, TDatabaseContext context);
+
+        /// <summary>
+        /// Get the table constraints
+        /// </summary>
+        /// <param name="database">The database information</param>
+        /// <param name="context">The database context</param>
+        /// <returns>The list of constraints</returns>
+        protected abstract IEnumerable<ABaseDbConstraint> GetConstraints(TDatabase database, TDatabaseContext context);
 
         /// <summary>
         /// Get the table indexes

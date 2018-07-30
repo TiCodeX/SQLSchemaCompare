@@ -58,11 +58,11 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       CASE ");
             query.AppendLine("            WHEN is_insertable_into = 'YES' THEN true");
             query.AppendLine("            ELSE false");
-            query.AppendLine("            END as \"IsInsertableInto\",");
+            query.AppendLine("       END as \"IsInsertableInto\",");
             query.AppendLine("       CASE ");
             query.AppendLine("            WHEN is_typed = 'YES' THEN true");
             query.AppendLine("            ELSE false");
-            query.AppendLine("            END as \"IsTyped\",");
+            query.AppendLine("       END as \"IsTyped\",");
             query.AppendLine("       commit_action as \"CommitAction\"");
             query.AppendLine("FROM INFORMATION_SCHEMA.TABLES");
             query.AppendLine("WHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = 'public'");
@@ -84,7 +84,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       CASE ");
             query.AppendLine("            WHEN is_nullable = 'YES' THEN true");
             query.AppendLine("            ELSE false");
-            query.AppendLine("            END as \"IsNullable\",");
+            query.AppendLine("       END as \"IsNullable\",");
             query.AppendLine("       data_type as \"DataType\",");
             query.AppendLine("       character_maximum_length as \"CharacterMaxLenght\",");
             query.AppendLine("       character_octet_length as \"CharacterOctetLenght\",");
@@ -114,11 +114,11 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       CASE ");
             query.AppendLine("            WHEN is_self_referencing = 'YES' THEN true");
             query.AppendLine("            ELSE false");
-            query.AppendLine("            END as \"IsSelfReferencing\",");
+            query.AppendLine("       END as \"IsSelfReferencing\",");
             query.AppendLine("       CASE ");
             query.AppendLine("            WHEN is_identity = 'YES' THEN true");
             query.AppendLine("            ELSE false");
-            query.AppendLine("            END as \"IsIdentity\",");
+            query.AppendLine("       END as \"IsIdentity\",");
             query.AppendLine("       identity_generation as \"IdentityGeneration\",");
             query.AppendLine("       identity_start as \"IdentitiyStart\",");
             query.AppendLine("       identity_increment as \"IdentityIncrement\",");
@@ -128,12 +128,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       CASE ");
             query.AppendLine("            WHEN is_generated = 'YES' THEN true");
             query.AppendLine("            ELSE false");
-            query.AppendLine("            END as \"IsGenerated\",");
+            query.AppendLine("       END as \"IsGenerated\",");
             query.AppendLine("       generation_expression as \"GenerationExpression\",");
             query.AppendLine("       CASE ");
             query.AppendLine("            WHEN is_updatable = 'YES' THEN true");
             query.AppendLine("            ELSE false");
-            query.AppendLine("            END as \"IsUpdatable\"");
+            query.AppendLine("       END as \"IsUpdatable\"");
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
             query.AppendLine($"WHERE TABLE_CATALOG = '{database.Name}'");
 
@@ -152,6 +152,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       kcu.table_schema AS \"TableSchema\",");
             query.AppendLine("       kcu.table_name AS \"TableName\",");
             query.AppendLine("       kcu.column_name AS \"ColumnName\",");
+            query.AppendLine("       tu.constraint_type AS \"ConstraintType\",");
             query.AppendLine("       kcu.ordinal_position AS \"OrdinalPosition\",");
             query.AppendLine("       kcu.position_in_unique_constraint AS \"PositionInUniqueConstraint\",");
             query.AppendLine("       rc.match_option AS \"MatchOption\",");
@@ -164,11 +165,11 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       CASE ");
             query.AppendLine("            WHEN tu.is_deferrable = 'YES' THEN true");
             query.AppendLine("            ELSE false");
-            query.AppendLine("            END AS \"IsDeferrable\",");
+            query.AppendLine("       END AS \"IsDeferrable\",");
             query.AppendLine("       CASE ");
             query.AppendLine("            WHEN tu.initially_deferred = 'YES' THEN true");
             query.AppendLine("            ELSE false");
-            query.AppendLine("            END AS \"IsInitiallyDeferred\"");
+            query.AppendLine("       END AS \"IsInitiallyDeferred\"");
             query.AppendLine("FROM information_schema.key_column_usage kcu");
             query.AppendLine("INNER JOIN information_schema.table_constraints tu");
             query.AppendLine("    ON kcu.constraint_name = tu.constraint_name AND kcu.constraint_schema = tu.constraint_schema AND kcu.constraint_catalog = tu.constraint_catalog");
@@ -178,6 +179,33 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("    ON kcu.constraint_name = ccu.constraint_name AND kcu.constraint_schema = ccu.constraint_schema AND kcu.constraint_catalog = ccu.constraint_catalog");
             query.AppendLine($"WHERE kcu.constraint_catalog = '{database.Name}' AND tu.constraint_type = 'FOREIGN KEY'");
             return context.Query<PostgreSqlForeignKey>(query.ToString());
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbConstraint> GetConstraints(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Catalog\",");
+            query.AppendLine("       nc.nspname AS \"Schema\",");
+            query.AppendLine("       c.conname AS \"Name\",");
+            query.AppendLine("       (current_database())::information_schema.sql_identifier AS \"TableCatalog\",");
+            query.AppendLine("       nt.nspname AS \"TableSchema\",");
+            query.AppendLine("       ct.relname AS \"TableName\",");
+            query.AppendLine("       ccu.COLUMN_NAME as \"ColumnName\",");
+            query.AppendLine("       CASE");
+            query.AppendLine("           WHEN c.contype = 'c' THEN 'CHECK'");
+            query.AppendLine("           WHEN c.contype = 'u' THEN 'UNIQUE'");
+            query.AppendLine("           WHEN c.contype = 'x' THEN 'EXCLUDE'");
+            query.AppendLine("       END AS \"ConstraintType\",");
+            query.AppendLine("       pg_get_constraintdef(c.oid) AS \"Definition\"");
+            query.AppendLine("FROM pg_constraint c");
+            query.AppendLine("JOIN pg_catalog.pg_class ct ON c.conrelid = ct.oid");
+            query.AppendLine("LEFT JOIN pg_catalog.pg_class cc ON c.conindid = cc.oid");
+            query.AppendLine("JOIN pg_catalog.pg_namespace nc ON c.connamespace = nc.oid");
+            query.AppendLine("JOIN pg_catalog.pg_namespace nt ON ct.relnamespace = nt.oid");
+            query.AppendLine("LEFT JOIN information_schema.constraint_column_usage ccu ON c.conname = ccu.constraint_name");
+            query.AppendLine("WHERE c.contype IN ('c', 'u', 'x') AND contypid = 0");
+            return context.Query<ABaseDbConstraint>(query.ToString());
         }
 
         /// <inheritdoc/>
@@ -191,9 +219,17 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       nt.nspname AS \"TableSchema\",");
             query.AppendLine("       ct.relname AS \"TableName\",");
             query.AppendLine("       a.attname AS \"ColumnName\",");
+            query.AppendLine("       CASE");
+            query.AppendLine("           WHEN i.indisprimary IS TRUE THEN 'PRIMARY KEY'");
+            query.AppendLine("           WHEN i.indisunique IS TRUE THEN 'UNIQUE'");
+            query.AppendLine("           ELSE 'INDEX'");
+            query.AppendLine("       END AS \"ConstraintType\",");
             query.AppendLine("       i.indisprimary AS \"IsPrimaryKey\",");
             query.AppendLine("       a.attnum AS \"OrdinalPosition\",");
-            query.AppendLine("       CASE WHEN i.indoption[a.attnum-1] & 1 = 1 THEN TRUE ELSE FALSE END AS \"IsDescending\",");
+            query.AppendLine("       CASE");
+            query.AppendLine("           WHEN i.indoption[a.attnum-1] & 1 = 1 THEN TRUE");
+            query.AppendLine("           ELSE FALSE");
+            query.AppendLine("       END AS \"IsDescending\",");
             query.AppendLine("       i.indisunique AS \"IsUnique\",");
             query.AppendLine("       am.amname AS \"Type\"");
             query.AppendLine("FROM pg_catalog.pg_index i");
@@ -264,10 +300,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var query = new StringBuilder();
 
             query.AppendLine("SELECT current_database()::information_schema.sql_identifier AS \"Catalog\", ");
-            query.AppendLine("        nc.nspname AS \"Schema\", ");
-            query.AppendLine("        a.oid AS \"TypeId\", ");
-            query.AppendLine("        a.typname AS \"Name\",");
-            query.AppendLine("        a.typarray AS \"ArrayTypeId\",");
+            query.AppendLine("       nc.nspname AS \"Schema\", ");
+            query.AppendLine("       a.oid AS \"TypeId\", ");
+            query.AppendLine("       a.typname AS \"Name\",");
+            query.AppendLine("       a.typarray AS \"ArrayTypeId\",");
             query.AppendLine("       CASE");
             query.AppendLine("              WHEN a.typcategory = 'A' THEN true");
             query.AppendLine("              ELSE false");
@@ -279,7 +315,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             // Get all types that have an ArrayTypeId, those types need to be referenced by the array type
             // E.g.: type 'bool' has id 1 and ArrayTypeId 1000
             // type '_bool' has id 1000 and will reference type 'bool'
-            var referencedTypes = types.Where(x => x.ArrayTypeId != 0);
+            var referencedTypes = types.Where(x => x.ArrayTypeId != 0).ToList();
 
             foreach (var t in types)
             {

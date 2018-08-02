@@ -11,7 +11,7 @@ namespace SQLCompare.Services
     /// <summary>
     /// Defines the service that handles customer account requests
     /// </summary>
-    public class AccountService : IAccountService
+    public class CustomerAccountService : IAccountService
     {
         private const string CreateAccountEndpoint = "http://localhost:7071/api/CreateAccount";
         /* private const string LoginEndpoint = "http://localhost:7071/api/Login"; */

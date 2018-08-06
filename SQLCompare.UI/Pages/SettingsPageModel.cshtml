@@ -19,6 +19,21 @@
             }
         </select>
     </div>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text min-width-100">@Localization.LabelLogLevel</span>
+        </div>
+        <select name="LogLevel">
+            @{
+                @:<option value="@LogLevel.Debug" @(Model.Settings.LogLevel == LogLevel.Debug ? "selected" : "")>Debug</option>
+                @:<option value="@LogLevel.Info" @(Model.Settings.LogLevel == LogLevel.Info ? "selected" : "")>Info</option>
+                @:<option value="@LogLevel.Warning" @(Model.Settings.LogLevel == LogLevel.Warning ? "selected" : "")>Warning</option>
+                @:<option value="@LogLevel.Error" @(Model.Settings.LogLevel == LogLevel.Error ? "selected" : "")>Error</option>
+                @:<option value="@LogLevel.Critical" @(Model.Settings.LogLevel == LogLevel.Critical ? "selected" : "")>Critical</option>
+                @:<option value="@LogLevel.None" @(Model.Settings.LogLevel == LogLevel.None ? "selected" : "")>None</option>
+            }
+        </select>
+    </div>
 </div>
 
 <div class="float-right">

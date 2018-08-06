@@ -261,4 +261,7 @@
   <data name="LabelSequence" xml:space="preserve">
     <value>Sequence</value>
   </data>
+  <data name="LabelLogLevel" xml:space="preserve">
+    <value>Logging level</value>
+  </data>
 </root>

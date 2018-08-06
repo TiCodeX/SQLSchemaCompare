@@ -87,7 +87,11 @@ namespace SQLCompare.UI.WebServer
             ILocalizationService localizationService,
             IAppSettingsService appSettingsService)
         {
-            localizationService.SetLanguage(appSettingsService.GetAppSettings().Language);
+            var appSettings = appSettingsService.GetAppSettings();
+
+            localizationService.SetLanguage(appSettings.Language);
+
+            Utility.SetLoggingLevel(appSettings.LogLevel);
 
             if (appGlobals.IsDevelopment)
             {

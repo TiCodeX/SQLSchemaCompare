@@ -14,6 +14,11 @@ namespace SQLCompare.Core.Entities
         public Language Language { get; set; } = Language.English;
 
         /// <summary>
+        /// Gets or sets the minimum log level
+        /// </summary>
+        public LogLevel LogLevel { get; set; } = LogLevel.Info;
+
+        /// <summary>
         /// Gets the recently opened projects
         /// </summary>
         public List<string> RecentProjects { get; } = new List<string>();

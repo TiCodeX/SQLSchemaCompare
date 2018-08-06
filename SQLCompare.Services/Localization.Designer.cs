@@ -187,6 +187,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Logging level.
+        /// </summary>
+        public static string LabelLogLevel {
+            get {
+                return ResourceManager.GetString("LabelLogLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string LabelName {

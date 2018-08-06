@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SQLCompare.Core.Entities;
 using SQLCompare.Core.Interfaces.Services;
+using SQLCompare.UI.WebServer;
 
 namespace SQLCompare.UI.Pages
 {
@@ -50,6 +51,12 @@ namespace SQLCompare.UI.Pages
             {
                 this.localizationService.SetLanguage(settings.Language);
                 currentSettings.Language = settings.Language;
+            }
+
+            if (currentSettings.LogLevel != settings.LogLevel)
+            {
+                Utility.SetLoggingLevel(settings.LogLevel);
+                currentSettings.LogLevel = settings.LogLevel;
             }
 
             this.appSettingsService.SaveAppSettings();

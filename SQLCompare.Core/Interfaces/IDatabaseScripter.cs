@@ -44,5 +44,12 @@ namespace SQLCompare.Core.Interfaces
         /// <param name="storedProcedure">The stored procedure to be scripted</param>
         /// <returns>The create script</returns>
         string GenerateCreateStoredProcedureScript(ABaseDbRoutine storedProcedure);
+
+        /// <summary>
+        /// Generates the create sequence script
+        /// </summary>
+        /// <param name="sequence">The sequence to be scripted</param>
+        /// <returns>The create script</returns>
+        string GenerateCreateSequenceScript(ABaseDbSequence sequence);
     }
 }

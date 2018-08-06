@@ -258,4 +258,7 @@
   <data name="LabelIgnoreReferenceTableColumnOrder" xml:space="preserve">
     <value>Ignore source table column order</value>
   </data>
+  <data name="LabelSequence" xml:space="preserve">
+    <value>Sequence</value>
+  </data>
 </root>

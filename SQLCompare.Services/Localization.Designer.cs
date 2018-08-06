@@ -259,6 +259,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sequence.
+        /// </summary>
+        public static string LabelSequence {
+            get {
+                return ResourceManager.GetString("LabelSequence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Source.
         /// </summary>
         public static string LabelSource {

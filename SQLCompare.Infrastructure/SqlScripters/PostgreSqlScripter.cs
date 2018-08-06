@@ -251,9 +251,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
             sb.AppendLine($"    INCREMENT BY {sequence.Increment}");
 
             // TODO: Handle min/max values correctly
-            sb.AppendLine($"    NO MINVALUE");
-            sb.AppendLine($"    NO MAXVALUE");
-            sb.AppendLine("     CACHE 1;");
+            sb.AppendLine("    NO MINVALUE");
+            sb.AppendLine("    NO MAXVALUE");
+            sb.AppendLine("    CACHE 1;");
             return sb.ToString();
         }
 

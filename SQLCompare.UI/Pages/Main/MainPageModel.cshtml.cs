@@ -60,6 +60,16 @@ namespace SQLCompare.UI.Pages.Main
                 resultItem = this.projectService.Project.Result.StoredProcedures.FirstOrDefault(x => x.Id == id);
             }
 
+            if (resultItem == null)
+            {
+                resultItem = this.projectService.Project.Result.Sequences.FirstOrDefault(x => x.Id == id);
+            }
+
+            if (resultItem == null)
+            {
+                throw new NotImplementedException("Unable to find the item specified");
+            }
+
             return new JsonResult(new
             {
                 SourceSql = resultItem?.SourceCreateScript,

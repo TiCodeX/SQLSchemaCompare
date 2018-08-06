@@ -178,6 +178,28 @@ namespace SQLCompare.Services
                             });
                         }
 
+                        taskInfo.Percentage = 95;
+
+                        taskInfo.Message = "Mapping sequences...";
+                        foreach (var sequence in this.retrievedSourceDatabase.Sequences)
+                        {
+                            this.result.Sequences.Add(new CompareResultItem<ABaseDbSequence>
+                            {
+                                ItemTypeLabel = Localization.LabelSequence,
+                                SourceItem = sequence,
+                                TargetItem = this.retrievedTargetDatabase.Sequences.FirstOrDefault(x => x.Name == sequence.Name)
+                            });
+                        }
+
+                        foreach (var sequence in this.retrievedTargetDatabase.Sequences.Where(x => this.result.Sequences.All(y => y.SourceItem.Name != x.Name)).ToList())
+                        {
+                            this.result.Sequences.Add(new CompareResultItem<ABaseDbSequence>
+                            {
+                                ItemTypeLabel = Localization.LabelSequence,
+                                TargetItem = sequence
+                            });
+                        }
+
                         taskInfo.Message = string.Empty;
                         taskInfo.Percentage = 100;
 
@@ -193,24 +215,21 @@ namespace SQLCompare.Services
                                          this.result.Functions.Count +
                                          this.result.StoredProcedures.Count;
                         var processedItems = 1;
+                        var scripter = this.databaseScripterFactory.Create(
+                            this.retrievedSourceDatabase,
+                            this.projectService.Project.Options);
 
                         taskInfo.Message = "Comparing tables...";
                         foreach (var resultTable in this.result.Tables)
                         {
                             if (resultTable.SourceItem != null)
                             {
-                                resultTable.SourceCreateScript = this.databaseScripterFactory.Create(
-                                        this.retrievedSourceDatabase,
-                                        this.projectService.Project.Options)
-                                    .GenerateCreateTableScript(resultTable.SourceItem);
+                                resultTable.SourceCreateScript = scripter.GenerateCreateTableScript(resultTable.SourceItem);
                             }
 
                             if (resultTable.TargetItem != null)
                             {
-                                resultTable.TargetCreateScript = this.databaseScripterFactory.Create(
-                                        this.retrievedTargetDatabase,
-                                        this.projectService.Project.Options)
-                                    .GenerateCreateTableScript(resultTable.TargetItem, resultTable.SourceItem);
+                                resultTable.TargetCreateScript = scripter.GenerateCreateTableScript(resultTable.TargetItem, resultTable.SourceItem);
                             }
 
                             resultTable.Equal = resultTable.SourceCreateScript == resultTable.TargetCreateScript;
@@ -242,6 +261,23 @@ namespace SQLCompare.Services
                             resultStoredProcedure.SourceCreateScript = resultStoredProcedure.SourceItem?.RoutineDefinition ?? string.Empty;
                             resultStoredProcedure.TargetCreateScript = resultStoredProcedure.TargetItem?.RoutineDefinition ?? string.Empty;
                             resultStoredProcedure.Equal = resultStoredProcedure.SourceCreateScript == resultStoredProcedure.TargetCreateScript;
+                            taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
+                        }
+
+                        taskInfo.Message = "Comparing sequences...";
+                        foreach (var resultSequence in this.result.Sequences)
+                        {
+                            if (resultSequence.SourceItem != null)
+                            {
+                                resultSequence.SourceCreateScript = scripter.GenerateCreateSequenceScript(resultSequence.SourceItem);
+                            }
+
+                            if (resultSequence.TargetItem != null)
+                            {
+                                resultSequence.TargetCreateScript = scripter.GenerateCreateSequenceScript(resultSequence.TargetItem);
+                            }
+
+                            resultSequence.Equal = resultSequence.SourceCreateScript == resultSequence.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 

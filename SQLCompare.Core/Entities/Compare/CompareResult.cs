@@ -27,5 +27,10 @@ namespace SQLCompare.Core.Entities.Compare
         /// Gets the list of Stored Procedures results
         /// </summary>
         public List<CompareResultItem<ABaseDbRoutine>> StoredProcedures { get; } = new List<CompareResultItem<ABaseDbRoutine>>();
+
+        /// <summary>
+        /// Gets the list of Sequences results
+        /// </summary>
+        public List<CompareResultItem<ABaseDbSequence>> Sequences { get; } = new List<CompareResultItem<ABaseDbSequence>>();
     }
 }

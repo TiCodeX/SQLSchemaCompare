@@ -209,6 +209,17 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return this.ScriptCreateStoredProcedure(storedProcedure);
         }
 
+        /// <inheritdoc/>
+        public string GenerateCreateSequenceScript(ABaseDbSequence sequence)
+        {
+            if (sequence == null)
+            {
+                throw new ArgumentNullException(nameof(sequence));
+            }
+
+            return this.ScriptCreateSequence(sequence);
+        }
+
         /// <summary>
         /// Generates the create table script
         /// </summary>

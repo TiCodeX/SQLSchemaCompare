@@ -10,24 +10,28 @@
     different.AddRange(Model.CompareResult.Views.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
     different.AddRange(Model.CompareResult.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
     different.AddRange(Model.CompareResult.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
+    different.AddRange(Model.CompareResult.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
 
     var onlySource = new List<ABaseCompareResultItem>();
     onlySource.AddRange(Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
     onlySource.AddRange(Model.CompareResult.Views.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
     onlySource.AddRange(Model.CompareResult.Functions.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
     onlySource.AddRange(Model.CompareResult.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
+    onlySource.AddRange(Model.CompareResult.Sequences.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
 
     var onlyTarget = new List<ABaseCompareResultItem>();
     onlyTarget.AddRange(Model.CompareResult.Tables.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
     onlyTarget.AddRange(Model.CompareResult.Views.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
     onlyTarget.AddRange(Model.CompareResult.Functions.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
     onlyTarget.AddRange(Model.CompareResult.StoredProcedures.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
+    onlyTarget.AddRange(Model.CompareResult.Sequences.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
 
     var same = new List<ABaseCompareResultItem>();
     same.AddRange(Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
     same.AddRange(Model.CompareResult.Views.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
     same.AddRange(Model.CompareResult.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
     same.AddRange(Model.CompareResult.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
+    same.AddRange(Model.CompareResult.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
 }
 
 <div id="mainTop">

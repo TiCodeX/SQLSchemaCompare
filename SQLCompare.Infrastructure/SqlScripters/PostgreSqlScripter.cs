@@ -30,10 +30,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var ncol = table.Columns.Count;
             var columns = this.GetSortedTableColumns(table, referenceTable);
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendLine($"CREATE TABLE {this.ScriptHelper.ScriptObjectName(table)}(");
 
-            int i = 0;
+            var i = 0;
             foreach (var col in columns)
             {
                 sb.Append($"{this.Indent}{this.ScriptHelper.ScriptColumn(col)}");
@@ -105,7 +105,22 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptIndexesAlterTable(ABaseDbTable table)
+        protected override string ScriptConstraintsAlterTable(ABaseDbTable table)
+        {
+            var sb = new StringBuilder();
+            foreach (var keys in table.Constraints.GroupBy(x => x.Name))
+            {
+                var key = keys.First();
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
+                sb.AppendLine($"ADD CONSTRAINT \"{key.Name}\" {key.Definition};");
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateIndexes(ABaseDbTable table)
         {
             var sb = new StringBuilder();
 
@@ -180,23 +195,29 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             var function = (PostgreSqlFunction)sqlFunction;
 
-            uint[] args = function.AllArgTypes != null ? function.AllArgTypes.ToArray() : function.ArgTypes.ToArray();
+            var args = function.AllArgTypes != null ? function.AllArgTypes.ToArray() : function.ArgTypes.ToArray();
 
-            sb.AppendLine($"CREATE FUNCTION {this.ScriptHelper.ScriptObjectName(function)}(");
+            sb.Append($"CREATE FUNCTION {this.ScriptHelper.ScriptObjectName(function)}(");
 
-            for (int i = 0; i < args.Length; i++)
+            for (var i = 0; i < args.Length; i++)
             {
                 var argType = args[i];
                 var argMode = function.ArgModes != null ? function.ArgModes.ToArray()[i] : 'i';
                 var argName = function.ArgNames != null ? function.ArgNames.ToArray()[i] : string.Empty;
+                sb.AppendLine();
                 sb.Append($"{this.Indent}{PostgreSqlScriptHelper.ScriptFunctionArgument(argType, argMode, argName, dataTypes)}");
-                sb.AppendLine((i == args.Length - 1) ? ")" : ",");
+                if (i != args.Length - 1)
+                {
+                    sb.Append(",");
+                }
             }
+
+            sb.AppendLine(")");
 
             var setOfString = function.ReturnSet ? "SETOF " : string.Empty;
 
             sb.AppendLine($"{this.Indent}RETURNS {setOfString}{PostgreSqlScriptHelper.ScriptFunctionArgumentType(function.ReturnType, dataTypes)}");
-            sb.AppendLine($"{this.Indent}LANGUAGE '{function.ExternalLanguage}'");
+            sb.AppendLine($"{this.Indent}LANGUAGE {function.ExternalLanguage}");
             sb.AppendLine();
             sb.AppendLine($"{this.Indent}COST {function.Cost}");
 
@@ -205,12 +226,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine($"{this.Indent}ROWS {function.Rows}");
             }
 
-            sb.AppendLine($"{this.Indent} {PostgreSqlScriptHelper.ScriptFunctionAttributes(function)}");
-            sb.AppendLine("AS $BODY$");
-            sb.AppendLine();
-            sb.AppendLine(function.RoutineDefinition);
-            sb.AppendLine();
+            sb.AppendLine($"{this.Indent}{PostgreSqlScriptHelper.ScriptFunctionAttributes(function)}");
+            sb.Append("AS $BODY$");
+            sb.Append(function.RoutineDefinition);
             sb.AppendLine("$BODY$;");
+            sb.AppendLine();
 
             return sb.ToString();
         }
@@ -218,8 +238,23 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptCreateStoredProcedure(ABaseDbRoutine storedProcedure)
         {
-            // PostgreSql doesn't have stored procedures, only functions.
-            return string.Empty;
+            throw new NotSupportedException("PostgreSQL doesn't have stored procedures, only functions");
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateSequence(ABaseDbSequence sequence)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"CREATE SEQUENCE {this.ScriptHelper.ScriptObjectName(sequence)}");
+            sb.AppendLine($"    AS {sequence.DataType}");
+            sb.AppendLine($"    START WITH {sequence.StartValue}");
+            sb.AppendLine($"    INCREMENT BY {sequence.Increment}");
+
+            // TODO: Handle min/max values correctly
+            sb.AppendLine($"    NO MINVALUE");
+            sb.AppendLine($"    NO MAXVALUE");
+            sb.AppendLine("     CACHE 1;");
+            return sb.ToString();
         }
 
         /// <inheritdoc/>

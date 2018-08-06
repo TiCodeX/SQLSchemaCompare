@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -36,7 +37,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-microsoftsql.sql");
                 var queries = File.ReadAllText(path).Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
-                foreach (var query in queries)
+                foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
                 {
                     context.ExecuteNonQuery(query);
                 }
@@ -69,7 +70,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.GetPostgreSqlDatabaseProviderOptions(true)))
             {
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-postgresql.sql");
-                context.Query(File.ReadAllText(path));
+                context.ExecuteNonQuery(File.ReadAllText(path));
             }
         }
 
@@ -136,7 +137,12 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             };
         }
 
-        private MySqlDatabaseProviderOptions GetMySqlDatabaseProviderOptions(bool connectToDatabase = true)
+        /// <summary>
+        /// Gets the MySQL database provider options
+        /// </summary>
+        /// <param name="connectToDatabase">if set to <c>true</c> it will connect directly to the test database</param>
+        /// <returns>The MySQL database provider options</returns>
+        internal MySqlDatabaseProviderOptions GetMySqlDatabaseProviderOptions(bool connectToDatabase = true)
         {
             return new MySqlDatabaseProviderOptions
             {
@@ -148,7 +154,12 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             };
         }
 
-        private PostgreSqlDatabaseProviderOptions GetPostgreSqlDatabaseProviderOptions(bool connectToDatabase = true)
+        /// <summary>
+        /// Gets the PostgreSQL database provider options
+        /// </summary>
+        /// <param name="connectToDatabase">if set to <c>true</c> it will connect directly to the test database</param>
+        /// <returns>The PostgreSQL database provider options</returns>
+        internal PostgreSqlDatabaseProviderOptions GetPostgreSqlDatabaseProviderOptions(bool connectToDatabase = true)
         {
             return new PostgreSqlDatabaseProviderOptions
             {

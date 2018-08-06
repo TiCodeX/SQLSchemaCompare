@@ -181,6 +181,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return sb.ToString();
         }
 
+        /// <inheritdoc />
+        public override string ScriptCommitTransaction()
+        {
+            return string.Empty;
+        }
+
         private static string ScriptDataTypeName(string dataTypeName)
         {
             switch (dataTypeName)

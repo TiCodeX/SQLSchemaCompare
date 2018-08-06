@@ -63,6 +63,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return sb.ToString();
         }
 
+        /// <inheritdoc />
+        public override string ScriptCommitTransaction()
+        {
+            return string.Empty;
+        }
+
         private string ScriptDataType(MySqlColumn column)
         {
             if (column.Extra.Equals("VIRTUAL GENERATED", StringComparison.OrdinalIgnoreCase))

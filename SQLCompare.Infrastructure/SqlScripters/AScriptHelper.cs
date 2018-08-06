@@ -56,5 +56,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="column">The table column</param>
         /// <returns>The column script</returns>
         public abstract string ScriptColumn(ABaseDbColumn column);
+
+        /// <summary>
+        /// Scripts the command to commit a transaction
+        /// </summary>
+        /// <returns>The script</returns>
+        public abstract string ScriptCommitTransaction();
     }
 }

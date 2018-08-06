@@ -59,6 +59,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             var sb = new StringBuilder();
 
+            // Script the CREATE SEQUENCE
+            foreach (var sequence in database.Sequences)
+            {
+                sb.AppendLine(this.ScriptCreateSequence(sequence));
+            }
+
             // Script the CREATE TABLE
             foreach (var table in database.Tables)
             {
@@ -68,12 +74,41 @@ namespace SQLCompare.Infrastructure.SqlScripters
             sb.AppendLine();
             sb.AppendLine();
 
+            // Script the functions
+            sb.AppendLine(AScriptHelper.ScriptComment("Functions"));
+            if (database.Functions.Count > 0)
+            {
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                foreach (var function in database.Functions)
+                {
+                    sb.Append(this.ScriptCreateFunction(function, database.DataTypes));
+                }
+            }
+
+            sb.AppendLine();
+            sb.AppendLine();
+
+            // Script the stored procedures
+            sb.AppendLine(AScriptHelper.ScriptComment("Stored Procedures"));
+            if (database.StoredProcedures.Count > 0)
+            {
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                foreach (var storedProcedure in database.StoredProcedures)
+                {
+                    sb.Append(this.ScriptCreateStoredProcedure(storedProcedure));
+                }
+            }
+
+            sb.AppendLine();
+            sb.AppendLine();
+
             // Script the ALTER TABLE for primary keys and indexes
             sb.AppendLine(AScriptHelper.ScriptComment("Constraints and Indexes"));
             foreach (var table in database.Tables)
             {
-                sb.AppendLine(this.ScriptPrimaryKeysAlterTable(table));
-                sb.AppendLine(this.ScriptIndexesAlterTable(table));
+                sb.Append(this.ScriptPrimaryKeysAlterTable(table));
+                sb.Append(this.ScriptConstraintsAlterTable(table));
+                sb.Append(this.ScriptCreateIndexes(table));
             }
 
             sb.AppendLine();
@@ -93,38 +128,15 @@ namespace SQLCompare.Infrastructure.SqlScripters
             sb.AppendLine(AScriptHelper.ScriptComment("Views"));
             if (database.Views.Count > 0)
             {
-                sb.AppendLine("GO");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                 foreach (var view in database.Views)
                 {
-                    sb.Append(this.ScriptCreateView(view));
-                }
-            }
-
-            sb.AppendLine();
-            sb.AppendLine();
-
-            // Script the functions
-            sb.AppendLine(AScriptHelper.ScriptComment("Functions"));
-            if (database.Functions.Count > 0)
-            {
-                sb.AppendLine("GO");
-                foreach (var function in database.Functions)
-                {
-                    sb.Append(this.ScriptCreateFunction(function, database.DataTypes));
-                }
-            }
-
-            sb.AppendLine();
-            sb.AppendLine();
-
-            // Script the stored procedures
-            sb.AppendLine(AScriptHelper.ScriptComment("Stored Procedures"));
-            if (database.StoredProcedures.Count > 0)
-            {
-                sb.AppendLine("GO");
-                foreach (var storedProcedure in database.StoredProcedures)
-                {
-                    sb.Append(this.ScriptCreateStoredProcedure(storedProcedure));
+                    var viewScript = this.ScriptCreateView(view);
+                    sb.Append(viewScript);
+                    if (!viewScript.EndsWith("\n", StringComparison.Ordinal))
+                    {
+                        sb.AppendLine();
+                    }
                 }
             }
 
@@ -148,8 +160,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             // Script the ALTER TABLE for primary keys and indexes
             sb.AppendLine(AScriptHelper.ScriptComment("Constraints and Indexes"));
-            sb.AppendLine(this.ScriptPrimaryKeysAlterTable(table));
-            sb.AppendLine(this.ScriptIndexesAlterTable(table));
+            sb.Append(this.ScriptPrimaryKeysAlterTable(table));
+            sb.Append(this.ScriptConstraintsAlterTable(table));
+            sb.AppendLine(this.ScriptCreateIndexes(table));
 
             // Script the ALTER TABLE for foreign keys
             sb.AppendLine(AScriptHelper.ScriptComment("Foreign keys"));
@@ -219,11 +232,18 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected abstract string ScriptForeignKeysAlterTable(ABaseDbTable table);
 
         /// <summary>
-        /// Generates the alter table for adding indexes after create table
+        /// Generates the alter table for adding the constraints after create table
         /// </summary>
         /// <param name="table">The table to alter</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptIndexesAlterTable(ABaseDbTable table);
+        protected abstract string ScriptConstraintsAlterTable(ABaseDbTable table);
+
+        /// <summary>
+        /// Generates the create index scripts for adding indexes after create table
+        /// </summary>
+        /// <param name="table">The table to create the indexes</param>
+        /// <returns>The create index scripts</returns>
+        protected abstract string ScriptCreateIndexes(ABaseDbTable table);
 
         /// <summary>
         /// Generates the create view script
@@ -246,6 +266,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="storedProcedure">The stored procedure to script</param>
         /// <returns>The create stored procedure script</returns>
         protected abstract string ScriptCreateStoredProcedure(ABaseDbRoutine storedProcedure);
+
+        /// <summary>
+        /// Generates the create sequence script
+        /// </summary>
+        /// <param name="sequence">The sequence to script</param>
+        /// <returns>The create sequence script</returns>
+        protected abstract string ScriptCreateSequence(ABaseDbSequence sequence);
 
         /// <summary>
         /// Get the table columns sorted depending on options and source table

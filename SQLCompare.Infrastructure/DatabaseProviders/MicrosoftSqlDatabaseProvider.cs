@@ -257,5 +257,21 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             return Enumerable.Empty<ABaseDbObject>();
         }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbSequence> GetSequences(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT DB_NAME() AS 'Catalog',");
+            query.AppendLine("       object_schema_name(s.object_id) AS 'Schema',");
+            query.AppendLine("       s.name AS 'Name',");
+            query.AppendLine("       type_name(s.system_type_id) AS 'DataType',");
+            query.AppendLine("       CONVERT(VARCHAR, s.start_value) AS 'StartValue',");
+            query.AppendLine("       CONVERT(VARCHAR, s.increment) AS 'Increment',");
+            query.AppendLine("       CONVERT(VARCHAR, s.minimum_value) AS 'MinValue',");
+            query.AppendLine("       CONVERT(VARCHAR, s.maximum_value) AS 'MaxValue'");
+            query.AppendLine("FROM sys.sequences s");
+            return context.Query<ABaseDbSequence>(query.ToString());
+        }
     }
 }

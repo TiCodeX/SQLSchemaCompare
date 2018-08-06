@@ -81,6 +81,14 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return sb.ToString();
         }
 
+        /// <inheritdoc />
+        public override string ScriptCommitTransaction()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("GO");
+            return sb.ToString();
+        }
+
         private string ScriptDataType(MicrosoftSqlColumn column)
         {
             // Computed columns return AS + definition

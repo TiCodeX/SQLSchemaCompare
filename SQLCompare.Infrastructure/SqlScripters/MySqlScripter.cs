@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -84,7 +85,14 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptIndexesAlterTable(ABaseDbTable table)
+        protected override string ScriptConstraintsAlterTable(ABaseDbTable table)
+        {
+            // Empty because there aren't constraints, already handled by table and indexes
+            return string.Empty;
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateIndexes(ABaseDbTable table)
         {
             var sb = new StringBuilder();
 
@@ -142,6 +150,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptCreateStoredProcedure(ABaseDbRoutine storedProcedure)
         {
             return storedProcedure.RoutineDefinition;
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateSequence(ABaseDbSequence sequence)
+        {
+            throw new NotSupportedException("MySQL doesn't support sequences");
         }
 
         /// <inheritdoc/>

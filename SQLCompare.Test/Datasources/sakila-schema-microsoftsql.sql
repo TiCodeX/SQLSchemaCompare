@@ -502,4 +502,7 @@ GROUP BY a.actor_id, a.first_name, a.last_name;
 -- TO DO PROCEDURES
 -- TO DO TRIGGERS
 
-
+CREATE SEQUENCE actor_seq
+  START WITH 1
+  INCREMENT BY 1;
+GO

@@ -222,5 +222,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             return Enumerable.Empty<ABaseDbObject>();
         }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbSequence> GetSequences(MySqlDb database, MySqlDatabaseContext context)
+        {
+            // An empty list is returned because MySQL doesn't have sequences
+            return Enumerable.Empty<ABaseDbSequence>();
+        }
     }
 }

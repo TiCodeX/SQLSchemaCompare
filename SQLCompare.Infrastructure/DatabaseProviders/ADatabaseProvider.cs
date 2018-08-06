@@ -100,6 +100,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             db.Functions.AddRange(this.GetFunctions(db, context));
             db.StoredProcedures.AddRange(this.GetStoredProcedures(db, context));
             db.DataTypes.AddRange(this.GetDataTypes(db, context));
+            db.Sequences.AddRange(this.GetSequences(db, context));
 
             return db;
         }
@@ -175,5 +176,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="context">The database context</param>
         /// <returns>The list of data types</returns>
         protected abstract IEnumerable<ABaseDbObject> GetDataTypes(TDatabase database, TDatabaseContext context);
+
+        /// <summary>
+        /// Get the database sequences
+        /// </summary>
+        /// <param name="database">The database information</param>
+        /// <param name="context">The database context</param>
+        /// <returns>The list of sequences</returns>
+        protected abstract IEnumerable<ABaseDbSequence> GetSequences(TDatabase database, TDatabaseContext context);
     }
 }

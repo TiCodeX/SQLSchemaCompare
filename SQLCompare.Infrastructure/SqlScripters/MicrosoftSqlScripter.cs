@@ -88,7 +88,23 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptIndexesAlterTable(ABaseDbTable table)
+        protected override string ScriptConstraintsAlterTable(ABaseDbTable table)
+        {
+            var sb = new StringBuilder();
+            foreach (var keys in table.Constraints.GroupBy(x => x.Name))
+            {
+                var key = keys.First();
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
+                sb.AppendLine($"ADD CONSTRAINT [{key.Name}] CHECK {key.Definition}");
+                sb.AppendLine("GO");
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateIndexes(ABaseDbTable table)
         {
             var sb = new StringBuilder();
 
@@ -184,6 +200,21 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
 
             sb.AppendLine("GO");
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateSequence(ABaseDbSequence sequence)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"CREATE SEQUENCE {this.ScriptHelper.ScriptObjectName(sequence)}");
+            sb.AppendLine($"    AS {sequence.DataType}");
+            sb.AppendLine($"    START WITH {sequence.StartValue}");
+            sb.AppendLine($"    INCREMENT BY {sequence.Increment}");
+
+            // TODO: Handle min/max values correctly
+            sb.AppendLine($"    NO MINVALUE");
+            sb.AppendLine($"    NO MAXVALUE");
             return sb.ToString();
         }
 

@@ -8,7 +8,7 @@ Choice /M "Run integration tests"
 
 If Errorlevel 2 ( set "filter=--filter Category!=IntegrationTest" )
 
-dotnet test %nobuild% --configuration release %filter% --collect:coverage .\SQLCompare.Test\SQLCompare.Test.csproj
+dotnet test %nobuild% --configuration release %filter% --collect:coverage %~dp0\SQLCompare.Test\SQLCompare.Test.csproj
 
 :exit
 echo Press any key to close...

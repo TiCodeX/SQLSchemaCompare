@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using FluentAssertions;
+using SQLCompare.Core.Entities.Database;
 using SQLCompare.Infrastructure.DatabaseProviders;
 using SQLCompare.Infrastructure.EntityFramework;
 using SQLCompare.Infrastructure.SqlScripters;
@@ -184,7 +185,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         /// </summary>
         [Fact]
         [IntegrationTest]
-        public void CloneMicrosoftDatabase()
+        public void CloneMicrosoftSqlDatabase()
         {
             var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider();
             var db = mssqldbp.GetDatabase();
@@ -213,7 +214,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 context.ExecuteNonQuery($"USE {clonedDatabaseName}");
 
                 var queries = fullScript.Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
-                foreach (var query in queries)
+                foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
                 {
                     context.ExecuteNonQuery(query);
                 }
@@ -225,6 +226,83 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 
             var clonedDb = mssqldbp.GetDatabase();
 
+            DatabaseProviderTests.CompareDatabase(db, clonedDb);
+        }
+
+        /// <summary>
+        /// Test cloning PostgreSQL 'sakila' database
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void ClonePostgreSqlDatabase()
+        {
+            var postgresqldbp = this.dbFixture.GetPostgreDatabaseProvider();
+            var db = postgresqldbp.GetDatabase();
+
+            var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
+            var scripter = scripterFactory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
+            var fullScript = scripter.GenerateFullScript(db);
+
+            var postgresqldbpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions();
+
+            var clonedDatabaseName = $"{postgresqldbpo.Database}_clone";
+
+            // Connect without a database to drop/create the cloned one
+            postgresqldbpo.Database = string.Empty;
+            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, postgresqldbpo))
+            {
+                var dropDbQuery = new StringBuilder();
+                dropDbQuery.AppendLine($"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{clonedDatabaseName}';");
+                dropDbQuery.AppendLine($"DROP DATABASE IF EXISTS {clonedDatabaseName};");
+                dropDbQuery.AppendLine($"CREATE DATABASE {clonedDatabaseName};");
+                context.ExecuteNonQuery(dropDbQuery.ToString());
+            }
+
+            postgresqldbpo.Database = clonedDatabaseName;
+            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, postgresqldbpo))
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("SET check_function_bodies = false;");
+
+                // TODO: implement create type in scripter
+                sb.AppendLine("CREATE TYPE mpaa_rating AS ENUM(");
+                sb.AppendLine("    'G',");
+                sb.AppendLine("    'PG',");
+                sb.AppendLine("    'PG-13',");
+                sb.AppendLine("    'R',");
+                sb.AppendLine("    'NC-17'");
+                sb.AppendLine(");");
+                sb.AppendLine("CREATE DOMAIN year AS integer");
+                sb.AppendLine("    CONSTRAINT year_check CHECK (((VALUE >= 1901) AND (VALUE <= 2155)));");
+                var firstViewFound = false;
+                foreach (var line in fullScript.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+                {
+                    if (line.Contains("CREATE VIEW", StringComparison.Ordinal) && !firstViewFound)
+                    {
+                        // TODO: implement create aggregate in scripter
+                        sb.AppendLine("CREATE AGGREGATE group_concat(text)(");
+                        sb.AppendLine("    SFUNC = _group_concat,");
+                        sb.AppendLine("    STYPE = text");
+                        sb.AppendLine(");");
+                        firstViewFound = true;
+                    }
+
+                    sb.AppendLine(line);
+                }
+
+                context.ExecuteNonQuery(sb.ToString());
+            }
+
+            var dpf = new DatabaseProviderFactory(this.LoggerFactory);
+            postgresqldbp = (PostgreSqlDatabaseProvider)dpf.Create(postgresqldbpo);
+
+            var clonedDb = postgresqldbp.GetDatabase();
+
+            DatabaseProviderTests.CompareDatabase(db, clonedDb);
+        }
+
+        private static void CompareDatabase(ABaseDb db, ABaseDb clonedDb)
+        {
             var tables = db.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name).ToList();
             var clonedTables = clonedDb.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name).ToList();
             tables.Should().BeEquivalentTo(clonedTables, options =>
@@ -238,6 +316,8 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 options.Excluding(x => new Regex("^ForeignKeys\\[.+\\]\\.Catalog$").IsMatch(x.SelectedMemberPath));
                 options.Excluding(x => new Regex("^Indexes\\[.+\\]\\.TableCatalog$").IsMatch(x.SelectedMemberPath));
                 options.Excluding(x => new Regex("^Indexes\\[.+\\]\\.Catalog$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^Constraints\\[.+\\]\\.TableCatalog$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^Constraints\\[.+\\]\\.Catalog$").IsMatch(x.SelectedMemberPath));
                 return options;
             });
 
@@ -253,9 +333,17 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var clonedStoredProcedures = clonedDb.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name);
             storedProcedures.Should().BeEquivalentTo(clonedStoredProcedures, options => options.Excluding(x => x.Catalog));
 
-            var dataTypes = db.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name);
-            var clonedDataTypes = clonedDb.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+            var dataTypes = db.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
+            var clonedDataTypes = clonedDb.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
+
+            // TODO: improve PostgreSQL datatype handling to retrieve only relevant types
+            dataTypes = dataTypes.Where(x => x.Schema != "pg_toast");
+            clonedDataTypes = clonedDataTypes.Where(x => x.Schema != "pg_toast");
             dataTypes.Should().BeEquivalentTo(clonedDataTypes, options => options.Excluding(x => x.Catalog));
+
+            var sequences = db.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+            var clonedSequences = clonedDb.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+            sequences.Should().BeEquivalentTo(clonedSequences, options => options.Excluding(x => x.Catalog));
         }
     }
 }

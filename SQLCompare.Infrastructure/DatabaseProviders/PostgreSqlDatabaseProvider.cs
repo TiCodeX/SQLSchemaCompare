@@ -325,5 +325,21 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             return types;
         }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbSequence> GetSequences(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT s.sequence_catalog AS \"Catalog\",");
+            query.AppendLine("       s.sequence_schema AS \"Schema\",");
+            query.AppendLine("       s.sequence_name AS \"Name\",");
+            query.AppendLine("       s.data_type AS \"DataType\",");
+            query.AppendLine("       s.start_value AS \"StartValue\",");
+            query.AppendLine("       s.increment AS \"Increment\",");
+            query.AppendLine("       s.minimum_value AS \"MinValue\",");
+            query.AppendLine("       s.maximum_value AS \"MaxValue\"");
+            query.AppendLine("FROM information_schema.sequences s");
+            return context.Query<ABaseDbSequence>(query.ToString());
+        }
     }
 }

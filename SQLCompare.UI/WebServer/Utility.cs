@@ -133,7 +133,12 @@ namespace SQLCompare.UI.WebServer
         /// <param name="logLevel">The desired log level</param>
         internal static void SetLoggingLevel(LogLevel logLevel)
         {
-            var logConfig = LogManager.Configuration.LoggingRules.First(x => x.LoggerNamePattern == "*");
+            if (LogManager.Configuration == null)
+            {
+                return;
+            }
+
+            var logConfig = LogManager.Configuration.LoggingRules.FirstOrDefault(x => x.LoggerNamePattern == "*");
 
             var nlogLevel = NLog.LogLevel.Info;
             switch (logLevel)

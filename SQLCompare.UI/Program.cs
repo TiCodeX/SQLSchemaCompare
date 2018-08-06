@@ -24,7 +24,7 @@ namespace SQLCompare.UI
             try
             {
                 logger.Debug("init main");
-                Utility.CreateWebHostBuilder(null, WebServerPort)
+                CreateWebHostBuilder(null)
                     .Build()
                     .Run();
             }
@@ -39,6 +39,11 @@ namespace SQLCompare.UI
                 // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
                 LogManager.Shutdown();
             }
+        }
+
+        private static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            return Utility.CreateWebHostBuilder(args, WebServerPort);
         }
     }
 }

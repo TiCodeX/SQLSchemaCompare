@@ -2,10 +2,83 @@
 import childProcess = require("child_process");
 import fs = require("fs");
 import windowStateKeeper = require("electron-window-state");
+import log4js = require("log4js");
+import glob = require("glob")
 
 electron.app.setAppUserModelId("ch.ticodex.sqlcompare");
 
+const splashUrl = `file://${__dirname}/splash.html`;
 const servicePath = `./SQLCompare.UI/SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`;
+const serviceUrl = "https://127.0.0.1:5000";
+const loggerPath = "C:\\ProgramData\\SqlCompare\\log\\";
+const loggerFile = "SqlCompare-yyyy-MM-dd-ui.log";
+const loggerLayout = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
+const loggerMaxArchiveFiles = 9;
+
+log4js.configure({
+    appenders: {
+        default: {
+            type: "dateFile",
+            filename: loggerPath,
+            pattern: loggerFile,
+            layout: {
+                type: "pattern",
+                pattern: loggerLayout,
+            },
+            alwaysIncludePattern: true,
+            keepFileExt: true,
+        }
+    },
+    categories: {
+        default: { appenders: ["default"], level: "debug" }
+    }
+});
+
+const logger = log4js.getLogger("electron");
+logger.info("Starting application...");
+
+// Start an asynchronous function to delete old log files
+setTimeout(() => {
+    try {
+        glob(loggerPath + loggerFile.replace("yyyy-MM-dd", "*"), null, (err, files) => {
+            files.sort();
+            files.reverse();
+            files.slice(loggerMaxArchiveFiles).forEach(file => {
+                try {
+                    logger.info(`Deleting old archive file: ${file}`);
+                    fs.unlinkSync(file);
+                } catch (e) {
+                    logger.error(`Delete file failed. Error: ${e}`);
+                }
+            });
+        });
+    } catch (ex) {
+        logger.log(`Error deleting old log files: ${ex}`);
+    }
+}, 0);
+
+// Register the renderer callback for logging the UI
+electron.ipcMain.on("log", (event, data: { category: string, level: string, message: string }) => {
+    var uiLogger = log4js.getLogger(data.category);
+    switch (data.level) {
+        case "debug":
+            uiLogger.debug(data.message);
+            break;
+        case "info":
+            uiLogger.info(data.message);
+            break;
+        case "warning":
+            uiLogger.warn(data.message);
+            break;
+        case "error":
+            uiLogger.error(data.message);
+            break;
+        case "critical":
+            uiLogger.fatal(data.message);
+            break;
+    }
+});
+
 let serviceProcess: childProcess.ChildProcess;
 if (fs.existsSync(servicePath)) {
     serviceProcess = childProcess.spawn(servicePath);
@@ -25,14 +98,16 @@ if (fs.existsSync(servicePath)) {
 let mainWindow: Electron.BrowserWindow;
 
 function createWindow() {
-
     const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
+    logger.debug("Primary display size: %dx%d", width, height);
 
     // Load the previous state with fall-back to defaults
     const mainWindowState = windowStateKeeper({
         defaultWidth: width - 200,
         defaultHeight: height - 100
     });
+    logger.debug("Window state size: %dx%d", mainWindowState.width, mainWindowState.height);
+    logger.debug("Window state location: %dx%d", mainWindowState.x, mainWindowState.y);
 
     const splashWindow = new electron.BrowserWindow({
         width: 300,
@@ -41,7 +116,8 @@ function createWindow() {
         frame: false,
         alwaysOnTop: false
     });
-    splashWindow.loadURL(`file://${__dirname}/splash.html`);
+    splashWindow.loadURL(splashUrl);
+    logger.debug("Splashscreen window started");
 
     // Create the browser window.
     mainWindow = new electron.BrowserWindow({
@@ -73,7 +149,8 @@ function createWindow() {
         callback({ cancel: false, requestHeaders: details.requestHeaders });
     });
 
-    mainWindow.loadURL("https://127.0.0.1:5000");
+    mainWindow.loadURL(serviceUrl);
+    logger.debug("Main window started");
 
     let loadFailed = false;
     mainWindow.webContents.on("did-fail-load", () => {
@@ -81,10 +158,12 @@ function createWindow() {
     });
     mainWindow.webContents.on("did-finish-load", () => {
         if (loadFailed) {
+            logger.debug("Unable to contact service, retrying...");
             // Reset the flag and trigger a new load
             loadFailed = false;
-            mainWindow.loadURL("https://127.0.0.1:5000");
+            mainWindow.loadURL(serviceUrl);
         } else {
+            logger.debug("Service connected, hide splashscreen window and show main window");
             splashWindow.destroy();
             mainWindow.show();
 
@@ -98,6 +177,8 @@ function createWindow() {
 
             // Open the DevTools.
             //mainWindow.webContents.openDevTools()
+
+            logger.info("Application started successfully");
         }
     });
 
@@ -125,6 +206,7 @@ electron.app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
         electron.app.quit();
     }
+    log4js.shutdown((err) => { });
 });
 
 electron.app.on("activate", () => {

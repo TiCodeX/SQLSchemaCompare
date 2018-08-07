@@ -52,6 +52,9 @@ namespace SQLCompare.UI
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
             "SqlCompare",
             "log",
-            @"nlog-all-${shortdate}.log");
+            @"SqlCompare-${shortdate}-service.log");
+
+        /// <inheritdoc/>
+        public int LoggerMaxArchiveFiles => 9;
     }
 }

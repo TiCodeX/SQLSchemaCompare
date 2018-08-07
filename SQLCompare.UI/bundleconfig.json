@@ -10,6 +10,7 @@
         "inputFiles": [
             "wwwroot/js/Index.js",
             "wwwroot/js/Localization.js",
+            "wwwroot/js/Logger.js",
             "wwwroot/js/Utility.js",
             "wwwroot/js/Main.js",
             "wwwroot/js/Menu.js",

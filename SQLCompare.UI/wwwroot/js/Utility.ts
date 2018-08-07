@@ -37,6 +37,14 @@ class Utility {
     }
 
     /**
+     * Get a Logger for the specified category
+     * @param category The logger category
+     */
+    public static GetLogger(category: string): Logger {
+        return new Logger(category);
+    }
+
+    /**
      * Perform an ajax call and open the modal dialog filled with the response
      * @param url The URL of the ajax call
      * @param method The method (GET/POST)

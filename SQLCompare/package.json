@@ -42,11 +42,12 @@
     },
     "postinstall": "electron-builder install-app-deps",
     "devDependencies": {
-        "@types/node": "^6.0.104",
-        "electron": "^1.8.4",
-        "electron-builder": "^20.8.1"
+        "@types/node": "^6.0.116",
+        "electron": "^1.8.7",
+        "electron-builder": "^20.27.0"
     },
     "dependencies": {
-        "electron-window-state": "^4.1.1"
+        "electron-window-state": "^4.1.1",
+        "log4js": "^3.0.4"
     }
 }

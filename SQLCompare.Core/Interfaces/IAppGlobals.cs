@@ -49,5 +49,10 @@
         /// Gets the path to save the log file
         /// </summary>
         string LoggerFile { get; }
+
+        /// <summary>
+        /// Gets the logger maximum archive files
+        /// </summary>
+        int LoggerMaxArchiveFiles { get; }
     }
 }

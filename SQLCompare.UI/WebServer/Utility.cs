@@ -88,6 +88,7 @@ namespace SQLCompare.UI.WebServer
             {
                 Layout = appGlobals.LoggerLayout,
                 FileName = appGlobals.LoggerFile,
+                MaxArchiveFiles = appGlobals.LoggerMaxArchiveFiles,
             };
             config.AddTarget(fileTarget);
 

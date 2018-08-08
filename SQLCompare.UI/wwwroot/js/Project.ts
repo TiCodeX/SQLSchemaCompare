@@ -202,7 +202,10 @@ class Project {
             const polling: VoidFunction = (): void => {
                 setTimeout(() => {
                     if ($("#stopPolling").length > 0) {
-                        Main.Open();
+                        // Open the main page only if there aren't failed tasks
+                        if ($("#taskFailed").length === 0) {
+                            Main.Open();
+                        }
                     } else {
                         Utility.OpenModalDialog("/TaskStatusPageModel", Utility.HttpMethod.Get);
                         polling();

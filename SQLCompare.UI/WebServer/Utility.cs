@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
@@ -33,7 +32,7 @@ namespace SQLCompare.UI.WebServer
             return WebHost.CreateDefaultBuilder(args)
                 .UseKestrel(options =>
                 {
-                    options.Listen(IPAddress.Any, port, listenOptions =>
+                    options.ListenLocalhost(port, listenOptions =>
                     {
                         using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SQLCompare.UI.certificate.pfx"))
                         using (var memoryStream = new MemoryStream())

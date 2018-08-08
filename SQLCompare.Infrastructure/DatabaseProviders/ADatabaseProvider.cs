@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -61,15 +62,69 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <returns>The discovered database structure</returns>
         protected TDatabase DiscoverDatabase(TDatabaseContext context)
         {
-            var db = new TDatabase { Name = context.Database.GetDbConnection().Database };
+            var databaseName = context.Database.GetDbConnection().Database;
+            this.Logger.LogInformation($"DiscoverDatabase started for database '{databaseName}'");
+            var db = new TDatabase { Name = databaseName };
 
-            var tables = this.GetTables(db, context).ToList();
-            var columns = this.GetColumns(db, context).ToList();
-            var foreignKeys = this.GetForeignKeys(db, context).ToList();
-            var indexes = this.GetIndexes(db, context).ToList();
-            var constraints = this.GetConstraints(db, context).ToList();
+            var columns = new List<ABaseDbColumn>();
+            var foreignKeys = new List<ABaseDbConstraint>();
+            var indexes = new List<ABaseDbIndex>();
+            var constraints = new List<ABaseDbConstraint>();
 
-            foreach (var table in tables)
+            var exceptions = new List<Exception>();
+
+            try
+            {
+                db.Tables.AddRange(this.GetTables(db, context));
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving tables");
+                exceptions.Add(ex);
+            }
+
+            try
+            {
+                columns.AddRange(this.GetColumns(db, context));
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving columns");
+                exceptions.Add(ex);
+            }
+
+            try
+            {
+                foreignKeys.AddRange(this.GetForeignKeys(db, context));
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving foreign keys");
+                exceptions.Add(ex);
+            }
+
+            try
+            {
+                indexes.AddRange(this.GetIndexes(db, context));
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving indexes");
+                exceptions.Add(ex);
+            }
+
+            try
+            {
+                constraints.AddRange(this.GetConstraints(db, context));
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving constraints");
+                exceptions.Add(ex);
+            }
+
+            // Assign the retrieved items to the related tables
+            foreach (var table in db.Tables)
             {
                 table.Columns.AddRange(
                     columns.Where(y => table.Catalog == y.Catalog
@@ -95,12 +150,60 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                                        && table.Name == y.TableName));
             }
 
-            db.Tables.AddRange(tables);
-            db.Views.AddRange(this.GetViews(db, context));
-            db.Functions.AddRange(this.GetFunctions(db, context));
-            db.StoredProcedures.AddRange(this.GetStoredProcedures(db, context));
-            db.DataTypes.AddRange(this.GetDataTypes(db, context));
-            db.Sequences.AddRange(this.GetSequences(db, context));
+            try
+            {
+                db.Views.AddRange(this.GetViews(db, context));
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving views");
+                exceptions.Add(ex);
+            }
+
+            try
+            {
+                db.Functions.AddRange(this.GetFunctions(db, context));
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving functions");
+                exceptions.Add(ex);
+            }
+
+            try
+            {
+                db.StoredProcedures.AddRange(this.GetStoredProcedures(db, context));
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving stored procedures");
+                exceptions.Add(ex);
+            }
+
+            try
+            {
+                db.DataTypes.AddRange(this.GetDataTypes(db, context));
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving data types");
+                exceptions.Add(ex);
+            }
+
+            try
+            {
+                db.Sequences.AddRange(this.GetSequences(db, context));
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving sequences");
+                exceptions.Add(ex);
+            }
+
+            if (exceptions.Count > 0)
+            {
+                throw new AggregateException(exceptions);
+            }
 
             return db;
         }

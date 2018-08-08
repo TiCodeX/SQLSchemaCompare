@@ -15,7 +15,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="dbpo">The PostgreSql database provider options</param>
         public PostgreSqlDatabaseContext(ILoggerFactory loggerFactory, PostgreSqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory, dbpo)
+            : base(loggerFactory, loggerFactory.CreateLogger(nameof(PostgreSqlDatabaseContext)), dbpo)
         {
         }
 

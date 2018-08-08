@@ -15,7 +15,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="dbpo">The MicrosoftSql database provider options</param>
         public MicrosoftSqlDatabaseContext(ILoggerFactory loggerFactory, MicrosoftSqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory, dbpo)
+            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MicrosoftSqlDatabaseContext)), dbpo)
         {
         }
 

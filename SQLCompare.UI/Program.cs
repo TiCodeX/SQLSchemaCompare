@@ -23,7 +23,8 @@ namespace SQLCompare.UI
             var logger = LogManager.GetCurrentClassLogger();
             try
             {
-                logger.Debug("init main");
+                logger.Info(string.Empty);
+                logger.Info("Starting WebHost Service...");
                 CreateWebHostBuilder(null)
                     .Build()
                     .Run();
@@ -36,6 +37,8 @@ namespace SQLCompare.UI
             }
             finally
             {
+                logger.Debug("Closing Application...");
+
                 // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
                 LogManager.Shutdown();
             }

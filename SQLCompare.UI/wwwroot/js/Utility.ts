@@ -3,6 +3,11 @@
  */
 class Utility {
     /**
+     * Logger instance for this class
+     */
+    private static readonly logger: Logger = Utility.GetLogger("Utility");
+
+    /**
      * Encode the HTML tags inside the string
      * @param s - The string to encode
      * @returns The string properly encoded
@@ -163,10 +168,9 @@ class Utility {
      * @param successCallback - The callback function in case of success
      */
     private static AjaxCallInternal(url: string, method: Utility.HttpMethod, async: boolean, data: object, successCallback: JQuery.Ajax.SuccessCallback<object>): void {
-
         let ajaxMethod: string;
         switch (method) {
-        case Utility.HttpMethod.Get:
+            case Utility.HttpMethod.Get:
                 ajaxMethod = "GET";
                 break;
             case Utility.HttpMethod.Post:
@@ -176,6 +180,7 @@ class Utility {
                 ajaxMethod = "GET";
         }
 
+        this.logger.debug(`Executing AjaxCall... (Method=${ajaxMethod} Url=${url})`);
         $.ajax(url, {
             type: ajaxMethod,
             beforeSend: (xhr: JQuery.jqXHR): void => {
@@ -188,6 +193,7 @@ class Utility {
             async: async,
             success: successCallback,
             error: (error: JQuery.jqXHR): void => {
+                this.logger.error(`Error executing AjaxCall: ${error.responseText}`);
                 $("#myModalBody").html(error.responseText);
                 $("#myModal").modal("show");
             },

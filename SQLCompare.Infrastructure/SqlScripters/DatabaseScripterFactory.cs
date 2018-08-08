@@ -31,11 +31,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
             switch (database)
             {
                 case MicrosoftSqlDb _:
-                    return new MicrosoftSqlScripter(this.loggerFactory.CreateLogger("MicrosoftSqlScripter"), options);
+                    return new MicrosoftSqlScripter(this.loggerFactory.CreateLogger(nameof(MicrosoftSqlScripter)), options);
                 case MySqlDb _:
-                    return new MySqlScripter(this.loggerFactory.CreateLogger("MySqlScripter"), options);
+                    return new MySqlScripter(this.loggerFactory.CreateLogger(nameof(MySqlScripter)), options);
                 case PostgreSqlDb _:
-                    return new PostgreSqlScripter(this.loggerFactory.CreateLogger("PostgreSqlScripter"), options);
+                    return new PostgreSqlScripter(this.loggerFactory.CreateLogger(nameof(PostgreSqlScripter)), options);
                 default:
                     throw new NotImplementedException();
             }

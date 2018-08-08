@@ -15,15 +15,18 @@ namespace SQLCompare.Infrastructure.EntityFramework
         where TDatabaseProviderOptions : ADatabaseProviderOptions
     {
         private readonly ILoggerFactory loggerFactory;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ADatabaseContext{TDatabaseProviderOptions}"/> class.
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory</param>
+        /// <param name="logger">The logger</param>
         /// <param name="dbpo">The database provider options</param>
-        protected ADatabaseContext(ILoggerFactory loggerFactory, TDatabaseProviderOptions dbpo)
+        protected ADatabaseContext(ILoggerFactory loggerFactory, ILogger logger, TDatabaseProviderOptions dbpo)
         {
             this.loggerFactory = loggerFactory;
+            this.logger = logger;
             this.DatabaseProviderOptions = dbpo;
             this.ConnectionString = $"Server={dbpo.Hostname};Database={dbpo.Database};User Id={dbpo.Username};Password={dbpo.Password};";
         }
@@ -47,6 +50,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
         public List<T> Query<T>(string query)
             where T : new()
         {
+            this.logger.LogDebug($"ExecuteQuery:{Environment.NewLine}{query}");
             var result = new List<T>();
             this.Database.OpenConnection();
             using (var command = this.Database.GetDbConnection().CreateCommand())
@@ -106,6 +110,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// <returns>The list of the requested column</returns>
         public List<string> Query(string query, int columnIndex = 0)
         {
+            this.logger.LogDebug($"ExecuteQuery:{Environment.NewLine}{query}");
             var result = new List<string>();
             this.Database.OpenConnection();
             using (var command = this.Database.GetDbConnection().CreateCommand())
@@ -129,7 +134,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// <param name="query">The SQL query</param>
         public void ExecuteNonQuery(string query)
         {
-            var result = new List<string>();
+            this.logger.LogDebug($"ExecuteQuery:{Environment.NewLine}{query}");
             this.Database.OpenConnection();
             using (var command = this.Database.GetDbConnection().CreateCommand())
             {

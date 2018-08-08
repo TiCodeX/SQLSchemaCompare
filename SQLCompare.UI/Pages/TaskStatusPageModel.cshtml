@@ -1,11 +1,14 @@
 ﻿@page
+@using Core.Interfaces
+@using Enums
+@using Services
 @model TaskStatusPageModel
 
 @foreach (var taskInfo in Model.TaskInfos)
 {
-    <div class="card my-3">
+    <div class="card my-3 @(taskInfo.Status == TaskStatus.Faulted ? "border-danger" : string.Empty)">
         <div class="card-body">
-            <h5 class="card-title">@taskInfo.Name</h5>
+            <h5 class="card-title @(taskInfo.Status == TaskStatus.Faulted ? "text-danger" : string.Empty)">@taskInfo.Name</h5>
             <h6 class="card-subtitle mb-2 text-muted">@taskInfo.Message</h6>
             <div class="progress">
                 <div class="progress-bar" role="progressbar" style="width: @taskInfo.Percentage%;">@taskInfo.Percentage%</div>
@@ -14,7 +17,16 @@
     </div>
 }
 
-@if (Model.TaskInfos.All(x => x.Status == TaskStatus.RanToCompletion))
+@if (Model.TaskInfos.All(x => x.Status == TaskStatus.RanToCompletion || x.Status == TaskStatus.Faulted))
 {
     <span id="stopPolling"></span>
+    if (Model.TaskInfos.Any(x => x.Status == TaskStatus.Faulted))
+    {
+        <span id="taskFailed"></span>
+
+        <div class="float-right">
+            <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">@Localization.ButtonCancel</button>
+        </div>
+
+    }
 }

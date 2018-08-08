@@ -4,51 +4,22 @@
 @using Enums
 @using Services
 @model MainPageModel
-@{
-    var different = new List<ABaseCompareResultItem>();
-    different.AddRange(Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-    different.AddRange(Model.CompareResult.Views.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-    different.AddRange(Model.CompareResult.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-    different.AddRange(Model.CompareResult.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-    different.AddRange(Model.CompareResult.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-
-    var onlySource = new List<ABaseCompareResultItem>();
-    onlySource.AddRange(Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
-    onlySource.AddRange(Model.CompareResult.Views.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
-    onlySource.AddRange(Model.CompareResult.Functions.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
-    onlySource.AddRange(Model.CompareResult.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
-    onlySource.AddRange(Model.CompareResult.Sequences.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
-
-    var onlyTarget = new List<ABaseCompareResultItem>();
-    onlyTarget.AddRange(Model.CompareResult.Tables.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
-    onlyTarget.AddRange(Model.CompareResult.Views.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
-    onlyTarget.AddRange(Model.CompareResult.Functions.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
-    onlyTarget.AddRange(Model.CompareResult.StoredProcedures.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
-    onlyTarget.AddRange(Model.CompareResult.Sequences.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
-
-    var same = new List<ABaseCompareResultItem>();
-    same.AddRange(Model.CompareResult.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-    same.AddRange(Model.CompareResult.Views.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-    same.AddRange(Model.CompareResult.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-    same.AddRange(Model.CompareResult.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-    same.AddRange(Model.CompareResult.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-}
 
 <div id="mainTop">
-    @await Html.PartialAsync("_ResultTable", different, new ViewDataDictionary(this.ViewData)
+    @await Html.PartialAsync("_ResultTable", Model.DifferentItems, new ViewDataDictionary(this.ViewData)
     {
         { "Title", Localization.LabelInBothButDifferent },
         { "Show", true }
     })
-    @await Html.PartialAsync("_ResultTable", onlySource, new ViewDataDictionary(this.ViewData)
+    @await Html.PartialAsync("_ResultTable", Model.OnlySourceItems, new ViewDataDictionary(this.ViewData)
     {
         { "Title", Localization.LabelOnlyInSource }
     })
-    @await Html.PartialAsync("_ResultTable", onlyTarget, new ViewDataDictionary(this.ViewData)
+    @await Html.PartialAsync("_ResultTable", Model.OnlyTargetItems, new ViewDataDictionary(this.ViewData)
     {
         { "Title", Localization.LabelOnlyInTarget }
     })
-    @await Html.PartialAsync("_ResultTable", same, new ViewDataDictionary(this.ViewData)
+    @await Html.PartialAsync("_ResultTable", Model.SameItems, new ViewDataDictionary(this.ViewData)
     {
         { "Title", Localization.LabelIdentical }
     })

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 
 namespace SQLCompare.UI.WebServer
@@ -12,19 +13,24 @@ namespace SQLCompare.UI.WebServer
     public class HyphenFriendlyEmbeddedFileProvider : IFileProvider
     {
         private readonly EmbeddedFileProvider embeddedFileProvider;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HyphenFriendlyEmbeddedFileProvider"/> class.
         /// </summary>
         /// <param name="embeddedFileProvider">The <see cref="EmbeddedFileProvider"/> to wrap</param>
-        public HyphenFriendlyEmbeddedFileProvider(EmbeddedFileProvider embeddedFileProvider)
+        /// <param name="logger">The logger</param>
+        public HyphenFriendlyEmbeddedFileProvider(EmbeddedFileProvider embeddedFileProvider, ILogger logger)
         {
             this.embeddedFileProvider = embeddedFileProvider;
+            this.logger = logger;
         }
 
         /// <inheritdoc/>
         public IFileInfo GetFileInfo(string subpath)
         {
+            this.logger.LogDebug($"Requested embedded file: {subpath}");
+
             if (string.IsNullOrEmpty(subpath))
             {
                 return new NotFoundFileInfo(subpath);

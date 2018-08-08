@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Enums;
@@ -15,6 +16,7 @@ namespace SQLCompare.UI.Pages.Project
     /// </summary>
     public class ProjectPageModel : PageModel
     {
+        private readonly ILogger logger;
         private readonly IAppSettingsService appSettingsService;
         private readonly IProjectService projectService;
         private readonly IDatabaseService databaseService;
@@ -23,16 +25,19 @@ namespace SQLCompare.UI.Pages.Project
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectPageModel"/> class.
         /// </summary>
+        /// <param name="logger">The injected logger</param>
         /// <param name="appSettingsService">The injected app settings service</param>
         /// <param name="projectService">The injected project service</param>
         /// <param name="databaseService">The injected database service</param>
         /// <param name="databaseCompareService">The injected database compare service</param>
         public ProjectPageModel(
+            ILogger<ProjectPageModel> logger,
             IAppSettingsService appSettingsService,
             IProjectService projectService,
             IDatabaseService databaseService,
             IDatabaseCompareService databaseCompareService)
         {
+            this.logger = logger;
             this.appSettingsService = appSettingsService;
             this.projectService = projectService;
             this.databaseService = databaseService;
@@ -181,6 +186,7 @@ namespace SQLCompare.UI.Pages.Project
                         Database = database,
                     };
                 default:
+                    this.logger.LogError($"Unknown Database type: {type}");
                     throw new ArgumentException("Unknown Database type");
             }
         }

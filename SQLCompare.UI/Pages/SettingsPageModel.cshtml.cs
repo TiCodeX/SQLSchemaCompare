@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities;
 using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.UI.WebServer;
@@ -11,16 +12,22 @@ namespace SQLCompare.UI.Pages
     /// </summary>
     public class SettingsPageModel : PageModel
     {
+        private readonly ILogger logger;
         private readonly IAppSettingsService appSettingsService;
         private readonly ILocalizationService localizationService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsPageModel"/> class.
         /// </summary>
+        /// <param name="logger">The injected logger</param>
         /// <param name="appSettingsService">The injected app settings service</param>
         /// <param name="localizationService">The injected LocalizationService</param>
-        public SettingsPageModel(IAppSettingsService appSettingsService, ILocalizationService localizationService)
+        public SettingsPageModel(
+            ILogger<SettingsPageModel> logger,
+            IAppSettingsService appSettingsService,
+            ILocalizationService localizationService)
         {
+            this.logger = logger;
             this.appSettingsService = appSettingsService;
             this.localizationService = localizationService;
         }
@@ -45,6 +52,10 @@ namespace SQLCompare.UI.Pages
         /// <returns>TODO: boh</returns>
         public ActionResult OnPostSave([FromBody] AppSettings settings)
         {
+            this.logger.LogDebug("Saving settings...");
+            this.logger.LogDebug($"LogLevel => {settings.LogLevel}");
+            this.logger.LogDebug($"Language => {settings.Language}");
+
             var currentSettings = this.appSettingsService.GetAppSettings();
 
             if (currentSettings.Language != settings.Language)

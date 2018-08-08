@@ -15,7 +15,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="dbpo">The MySql database provider options</param>
         public MySqlDatabaseContext(ILoggerFactory loggerFactory, MySqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory, dbpo)
+            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MySqlDatabaseContext)), dbpo)
         {
         }
 

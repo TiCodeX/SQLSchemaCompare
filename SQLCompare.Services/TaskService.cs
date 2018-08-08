@@ -45,10 +45,21 @@ namespace SQLCompare.Services
             return Task.Factory.StartNew(
                 () =>
                 {
-                    task.Info.Status = TaskStatus.Running;
-                    task.Work.Invoke(task.Info);
-                    task.Info.Status = TaskStatus.RanToCompletion;
-                    task.Info.CompleteTime = DateTime.Now;
+                    try
+                    {
+                        task.Info.Status = TaskStatus.Running;
+                        task.Work.Invoke(task.Info);
+                        task.Info.Status = TaskStatus.RanToCompletion;
+                    }
+                    catch
+                    {
+                        task.Info.Status = TaskStatus.Faulted;
+                    }
+                    finally
+                    {
+                        task.Info.Percentage = 100;
+                        task.Info.CompleteTime = DateTime.Now;
+                    }
                 },
                 CancellationToken.None,
                 TaskCreationOptions.None,

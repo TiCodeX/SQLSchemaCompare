@@ -43,13 +43,6 @@ namespace SQLCompare.UI.Pages
         public void OnGet()
         {
             this.ViewData["Title"] = $"{this.appGlobals.ProductName} - {this.appGlobals.CompanyName}";
-
-            this.logger.LogTrace("This is a Trace log");
-            this.logger.LogDebug("This is a Debug log");
-            this.logger.LogInformation("This is a Info log");
-            this.logger.LogWarning("This is a Warning log");
-            this.logger.LogError("This is a Error log");
-            this.logger.LogCritical("This is a Critical log");
         }
     }
 }

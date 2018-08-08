@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Repository;
 using SQLCompare.Core.Interfaces.Services;
@@ -81,17 +82,21 @@ namespace SQLCompare.UI.WebServer
         /// <param name="appGlobals">The application globals</param>
         /// <param name="localizationService">The localization service</param>
         /// <param name="appSettingsService">The app settings service</param>
+        /// <param name="logger">The injected logger</param>
         public void Configure(
             IApplicationBuilder app,
             IAppGlobals appGlobals,
             ILocalizationService localizationService,
-            IAppSettingsService appSettingsService)
+            IAppSettingsService appSettingsService,
+            ILogger<WebServerStartup> logger)
         {
             var appSettings = appSettingsService.GetAppSettings();
-
+            Utility.SetLoggingLevel(appSettings.LogLevel);
             localizationService.SetLanguage(appSettings.Language);
 
-            Utility.SetLoggingLevel(appSettings.LogLevel);
+            logger.LogDebug("Configuring WebHost...");
+            logger.LogDebug($"LogLevel => {appSettings.LogLevel}");
+            logger.LogDebug($"Language => {appSettings.Language}");
 
             if (appGlobals.IsDevelopment)
             {
@@ -104,7 +109,9 @@ namespace SQLCompare.UI.WebServer
                 app.UseExceptionHandler("/Error");
                 app.UseStaticFiles(new StaticFileOptions
                 {
-                    FileProvider = new HyphenFriendlyEmbeddedFileProvider(new EmbeddedFileProvider(Assembly.GetExecutingAssembly(), "SQLCompare.UI.wwwroot"))
+                    FileProvider = new HyphenFriendlyEmbeddedFileProvider(
+                        new EmbeddedFileProvider(Assembly.GetExecutingAssembly(), "SQLCompare.UI.wwwroot"),
+                        logger)
                 });
                 app.UseRequestValidator();
             }

@@ -1,0 +1,31 @@
+<?xml version='1.0'?>
+<Obfuscator>
+    <Var name="InPath" value="..\.publish" />
+    <Var name="OutPath" value="..\.publish\.obfuscated" />
+    <Var name="HidePrivateApi" value="true" />
+    <Var name="KeepPublicApi" value="false" />
+
+    <Var name="HideStrings" value="true" />
+    <Var name="ReuseNames" value="true" />
+    <Var name="UseUnicodeNames" value="true" />
+    <!--<Var name="RegenerateDebugInfo" value="true" />-->
+    <!--<Var name="KeyFile" value=".\test.snk" />-->
+
+    <Module file="$(InPath)\SQLCompare.UI.dll">
+        <SkipNamespace name="SQLCompare.UI.Enums*" />
+        <SkipNamespace name="SQLCompare.UI.Models*" />
+        <SkipNamespace name="SQLCompare.UI.Pages*" />
+    </Module>
+    <Module file="$(InPath)\SQLCompare.UI.Views.dll">
+        <SkipNamespace name="SQLCompare.UI.Pages*" />
+    </Module>
+    <Module file="$(InPath)\SQLCompare.Services.dll">
+        <SkipType name="SQLCompare.Services.Localization*" />
+    </Module>
+    <Module file="$(InPath)\SQLCompare.Infrastructure.dll" />
+    <Module file="$(InPath)\SQLCompare.Core.dll">
+        <SkipNamespace name="SQLCompare.Core.Entities*" />
+        <SkipNamespace name="SQLCompare.Core.Enums*" />
+    </Module>
+
+</Obfuscator>

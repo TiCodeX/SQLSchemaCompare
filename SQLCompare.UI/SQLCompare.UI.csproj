@@ -10,6 +10,7 @@
     <TSLintProject>tsconfig.json</TSLintProject>
     <OutputType>Exe</OutputType>
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+    <PublishDir>..\.publish</PublishDir>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -81,6 +82,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.0" />
     <PackageReference Include="NLog" Version="4.5.6" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.5.4" />
+    <PackageReference Include="Obfuscar" Version="2.2.12" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" />
     <PackageReference Include="tslint" Version="5.10.0" />
   </ItemGroup>
@@ -102,4 +104,11 @@
   <ImportGroup>
     <Import Project="tslint.targets" />
   </ImportGroup>
+
+  <Target Name="Obfuscate" AfterTargets="Publish">
+    <Exec Command="$(Obfuscar) obfuscar.xml" />
+    <Exec Command="MOVE /Y ..\.publish\.obfuscated\* ..\.publish\" />
+    <Exec Command="RMDIR ..\.publish\.obfuscated" />
+  </Target>
+
 </Project>

@@ -40,6 +40,7 @@ namespace SQLCompare.UI.WebServer
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
         /// <param name="services">The WebHost service collection</param>
+        [Obfuscation(Exclude = true)]
         public static void ConfigureServices(IServiceCollection services)
         {
             services.Configure<MvcOptions>(options =>
@@ -83,6 +84,7 @@ namespace SQLCompare.UI.WebServer
         /// <param name="localizationService">The localization service</param>
         /// <param name="appSettingsService">The app settings service</param>
         /// <param name="logger">The injected logger</param>
+        [Obfuscation(Exclude = true)]
         public void Configure(
             IApplicationBuilder app,
             IAppGlobals appGlobals,

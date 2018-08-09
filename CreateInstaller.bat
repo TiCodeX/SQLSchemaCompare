@@ -1,11 +1,13 @@
 @echo off
-set "ArrayTarget[win]=true"
-set "ArrayTarget[linux]=true"
-set "ArrayTarget[mac]=true"
-:choosetarget
-set /p target="Enter target [win/linux/mac]: "
-if not defined ArrayTarget[%target%] ( goto:choosetarget )
+set "target=win"
+REM set "ArrayTarget[win]=true"
+REM set "ArrayTarget[linux]=true"
+REM set "ArrayTarget[mac]=true"
+REM :choosetarget
+REM set /p target="Enter target [win/linux/mac]: "
+REM if not defined ArrayTarget[%target%] ( goto:choosetarget )
 
+set "publishDir=%~dp0.publish"
 set "configuration=release"
 REM set "ArrayConfig[release]=true"
 REM set "ArrayConfig[debug]=true"
@@ -17,7 +19,11 @@ if /i "%target%" == "win" ( set "targetdotnet=win-x64" )
 if /i "%target%" == "linux" ( set "targetdotnet=linux-x64" )
 if /i "%target%" == "mac" ( set "targetdotnet=osx-x64" )
 
-if exist %~dp0SQLCompare.UI\dist ( rmdir /S /Q %~dp0SQLCompare.UI\dist )
+REM Cleanup folders
+if exist %publishDir% ( rmdir /S /Q %publishDir% )
+if exist %~dp0installer\win-unpacked ( rmdir /S /Q %~dp0installer\win-unpacked )
+if exist %~dp0installer\linux-unpacked ( rmdir /S /Q %~dp0installer\linux-unpacked )
+if exist %~dp0installer\mac-unpacked ( rmdir /S /Q %~dp0installer\mac-unpacked )
 
 echo.
 echo     _____________________
@@ -28,13 +34,11 @@ echo      ^|  _________________^|_
 echo      \_/___________________/
 echo.
 
-set PublishOutputPath="dist\%configuration%"
-
-dotnet publish %~dp0SQLCompare.UI\SQLCompare.UI.csproj -f netcoreapp2.1 -o %PublishOutputPath% -r %targetdotnet% -c %configuration%
+dotnet publish %~dp0SQLCompare.UI\SQLCompare.UI.csproj -f netcoreapp2.1 -r %targetdotnet% -c %configuration%
 
 if ERRORLEVEL 1 goto:error
 
-if "%configuration%" == "release" ( del %~dp0SQLCompare.UI\%PublishOutputPath%\*.pdb )
+if "%configuration%" == "release" ( del %publishDir%\*.pdb )
 REM TODO: remove other unnecessary files
 
 echo.
@@ -50,11 +54,11 @@ call npm --prefix SqlCompare run dist-%target%
 
 if ERRORLEVEL 1 goto:error
 
-REM cleanup
-if exist %~dp0SQLCompare.UI\dist ( rmdir /S /Q %~dp0SQLCompare.UI\dist )
-if exist %~dp0SQLCompare\dist\win-unpacked ( rmdir /S /Q %~dp0SQLCompare\dist\win-unpacked )
-if exist %~dp0SQLCompare\dist\linux-unpacked ( rmdir /S /Q %~dp0SQLCompare\dist\linux-unpacked )
-if exist %~dp0SQLCompare\dist\mac-unpacked ( rmdir /S /Q %~dp0SQLCompare\dist\mac-unpacked )
+REM Cleanup folders
+if exist %publishDir% ( rmdir /S /Q %publishDir% )
+REM if exist %~dp0installer\win-unpacked ( rmdir /S /Q %~dp0installer\win-unpacked )
+REM if exist %~dp0installer\linux-unpacked ( rmdir /S /Q %~dp0installer\linux-unpacked )
+REM if exist %~dp0installer\mac-unpacked ( rmdir /S /Q %~dp0installer\mac-unpacked )
 
 echo.
 echo.

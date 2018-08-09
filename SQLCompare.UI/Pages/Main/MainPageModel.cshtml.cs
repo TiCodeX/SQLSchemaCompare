@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Compare;
 using SQLCompare.Core.Interfaces.Services;
+using SQLCompare.UI.Models.Main;
 
 namespace SQLCompare.UI.Pages.Main
 {
@@ -103,10 +104,10 @@ namespace SQLCompare.UI.Pages.Main
                 throw new NotImplementedException("Unable to find the item specified");
             }
 
-            return new JsonResult(new
+            return new JsonResult(new CreateScriptResponse
             {
-                SourceSql = resultItem?.SourceCreateScript,
-                TargetSql = resultItem?.TargetCreateScript,
+                SourceSql = resultItem.SourceCreateScript,
+                TargetSql = resultItem.TargetCreateScript,
             });
         }
     }

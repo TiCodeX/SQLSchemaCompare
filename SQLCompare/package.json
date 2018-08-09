@@ -27,13 +27,16 @@
         "copyright": "Copyright @ 2018 ${author}",
         "extraFiles": [
             {
-                "from": "../SQLCompare.UI/dist/release",
-                "to": "SQLCompare.UI",
+                "from": "../.publish",
+                "to": "bin",
                 "filter": [
                     "**/*"
                 ]
             }
-        ]
+        ],
+        "directories": {
+            "output": "../installer"
+        }
     },
     "scripts": {
         "dist-win": "electron-builder --win",
@@ -48,6 +51,7 @@
     },
     "dependencies": {
         "electron-window-state": "^4.1.1",
+        "glob": "^7.1.2",
         "log4js": "^3.0.4"
     }
 }

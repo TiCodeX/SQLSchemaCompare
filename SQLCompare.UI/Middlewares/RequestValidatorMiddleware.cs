@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -38,6 +38,7 @@ namespace SQLCompare.UI.Middlewares
         /// </summary>
         /// <param name="context">The HttpContext of the current request</param>
         /// <returns>The next task</returns>
+        [Obfuscation(Exclude = true)]
         public async Task Invoke(HttpContext context)
         {
             string authToken = context.Request.Headers[this.appGlobals.AuthorizationHeaderName];

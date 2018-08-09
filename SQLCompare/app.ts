@@ -8,7 +8,7 @@ import glob = require("glob")
 electron.app.setAppUserModelId("ch.ticodex.sqlcompare");
 
 const splashUrl = `file://${__dirname}/splash.html`;
-const servicePath = `./SQLCompare.UI/SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`;
+const servicePath = `./bin/SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`;
 const serviceUrl = "https://127.0.0.1:5000";
 const loggerPath = "C:\\ProgramData\\SqlCompare\\log\\";
 const loggerFile = "SqlCompare-yyyy-MM-dd-ui.log";

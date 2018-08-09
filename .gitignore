@@ -291,4 +291,5 @@ SQLCompare.UI/wwwroot/js/**/*.js
 # Css generated files
 SQLCompare.UI/wwwroot/css/**/*.css
 # Installer
-SQLCompare/dist
+.publish
+installer

@@ -8,7 +8,7 @@
     <Var name="HideStrings" value="true" />
     <Var name="ReuseNames" value="true" />
     <Var name="UseUnicodeNames" value="true" />
-    <!--<Var name="RegenerateDebugInfo" value="true" />-->
+    <Var name="RegenerateDebugInfo" value="true" />
     <!--<Var name="KeyFile" value=".\test.snk" />-->
 
     <Module file="$(InPath)\SQLCompare.UI.dll">
@@ -20,7 +20,7 @@
         <SkipNamespace name="SQLCompare.UI.Pages*" />
     </Module>
     <Module file="$(InPath)\SQLCompare.Services.dll">
-        <SkipType name="SQLCompare.Services.Localization*" />
+        <SkipType name="SQLCompare.Services.Localization" skipFields="true" />
     </Module>
     <Module file="$(InPath)\SQLCompare.Infrastructure.dll" />
     <Module file="$(InPath)\SQLCompare.Core.dll">

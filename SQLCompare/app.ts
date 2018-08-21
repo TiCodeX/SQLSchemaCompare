@@ -1,19 +1,22 @@
-﻿import electron = require("electron");
+/* tslint:disable:no-require-imports no-implicit-dependencies max-file-line-count only-arrow-functions no-magic-numbers no-string-literal */
 import childProcess = require("child_process");
-import fs = require("fs");
+import electron = require("electron");
 import windowStateKeeper = require("electron-window-state");
+import fs = require("fs");
+import glob = require("glob");
 import log4js = require("log4js");
-import glob = require("glob")
+/* tslint:enable:no-require-imports no-implicit-dependencies */
 
 electron.app.setAppUserModelId("ch.ticodex.sqlcompare");
 
-const splashUrl = `file://${__dirname}/splash.html`;
-const servicePath = `./bin/SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`;
-const serviceUrl = "https://127.0.0.1:5000";
-const loggerPath = "C:\\ProgramData\\SqlCompare\\log\\";
-const loggerFile = "SqlCompare-yyyy-MM-dd-ui.log";
-const loggerLayout = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
-const loggerMaxArchiveFiles = 9;
+const splashUrl: string = `file://${__dirname}/splash.html`;
+const servicePath: string = `./bin/SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`;
+const serviceUrl: string = "https://127.0.0.1:5000";
+const loginUrl: string = "https://127.0.0.1:5000/login";
+const loggerPath: string = "C:\\ProgramData\\SqlCompare\\log\\";
+const loggerFile: string = "SqlCompare-yyyy-MM-dd-ui.log";
+const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
+const loggerMaxArchiveFiles: number = 9;
 
 log4js.configure({
     appenders: {
@@ -27,23 +30,29 @@ log4js.configure({
             },
             alwaysIncludePattern: true,
             keepFileExt: true,
-        }
+        },
+        console: {
+            type: "console",
+        },
     },
     categories: {
-        default: { appenders: ["default"], level: "debug" }
-    }
+        default: {
+            appenders: (process.defaultApp ? ["default", "console"] : ["default"]),
+            level: (process.defaultApp ? "debug" : "info"),
+        },
+    },
 });
 
-const logger = log4js.getLogger("electron");
+const logger: log4js.Logger = log4js.getLogger("electron");
 logger.info("Starting application...");
 
 // Start an asynchronous function to delete old log files
 setTimeout(() => {
     try {
-        glob(loggerPath + loggerFile.replace("yyyy-MM-dd", "*"), null, (err, files) => {
+        glob(loggerPath + loggerFile.replace("yyyy-MM-dd", "*"), (err: object, files: Array<string>) => {
             files.sort();
             files.reverse();
-            files.slice(loggerMaxArchiveFiles).forEach(file => {
+            files.slice(loggerMaxArchiveFiles).forEach((file: string) => {
                 try {
                     logger.info(`Deleting old archive file: ${file}`);
                     fs.unlinkSync(file);
@@ -58,8 +67,8 @@ setTimeout(() => {
 }, 0);
 
 // Register the renderer callback for logging the UI
-electron.ipcMain.on("log", (event, data: { category: string, level: string, message: string }) => {
-    var uiLogger = log4js.getLogger(data.category);
+electron.ipcMain.on("log", (event: electron.Event, data: { category: string; level: string; message: string }) => {
+    const uiLogger: log4js.Logger = log4js.getLogger(data.category);
     switch (data.level) {
         case "debug":
             uiLogger.debug(data.message);
@@ -76,48 +85,58 @@ electron.ipcMain.on("log", (event, data: { category: string, level: string, mess
         case "critical":
             uiLogger.fatal(data.message);
             break;
+        default:
+            uiLogger.info(data.message);
     }
+});
+
+// Register the renderer callback for opening the main window
+electron.ipcMain.on("OpenMainWindow", (event: electron.Event) => {
+    createMainWindow();
+});
+// Register the renderer callback for opening the login window
+electron.ipcMain.on("OpenLoginWindow", (event: electron.Event) => {
+    createLoginWindow(true);
 });
 
 let serviceProcess: childProcess.ChildProcess;
 if (fs.existsSync(servicePath)) {
     serviceProcess = childProcess.spawn(servicePath);
-    //serviceProcess.stdout.on("data", data => {
-    //    console.log("stdout: " + data);
-    //});
-    //serviceProcess.stderr.on("data", data => {
-    //    console.log("stderr: " + data);
-    //});
-    //serviceProcess.on("close", code => {
-    //    console.log("closing code: " + code);
-    //});
+    /*
+    serviceProcess.stdout.on("data", data => {
+        console.log("stdout: " + data);
+    });
+    serviceProcess.stderr.on("data", data => {
+        console.log("stderr: " + data);
+    });
+    serviceProcess.on("close", code => {
+        console.log("closing code: " + code);
+    });
+    */
 }
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
+/**
+ * Keep a global reference of the window object, if you don't, the window will
+ * be closed automatically when the JavaScript object is garbage collected.
+ */
 let mainWindow: Electron.BrowserWindow;
+let loginWindow: Electron.BrowserWindow;
 
-function createWindow() {
-    const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
-    logger.debug("Primary display size: %dx%d", width, height);
+/**
+ * Create the main window ensuring to destroy the login window
+ * @param url The url to pass for authentication purpose
+ */
+function createMainWindow(): void {
+    const workAreaSize: electron.Size = electron.screen.getPrimaryDisplay().workAreaSize;
+    logger.debug("Primary display size: %dx%d", workAreaSize.width, workAreaSize.height);
 
     // Load the previous state with fall-back to defaults
-    const mainWindowState = windowStateKeeper({
-        defaultWidth: width - 200,
-        defaultHeight: height - 100
+    const mainWindowState: { width: number; height: number; x: number; y: number; manage: Function } = windowStateKeeper({
+        defaultWidth: workAreaSize.width - 200,
+        defaultHeight: workAreaSize.height - 100,
     });
     logger.debug("Window state size: %dx%d", mainWindowState.width, mainWindowState.height);
     logger.debug("Window state location: %dx%d", mainWindowState.x, mainWindowState.y);
-
-    const splashWindow = new electron.BrowserWindow({
-        width: 300,
-        height: 330,
-        transparent: true,
-        frame: false,
-        alwaysOnTop: false
-    });
-    splashWindow.loadURL(splashUrl);
-    logger.debug("Splashscreen window started");
 
     // Create the browser window.
     mainWindow = new electron.BrowserWindow({
@@ -128,7 +147,7 @@ function createWindow() {
         show: false,
         webPreferences: {
             nodeIntegration: true,
-        }
+        },
     });
 
     mainWindow.setMenu(electron.Menu.buildFromTemplate([{
@@ -137,90 +156,172 @@ function createWindow() {
             {
                 role: "close",
                 label: "Exit",
-            }
+            },
         ],
     }]));
 
-    const filter = {
-        urls: ["http://*/*", "https://*/*"]
+    /**
+     * Let us register listeners on the window, so we can update the state
+     * automatically (the listeners will be removed when the window is closed)
+     * and restore the maximized or full screen state
+     */
+    mainWindowState.manage(mainWindow);
+
+    mainWindow.loadURL(serviceUrl);
+
+    // Emitted when the window is closed.
+    mainWindow.on("closed", () => {
+        /**
+         * Dereference the window object, usually you would store windows
+         * in an array if your app supports multi windows, this is the time
+         * when you should delete the corresponding element.
+         */
+        mainWindow = undefined;
+    });
+
+    // Destroy login window
+    if (loginWindow !== undefined) {
+        loginWindow.destroy();
+        loginWindow = undefined;
+    }
+
+    mainWindow.show();
+    mainWindow.focus();
+}
+
+/**
+ * Create the login window ensuring to destroy the main window
+ * @param show True if the window should be shown
+ */
+function createLoginWindow(show: boolean): void {
+    // Create the login window
+    loginWindow = new electron.BrowserWindow({
+        width: 600,
+        height: 800,
+        show: false,
+        center: true,
+        resizable: false,
+    });
+
+    // A loginWindow.setMenu(null);
+
+    // Emitted when the window is closed.
+    loginWindow.on("closed", () => {
+        /**
+         * Dereference the window object, usually you would store windows
+         * in an array if your app supports multi windows, this is the time
+         * when you should delete the corresponding element.
+         */
+        loginWindow = undefined;
+    });
+
+    if (mainWindow !== undefined) {
+        mainWindow.destroy();
+        mainWindow = undefined;
+    }
+
+    if (show) {
+        loginWindow.show();
+        loginWindow.focus();
+    }
+}
+
+/**
+ * Startup function called when Electron is ready
+ */
+function startup(): void {
+    // Setup request default auth header
+    const filter: electron.OnBeforeSendHeadersFilter = {
+        urls: [
+            "http://*/*",
+            "https://*/*",
+        ],
     };
-    electron.session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+    electron.session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details: { requestHeaders: object }, callback: Function) => {
         details.requestHeaders["CustomAuthToken"] = "prova";
         callback({ cancel: false, requestHeaders: details.requestHeaders });
     });
 
-    mainWindow.loadURL(serviceUrl);
-    logger.debug("Main window started");
+    const splashWindow: electron.BrowserWindow = new electron.BrowserWindow({
+        width: 640,
+        height: 400,
+        transparent: true,
+        frame: false,
+        alwaysOnTop: false,
+    });
+    splashWindow.loadURL(splashUrl);
+    logger.debug("Splashscreen window started");
 
-    let loadFailed = false;
-    mainWindow.webContents.on("did-fail-load", () => {
+    createLoginWindow(false);
+    logger.debug("Login window started");
+
+    let loadFailed: boolean = false;
+    loginWindow.webContents.on("did-fail-load", () => {
         loadFailed = true;
     });
-    mainWindow.webContents.on("did-finish-load", () => {
+    loginWindow.webContents.on("did-finish-load", () => {
         if (loadFailed) {
             logger.debug("Unable to contact service, retrying...");
             // Reset the flag and trigger a new load
             loadFailed = false;
-            mainWindow.loadURL(serviceUrl);
+            loginWindow.loadURL(loginUrl);
         } else {
-            logger.debug("Service connected, hide splashscreen window and show main window");
+            logger.debug("Service connected, hide splashscreen window and show login window");
             splashWindow.destroy();
-            mainWindow.show();
-
-            // Let us register listeners on the window, so we can update the state
-            // automatically (the listeners will be removed when the window is closed)
-            // and restore the maximized or full screen state
-            mainWindowState.manage(mainWindow);
-
-            // Bring the window to front
-            mainWindow.focus();
-
-            // Open the DevTools.
-            //mainWindow.webContents.openDevTools()
-
+            loginWindow.show();
+            loginWindow.focus();
             logger.info("Application started successfully");
         }
     });
 
-    // Emitted when the window is closed.
-    mainWindow.on("closed", () => {
-        // Dereference the window object, usually you would store windows
-        // in an array if your app supports multi windows, this is the time
-        // when you should delete the corresponding element.
-        mainWindow = null;
-        if (serviceProcess) {
-            serviceProcess.kill();
-        }
-    });
+    // Events registered, now load the URL
+    loginWindow.loadURL(loginUrl);
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-electron.app.on("ready", createWindow);
+/**
+ * This method will be called when Electron has finished
+ * initialization and is ready to create browser windows.
+ * Some APIs can only be used after this event occurs.
+ */
+electron.app.on("ready", startup);
+
+// This method will be called when Electron will quit the application
+electron.app.on("will-quit", () => {
+    if (serviceProcess) {
+        serviceProcess.kill();
+    }
+});
 
 // Quit when all windows are closed.
 electron.app.on("window-all-closed", () => {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
+    /**
+     * On OS X it is common for applications and their menu bar
+     * to stay active until the user quits explicitly with Cmd + Q
+     */
     if (process.platform !== "darwin") {
         electron.app.quit();
     }
-    log4js.shutdown((err) => { });
+    log4js.shutdown(() => {
+        // Do nothing
+    });
 });
 
 electron.app.on("activate", () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (mainWindow === null) {
-        createWindow();
+    /**
+     * On OS X it's common to re-create a window in the app when the
+     * dock icon is clicked and there are no other windows open.
+     */
+    if (mainWindow === undefined && loginWindow === undefined) {
+        startup();
     }
 });
 
 // SSL/TSL: this is the self signed certificate support
-electron.app.on("certificate-error", (event, webContents, url, error, certificate, callback) => {
-    // On certificate error we disable default behaviour (stop loading the page)
-    // and we then say "it is all fine - true" to the callback
+electron.app.on("certificate-error", (event: electron.Event, webContents: electron.WebContents, url: string, error: string, certificate: electron.Certificate, callback: Function) => {
+    /**
+     * On certificate error we disable default behaviour (stop loading the page)
+     * and we then say "it is all fine - true" to the callback
+     */
     event.preventDefault();
     callback(true);
 });

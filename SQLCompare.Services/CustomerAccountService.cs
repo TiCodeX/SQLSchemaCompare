@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using SQLCompare.Core.Entities.AccountService;
+using SQLCompare.Core.Entities.Exceptions;
+using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 
 namespace SQLCompare.Services
@@ -13,39 +13,42 @@ namespace SQLCompare.Services
     /// </summary>
     public class CustomerAccountService : IAccountService
     {
-        private const string CreateAccountEndpoint = "http://localhost:7071/api/CreateAccount";
-        /* private const string LoginEndpoint = "http://localhost:7071/api/Login"; */
+        private readonly IAppGlobals appGlobals;
 
-        /// <inheritdoc/>
-        public LoginResult CustomerInformation { get; private set; }
-
-        /// <inheritdoc/>
-        public async Task CreateAccountAsync(string email, string password, bool startTrial, string productName)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomerAccountService"/> class
+        /// </summary>
+        /// <param name="appGlobals">Injected application global constants</param>
+        public CustomerAccountService(IAppGlobals appGlobals)
         {
-            using (var client = new HttpClient())
-            {
-                var request = new CreateAccountRequest
-                {
-                    Email = email,
-                    Password = password,
-                    StartTrial = startTrial,
-                    ProductName = productName,
-                };
-
-                using (HttpResponseMessage response = await client.PostAsJsonAsync(CreateAccountEndpoint, request).ConfigureAwait(false))
-                {
-                    response.EnsureSuccessStatusCode();
-                    var results = await response.Content.ReadAsAsync<CreateAccountResponse>().ConfigureAwait(false);
-                }
-            }
-
-            throw new NotImplementedException();
+            this.appGlobals = appGlobals;
         }
 
         /// <inheritdoc/>
-        public void Login(string email, string password, string productName)
+        public VerifySessionResult CustomerInformation { get; private set; }
+
+        /// <inheritdoc/>
+        public async Task VerifySession(string sessionToken)
         {
-            throw new NotImplementedException();
+            using (var client = new HttpClient())
+            {
+                var builder = new UriBuilder(this.appGlobals.VerifySessionEndpoint)
+                {
+                    Query = $"st={sessionToken}"
+                };
+
+                using (var response = await client.GetAsync(builder.Uri).ConfigureAwait(false))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var results = await response.Content.ReadAsAsync<AzureFunctionResponse<VerifySessionResult>>().ConfigureAwait(false);
+                    if (!results.Success)
+                    {
+                        throw new AccountServiceException(results.ErrorMessage) { ErrorCode = results.ErrorCode };
+                    }
+
+                    this.CustomerInformation = results.Result;
+                }
+            }
         }
 
         /// <inheritdoc/>

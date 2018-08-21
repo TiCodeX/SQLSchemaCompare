@@ -1,9 +1,7 @@
-﻿@using System.Net.Http
-@using Core.Enums
+﻿@using Core.Enums
 @using Core.Interfaces
 @using Enums
 @using Core.Entities.DatabaseProvider
-@using Models
 @using Services
 @model ADatabaseProviderOptions
 @{
@@ -16,48 +14,34 @@
         <h5 class="card-title text-center">@ViewBag.Title</h5>
         <p class="card-text">
             <div class="form-group">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">@Localization.LabelType</span>
-                    </div>
-                    <select name="@(prefix)DatabaseType">
-                        @{
-                            @:<option value="@DatabaseType.MicrosoftSql" @(Model is MicrosoftSqlDatabaseProviderOptions ? "selected" : "")>Microsoft SQL Server</option>
-                            @:<option value="@DatabaseType.MySql" @(Model is MySqlDatabaseProviderOptions ? "selected" : "")>Oracle MySQL Server</option>
-                            @:<option value="@DatabaseType.PostgreSql" @(Model is PostgreSqlDatabaseProviderOptions ? "selected" : "")>PostgreSQL Server</option>
-                        }
-                    </select>
-                </div>
+                <label class="form-label">@Localization.LabelType</label>
+                <select name="@(prefix)DatabaseType" class="form-control-sm">
+                    @{
+                        @:<option value="@DatabaseType.MicrosoftSql" @(Model is MicrosoftSqlDatabaseProviderOptions ? "selected" : "")>Microsoft SQL Server</option>
+                        @:<option value="@DatabaseType.MySql" @(Model is MySqlDatabaseProviderOptions ? "selected" : "")>Oracle MySQL Server</option>
+                        @:<option value="@DatabaseType.PostgreSql" @(Model is PostgreSqlDatabaseProviderOptions ? "selected" : "")>PostgreSQL Server</option>
+                    }
+                </select>
             </div>
             <div class="form-group">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">@Localization.LabelHostname</span>
-                    </div>
-                    <input type="text" name="@(prefix)Hostname" value="@Model.Hostname">
-                </div>
+                <label class="form-label">@Localization.LabelHostname</label>
+                <input type="text" name="@(prefix)Hostname" value="@Model.Hostname" class="form-control-sm">
             </div>
             <div class="form-group">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">@Localization.LabelUsername</span>
-                    </div>
-                    <input type="text" name="@(prefix)Username" value="@Model.Username">
-                </div>
+                <label class="form-label">@Localization.LabelUsername</label>
+                <input type="text" name="@(prefix)Username" value="@Model.Username" class="form-control-sm">
             </div>
             <div class="form-group">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">@Localization.LabelPassword</span>
-                    </div>
-                    <input type="password" name="@(prefix)Password" value="@Model.Password">
-                </div>
+                <label class="form-label">@Localization.LabelPassword</label>
+                <input type="password" name="@(prefix)Password" value="@Model.Password" class="form-control-sm">
             </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">@Localization.LabelUseWindowsAuthentication</span>
-                    </div>
+
+
+            <div class="form-group row">
+                <div class="col-9">
+                    <label class="form-label">@Localization.LabelUseWindowsAuthentication</label>
+                </div>
+                <div class="col-3 text-right">
                     <label class="switch">
                         @{
                             @:<input type="checkbox" name="@(prefix)UseWindowsAuthentication" data-value-type="boolean" @(Model is MicrosoftSqlDatabaseProviderOptions options && options.UseWindowsAuthentication ? "checked=\"checked\"" : "")>
@@ -66,11 +50,11 @@
                     </label>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">@Localization.LabelUseSSL</span>
-                    </div>
+            <div class="form-group row">
+                <div class="col-9">
+                    <label class="form-label">@Localization.LabelUseSSL</label>
+                </div>
+                <div class="col-3 text-right">
                     <label class="switch">
                         @{
                             @:<input type="checkbox" name="@(prefix)UseSSL" data-value-type="boolean" @(Model.UseSSL ? "checked=\"checked\"" : "")>
@@ -79,12 +63,10 @@
                     </label>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text min-width-100">@Localization.LabelDatabase</span>
-                    </div>
-                    <select name="@(prefix)Database">
+            <div class="form-group ">
+                <label class="form-label">@Localization.LabelDatabase</label>
+                <div class="input-group input-group-sm">
+                    <select name="@(prefix)Database" class="form-control-sm">
                         @if (!string.IsNullOrEmpty(Model.Database))
                         {
                             <option value="@Model.Database">@Model.Database</option>

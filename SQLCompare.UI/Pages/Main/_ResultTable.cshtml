@@ -1,8 +1,4 @@
 ﻿@using Core.Entities.Compare
-@using Core.Entities.Database
-@using Core.Entities.Database.MicrosoftSql
-@using Core.Entities.Database.MySql
-@using Core.Entities.Database.PostgreSql
 @using Core.Interfaces
 @using Services
 @model List<ABaseCompareResultItem>
@@ -14,7 +10,7 @@
         <h5 class="mb-0">@ViewBag.Title (@Model.Count)</h5>
     </div>
     <div id="@divId" class="collapse @(ViewBag.Show is bool && ViewBag.Show ? "show" : "")">
-        <table class="table">
+        <table class="table table-compact">
             <thead class="thead-light">
                 <tr>
                     <th style="width: 10%">@Localization.LabelType</th>

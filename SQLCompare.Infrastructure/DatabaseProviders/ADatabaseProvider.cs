@@ -135,7 +135,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                                            && table.Schema == y.TableSchema
                                            && table.Name == y.TableName));
                 table.PrimaryKeys.AddRange(
-                    indexes.Where(y => y.IsPrimaryKey == true
+                    indexes.Where(y => y.IsPrimaryKey
                                            && table.Catalog == y.TableCatalog
                                            && table.Schema == y.TableSchema
                                            && table.Name == y.TableName));

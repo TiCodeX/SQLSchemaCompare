@@ -134,7 +134,7 @@ class Project {
                     properties: ["openFile"],
                 });
 
-            if (!Boolean(filenames) || filenames.length < 1 || Utility.IsNullOrWhitespace(filenames[0])) {
+            if (!Array.isArray(filenames) || filenames.length < 1 || Utility.IsNullOrWhitespace(filenames[0])) {
                 return;
             }
 

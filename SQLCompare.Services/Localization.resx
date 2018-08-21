@@ -258,10 +258,46 @@
   <data name="LabelIgnoreReferenceTableColumnOrder" xml:space="preserve">
     <value>Ignore source table column order</value>
   </data>
+  <data name="ErrorGeneric" xml:space="preserve">
+    <value>An error occurred</value>
+  </data>
+  <data name="ErrorInvalidUsernameOrPassword" xml:space="preserve">
+    <value>Invalid username or password</value>
+  </data>
   <data name="LabelSequence" xml:space="preserve">
     <value>Sequence</value>
   </data>
   <data name="LabelLogLevel" xml:space="preserve">
     <value>Logging level</value>
+  </data>
+  <data name="ErrorAccountLocked" xml:space="preserve">
+    <value>Account is locked</value>
+  </data>
+  <data name="ErrorEmailNotSpecified" xml:space="preserve">
+    <value>E-mail not specified</value>
+  </data>
+  <data name="ErrorEmailNotVerified" xml:space="preserve">
+    <value>E-mail not verified</value>
+  </data>
+  <data name="ErrorLoginVerificationFailed" xml:space="preserve">
+    <value>Failed to verify login</value>
+  </data>
+  <data name="ErrorNoSubscriptionAvailable" xml:space="preserve">
+    <value>No subscription plan available</value>
+  </data>
+  <data name="ErrorPasswordNotSpecified" xml:space="preserve">
+    <value>Password not specified</value>
+  </data>
+  <data name="ErrorProductIsMissing" xml:space="preserve">
+    <value>Product is missing</value>
+  </data>
+  <data name="ErrorSessionExpired" xml:space="preserve">
+    <value>The session has expired</value>
+  </data>
+  <data name="ErrorSubscriptionExpired" xml:space="preserve">
+    <value>The subscription has expired</value>
+  </data>
+  <data name="ErrorTrialSubscriptionExpired" xml:space="preserve">
+    <value>The trial subscriptioin has expired</value>
   </data>
 </root>

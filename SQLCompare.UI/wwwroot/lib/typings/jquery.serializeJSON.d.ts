@@ -13,6 +13,6 @@ interface SerializeJSONSettings {
     useIntKeysAsArrayIndex?: boolean;
 }
 
-interface JQuery {
+interface JQuery<TElement = HTMLElement> extends Iterable<TElement> {
     serializeJSON(settings?: SerializeJSONSettings): any;
 }

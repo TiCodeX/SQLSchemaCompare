@@ -25,7 +25,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateTable(ABaseDbTable table, ABaseDbTable referenceTable)
+        protected override string ScriptCreateTable(ABaseDbTable table, ABaseDbTable referenceTable = null)
         {
             var ncol = table.Columns.Count;
 

@@ -117,8 +117,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       rc.UPDATE_RULE as UpdateRule,");
             query.AppendLine("       rc.DELETE_RULE as DeleteRule");
             query.AppendLine("FROM information_schema.key_column_usage kcu");
-            query.AppendLine("INNER JOIN information_schema.table_constraints tc ON tc.table_name = kcu.table_name and tc.table_schema = kcu.table_schema and tc.constraint_name = kcu.constraint_name");
-            query.AppendLine("INNER JOIN information_schema.REFERENTIAL_CONSTRAINTS rc ON rc.constraint_name = kcu.constraint_name ");
+            query.AppendLine("INNER JOIN information_schema.table_constraints tc ON tc.table_name = kcu.table_name AND tc.table_schema = kcu.table_schema AND tc.constraint_name = kcu.constraint_name");
+            query.AppendLine("INNER JOIN information_schema.REFERENTIAL_CONSTRAINTS rc ON rc.constraint_catalog = kcu.constraint_catalog AND rc.constraint_schema = kcu.constraint_schema AND rc.constraint_name = kcu.constraint_name ");
             query.AppendLine($"WHERE kcu.TABLE_SCHEMA = '{database.Name}' AND tc.constraint_type = 'FOREIGN KEY'");
 
             return context.Query<MySqlForeignKey>(query.ToString());

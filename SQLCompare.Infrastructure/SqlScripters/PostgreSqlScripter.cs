@@ -25,7 +25,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateTable(ABaseDbTable table, ABaseDbTable referenceTable)
+        protected override string ScriptCreateTable(ABaseDbTable table, ABaseDbTable referenceTable = null)
         {
             var ncol = table.Columns.Count;
             var columns = this.GetSortedTableColumns(table, referenceTable);
@@ -49,11 +49,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            IEnumerable<string> columnList;
             foreach (var keys in table.PrimaryKeys.GroupBy(x => x.Name))
             {
                 var key = (PostgreSqlIndex)keys.First();
-                columnList = keys.OrderBy(x => ((PostgreSqlIndex)x).OrdinalPosition).Select(x => $"\"{((PostgreSqlIndex)x).ColumnName}\"");
+                var columnList = keys.OrderBy(x => ((PostgreSqlIndex)x).OrdinalPosition).Select(x => $"\"{((PostgreSqlIndex)x).ColumnName}\"");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT \"{key.Name}\" PRIMARY KEY ({string.Join(",", columnList)});");
@@ -80,23 +79,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine($"ON DELETE {key.DeleteRule}");
                 sb.AppendLine($"ON UPDATE {key.UpdateRule}");
 
-                if (key.IsDeferrable)
-                {
-                    sb.AppendLine("DEFERRABLE");
-                }
-                else
-                {
-                    sb.AppendLine("NOT DEFERRABLE");
-                }
+                sb.AppendLine(key.IsDeferrable ? "DEFERRABLE" : "NOT DEFERRABLE");
 
-                if (key.IsInitiallyDeferred)
-                {
-                    sb.AppendLine("INITIALLY DEFERRED;");
-                }
-                else
-                {
-                    sb.AppendLine("INITIALLY IMMEDIATE;");
-                }
+                sb.AppendLine(key.IsInitiallyDeferred ? "INITIALLY DEFERRED;" : "INITIALLY IMMEDIATE;");
 
                 sb.AppendLine();
             }
@@ -179,9 +164,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
             else
             {
                 sb.AppendLine($"CREATE VIEW {this.ScriptHelper.ScriptObjectName(view)}");
-                sb.AppendLine($"WITH(");
+                sb.AppendLine("WITH(");
                 sb.AppendLine($"{this.Indent}CHECK_OPTION = {checkOption}");
-                sb.AppendLine($") AS");
+                sb.AppendLine(") AS");
             }
 
             sb.AppendLine($"{view.ViewDefinition}");
@@ -202,8 +187,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
             for (var i = 0; i < args.Length; i++)
             {
                 var argType = args[i];
-                var argMode = function.ArgModes != null ? function.ArgModes.ToArray()[i] : 'i';
-                var argName = function.ArgNames != null ? function.ArgNames.ToArray()[i] : string.Empty;
+                var argMode = function.ArgModes?.ToArray()[i] ?? 'i';
+                var argName = function.ArgNames?.ToArray()[i] ?? string.Empty;
                 sb.AppendLine();
                 sb.Append($"{this.Indent}{PostgreSqlScriptHelper.ScriptFunctionArgument(argType, argMode, argName, dataTypes)}");
                 if (i != args.Length - 1)

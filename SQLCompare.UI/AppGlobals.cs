@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using SQLCompare.Core.Interfaces;
+using SQLCompare.Services;
 
 namespace SQLCompare.UI
 {
@@ -56,5 +57,17 @@ namespace SQLCompare.UI
 
         /// <inheritdoc/>
         public int LoggerMaxArchiveFiles => 9;
+
+        /// <inheritdoc/>
+        public string ElectronAuthAppId => "queieimiugrepqueieimiucrap";
+
+        /// <inheritdoc/>
+        public string ProductCode => "SQLCMP";
+
+        /// <inheritdoc/>
+        public string LoginEndpoint => $"https://localhost:44349/login?culture={Localization.Culture.Name}&appId={this.ElectronAuthAppId}&product={this.ProductCode}";
+
+        /// <inheritdoc/>
+        public string VerifySessionEndpoint => "http://localhost:7071/api/VerifySession";
     }
 }

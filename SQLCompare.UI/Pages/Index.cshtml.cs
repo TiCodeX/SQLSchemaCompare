@@ -14,6 +14,7 @@ namespace SQLCompare.UI.Pages
         private readonly IAppGlobals appGlobals;
         private readonly ILocalizationService localizationService;
         private readonly ILogger logger;
+        private readonly IAccountService accountService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Index"/> class.
@@ -21,12 +22,19 @@ namespace SQLCompare.UI.Pages
         /// <param name="appGlobals">The injected app globals</param>
         /// <param name="localizationService">The injected LocalizationService</param>
         /// <param name="logger">The injected logger</param>
-        public Index(IAppGlobals appGlobals, ILocalizationService localizationService, ILogger<Index> logger)
+        /// <param name="accountService">The injected account service</param>
+        public Index(IAppGlobals appGlobals, ILocalizationService localizationService, ILogger<Index> logger, IAccountService accountService)
         {
             this.appGlobals = appGlobals;
             this.localizationService = localizationService;
             this.logger = logger;
+            this.accountService = accountService;
         }
+
+        /// <summary>
+        /// Gets or sets the title of the page
+        /// </summary>
+        public string Title { get; set; }
 
         /// <summary>
         /// Get the localization
@@ -40,9 +48,11 @@ namespace SQLCompare.UI.Pages
         /// <summary>
         /// Initialize the state of the page
         /// </summary>
-        public void OnGet()
+        /// <returns>The page</returns>
+        public IActionResult OnGet()
         {
-            this.ViewData["Title"] = $"{this.appGlobals.ProductName} - {this.appGlobals.CompanyName}";
+            this.Title = $"{this.appGlobals.ProductName} - {this.appGlobals.CompanyName}";
+            return this.Page();
         }
     }
 }

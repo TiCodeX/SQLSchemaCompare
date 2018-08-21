@@ -1,0 +1,58 @@
+﻿@page
+@model Login
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>@Model.Title</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            background: #ffffff;
+            font-family: OpenSans, sans-serif;
+        }
+
+        #url {
+            display: none;
+        }
+
+        #webview {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    @Html.AntiForgeryToken()
+
+    @* Url is stored in the input field because it will be set to the webview after registering the event handlers *@
+    @if (!Model.Verified) {
+        <input id="url" type="text" value="@Model.LoginEndpoint" />
+    }
+    <webview id="webview"></webview>
+
+    <div id="error"></div>
+
+    @* In order to make jquery work with both Chrome and Electron *@
+    @* Keep a reference to module and restore it after jquery is loaded *@
+    <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+    <script src="~/lib/jquery/jquery-3.3.1.min.js"></script>
+    <script>if (window.module) module = window.module;</script>
+
+    @* SQLCompare scripts *@
+    @if (AppGlobal.IsDevelopment)
+    {
+        <script src="~/js/Login.js" asp-append-version="true"></script>
+    }
+    else
+    {
+        <script src="~/js/login.min.js" asp-append-version="true"></script>
+    }
+</body>
+</html>
+

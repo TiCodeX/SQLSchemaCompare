@@ -33,17 +33,17 @@ namespace SQLCompare.Test.Infrastructure.SqlScripter
         [UnitTest]
         public void GetSortedTableColumnsAlphabetically()
         {
-            MicrosoftSqlScripter scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions() { Scripting = new ScriptingOptions() { OrderColumnAlphabetically = true } });
+            var scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions { Scripting = new ScriptingOptions { OrderColumnAlphabetically = true } });
 
-            var table = new MicrosoftSqlTable() { };
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "e", OrdinalPosition = 1 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "a", OrdinalPosition = 2 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "b", OrdinalPosition = 0 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "c", OrdinalPosition = 4 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "d", OrdinalPosition = 3 });
+            var table = new MicrosoftSqlTable();
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "a", OrdinalPosition = 2 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "b", OrdinalPosition = 0 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            IEnumerable<ABaseDbColumn> columns = (IEnumerable<ABaseDbColumn>)scripter.GetType().GetTypeInfo().BaseType.GetTypeInfo().GetDeclaredMethod("GetSortedTableColumns").Invoke(scripter, new[] { table, null });
-            columns.Select(x => x.Name).Should().ContainInOrder(new[] { "a", "b", "c", "d", "e" });
+            var columns = (IEnumerable<ABaseDbColumn>)scripter.GetType().GetTypeInfo().BaseType.GetTypeInfo().GetDeclaredMethod("GetSortedTableColumns").Invoke(scripter, new[] { table, null });
+            columns.Select(x => x.Name).Should().ContainInOrder("a", "b", "c", "d", "e");
         }
 
         /// <summary>
@@ -53,17 +53,17 @@ namespace SQLCompare.Test.Infrastructure.SqlScripter
         [UnitTest]
         public void GetSortedTableColumnsByOrdinalPosition()
         {
-            MicrosoftSqlScripter scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions() { Scripting = new ScriptingOptions() { OrderColumnAlphabetically = false } });
+            var scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions { Scripting = new ScriptingOptions { OrderColumnAlphabetically = false } });
 
-            var table = new MicrosoftSqlTable() { };
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "e", OrdinalPosition = 1 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "a", OrdinalPosition = 2 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "b", OrdinalPosition = 0 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "c", OrdinalPosition = 4 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "d", OrdinalPosition = 3 });
+            var table = new MicrosoftSqlTable();
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "a", OrdinalPosition = 2 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "b", OrdinalPosition = 0 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            IEnumerable<ABaseDbColumn> columns = (IEnumerable<ABaseDbColumn>)scripter.GetType().GetTypeInfo().BaseType.GetTypeInfo().GetDeclaredMethod("GetSortedTableColumns").Invoke(scripter, new[] { table, null });
-            columns.Select(x => x.Name).Should().ContainInOrder(new[] { "b", "e", "a", "d", "c" });
+            var columns = (IEnumerable<ABaseDbColumn>)scripter.GetType().GetTypeInfo().BaseType.GetTypeInfo().GetDeclaredMethod("GetSortedTableColumns").Invoke(scripter, new[] { table, null });
+            columns.Select(x => x.Name).Should().ContainInOrder("b", "e", "a", "d", "c");
         }
 
         /// <summary>
@@ -73,24 +73,24 @@ namespace SQLCompare.Test.Infrastructure.SqlScripter
         [UnitTest]
         public void GetSortedTableColumnsWithReferenceTableAlphabetically()
         {
-            MicrosoftSqlScripter scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions() { Scripting = new ScriptingOptions() { OrderColumnAlphabetically = true } });
+            var scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions { Scripting = new ScriptingOptions { OrderColumnAlphabetically = true } });
 
-            var refTable = new MicrosoftSqlTable() { };
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "e", OrdinalPosition = 1 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "m", OrdinalPosition = 3 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "z", OrdinalPosition = 2 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "c", OrdinalPosition = 0 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "d", OrdinalPosition = 4 });
+            var refTable = new MicrosoftSqlTable();
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "m", OrdinalPosition = 3 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "z", OrdinalPosition = 2 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 0 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 4 });
 
-            var table = new MicrosoftSqlTable() { };
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "e", OrdinalPosition = 1 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "a", OrdinalPosition = 2 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "b", OrdinalPosition = 0 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "c", OrdinalPosition = 4 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "d", OrdinalPosition = 3 });
+            var table = new MicrosoftSqlTable();
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "a", OrdinalPosition = 2 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "b", OrdinalPosition = 0 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            IEnumerable<ABaseDbColumn> columns = (IEnumerable<ABaseDbColumn>)scripter.GetType().GetTypeInfo().BaseType.GetTypeInfo().GetDeclaredMethod("GetSortedTableColumns").Invoke(scripter, new[] { table, refTable });
-            columns.Select(x => x.Name).Should().ContainInOrder(new[] { "c", "d", "e", "a", "b" });
+            var columns = (IEnumerable<ABaseDbColumn>)scripter.GetType().GetTypeInfo().BaseType.GetTypeInfo().GetDeclaredMethod("GetSortedTableColumns").Invoke(scripter, new[] { table, refTable });
+            columns.Select(x => x.Name).Should().ContainInOrder("c", "d", "e", "a", "b");
         }
 
         /// <summary>
@@ -100,24 +100,24 @@ namespace SQLCompare.Test.Infrastructure.SqlScripter
         [UnitTest]
         public void GetSortedTableColumnsWithReferenceTableByOrdinalPosition()
         {
-            MicrosoftSqlScripter scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions() { Scripting = new ScriptingOptions() { OrderColumnAlphabetically = false } });
+            var scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions { Scripting = new ScriptingOptions { OrderColumnAlphabetically = false } });
 
-            var refTable = new MicrosoftSqlTable() { };
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "e", OrdinalPosition = 1 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "m", OrdinalPosition = 3 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "z", OrdinalPosition = 2 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "c", OrdinalPosition = 0 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "d", OrdinalPosition = 4 });
+            var refTable = new MicrosoftSqlTable();
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "m", OrdinalPosition = 3 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "z", OrdinalPosition = 2 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 0 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 4 });
 
-            var table = new MicrosoftSqlTable() { };
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "e", OrdinalPosition = 1 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "a", OrdinalPosition = 2 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "b", OrdinalPosition = 0 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "c", OrdinalPosition = 4 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "d", OrdinalPosition = 3 });
+            var table = new MicrosoftSqlTable();
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "a", OrdinalPosition = 2 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "b", OrdinalPosition = 0 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            IEnumerable<ABaseDbColumn> columns = (IEnumerable<ABaseDbColumn>)scripter.GetType().GetTypeInfo().BaseType.GetTypeInfo().GetDeclaredMethod("GetSortedTableColumns").Invoke(scripter, new[] { table, refTable });
-            columns.Select(x => x.Name).Should().ContainInOrder(new[] { "c", "e", "d", "b", "a" });
+            var columns = (IEnumerable<ABaseDbColumn>)scripter.GetType().GetTypeInfo().BaseType.GetTypeInfo().GetDeclaredMethod("GetSortedTableColumns").Invoke(scripter, new[] { table, refTable });
+            columns.Select(x => x.Name).Should().ContainInOrder("c", "e", "d", "b", "a");
         }
 
         /// <summary>
@@ -127,24 +127,24 @@ namespace SQLCompare.Test.Infrastructure.SqlScripter
         [UnitTest]
         public void GetSortedTableColumnsWithReferenceTableByOrdinalPositionIgnoreReference()
         {
-            MicrosoftSqlScripter scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions() { Scripting = new ScriptingOptions() { OrderColumnAlphabetically = false, IgnoreReferenceTableColumnOrder = true } });
+            var scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions { Scripting = new ScriptingOptions { OrderColumnAlphabetically = false, IgnoreReferenceTableColumnOrder = true } });
 
-            var refTable = new MicrosoftSqlTable() { };
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "e", OrdinalPosition = 1 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "m", OrdinalPosition = 3 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "z", OrdinalPosition = 2 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "c", OrdinalPosition = 0 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "d", OrdinalPosition = 4 });
+            var refTable = new MicrosoftSqlTable();
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "m", OrdinalPosition = 3 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "z", OrdinalPosition = 2 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 0 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 4 });
 
-            var table = new MicrosoftSqlTable() { };
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "e", OrdinalPosition = 1 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "a", OrdinalPosition = 2 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "b", OrdinalPosition = 0 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "c", OrdinalPosition = 4 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "d", OrdinalPosition = 3 });
+            var table = new MicrosoftSqlTable();
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "a", OrdinalPosition = 2 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "b", OrdinalPosition = 0 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            IEnumerable<ABaseDbColumn> columns = (IEnumerable<ABaseDbColumn>)scripter.GetType().GetTypeInfo().BaseType.GetTypeInfo().GetDeclaredMethod("GetSortedTableColumns").Invoke(scripter, new[] { table, refTable });
-            columns.Select(x => x.Name).Should().ContainInOrder(new[] { "b", "e", "a", "d", "c" });
+            var columns = (IEnumerable<ABaseDbColumn>)scripter.GetType().GetTypeInfo().BaseType.GetTypeInfo().GetDeclaredMethod("GetSortedTableColumns").Invoke(scripter, new[] { table, refTable });
+            columns.Select(x => x.Name).Should().ContainInOrder("b", "e", "a", "d", "c");
         }
 
         /// <summary>
@@ -154,24 +154,24 @@ namespace SQLCompare.Test.Infrastructure.SqlScripter
         [UnitTest]
         public void GetSortedTableColumnsWithReferenceTableAlphabeticallyIgnoreReference()
         {
-            MicrosoftSqlScripter scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions() { Scripting = new ScriptingOptions() { OrderColumnAlphabetically = true, IgnoreReferenceTableColumnOrder = true } });
+            var scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions { Scripting = new ScriptingOptions { OrderColumnAlphabetically = true, IgnoreReferenceTableColumnOrder = true } });
 
-            var refTable = new MicrosoftSqlTable() { };
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "e", OrdinalPosition = 1 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "m", OrdinalPosition = 3 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "z", OrdinalPosition = 2 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "c", OrdinalPosition = 0 });
-            refTable.Columns.Add(new MicrosoftSqlColumn() { Name = "d", OrdinalPosition = 4 });
+            var refTable = new MicrosoftSqlTable();
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "m", OrdinalPosition = 3 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "z", OrdinalPosition = 2 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 0 });
+            refTable.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 4 });
 
-            var table = new MicrosoftSqlTable() { };
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "e", OrdinalPosition = 1 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "a", OrdinalPosition = 2 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "b", OrdinalPosition = 0 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "c", OrdinalPosition = 4 });
-            table.Columns.Add(new MicrosoftSqlColumn() { Name = "d", OrdinalPosition = 3 });
+            var table = new MicrosoftSqlTable();
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "a", OrdinalPosition = 2 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "b", OrdinalPosition = 0 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
+            table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            IEnumerable<ABaseDbColumn> columns = (IEnumerable<ABaseDbColumn>)scripter.GetType().GetTypeInfo().BaseType.GetTypeInfo().GetDeclaredMethod("GetSortedTableColumns").Invoke(scripter, new[] { table, refTable });
-            columns.Select(x => x.Name).Should().ContainInOrder(new[] { "a", "b", "c", "d", "e" });
+            var columns = (IEnumerable<ABaseDbColumn>)scripter.GetType().GetTypeInfo().BaseType.GetTypeInfo().GetDeclaredMethod("GetSortedTableColumns").Invoke(scripter, new[] { table, refTable });
+            columns.Select(x => x.Name).Should().ContainInOrder("a", "b", "c", "d", "e");
         }
     }
 }

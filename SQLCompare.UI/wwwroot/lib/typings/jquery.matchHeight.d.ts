@@ -30,6 +30,6 @@ declare namespace JQueryMatchHeight {
     }
 }
 
-interface JQuery {
+interface JQuery<TElement = HTMLElement> extends Iterable<TElement> {
     matchHeight: JQueryMatchHeight;
 }

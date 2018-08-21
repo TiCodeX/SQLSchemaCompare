@@ -1,10 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            src: local("Open Sans Regular"), local("OpenSans-Regular"), url("font/OpenSans-Regular.ttf") format("truetype");
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+  
         body {
             background-color: white;
+            font-family: 'Open Sans';
+            background-image: url('img/background.jpg');
+            background-repeat: no-repeat;
+            background-position: right bottom;
+            background-position-x: 40px;
+            background-position-y: 100px;
+            margin: 10px 0 0 0;
         }
 
         h1 {
@@ -16,14 +32,36 @@
         }
 
         .loader {
-            border: 16px solid #f3f3f3;
+            border: 16px solid #39B54A;
             border-radius: 50%;
-            border-top: 16px solid #3498db;
+            border-top: 16px solid #39cc4A;
             width: 120px;
             height: 120px;
+            margin-top: 30px;
             margin-left: auto;
             margin-right: auto;
             animation: spin 2s linear infinite;
+        }
+
+        .brand {
+            font-size: 25px;
+            font-weight: bold;
+            padding-left: 45px;
+        }
+
+        .version {
+            text-align: right;
+            vertical-align: top;
+        }
+
+        .copyright {
+            font-size: 10px;
+        }
+
+        .copyright > br {
+            display: block;
+            content: " ";
+            margin-top: -6px;
         }
 
         @keyframes spin {
@@ -38,11 +76,36 @@
     </style>
 </head>
 <body>
+    <table width="610">
+        <tr>
+            <td style="padding-left:10px">
+                <img src="img/Logo.png" width="200" />
+                <br />
+                <label class="brand">SQL Compare</label>
+            </td>
+            <td id="version" class="version"></td>
+        </tr>
+    </table>
     <div style="text-align: center;">
-        <h1>SQL Compare</h1>
-        <h4>TiCodeX SA</h4>
         <div class="loader"></div>
-        <h1><i>Loading...</i></h1>
+        <h2><i>Loading...</i></h2>
     </div>
+    <table width="610">
+        <tr>
+            <td align="right">
+                <label class="copyright">
+                    &copy; 2018 TiCodeX SA, Switzerland.<br />All rights protected.
+                </label>
+            </td>
+        </tr>
+    </table>
+    <script type="text/javascript">
+        try {
+            var electron = require("electron");
+            document.getElementById("version").innerHTML = "v" + electron.remote.app.getVersion();
+        } catch (e) {
+            document.getElementById("version").innerHTML = "v0.0.0";
+        }
+    </script>
 </body>
 </html>

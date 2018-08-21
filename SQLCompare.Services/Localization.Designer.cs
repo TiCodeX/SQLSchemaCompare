@@ -106,6 +106,114 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account is locked.
+        /// </summary>
+        public static string ErrorAccountLocked {
+            get {
+                return ResourceManager.GetString("ErrorAccountLocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-mail not specified.
+        /// </summary>
+        public static string ErrorEmailNotSpecified {
+            get {
+                return ResourceManager.GetString("ErrorEmailNotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-mail not verified.
+        /// </summary>
+        public static string ErrorEmailNotVerified {
+            get {
+                return ResourceManager.GetString("ErrorEmailNotVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred.
+        /// </summary>
+        public static string ErrorGeneric {
+            get {
+                return ResourceManager.GetString("ErrorGeneric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid username or password.
+        /// </summary>
+        public static string ErrorInvalidUsernameOrPassword {
+            get {
+                return ResourceManager.GetString("ErrorInvalidUsernameOrPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to verify login.
+        /// </summary>
+        public static string ErrorLoginVerificationFailed {
+            get {
+                return ResourceManager.GetString("ErrorLoginVerificationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No subscription plan available.
+        /// </summary>
+        public static string ErrorNoSubscriptionAvailable {
+            get {
+                return ResourceManager.GetString("ErrorNoSubscriptionAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password not specified.
+        /// </summary>
+        public static string ErrorPasswordNotSpecified {
+            get {
+                return ResourceManager.GetString("ErrorPasswordNotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Product is missing.
+        /// </summary>
+        public static string ErrorProductIsMissing {
+            get {
+                return ResourceManager.GetString("ErrorProductIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The session has expired.
+        /// </summary>
+        public static string ErrorSessionExpired {
+            get {
+                return ResourceManager.GetString("ErrorSessionExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The subscription has expired.
+        /// </summary>
+        public static string ErrorSubscriptionExpired {
+            get {
+                return ResourceManager.GetString("ErrorSubscriptionExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The trial subscriptioin has expired.
+        /// </summary>
+        public static string ErrorTrialSubscriptionExpired {
+            get {
+                return ResourceManager.GetString("ErrorTrialSubscriptionExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Database.
         /// </summary>
         public static string LabelDatabase {

@@ -1,7 +1,5 @@
 ﻿@page
-@using System.Net.Http
 @using Enums
-@using Models
 @using Services
 @model ProjectPageModel
 
@@ -47,13 +45,13 @@
         </div>
         <div class="tab-pane" id="tabOptions">
             <div class="row">
-                <div class="col-12">
+                <div class="col-6">
 
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text min-width-100">@Localization.LabelIgnoreCollate</span>
-                            </div>
+                    <div class="form-group row">
+                        <div class="col-9">
+                            <label class="form-label">@Localization.LabelIgnoreCollate</label>
+                        </div>
+                        <div class="col-3 text-right">
                             <label class="switch">
                                 @{
                                     @:<input type="checkbox" name="ProjectOptions[Scripting[IgnoreCollate]]" data-value-type="boolean" @(Model.Project.Options.Scripting.IgnoreCollate ? "checked=\"checked\"" : "")>
@@ -63,11 +61,11 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text min-width-100">@Localization.LabelOrderColumnAlphabetically</span>
-                            </div>
+                    <div class="form-group row">
+                        <div class="col-9">
+                            <label class="form-label">@Localization.LabelOrderColumnAlphabetically</label>
+                        </div>
+                        <div class="col-3 text-right">
                             <label class="switch">
                                 @{
                                     @:<input type="checkbox" name="ProjectOptions[Scripting[OrderColumnAlphabetically]]" data-value-type="boolean" @(Model.Project.Options.Scripting.OrderColumnAlphabetically ? "checked=\"checked\"" : "")>
@@ -77,11 +75,11 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text min-width-100">@Localization.LabelUseSchemaName</span>
-                            </div>
+                    <div class="form-group row">
+                        <div class="col-9">
+                            <label class="form-label">@Localization.LabelUseSchemaName</label>
+                        </div>
+                        <div class="col-3 text-right">
                             <label class="switch">
                                 @{
                                     @:<input type="checkbox" name="ProjectOptions[Scripting[UseSchemaName]]" data-value-type="boolean" @(Model.Project.Options.Scripting.UseSchemaName ? "checked=\"checked\"" : "")>
@@ -91,11 +89,11 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text min-width-100">@Localization.LabelIgnoreReferenceTableColumnOrder</span>
-                            </div>
+                    <div class="form-group row">
+                        <div class="col-9">
+                            <label class="form-label">@Localization.LabelIgnoreReferenceTableColumnOrder</label>
+                        </div>
+                        <div class="col-3 text-right">
                             <label class="switch">
                                 @{
                                     @:<input type="checkbox" name="ProjectOptions[Scripting[IgnoreReferenceTableColumnOrder]]" data-value-type="boolean" @(Model.Project.Options.Scripting.IgnoreReferenceTableColumnOrder ? "checked=\"checked\"" : "")>
@@ -106,21 +104,26 @@
                     </div>
 
                 </div>
+                <div class="col-6">
+                    <label id="helptext">
+                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+                    </label>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="float-right">
-    <button style="@ButtonStyle.Primary" onclick="Project.EditAndCompare()">
-        @Localization.ButtonCompareNow
-    </button>
-    @if (Model.Project.Result != null)
-    {
-        <button style="@ButtonStyle.Secondary" onclick="Utility.CloseModalDialog()">@Localization.ButtonCancel</button>
-    }
-    else
-    {
-        <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">@Localization.ButtonCancel</button>
-    }
+    <div class="float-right">
+        @if (Model.Project.Result != null)
+        {
+            <button style="@ButtonStyle.Secondary" onclick="Utility.CloseModalDialog()">@Localization.ButtonCancel</button>
+        }
+        else
+        {
+            <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">@Localization.ButtonCancel</button>
+        }
+        <button style="@ButtonStyle.Primary" onclick="Project.EditAndCompare()">
+            @Localization.ButtonCompareNow
+        </button>
+    </div>
 </div>

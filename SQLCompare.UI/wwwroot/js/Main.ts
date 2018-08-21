@@ -86,7 +86,7 @@ class Main {
      * @param rowId The id of the row to select
      */
     public static SelectRow(e: MouseEvent, rowId: string): void {
-        const target: JQuery = $(e.target).closest("tr");
+        const target: JQuery<EventTarget> = $(e.target).closest("tr");
 
         // Highlight the selected row only
         target.addClass("table-info").siblings().removeClass("table-info");

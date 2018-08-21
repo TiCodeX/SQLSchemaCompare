@@ -22,5 +22,10 @@ namespace SQLCompare.Core.Entities
         /// Gets the recently opened projects
         /// </summary>
         public List<string> RecentProjects { get; } = new List<string>();
+
+        /// <summary>
+        /// Gets or sets the saved login session
+        /// </summary>
+        public string Session { get; set; }
     }
 }

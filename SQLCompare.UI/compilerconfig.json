@@ -1,9 +1,16 @@
 ﻿[
-  {
-    "outputFile": "wwwroot/css/Index.css",
-    "inputFile": "wwwroot/css/Index.scss",
-    "minify": {
-      "enabled": false
+    {
+        "outputFile": "wwwroot/css/Index.css",
+        "inputFile": "wwwroot/css/Index.scss",
+        "minify": {
+            "enabled": false
+        }
+    },
+    {
+        "outputFile": "wwwroot/css/Font.css",
+        "inputFile": "wwwroot/css/Font.scss",
+        "minify": {
+            "enabled": false
+        }
     }
-  }
 ]

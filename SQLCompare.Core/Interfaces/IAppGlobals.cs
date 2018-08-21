@@ -54,5 +54,25 @@
         /// Gets the logger maximum archive files
         /// </summary>
         int LoggerMaxArchiveFiles { get; }
+
+        /// <summary>
+        /// Gets the application id used during electron login. The same application id is expected in the redirect response.
+        /// </summary>
+        string ElectronAuthAppId { get; }
+
+        /// <summary>
+        /// Gets the product code used to identify subscriptions
+        /// </summary>
+        string ProductCode { get; }
+
+        /// <summary>
+        /// Gets the login endpoint
+        /// </summary>
+        string LoginEndpoint { get; }
+
+        /// <summary>
+        /// Gets the verify session endpoint
+        /// </summary>
+        string VerifySessionEndpoint { get; }
     }
 }

@@ -4,7 +4,11 @@ changedFiles=$(git diff --cached --name-only)
 for file in $changedFiles; do
     [ ! -f "$file" ] && continue;
     [ -z "${file##"SQLCompare.UI/wwwroot/lib/"*}" ] && continue;
+    [ -z "${file##"SQLCompare.UI/wwwroot/img/"*}" ] && continue;
+    [ -z "${file##"SQLCompare.UI/wwwroot/font/"*}" ] && continue;
     [ -z "${file##"SQLCompare/package"*".json"}" ] && continue;
+    [ -z "${file##"SQLCompare/img/"*}" ] && continue;
+    [ -z "${file##"SQLCompare/font/"*}" ] && continue;
     [ -z "${file##*".xlsx"}" ] && continue;
     
     unix2dos < "$file" | cmp -s - "$file"

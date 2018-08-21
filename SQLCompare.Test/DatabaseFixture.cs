@@ -9,7 +9,7 @@ using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Infrastructure.DatabaseProviders;
 using SQLCompare.Infrastructure.EntityFramework;
 
-namespace SQLCompare.Test.Infrastructure.DatabaseProviders
+namespace SQLCompare.Test
 {
     /// <summary>
     /// Creates the sakila/pagila databases for the tests
@@ -67,7 +67,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 context.ExecuteNonQuery(dropDbQuery.ToString());
             }
 
-            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.GetPostgreSqlDatabaseProviderOptions(true)))
+            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.GetPostgreSqlDatabaseProviderOptions()))
             {
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-postgresql.sql");
                 context.ExecuteNonQuery(File.ReadAllText(path));
@@ -77,10 +77,10 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         /// <summary>
         /// Sets the test output helper
         /// </summary>
-        /// <param name="loggerFactory">The test output helper</param>
-        public void SetLoggerFactory(ILoggerFactory loggerFactory)
+        /// <param name="logFactory">The test output helper</param>
+        public void SetLoggerFactory(ILoggerFactory logFactory)
         {
-            this.loggerFactory = loggerFactory;
+            this.loggerFactory = logFactory;
         }
 
         /// <inheritdoc />

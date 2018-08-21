@@ -2,7 +2,8 @@
     {
         "outputFileName": "wwwroot/css/site.min.css",
         "inputFiles": [
-            "wwwroot/css/Index.css"
+            "wwwroot/css/Index.css",
+            "wwwroot/css/Font.css"
         ]
     },
     {
@@ -16,6 +17,17 @@
             "wwwroot/js/Menu.js",
             "wwwroot/js/Project.js",
             "wwwroot/js/Settings.js"
+        ],
+        "minify": {
+            "enabled": true,
+            "renameLocals": true
+        },
+        "sourceMap": false
+    },
+    {
+        "outputFileName": "wwwroot/js/login.min.js",
+        "inputFiles": [
+            "wwwroot/js/Login.js"
         ],
         "minify": {
             "enabled": true,

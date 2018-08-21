@@ -3,22 +3,14 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
-    <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
     <TypeScriptSourceMap>false</TypeScriptSourceMap>
     <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
-    <TSLintConfig>tslint.json</TSLintConfig>
+    <TSLintConfig>..\tslint.json</TSLintConfig>
     <TSLintProject>tsconfig.json</TSLintProject>
     <OutputType>Exe</OutputType>
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <PublishDir>..\.publish</PublishDir>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>
@@ -36,11 +28,15 @@
     <None Include="compilerconfig.json" />
     <Content Remove="tsconfig.json" />
     <None Include="tsconfig.json" />
-    <Content Remove="tslint.json" />
-    <None Include="tslint.json" />
     <!--Configure all TypeScript files to be compiled-->
     <Content Remove="wwwroot\**\*.ts" />
     <TypeScriptCompile Include="wwwroot\**\*.ts" />
+    <!--Configure all Bootstrap scss files as None-->
+    <Content Remove="wwwroot\lib\bootstrap\**\*.scss" />
+    <None Include="wwwroot\lib\bootstrap\**\*.scss" />
+    <!--Configure the certificate as embedded resource-->
+    <None Remove="certificate.pfx" />
+    <EmbeddedResource Include="certificate.pfx" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
@@ -56,18 +52,15 @@
     <EmbeddedResource Include="wwwroot\**\*.min.css" />
     <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*.js" />
     <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*.css" />
-    <!--Configure the images as EmbeddedResource-->
+    <!--Configure the images/fonts as EmbeddedResource-->
     <Content Remove="wwwroot\**\*.png" />
     <EmbeddedResource Include="wwwroot\**\*.png" />
     <Content Remove="wwwroot\**\*.jpg" />
     <EmbeddedResource Include="wwwroot\**\*.jpg" />
     <Content Remove="wwwroot\**\*.svg" />
     <EmbeddedResource Include="wwwroot\**\*.svg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="certificate.pfx" />
-    <EmbeddedResource Include="certificate.pfx" />
+    <Content Remove="wwwroot\**\*.ttf" />
+    <EmbeddedResource Include="wwwroot\**\*.ttf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -102,7 +95,7 @@
   </ItemGroup>
 
   <ImportGroup>
-    <Import Project="tslint.targets" />
+    <Import Project="..\tslint.targets" />
   </ImportGroup>
 
   <Target Name="Obfuscate" AfterTargets="Publish">

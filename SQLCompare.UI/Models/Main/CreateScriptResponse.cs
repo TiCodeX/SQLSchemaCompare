@@ -1,12 +1,9 @@
-﻿using SQLCompare.Core.Entities.AccountService;
-
-namespace SQLCompare.UI.Models.Main
+﻿namespace SQLCompare.UI.Models.Main
 {
     /// <summary>
     /// Represent the response of a CreateScript request
     /// </summary>
-    /// <seealso cref="SQLCompare.Core.Entities.AccountService.ABaseResponse" />
-    public class CreateScriptResponse : ABaseResponse
+    public class CreateScriptResponse
     {
         /// <summary>
         /// Gets or sets the source SQL

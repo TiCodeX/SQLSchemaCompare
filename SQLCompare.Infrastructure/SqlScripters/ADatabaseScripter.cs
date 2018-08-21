@@ -305,15 +305,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
             // If there is a source table and the option IgnoreSourceTableColumnOrder is set to false there are 2 sorting outcome:
             // 1) reference table is sorted alphabetically
             // 2) reference table is sorted by column ordinal position
-            var referenceColumns = referenceTable.Columns.AsEnumerable();
-            if (this.Options.Scripting.OrderColumnAlphabetically)
-            {
-                referenceColumns = referenceTable.Columns.OrderBy(x => x.Name);
-            }
-            else
-            {
-                referenceColumns = this.OrderColumnsByOrdinalPosition(referenceTable);
-            }
+            var referenceColumns = this.Options.Scripting.OrderColumnAlphabetically ?
+                referenceTable.Columns.OrderBy(x => x.Name) :
+                this.OrderColumnsByOrdinalPosition(referenceTable);
 
             var sortedColumns = new List<ABaseDbColumn>();
 

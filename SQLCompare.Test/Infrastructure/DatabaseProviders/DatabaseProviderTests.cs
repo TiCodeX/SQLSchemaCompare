@@ -226,7 +226,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 
             var clonedDb = mssqldbp.GetDatabase();
 
-            DatabaseProviderTests.CompareDatabase(db, clonedDb);
+            CompareDatabase(db, clonedDb);
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 
             var clonedDb = postgresqldbp.GetDatabase();
 
-            DatabaseProviderTests.CompareDatabase(db, clonedDb);
+            CompareDatabase(db, clonedDb);
         }
 
         private static void CompareDatabase(ABaseDb db, ABaseDb clonedDb)

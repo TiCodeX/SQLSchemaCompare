@@ -5,7 +5,7 @@
 @using Services
 @model WelcomePageModel
 
-<h1>@string.Format(Localization.TitleWelcome, @AppGlobal.CompanyName + " " + @AppGlobal.ProductName)</h1>
+<h1>@string.Format(Localization.TitleWelcome, AppGlobal.CompanyName + " " + AppGlobal.ProductName)</h1>
 <br />
 
 <button style="@ButtonStyle.Primary" onclick="Project.New()">

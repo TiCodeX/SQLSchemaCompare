@@ -51,7 +51,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <returns>The scripted function attributes</returns>
         public static string ScriptFunctionAttributes(PostgreSqlFunction function)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             switch (function.Volatile)
             {
@@ -90,7 +90,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <returns>The scripted function argument</returns>
         public static string ScriptFunctionArgument(uint argType, char argMode, string argName, IEnumerable<ABaseDbObject> dataTypes)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             switch (argMode)
             {
@@ -103,9 +103,6 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 case 'v':
                     sb.Append("VARIADIC ");
                     break;
-                case 'i':
-                default:
-                    break;
             }
 
             if (!string.IsNullOrEmpty(argName))
@@ -113,7 +110,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.Append($"{argName} ");
             }
 
-            sb.Append(PostgreSqlScriptHelper.ScriptFunctionArgumentType(argType, dataTypes));
+            sb.Append(ScriptFunctionArgumentType(argType, dataTypes));
             return sb.ToString();
         }
 
@@ -144,34 +141,24 @@ namespace SQLCompare.Infrastructure.SqlScripters
             {
                 return $"\"{objectSchema}\".\"{objectName}\"";
             }
-            else
-            {
-                return $"\"{objectName}\"";
-            }
+
+            return $"\"{objectName}\"";
         }
 
         /// <inheritdoc/>
         public override string ScriptColumn(ABaseDbColumn column)
         {
-            if (column == null)
+            var col = column as PostgreSqlColumn;
+            if (col == null)
             {
                 throw new ArgumentNullException(nameof(column));
             }
-
-            var col = column as PostgreSqlColumn;
 
             var sb = new StringBuilder();
 
             sb.Append($"\"{col.Name}\" {this.ScriptDataType(col)}");
 
-            if (col.IsNullable)
-            {
-                sb.Append($" NULL");
-            }
-            else
-            {
-                sb.Append($" NOT NULL");
-            }
+            sb.Append(col.IsNullable ? " NULL" : " NOT NULL");
 
             if (col.ColumnDefault != null)
             {
@@ -244,13 +231,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 case "character":
                 case "character varying":
                     {
-                        string collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
+                        var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
                         return $"{column.DataType}({column.CharacterMaxLenght}){collate}";
                     }
 
                 case "text":
                     {
-                        string collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
+                        var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
                         return $"{column.DataType}{collate}";
                     }
 

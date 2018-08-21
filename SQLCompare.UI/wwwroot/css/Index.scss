@@ -1,9 +1,26 @@
-$font-stack: Helvetica, sans-serif;
-$primary-color: #0094ff;
+@import "../lib/bootstrap/scss/functions";
+@import "../lib/bootstrap/scss/variables";
+
+$ourgreen: #39B54A;
+
+/* -------begin customization-------- */
+
+$theme-colors: ( primary: $ourgreen, info: $ourgreen );
+$font-size-base: 0.8rem;
+$line-height-base: 1.3;
+$form-group-margin-bottom: 0.4rem;
+$font-family-base: "Open Sans";
+
+/* -------end customization-------- */
+@import "../lib/bootstrap/scss/bootstrap";
+
+$switch-width: 32px;
+
+:root {
+    --dark-color-lightest: #ffffff;
+}
 
 body {
-    font: 100% $font-stack;
-    color: $primary-color;
     overflow: hidden;
 }
 
@@ -14,6 +31,18 @@ body {
 body > .container-fluid > .row {
     height: 100vh;
 }
+
+.modal-header {
+    background-color: #303030;
+    padding: 12px 12px;
+}
+
+.modal-title {
+    font-size: 12px;
+    color: var(--dark-color-lightest);
+    padding: 0px;
+    text-transform: uppercase;
+ }
 
 .modal-body {
     overflow: auto;
@@ -69,10 +98,10 @@ body > .container-fluid > .row {
 .switch {
     position: relative;
     display: inline-block;
-    width: 60px;
-    height: 34px;
+    width: $switch-width;
+    height: $switch-width / 2;
     margin-bottom: 0;
-    margin-left: 15px;
+    margin-left: 0px;
 }
 
 .switch input {
@@ -94,27 +123,27 @@ body > .container-fluid > .row {
 .slider:before {
     position: absolute;
     content: "";
-    height: 26px;
-    width: 26px;
+    height: ($switch-width / 2 - 5);
+    width: ($switch-width / 2 - 5);
     left: 4px;
-    bottom: 4px;
+    bottom: 2px;
     background-color: white;
     -webkit-transition: .4s;
     transition: .4s;
 }
 
 input:checked + .slider {
-    background-color: #2196F3;
+    background-color: $ourgreen;
 }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
+    box-shadow: 0 0 1px $ourgreen;
 }
 
 input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
+    -webkit-transform: translateX(0.75rem);
+    -ms-transform: translateX(0.75rem);
+    transform: translateX(0.75rem);
 }
 
 /* Rounded sliders */
@@ -125,3 +154,60 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+
+.form-label {
+    font-size: $font-size-base;
+    margin-bottom: 0px;
+}
+
+/* TAB */
+.tab {
+    /* width: 100px;*/
+    padding: 8px 10px;
+    margin-right: 5px;
+    font-size: 0.9em;
+    /*   border: 1px solid red; */
+    border-radius: 10px 10px 0 0;
+    /* height: 33px; */
+    float: left;
+    background: #eee;
+    text-transform: capitalize;
+    color: #333;
+    text-align: center;
+    /* line-height: 2.0em; */
+    cursor: pointer;
+    list-style: none !important;
+    transition: all 200ms;
+    /*   border-right: 0.125rem solid #16a085; */
+    border-top: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+
+.tab:hover {
+    background: #f0554a;
+    color: #fff;
+}
+
+.active-tab {
+    background: #f0554a;
+    color: #fff;
+}
+
+.active-tab:hover {
+}
+
+.table-compact tr {
+    line-height: 1;
+}
+
+/* is the main top nav*/
+.main-header {
+    background-color: #292929;
+    padding: 2px 5px 2px 5px;
+}
+
+.main-header-content {
+    padding: 2px 10px 2px 10px;
+}
+/* end main top nav*/

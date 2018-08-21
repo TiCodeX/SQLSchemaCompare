@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Authentication;
@@ -25,14 +27,18 @@ namespace SQLCompare.UI.WebServer
         /// Creates the web host builder
         /// </summary>
         /// <param name="args">The arguments</param>
-        /// <param name="port">The port</param>
         /// <returns>The web host builder</returns>
-        internal static IWebHostBuilder CreateWebHostBuilder(string[] args, int port)
+        internal static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
+            if (args == null || args.Length < 1 || !int.TryParse(args[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out var webPort))
+            {
+                throw new ArgumentException("Wrong command line arguments");
+            }
+
             return WebHost.CreateDefaultBuilder(args)
                 .UseKestrel(options =>
                 {
-                    options.ListenLocalhost(port, listenOptions =>
+                    options.ListenLocalhost(webPort, listenOptions =>
                     {
                         using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SQLCompare.UI.certificate.pfx"))
                         using (var memoryStream = new MemoryStream())

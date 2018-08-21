@@ -1,5 +1,6 @@
 /* tslint:disable:no-require-imports no-implicit-dependencies max-file-line-count only-arrow-functions no-magic-numbers no-string-literal */
 import childProcess = require("child_process");
+import portfinder = require("detect-port");
 import electron = require("electron");
 import windowStateKeeper = require("electron-window-state");
 import fs = require("fs");
@@ -9,14 +10,16 @@ import log4js = require("log4js");
 
 electron.app.setAppUserModelId("ch.ticodex.sqlcompare");
 
+const initialPort: number = 5000;
 const splashUrl: string = `file://${__dirname}/splash.html`;
 const servicePath: string = `./bin/SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`;
-const serviceUrl: string = "https://127.0.0.1:5000";
-const loginUrl: string = "https://127.0.0.1:5000/login";
 const loggerPath: string = "C:\\ProgramData\\SqlCompare\\log\\";
 const loggerFile: string = "SqlCompare-yyyy-MM-dd-ui.log";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;
+let serviceUrl: string = "https://127.0.0.1:{port}";
+let loginUrl: string = "https://127.0.0.1:{port}/login";
+let serviceProcess: childProcess.ChildProcess;
 
 log4js.configure({
     appenders: {
@@ -98,22 +101,6 @@ electron.ipcMain.on("OpenMainWindow", (event: electron.Event) => {
 electron.ipcMain.on("OpenLoginWindow", (event: electron.Event) => {
     createLoginWindow(true);
 });
-
-let serviceProcess: childProcess.ChildProcess;
-if (fs.existsSync(servicePath)) {
-    serviceProcess = childProcess.spawn(servicePath);
-    /*
-    serviceProcess.stdout.on("data", data => {
-        console.log("stdout: " + data);
-    });
-    serviceProcess.stderr.on("data", data => {
-        console.log("stderr: " + data);
-    });
-    serviceProcess.on("close", code => {
-        console.log("closing code: " + code);
-    });
-    */
-}
 
 /**
  * Keep a global reference of the window object, if you don't, the window will
@@ -230,6 +217,27 @@ function createLoginWindow(show: boolean): void {
 }
 
 /**
+ * Start the SQL Compare backend process
+ * @param webPort The port to start the web server
+ */
+function startSqlCompareBackend(webPort: number): void {
+    if (fs.existsSync(servicePath)) {
+        serviceProcess = childProcess.spawn(servicePath, [`${webPort}`]);
+        /*
+        serviceProcess.stdout.on("data", data => {
+            console.log("stdout: " + data);
+        });
+        serviceProcess.stderr.on("data", data => {
+            console.log("stderr: " + data);
+        });
+        serviceProcess.on("close", code => {
+            console.log("closing code: " + code);
+        });
+        */
+    }
+}
+
+/**
  * Startup function called when Electron is ready
  */
 function startup(): void {
@@ -255,30 +263,37 @@ function startup(): void {
     splashWindow.loadURL(splashUrl);
     logger.debug("Splashscreen window started");
 
-    createLoginWindow(false);
-    logger.debug("Login window started");
+    portfinder(initialPort, (errorWebPort: Error, webPort: number) => {
+        serviceUrl = serviceUrl.replace("{port}", `${webPort}`);
+        loginUrl = loginUrl.replace("{port}", `${webPort}`);
 
-    let loadFailed: boolean = false;
-    loginWindow.webContents.on("did-fail-load", () => {
-        loadFailed = true;
-    });
-    loginWindow.webContents.on("did-finish-load", () => {
-        if (loadFailed) {
-            logger.debug("Unable to contact service, retrying...");
-            // Reset the flag and trigger a new load
-            loadFailed = false;
-            loginWindow.loadURL(loginUrl);
-        } else {
-            logger.debug("Service connected, hide splashscreen window and show login window");
-            splashWindow.destroy();
-            loginWindow.show();
-            loginWindow.focus();
-            logger.info("Application started successfully");
-        }
-    });
+        startSqlCompareBackend(webPort);
 
-    // Events registered, now load the URL
-    loginWindow.loadURL(loginUrl);
+        createLoginWindow(false);
+        logger.debug("Login window started");
+
+        let loadFailed: boolean = false;
+        loginWindow.webContents.on("did-fail-load", () => {
+            loadFailed = true;
+        });
+        loginWindow.webContents.on("did-finish-load", () => {
+            if (loadFailed) {
+                logger.debug("Unable to contact service, retrying...");
+                // Reset the flag and trigger a new load
+                loadFailed = false;
+                loginWindow.loadURL(loginUrl);
+            } else {
+                logger.debug("Service connected, hide splashscreen window and show login window");
+                splashWindow.destroy();
+                loginWindow.show();
+                loginWindow.focus();
+                logger.info("Application started successfully");
+            }
+        });
+
+        // Events registered, now load the URL
+        loginWindow.loadURL(loginUrl);
+    });
 }
 
 /**
@@ -290,7 +305,7 @@ electron.app.on("ready", startup);
 
 // This method will be called when Electron will quit the application
 electron.app.on("will-quit", () => {
-    if (serviceProcess) {
+    if (serviceProcess !== undefined) {
         serviceProcess.kill();
     }
 });

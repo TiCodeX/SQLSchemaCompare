@@ -10,13 +10,11 @@ namespace SQLCompare.UI
     /// </summary>
     public static class Program
     {
-        // TODO: receive port from electron (args) or find an open port itself and give it back to electron
-        private const short WebServerPort = 5000;
-
         /// <summary>
         /// Entry point of the SQLCompare UI application
         /// </summary>
-        public static void Main()
+        /// <param name="args">The command line arguments</param>
+        public static void Main(string[] args)
         {
             Utility.ConfigureLogger();
 
@@ -25,7 +23,7 @@ namespace SQLCompare.UI
             {
                 logger.Info(string.Empty);
                 logger.Info("Starting WebHost Service...");
-                CreateWebHostBuilder(null)
+                CreateWebHostBuilder(args)
                     .Build()
                     .Run();
             }
@@ -33,7 +31,6 @@ namespace SQLCompare.UI
             {
                 // NLog: catch setup errors
                 logger.Error(ex, "Stopped program because of exception");
-                throw;
             }
             finally
             {
@@ -46,7 +43,7 @@ namespace SQLCompare.UI
 
         private static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
-            return Utility.CreateWebHostBuilder(args, WebServerPort);
+            return Utility.CreateWebHostBuilder(args);
         }
     }
 }

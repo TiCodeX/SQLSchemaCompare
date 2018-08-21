@@ -53,6 +53,7 @@
     },
     "postinstall": "electron-builder install-app-deps",
     "devDependencies": {
+        "@types/detect-port": "^1.1.0",
         "@types/electron-window-state": "^2.0.31",
         "@types/glob": "^5.0.35",
         "@types/node": "^6.0.116",
@@ -60,6 +61,7 @@
         "electron-builder": "^20.27.0"
     },
     "dependencies": {
+        "detect-port": "^1.2.3",
         "electron-window-state": "^4.1.1",
         "glob": "^7.1.2",
         "log4js": "^3.0.4"

@@ -34,6 +34,9 @@ echo      ^|  _________________^|_
 echo      \_/___________________/
 echo.
 
+dotnet msbuild %~dp0SQLCompare.UI\SQLCompare.UI.csproj /t:WebCompile
+dotnet msbuild %~dp0SQLCompare.UI\SQLCompare.UI.csproj /t:BundleMinify
+
 dotnet publish %~dp0SQLCompare.UI\SQLCompare.UI.csproj -f netcoreapp2.1 -r %targetdotnet% -c %configuration%
 
 if ERRORLEVEL 1 goto:error

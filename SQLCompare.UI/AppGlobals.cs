@@ -30,12 +30,6 @@ namespace SQLCompare.UI
         }
 
         /// <inheritdoc/>
-        public int StartPortRange => 5000;
-
-        /// <inheritdoc/>
-        public int EndPortRange => 6000;
-
-        /// <inheritdoc/>
         public string AuthorizationHeaderName => "CustomAuthToken";
 
         /// <inheritdoc/>

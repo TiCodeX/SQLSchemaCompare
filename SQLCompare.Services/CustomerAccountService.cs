@@ -56,5 +56,11 @@ namespace SQLCompare.Services
         {
             throw new NotImplementedException();
         }
+
+        /// <inheritdoc/>
+        public void Logout()
+        {
+            this.CustomerInformation = null;
+        }
     }
 }

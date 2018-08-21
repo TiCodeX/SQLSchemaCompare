@@ -108,10 +108,6 @@ namespace SQLCompare.Test.Infrastructure.Repository
 
             public bool IsDevelopment => throw new System.NotImplementedException();
 
-            public int StartPortRange => throw new System.NotImplementedException();
-
-            public int EndPortRange => throw new System.NotImplementedException();
-
             public string AuthorizationHeaderName => throw new System.NotImplementedException();
 
             public string AppSettingsFullFilename => TempSettingFile;

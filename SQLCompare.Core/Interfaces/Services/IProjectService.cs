@@ -34,5 +34,11 @@ namespace SQLCompare.Core.Interfaces.Services
         /// </summary>
         /// <param name="filename">The filename from which the project must be loaded</param>
         void LoadProject(string filename);
+
+        /// <summary>
+        /// Check if the project need to be saved
+        /// </summary>
+        /// <returns>True if the project need to be saved</returns>
+        bool NeedSave();
     }
 }

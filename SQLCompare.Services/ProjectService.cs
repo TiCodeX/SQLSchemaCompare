@@ -57,5 +57,19 @@ namespace SQLCompare.Services
         {
             this.Project = this.projectRepository.Read(filename);
         }
+
+        /// <inheritdoc/>
+        public bool NeedSave()
+        {
+            bool isDirty = false;
+
+            // Todo: implement a way to detect if is dirty
+            if (this.Project != null && isDirty)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

@@ -21,16 +21,6 @@
         bool IsDevelopment { get; }
 
         /// <summary>
-        /// Gets the initial port for the range of the WebServer
-        /// </summary>
-        int StartPortRange { get; }
-
-        /// <summary>
-        /// Gets the final port for the range of the WebServer
-        /// </summary>
-        int EndPortRange { get; }
-
-        /// <summary>
         /// Gets the header attribute name for the authentication
         /// </summary>
         string AuthorizationHeaderName { get; }

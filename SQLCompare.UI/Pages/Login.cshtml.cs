@@ -21,6 +21,7 @@ namespace SQLCompare.UI.Pages
         private readonly IAccountService accountService;
         private readonly ILogger logger;
         private readonly IAppGlobals appGlobals;
+        private readonly IProjectService projectService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Login"/> class.
@@ -29,12 +30,14 @@ namespace SQLCompare.UI.Pages
         /// <param name="accountService">The injected account service</param>
         /// <param name="logger">The injected logger</param>
         /// <param name="appGlobals">The injected application globals</param>
-        public Login(IAppSettingsService appSettingsService, IAccountService accountService, ILogger<Login> logger, IAppGlobals appGlobals)
+        /// <param name="projectService">The injected project service</param>
+        public Login(IAppSettingsService appSettingsService, IAccountService accountService, ILogger<Login> logger, IAppGlobals appGlobals, IProjectService projectService)
         {
             this.appSettingsService = appSettingsService;
             this.accountService = accountService;
             this.logger = logger;
             this.appGlobals = appGlobals;
+            this.projectService = projectService;
         }
 
         /// <summary>
@@ -180,6 +183,25 @@ namespace SQLCompare.UI.Pages
                 this.logger.LogError($"Error occured in index: {ex.Message}");
                 return new JsonResult(new { success = false, error = Localization.ErrorLoginVerificationFailed });
             }
+        }
+
+        /// <summary>
+        /// Logout the users from the app
+        /// </summary>
+        /// <returns>The resulting json</returns>
+        public IActionResult OnPostLogout()
+        {
+            if (this.projectService.NeedSave())
+            {
+                return new JsonResult(new { success = false, error = "Project need to be saved" });
+            }
+
+            this.appSettingsService.GetAppSettings().Session = null;
+            this.appSettingsService.SaveAppSettings();
+
+            this.accountService.Logout();
+
+            return new JsonResult(new { success = true });
         }
     }
 }

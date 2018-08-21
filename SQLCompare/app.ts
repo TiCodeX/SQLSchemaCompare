@@ -205,6 +205,9 @@ function createLoginWindow(show: boolean): void {
 
     // A loginWindow.setMenu(null);
 
+    // Events registered, now load the URL
+    loginWindow.loadURL(loginUrl);
+
     // Emitted when the window is closed.
     loginWindow.on("closed", () => {
         /**

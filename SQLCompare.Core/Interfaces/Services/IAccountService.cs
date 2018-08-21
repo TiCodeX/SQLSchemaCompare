@@ -26,5 +26,10 @@ namespace SQLCompare.Core.Interfaces.Services
         /// <param name="evalutation">The customer evaluation value, a number between 1 and 5</param>
         /// <param name="comment">The customer comment</param>
         void SendFeedback(int evalutation, string comment);
+
+        /// <summary>
+        /// Logout the user and reset customer information
+        /// </summary>
+        void Logout();
     }
 }

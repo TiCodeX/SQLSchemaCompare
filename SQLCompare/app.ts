@@ -180,7 +180,7 @@ function createMainWindow(): void {
  * Create the login window ensuring to destroy the main window
  * @param show True if the window should be shown
  */
-function createLoginWindow(show: boolean): void {
+function createLoginWindow(load: boolean): void {
     // Create the login window
     loginWindow = new electron.BrowserWindow({
         width: 600,
@@ -192,8 +192,11 @@ function createLoginWindow(show: boolean): void {
 
     // A loginWindow.setMenu(null);
 
-    // Events registered, now load the URL
-    loginWindow.loadURL(loginUrl);
+    loginWindow.webContents.on("did-finish-load", () => {
+            logger.debug("Showing a new login window");
+            loginWindow.show();
+            loginWindow.focus();        
+    });
 
     // Emitted when the window is closed.
     loginWindow.on("closed", () => {
@@ -210,9 +213,8 @@ function createLoginWindow(show: boolean): void {
         mainWindow = undefined;
     }
 
-    if (show) {
-        loginWindow.show();
-        loginWindow.focus();
+    if (load) {
+        loginWindow.loadURL(loginUrl);
     }
 }
 

@@ -195,7 +195,7 @@ function createLoginWindow(load: boolean): void {
     loginWindow.webContents.on("did-finish-load", () => {
             logger.debug("Showing a new login window");
             loginWindow.show();
-            loginWindow.focus();        
+            loginWindow.focus();
     });
 
     // Emitted when the window is closed.

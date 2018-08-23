@@ -32,5 +32,10 @@ namespace SQLCompare.Core.Entities.Compare
         /// Gets the list of Sequences results
         /// </summary>
         public List<CompareResultItem<ABaseDbSequence>> Sequences { get; } = new List<CompareResultItem<ABaseDbSequence>>();
+
+        /// <summary>
+        /// Gets the list of user defined types results
+        /// </summary>
+        public List<CompareResultItem<ABaseDbDataType>> DataTypes { get; } = new List<CompareResultItem<ABaseDbDataType>>();
     }
 }

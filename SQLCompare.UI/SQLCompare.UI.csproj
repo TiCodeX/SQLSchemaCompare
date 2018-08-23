@@ -94,12 +94,6 @@
     <TSLintExclude Include="wwwroot\lib\typings\%2A%2A\%2A.d.ts" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="wwwroot\js\ApiResponse.js">
-      <DependentUpon>ApiResponse.ts</DependentUpon>
-    </Content>
-  </ItemGroup>
-
   <ImportGroup>
     <Import Project="..\tslint.targets" />
   </ImportGroup>

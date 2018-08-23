@@ -306,4 +306,7 @@
   <data name="TitleLoginError" xml:space="preserve">
     <value>Login error</value>
   </data>
+  <data name="LabelUserDefinedType" xml:space="preserve">
+    <value>User-Defined Data Type</value>
+  </data>
 </root>

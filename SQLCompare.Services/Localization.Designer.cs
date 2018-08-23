@@ -448,6 +448,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User-Defined Data Type.
+        /// </summary>
+        public static string LabelUserDefinedType {
+            get {
+                return ResourceManager.GetString("LabelUserDefinedType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Username.
         /// </summary>
         public static string LabelUsername {

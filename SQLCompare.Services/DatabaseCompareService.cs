@@ -200,6 +200,28 @@ namespace SQLCompare.Services
                             });
                         }
 
+                        taskInfo.Percentage = 98;
+
+                        taskInfo.Message = "Mapping user defined types...";
+                        foreach (var type in this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined))
+                        {
+                            this.result.DataTypes.Add(new CompareResultItem<ABaseDbDataType>
+                            {
+                                ItemTypeLabel = Localization.LabelUserDefinedType,
+                                SourceItem = type,
+                                TargetItem = this.retrievedTargetDatabase.DataTypes.FirstOrDefault(x => x.Name == type.Name)
+                            });
+                        }
+
+                        foreach (var type in this.retrievedTargetDatabase.DataTypes.Where(x => x.IsUserDefined && this.result.DataTypes.All(y => y.SourceItem.Name != x.Name)).ToList())
+                        {
+                            this.result.DataTypes.Add(new CompareResultItem<ABaseDbDataType>
+                            {
+                                ItemTypeLabel = Localization.LabelUserDefinedType,
+                                TargetItem = type
+                            });
+                        }
+
                         taskInfo.Message = string.Empty;
                         taskInfo.Percentage = 100;
 
@@ -213,7 +235,8 @@ namespace SQLCompare.Services
                         var totalItems = this.result.Tables.Count +
                                          this.result.Views.Count +
                                          this.result.Functions.Count +
-                                         this.result.StoredProcedures.Count;
+                                         this.result.StoredProcedures.Count +
+                                         this.result.DataTypes.Count;
                         var processedItems = 1;
                         var scripter = this.databaseScripterFactory.Create(
                             this.retrievedSourceDatabase,
@@ -278,6 +301,23 @@ namespace SQLCompare.Services
                             }
 
                             resultSequence.Equal = resultSequence.SourceCreateScript == resultSequence.TargetCreateScript;
+                            taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
+                        }
+
+                        taskInfo.Message = "Comparing User-Defined Data Types...";
+                        foreach (var resultType in this.result.DataTypes)
+                        {
+                            if (resultType.SourceItem != null)
+                            {
+                                resultType.SourceCreateScript = scripter.GenerateCreateTypeScript(resultType.SourceItem);
+                            }
+
+                            if (resultType.TargetItem != null)
+                            {
+                                resultType.TargetCreateScript = scripter.GenerateCreateTypeScript(resultType.TargetItem);
+                            }
+
+                            resultType.Equal = resultType.SourceCreateScript == resultType.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 

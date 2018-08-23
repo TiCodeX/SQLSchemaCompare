@@ -61,6 +61,7 @@ namespace SQLCompare.UI.Pages.Main
             this.DifferentItems.AddRange(result.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
             this.DifferentItems.AddRange(result.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
             this.DifferentItems.AddRange(result.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
+            this.DifferentItems.AddRange(result.DataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Different items => {this.DifferentItems.Count}");
 
             this.OnlySourceItems.AddRange(result.Tables.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
@@ -68,6 +69,7 @@ namespace SQLCompare.UI.Pages.Main
             this.OnlySourceItems.AddRange(result.Functions.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
             this.OnlySourceItems.AddRange(result.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
             this.OnlySourceItems.AddRange(result.Sequences.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
+            this.OnlySourceItems.AddRange(result.DataTypes.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Only Source items => {this.OnlySourceItems.Count}");
 
             this.OnlyTargetItems.AddRange(result.Tables.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
@@ -75,6 +77,7 @@ namespace SQLCompare.UI.Pages.Main
             this.OnlyTargetItems.AddRange(result.Functions.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
             this.OnlyTargetItems.AddRange(result.StoredProcedures.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
             this.OnlyTargetItems.AddRange(result.Sequences.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
+            this.OnlyTargetItems.AddRange(result.DataTypes.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Only Target items => {this.OnlyTargetItems.Count}");
 
             this.SameItems.AddRange(result.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
@@ -82,6 +85,7 @@ namespace SQLCompare.UI.Pages.Main
             this.SameItems.AddRange(result.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
             this.SameItems.AddRange(result.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
             this.SameItems.AddRange(result.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
+            this.SameItems.AddRange(result.DataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Same items => {this.SameItems.Count}");
         }
 
@@ -96,7 +100,8 @@ namespace SQLCompare.UI.Pages.Main
                              (ABaseCompareResultItem)this.projectService.Project.Result.Views.FirstOrDefault(x => x.Id == id) ??
                              (ABaseCompareResultItem)this.projectService.Project.Result.Functions.FirstOrDefault(x => x.Id == id) ??
                              (ABaseCompareResultItem)this.projectService.Project.Result.StoredProcedures.FirstOrDefault(x => x.Id == id) ??
-                             (ABaseCompareResultItem)this.projectService.Project.Result.Sequences.FirstOrDefault(x => x.Id == id);
+                             (ABaseCompareResultItem)this.projectService.Project.Result.Sequences.FirstOrDefault(x => x.Id == id) ??
+                             (ABaseCompareResultItem)this.projectService.Project.Result.DataTypes.FirstOrDefault(x => x.Id == id);
 
             if (resultItem == null)
             {

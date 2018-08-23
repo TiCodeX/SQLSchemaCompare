@@ -131,14 +131,14 @@ class Menu {
                     {
                         label: Localization.Get("MenuAbout"),
                         click(): void {
-                            electron.shell.openExternal("https://ticodex.ch/");
+                            electron.shell.openExternal("https://www.ticodex.com/");
                         },
                     },
                 ],
             },
         ];
 
-        electron.remote.Menu.setApplicationMenu(electron.remote.Menu.buildFromTemplate(template));
+        electron.remote.getCurrentWindow().setMenu(electron.remote.Menu.buildFromTemplate(template));
     }
 
     /**

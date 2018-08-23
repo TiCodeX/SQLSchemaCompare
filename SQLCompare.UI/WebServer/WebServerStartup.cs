@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Repository;
 using SQLCompare.Core.Interfaces.Services;
@@ -52,7 +54,12 @@ namespace SQLCompare.UI.WebServer
                 options.AllowedRequestGuid = "prova";
             });
 
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(options =>
+            {
+                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
+                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            });
 
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 

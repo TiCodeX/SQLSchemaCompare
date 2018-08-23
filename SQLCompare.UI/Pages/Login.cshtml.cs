@@ -112,7 +112,7 @@ namespace SQLCompare.UI.Pages
             if (url == null)
             {
                 this.logger.LogError("Url is null");
-                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorRedirectUrlIsNull, ErrorMessage = Localization.ErrorLoginVerificationFailed });
+                return new JsonResult(new ApiResponse<string> { Success = false, ErrorCode = EErrorCode.ErrorRedirectUrlIsNull, ErrorMessage = Localization.ErrorLoginVerificationFailed });
             }
 
             var queryParams = HttpUtility.ParseQueryString(url.Query);
@@ -122,7 +122,7 @@ namespace SQLCompare.UI.Pages
             if (string.IsNullOrEmpty(sessionToken))
             {
                 this.logger.LogError("Null or empty session token");
-                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorSessionTokenIsNullOrEmpty, ErrorMessage = Localization.ErrorLoginVerificationFailed });
+                return new JsonResult(new ApiResponse<string> { Success = false, ErrorCode = EErrorCode.ErrorSessionTokenIsNullOrEmpty, ErrorMessage = Localization.ErrorLoginVerificationFailed });
             }
 
             try
@@ -131,7 +131,13 @@ namespace SQLCompare.UI.Pages
                 if (this.accountService.CustomerInformation.SubscriptionPlan == null)
                 {
                     this.logger.LogError("No subscription plan");
-                    return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorNoSubscriptionAvailable, ErrorMessage = Localization.ErrorNoSubscriptionAvailable });
+                    return new JsonResult(new ApiResponse<string>
+                    {
+                        Success = false,
+                        ErrorCode = EErrorCode.ErrorNoSubscriptionAvailable,
+                        ErrorMessage = Localization.ErrorNoSubscriptionAvailable,
+                        Result = sessionToken,
+                    });
                 }
 
                 if (!this.accountService.CustomerInformation.ExpirationDate.HasValue || this.accountService.CustomerInformation.ExpirationDate.Value < DateTime.Now)
@@ -139,18 +145,30 @@ namespace SQLCompare.UI.Pages
                     if (this.accountService.CustomerInformation.IsTrial.HasValue && this.accountService.CustomerInformation.IsTrial.Value)
                     {
                         this.logger.LogError("Expired trial subscription");
-                        return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorTrialSubscriptionExpired, ErrorMessage = Localization.ErrorTrialSubscriptionExpired });
+                        return new JsonResult(new ApiResponse<string>
+                        {
+                            Success = false,
+                            ErrorCode = EErrorCode.ErrorTrialSubscriptionExpired,
+                            ErrorMessage = Localization.ErrorTrialSubscriptionExpired,
+                            Result = sessionToken,
+                        });
                     }
 
                     this.logger.LogError("Expired subscription");
-                    return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorSubscriptionExpired, ErrorMessage = Localization.ErrorSubscriptionExpired });
+                    return new JsonResult(new ApiResponse<string>
+                    {
+                        Success = false,
+                        ErrorCode = EErrorCode.ErrorSubscriptionExpired,
+                        ErrorMessage = Localization.ErrorSubscriptionExpired,
+                        Result = sessionToken,
+                    });
                 }
 
                 var settings = this.appSettingsService.GetAppSettings();
                 settings.Session = sessionToken;
                 this.appSettingsService.SaveAppSettings();
 
-                return new JsonResult(new ApiResponse { Success = true }, new Newtonsoft.Json.JsonSerializerSettings { });
+                return new JsonResult(new ApiResponse<string> { Success = true }, new Newtonsoft.Json.JsonSerializerSettings { });
             }
             catch (AccountServiceException ex)
             {

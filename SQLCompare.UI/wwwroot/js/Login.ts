@@ -27,11 +27,10 @@ class Login {
                 data: JSON.stringify(redirectUrl),
                 cache: false,
                 async: true,
-                success: (response: ApiResponse): void => {
+                success: (response: ApiResponse<string>): void => {
                     if (response.Success) {
                         electron.ipcRenderer.send("OpenMainWindow");
-                    }
-                    else {
+                    } else {
                         $("#webview").attr("src", webviewUrl);
                         $("#myModalText").html(response.ErrorMessage);
                         $("#closeButton").removeClass("invisible").addClass("visible");
@@ -42,7 +41,9 @@ class Login {
                             case ApiResponse.EErrorCodes.ErrorSubscriptionExpired:
                             case ApiResponse.EErrorCodes.ErrorTrialSubscriptionExpired:
                                 $("#myModalLink").html("Get a subscription");
-                                $("#myModalLink").on("click", () => { Utility.OpenExternalBrowser("https://www.ticodex.com/checkout"); });
+                                $("#myModalLink").on("click", () => {
+                                    Utility.OpenExternalBrowser(`https://www.ticodex.com/Login?ReturnUrl=${encodeURI(`/Checkout&s=${response.Result}`)}`);
+                                });
                                 break;
                             default:
                         }

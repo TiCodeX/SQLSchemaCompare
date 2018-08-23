@@ -1,7 +1,7 @@
 /**
  * Represent an Api response
  */
-class ApiResponse {
+class ApiResponse<T> {
 
     /**
      * Indicates whether a response is success
@@ -17,6 +17,11 @@ class ApiResponse {
      * The error message
      */
     public ErrorMessage: string;
+
+    /**
+     * The error message
+     */
+    public Result: T;
 
 }
 

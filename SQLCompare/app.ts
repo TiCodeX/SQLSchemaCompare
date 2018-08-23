@@ -183,19 +183,11 @@ function createMainWindow(): void {
 function createLoginWindow(load: boolean): void {
     // Create the login window
     loginWindow = new electron.BrowserWindow({
-        width: 600,
-        height: 800,
+        width: 700,
+        height: 650,
         show: false,
         center: true,
         resizable: false,
-    });
-
-    // A loginWindow.setMenu(null);
-
-    loginWindow.webContents.on("did-finish-load", () => {
-            logger.debug("Showing a new login window");
-            loginWindow.show();
-            loginWindow.focus();
     });
 
     // Emitted when the window is closed.
@@ -215,6 +207,8 @@ function createLoginWindow(load: boolean): void {
 
     if (load) {
         loginWindow.loadURL(loginUrl);
+        loginWindow.show();
+        loginWindow.focus();
     }
 }
 

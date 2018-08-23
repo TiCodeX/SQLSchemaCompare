@@ -3,7 +3,7 @@
     /// <summary>
     /// Specific PostgreSql data type definition
     /// </summary>
-    public class PostgreSqlDataType : ABaseDbObject
+    public class PostgreSqlDataType : ABaseDbDataType
     {
         /// <summary>
         /// Gets or sets the data type id

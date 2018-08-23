@@ -39,7 +39,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.Options))
             {
-                return context.Query("SELECT datname FROM pg_database WHERE datistemplate = FALSE");
+                return context.Query("SELECT datname FROM pg_catalog.pg_database WHERE datistemplate = FALSE");
             }
         }
 
@@ -198,7 +198,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("           WHEN c.contype = 'x' THEN 'EXCLUDE'");
             query.AppendLine("       END AS \"ConstraintType\",");
             query.AppendLine("       pg_get_constraintdef(c.oid) AS \"Definition\"");
-            query.AppendLine("FROM pg_constraint c");
+            query.AppendLine("FROM pg_catalog.pg_constraint c");
             query.AppendLine("JOIN pg_catalog.pg_class ct ON c.conrelid = ct.oid");
             query.AppendLine("LEFT JOIN pg_catalog.pg_class cc ON c.conindid = cc.oid");
             query.AppendLine("JOIN pg_catalog.pg_namespace nc ON c.connamespace = nc.oid");
@@ -281,8 +281,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       p.proargmodes as \"ArgModes\",");
             query.AppendLine("       p.proargnames as \"ArgNames\"");
             query.AppendLine("FROM information_schema.routines r");
-            query.AppendLine("INNER JOIN pg_proc p");
-            query.AppendLine("    ON r.routine_name = p.proname");
+            query.AppendLine("INNER JOIN pg_catalog.pg_proc p ON r.routine_name = p.proname");
             query.AppendLine($"WHERE routine_catalog = '{database.Name}' AND r.routine_schema = 'public' AND p.proisagg = 'false'");
             return context.Query<PostgreSqlFunction>(query.ToString());
         }
@@ -295,21 +294,31 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbObject> GetDataTypes(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbDataType> GetDataTypes(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
 
             query.AppendLine("SELECT current_database()::information_schema.sql_identifier AS \"Catalog\", ");
-            query.AppendLine("       nc.nspname AS \"Schema\", ");
-            query.AppendLine("       a.oid AS \"TypeId\", ");
-            query.AppendLine("       a.typname AS \"Name\",");
-            query.AppendLine("       a.typarray AS \"ArrayTypeId\",");
+            query.AppendLine("       n.nspname AS \"Schema\", ");
+            query.AppendLine("       t.oid AS \"TypeId\", ");
+            query.AppendLine("       t.typname AS \"Name\",");
+            query.AppendLine("       t.typarray AS \"ArrayTypeId\",");
             query.AppendLine("       CASE");
-            query.AppendLine("              WHEN a.typcategory = 'A' THEN true");
+            query.AppendLine("              WHEN t.typcategory = 'A' THEN true");
             query.AppendLine("              ELSE false");
-            query.AppendLine("       END AS \"IsArray\"");
-            query.AppendLine("FROM pg_type a");
-            query.AppendLine("INNER JOIN pg_namespace nc ON a.typnamespace = nc.oid");
+            query.AppendLine("       END AS \"IsArray\",");
+            query.AppendLine("       (");
+            query.AppendLine("              (t.typrelid = 0 OR c.relkind = 'c')");
+            query.AppendLine("              AND NOT EXISTS (SELECT 1");
+            query.AppendLine("                              FROM pg_catalog.pg_type el");
+            query.AppendLine("                              WHERE el.oid = t.typelem AND el.typarray = t.oid)");
+            query.AppendLine("              AND n.nspname <> 'pg_catalog'");
+            query.AppendLine("              AND n.nspname <> 'information_schema'");
+            query.AppendLine("              AND pg_catalog.pg_type_is_visible(t.oid)");
+            query.AppendLine("       ) AS \"IsUserDefined\"");
+            query.AppendLine("FROM pg_catalog.pg_type t");
+            query.AppendLine("INNER JOIN pg_catalog.pg_namespace n ON t.typnamespace = n.oid");
+            query.AppendLine("LEFT JOIN pg_catalog.pg_class c ON c.oid = t.typrelid");
             var types = context.Query<PostgreSqlDataType>(query.ToString());
 
             // Get all types that have an ArrayTypeId, those types need to be referenced by the array type

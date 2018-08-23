@@ -36,7 +36,7 @@ namespace SQLCompare.Core.Entities.Database
         /// <summary>
         /// Gets the database's data types
         /// </summary>
-        public List<ABaseDbObject> DataTypes { get; } = new List<ABaseDbObject>();
+        public List<ABaseDbDataType> DataTypes { get; } = new List<ABaseDbDataType>();
 
         /// <summary>
         /// Gets the database's sequences

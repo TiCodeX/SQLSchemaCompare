@@ -1,4 +1,5 @@
-﻿using SQLCompare.Core.Entities.Database.MicrosoftSql;
+﻿using FluentAssertions;
+using SQLCompare.Core.Entities.Database.MicrosoftSql;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Infrastructure.SqlScripters;
 using Xunit;
@@ -25,7 +26,7 @@ namespace SQLCompare.Test.Infrastructure.SqlScripter
         /// Test for the script column function
         /// </summary>
         /// <param name="options">The project options</param>
-        /// <param name="column">The MicrosoftSqlColumn </param>
+        /// <param name="column">The MicrosoftSqlColumn</param>
         /// <param name="expectedResult">The expected sql result</param>
         [Theory]
         [UnitTest]
@@ -33,7 +34,22 @@ namespace SQLCompare.Test.Infrastructure.SqlScripter
         public void ScriptColumn(ProjectOptions options, MicrosoftSqlColumn column, string expectedResult)
         {
             var helper = new MicrosoftSqlScriptHelper(options);
-            Assert.Equal(helper.ScriptColumn(column), expectedResult);
+            helper.ScriptColumn(column).Should().Be(expectedResult);
+        }
+
+        /// <summary>
+        /// Test for the script column function
+        /// </summary>
+        /// <param name="options">The project options</param>
+        /// <param name="dataType">The MicrosoftSqlDataType</param>
+        /// <param name="expectedResult">The expected sql result</param>
+        [Theory]
+        [UnitTest]
+        [ExcelData(@"Datasources\ScriptMicrosoftSqlDataTypeTest.xlsx")]
+        public void ScriptDataType(ProjectOptions options, MicrosoftSqlDataType dataType, string expectedResult)
+        {
+            var scripter = new MicrosoftSqlScripter(this.Logger, options);
+            scripter.GenerateCreateTypeScript(dataType).Should().Be(expectedResult);
         }
     }
 }

@@ -242,6 +242,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return sb.ToString();
         }
 
+        /// <inheritdoc />
+        protected override string ScriptCreateType(ABaseDbDataType type)
+        {
+            return string.Empty;
+        }
+
         /// <inheritdoc/>
         protected override IEnumerable<ABaseDbColumn> OrderColumnsByOrdinalPosition(ABaseDbTable table)
         {

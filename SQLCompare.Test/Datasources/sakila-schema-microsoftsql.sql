@@ -15,6 +15,22 @@ GO
 USE sakila;
 
 --
+-- User-Defined Data Types
+--
+
+CREATE TYPE phone_number
+    FROM varchar(14) NOT NULL
+GO
+
+CREATE TYPE custom_decimal
+    FROM decimal(29, 8) NULL
+GO
+
+CREATE TYPE custom_varchar_max
+    FROM varchar(max) NOT NULL
+GO
+
+--
 -- Table structure for table actor
 --
 
@@ -75,7 +91,7 @@ CREATE TABLE address (
   district VARCHAR(20) NOT NULL,
   city_id INT  NOT NULL,
   postal_code VARCHAR(10) DEFAULT NULL,
-  phone VARCHAR(20) NOT NULL,
+  phone phone_number NOT NULL,
   last_update DATETIME NOT NULL,
   PRIMARY KEY NONCLUSTERED (address_id)
 )

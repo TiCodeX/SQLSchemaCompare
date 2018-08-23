@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -215,6 +216,46 @@ namespace SQLCompare.Infrastructure.SqlScripters
             // TODO: Handle min/max values correctly
             sb.AppendLine("    NO MINVALUE");
             sb.AppendLine("    NO MAXVALUE");
+            sb.AppendLine("GO");
+            return sb.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptCreateType(ABaseDbDataType type)
+        {
+            var msType = (MicrosoftSqlDataType)type;
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"CREATE TYPE {this.ScriptHelper.ScriptObjectName(type)}");
+            sb.Append($"    FROM {msType.SystemType.Name}");
+
+            switch (msType.SystemType.Name)
+            {
+                // Cases with the configurable MaxLength parameter
+                case "binary":
+                case "char":
+                case "nchar":
+                case "nvarchar":
+                case "varbinary":
+                case "varchar":
+                    sb.Append($"({(msType.MaxLength == -1 ? "max" : msType.MaxLength.ToString(CultureInfo.InvariantCulture))})");
+                    break;
+
+                // Cases with the configurable Scale parameter only
+                case "datetime2":
+                case "datetimeoffset":
+                case "time":
+                    sb.Append($"({msType.Scale.ToString(CultureInfo.InvariantCulture)})");
+                    break;
+
+                // Cases with configurable Scale and Precision parameters
+                case "decimal":
+                case "numeric":
+                    sb.Append($"({msType.Precision.ToString(CultureInfo.InvariantCulture)},{msType.Scale.ToString(CultureInfo.InvariantCulture)})");
+                    break;
+            }
+
+            sb.AppendLine(msType.IsNullable ? " NULL" : " NOT NULL");
             sb.AppendLine("GO");
             return sb.ToString();
         }

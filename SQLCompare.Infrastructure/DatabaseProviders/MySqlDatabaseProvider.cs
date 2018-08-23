@@ -218,9 +218,9 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbObject> GetDataTypes(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbDataType> GetDataTypes(MySqlDb database, MySqlDatabaseContext context)
         {
-            return Enumerable.Empty<ABaseDbObject>();
+            return Enumerable.Empty<ABaseDbDataType>();
         }
 
         /// <inheritdoc/>

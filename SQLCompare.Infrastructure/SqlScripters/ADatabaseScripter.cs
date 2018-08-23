@@ -59,6 +59,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             var sb = new StringBuilder();
 
+            // Script the CREATE TYPE
+            foreach (var userDataType in database.DataTypes.Where(x => x.IsUserDefined))
+            {
+                sb.AppendLine(this.ScriptCreateType(userDataType));
+            }
+
             // Script the CREATE SEQUENCE
             foreach (var sequence in database.Sequences)
             {
@@ -220,6 +226,17 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return this.ScriptCreateSequence(sequence);
         }
 
+        /// <inheritdoc/>
+        public string GenerateCreateTypeScript(ABaseDbDataType type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            return this.ScriptCreateType(type);
+        }
+
         /// <summary>
         /// Generates the create table script
         /// </summary>
@@ -284,6 +301,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="sequence">The sequence to script</param>
         /// <returns>The create sequence script</returns>
         protected abstract string ScriptCreateSequence(ABaseDbSequence sequence);
+
+        /// <summary>
+        /// Generates the create type script
+        /// </summary>
+        /// <param name="type">The type to script</param>
+        /// <returns>The create type script</returns>
+        protected abstract string ScriptCreateType(ABaseDbDataType type);
 
         /// <summary>
         /// Get the table columns sorted depending on options and source table

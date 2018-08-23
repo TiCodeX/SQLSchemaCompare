@@ -97,7 +97,15 @@ namespace SQLCompare.Test
         private static object ConvertParameter(Type parameterType, object value)
         {
             var type = Nullable.GetUnderlyingType(parameterType) ?? parameterType;
-            return value == null ? null : Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+            var returnValue = value == null ? null : Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+
+            // If it's a string, fix the new line characters
+            if (returnValue is string returnValueStr)
+            {
+                returnValue = returnValueStr.Replace("\n", Environment.NewLine, StringComparison.InvariantCulture);
+            }
+
+            return returnValue;
         }
 
         private static bool IsSimpleType(Type type)
@@ -123,7 +131,17 @@ namespace SQLCompare.Test
             {
                 if (!IsSimpleType(propertyInfo.PropertyType))
                 {
-                    this.RecursiveSetProperty(columnNames, wsRow, rowNum, $"{parameterPrefix}.{propertyInfo.Name}", propertyInfo.GetValue(obj));
+                    // Check if there are columns in the excel related to this property, otherwise skip it
+                    if (columnNames.Keys.Any(x => x.StartsWith($"{parameterPrefix}.{propertyInfo.Name}".ToUpperInvariant(), StringComparison.Ordinal)))
+                    {
+                        // Since there are values, check if the object exists, otherwise create it
+                        if (propertyInfo.GetValue(obj) == null)
+                        {
+                            propertyInfo.SetValue(obj, Activator.CreateInstance(propertyInfo.PropertyType));
+                        }
+
+                        this.RecursiveSetProperty(columnNames, wsRow, rowNum, $"{parameterPrefix}.{propertyInfo.Name}", propertyInfo.GetValue(obj));
+                    }
                 }
 
                 if (!columnNames.TryGetValue(

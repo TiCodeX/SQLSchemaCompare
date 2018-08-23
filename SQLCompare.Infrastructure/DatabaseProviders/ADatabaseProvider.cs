@@ -278,7 +278,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of data types</returns>
-        protected abstract IEnumerable<ABaseDbObject> GetDataTypes(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbDataType> GetDataTypes(TDatabase database, TDatabaseContext context);
 
         /// <summary>
         /// Get the database sequences

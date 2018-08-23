@@ -158,6 +158,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
             throw new NotSupportedException("MySQL doesn't support sequences");
         }
 
+        /// <inheritdoc />
+        protected override string ScriptCreateType(ABaseDbDataType type)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <inheritdoc/>
         protected override IEnumerable<ABaseDbColumn> OrderColumnsByOrdinalPosition(ABaseDbTable table)
         {

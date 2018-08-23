@@ -53,11 +53,11 @@ namespace SQLCompare.Test.Infrastructure.Repository
             settings.Should().NotBeNull();
 
             settings.Should().BeOfType<AppSettings>();
-            settings.Language.Should().BeEquivalentTo(Language.English);
-            settings.LogLevel.Should().BeEquivalentTo(LogLevel.Debug);
+            settings.Language.Should().Be(Language.English);
+            settings.LogLevel.Should().Be(LogLevel.Debug);
             settings.RecentProjects.Should().HaveCount(3);
             settings.RecentProjects.Should().Contain("test.txt");
-            settings.Session.Should().BeEquivalentTo("TESTSESSION");
+            settings.Session.Should().Be("TestSession");
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
   <Session>TestSession</Session>
 </AppSettings>";
 
-            xmlFile.Should().BeEquivalentTo(xmlFileExpected);
+            xmlFile.Should().Be(xmlFileExpected);
         }
 
         private class AppGlobals : IAppGlobals

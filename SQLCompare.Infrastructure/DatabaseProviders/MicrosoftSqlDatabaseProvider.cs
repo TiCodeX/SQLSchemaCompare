@@ -253,9 +253,31 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbObject> GetDataTypes(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbDataType> GetDataTypes(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
-            return Enumerable.Empty<ABaseDbObject>();
+            var query = new StringBuilder();
+            query.AppendLine("SELECT DB_NAME() AS 'Catalog',");
+            query.AppendLine("       sc.name AS 'Schema',");
+            query.AppendLine("       t.name AS 'Name',");
+            query.AppendLine("       t.user_type_id AS 'TypeId',");
+            query.AppendLine("       t.system_type_id AS 'SystemTypeId',");
+            query.AppendLine("       t.is_user_defined AS 'IsUserDefined',");
+            query.AppendLine("       t.is_nullable AS 'IsNullable',");
+            query.AppendLine("       t.precision AS 'Precision',");
+            query.AppendLine("       t.scale AS 'Scale',");
+            query.AppendLine("       t.max_length AS 'MaxLength'");
+            query.AppendLine("FROM sys.types t");
+            query.AppendLine("INNER JOIN sys.schemas sc ON t.schema_id = sc.schema_id");
+
+            var types = context.Query<MicrosoftSqlDataType>(query.ToString());
+
+            // Get all the user defined and set the reference to the related system type
+            foreach (var t in types.Where(x => x.IsUserDefined))
+            {
+                t.SystemType = types.FirstOrDefault(x => x.TypeId == t.SystemTypeId);
+            }
+
+            return types;
         }
 
         /// <inheritdoc/>

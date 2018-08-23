@@ -51,5 +51,12 @@ namespace SQLCompare.Core.Interfaces
         /// <param name="sequence">The sequence to be scripted</param>
         /// <returns>The create script</returns>
         string GenerateCreateSequenceScript(ABaseDbSequence sequence);
+
+        /// <summary>
+        /// Generates the create type script
+        /// </summary>
+        /// <param name="type">The type to be scripted</param>
+        /// <returns>The create script</returns>
+        string GenerateCreateTypeScript(ABaseDbDataType type);
     }
 }

@@ -7,7 +7,7 @@ REM :choosetarget
 REM set /p target="Enter target [win/linux/mac]: "
 REM if not defined ArrayTarget[%target%] ( goto:choosetarget )
 
-set "publishDir=%~dp0.publish"
+set "publishDir=%~dp0\.publish"
 set "configuration=release"
 REM set "ArrayConfig[release]=true"
 REM set "ArrayConfig[debug]=true"
@@ -21,9 +21,9 @@ if /i "%target%" == "mac" ( set "targetdotnet=osx-x64" )
 
 REM Cleanup folders
 if exist %publishDir% ( rmdir /S /Q %publishDir% )
-if exist %~dp0installer\win-unpacked ( rmdir /S /Q %~dp0installer\win-unpacked )
-if exist %~dp0installer\linux-unpacked ( rmdir /S /Q %~dp0installer\linux-unpacked )
-if exist %~dp0installer\mac-unpacked ( rmdir /S /Q %~dp0installer\mac-unpacked )
+if exist %~dp0\installer\win-unpacked ( rmdir /S /Q %~dp0\installer\win-unpacked )
+if exist %~dp0\installer\linux-unpacked ( rmdir /S /Q %~dp0\installer\linux-unpacked )
+if exist %~dp0\installer\mac-unpacked ( rmdir /S /Q %~dp0\installer\mac-unpacked )
 
 echo.
 echo     _____________________
@@ -34,10 +34,7 @@ echo      ^|  _________________^|_
 echo      \_/___________________/
 echo.
 
-dotnet msbuild %~dp0SQLCompare.UI\SQLCompare.UI.csproj /t:WebCompile
-dotnet msbuild %~dp0SQLCompare.UI\SQLCompare.UI.csproj /t:BundleMinify
-
-dotnet publish %~dp0SQLCompare.UI\SQLCompare.UI.csproj -f netcoreapp2.1 -r %targetdotnet% -c %configuration%
+dotnet publish %~dp0\SQLCompare.UI\SQLCompare.UI.csproj -f netcoreapp2.1 -r %targetdotnet% -c %configuration%
 
 if ERRORLEVEL 1 goto:error
 

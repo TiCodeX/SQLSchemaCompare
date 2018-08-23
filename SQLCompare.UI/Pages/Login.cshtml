@@ -1,42 +1,69 @@
 ﻿@page
 @model Login
+@using Services
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>@Model.Title</title>
-    <style>
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            background: #ffffff;
-            font-family: OpenSans, sans-serif;
-        }
-
-        #url {
-            display: none;
-        }
-
-        #webview {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            z-index: 2;
-        }
-    </style>
+    @if (AppGlobal.IsDevelopment)
+    {
+        <link href="~/css/Index.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+        <link href="~/css/Font.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    }
+    else
+    {
+        <link href="~/css/site.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    }
 </head>
 <body>
     @Html.AntiForgeryToken()
 
-    @* Url is stored in the input field because it will be set to the webview after registering the event handlers *@
-    @if (!Model.Verified) {
-        <input id="url" type="text" value="@Model.LoginEndpoint" />
-    }
-    <webview id="webview"></webview>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 p-0" id="mainDiv">
+                @* Url is stored in the input field because it will be set to the webview after registering the event handlers *@
+                @if (!Model.Verified)
+                {
+                    <input id="url" type="hidden" value="@Model.LoginEndpoint" />
+                }
+                <webview class="login-webview" id="webview" partition="x"></webview>
+            </div>
+        </div>
+    </div>
 
-    <div id="error"></div>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalTitle">@Localization.TitleLoginError</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-4">
+                                <p></p>
+                                <p class="text-center">
+                                    <div class="tcdx-logo"></div>
+                                </p>
+                            </div>
+                            <div class="col-8 my-auto">
+                                <div id="myModalText"></div>
+                                <a id="myModalLink" href="#"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="closeButton" class="btn btn-secondary invisible" data-dismiss="modal" data-toggle="modal" data-target="#myModal">Close</button>
+                    <button type="button" id="quitButton" class="btn btn-primary invisible" data-dismiss="modal" onclick="Login.QuitWindow();">Quit</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @* In order to make jquery work with both Chrome and Electron *@
     @* Keep a reference to module and restore it after jquery is loaded *@
@@ -44,9 +71,17 @@
     <script src="~/lib/jquery/jquery-3.3.1.min.js"></script>
     <script>if (window.module) module = window.module;</script>
 
+    <script src="~/lib/popperjs/popper.min.js"></script>
+    <script src="~/lib/bootstrap/bootstrap.min.js"></script>
+
+
     @* SQLCompare scripts *@
     @if (AppGlobal.IsDevelopment)
     {
+        <script src="~/js/ApiResponse.js" asp-append-version="true"></script>
+        <script src="~/js/Logger.js" asp-append-version="true"></script>
+        <script src="~/js/Utility.js" asp-append-version="true"></script>
+        <script src="~/js/Localization.js" asp-append-version="true"></script>
         <script src="~/js/Login.js" asp-append-version="true"></script>
     }
     else

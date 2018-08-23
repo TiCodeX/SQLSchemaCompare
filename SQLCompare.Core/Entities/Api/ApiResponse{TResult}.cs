@@ -1,10 +1,10 @@
-﻿namespace SQLCompare.Core.Entities.AccountService
+﻿namespace SQLCompare.Core.Entities.Api
 {
     /// <summary>
-    /// Represents response for the Azure function Account requests with a result
+    /// Represents response for the Api requests with a result
     /// </summary>
     /// <typeparam name="TResult">The result type</typeparam>
-    public class AzureFunctionResponse<TResult> : AzureFunctionResponse
+    public class ApiResponse<TResult> : ApiResponse
     {
         /// <summary>
         /// Gets or sets the response result

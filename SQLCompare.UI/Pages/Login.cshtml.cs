@@ -4,7 +4,7 @@ using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities.AccountService;
+using SQLCompare.Core.Entities.Api;
 using SQLCompare.Core.Entities.Exceptions;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
@@ -112,18 +112,17 @@ namespace SQLCompare.UI.Pages
             if (url == null)
             {
                 this.logger.LogError("Url is null");
-                return new JsonResult(new { success = false, error = Localization.ErrorLoginVerificationFailed });
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorRedirectUrlIsNull, ErrorMessage = Localization.ErrorLoginVerificationFailed });
             }
 
             var queryParams = HttpUtility.ParseQueryString(url.Query);
 
             var sessionToken = queryParams.Get("t");
-            var rememberSession = queryParams.Get("r");
 
             if (string.IsNullOrEmpty(sessionToken))
             {
                 this.logger.LogError("Null or empty session token");
-                return new JsonResult(new { success = false, error = Localization.ErrorLoginVerificationFailed });
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorSessionTokenIsNullOrEmpty, ErrorMessage = Localization.ErrorLoginVerificationFailed });
             }
 
             try
@@ -132,7 +131,7 @@ namespace SQLCompare.UI.Pages
                 if (this.accountService.CustomerInformation.SubscriptionPlan == null)
                 {
                     this.logger.LogError("No subscription plan");
-                    return new JsonResult(new { success = false, error = Localization.ErrorNoSubscriptionAvailable });
+                    return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorNoSubscriptionAvailable, ErrorMessage = Localization.ErrorNoSubscriptionAvailable });
                 }
 
                 if (!this.accountService.CustomerInformation.ExpirationDate.HasValue || this.accountService.CustomerInformation.ExpirationDate.Value < DateTime.Now)
@@ -140,26 +139,24 @@ namespace SQLCompare.UI.Pages
                     if (this.accountService.CustomerInformation.IsTrial.HasValue && this.accountService.CustomerInformation.IsTrial.Value)
                     {
                         this.logger.LogError("Expired trial subscription");
-                        return new JsonResult(new { success = false, error = Localization.ErrorTrialSubscriptionExpired });
+                        return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorTrialSubscriptionExpired, ErrorMessage = Localization.ErrorTrialSubscriptionExpired });
                     }
 
                     this.logger.LogError("Expired subscription");
-                    return new JsonResult(new { success = false, error = Localization.ErrorSubscriptionExpired });
+                    return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorSubscriptionExpired, ErrorMessage = Localization.ErrorSubscriptionExpired });
                 }
 
-                if (!string.IsNullOrEmpty(rememberSession) && rememberSession == "1")
-                {
-                    var settings = this.appSettingsService.GetAppSettings();
-                    settings.Session = sessionToken;
-                    this.appSettingsService.SaveAppSettings();
-                }
+                var settings = this.appSettingsService.GetAppSettings();
+                settings.Session = sessionToken;
+                this.appSettingsService.SaveAppSettings();
 
-                return new JsonResult(new { success = true, error = string.Empty });
+                return new JsonResult(new ApiResponse { Success = true }, new Newtonsoft.Json.JsonSerializerSettings { });
             }
             catch (AccountServiceException ex)
             {
                 this.logger.LogError($"VerifySession error: {ex.ErrorCode} - {ex.Message}");
                 string error;
+
                 switch (ex.ErrorCode)
                 {
                     case EErrorCode.ErrorAccountLocked:
@@ -176,12 +173,12 @@ namespace SQLCompare.UI.Pages
                         break;
                 }
 
-                return new JsonResult(new { success = false, error });
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = ex.ErrorCode, ErrorMessage = error });
             }
             catch (Exception ex)
             {
                 this.logger.LogError($"Error occured in index: {ex.Message}");
-                return new JsonResult(new { success = false, error = Localization.ErrorLoginVerificationFailed });
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorUnexpected, ErrorMessage = Localization.ErrorLoginVerificationFailed });
             }
         }
 

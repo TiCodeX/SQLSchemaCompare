@@ -1,9 +1,9 @@
-﻿namespace SQLCompare.Core.Entities.AccountService
+﻿namespace SQLCompare.Core.Entities.Api
 {
     /// <summary>
-    /// Represents the response for Azure function Account requests
+    /// Represents the response for Api requests
     /// </summary>
-    public class AzureFunctionResponse
+    public class ApiResponse
     {
         /// <summary>
         /// Gets or sets a value indicating whether the request succeeded or returned an error

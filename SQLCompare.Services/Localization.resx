@@ -283,7 +283,7 @@
     <value>Failed to verify login</value>
   </data>
   <data name="ErrorNoSubscriptionAvailable" xml:space="preserve">
-    <value>No subscription plan available</value>
+    <value>No subscription plan has been found</value>
   </data>
   <data name="ErrorPasswordNotSpecified" xml:space="preserve">
     <value>Password not specified</value>
@@ -295,9 +295,15 @@
     <value>The session has expired</value>
   </data>
   <data name="ErrorSubscriptionExpired" xml:space="preserve">
-    <value>The subscription has expired</value>
+    <value>The current subscription has expired</value>
   </data>
   <data name="ErrorTrialSubscriptionExpired" xml:space="preserve">
-    <value>The trial subscriptioin has expired</value>
+    <value>The current trial subscriptioin has expired</value>
+  </data>
+  <data name="ErrorCannotContactTiCodeXWebsite" xml:space="preserve">
+    <value>Unable to contact TiCodeX website:</value>
+  </data>
+  <data name="TitleLoginError" xml:space="preserve">
+    <value>Login error</value>
   </data>
 </root>

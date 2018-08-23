@@ -115,6 +115,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to contact TiCodeX website:.
+        /// </summary>
+        public static string ErrorCannotContactTiCodeXWebsite {
+            get {
+                return ResourceManager.GetString("ErrorCannotContactTiCodeXWebsite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to E-mail not specified.
         /// </summary>
         public static string ErrorEmailNotSpecified {
@@ -160,7 +169,7 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No subscription plan available.
+        ///   Looks up a localized string similar to No subscription plan has been found.
         /// </summary>
         public static string ErrorNoSubscriptionAvailable {
             get {
@@ -196,7 +205,7 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The subscription has expired.
+        ///   Looks up a localized string similar to The current subscription has expired.
         /// </summary>
         public static string ErrorSubscriptionExpired {
             get {
@@ -205,7 +214,7 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The trial subscriptioin has expired.
+        ///   Looks up a localized string similar to The current trial subscriptioin has expired.
         /// </summary>
         public static string ErrorTrialSubscriptionExpired {
             get {
@@ -597,6 +606,15 @@ namespace SQLCompare.Services {
         public static string MenuSettings {
             get {
                 return ResourceManager.GetString("MenuSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login error.
+        /// </summary>
+        public static string TitleLoginError {
+            get {
+                return ResourceManager.GetString("TitleLoginError", resourceCulture);
             }
         }
         

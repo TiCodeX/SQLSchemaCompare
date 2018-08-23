@@ -1,3 +1,8 @@
+/* tslint:disable:no-require-imports no-implicit-dependencies */
+declare const amdRequire: Require;
+const electron: Electron.AllElectron = (typeof require !== "undefined" ? <Electron.AllElectron>require("electron") : undefined);
+/* tslint:enable:no-require-imports no-implicit-dependencies */
+
 /**
  * Contains various utility methods
  */
@@ -8,12 +13,42 @@ class Utility {
     private static readonly logger: Logger = Utility.GetLogger("Utility");
 
     /**
+     * Set the standard settings when the app starts
+     */
+    public static ApplicationStartup(): void {
+        // Disable context menu
+        window.addEventListener("contextmenu", (e: PointerEvent) => {
+            e.preventDefault();
+        }, false);
+
+        // Prevent app zooming
+        if (electron !== undefined) {
+            electron.webFrame.setVisualZoomLevelLimits(1, 1);
+            electron.webFrame.setLayoutZoomLevelLimits(0, 0);
+        }
+
+        // Enable bootstrap tooltips and popovers
+        $("[data-toggle='tooltip']").tooltip();
+        $("[data-toggle='popover']").popover();
+
+        Localization.Load();
+    }
+
+    /**
      * Encode the HTML tags inside the string
      * @param s - The string to encode
      * @returns The string properly encoded
      */
     public static EncodeHtmlEntities(s: string): string {
         return $("<div/>").text(s).html();
+    }
+
+    /**
+     * Contact electron to open an external browser at the specified url
+     * @param url - The url to be opened in external browser
+     */
+    public static OpenExternalBrowser(url: string): void {
+        electron.shell.openExternal(url);
     }
 
     /**

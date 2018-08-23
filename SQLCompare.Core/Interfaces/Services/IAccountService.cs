@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SQLCompare.Core.Entities.AccountService;
+using SQLCompare.Core.Entities.Api;
 
 namespace SQLCompare.Core.Interfaces.Services
 {

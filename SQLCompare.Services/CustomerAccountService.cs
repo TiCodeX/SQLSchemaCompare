@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using SQLCompare.Core.Entities.AccountService;
+using SQLCompare.Core.Entities.Api;
 using SQLCompare.Core.Entities.Exceptions;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
@@ -40,7 +40,7 @@ namespace SQLCompare.Services
                 using (var response = await client.GetAsync(builder.Uri).ConfigureAwait(false))
                 {
                     response.EnsureSuccessStatusCode();
-                    var results = await response.Content.ReadAsAsync<AzureFunctionResponse<VerifySessionResult>>().ConfigureAwait(false);
+                    var results = await response.Content.ReadAsAsync<ApiResponse<VerifySessionResult>>().ConfigureAwait(false);
                     if (!results.Success)
                     {
                         throw new AccountServiceException(results.ErrorMessage) { ErrorCode = results.ErrorCode };

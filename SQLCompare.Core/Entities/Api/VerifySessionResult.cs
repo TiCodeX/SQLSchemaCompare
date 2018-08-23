@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SQLCompare.Core.Entities.AccountService
+namespace SQLCompare.Core.Entities.Api
 {
     /// <summary>
     /// Represent the VerifySession result

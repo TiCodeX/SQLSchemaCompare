@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Entities.AccountService
+﻿namespace SQLCompare.Core.Entities.Api
 {
     /// <summary>
     /// Defines all the possible error codes that can be returned in the account service response
@@ -10,9 +10,9 @@
         /// </summary>
         Success = 0,
 
-        /*********************************
-        *** Errors (from 1000 to 1999) ***
-        *********************************/
+        /*****************************************
+        *** Website Errors (from 1000 to 1999) ***
+        *****************************************/
 
         /// <summary>
         /// The email has not been specified
@@ -94,8 +94,46 @@
         /// </summary>
         ErrorNoLanguageSpecified = 1015,
 
-        /***********************************
-        *** Warnings (from 2000 to 2999) ***
-        ***********************************/
+        /*******************************************
+        *** Website Warnings (from 2000 to 2999) ***
+        *******************************************/
+
+        /********************************************
+        *** SqlCompare Errors (from 3000 to 3999) ***
+        ********************************************/
+
+        /// <summary>
+        /// The redirect url for the login process is null
+        /// </summary>
+        ErrorRedirectUrlIsNull = 3000,
+
+        /// <summary>
+        /// The session token received by the login process is null or empty
+        /// </summary>
+        ErrorSessionTokenIsNullOrEmpty = 3001,
+
+        /// <summary>
+        /// The account has no subscription
+        /// </summary>
+        ErrorNoSubscriptionAvailable = 3002,
+
+        /// <summary>
+        /// The trial subscription is expired
+        /// </summary>
+        ErrorTrialSubscriptionExpired = 3003,
+
+        /// <summary>
+        /// The subscription is expired
+        /// </summary>
+        ErrorSubscriptionExpired = 3004,
+
+        /// <summary>
+        /// Generic unexpected error
+        /// </summary>
+        ErrorUnexpected = 3005,
+
+        /**********************************************
+        *** SqlCompare Warnings (from 4000 to 4999) ***
+        **********************************************/
     }
 }

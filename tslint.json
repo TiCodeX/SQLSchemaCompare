@@ -219,7 +219,12 @@
         "space-within-parens": false,
         "switch-final-break": true,
         "type-literal-delimiter": true,
-        "variable-name": [ true, "ban-keywords", "check-format" ],
+        "variable-name": [
+            true,
+            "ban-keywords",
+            "check-format",
+            "allow-pascal-case"
+        ],
         "whitespace": [
             true,
             "check-branch",

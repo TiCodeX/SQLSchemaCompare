@@ -29,7 +29,7 @@ namespace SQLCompare.Test.UI
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Fact]
-        [UnitTest]
+        [IntegrationTest]
         public async Task ConnectionTest()
         {
             var response = await this.HttpClient.GetAsync(new Uri("https://127.0.0.1:5000")).ConfigureAwait(false);
@@ -41,7 +41,7 @@ namespace SQLCompare.Test.UI
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Fact]
-        [UnitTest]
+        [IntegrationTest]
         public async Task WelcomePageLoadTest()
         {
             var response = await this.HttpClient.GetAsync(new Uri("https://127.0.0.1:5000/WelcomePageModel")).ConfigureAwait(false);

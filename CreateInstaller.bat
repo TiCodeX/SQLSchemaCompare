@@ -34,7 +34,7 @@ echo      ^|  _________________^|_
 echo      \_/___________________/
 echo.
 
-dotnet publish %~dp0\SQLCompare.UI\SQLCompare.UI.csproj -f netcoreapp2.1 -r %targetdotnet% -c %configuration%
+dotnet publish %~dp0\SQLCompare.UI\SQLCompare.UI.csproj -r %targetdotnet% -c %configuration%
 
 if ERRORLEVEL 1 goto:error
 

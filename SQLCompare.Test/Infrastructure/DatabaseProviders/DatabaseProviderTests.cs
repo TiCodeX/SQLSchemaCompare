@@ -69,8 +69,6 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
 
-            db.DataTypes.Should().BeEmpty();
-
             db.Tables.Count.Should().Be(16);
             var table = db.Tables.FirstOrDefault(x => x.Name == "film");
             table.Should().NotBeNull();
@@ -95,6 +93,9 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             db.Functions.Should().BeEmpty();
 
             db.StoredProcedures.Should().BeEmpty();
+
+            db.DataTypes.Should().NotBeNull();
+            db.DataTypes.Count.Should().Be(37);
         }
 
         /// <summary>

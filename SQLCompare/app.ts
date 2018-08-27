@@ -1,7 +1,9 @@
 /* tslint:disable:no-require-imports no-implicit-dependencies max-file-line-count only-arrow-functions no-magic-numbers no-string-literal */
+import builderUtilRuntime = require("builder-util-runtime");
 import childProcess = require("child_process");
 import portfinder = require("detect-port");
 import electron = require("electron");
+import electronUpdater = require("electron-updater");
 import windowStateKeeper = require("electron-window-state");
 import fs = require("fs");
 import glob = require("glob");
@@ -17,9 +19,11 @@ const loggerPath: string = "C:\\ProgramData\\SqlCompare\\log\\";
 const loggerFile: string = "SqlCompare-yyyy-MM-dd-ui.log";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;
+const autoUpdater: electronUpdater.AppUpdater = electronUpdater.autoUpdater;
 let serviceUrl: string = "https://127.0.0.1:{port}";
 let loginUrl: string = "https://127.0.0.1:{port}/login";
 let serviceProcess: childProcess.ChildProcess;
+let autoUpdaterInfo: electronUpdater.UpdateInfo;
 
 log4js.configure({
     appenders: {
@@ -48,6 +52,21 @@ log4js.configure({
 
 const logger: log4js.Logger = log4js.getLogger("electron");
 logger.info("Starting application...");
+
+// Configure electron auto-updater
+const autoUpdaterLogger: log4js.Logger = log4js.getLogger("electron-updater");
+autoUpdaterLogger.level = (process.defaultApp ? "debug" : "info");
+autoUpdater.logger = autoUpdaterLogger;
+autoUpdater.autoDownload = true;
+autoUpdater.autoInstallOnAppQuit = true;
+const autoUpdaterPublishOptions: builderUtilRuntime.GenericServerOptions = {
+    provider: "generic",
+    url: "http://www.debeonline.ch/sqlcompare",
+};
+autoUpdater.setFeedURL(autoUpdaterPublishOptions);
+autoUpdater.on("update-available", (info: electronUpdater.UpdateInfo) => {
+    autoUpdaterInfo = info;
+});
 
 // Start an asynchronous function to delete old log files
 setTimeout(() => {
@@ -100,6 +119,10 @@ electron.ipcMain.on("OpenMainWindow", (event: electron.Event) => {
 // Register the renderer callback for opening the login window
 electron.ipcMain.on("OpenLoginWindow", (event: electron.Event) => {
     createLoginWindow(true);
+});
+// Register the renderer callback to retrieve the updates
+electron.ipcMain.on("GetUpdateInfo", (event: electron.Event) => {
+    event.sender.send("GetUpdateInfoResponse", autoUpdaterInfo);
 });
 
 /**
@@ -257,7 +280,13 @@ function startup(): void {
         alwaysOnTop: false,
     });
     splashWindow.loadURL(splashUrl);
+    splashWindow.show();
+    splashWindow.focus();
     logger.debug("Splashscreen window started");
+
+    autoUpdater.checkForUpdates().catch(() => {
+        logger.error("Error checking for updates");
+    });
 
     portfinder(initialPort, (errorWebPort: Error, webPort: number) => {
         serviceUrl = serviceUrl.replace("{port}", `${webPort}`);

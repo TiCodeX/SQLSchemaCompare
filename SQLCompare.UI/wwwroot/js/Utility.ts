@@ -21,17 +21,28 @@ class Utility {
             e.preventDefault();
         }, false);
 
-        // Prevent app zooming
-        if (electron !== undefined) {
-            electron.webFrame.setVisualZoomLevelLimits(1, 1);
-            electron.webFrame.setLayoutZoomLevelLimits(0, 0);
-        }
-
         // Enable bootstrap tooltips and popovers
         $("[data-toggle='tooltip']").tooltip();
         $("[data-toggle='popover']").popover();
 
         Localization.Load();
+
+        if (electron !== undefined) {
+            // Prevent app zooming
+            electron.webFrame.setVisualZoomLevelLimits(1, 1);
+            electron.webFrame.setLayoutZoomLevelLimits(0, 0);
+            // Register electron callbacks
+            electron.ipcRenderer.on("GetUpdateInfoResponse", (event: Electron.Event, info: { version: string }) => {
+                if (info !== undefined) {
+                    let message: string = `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
+                    message += "<br/>";
+                    message += `${Localization.Get("NotificationAutomaticUpdateAndInstall").replace("{0}", info.version)}`;
+                    $("#myNotificationMessage").html(message);
+                    $("#myNotification").show();
+                }
+            });
+            electron.ipcRenderer.send("GetUpdateInfo");
+        }
     }
 
     /**

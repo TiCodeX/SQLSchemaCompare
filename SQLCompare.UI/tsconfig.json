@@ -1,8 +1,9 @@
 {
-  "compileOnSave": true,
-  "compilerOptions": {
-    "target": "es5",
-    "sourceMap": false,
-    "removeComments": true
-  }
+    "compileOnSave": true,
+    "compilerOptions": {
+        "target": "es5",
+        "lib": [ "es5", "es6", "dom" ],
+        "sourceMap": false,
+        "removeComments": true
+    }
 }

@@ -1,21 +1,31 @@
 {
     "name": "sqlcompare",
-    "version": "1.0.0",
-    "description": "SQLCompare",
+    "version": "2018.8.3",
+    "description": "SQL Compare",
     "main": "app.js",
     "author": {
         "name": "TiCodeX SA"
     },
     "build": {
         "appId": "ch.ticodex.sqlcompare",
+        "productName": "SQL Compare",
+        "copyright": "Copyright @ 2018 ${author}",
         "remoteBuild": false,
         "win": {
-            "target": "nsis"
+            "target": "nsis",
+            "publish": {
+                "provider": "generic",
+                "url": "https://www.debeonline.ch/sqlcompare"
+            }
         },
         "nsis": {
             "oneClick": false,
             "allowToChangeInstallationDirectory": true,
-            "runAfterFinish": false
+            "runAfterFinish": false,
+            "installerHeader": "installerHeader.bmp",
+            "installerSidebar": "installerSidebar.bmp",
+            "uninstallerSidebar": "installerSidebar.bmp",
+            "license": "eula.html"
         },
         "linux": {
             "target": "AppImage"
@@ -24,14 +34,14 @@
             "target": "default",
             "category": "public.app-category.productivity"
         },
-        "copyright": "Copyright @ 2018 ${author}",
         "files": [
             "!app.ts",
             "!*.njsproj",
             "!*.njsproj.user",
             "!tsconfig.json",
             "!bin",
-            "!obj"
+            "!obj",
+            "!build"
         ],
         "extraFiles": [
             {
@@ -47,9 +57,9 @@
         }
     },
     "scripts": {
-        "dist-win": "electron-builder --win",
-        "dist-linux": "electron-builder --linux",
-        "dist-mac": "electron-builder --mac"
+        "dist-win": "electron-builder --win --publish always",
+        "dist-linux": "electron-builder --linux --publish always",
+        "dist-mac": "electron-builder --mac --publish always"
     },
     "postinstall": "electron-builder install-app-deps",
     "devDependencies": {
@@ -57,13 +67,14 @@
         "@types/electron-window-state": "^2.0.31",
         "@types/glob": "^5.0.35",
         "@types/node": "^6.0.116",
-        "electron": "^1.8.7",
-        "electron-builder": "^20.27.0"
+        "electron": "^1.8.8",
+        "electron-builder": "^20.28.2"
     },
     "dependencies": {
         "detect-port": "^1.2.3",
+        "electron-updater": "^3.1.1",
         "electron-window-state": "^4.1.1",
         "glob": "^7.1.2",
-        "log4js": "^3.0.4"
+        "log4js": "^3.0.5"
     }
 }

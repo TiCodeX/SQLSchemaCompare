@@ -94,6 +94,15 @@ body > .container-fluid > .row {
     }
 }
 
+#myNotification {
+    display: none;
+    position: fixed;
+    top: 5px;
+    left: 2%;
+    width: 96%;
+    z-index: 2000;
+}
+
 /*TEST*/
 .switch {
     position: relative;

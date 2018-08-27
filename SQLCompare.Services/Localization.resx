@@ -309,4 +309,10 @@
   <data name="LabelUserDefinedType" xml:space="preserve">
     <value>User-Defined Data Type</value>
   </data>
+  <data name="NotificationAutomaticUpdateAndInstall" xml:space="preserve">
+    <value>The version v{0} has been released, it will be downloaded in background and installed automatically when you close the application.</value>
+  </data>
+  <data name="NotificationNewVersionAvailable" xml:space="preserve">
+    <value>New version available!</value>
+  </data>
 </root>

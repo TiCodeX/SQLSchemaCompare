@@ -1,11 +1,12 @@
 {
-  "compileOnSave": true,
-  "compilerOptions": {
-    "target": "es5",
-    "sourceMap": false,
-    "removeComments": true
-  },
-  "exclude": [
-    "node_modules"
-  ]
+    "compileOnSave": true,
+    "compilerOptions": {
+        "target": "es5",
+        "lib": [ "es5", "es6", "dom" ],
+        "sourceMap": false,
+        "removeComments": true
+    },
+    "exclude": [
+        "node_modules"
+    ]
 }

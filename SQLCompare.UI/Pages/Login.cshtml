@@ -10,12 +10,12 @@
     <title>@Model.Title</title>
     @if (AppGlobal.IsDevelopment)
     {
-        <link href="~/css/Index.css" rel="stylesheet" type="text/css" asp-append-version="true" />
         <link href="~/css/Font.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+        <link href="~/css/Index.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     }
     else
     {
-        <link href="~/css/site.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+        <link href="~/css/Index.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     }
 </head>
 <body>
@@ -65,6 +65,11 @@
         </div>
     </div>
 
+    <div id="myNotification" class="alert alert-warning">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <span id="myNotificationMessage"></span>
+    </div>
+
     @* In order to make jquery work with both Chrome and Electron *@
     @* Keep a reference to module and restore it after jquery is loaded *@
     <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
@@ -86,7 +91,7 @@
     }
     else
     {
-        <script src="~/js/login.min.js" asp-append-version="true"></script>
+        <script src="~/js/Login.min.js" asp-append-version="true"></script>
     }
 </body>
 </html>

@@ -619,6 +619,24 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The version v{0} has been released, it will be downloaded in background and installed automatically when you close the application..
+        /// </summary>
+        public static string NotificationAutomaticUpdateAndInstall {
+            get {
+                return ResourceManager.GetString("NotificationAutomaticUpdateAndInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New version available!.
+        /// </summary>
+        public static string NotificationNewVersionAvailable {
+            get {
+                return ResourceManager.GetString("NotificationNewVersionAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login error.
         /// </summary>
         public static string TitleLoginError {

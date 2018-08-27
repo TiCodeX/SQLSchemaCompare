@@ -9,6 +9,7 @@ for file in $changedFiles; do
     [ -z "${file##"SQLCompare/package"*".json"}" ] && continue;
     [ -z "${file##"SQLCompare/img/"*}" ] && continue;
     [ -z "${file##"SQLCompare/font/"*}" ] && continue;
+    [ -z "${file##"SQLCompare/build/"*}" ] && continue;
     [ -z "${file##*".xlsx"}" ] && continue;
     
     unix2dos < "$file" | cmp -s - "$file"

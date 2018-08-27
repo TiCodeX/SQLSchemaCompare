@@ -13,7 +13,7 @@
     }
     else
     {
-        <link href="~/css/site.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+        <link href="~/css/Index.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     }
 </head>
 <body>
@@ -50,6 +50,11 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div id="myNotification" class="alert alert-warning">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <span id="myNotificationMessage"></span>
     </div>
 
     @await Html.PartialAsync("_ScriptSetup")

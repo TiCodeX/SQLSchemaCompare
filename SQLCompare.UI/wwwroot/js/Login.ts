@@ -77,17 +77,18 @@ class Login {
 $((): void => {
     Utility.ApplicationStartup();
 
-    const webview: JQuery = $("#webview");
-    const url: JQuery = $("#url");
-    let webviewUrl: string = "";
-
     // If it doesn't exist, means the saved session has been verified
+    const url: JQuery = $("#url");
     if (url.length === 0) {
-        electron.ipcRenderer.send("OpenMainWindow");
+        setTimeout(() => {
+            electron.ipcRenderer.send("OpenMainWindow");
+        }, 0);
+
+        return;
     }
-    else {
-        webviewUrl = <string>url.val();
-    }
+
+    const webview: JQuery = $("#webview");
+    const webviewUrl: string = <string>url.val();
 
     let redirectRequestDetected: boolean = false;
     webview.on("did-get-redirect-request", (e: JQuery.Event): void => {

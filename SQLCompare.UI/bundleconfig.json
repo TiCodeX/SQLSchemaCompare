@@ -1,24 +1,24 @@
 ﻿[
     {
-        "outputFileName": "wwwroot/css/site.min.css",
+        "outputFileName": "wwwroot/css/Index.min.css",
         "inputFiles": [
-            "wwwroot/css/Index.css",
-            "wwwroot/css/Font.css"
+            "wwwroot/css/Font.css",
+            "wwwroot/css/Index.css"
         ]
     },
     {
-        "outputFileName": "wwwroot/js/site.min.js",
+        "outputFileName": "wwwroot/js/Index.min.js",
         "inputFiles": [
-            "wwwroot/js/Index.js",
             "wwwroot/js/ApiResponse.js",
             "wwwroot/js/Localization.js",
             "wwwroot/js/Logger.js",
             "wwwroot/js/Utility.js",
-            "wwwroot/js/Main.js",
             "wwwroot/js/Menu.js",
+            "wwwroot/js/Main.js",
             "wwwroot/js/Project.js",
             "wwwroot/js/Settings.js",
-            "wwwroot/js/Logout.js"
+            "wwwroot/js/Logout.js",
+            "wwwroot/js/Index.js"
         ],
         "minify": {
             "enabled": true,
@@ -27,13 +27,13 @@
         "sourceMap": false
     },
     {
-        "outputFileName": "wwwroot/js/login.min.js",
+        "outputFileName": "wwwroot/js/Login.min.js",
         "inputFiles": [
-            "wwwroot/js/Login.js",
             "wwwroot/js/ApiResponse.js",
-            "wwwroot/js/Utility.js",
             "wwwroot/js/Logger.js",
-            "wwwroot/js/Localization.js"
+            "wwwroot/js/Utility.js",
+            "wwwroot/js/Localization.js",
+            "wwwroot/js/Login.js"
         ],
         "minify": {
             "enabled": true,

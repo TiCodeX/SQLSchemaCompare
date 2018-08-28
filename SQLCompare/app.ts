@@ -19,11 +19,19 @@ const loggerPath: string = "C:\\ProgramData\\SqlCompare\\log\\";
 const loggerFile: string = "SqlCompare-yyyy-MM-dd-ui.log";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;
-const autoUpdater: electronUpdater.AppUpdater = electronUpdater.autoUpdater;
+const autoUpdaterUrl: string = "http://www.debeonline.ch/sqlcompare";
 let serviceUrl: string = "https://127.0.0.1:{port}";
 let loginUrl: string = "https://127.0.0.1:{port}/login";
 let serviceProcess: childProcess.ChildProcess;
 let autoUpdaterInfo: electronUpdater.UpdateInfo;
+
+/**
+ * Keep a global reference of the window object, if you don't, the window will
+ * be closed automatically when the JavaScript object is garbage collected.
+ */
+let splashWindow: Electron.BrowserWindow;
+let mainWindow: Electron.BrowserWindow;
+let loginWindow: Electron.BrowserWindow;
 
 log4js.configure({
     appenders: {
@@ -56,15 +64,15 @@ logger.info("Starting application...");
 // Configure electron auto-updater
 const autoUpdaterLogger: log4js.Logger = log4js.getLogger("electron-updater");
 autoUpdaterLogger.level = (process.defaultApp ? "debug" : "info");
-autoUpdater.logger = autoUpdaterLogger;
-autoUpdater.autoDownload = true;
-autoUpdater.autoInstallOnAppQuit = true;
+electronUpdater.autoUpdater.logger = autoUpdaterLogger;
+electronUpdater.autoUpdater.autoDownload = true;
+electronUpdater.autoUpdater.autoInstallOnAppQuit = true;
 const autoUpdaterPublishOptions: builderUtilRuntime.GenericServerOptions = {
     provider: "generic",
-    url: "http://www.debeonline.ch/sqlcompare",
+    url: autoUpdaterUrl,
 };
-autoUpdater.setFeedURL(autoUpdaterPublishOptions);
-autoUpdater.on("update-available", (info: electronUpdater.UpdateInfo) => {
+electronUpdater.autoUpdater.setFeedURL(autoUpdaterPublishOptions);
+electronUpdater.autoUpdater.on("update-available", (info: electronUpdater.UpdateInfo) => {
     autoUpdaterInfo = info;
 });
 
@@ -120,17 +128,23 @@ electron.ipcMain.on("OpenMainWindow", (event: electron.Event) => {
 electron.ipcMain.on("OpenLoginWindow", (event: electron.Event) => {
     createLoginWindow(true);
 });
+// Register the renderer callback for opening the login window
+electron.ipcMain.on("ShowLoginWindow", (event: electron.Event) => {
+    // Destroy splash window
+    if (splashWindow !== undefined) {
+        splashWindow.destroy();
+        splashWindow = undefined;
+    }
+    // Show login window
+    if (loginWindow !== undefined) {
+        loginWindow.show();
+        loginWindow.focus();
+    }
+});
 // Register the renderer callback to retrieve the updates
 electron.ipcMain.on("GetUpdateInfo", (event: electron.Event) => {
     event.sender.send("GetUpdateInfoResponse", autoUpdaterInfo);
 });
-
-/**
- * Keep a global reference of the window object, if you don't, the window will
- * be closed automatically when the JavaScript object is garbage collected.
- */
-let mainWindow: Electron.BrowserWindow;
-let loginWindow: Electron.BrowserWindow;
 
 /**
  * Create the main window ensuring to destroy the login window
@@ -189,6 +203,11 @@ function createMainWindow(): void {
         mainWindow = undefined;
     });
 
+    // Destroy splash window
+    if (splashWindow !== undefined) {
+        splashWindow.destroy();
+        splashWindow = undefined;
+    }
     // Destroy login window
     if (loginWindow !== undefined) {
         loginWindow.destroy();
@@ -272,7 +291,7 @@ function startup(): void {
         callback({ cancel: false, requestHeaders: details.requestHeaders });
     });
 
-    const splashWindow: electron.BrowserWindow = new electron.BrowserWindow({
+    splashWindow = new electron.BrowserWindow({
         width: 640,
         height: 400,
         transparent: true,
@@ -284,7 +303,7 @@ function startup(): void {
     splashWindow.focus();
     logger.debug("Splashscreen window started");
 
-    autoUpdater.checkForUpdates().catch(() => {
+    electronUpdater.autoUpdater.checkForUpdates().catch(() => {
         logger.error("Error checking for updates");
     });
 
@@ -308,10 +327,6 @@ function startup(): void {
                 loadFailed = false;
                 loginWindow.loadURL(loginUrl);
             } else {
-                logger.debug("Service connected, hide splashscreen window and show login window");
-                splashWindow.destroy();
-                loginWindow.show();
-                loginWindow.focus();
                 logger.info("Application started successfully");
             }
         });

@@ -80,12 +80,12 @@ $((): void => {
     // If it doesn't exist, means the saved session has been verified
     const url: JQuery = $("#url");
     if (url.length === 0) {
-        setTimeout(() => {
-            electron.ipcRenderer.send("OpenMainWindow");
-        }, 0);
+        electron.ipcRenderer.send("OpenMainWindow");
 
         return;
     }
+
+    electron.ipcRenderer.send("ShowLoginWindow");
 
     const webview: JQuery = $("#webview");
     const webviewUrl: string = <string>url.val();

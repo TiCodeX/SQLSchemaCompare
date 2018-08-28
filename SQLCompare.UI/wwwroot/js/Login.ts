@@ -33,9 +33,6 @@ class Login {
                     } else {
                         $("#webview").attr("src", webviewUrl);
                         $("#myModalText").html(response.ErrorMessage);
-                        $("#closeButton").removeClass("invisible").addClass("visible");
-                        $("#quitButton").removeClass("invisible").addClass("visible");
-
                         switch (response.ErrorCode) {
                             case ApiResponse.EErrorCodes.ErrorNoSubscriptionAvailable:
                             case ApiResponse.EErrorCodes.ErrorSubscriptionExpired:
@@ -48,16 +45,14 @@ class Login {
                             default:
                         }
 
-                        $("#myModal").modal({ show: true, backdrop: "static", keyboard: false });
+                        $("#myModal").modal("show");
                     }
 
                 },
                 error: (error: JQuery.jqXHR): void => {
                     $("#webview").attr("src", webviewUrl);
                     $("#myModalText").html(Localization.Get("ErrorGeneric"));
-                    $("#closeButton").removeClass("invisible").addClass("visible");
-                    $("#quitButton").removeClass("invisible").addClass("visible");
-                    $("#myModal").modal({ show: true, backdrop: "static", keyboard: false });
+                    $("#myModal").modal("show");
                 },
             });
         }
@@ -88,13 +83,11 @@ $((): void => {
     electron.ipcRenderer.send("ShowLoginWindow");
 
     const webview: JQuery = $("#webview");
-    const webviewUrl: string = <string>url.val();
-
     let redirectRequestDetected: boolean = false;
     webview.on("did-get-redirect-request", (e: JQuery.Event): void => {
         redirectRequestDetected = true;
         e.preventDefault();
-        Login.handleRedirect((<HashChangeEvent>e.originalEvent).newURL, webviewUrl);
+        Login.handleRedirect((<HashChangeEvent>e.originalEvent).newURL, <string>url.val());
     });
     webview.on("did-fail-load", (e: JQuery.Event) => {
         e.preventDefault();
@@ -105,11 +98,10 @@ $((): void => {
         $("#myModalText").html(Localization.Get("ErrorCannotContactTiCodeXWebsite"));
         $("#myModalLink").html("www.ticodex.com");
         $("#myModalLink").on("click", () => { Utility.OpenExternalBrowser("https://www.ticodex.com"); });
-        $("#closeButton").removeClass("visible").addClass("invisible");
-        $("#quitButton").removeClass("invisible").addClass("visible");
+        $("#closeButton").hide();
         $("#myModal").modal({ show: true, backdrop: "static", keyboard: false });
     });
 
     // Start loading the webview
-    webview.attr("src", webviewUrl);
+    webview.attr("src", <string>url.val());
 });

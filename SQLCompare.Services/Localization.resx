@@ -315,4 +315,10 @@
   <data name="NotificationNewVersionAvailable" xml:space="preserve">
     <value>New version available!</value>
   </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ButtonQuit" xml:space="preserve">
+    <value>Quit</value>
+  </data>
 </root>

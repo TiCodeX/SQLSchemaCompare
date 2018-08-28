@@ -33,7 +33,7 @@ class Utility {
             electron.webFrame.setLayoutZoomLevelLimits(0, 0);
             // Register electron callbacks
             electron.ipcRenderer.on("GetUpdateInfoResponse", (event: Electron.Event, info: { version: string }) => {
-                if (info !== undefined) {
+                if (info !== null) {
                     let message: string = `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
                     message += "<br/>";
                     message += `${Localization.Get("NotificationAutomaticUpdateAndInstall").replace("{0}", info.version)}`;
@@ -96,6 +96,13 @@ class Utility {
     }
 
     /**
+     * Open the welcome page
+     */
+    public static OpenWelcomePage(): void {
+        this.OpenModalDialog("/WelcomePageModel", Utility.HttpMethod.Get);
+    }
+
+    /**
      * Perform an ajax call and open the modal dialog filled with the response
      * @param url The URL of the ajax call
      * @param method The method (GET/POST)
@@ -105,6 +112,7 @@ class Utility {
     public static OpenModalDialog(url: string, method: Utility.HttpMethod, data?: object, callbackFunction?: () => void): void {
         this.AjaxCall(url, method, data, (result: string): void => {
             $("#myModalBody").html(result);
+            $(".modal-dialog").css("max-width", "");
             $("#myModal").modal("show");
             $(".tab-pane").matchHeight({
                 byRow: false,
@@ -129,6 +137,7 @@ class Utility {
     public static CloseModalDialog(): void {
         $("#myModal").modal("hide");
         $("#myModalBody").empty();
+        $(".modal-dialog").css("max-width", "");
     }
 
     /**

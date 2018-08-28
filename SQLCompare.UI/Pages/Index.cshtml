@@ -8,8 +8,8 @@
     <title>@Model.Title</title>
     @if (AppGlobal.IsDevelopment)
     {
-        <link href="~/css/Index.css" rel="stylesheet" type="text/css" asp-append-version="true" />
         <link href="~/css/Font.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+        <link href="~/css/Index.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     }
     else
     {
@@ -19,25 +19,25 @@
 <body>
     @Html.AntiForgeryToken()
 
-    <div class="d-flex justify-content-between main-header">
-        <div>
-            <button class="btn btn-primary" type="button" onclick="Project.New();">new project</button>
-            <button class="btn btn-secondary" type="button">save</button>
-
-        </div>
-        <div>
-            <button class="btn btn-secondary" type="button">refresh</button>
-            <button class="btn btn-secondary" type="button" onclick="Logout.Logout();">sign out</button>
-        </div>
-    </div>
     <div class="container-fluid">
-        <div class="row">
+        <div class="row row-header d-flex justify-content-between">
+            <div>
+                <button class="btn btn-primary" type="button" onclick="Project.New();">new project</button>
+                <button class="btn btn-secondary" type="button">save</button>
+
+            </div>
+            <div>
+                <button class="btn btn-secondary" type="button">refresh</button>
+                <button class="btn btn-secondary" type="button" onclick="Logout.Logout();">sign out</button>
+            </div>
+        </div>
+        <div class="row row-main">
             <div class="col-12 p-0" id="mainDiv"></div>
         </div>
     </div>
 
     <!-- Modal -->
-    <div id="myModal" class="modal" data-backdrop="static">
+    <div id="myModal" class="modal" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -46,7 +46,8 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     *@
-                </div><div id="myModalBody" class="modal-body">
+                </div>
+                <div id="myModalBody" class="modal-body">
                 </div>
             </div>
         </div>

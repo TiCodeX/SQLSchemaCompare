@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities;
+using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.UI.WebServer;
 
@@ -14,6 +15,7 @@ namespace SQLCompare.UI.Pages
     {
         private readonly ILogger logger;
         private readonly IAppSettingsService appSettingsService;
+        private readonly IProjectService projectService;
         private readonly ILocalizationService localizationService;
 
         /// <summary>
@@ -21,16 +23,24 @@ namespace SQLCompare.UI.Pages
         /// </summary>
         /// <param name="logger">The injected logger</param>
         /// <param name="appSettingsService">The injected app settings service</param>
+        /// <param name="projectService">The injected project service</param>
         /// <param name="localizationService">The injected LocalizationService</param>
         public SettingsPageModel(
             ILogger<SettingsPageModel> logger,
             IAppSettingsService appSettingsService,
+            IProjectService projectService,
             ILocalizationService localizationService)
         {
             this.logger = logger;
             this.appSettingsService = appSettingsService;
+            this.projectService = projectService;
             this.localizationService = localizationService;
         }
+
+        /// <summary>
+        /// Gets the current project
+        /// </summary>
+        public CompareProject Project { get; internal set; }
 
         /// <summary>
         /// Gets the settings
@@ -42,6 +52,7 @@ namespace SQLCompare.UI.Pages
         /// </summary>
         public void OnGet()
         {
+            this.Project = this.projectService.Project;
             this.Settings = this.appSettingsService.GetAppSettings();
         }
 

@@ -1,0 +1,18 @@
+﻿@import "common";
+
+.row-login {
+    height: 100vh;
+}
+
+.login-webview {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.tcdx-logo {
+    background: url("../img/logo.png") no-repeat center;
+    background-size: 104px 110px;
+    height: 110px;
+}

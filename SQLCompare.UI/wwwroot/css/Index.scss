@@ -1,51 +1,24 @@
-@import "../lib/bootstrap/scss/functions";
-@import "../lib/bootstrap/scss/variables";
+@import "common";
 
-$ourgreen: #39B54A;
-
-/* -------begin customization-------- */
-
-$theme-colors: ( primary: $ourgreen, info: $ourgreen );
-$font-size-base: 0.8rem;
-$line-height-base: 1.3;
-$form-group-margin-bottom: 0.4rem;
-$font-family-base: "Open Sans";
-
-/* -------end customization-------- */
-@import "../lib/bootstrap/scss/bootstrap";
-
-$switch-width: 32px;
-
-:root {
-    --dark-color-lightest: #ffffff;
+.row-header {
+    background-color: #292929;
+    padding: 2px 5px 2px 5px;
+    height: $row-header-height;
 }
 
-body {
-    overflow: hidden;
+.row-main {
+    height: 100vh;
+    padding-bottom: $row-header-height;
 }
 
+.modal,
+.modal-backdrop {
+    top: $row-header-height;
+}
+
+/* TO BE REMOVED */
 .input-group-text.min-width-100 {
     min-width: 100px;
-}
-
-body > .container-fluid > .row {
-    height: 100vh;
-}
-
-.modal-header {
-    background-color: #303030;
-    padding: 12px 12px;
-}
-
-.modal-title {
-    font-size: 12px;
-    color: var(--dark-color-lightest);
-    padding: 0px;
-    text-transform: uppercase;
-}
-
-.modal-body {
-    overflow: auto;
 }
 
 #mainTop {
@@ -92,15 +65,6 @@ body > .container-fluid > .row {
     100% {
         transform: rotate(360deg);
     }
-}
-
-#myNotification {
-    display: none;
-    position: fixed;
-    top: 5px;
-    left: 2%;
-    width: 96%;
-    z-index: 2000;
 }
 
 /*TEST*/
@@ -209,33 +173,3 @@ input:checked + .slider:before {
 .table-compact tr {
     line-height: 1;
 }
-
-/* is the main top nav*/
-.main-header {
-    background-color: #292929;
-    padding: 2px 5px 2px 5px;
-}
-
-.main-header-content {
-    padding: 2px 10px 2px 10px;
-}
-/* end main top nav*/
-
-/* The login page webview*/
-.login-webview {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    z-index: 2;
-}
-
-.tcdx-logo {
-    background: url("../img/logo.png") no-repeat center;
-    background-size: 104px 110px;
-    /*temp fix to center logo, should be fixed later*/
-    height: 110px;
-}
-
-
-/* end of login page webview*/
-

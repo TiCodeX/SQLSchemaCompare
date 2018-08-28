@@ -70,6 +70,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string ButtonClose {
+            get {
+                return ResourceManager.GetString("ButtonClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compare Now.
         /// </summary>
         public static string ButtonCompareNow {
@@ -93,6 +102,15 @@ namespace SQLCompare.Services {
         public static string ButtonOpenProject {
             get {
                 return ResourceManager.GetString("ButtonOpenProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quit.
+        /// </summary>
+        public static string ButtonQuit {
+            get {
+                return ResourceManager.GetString("ButtonQuit", resourceCulture);
             }
         }
         

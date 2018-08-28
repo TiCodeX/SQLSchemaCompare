@@ -1,12 +1,5 @@
 ﻿[
     {
-        "outputFileName": "wwwroot/css/Index.min.css",
-        "inputFiles": [
-            "wwwroot/css/Font.css",
-            "wwwroot/css/Index.css"
-        ]
-    },
-    {
         "outputFileName": "wwwroot/js/Index.min.js",
         "inputFiles": [
             "wwwroot/js/ApiResponse.js",

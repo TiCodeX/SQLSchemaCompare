@@ -3,14 +3,14 @@
         "outputFile": "wwwroot/css/Index.css",
         "inputFile": "wwwroot/css/Index.scss",
         "minify": {
-            "enabled": false
+            "enabled": true
         }
     },
     {
-        "outputFile": "wwwroot/css/Font.css",
-        "inputFile": "wwwroot/css/Font.scss",
+        "outputFile": "wwwroot/css/Login.css",
+        "inputFile": "wwwroot/css/Login.scss",
         "minify": {
-            "enabled": false
+            "enabled": true
         }
     }
 ]

@@ -18,5 +18,5 @@ $(() => {
 
     Menu.CreateMenu();
 
-    Utility.OpenModalDialog("/WelcomePageModel", Utility.HttpMethod.Get);
+    Utility.OpenWelcomePage();
 });

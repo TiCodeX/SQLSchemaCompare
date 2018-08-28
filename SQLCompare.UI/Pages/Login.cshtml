@@ -1,7 +1,7 @@
 ﻿@page
 @model Login
+@using Enums
 @using Services
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,18 +11,18 @@
     @if (AppGlobal.IsDevelopment)
     {
         <link href="~/css/Font.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-        <link href="~/css/Index.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+        <link href="~/css/Login.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     }
     else
     {
-        <link href="~/css/Index.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+        <link href="~/css/Login.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     }
 </head>
 <body>
     @Html.AntiForgeryToken()
 
     <div class="container-fluid">
-        <div class="row">
+        <div class="row row-login">
             <div class="col-12 p-0" id="mainDiv">
                 @* Url is stored in the input field because it will be set to the webview after registering the event handlers *@
                 @if (!Model.Verified)
@@ -35,11 +35,11 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+    <div id="myModal" class="modal fade" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModalTitle">@Localization.TitleLoginError</h5>
+                    <h5 class="modal-title">@Localization.TitleLoginError</h5>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
@@ -58,8 +58,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="closeButton" class="btn btn-secondary invisible" data-dismiss="modal" data-toggle="modal" data-target="#myModal">Close</button>
-                    <button type="button" id="quitButton" class="btn btn-primary invisible" data-dismiss="modal" onclick="Login.QuitWindow();">Quit</button>
+                    <button type="button" id="closeButton" style="@ButtonStyle.Secondary" data-dismiss="modal" data-target="#myModal">@Localization.ButtonClose</button>
+                    <button type="button" style="@ButtonStyle.Primary" data-dismiss="modal" onclick="Login.QuitWindow();">@Localization.ButtonQuit</button>
                 </div>
             </div>
         </div>

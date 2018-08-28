@@ -2,6 +2,10 @@
  * Contains utility method to handle the main application menu
  */
 class Menu {
+    /**
+     * Keep a reference to the created menu
+     */
+    private static menu: Electron.Menu;
 
     /**
      * Creates the main application menu
@@ -138,7 +142,9 @@ class Menu {
             },
         ];
 
-        electron.remote.getCurrentWindow().setMenu(electron.remote.Menu.buildFromTemplate(template));
+        this.menu = electron.remote.Menu.buildFromTemplate(template);
+
+        electron.remote.getCurrentWindow().setMenu(this.menu);
     }
 
     /**
@@ -146,16 +152,14 @@ class Menu {
      * @param enabled Whether to enable or disable the menu items
      */
     public static ToggleProjectRelatedMenuStatus(enable: boolean): void {
-        if (electron === undefined) {
+        if (this.menu === undefined) {
             return;
         }
 
-        const menu: Electron.Menu = electron.remote.Menu.getApplicationMenu();
-
-        menu.getMenuItemById("menuSaveProject").enabled = enable;
-        menu.getMenuItemById("menuSaveProjectAs").enabled = enable;
-        menu.getMenuItemById("menuCloseProject").enabled = enable;
-        menu.getMenuItemById("menuEditProject").enabled = enable;
-        menu.getMenuItemById("menuPerformCompare").enabled = enable;
+        this.menu.getMenuItemById("menuSaveProject").enabled = enable;
+        this.menu.getMenuItemById("menuSaveProjectAs").enabled = enable;
+        this.menu.getMenuItemById("menuCloseProject").enabled = enable;
+        this.menu.getMenuItemById("menuEditProject").enabled = enable;
+        this.menu.getMenuItemById("menuPerformCompare").enabled = enable;
     }
 }

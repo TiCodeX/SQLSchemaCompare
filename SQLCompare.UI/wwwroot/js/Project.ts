@@ -167,7 +167,7 @@ class Project {
             this.filename = undefined;
             $("#mainDiv").empty();
             if (showWelcome) {
-                Utility.OpenModalDialog("/WelcomePageModel", Utility.HttpMethod.Get);
+                Utility.OpenWelcomePage();
             }
             Menu.ToggleProjectRelatedMenuStatus(false);
         });

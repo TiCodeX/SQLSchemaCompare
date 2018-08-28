@@ -58,10 +58,18 @@ namespace SQLCompare.UI
         /// <inheritdoc/>
         public string ProductCode => "SQLCMP";
 
+#if DEBUG
         /// <inheritdoc/>
         public string LoginEndpoint => $"https://localhost:44349/login?culture={Localization.Culture.Name}&appId={this.ElectronAuthAppId}&product={this.ProductCode}";
 
         /// <inheritdoc/>
-        public string VerifySessionEndpoint => "http://localhost:7071/api/VerifySession";
+        public string VerifySessionEndpoint => "https://localhost:44349/api/VerifySession";
+#else
+        /// <inheritdoc/>
+        public string LoginEndpoint => $"http://myaccount-ticodex.azurewebsites.net/login?culture={Localization.Culture.Name}&appId={this.ElectronAuthAppId}&product={this.ProductCode}";
+
+        /// <inheritdoc/>
+        public string VerifySessionEndpoint => "http://myaccount-ticodex.azurewebsites.net/api/VerifySession";
+#endif
     }
 }

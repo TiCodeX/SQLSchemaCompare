@@ -32,12 +32,7 @@ namespace SQLCompare.Services
         {
             using (var client = new HttpClient())
             {
-                var builder = new UriBuilder(this.appGlobals.VerifySessionEndpoint)
-                {
-                    Query = $"st={sessionToken}"
-                };
-
-                using (var response = await client.GetAsync(builder.Uri).ConfigureAwait(false))
+                using (HttpResponseMessage response = await client.PostAsJsonAsync(this.appGlobals.VerifySessionEndpoint, sessionToken).ConfigureAwait(false))
                 {
                     response.EnsureSuccessStatusCode();
                     var results = await response.Content.ReadAsAsync<ApiResponse<VerifySessionResult>>().ConfigureAwait(false);

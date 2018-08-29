@@ -50,3 +50,12 @@ body {
     width: 96%;
     z-index: 2000;
 }
+
+@keyframes spin {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

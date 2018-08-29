@@ -101,6 +101,9 @@ $((): void => {
         $("#closeButton").hide();
         $("#myModal").modal({ show: true, backdrop: "static", keyboard: false });
     });
+    webview.on("did-finish-load", (e: JQuery.Event): void => {
+        $(".loader").hide();
+    });
 
     // Start loading the webview
     webview.attr("src", <string>url.val());

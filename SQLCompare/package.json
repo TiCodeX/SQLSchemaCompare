@@ -15,7 +15,7 @@
             "target": "nsis",
             "publish": {
                 "provider": "generic",
-                "url": "https://www.debeonline.ch/sqlcompare"
+                "url": ""
             }
         },
         "nsis": {

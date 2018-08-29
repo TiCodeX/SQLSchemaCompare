@@ -10,7 +10,6 @@
     <title>@Model.Title</title>
     @if (AppGlobal.IsDevelopment)
     {
-        <link href="~/css/Font.css" rel="stylesheet" type="text/css" asp-append-version="true" />
         <link href="~/css/Login.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     }
     else
@@ -69,6 +68,8 @@
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
         <span id="myNotificationMessage"></span>
     </div>
+
+    <div class="loader"></div>
 
     @* In order to make jquery work with both Chrome and Electron *@
     @* Keep a reference to module and restore it after jquery is loaded *@

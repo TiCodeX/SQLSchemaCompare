@@ -19,7 +19,7 @@ const loggerPath: string = "C:/ProgramData/SqlCompare/log/SqlCompare";
 const loggerPattern: string = "-yyyy-MM-dd-ui.log";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;
-const autoUpdaterUrl: string = "http://www.debeonline.ch/sqlcompare";
+const autoUpdaterUrl: string = "https://ticodex.blob.core.windows.net/releases";
 let serviceUrl: string = "https://127.0.0.1:{port}";
 let loginUrl: string = "https://127.0.0.1:{port}/login";
 let serviceProcess: childProcess.ChildProcess;

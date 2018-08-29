@@ -46,7 +46,7 @@
                         @{
                             @:<input type="checkbox" name="@(prefix)UseWindowsAuthentication" data-value-type="boolean" @(Model is MicrosoftSqlDatabaseProviderOptions options && options.UseWindowsAuthentication ? "checked=\"checked\"" : "")>
                         }
-                        <span class="slider round"></span>
+                        <span class="slider"></span>
                     </label>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                         @{
                             @:<input type="checkbox" name="@(prefix)UseSSL" data-value-type="boolean" @(Model.UseSSL ? "checked=\"checked\"" : "")>
                         }
-                        <span class="slider round"></span>
+                        <span class="slider"></span>
                     </label>
                 </div>
             </div>

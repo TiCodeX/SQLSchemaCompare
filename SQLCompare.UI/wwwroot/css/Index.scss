@@ -16,10 +16,94 @@
     top: $row-header-height;
 }
 
-/* TO BE REMOVED */
-.input-group-text.min-width-100 {
-    min-width: 100px;
+/* begin checkbox switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: $switch-width;
+    height: $switch-width / 2;
+    margin-bottom: 0;
+    margin-left: 0px;
 }
+
+.switch input {
+    display: none;
+}
+
+.switch > .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.switch > .slider:before {
+    position: absolute;
+    content: "";
+    height: ($switch-width / 2 - 5);
+    width: ($switch-width / 2 - 5);
+    left: 4px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.switch > input:checked + .slider {
+    background-color: $ourgreen;
+}
+
+.switch > input:focus + .slider {
+    box-shadow: 0 0 1px $ourgreen;
+}
+
+.switch > input:checked + .slider:before {
+    -webkit-transform: translateX(0.75rem);
+    -ms-transform: translateX(0.75rem);
+    transform: translateX(0.75rem);
+}
+/* end checkbox switch */
+
+/* begin monaco-editor override */
+
+.vs .monaco-scrollable-element > .scrollbar.vertical {
+    background: $color-scrollbar-track;
+    background-clip: content-box;
+    padding: 3px;
+    border-radius: 25px;
+}
+
+.vs .monaco-scrollable-element > .scrollbar > .slider,
+.vs .monaco-scrollable-element > .scrollbar > .slider.active,
+.vs .monaco-scrollable-element > .scrollbar > .slider:hover {
+    background-color: $color-scrollbar;
+    border-radius: 25px;
+}
+
+.vs .monaco-scrollable-element > .scrollbar.vertical > .slider,
+.vs .monaco-scrollable-element > .scrollbar.vertical > .slider.active,
+.vs .monaco-scrollable-element > .scrollbar.vertical > .slider:hover {
+    margin-left: 3px;
+    max-width: 8px;
+}
+
+.vs .monaco-scrollable-element > .scrollbar.horizontal > .slider,
+.vs .monaco-scrollable-element > .scrollbar.horizontal > .slider.active,
+.vs .monaco-scrollable-element > .scrollbar.horizontal > .slider:hover {
+    margin-top: 3px;
+    max-height: 8px;
+}
+
+/* end monaco-editor override */
+
+/* TO BE VERIFIED/REMOVED */
 
 #mainTop {
     overflow: auto;
@@ -58,65 +142,6 @@
 }
 
 /*TEST*/
-.switch {
-    position: relative;
-    display: inline-block;
-    width: $switch-width;
-    height: $switch-width / 2;
-    margin-bottom: 0;
-    margin-left: 0px;
-}
-
-.switch input {
-    display: none;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: ($switch-width / 2 - 5);
-    width: ($switch-width / 2 - 5);
-    left: 4px;
-    bottom: 2px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-
-input:checked + .slider {
-    background-color: $ourgreen;
-}
-
-input:focus + .slider {
-    box-shadow: 0 0 1px $ourgreen;
-}
-
-input:checked + .slider:before {
-    -webkit-transform: translateX(0.75rem);
-    -ms-transform: translateX(0.75rem);
-    transform: translateX(0.75rem);
-}
-
-/* Rounded sliders */
-.slider.round {
-    border-radius: 34px;
-}
-
-.slider.round:before {
-    border-radius: 50%;
-}
 
 .form-label {
     font-size: $font-size-base;

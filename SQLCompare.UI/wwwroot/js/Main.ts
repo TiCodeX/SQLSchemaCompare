@@ -24,7 +24,11 @@ class Main {
         Utility.AjaxCall(this.pageUrl, Utility.HttpMethod.Get, undefined, (result: string): void => {
             Utility.CloseModalDialog();
             if (this.mainSplitter !== undefined) {
-                this.mainSplitter.destroy();
+                try {
+                    this.mainSplitter.destroy();
+                } catch (e) {
+                    // Ignore
+                }
                 this.mainSplitter = undefined;
             }
             $("#mainDiv").html(result);

@@ -97,13 +97,10 @@ class Project {
         const saveCall: () => void = (): void => {
             const data: object = <object>JSON.parse(JSON.stringify(filename));
 
-            Utility.AjaxCall(this.saveUrl,
-                Utility.HttpMethod.Post,
-                data,
-                (): void => {
-                    this.filename = filename;
-                    alert("Saved successfully!");
-                });
+            Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data, (response: ApiResponse<object>): void => {
+                this.filename = filename;
+                alert("Saved successfully!");
+            });
         };
 
         if (this.IsProjectPageOpen()) {
@@ -153,7 +150,7 @@ class Project {
      * Serialize the project values in the UI and send them to the service
      * @param successCallback - The callback function in case of success
      */
-    public static Edit(successCallback: JQuery.Ajax.SuccessCallback<object>): void {
+    public static Edit<T>(successCallback: JQuery.Ajax.SuccessCallback<ApiResponse<T>>): void {
         const data: object = Utility.SerializeJSON($("#ProjectPage"));
 
         Utility.AjaxCall(this.editUrl, Utility.HttpMethod.Post, data, successCallback);

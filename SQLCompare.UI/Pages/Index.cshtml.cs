@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using SQLCompare.Core.Entities.Api;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 
@@ -40,9 +42,12 @@ namespace SQLCompare.UI.Pages
         /// Get the localization
         /// </summary>
         /// <returns>A dictionary of the tokens as keys and the related localized strings</returns>
-        public ActionResult OnGetLoadLocalization()
+        public IActionResult OnGetLoadLocalization()
         {
-            return new JsonResult(this.localizationService.GetLocalizationDictionary());
+            return new JsonResult(new ApiResponse<Dictionary<string, string>>
+            {
+                Result = this.localizationService.GetLocalizationDictionary()
+            });
         }
 
         /// <summary>

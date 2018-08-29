@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities;
+using SQLCompare.Core.Entities.Api;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.UI.WebServer;
@@ -82,7 +83,8 @@ namespace SQLCompare.UI.Pages
             }
 
             this.appSettingsService.SaveAppSettings();
-            return new JsonResult(null);
+
+            return new JsonResult(new ApiResponse());
         }
     }
 }

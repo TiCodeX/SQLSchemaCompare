@@ -180,10 +180,10 @@ class Utility {
 
         const data: object = Utility.SerializeJSON(dataDiv);
 
-        Utility.AjaxCall(url, method, data, (result: Array<string>): void => {
+        Utility.AjaxCall(url, method, data, (response: ApiResponse<Array<string>>): void => {
             select.find("option").remove();
             let options: string = "";
-            $.each(result, (index: number, value: string): void => {
+            $.each(response.Result, (index: number, value: string): void => {
                 options += `<option value="${value}">${value}</option>`;
             });
             select.append(options);
@@ -199,7 +199,7 @@ class Utility {
      * @param data - The object data to send when the method is POST
      * @param successCallback - The callback function in case of success
      */
-    public static AjaxCall(url: string, method: Utility.HttpMethod, data: object, successCallback: JQuery.Ajax.SuccessCallback<object>): void {
+    public static AjaxCall<T>(url: string, method: Utility.HttpMethod, data: object, successCallback: JQuery.Ajax.SuccessCallback<ApiResponse<T>>): void {
         this.AjaxCallInternal(url, method, true, data, successCallback);
     }
 
@@ -210,8 +210,8 @@ class Utility {
      * @param data - The object data to send when the method is POST
      * @param successCallback - The callback function in case of success
      */
-    public static AjaxSyncCall(url: string, method: Utility.HttpMethod, data: object, successCallback: JQuery.Ajax.SuccessCallback<object>): void {
-        this.AjaxCallInternal(url, method, false, data, successCallback);
+    public static AjaxSyncCall<T>(url: string, method: Utility.HttpMethod, data: object, successCallback: JQuery.Ajax.SuccessCallback<ApiResponse<T>>): void {
+        this.AjaxCallInternal<T>(url, method, false, data, successCallback);
     }
 
     /**
@@ -222,7 +222,7 @@ class Utility {
      * @param data - The object data to send when the method is POST
      * @param successCallback - The callback function in case of success
      */
-    private static AjaxCallInternal(url: string, method: Utility.HttpMethod, async: boolean, data: object, successCallback: JQuery.Ajax.SuccessCallback<object>): void {
+    private static AjaxCallInternal<T>(url: string, method: Utility.HttpMethod, async: boolean, data: object, successCallback: JQuery.Ajax.SuccessCallback<ApiResponse<T>>): void {
         let ajaxMethod: string;
         switch (method) {
             case Utility.HttpMethod.Get:

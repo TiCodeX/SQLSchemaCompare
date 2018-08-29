@@ -1,9 +1,9 @@
 ﻿namespace SQLCompare.UI.Models.Main
 {
     /// <summary>
-    /// Represent the response of a CreateScript request
+    /// Represent the result of a CreateScript request
     /// </summary>
-    public class CreateScriptResponse
+    public class CreateScriptResult
     {
         /// <summary>
         /// Gets or sets the source SQL

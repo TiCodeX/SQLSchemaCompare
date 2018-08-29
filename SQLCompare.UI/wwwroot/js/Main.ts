@@ -50,15 +50,15 @@ class Main {
 
         $("#sqlDiff").empty();
 
-        Utility.AjaxCall(this.createScriptUrl + rowId, Utility.HttpMethod.Get, undefined, (result: { SourceSql: string; TargetSql: string }): void => {
+        Utility.AjaxCall(this.createScriptUrl + rowId, Utility.HttpMethod.Get, undefined, (response: ApiResponse<CreateScriptResult>): void => {
             const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(document.getElementById("sqlDiff"),
                 {
                     automaticLayout: true,
                     scrollBeyondLastLine: false,
                 });
             diffEditor.setModel({
-                original: monaco.editor.createModel(result.SourceSql, "sql"),
-                modified: monaco.editor.createModel(result.TargetSql, "sql"),
+                original: monaco.editor.createModel(response.Result.SourceSql, "sql"),
+                modified: monaco.editor.createModel(response.Result.TargetSql, "sql"),
             });
         });
     }

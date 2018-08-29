@@ -26,15 +26,15 @@ class Localization {
      * Load the localization
      */
     public static Load(): void {
-        Utility.AjaxSyncCall("/Index?handler=LoadLocalization", Utility.HttpMethod.Get, undefined, (result: object): void => {
+        Utility.AjaxSyncCall("/Index?handler=LoadLocalization", Utility.HttpMethod.Get, undefined, (result: ApiResponse<object>): void => {
 
             // Remove old localization
             this.dictionary = new Array<[string, string]>();
 
             // Add new values
-            for (const key in result) {
-                if (result.hasOwnProperty(key)) {
-                    this.dictionary.push([key, <string>result[key]]);
+            for (const key in result.Result) {
+                if (result.Result.hasOwnProperty(key)) {
+                    this.dictionary.push([key, <string>result.Result[key]]);
                 }
             }
         });

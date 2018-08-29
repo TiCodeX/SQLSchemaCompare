@@ -67,36 +67,38 @@ namespace SQLCompare.UI.Pages
             var appSettings = this.appSettingsService.GetAppSettings();
             var session = appSettings.Session;
 
-            if (!string.IsNullOrEmpty(session))
+            if (string.IsNullOrEmpty(session))
             {
-                try
-                {
-                    await this.accountService.VerifySession(session).ConfigureAwait(false);
-                    if (this.accountService.CustomerInformation.SubscriptionPlan == null || !this.accountService.CustomerInformation.ExpirationDate.HasValue || this.accountService.CustomerInformation.ExpirationDate.Value < DateTime.Now)
-                    {
-                        this.logger.LogError("Saved session token is not valid anymore");
+                return this.Page();
+            }
 
-                        // Remove session from settings
-                        appSettings.Session = null;
-                        this.appSettingsService.SaveAppSettings();
-                    }
-                    else
-                    {
-                        // Session verified successfully
-                        this.Verified = true;
-                    }
-                }
-                catch (AccountServiceException ex)
+            try
+            {
+                await this.accountService.VerifySession(session).ConfigureAwait(false);
+                if (this.accountService.CustomerInformation.SubscriptionPlan == null || !this.accountService.CustomerInformation.ExpirationDate.HasValue || this.accountService.CustomerInformation.ExpirationDate.Value < DateTime.Now)
                 {
-                    this.logger.LogError($"An error occurred while verifying the saved session token: {ex.ErrorCode} - {ex.Message}");
+                    this.logger.LogError("Saved session token is not valid anymore");
 
+                    // Remove session from settings
                     appSettings.Session = null;
                     this.appSettingsService.SaveAppSettings();
                 }
-                catch (Exception ex)
+                else
                 {
-                    this.logger.LogError($"An unexpected error occurred while verifying the saved session token: {ex.Message}");
+                    // Session verified successfully
+                    this.Verified = true;
                 }
+            }
+            catch (AccountServiceException ex)
+            {
+                this.logger.LogError($"An error occurred while verifying the saved session token: {ex.ErrorCode} - {ex.Message}");
+
+                appSettings.Session = null;
+                this.appSettingsService.SaveAppSettings();
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError($"An unexpected error occurred while verifying the saved session token: {ex.Message}");
             }
 
             return this.Page();
@@ -112,7 +114,12 @@ namespace SQLCompare.UI.Pages
             if (url == null)
             {
                 this.logger.LogError("Url is null");
-                return new JsonResult(new ApiResponse<string> { Success = false, ErrorCode = EErrorCode.ErrorRedirectUrlIsNull, ErrorMessage = Localization.ErrorLoginVerificationFailed });
+                return new JsonResult(new ApiResponse<string>
+                {
+                    Success = false,
+                    ErrorCode = EErrorCode.ErrorRedirectUrlIsNull,
+                    ErrorMessage = Localization.ErrorLoginVerificationFailed
+                });
             }
 
             var queryParams = HttpUtility.ParseQueryString(url.Query);
@@ -122,7 +129,12 @@ namespace SQLCompare.UI.Pages
             if (string.IsNullOrEmpty(sessionToken))
             {
                 this.logger.LogError("Null or empty session token");
-                return new JsonResult(new ApiResponse<string> { Success = false, ErrorCode = EErrorCode.ErrorSessionTokenIsNullOrEmpty, ErrorMessage = Localization.ErrorLoginVerificationFailed });
+                return new JsonResult(new ApiResponse<string>
+                {
+                    Success = false,
+                    ErrorCode = EErrorCode.ErrorSessionTokenIsNullOrEmpty,
+                    ErrorMessage = Localization.ErrorLoginVerificationFailed
+                });
             }
 
             try
@@ -168,7 +180,7 @@ namespace SQLCompare.UI.Pages
                 settings.Session = sessionToken;
                 this.appSettingsService.SaveAppSettings();
 
-                return new JsonResult(new ApiResponse<string> { Success = true }, new Newtonsoft.Json.JsonSerializerSettings { });
+                return new JsonResult(new ApiResponse { Success = true });
             }
             catch (AccountServiceException ex)
             {
@@ -191,12 +203,22 @@ namespace SQLCompare.UI.Pages
                         break;
                 }
 
-                return new JsonResult(new ApiResponse { Success = false, ErrorCode = ex.ErrorCode, ErrorMessage = error });
+                return new JsonResult(new ApiResponse
+                {
+                    Success = false,
+                    ErrorCode = ex.ErrorCode,
+                    ErrorMessage = error
+                });
             }
             catch (Exception ex)
             {
                 this.logger.LogError($"Error occured in index: {ex.Message}");
-                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorUnexpected, ErrorMessage = Localization.ErrorLoginVerificationFailed });
+                return new JsonResult(new ApiResponse
+                {
+                    Success = false,
+                    ErrorCode = EErrorCode.ErrorUnexpected,
+                    ErrorMessage = Localization.ErrorLoginVerificationFailed
+                });
             }
         }
 
@@ -208,7 +230,11 @@ namespace SQLCompare.UI.Pages
         {
             if (this.projectService.NeedSave())
             {
-                return new JsonResult(new { success = false, error = "Project need to be saved" });
+                return new JsonResult(new ApiResponse
+                {
+                    Success = false,
+                    ErrorMessage = "Project need to be saved"
+                });
             }
 
             this.appSettingsService.GetAppSettings().Session = null;
@@ -216,7 +242,7 @@ namespace SQLCompare.UI.Pages
 
             this.accountService.Logout();
 
-            return new JsonResult(new { success = true });
+            return new JsonResult(new ApiResponse());
         }
     }
 }

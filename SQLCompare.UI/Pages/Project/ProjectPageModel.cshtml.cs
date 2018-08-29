@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using SQLCompare.Core.Entities.Api;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Enums;
@@ -96,7 +98,7 @@ namespace SQLCompare.UI.Pages.Project
             appSettings.RecentProjects.Add(filename);
             this.appSettingsService.SaveAppSettings();
 
-            return new JsonResult(null);
+            return new JsonResult(new ApiResponse());
         }
 
         /// <summary>
@@ -107,7 +109,7 @@ namespace SQLCompare.UI.Pages.Project
         {
             this.projectService.CloseProject();
 
-            return new JsonResult(null);
+            return new JsonResult(new ApiResponse());
         }
 
         /// <summary>
@@ -121,7 +123,7 @@ namespace SQLCompare.UI.Pages.Project
             this.projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(options, CompareDirection.Target);
             this.projectService.Project.Options = options.ProjectOptions;
 
-            return new JsonResult(null);
+            return new JsonResult(new ApiResponse());
         }
 
         /// <summary>
@@ -132,7 +134,7 @@ namespace SQLCompare.UI.Pages.Project
         {
             this.databaseCompareService.StartCompare();
 
-            return new JsonResult(null);
+            return new JsonResult(new ApiResponse());
         }
 
         /// <summary>
@@ -142,7 +144,10 @@ namespace SQLCompare.UI.Pages.Project
         /// <returns>The list of database names in JSON</returns>
         public ActionResult OnPostLoadDatabaseList([FromBody] CompareProjectOptions options)
         {
-            return new JsonResult(this.databaseService.ListDatabases(this.GetDatabaseProviderOptions(options, options.Direction)));
+            return new JsonResult(new ApiResponse<List<string>>
+            {
+                Result = this.databaseService.ListDatabases(this.GetDatabaseProviderOptions(options, options.Direction))
+            });
         }
 
         // TODO: move somewhere else and add missing parameters

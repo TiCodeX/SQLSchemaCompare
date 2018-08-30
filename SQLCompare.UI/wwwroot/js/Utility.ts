@@ -114,7 +114,7 @@ class Utility {
             $("#myModalBody").html(result);
             $(".modal-dialog").css("max-width", "");
             $("#myModal").modal("show");
-            $(".tab-pane").matchHeight({
+            $("#myModal .tab-pane").matchHeight({
                 byRow: false,
             });
             if (callbackFunction !== undefined) {

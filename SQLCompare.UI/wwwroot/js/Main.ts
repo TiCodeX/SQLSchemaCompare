@@ -18,19 +18,17 @@ class Main {
     private static mainSplitter: Split.Instance;
 
     /**
+     * Contains a reference to the splitter sizes
+     */
+    private static mainSplitterSizes: Array<number> = [60, 40]; // tslint:disable-line:no-magic-numbers
+
+    /**
      * Open the Main page
      */
     public static Open(): void {
         Utility.AjaxCall(this.pageUrl, Utility.HttpMethod.Get, undefined, (result: string): void => {
             Utility.CloseModalDialog();
-            if (this.mainSplitter !== undefined) {
-                try {
-                    this.mainSplitter.destroy();
-                } catch (e) {
-                    // Ignore
-                }
-                this.mainSplitter = undefined;
-            }
+            this.RemoveSplitter();
             $("#mainDiv").html(result);
         });
     }
@@ -46,6 +44,11 @@ class Main {
         if (this.mainSplitter === undefined) {
             this.mainSplitter = Split(["#mainTop", "#mainBottom"], {
                 direction: "vertical",
+                gutterSize: 7,
+                sizes: this.mainSplitterSizes,
+                onDragEnd: (): void => {
+                    this.mainSplitterSizes = this.mainSplitter.getSizes();
+                },
             });
             const mainTop: JQuery = $("#mainTop");
             const half: number = 0.5;
@@ -86,16 +89,9 @@ class Main {
      * Hide the bottom panel
      */
     public static HideBottomPanel(): void {
-        if (this.mainSplitter === undefined) {
-            return;
-        }
-
-        this.mainSplitter.destroy();
-        this.mainSplitter = undefined;
-
+        this.RemoveSplitter();
         // Deselect the row
         $("#mainTop .table-info").removeClass("table-info");
-
         $("#mainBottom").hide();
     }
 
@@ -111,5 +107,21 @@ class Main {
         target.addClass("table-info").siblings().removeClass("table-info");
 
         Main.ShowBottomPanel(rowId);
+    }
+
+    /**
+     * Remove the splitter
+     */
+    private static RemoveSplitter(): void {
+        if (this.mainSplitter === undefined) {
+            return;
+        }
+        try {
+            this.mainSplitter.destroy();
+        } catch (e) {
+            // Ignore
+        } finally {
+            this.mainSplitter = undefined;
+        }
     }
 }

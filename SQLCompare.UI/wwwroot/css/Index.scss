@@ -102,15 +102,9 @@
 }
 /*#endregion*/
 
-.btn.spin > span {
-    display: block;
-    animation: spin 2s linear infinite;
-}
-
-/* TO BE VERIFIED/REMOVED */
-
+/*#region splitter */
 .gutter {
-    background-color: gray;
+    background-color: #CCCCCC;
     background-repeat: no-repeat;
     background-position: 50%;
 }
@@ -124,3 +118,25 @@
     cursor: row-resize;
     background-image: url("../img/gutter-vertical.png");
 }
+/*#endregion*/
+
+/*#region buttons */
+.btn.spin > span {
+    display: block;
+    animation: spin 2s linear infinite;
+}
+
+.btn.btn-close {
+    font-weight: bold;
+    font-size: 1.5rem;
+    line-height: 0.5;
+    padding: 0.3rem;
+    color: $gray-600;
+    background-color: $gray-300;
+}
+
+.btn.btn-close:hover {
+    color: $gray-700;
+    background-color: $gray-400;
+}
+/*#endregion*/

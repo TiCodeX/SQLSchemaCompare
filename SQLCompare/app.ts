@@ -1,4 +1,4 @@
-/* tslint:disable:no-require-imports no-implicit-dependencies max-file-line-count only-arrow-functions no-magic-numbers no-string-literal */
+/* tslint:disable:no-require-imports no-implicit-dependencies max-file-line-count only-arrow-functions no-magic-numbers */
 import builderUtilRuntime = require("builder-util-runtime");
 import childProcess = require("child_process");
 import portfinder = require("detect-port");
@@ -287,7 +287,7 @@ function startup(): void {
         ],
     };
     electron.session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details: { requestHeaders: object }, callback: Function) => {
-        details.requestHeaders["CustomAuthToken"] = "prova";
+        details.requestHeaders["CustomAuthToken"] = "prova"; // tslint:disable-line:no-string-literal
         callback({ cancel: false, requestHeaders: details.requestHeaders });
     });
 

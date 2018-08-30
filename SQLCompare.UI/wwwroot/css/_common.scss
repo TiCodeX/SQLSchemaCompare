@@ -6,10 +6,10 @@ $ourgreen: #39B54A;
 $row-header-height: 37px;
 $switch-width: 32px;
 $switch-on-color: $ourgreen;
-$switch-off-color: #CCCCCC;
-$switch-slider-color: white;
+$switch-off-color: $gray-200;
+$switch-slider-color: $white;
 $color-scrollbar: $ourgreen;
-$color-scrollbar-track: #ECECEC;
+$color-scrollbar-track: $gray-200;
 
 /*#region bootstrap variables customization */
 $theme-colors: ( primary: $ourgreen, info: $ourgreen );

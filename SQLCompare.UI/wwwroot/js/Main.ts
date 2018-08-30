@@ -59,6 +59,21 @@ class Main {
                 {
                     automaticLayout: true,
                     scrollBeyondLastLine: false,
+                    readOnly: true,
+                    stopRenderingLineAfter: -1,
+                    links: false,
+                    contextmenu: false,
+                    quickSuggestions: false,
+                    autoClosingBrackets: false,
+                    selectionHighlight: false,
+                    occurrencesHighlight: false,
+                    folding: false,
+                    matchBrackets: false,
+                    ignoreTrimWhitespace: false,
+                    /*fontWeight: "normal",*/
+                    /*fontFamily: "Open Sans",*/
+                    fontSize: 13,
+                    /*lineHeight: 1,*/
                 });
             diffEditor.setModel({
                 original: monaco.editor.createModel(response.Result.SourceSql, "sql"),

@@ -1,78 +1,13 @@
 @import "common";
 
-.row-header {
-    background-color: #292929;
-    padding: 2px 5px 2px 5px;
-    height: $row-header-height;
-}
-
-.row-main {
-    height: 100vh;
-    padding-bottom: $row-header-height;
-}
-
+/*#region bootstrap overrides */
 .modal,
 .modal-backdrop {
     top: $row-header-height;
 }
+/*#endregion*/
 
-/* begin checkbox switch */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: $switch-width;
-    height: $switch-width / 2;
-    margin-bottom: 0;
-    margin-left: 0px;
-}
-
-.switch input {
-    display: none;
-}
-
-.switch > .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 34px;
-}
-
-.switch > .slider:before {
-    position: absolute;
-    content: "";
-    height: ($switch-width / 2 - 5);
-    width: ($switch-width / 2 - 5);
-    left: 4px;
-    bottom: 2px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-.switch > input:checked + .slider {
-    background-color: $ourgreen;
-}
-
-.switch > input:focus + .slider {
-    box-shadow: 0 0 1px $ourgreen;
-}
-
-.switch > input:checked + .slider:before {
-    -webkit-transform: translateX(0.75rem);
-    -ms-transform: translateX(0.75rem);
-    transform: translateX(0.75rem);
-}
-/* end checkbox switch */
-
-/* begin monaco-editor override */
-
+/*#region monaco-editor overrides */
 .vs .monaco-scrollable-element > .scrollbar.vertical {
     background: $color-scrollbar-track;
     background-clip: content-box;
@@ -100,15 +35,79 @@
     margin-top: 3px;
     max-height: 8px;
 }
+/*#endregion*/
 
-/* end monaco-editor override */
+.tcx-row-header {
+    background-color: #292929;
+    padding: 2px 5px 2px 5px;
+    height: $row-header-height;
+}
 
-/* TO BE VERIFIED/REMOVED */
+.tcx-row-main {
+    height: 100vh;
+    padding-bottom: $row-header-height;
+}
 
-#mainTop {
+.tcx-main-top {
     overflow: auto;
     height: 100%;
 }
+
+/*#region checkbox switch */
+.tcx-switch {
+    position: relative;
+    width: $switch-width;
+    height: $switch-width / 2;
+    margin-top: 2px;
+}
+
+.tcx-switch input {
+    display: none;
+}
+
+.tcx-switch > .tcx-switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $switch-off-color;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.tcx-switch > .tcx-switch-slider:before {
+    position: absolute;
+    content: "";
+    height: ($switch-width / 2 - 4);
+    width: ($switch-width / 2 - 4);
+    left: 4px;
+    bottom: 2px;
+    background-color: $switch-slider-color;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.tcx-switch > input:checked + .tcx-switch-slider {
+    background-color: $switch-on-color;
+}
+
+.tcx-switch > input:focus + .tcx-switch-slider {
+    box-shadow: 0 0 1px $switch-on-color;
+}
+
+.tcx-switch > input:checked + .tcx-switch-slider:before {
+    transform: translateX(0.75rem);
+}
+/*#endregion*/
+
+.btn.spin > span {
+    display: block;
+    animation: spin 2s linear infinite;
+}
+
+/* TO BE VERIFIED/REMOVED */
 
 .gutter {
     background-color: gray;
@@ -124,67 +123,4 @@
 .gutter.gutter-vertical {
     cursor: row-resize;
     background-image: url("../img/gutter-vertical.png");
-}
-
-.nav-tabs {
-    margin-bottom: 0;
-}
-
-.tab-content {
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-}
-
-.btn.spin > span {
-    display: block;
-    animation: spin 2s linear infinite;
-}
-
-/*TEST*/
-
-.form-label {
-    font-size: $font-size-base;
-    margin-bottom: 0px;
-}
-
-/* TAB */
-.tab {
-    /* width: 100px;*/
-    padding: 8px 10px;
-    margin-right: 5px;
-    font-size: 0.9em;
-    /*   border: 1px solid red; */
-    border-radius: 10px 10px 0 0;
-    /* height: 33px; */
-    float: left;
-    background: #eee;
-    text-transform: capitalize;
-    color: #333;
-    text-align: center;
-    /* line-height: 2.0em; */
-    cursor: pointer;
-    list-style: none !important;
-    transition: all 200ms;
-    /*   border-right: 0.125rem solid #16a085; */
-    border-top: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-}
-
-.tab:hover {
-    background: #f0554a;
-    color: #fff;
-}
-
-.active-tab {
-    background: #f0554a;
-    color: #fff;
-}
-
-.active-tab:hover {
-}
-
-.table-compact tr {
-    line-height: 1;
 }

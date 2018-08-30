@@ -263,8 +263,16 @@ namespace SQLCompare.Services
                         taskInfo.Message = "Comparing views...";
                         foreach (var resultView in this.result.Views)
                         {
-                            resultView.SourceCreateScript = resultView.SourceItem?.ViewDefinition ?? string.Empty;
-                            resultView.TargetCreateScript = resultView.TargetItem?.ViewDefinition ?? string.Empty;
+                            if (resultView.SourceItem != null)
+                            {
+                                resultView.SourceCreateScript = scripter.GenerateCreateViewScript(resultView.SourceItem);
+                            }
+
+                            if (resultView.TargetItem != null)
+                            {
+                                resultView.TargetCreateScript = scripter.GenerateCreateViewScript(resultView.TargetItem);
+                            }
+
                             resultView.Equal = resultView.SourceCreateScript == resultView.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
@@ -272,8 +280,16 @@ namespace SQLCompare.Services
                         taskInfo.Message = "Comparing functions...";
                         foreach (var resultFunction in this.result.Functions)
                         {
-                            resultFunction.SourceCreateScript = resultFunction.SourceItem?.RoutineDefinition ?? string.Empty;
-                            resultFunction.TargetCreateScript = resultFunction.TargetItem?.RoutineDefinition ?? string.Empty;
+                            if (resultFunction.SourceItem != null)
+                            {
+                                resultFunction.SourceCreateScript = scripter.GenerateCreateFunctionScript(resultFunction.SourceItem, this.retrievedSourceDatabase.DataTypes);
+                            }
+
+                            if (resultFunction.TargetItem != null)
+                            {
+                                resultFunction.TargetCreateScript = scripter.GenerateCreateFunctionScript(resultFunction.TargetItem, this.retrievedTargetDatabase.DataTypes);
+                            }
+
                             resultFunction.Equal = resultFunction.SourceCreateScript == resultFunction.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
@@ -281,8 +297,16 @@ namespace SQLCompare.Services
                         taskInfo.Message = "Comparing stored procedures...";
                         foreach (var resultStoredProcedure in this.result.StoredProcedures)
                         {
-                            resultStoredProcedure.SourceCreateScript = resultStoredProcedure.SourceItem?.RoutineDefinition ?? string.Empty;
-                            resultStoredProcedure.TargetCreateScript = resultStoredProcedure.TargetItem?.RoutineDefinition ?? string.Empty;
+                            if (resultStoredProcedure.SourceItem != null)
+                            {
+                                resultStoredProcedure.SourceCreateScript = scripter.GenerateCreateStoredProcedureScript(resultStoredProcedure.SourceItem);
+                            }
+
+                            if (resultStoredProcedure.TargetItem != null)
+                            {
+                                resultStoredProcedure.TargetCreateScript = scripter.GenerateCreateStoredProcedureScript(resultStoredProcedure.TargetItem);
+                            }
+
                             resultStoredProcedure.Equal = resultStoredProcedure.SourceCreateScript == resultStoredProcedure.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }

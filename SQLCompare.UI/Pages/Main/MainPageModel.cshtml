@@ -4,7 +4,7 @@
 @using Services
 @model MainPageModel
 
-<div id="mainTop">
+<div id="mainTop" class="tcx-main-top">
     @await Html.PartialAsync("_ResultTable", Model.DifferentItems, new ViewDataDictionary(this.ViewData)
     {
         { "Title", Localization.LabelInBothButDifferent },
@@ -37,7 +37,7 @@
                 <a class="nav-link" data-toggle="tab" href="#menu2">Menu 3</a>
             </li>
         </ul>
-        <button style="@(ButtonStyle.Secondary)" outline="@true" size="@ButtonSize.Small" onclick="Main.HideBottomPanel()">X</button>
+        <button style="@ButtonStyle.Secondary" outline="@true" size="@ButtonSize.Small" onclick="Main.HideBottomPanel();">X</button>
     </div>
 
     <div class="tab-content" style="height: calc(100% - 36px);">

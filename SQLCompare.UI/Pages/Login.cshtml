@@ -21,14 +21,14 @@
     @Html.AntiForgeryToken()
 
     <div class="container-fluid">
-        <div class="row row-login">
+        <div class="row tcx-row-login">
             <div class="col-12 p-0" id="mainDiv">
                 @* Url is stored in the input field because it will be set to the webview after registering the event handlers *@
                 @if (!Model.Verified)
                 {
                     <input id="url" type="hidden" value="@Model.LoginEndpoint" />
                 }
-                <webview class="login-webview" id="webview" partition="x"></webview>
+                <webview class="tcx-login-webview" id="webview" partition="x"></webview>
             </div>
         </div>
     </div>
@@ -46,7 +46,7 @@
                             <div class="col-4">
                                 <p></p>
                                 <p class="text-center">
-                                    <div class="tcdx-logo"></div>
+                                    <div class="tcx-logo"></div>
                                 </p>
                             </div>
                             <div class="col-8 my-auto">
@@ -69,7 +69,7 @@
         <span id="myNotificationMessage"></span>
     </div>
 
-    <div class="loader"></div>
+    <div class="tcx-loader"></div>
 
     @* In order to make jquery work with both Chrome and Electron *@
     @* Keep a reference to module and restore it after jquery is loaded *@

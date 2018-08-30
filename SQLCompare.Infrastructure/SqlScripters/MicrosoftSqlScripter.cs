@@ -166,7 +166,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptCreateView(ABaseDbView view)
         {
             var sb = new StringBuilder();
-            sb.Append($"{view.ViewDefinition}");
+            sb.Append($"{view.ViewDefinition.TrimStart('\r', '\n')}");
             if (!view.ViewDefinition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
@@ -180,7 +180,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptCreateFunction(ABaseDbRoutine sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
         {
             var sb = new StringBuilder();
-            sb.Append($"{sqlFunction.RoutineDefinition}");
+            sb.Append($"{sqlFunction.RoutineDefinition.TrimStart('\r', '\n')}");
             if (!sqlFunction.RoutineDefinition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
@@ -194,7 +194,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptCreateStoredProcedure(ABaseDbRoutine storedProcedure)
         {
             var sb = new StringBuilder();
-            sb.Append($"{storedProcedure.RoutineDefinition}");
+            sb.Append($"{storedProcedure.RoutineDefinition.TrimStart('\r', '\n')}");
             if (!storedProcedure.RoutineDefinition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();

@@ -94,15 +94,15 @@ $((): void => {
         if (redirectRequestDetected) {
             return;
         }
-        $("#webview").hide();
+        webview.hide();
         $("#myModalText").html(Localization.Get("ErrorCannotContactTiCodeXWebsite"));
         $("#myModalLink").html("www.ticodex.com");
         $("#myModalLink").on("click", () => { Utility.OpenExternalBrowser("https://www.ticodex.com"); });
         $("#closeButton").hide();
-        $("#myModal").modal({ show: true, backdrop: "static", keyboard: false });
+        $("#myModal").modal("show");
     });
     webview.on("did-finish-load", (e: JQuery.Event): void => {
-        $(".loader").hide();
+        $(".tcx-loader").hide();
     });
 
     // Start loading the webview

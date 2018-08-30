@@ -14,7 +14,7 @@
         <h5 class="card-title text-center">@ViewBag.Title</h5>
         <p class="card-text">
             <div class="form-group">
-                <label class="form-label">@Localization.LabelType</label>
+                <label>@Localization.LabelType</label>
                 <select name="@(prefix)DatabaseType" class="form-control-sm">
                     @{
                         @:<option value="@DatabaseType.MicrosoftSql" @(Model is MicrosoftSqlDatabaseProviderOptions ? "selected" : "")>Microsoft SQL Server</option>
@@ -24,47 +24,47 @@
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">@Localization.LabelHostname</label>
+                <label>@Localization.LabelHostname</label>
                 <input type="text" name="@(prefix)Hostname" value="@Model.Hostname" class="form-control-sm">
             </div>
             <div class="form-group">
-                <label class="form-label">@Localization.LabelUsername</label>
+                <label>@Localization.LabelUsername</label>
                 <input type="text" name="@(prefix)Username" value="@Model.Username" class="form-control-sm">
             </div>
             <div class="form-group">
-                <label class="form-label">@Localization.LabelPassword</label>
+                <label>@Localization.LabelPassword</label>
                 <input type="password" name="@(prefix)Password" value="@Model.Password" class="form-control-sm">
             </div>
 
 
             <div class="form-group row">
                 <div class="col-9">
-                    <label class="form-label">@Localization.LabelUseWindowsAuthentication</label>
+                    <label>@Localization.LabelUseWindowsAuthentication</label>
                 </div>
                 <div class="col-3 text-right">
-                    <label class="switch">
+                    <label class="tcx-switch">
                         @{
                             @:<input type="checkbox" name="@(prefix)UseWindowsAuthentication" data-value-type="boolean" @(Model is MicrosoftSqlDatabaseProviderOptions options && options.UseWindowsAuthentication ? "checked=\"checked\"" : "")>
                         }
-                        <span class="slider"></span>
+                        <span class="tcx-switch-slider"></span>
                     </label>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-9">
-                    <label class="form-label">@Localization.LabelUseSSL</label>
+                    <label>@Localization.LabelUseSSL</label>
                 </div>
                 <div class="col-3 text-right">
-                    <label class="switch">
+                    <label class="tcx-switch">
                         @{
                             @:<input type="checkbox" name="@(prefix)UseSSL" data-value-type="boolean" @(Model.UseSSL ? "checked=\"checked\"" : "")>
                         }
-                        <span class="slider"></span>
+                        <span class="tcx-switch-slider"></span>
                     </label>
                 </div>
             </div>
             <div class="form-group ">
-                <label class="form-label">@Localization.LabelDatabase</label>
+                <label>@Localization.LabelDatabase</label>
                 <div class="input-group input-group-sm">
                     <select name="@(prefix)Database" class="form-control-sm">
                         @if (!string.IsNullOrEmpty(Model.Database))

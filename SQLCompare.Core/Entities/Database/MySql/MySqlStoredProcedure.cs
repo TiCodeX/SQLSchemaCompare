@@ -3,7 +3,7 @@
     /// <summary>
     /// Specific MySql stored procedure definition
     /// </summary>
-    public class MySqlStoredProcedure : ABaseDbRoutine
+    public class MySqlStoredProcedure : ABaseDbStoredProcedure
     {
     }
 }

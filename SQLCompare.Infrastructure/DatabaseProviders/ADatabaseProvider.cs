@@ -262,7 +262,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of functions</returns>
-        protected abstract IEnumerable<ABaseDbRoutine> GetFunctions(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbFunction> GetFunctions(TDatabase database, TDatabaseContext context);
 
         /// <summary>
         /// Get the database stored procedures
@@ -270,7 +270,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of stored procedures</returns>
-        protected abstract IEnumerable<ABaseDbRoutine> GetStoredProcedures(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(TDatabase database, TDatabaseContext context);
 
         /// <summary>
         /// Get the database data types

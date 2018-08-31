@@ -1,29 +1,13 @@
 @echo off
-set "target=win"
-REM set "ArrayTarget[win]=true"
-REM set "ArrayTarget[linux]=true"
-REM set "ArrayTarget[mac]=true"
-REM :choosetarget
-REM set /p target="Enter target [win/linux/mac]: "
-REM if not defined ArrayTarget[%target%] ( goto:choosetarget )
 
+set "targetdotnet=win-x64"
 set "publishDir=%~dp0\.publish"
 set "configuration=release"
-REM set "ArrayConfig[release]=true"
-REM set "ArrayConfig[debug]=true"
-REM :chooseconfig
-REM set /p configuration="Enter configuration [release/debug]: "
-REM if not defined ArrayConfig[%configuration%] ( goto:chooseconfig )
-
-if /i "%target%" == "win" ( set "targetdotnet=win-x64" )
-if /i "%target%" == "linux" ( set "targetdotnet=linux-x64" )
-if /i "%target%" == "mac" ( set "targetdotnet=osx-x64" )
+set "electronScript=dist-win"
 
 REM Cleanup folders
 if exist %publishDir% ( rmdir /S /Q %publishDir% )
 if exist %~dp0\installer\win-unpacked ( rmdir /S /Q %~dp0\installer\win-unpacked )
-if exist %~dp0\installer\linux-unpacked ( rmdir /S /Q %~dp0\installer\linux-unpacked )
-if exist %~dp0\installer\mac-unpacked ( rmdir /S /Q %~dp0\installer\mac-unpacked )
 
 echo.
 echo     _____________________
@@ -31,7 +15,7 @@ echo    /\                    \
 echo    \_^|    Publishing     ^|  
 echo      ^|    SqlCompare     ^|  
 echo      ^|  _________________^|_ 
-echo      \_/___________________/
+echo       \_/___________________/
 echo.
 
 dotnet publish %~dp0\SQLCompare.UI\SQLCompare.UI.csproj -r %targetdotnet% -c %configuration%
@@ -47,18 +31,16 @@ echo    /\                    \
 echo    \_^|    Packaging      ^|  
 echo      ^|    electron       ^|  
 echo      ^|  _________________^|_ 
-echo      \_/___________________/
+echo       \_/___________________/
 echo.
 
-call npm --prefix SqlCompare run dist-%target%
+call npm --prefix SqlCompare run %electronScript%
 
 if ERRORLEVEL 1 goto:error
 
 REM Cleanup folders
 if exist %publishDir% ( rmdir /S /Q %publishDir% )
 REM if exist %~dp0installer\win-unpacked ( rmdir /S /Q %~dp0installer\win-unpacked )
-REM if exist %~dp0installer\linux-unpacked ( rmdir /S /Q %~dp0installer\linux-unpacked )
-REM if exist %~dp0installer\mac-unpacked ( rmdir /S /Q %~dp0installer\mac-unpacked )
 
 echo.
 echo.

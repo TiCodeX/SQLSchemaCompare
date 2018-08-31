@@ -178,7 +178,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbRoutine> GetFunctions(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbFunction> GetFunctions(MySqlDb database, MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT ROUTINE_NAME as Name,");
@@ -190,15 +190,14 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var result = context.Query<MySqlFunction>(query.ToString());
             foreach (var function in result)
             {
-                var createFunction = context.Query($"SHOW CREATE FUNCTION {function.Schema}.{function.Name}", 2).FirstOrDefault();
-                function.RoutineDefinition = createFunction;
+                function.Definition = context.Query($"SHOW CREATE FUNCTION {function.Schema}.{function.Name}", 2).FirstOrDefault();
             }
 
             return result;
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbRoutine> GetStoredProcedures(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(MySqlDb database, MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT ROUTINE_NAME as Name,");
@@ -210,8 +209,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var result = context.Query<MySqlStoredProcedure>(query.ToString());
             foreach (var procedure in result)
             {
-                var createProcedure = context.Query($"SHOW CREATE PROCEDURE {procedure.Schema}.{procedure.Name}", 2).FirstOrDefault();
-                procedure.RoutineDefinition = createProcedure;
+                procedure.Definition = context.Query($"SHOW CREATE PROCEDURE {procedure.Schema}.{procedure.Name}", 2).FirstOrDefault();
             }
 
             return result;

@@ -36,14 +36,14 @@ namespace SQLCompare.Core.Interfaces
         /// <param name="sqlFunction">The function to be scripted</param>
         /// <param name="dataTypes">The list of database data types</param>
         /// <returns>The create script</returns>
-        string GenerateCreateFunctionScript(ABaseDbRoutine sqlFunction, IEnumerable<ABaseDbObject> dataTypes);
+        string GenerateCreateFunctionScript(ABaseDbFunction sqlFunction, IEnumerable<ABaseDbObject> dataTypes);
 
         /// <summary>
         /// Generates the create stored procedure script
         /// </summary>
         /// <param name="storedProcedure">The stored procedure to be scripted</param>
         /// <returns>The create script</returns>
-        string GenerateCreateStoredProcedureScript(ABaseDbRoutine storedProcedure);
+        string GenerateCreateStoredProcedureScript(ABaseDbStoredProcedure storedProcedure);
 
         /// <summary>
         /// Generates the create sequence script

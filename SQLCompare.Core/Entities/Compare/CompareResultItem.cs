@@ -10,6 +10,14 @@ namespace SQLCompare.Core.Entities.Compare
         where T : ABaseDbObject
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="CompareResultItem{T}"/> class
+        /// </summary>
+        public CompareResultItem()
+        {
+            this.ItemType = typeof(T);
+        }
+
+        /// <summary>
         /// Gets or sets the Source item
         /// </summary>
         public T SourceItem { get; set; }

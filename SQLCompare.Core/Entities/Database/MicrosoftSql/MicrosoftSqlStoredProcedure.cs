@@ -3,7 +3,7 @@
     /// <summary>
     /// Specific MicrosoftSql stored procedure definition
     /// </summary>
-    public class MicrosoftSqlStoredProcedure : ABaseDbRoutine
+    public class MicrosoftSqlStoredProcedure : ABaseDbStoredProcedure
     {
     }
 }

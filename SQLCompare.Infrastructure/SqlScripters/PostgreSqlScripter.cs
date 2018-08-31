@@ -174,7 +174,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateFunction(ABaseDbRoutine sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
+        protected override string ScriptCreateFunction(ABaseDbFunction sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
         {
             var sb = new StringBuilder();
 
@@ -213,7 +213,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             sb.AppendLine($"{this.Indent}{PostgreSqlScriptHelper.ScriptFunctionAttributes(function)}");
             sb.Append("AS $BODY$");
-            sb.Append(function.RoutineDefinition);
+            sb.Append(function.Definition);
             sb.AppendLine("$BODY$;");
             sb.AppendLine();
 
@@ -221,7 +221,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateStoredProcedure(ABaseDbRoutine storedProcedure)
+        protected override string ScriptCreateStoredProcedure(ABaseDbStoredProcedure storedProcedure)
         {
             throw new NotSupportedException("PostgreSQL doesn't have stored procedures, only functions");
         }

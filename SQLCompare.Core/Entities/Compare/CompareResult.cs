@@ -21,12 +21,12 @@ namespace SQLCompare.Core.Entities.Compare
         /// <summary>
         /// Gets the list of Function results
         /// </summary>
-        public List<CompareResultItem<ABaseDbRoutine>> Functions { get; } = new List<CompareResultItem<ABaseDbRoutine>>();
+        public List<CompareResultItem<ABaseDbFunction>> Functions { get; } = new List<CompareResultItem<ABaseDbFunction>>();
 
         /// <summary>
         /// Gets the list of Stored Procedures results
         /// </summary>
-        public List<CompareResultItem<ABaseDbRoutine>> StoredProcedures { get; } = new List<CompareResultItem<ABaseDbRoutine>>();
+        public List<CompareResultItem<ABaseDbStoredProcedure>> StoredProcedures { get; } = new List<CompareResultItem<ABaseDbStoredProcedure>>();
 
         /// <summary>
         /// Gets the list of Sequences results

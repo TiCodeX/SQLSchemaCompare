@@ -3,7 +3,7 @@
     /// <summary>
     /// Specific MicrosoftSql function definition
     /// </summary>
-    public class MicrosoftSqlFunction : ABaseDbRoutine
+    public class MicrosoftSqlFunction : ABaseDbFunction
     {
     }
 }

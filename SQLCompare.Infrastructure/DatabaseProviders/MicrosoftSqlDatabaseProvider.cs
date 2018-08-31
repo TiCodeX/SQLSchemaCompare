@@ -225,13 +225,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbRoutine> GetFunctions(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbFunction> GetFunctions(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT ROUTINE_NAME as Name,");
             query.AppendLine("       ROUTINE_CATALOG as 'Catalog',");
             query.AppendLine("       ROUTINE_SCHEMA as 'Schema',");
-            query.AppendLine("       ROUTINE_DEFINITION as RoutineDefinition");
+            query.AppendLine("       ROUTINE_DEFINITION as Definition");
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
             query.AppendLine("WHERE routine_type = 'FUNCTION'");
 
@@ -239,17 +239,17 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbRoutine> GetStoredProcedures(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT ROUTINE_NAME as Name,");
             query.AppendLine("       ROUTINE_CATALOG as 'Catalog',");
             query.AppendLine("       ROUTINE_SCHEMA as 'Schema',");
-            query.AppendLine("       ROUTINE_DEFINITION as RoutineDefinition");
+            query.AppendLine("       ROUTINE_DEFINITION as Definition");
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
             query.AppendLine("WHERE routine_type = 'PROCEDURE'");
 
-            return context.Query<MicrosoftSqlFunction>(query.ToString());
+            return context.Query<MicrosoftSqlStoredProcedure>(query.ToString());
         }
 
         /// <inheritdoc/>

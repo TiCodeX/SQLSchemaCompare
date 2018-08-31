@@ -3,7 +3,7 @@
     /// <summary>
     /// Specific MySql function definition
     /// </summary>
-    public class MySqlFunction : ABaseDbRoutine
+    public class MySqlFunction : ABaseDbFunction
     {
     }
 }

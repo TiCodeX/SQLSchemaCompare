@@ -216,4 +216,46 @@
   <data name="LabelStoredProcedure" xml:space="preserve">
     <value>Procedura</value>
   </data>
+  <data name="LabelUseSSL" xml:space="preserve">
+    <value>Usa SSL</value>
+  </data>
+  <data name="LabelUseWindowsAuthentication" xml:space="preserve">
+    <value>Usa autenticazione di Windows</value>
+  </data>
+  <data name="LabelOnlyInSource" xml:space="preserve">
+    <value>Solo nell'origine</value>
+  </data>
+  <data name="LabelOnlyInTarget" xml:space="preserve">
+    <value>Solo nella destinazione</value>
+  </data>
+  <data name="LabelSource" xml:space="preserve">
+    <value>Origine</value>
+  </data>
+  <data name="LabelTarget" xml:space="preserve">
+    <value>Destinazione</value>
+  </data>
+  <data name="MenuCompare" xml:space="preserve">
+    <value>Confronta</value>
+  </data>
+  <data name="ErrorGeneric" xml:space="preserve">
+    <value>Si è verificato un errore</value>
+  </data>
+  <data name="ErrorInvalidUsernameOrPassword" xml:space="preserve">
+    <value>Nome utente o password non valida</value>
+  </data>
+  <data name="ErrorAccountLocked" xml:space="preserve">
+    <value>Account bloccato</value>
+  </data>
+  <data name="ErrorSessionExpired" xml:space="preserve">
+    <value>La sessione è scaduta</value>
+  </data>
+  <data name="NotificationNewVersionAvailable" xml:space="preserve">
+    <value>Nuova versione disponibile!</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>Chiudi</value>
+  </data>
+  <data name="ButtonQuit" xml:space="preserve">
+    <value>Esci</value>
+  </data>
 </root>

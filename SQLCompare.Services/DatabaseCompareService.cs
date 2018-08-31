@@ -97,7 +97,6 @@ namespace SQLCompare.Services
                         {
                             this.result.Tables.Add(new CompareResultItem<ABaseDbTable>
                             {
-                                ItemTypeLabel = Localization.LabelTable,
                                 SourceItem = table,
                                 TargetItem = this.retrievedTargetDatabase.Tables.FirstOrDefault(x => x.Name == table.Name)
                             });
@@ -107,7 +106,6 @@ namespace SQLCompare.Services
                         {
                             this.result.Tables.Add(new CompareResultItem<ABaseDbTable>
                             {
-                                ItemTypeLabel = Localization.LabelTable,
                                 TargetItem = table
                             });
                         }
@@ -119,7 +117,6 @@ namespace SQLCompare.Services
                         {
                             this.result.Views.Add(new CompareResultItem<ABaseDbView>
                             {
-                                ItemTypeLabel = Localization.LabelView,
                                 SourceItem = view,
                                 TargetItem = this.retrievedTargetDatabase.Views.FirstOrDefault(x => x.Name == view.Name)
                             });
@@ -129,7 +126,6 @@ namespace SQLCompare.Services
                         {
                             this.result.Views.Add(new CompareResultItem<ABaseDbView>
                             {
-                                ItemTypeLabel = Localization.LabelView,
                                 TargetItem = view
                             });
                         }
@@ -139,9 +135,8 @@ namespace SQLCompare.Services
                         taskInfo.Message = "Mapping functions...";
                         foreach (var function in this.retrievedSourceDatabase.Functions)
                         {
-                            this.result.Functions.Add(new CompareResultItem<ABaseDbRoutine>
+                            this.result.Functions.Add(new CompareResultItem<ABaseDbFunction>
                             {
-                                ItemTypeLabel = Localization.LabelFunction,
                                 SourceItem = function,
                                 TargetItem = this.retrievedTargetDatabase.Functions.FirstOrDefault(x => x.Name == function.Name)
                             });
@@ -149,9 +144,8 @@ namespace SQLCompare.Services
 
                         foreach (var function in this.retrievedTargetDatabase.Functions.Where(x => this.result.Functions.All(y => y.SourceItem.Name != x.Name)).ToList())
                         {
-                            this.result.Functions.Add(new CompareResultItem<ABaseDbRoutine>
+                            this.result.Functions.Add(new CompareResultItem<ABaseDbFunction>
                             {
-                                ItemTypeLabel = Localization.LabelFunction,
                                 TargetItem = function
                             });
                         }
@@ -161,20 +155,18 @@ namespace SQLCompare.Services
                         taskInfo.Message = "Mapping stored procedures...";
                         foreach (var storedProcedure in this.retrievedSourceDatabase.StoredProcedures)
                         {
-                            this.result.StoredProcedures.Add(new CompareResultItem<ABaseDbRoutine>
+                            this.result.StoredProcedures.Add(new CompareResultItem<ABaseDbStoredProcedure>
                             {
-                                ItemTypeLabel = Localization.LabelStoredProcedure,
                                 SourceItem = storedProcedure,
                                 TargetItem = this.retrievedTargetDatabase.StoredProcedures.FirstOrDefault(x => x.Name == storedProcedure.Name)
                             });
                         }
 
-                        foreach (var function in this.retrievedTargetDatabase.StoredProcedures.Where(x => this.result.StoredProcedures.All(y => y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var storedProcedure in this.retrievedTargetDatabase.StoredProcedures.Where(x => this.result.StoredProcedures.All(y => y.SourceItem.Name != x.Name)).ToList())
                         {
-                            this.result.StoredProcedures.Add(new CompareResultItem<ABaseDbRoutine>
+                            this.result.StoredProcedures.Add(new CompareResultItem<ABaseDbStoredProcedure>
                             {
-                                ItemTypeLabel = Localization.LabelStoredProcedure,
-                                TargetItem = function
+                                TargetItem = storedProcedure
                             });
                         }
 
@@ -185,7 +177,6 @@ namespace SQLCompare.Services
                         {
                             this.result.Sequences.Add(new CompareResultItem<ABaseDbSequence>
                             {
-                                ItemTypeLabel = Localization.LabelSequence,
                                 SourceItem = sequence,
                                 TargetItem = this.retrievedTargetDatabase.Sequences.FirstOrDefault(x => x.Name == sequence.Name)
                             });
@@ -195,7 +186,6 @@ namespace SQLCompare.Services
                         {
                             this.result.Sequences.Add(new CompareResultItem<ABaseDbSequence>
                             {
-                                ItemTypeLabel = Localization.LabelSequence,
                                 TargetItem = sequence
                             });
                         }
@@ -207,7 +197,6 @@ namespace SQLCompare.Services
                         {
                             this.result.DataTypes.Add(new CompareResultItem<ABaseDbDataType>
                             {
-                                ItemTypeLabel = Localization.LabelUserDefinedType,
                                 SourceItem = type,
                                 TargetItem = this.retrievedTargetDatabase.DataTypes.FirstOrDefault(x => x.Name == type.Name)
                             });
@@ -217,7 +206,6 @@ namespace SQLCompare.Services
                         {
                             this.result.DataTypes.Add(new CompareResultItem<ABaseDbDataType>
                             {
-                                ItemTypeLabel = Localization.LabelUserDefinedType,
                                 TargetItem = type
                             });
                         }

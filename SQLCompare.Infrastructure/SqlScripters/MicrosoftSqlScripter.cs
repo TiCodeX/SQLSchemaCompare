@@ -177,11 +177,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateFunction(ABaseDbRoutine sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
+        protected override string ScriptCreateFunction(ABaseDbFunction sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
         {
             var sb = new StringBuilder();
-            sb.Append($"{sqlFunction.RoutineDefinition.TrimStart('\r', '\n')}");
-            if (!sqlFunction.RoutineDefinition.EndsWith("\n", StringComparison.Ordinal))
+            sb.Append($"{sqlFunction.Definition.TrimStart('\r', '\n')}");
+            if (!sqlFunction.Definition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
             }
@@ -191,11 +191,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateStoredProcedure(ABaseDbRoutine storedProcedure)
+        protected override string ScriptCreateStoredProcedure(ABaseDbStoredProcedure storedProcedure)
         {
             var sb = new StringBuilder();
-            sb.Append($"{storedProcedure.RoutineDefinition.TrimStart('\r', '\n')}");
-            if (!storedProcedure.RoutineDefinition.EndsWith("\n", StringComparison.Ordinal))
+            sb.Append($"{storedProcedure.Definition.TrimStart('\r', '\n')}");
+            if (!storedProcedure.Definition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
             }

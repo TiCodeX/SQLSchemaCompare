@@ -189,7 +189,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateCreateFunctionScript(ABaseDbRoutine sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
+        public string GenerateCreateFunctionScript(ABaseDbFunction sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
         {
             if (sqlFunction == null)
             {
@@ -205,7 +205,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateCreateStoredProcedureScript(ABaseDbRoutine storedProcedure)
+        public string GenerateCreateStoredProcedureScript(ABaseDbStoredProcedure storedProcedure)
         {
             if (storedProcedure == null)
             {
@@ -286,14 +286,14 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="sqlFunction">The function to script</param>
         /// <param name="dataTypes">The list of database data types</param>
         /// <returns>The create function script</returns>
-        protected abstract string ScriptCreateFunction(ABaseDbRoutine sqlFunction, IEnumerable<ABaseDbObject> dataTypes);
+        protected abstract string ScriptCreateFunction(ABaseDbFunction sqlFunction, IEnumerable<ABaseDbObject> dataTypes);
 
         /// <summary>
         /// Generates the create stored procedure script
         /// </summary>
         /// <param name="storedProcedure">The stored procedure to script</param>
         /// <returns>The create stored procedure script</returns>
-        protected abstract string ScriptCreateStoredProcedure(ABaseDbRoutine storedProcedure);
+        protected abstract string ScriptCreateStoredProcedure(ABaseDbStoredProcedure storedProcedure);
 
         /// <summary>
         /// Generates the create sequence script

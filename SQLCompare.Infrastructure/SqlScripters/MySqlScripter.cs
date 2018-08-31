@@ -141,15 +141,15 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateFunction(ABaseDbRoutine sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
+        protected override string ScriptCreateFunction(ABaseDbFunction sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
         {
-            return sqlFunction.RoutineDefinition;
+            return sqlFunction.Definition;
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateStoredProcedure(ABaseDbRoutine storedProcedure)
+        protected override string ScriptCreateStoredProcedure(ABaseDbStoredProcedure storedProcedure)
         {
-            return storedProcedure.RoutineDefinition;
+            return storedProcedure.Definition;
         }
 
         /// <inheritdoc/>

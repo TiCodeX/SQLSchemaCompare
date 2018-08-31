@@ -120,4 +120,76 @@
   <data name="LabelUsername" xml:space="preserve">
     <value>Benutzer</value>
   </data>
+  <data name="ButtonCancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="ButtonNewProject" xml:space="preserve">
+    <value>Neues Projekt</value>
+  </data>
+  <data name="ButtonOpenProject" xml:space="preserve">
+    <value>Projekt öffnen</value>
+  </data>
+  <data name="ButtonSave" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="LabelLanguage" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="LabelPassword" xml:space="preserve">
+    <value>Kennwort</value>
+  </data>
+  <data name="LabelUseSSL" xml:space="preserve">
+    <value>SSL verwenden</value>
+  </data>
+  <data name="LabelUseWindowsAuthentication" xml:space="preserve">
+    <value>Windows-Authentifizierung verwenden</value>
+  </data>
+  <data name="TitleWelcome" xml:space="preserve">
+    <value>Willkommen bei {0}</value>
+  </data>
+  <data name="LabelOptions" xml:space="preserve">
+    <value>Optionen</value>
+  </data>
+  <data name="LabelTable" xml:space="preserve">
+    <value>Tabelle</value>
+  </data>
+  <data name="MenuCloseProject" xml:space="preserve">
+    <value>Projekt schließen</value>
+  </data>
+  <data name="MenuExit" xml:space="preserve">
+    <value>Beenden</value>
+  </data>
+  <data name="MenuFile" xml:space="preserve">
+    <value>Datei</value>
+  </data>
+  <data name="MenuNewProject" xml:space="preserve">
+    <value>Neues Projekt</value>
+  </data>
+  <data name="MenuOpenProject" xml:space="preserve">
+    <value>Projekt öffnen</value>
+  </data>
+  <data name="MenuProject" xml:space="preserve">
+    <value>Projekt</value>
+  </data>
+  <data name="MenuSaveProject" xml:space="preserve">
+    <value>Projekt speichern</value>
+  </data>
+  <data name="MenuSettings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="ErrorAccountLocked" xml:space="preserve">
+    <value>Ihr Konto ist gesperrt</value>
+  </data>
+  <data name="TitleLoginError" xml:space="preserve">
+    <value>Login-Fehler</value>
+  </data>
+  <data name="NotificationNewVersionAvailable" xml:space="preserve">
+    <value>Neue Version verfügbar!</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="ButtonQuit" xml:space="preserve">
+    <value>Beenden</value>
+  </data>
 </root>

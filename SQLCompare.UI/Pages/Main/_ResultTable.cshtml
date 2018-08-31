@@ -1,4 +1,5 @@
 ﻿@using Core.Entities.Compare
+@using Core.Entities.Database
 @using Core.Interfaces
 @using Services
 @model List<ABaseCompareResultItem>
@@ -22,7 +23,32 @@
                 @foreach (var item in Model)
                 {
                     <tr id="@item.Id" onclick="Main.SelectRow($(event.target).closest('tr'))">
-                        <td>@item.ItemTypeLabel</td>
+                        <td>
+                            @if (item.ItemType == typeof(ABaseDbTable))
+                            {
+                                <i class="fa fa-fw fa-table"></i> @Localization.LabelTable
+                            }
+                            else if (item.ItemType == typeof(ABaseDbView))
+                            {
+                                <i class="fa fa-fw fa-clipboard-list"></i> @Localization.LabelView
+                            }
+                            else if (item.ItemType == typeof(ABaseDbFunction))
+                            {
+                                <i class="fa fa-fw fa-cogs"></i> @Localization.LabelFunction
+                            }
+                            else if (item.ItemType == typeof(ABaseDbStoredProcedure))
+                            {
+                                <i class="fa fa-fw fa-drafting-compass"></i> @Localization.LabelStoredProcedure
+                            }
+                            else if (item.ItemType == typeof(ABaseDbSequence))
+                            {
+                                <i class="fa fa-fw fa-list"></i> @Localization.LabelSequence
+                            }
+                            else if (item.ItemType == typeof(ABaseDbDataType))
+                            {
+                                <i class="fa fa-fw fa-vector-square"></i> @Localization.LabelUserDefinedType
+                            }
+                        </td>
                         <td>@item.SourceItemName</td>
                         <td>@item.TargetItemName</td>
                     </tr>

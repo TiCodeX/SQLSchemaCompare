@@ -260,13 +260,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbRoutine> GetFunctions(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbFunction> GetFunctions(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT r.routine_catalog as \"Catalog\",");
             query.AppendLine("       r.routine_schema as \"Schema\",");
             query.AppendLine("       r.routine_name as \"Name\",");
-            query.AppendLine("       r.routine_definition as \"RoutineDefinition\",");
+            query.AppendLine("       r.routine_definition as \"Definition\",");
             query.AppendLine("       r.external_language as \"ExternalLanguage\",");
             query.AppendLine("       r.security_type as \"SecurityType\",");
             query.AppendLine("       p.procost as \"Cost\",");
@@ -287,10 +287,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbRoutine> GetStoredProcedures(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             // In PostgreSql Stored Procedures doesn't exists. Therefore we will return an empty list;
-            return Enumerable.Empty<ABaseDbRoutine>();
+            return Enumerable.Empty<ABaseDbStoredProcedure>();
         }
 
         /// <inheritdoc/>

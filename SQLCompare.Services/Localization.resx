@@ -321,4 +321,10 @@
   <data name="ButtonQuit" xml:space="preserve">
     <value>Quit</value>
   </data>
+  <data name="ButtonPrev" xml:space="preserve">
+    <value>Prev</value>
+  </data>
+  <data name="ButtonNext" xml:space="preserve">
+    <value>Next</value>
+  </data>
 </root>

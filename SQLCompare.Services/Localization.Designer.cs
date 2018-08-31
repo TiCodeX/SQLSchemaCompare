@@ -97,11 +97,29 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string ButtonNext {
+            get {
+                return ResourceManager.GetString("ButtonNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Project.
         /// </summary>
         public static string ButtonOpenProject {
             get {
                 return ResourceManager.GetString("ButtonOpenProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prev.
+        /// </summary>
+        public static string ButtonPrev {
+            get {
+                return ResourceManager.GetString("ButtonPrev", resourceCulture);
             }
         }
         

@@ -5,7 +5,7 @@ namespace SQLCompare.Core.Entities.Database.PostgreSql
     /// <summary>
     /// Specific PostgreSql function definition
     /// </summary>
-    public class PostgreSqlFunction : ABaseDbRoutine
+    public class PostgreSqlFunction : ABaseDbFunction
     {
         /// <summary>
         /// Gets or sets the external language

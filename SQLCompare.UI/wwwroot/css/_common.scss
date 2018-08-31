@@ -70,12 +70,36 @@ label {
     line-height: 0.8;
 }
 
+.btn:focus {
+    box-shadow: none;
+}
+/*#endregion*/
+
+/*#region buttons */
+.btn.spin > span {
+    display: block;
+    animation: spin 2s linear infinite;
+}
+
+.btn.btn-mini {
+    font-weight: bold;
+    line-height: 0.5;
+    padding: 0.3rem;
+    color: $gray-600;
+    background-color: $gray-300;
+}
+
+.btn.btn-mini:hover {
+    color: $gray-700;
+    background-color: $gray-400;
+}
 /*#endregion*/
 
 @keyframes spin {
     0% {
         transform: rotate(0);
     }
+
     100% {
         transform: rotate(360deg);
     }

@@ -9,7 +9,7 @@
     <div class="card-header" data-toggle="collapse" data-target="#@divId">
         <h6 class="mb-0 font-weight-bold">@ViewBag.Title (@Model.Count)</h6>
     </div>
-    <div id="@divId" class="collapse @(ViewBag.Show is bool && ViewBag.Show ? "show" : "")">
+    <div id="@divId" class="card-body p-0 collapse @(ViewBag.Show is bool && ViewBag.Show ? "show" : "")">
         <table class="table table-compact">
             <thead class="thead-light">
                 <tr>
@@ -21,7 +21,7 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr onclick="Main.SelectRow(event, '@item.Id')">
+                    <tr id="@item.Id" onclick="Main.SelectRow($(event.target).closest('tr'))">
                         <td>@item.ItemTypeLabel</td>
                         <td>@item.SourceItemName</td>
                         <td>@item.TargetItemName</td>

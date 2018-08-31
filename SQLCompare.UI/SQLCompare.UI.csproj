@@ -52,15 +52,22 @@
     <EmbeddedResource Include="wwwroot\**\*.min.css" />
     <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*.js" />
     <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*.css" />
-    <!--Configure the images/fonts as EmbeddedResource-->
+    <!--Configure the images as EmbeddedResource-->
     <Content Remove="wwwroot\**\*.png" />
     <EmbeddedResource Include="wwwroot\**\*.png" />
     <Content Remove="wwwroot\**\*.jpg" />
     <EmbeddedResource Include="wwwroot\**\*.jpg" />
     <Content Remove="wwwroot\**\*.svg" />
     <EmbeddedResource Include="wwwroot\**\*.svg" />
+    <!--Configure the fonts as EmbeddedResource-->
     <Content Remove="wwwroot\**\*.ttf" />
     <EmbeddedResource Include="wwwroot\**\*.ttf" />
+    <Content Remove="wwwroot\**\*.eot" />
+    <EmbeddedResource Include="wwwroot\**\*.eot" />
+    <Content Remove="wwwroot\**\*.woff" />
+    <EmbeddedResource Include="wwwroot\**\*.woff" />
+    <Content Remove="wwwroot\**\*.woff2" />
+    <EmbeddedResource Include="wwwroot\**\*.woff2" />
   </ItemGroup>
 
   <ItemGroup>

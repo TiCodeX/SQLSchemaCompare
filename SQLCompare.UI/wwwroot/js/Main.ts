@@ -50,9 +50,7 @@ class Main {
                     this.mainSplitterSizes = this.mainSplitter.getSizes();
                 },
             });
-            const mainTop: JQuery = $("#mainTop");
-            const half: number = 0.5;
-            mainTop.scrollTop(mainTop.scrollTop() + $(".table-info").offset().top - mainTop.innerHeight() * half);
+            this.ScollToSelectedElement();
         }
 
         $("#sqlDiff").empty();
@@ -100,13 +98,68 @@ class Main {
      * @param e The click event
      * @param rowId The id of the row to select
      */
-    public static SelectRow(e: MouseEvent, rowId: string): void {
-        const target: JQuery<EventTarget> = $(e.target).closest("tr");
+    public static SelectRow(rowElement: JQuery): void {
+        // Deselect the row
+        $("#mainTop .table-info").removeClass("table-info");
+        // Highlight the selected
+        rowElement.addClass("table-info");
+        rowElement.parents(".card-body").addClass("show");
+        this.ShowBottomPanel(rowElement.get(0).id);
+    }
 
-        // Highlight the selected row only
-        target.addClass("table-info").siblings().removeClass("table-info");
+    /**
+     * Select the previous row
+     */
+    public static SelectPrevRow(): void {
+        const selectedElement: JQuery = $(".table-info");
+        if (selectedElement.length === 0) {
+            return;
+        }
 
-        Main.ShowBottomPanel(rowId);
+        let prevElement: JQuery = selectedElement.prev();
+        if (prevElement.length === 0) {
+            prevElement = selectedElement.parents(".card").prev().find("tbody > tr:last");
+            if (prevElement.length === 0) {
+                return;
+            }
+        }
+
+        this.SelectRow(prevElement);
+        this.ScollToSelectedElement();
+    }
+
+    /**
+     * Select the next row
+     */
+    public static SelectNextRow(): void {
+        const selectedElement: JQuery = $(".table-info");
+        if (selectedElement.length === 0) {
+            return;
+        }
+
+        let nextElement: JQuery = selectedElement.next();
+        if (nextElement.length === 0) {
+            nextElement = selectedElement.parents(".card").next().find("tbody > tr:first");
+            if (nextElement.length === 0) {
+                return;
+            }
+        }
+
+        this.SelectRow(nextElement);
+        this.ScollToSelectedElement();
+    }
+
+    /**
+     * Scroll the main view to the selected element
+     */
+    private static ScollToSelectedElement(): void {
+        const selectedElement: JQuery = $(".table-info");
+        if (selectedElement.length === 0) {
+            return;
+        }
+        const mainTop: JQuery = $("#mainTop");
+        const half: number = 0.5;
+        mainTop.scrollTop(mainTop.scrollTop() + selectedElement.offset().top - mainTop.innerHeight() * half);
     }
 
     /**

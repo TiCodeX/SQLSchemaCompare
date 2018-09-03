@@ -249,8 +249,8 @@ class Utility {
             success: successCallback,
             error: (error: JQuery.jqXHR): void => {
                 this.logger.error(`Error executing AjaxCall: ${error.responseText}`);
-                $("#myModalBody").html(error.responseText);
-                $("#myModal").modal("show");
+                $("#myErrorModalText").html(error.responseText);
+                $("#myErrorModal").modal("show");
             },
         });
     }

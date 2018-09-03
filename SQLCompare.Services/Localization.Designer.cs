@@ -196,6 +196,51 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot load the file: {0}.
+        /// </summary>
+        public static string ErrorLoadProject {
+            get {
+                return ResourceManager.GetString("ErrorLoadProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot load project file: file not found..
+        /// </summary>
+        public static string ErrorLoadProjectFileNotFound {
+            get {
+                return ResourceManager.GetString("ErrorLoadProjectFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to read {0} project file: invalid file format..
+        /// </summary>
+        public static string ErrorLoadProjectInvalidProjectFile {
+            get {
+                return ResourceManager.GetString("ErrorLoadProjectInvalidProjectFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot load the project file because an error has occured why reading the file: {0}.
+        /// </summary>
+        public static string ErrorLoadProjectIOError {
+            get {
+                return ResourceManager.GetString("ErrorLoadProjectIOError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot load the project file: access is denied..
+        /// </summary>
+        public static string ErrorLoadProjectUnauthorizedFileAccess {
+            get {
+                return ResourceManager.GetString("ErrorLoadProjectUnauthorizedFileAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to verify login.
         /// </summary>
         public static string ErrorLoginVerificationFailed {
@@ -678,6 +723,15 @@ namespace SQLCompare.Services {
         public static string NotificationNewVersionAvailable {
             get {
                 return ResourceManager.GetString("NotificationNewVersionAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string TitleError {
+            get {
+                return ResourceManager.GetString("TitleError", resourceCulture);
             }
         }
         

@@ -140,9 +140,16 @@ class Project {
 
         const data: object = <object>JSON.parse(JSON.stringify(file));
 
-        Utility.OpenModalDialog(this.loadUrl, Utility.HttpMethod.Post, data, (): void => {
-            this.filename = filename;
-            Menu.ToggleProjectRelatedMenuStatus(true);
+        Utility.AjaxCall(this.loadUrl, Utility.HttpMethod.Post, data, (result: ApiResponse<string>): void => {
+            if (result.Success) {
+                this.filename = filename;
+                Menu.ToggleProjectRelatedMenuStatus(true);
+                Project.Open();
+            }
+            else {
+                $("#myErrorModalText").html(result.ErrorMessage);
+                $("#myErrorModal").modal("show");
+            }
         });
     }
 
@@ -195,7 +202,7 @@ class Project {
     public static Compare(): void {
         Utility.AjaxCall(this.startCompareUrl, Utility.HttpMethod.Get, undefined, (): void => {
             // TODO: move the polling functionality in Utility
-            const pollingTime: number = 200;
+            const pollingTime: number = 500;
             const polling: VoidFunction = (): void => {
                 setTimeout(() => {
                     if ($("#stopPolling").length > 0) {

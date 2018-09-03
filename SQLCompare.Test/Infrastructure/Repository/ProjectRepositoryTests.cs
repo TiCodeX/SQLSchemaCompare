@@ -28,9 +28,9 @@ namespace SQLCompare.Test.Infrastructure.Repository
         /// </summary>
         [Fact]
         [UnitTest]
-        public static void Read()
+        public void Read()
         {
-            var projectRepository = new ProjectRepository();
+            var projectRepository = new ProjectRepository(this.LoggerFactory);
 
             const string sourceHostname = "localhost";
             const string sourceUsername = "admin";
@@ -84,7 +84,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
         /// </summary>
         [Fact]
         [UnitTest]
-        public static void Write()
+        public void Write()
         {
             const string sourceHostname = "localhost";
             const string sourceUsername = "admin";
@@ -130,7 +130,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
             };
 
             var filename = Path.GetTempFileName();
-            new ProjectRepository().Write(compareProject, filename);
+            new ProjectRepository(this.LoggerFactory).Write(compareProject, filename);
 
             var xmlFile = File.ReadAllText(filename);
 

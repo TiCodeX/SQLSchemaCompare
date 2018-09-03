@@ -132,6 +132,11 @@
         /// </summary>
         ErrorUnexpected = 3005,
 
+        /// <summary>
+        /// Cannot load the SQLCompare project
+        /// </summary>
+        ErrorCannotLoadProject = 3006,
+
         /**********************************************
         *** SqlCompare Warnings (from 4000 to 4999) ***
         **********************************************/

@@ -1,4 +1,6 @@
-﻿using SQLCompare.Core.Entities.DatabaseProvider;
+﻿using System;
+using Microsoft.Extensions.Logging;
+using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Interfaces.Repository;
 using SQLCompare.Core.Interfaces.Services;
@@ -10,14 +12,17 @@ namespace SQLCompare.Services
     /// </summary>
     public class ProjectService : IProjectService
     {
+        private readonly ILogger logger;
         private readonly IProjectRepository projectRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectService"/> class.
         /// </summary>
         /// <param name="projectRepository">The injected project repository</param>
-        public ProjectService(IProjectRepository projectRepository)
+        /// <param name="loggerFactory">The injected logger factory</param>
+        public ProjectService(IProjectRepository projectRepository, ILoggerFactory loggerFactory)
         {
+            this.logger = loggerFactory.CreateLogger(nameof(ProjectService));
             this.projectRepository = projectRepository;
         }
 
@@ -55,7 +60,15 @@ namespace SQLCompare.Services
         /// <inheritdoc/>
         public void LoadProject(string filename)
         {
-            this.Project = this.projectRepository.Read(filename);
+            try
+            {
+                this.Project = this.projectRepository.Read(filename);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError($"Load project error: {ex}");
+                throw;
+            }
         }
 
         /// <inheritdoc/>

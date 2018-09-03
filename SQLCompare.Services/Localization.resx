@@ -330,4 +330,25 @@
   <data name="LabelTrigger" xml:space="preserve">
     <value>Trigger</value>
   </data>
+  <data name="ErrorLoadProject" xml:space="preserve">
+    <value>Cannot load the file: {0}</value>
+    <comment>{0}: The exception message</comment>
+  </data>
+  <data name="ErrorLoadProjectFileNotFound" xml:space="preserve">
+    <value>Cannot load project file: file not found.</value>
+  </data>
+  <data name="ErrorLoadProjectInvalidProjectFile" xml:space="preserve">
+    <value>Unable to read {0} project file: invalid file format.</value>
+    <comment>{0}: The application name</comment>
+  </data>
+  <data name="ErrorLoadProjectIOError" xml:space="preserve">
+    <value>Cannot load the project file because an error has occured why reading the file: {0}</value>
+    <comment>{0}: The exception message</comment>
+  </data>
+  <data name="ErrorLoadProjectUnauthorizedFileAccess" xml:space="preserve">
+    <value>Cannot load the project file: access is denied.</value>
+  </data>
+  <data name="TitleError" xml:space="preserve">
+    <value>Error</value>
+  </data>
 </root>

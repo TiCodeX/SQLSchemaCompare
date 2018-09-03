@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -7,7 +9,9 @@ using SQLCompare.Core.Entities.Api;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Enums;
+using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
+using SQLCompare.Services;
 using SQLCompare.UI.Enums;
 using SQLCompare.UI.Models.Project;
 
@@ -23,6 +27,7 @@ namespace SQLCompare.UI.Pages.Project
         private readonly IProjectService projectService;
         private readonly IDatabaseService databaseService;
         private readonly IDatabaseCompareService databaseCompareService;
+        private readonly IAppGlobals appGlobals;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectPageModel"/> class.
@@ -32,18 +37,21 @@ namespace SQLCompare.UI.Pages.Project
         /// <param name="projectService">The injected project service</param>
         /// <param name="databaseService">The injected database service</param>
         /// <param name="databaseCompareService">The injected database compare service</param>
+        /// <param name="appGlobals">The injected app globals</param>
         public ProjectPageModel(
             ILoggerFactory loggerFactory,
             IAppSettingsService appSettingsService,
             IProjectService projectService,
             IDatabaseService databaseService,
-            IDatabaseCompareService databaseCompareService)
+            IDatabaseCompareService databaseCompareService,
+            IAppGlobals appGlobals)
         {
             this.logger = loggerFactory.CreateLogger(nameof(ProjectPageModel));
             this.appSettingsService = appSettingsService;
             this.projectService = projectService;
             this.databaseService = databaseService;
             this.databaseCompareService = databaseCompareService;
+            this.appGlobals = appGlobals;
         }
 
         /// <summary>
@@ -72,16 +80,48 @@ namespace SQLCompare.UI.Pages.Project
         /// Get the Project page
         /// </summary>
         /// <param name="projectFile">The project file to load</param>
-        public void OnPostLoadProject([FromBody] string projectFile)
+        /// <returns>The API response with result information</returns>
+        public IActionResult OnPostLoadProject([FromBody] string projectFile)
         {
-            this.projectService.LoadProject(projectFile);
+            try
+            {
+                this.projectService.LoadProject(projectFile);
+            }
+            catch (InvalidOperationException)
+            {
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProjectInvalidProjectFile, this.appGlobals.ProductName) });
+            }
+            catch (FileNotFoundException)
+            {
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = Localization.ErrorLoadProjectFileNotFound });
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = Localization.ErrorLoadProjectUnauthorizedFileAccess });
+            }
+            catch (IOException ex)
+            {
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProjectIOError, ex.Message) });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProject, ex.Message) });
+            }
 
             var appSettings = this.appSettingsService.GetAppSettings();
             appSettings.RecentProjects.Remove(projectFile);
             appSettings.RecentProjects.Add(projectFile);
-            this.appSettingsService.SaveAppSettings();
+
+            try
+            {
+                this.appSettingsService.SaveAppSettings();
+            }
+            catch
+            {
+            }
 
             this.Project = this.projectService.Project;
+            return new JsonResult(new ApiResponse());
         }
 
         /// <summary>

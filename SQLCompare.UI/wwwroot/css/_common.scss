@@ -143,3 +143,9 @@ label {
     background-color: $color-scrollbar-track;
 }
 /*#endregion*/
+
+.tcx-logo {
+    background: url("../img/logo.png") no-repeat center;
+    background-size: 104px 110px;
+    height: 110px;
+}

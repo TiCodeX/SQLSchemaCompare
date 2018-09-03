@@ -1,5 +1,8 @@
 ﻿@page
 @model Index
+@using Services
+@using Enums
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -47,6 +50,35 @@
                     *@
                 </div>
                 <div id="myModalBody" class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div id="myErrorModal" class="modal fade" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myErrorModalTitle">@Localization.TitleError</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-4">
+                                <p></p>
+                                <p class="text-center">
+                                    <div class="tcx-logo"></div>
+                                </p>
+                            </div>
+                            <div class="col-8 my-auto">
+                                <div id="myErrorModalText"></div>
+                                <a id="myErrorModalLink" href="#"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="closeButton" style="@ButtonStyle.Secondary" data-dismiss="modal" data-target="#myErrorModal">@Localization.ButtonClose</button>
                 </div>
             </div>
         </div>

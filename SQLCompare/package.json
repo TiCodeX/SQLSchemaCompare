@@ -21,11 +21,12 @@
         "nsis": {
             "oneClick": false,
             "allowToChangeInstallationDirectory": true,
-            "runAfterFinish": false,
+            "runAfterFinish": true,
             "installerHeader": "installerHeader.bmp",
             "installerSidebar": "installerSidebar.bmp",
             "uninstallerSidebar": "installerSidebar.bmp",
-            "license": "eula.html"
+            "license": "eula.html",
+            "include": "installer.nsh"
         },
         "linux": {
             "target": "AppImage"

@@ -28,14 +28,14 @@ namespace SQLCompare.UI.Pages
         /// </summary>
         /// <param name="appSettingsService">The injected app settings service</param>
         /// <param name="accountService">The injected account service</param>
-        /// <param name="logger">The injected logger</param>
+        /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="appGlobals">The injected application globals</param>
         /// <param name="projectService">The injected project service</param>
-        public Login(IAppSettingsService appSettingsService, IAccountService accountService, ILogger<Login> logger, IAppGlobals appGlobals, IProjectService projectService)
+        public Login(IAppSettingsService appSettingsService, IAccountService accountService, ILoggerFactory loggerFactory, IAppGlobals appGlobals, IProjectService projectService)
         {
             this.appSettingsService = appSettingsService;
             this.accountService = accountService;
-            this.logger = logger;
+            this.logger = loggerFactory.CreateLogger(nameof(Login));
             this.appGlobals = appGlobals;
             this.projectService = projectService;
         }

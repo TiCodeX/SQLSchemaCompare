@@ -14,7 +14,7 @@ namespace SQLCompare.UI.Middlewares
     public class RequestValidatorMiddleware
     {
         private readonly RequestDelegate next;
-        private readonly ILogger<RequestValidatorMiddleware> logger;
+        private readonly ILogger logger;
         private readonly RequestValidatorSettings options;
         private readonly IAppGlobals appGlobals;
 
@@ -22,13 +22,13 @@ namespace SQLCompare.UI.Middlewares
         /// Initializes a new instance of the <see cref="RequestValidatorMiddleware"/> class.
         /// </summary>
         /// <param name="next">The RequestDelegate instance</param>
-        /// <param name="logger">The injected Logger</param>
+        /// <param name="loggerFactory">The injected Logger factory</param>
         /// <param name="options">Configuration options for the validation</param>
         /// <param name="appGlobals">The injected application global constants</param>
-        public RequestValidatorMiddleware(RequestDelegate next, ILogger<RequestValidatorMiddleware> logger, IOptions<RequestValidatorSettings> options, IAppGlobals appGlobals)
+        public RequestValidatorMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, IOptions<RequestValidatorSettings> options, IAppGlobals appGlobals)
         {
             this.next = next;
-            this.logger = logger;
+            this.logger = loggerFactory.CreateLogger(nameof(RequestValidatorMiddleware));
             this.options = options.Value;
             this.appGlobals = appGlobals;
         }

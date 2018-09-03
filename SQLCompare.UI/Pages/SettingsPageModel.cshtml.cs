@@ -22,17 +22,17 @@ namespace SQLCompare.UI.Pages
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsPageModel"/> class.
         /// </summary>
-        /// <param name="logger">The injected logger</param>
+        /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="appSettingsService">The injected app settings service</param>
         /// <param name="projectService">The injected project service</param>
         /// <param name="localizationService">The injected LocalizationService</param>
         public SettingsPageModel(
-            ILogger<SettingsPageModel> logger,
+            ILoggerFactory loggerFactory,
             IAppSettingsService appSettingsService,
             IProjectService projectService,
             ILocalizationService localizationService)
         {
-            this.logger = logger;
+            this.logger = loggerFactory.CreateLogger(nameof(SettingsPageModel));
             this.appSettingsService = appSettingsService;
             this.projectService = projectService;
             this.localizationService = localizationService;

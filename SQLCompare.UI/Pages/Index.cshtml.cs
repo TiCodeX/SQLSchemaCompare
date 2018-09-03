@@ -23,13 +23,13 @@ namespace SQLCompare.UI.Pages
         /// </summary>
         /// <param name="appGlobals">The injected app globals</param>
         /// <param name="localizationService">The injected LocalizationService</param>
-        /// <param name="logger">The injected logger</param>
+        /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="accountService">The injected account service</param>
-        public Index(IAppGlobals appGlobals, ILocalizationService localizationService, ILogger<Index> logger, IAccountService accountService)
+        public Index(IAppGlobals appGlobals, ILocalizationService localizationService, ILoggerFactory loggerFactory, IAccountService accountService)
         {
             this.appGlobals = appGlobals;
             this.localizationService = localizationService;
-            this.logger = logger;
+            this.logger = loggerFactory.CreateLogger(nameof(Index));
             this.accountService = accountService;
         }
 

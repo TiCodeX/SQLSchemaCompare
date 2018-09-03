@@ -22,11 +22,11 @@ namespace SQLCompare.UI.Pages.Main
         /// <summary>
         /// Initializes a new instance of the <see cref="MainPageModel"/> class.
         /// </summary>
-        /// <param name="logger">The injected logger</param>
+        /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="projectService">The injected project service</param>
-        public MainPageModel(ILogger<MainPageModel> logger, IProjectService projectService)
+        public MainPageModel(ILoggerFactory loggerFactory, IProjectService projectService)
         {
-            this.logger = logger;
+            this.logger = loggerFactory.CreateLogger(nameof(MainPageModel));
             this.projectService = projectService;
         }
 

@@ -11,18 +11,18 @@ namespace SQLCompare.Services
     /// </summary>
     public class AppSettingsService : IAppSettingsService
     {
-        private readonly ILogger<AppSettingsService> logger;
+        private readonly ILogger logger;
         private readonly IAppSettingsRepository appSettingsRepository;
         private AppSettings currentAppSettings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AppSettingsService"/> class.
         /// </summary>
-        /// <param name="logger">The injected logger</param>
+        /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="appSettingsRepository">The injected entity repository</param>
-        public AppSettingsService(ILogger<AppSettingsService> logger, IAppSettingsRepository appSettingsRepository)
+        public AppSettingsService(ILoggerFactory loggerFactory, IAppSettingsRepository appSettingsRepository)
         {
-            this.logger = logger;
+            this.logger = loggerFactory.CreateLogger(nameof(AppSettingsService));
             this.appSettingsRepository = appSettingsRepository;
         }
 

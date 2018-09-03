@@ -90,15 +90,17 @@ namespace SQLCompare.UI.WebServer
         /// <param name="appGlobals">The application globals</param>
         /// <param name="localizationService">The localization service</param>
         /// <param name="appSettingsService">The app settings service</param>
-        /// <param name="logger">The injected logger</param>
+        /// <param name="loggerFactory">The injected logger factory</param>
         [Obfuscation(Exclude = true)]
         public void Configure(
             IApplicationBuilder app,
             IAppGlobals appGlobals,
             ILocalizationService localizationService,
             IAppSettingsService appSettingsService,
-            ILogger<WebServerStartup> logger)
+            ILoggerFactory loggerFactory)
         {
+            var logger = loggerFactory.CreateLogger(nameof(WebServerStartup));
+
             var appSettings = appSettingsService.GetAppSettings();
             Utility.SetLoggingLevel(appSettings.LogLevel);
             localizationService.SetLanguage(appSettings.Language);

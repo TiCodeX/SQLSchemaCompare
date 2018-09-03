@@ -29,6 +29,11 @@ namespace SQLCompare.Core.Entities.Compare
         public List<CompareResultItem<ABaseDbStoredProcedure>> StoredProcedures { get; } = new List<CompareResultItem<ABaseDbStoredProcedure>>();
 
         /// <summary>
+        /// Gets the list of Trigger results
+        /// </summary>
+        public List<CompareResultItem<ABaseDbTrigger>> Triggers { get; } = new List<CompareResultItem<ABaseDbTrigger>>();
+
+        /// <summary>
         /// Gets the list of Sequences results
         /// </summary>
         public List<CompareResultItem<ABaseDbSequence>> Sequences { get; } = new List<CompareResultItem<ABaseDbSequence>>();

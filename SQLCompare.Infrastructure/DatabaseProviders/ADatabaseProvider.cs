@@ -153,6 +153,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             try
             {
                 db.Views.AddRange(this.GetViews(db, context));
+                db.Views.ForEach(x => { x.ViewDefinition = x.ViewDefinition.TrimStart('\r', '\n'); });
             }
             catch (Exception ex)
             {
@@ -163,6 +164,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             try
             {
                 db.Functions.AddRange(this.GetFunctions(db, context));
+                db.Functions.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
             }
             catch (Exception ex)
             {
@@ -173,10 +175,22 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             try
             {
                 db.StoredProcedures.AddRange(this.GetStoredProcedures(db, context));
+                db.StoredProcedures.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
             }
             catch (Exception ex)
             {
                 this.Logger.LogError(ex, "Error retrieving stored procedures");
+                exceptions.Add(ex);
+            }
+
+            try
+            {
+                db.Triggers.AddRange(this.GetTriggers(db, context));
+                db.Triggers.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving triggers");
                 exceptions.Add(ex);
             }
 
@@ -271,6 +285,14 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="context">The database context</param>
         /// <returns>The list of stored procedures</returns>
         protected abstract IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(TDatabase database, TDatabaseContext context);
+
+        /// <summary>
+        /// Get the database triggers
+        /// </summary>
+        /// <param name="database">The database information</param>
+        /// <param name="context">The database context</param>
+        /// <returns>The list of triggers</returns>
+        protected abstract IEnumerable<ABaseDbTrigger> GetTriggers(TDatabase database, TDatabaseContext context);
 
         /// <summary>
         /// Get the database data types

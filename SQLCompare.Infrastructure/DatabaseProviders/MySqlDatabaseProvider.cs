@@ -216,6 +216,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbTrigger> GetTriggers(MySqlDb database, MySqlDatabaseContext context)
+        {
+            return Enumerable.Empty<ABaseDbTrigger>();
+        }
+
+        /// <inheritdoc/>
         protected override IEnumerable<ABaseDbDataType> GetDataTypes(MySqlDb database, MySqlDatabaseContext context)
         {
             return Enumerable.Empty<ABaseDbDataType>();

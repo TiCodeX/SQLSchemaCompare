@@ -91,11 +91,16 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             db.Views.Should().ContainSingle(x => x.Name == "film_list");
 
             db.Functions.Should().BeEmpty();
-
             db.StoredProcedures.Should().BeEmpty();
 
-            db.DataTypes.Should().NotBeNull();
+            db.Triggers.Should().NotBeNullOrEmpty();
+            db.Triggers.Count.Should().Be(1);
+            db.Triggers.First().Name.Should().Be("reminder1");
+
+            db.DataTypes.Should().NotBeNullOrEmpty();
             db.DataTypes.Count.Should().Be(37);
+
+            db.Sequences.Should().NotBeNullOrEmpty();
         }
 
         /// <summary>
@@ -333,6 +338,10 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var storedProcedures = db.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name);
             var clonedStoredProcedures = clonedDb.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name);
             storedProcedures.Should().BeEquivalentTo(clonedStoredProcedures, options => options.Excluding(x => x.Catalog));
+
+            var triggers = db.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
+            var clonedTriggers = clonedDb.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
+            triggers.Should().BeEquivalentTo(clonedTriggers, options => options.Excluding(x => x.Catalog));
 
             var dataTypes = db.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
             var clonedDataTypes = clonedDb.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();

@@ -34,6 +34,11 @@ namespace SQLCompare.Core.Entities.Database
         public List<ABaseDbStoredProcedure> StoredProcedures { get; } = new List<ABaseDbStoredProcedure>();
 
         /// <summary>
+        /// Gets the database's triggers
+        /// </summary>
+        public List<ABaseDbTrigger> Triggers { get; } = new List<ABaseDbTrigger>();
+
+        /// <summary>
         /// Gets the database's data types
         /// </summary>
         public List<ABaseDbDataType> DataTypes { get; } = new List<ABaseDbDataType>();

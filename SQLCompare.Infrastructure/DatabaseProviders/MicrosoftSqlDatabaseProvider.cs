@@ -253,6 +253,21 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbTrigger> GetTriggers(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT DB_NAME() AS 'Catalog',");
+            query.AppendLine("       object_schema_name(o.id) AS 'Schema',");
+            query.AppendLine("       o.name AS 'Name',");
+            query.AppendLine("       c.text AS 'Definition'");
+            query.AppendLine("FROM sys.sysobjects o");
+            query.AppendLine("INNER JOIN sys.syscomments AS c ON o.id = c.id");
+            query.AppendLine("WHERE o.type = 'TR'");
+
+            return context.Query<ABaseDbTrigger>(query.ToString());
+        }
+
+        /// <inheritdoc/>
         protected override IEnumerable<ABaseDbDataType> GetDataTypes(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();

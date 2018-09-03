@@ -294,6 +294,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbTrigger> GetTriggers(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        {
+            return Enumerable.Empty<ABaseDbTrigger>();
+        }
+
+        /// <inheritdoc/>
         protected override IEnumerable<ABaseDbDataType> GetDataTypes(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();

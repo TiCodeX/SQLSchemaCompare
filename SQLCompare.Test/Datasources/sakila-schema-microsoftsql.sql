@@ -517,6 +517,13 @@ GROUP BY a.actor_id, a.first_name, a.last_name;
 
 -- TO DO PROCEDURES
 -- TO DO TRIGGERS
+GO
+
+CREATE TRIGGER reminder1
+ON dbo.country
+AFTER INSERT, UPDATE
+AS RAISERROR ('BLABLABLA', 16, 10)
+GO
 
 CREATE SEQUENCE actor_seq
   START WITH 1

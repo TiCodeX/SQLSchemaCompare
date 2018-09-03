@@ -98,11 +98,11 @@ namespace SQLCompare.Services
                             this.result.Tables.Add(new CompareResultItem<ABaseDbTable>
                             {
                                 SourceItem = table,
-                                TargetItem = this.retrievedTargetDatabase.Tables.FirstOrDefault(x => x.Name == table.Name)
+                                TargetItem = this.retrievedTargetDatabase.Tables.FirstOrDefault(x => x.Schema == table.Schema && x.Name == table.Name)
                             });
                         }
 
-                        foreach (var table in this.retrievedTargetDatabase.Tables.Where(x => this.result.Tables.All(y => y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var table in this.retrievedTargetDatabase.Tables.Where(x => this.result.Tables.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
                         {
                             this.result.Tables.Add(new CompareResultItem<ABaseDbTable>
                             {
@@ -110,7 +110,7 @@ namespace SQLCompare.Services
                             });
                         }
 
-                        taskInfo.Percentage = 25;
+                        taskInfo.Percentage = 15;
 
                         taskInfo.Message = "Mapping views...";
                         foreach (var view in this.retrievedSourceDatabase.Views)
@@ -118,11 +118,11 @@ namespace SQLCompare.Services
                             this.result.Views.Add(new CompareResultItem<ABaseDbView>
                             {
                                 SourceItem = view,
-                                TargetItem = this.retrievedTargetDatabase.Views.FirstOrDefault(x => x.Name == view.Name)
+                                TargetItem = this.retrievedTargetDatabase.Views.FirstOrDefault(x => x.Schema == view.Schema && x.Name == view.Name)
                             });
                         }
 
-                        foreach (var view in this.retrievedTargetDatabase.Views.Where(x => this.result.Views.All(y => y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var view in this.retrievedTargetDatabase.Views.Where(x => this.result.Views.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
                         {
                             this.result.Views.Add(new CompareResultItem<ABaseDbView>
                             {
@@ -130,7 +130,7 @@ namespace SQLCompare.Services
                             });
                         }
 
-                        taskInfo.Percentage = 50;
+                        taskInfo.Percentage = 30;
 
                         taskInfo.Message = "Mapping functions...";
                         foreach (var function in this.retrievedSourceDatabase.Functions)
@@ -138,11 +138,11 @@ namespace SQLCompare.Services
                             this.result.Functions.Add(new CompareResultItem<ABaseDbFunction>
                             {
                                 SourceItem = function,
-                                TargetItem = this.retrievedTargetDatabase.Functions.FirstOrDefault(x => x.Name == function.Name)
+                                TargetItem = this.retrievedTargetDatabase.Functions.FirstOrDefault(x => x.Schema == function.Schema && x.Name == function.Name)
                             });
                         }
 
-                        foreach (var function in this.retrievedTargetDatabase.Functions.Where(x => this.result.Functions.All(y => y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var function in this.retrievedTargetDatabase.Functions.Where(x => this.result.Functions.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
                         {
                             this.result.Functions.Add(new CompareResultItem<ABaseDbFunction>
                             {
@@ -150,7 +150,7 @@ namespace SQLCompare.Services
                             });
                         }
 
-                        taskInfo.Percentage = 75;
+                        taskInfo.Percentage = 45;
 
                         taskInfo.Message = "Mapping stored procedures...";
                         foreach (var storedProcedure in this.retrievedSourceDatabase.StoredProcedures)
@@ -158,11 +158,11 @@ namespace SQLCompare.Services
                             this.result.StoredProcedures.Add(new CompareResultItem<ABaseDbStoredProcedure>
                             {
                                 SourceItem = storedProcedure,
-                                TargetItem = this.retrievedTargetDatabase.StoredProcedures.FirstOrDefault(x => x.Name == storedProcedure.Name)
+                                TargetItem = this.retrievedTargetDatabase.StoredProcedures.FirstOrDefault(x => x.Schema == storedProcedure.Schema && x.Name == storedProcedure.Name)
                             });
                         }
 
-                        foreach (var storedProcedure in this.retrievedTargetDatabase.StoredProcedures.Where(x => this.result.StoredProcedures.All(y => y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var storedProcedure in this.retrievedTargetDatabase.StoredProcedures.Where(x => this.result.StoredProcedures.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
                         {
                             this.result.StoredProcedures.Add(new CompareResultItem<ABaseDbStoredProcedure>
                             {
@@ -170,7 +170,27 @@ namespace SQLCompare.Services
                             });
                         }
 
-                        taskInfo.Percentage = 95;
+                        taskInfo.Percentage = 60;
+
+                        taskInfo.Message = "Mapping triggers...";
+                        foreach (var trigger in this.retrievedSourceDatabase.Triggers)
+                        {
+                            this.result.Triggers.Add(new CompareResultItem<ABaseDbTrigger>
+                            {
+                                SourceItem = trigger,
+                                TargetItem = this.retrievedTargetDatabase.Triggers.FirstOrDefault(x => x.Schema == trigger.Schema && x.Name == trigger.Name)
+                            });
+                        }
+
+                        foreach (var trigger in this.retrievedTargetDatabase.Triggers.Where(x => this.result.Triggers.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
+                        {
+                            this.result.Triggers.Add(new CompareResultItem<ABaseDbTrigger>
+                            {
+                                TargetItem = trigger
+                            });
+                        }
+
+                        taskInfo.Percentage = 75;
 
                         taskInfo.Message = "Mapping sequences...";
                         foreach (var sequence in this.retrievedSourceDatabase.Sequences)
@@ -178,11 +198,11 @@ namespace SQLCompare.Services
                             this.result.Sequences.Add(new CompareResultItem<ABaseDbSequence>
                             {
                                 SourceItem = sequence,
-                                TargetItem = this.retrievedTargetDatabase.Sequences.FirstOrDefault(x => x.Name == sequence.Name)
+                                TargetItem = this.retrievedTargetDatabase.Sequences.FirstOrDefault(x => x.Schema == sequence.Schema && x.Name == sequence.Name)
                             });
                         }
 
-                        foreach (var sequence in this.retrievedTargetDatabase.Sequences.Where(x => this.result.Sequences.All(y => y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var sequence in this.retrievedTargetDatabase.Sequences.Where(x => this.result.Sequences.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
                         {
                             this.result.Sequences.Add(new CompareResultItem<ABaseDbSequence>
                             {
@@ -190,7 +210,7 @@ namespace SQLCompare.Services
                             });
                         }
 
-                        taskInfo.Percentage = 98;
+                        taskInfo.Percentage = 90;
 
                         taskInfo.Message = "Mapping user defined types...";
                         foreach (var type in this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined))
@@ -198,11 +218,11 @@ namespace SQLCompare.Services
                             this.result.DataTypes.Add(new CompareResultItem<ABaseDbDataType>
                             {
                                 SourceItem = type,
-                                TargetItem = this.retrievedTargetDatabase.DataTypes.FirstOrDefault(x => x.Name == type.Name)
+                                TargetItem = this.retrievedTargetDatabase.DataTypes.FirstOrDefault(x => x.Schema == type.Schema && x.Name == type.Name)
                             });
                         }
 
-                        foreach (var type in this.retrievedTargetDatabase.DataTypes.Where(x => x.IsUserDefined && this.result.DataTypes.All(y => y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var type in this.retrievedTargetDatabase.DataTypes.Where(x => x.IsUserDefined && this.result.DataTypes.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
                         {
                             this.result.DataTypes.Add(new CompareResultItem<ABaseDbDataType>
                             {
@@ -224,6 +244,7 @@ namespace SQLCompare.Services
                                          this.result.Views.Count +
                                          this.result.Functions.Count +
                                          this.result.StoredProcedures.Count +
+                                         this.result.Triggers.Count +
                                          this.result.DataTypes.Count;
                         var processedItems = 1;
                         var scripter = this.databaseScripterFactory.Create(
@@ -296,6 +317,23 @@ namespace SQLCompare.Services
                             }
 
                             resultStoredProcedure.Equal = resultStoredProcedure.SourceCreateScript == resultStoredProcedure.TargetCreateScript;
+                            taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
+                        }
+
+                        taskInfo.Message = "Comparing triggers...";
+                        foreach (var resultTrigger in this.result.Triggers)
+                        {
+                            if (resultTrigger.SourceItem != null)
+                            {
+                                resultTrigger.SourceCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.SourceItem);
+                            }
+
+                            if (resultTrigger.TargetItem != null)
+                            {
+                                resultTrigger.TargetCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.TargetItem);
+                            }
+
+                            resultTrigger.Equal = resultTrigger.SourceCreateScript == resultTrigger.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 

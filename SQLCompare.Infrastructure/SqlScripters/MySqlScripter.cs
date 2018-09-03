@@ -153,6 +153,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        protected override string ScriptCreateTrigger(ABaseDbTrigger trigger)
+        {
+            return trigger.Definition;
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptCreateSequence(ABaseDbSequence sequence)
         {
             throw new NotSupportedException("MySQL doesn't support sequences");

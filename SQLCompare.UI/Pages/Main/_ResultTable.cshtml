@@ -40,6 +40,10 @@
                             {
                                 <i class="fa fa-fw fa-drafting-compass"></i> @Localization.LabelStoredProcedure
                             }
+                            else if (item.ItemType == typeof(ABaseDbTrigger))
+                            {
+                                <i class="fa fa-fw fa-code-branch"></i> @Localization.LabelTrigger
+                            }
                             else if (item.ItemType == typeof(ABaseDbSequence))
                             {
                                 <i class="fa fa-fw fa-list"></i> @Localization.LabelSequence

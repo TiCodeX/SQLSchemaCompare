@@ -327,4 +327,7 @@
   <data name="ButtonNext" xml:space="preserve">
     <value>Next</value>
   </data>
+  <data name="LabelTrigger" xml:space="preserve">
+    <value>Trigger</value>
+  </data>
 </root>

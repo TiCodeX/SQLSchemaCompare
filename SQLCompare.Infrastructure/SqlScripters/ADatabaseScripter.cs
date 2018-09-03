@@ -146,6 +146,22 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 }
             }
 
+            // Script the triggers
+            sb.AppendLine(AScriptHelper.ScriptComment("Triggers"));
+            if (database.Triggers.Count > 0)
+            {
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                foreach (var trigger in database.Triggers)
+                {
+                    var triggerScript = this.ScriptCreateTrigger(trigger);
+                    sb.Append(triggerScript);
+                    if (!triggerScript.EndsWith("\n", StringComparison.Ordinal))
+                    {
+                        sb.AppendLine();
+                    }
+                }
+            }
+
             return sb.ToString();
         }
 
@@ -213,6 +229,17 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
 
             return this.ScriptCreateStoredProcedure(storedProcedure);
+        }
+
+        /// <inheritdoc/>
+        public string GenerateCreateTriggerScript(ABaseDbTrigger trigger)
+        {
+            if (trigger == null)
+            {
+                throw new ArgumentNullException(nameof(trigger));
+            }
+
+            return this.ScriptCreateTrigger(trigger);
         }
 
         /// <inheritdoc/>
@@ -294,6 +321,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="storedProcedure">The stored procedure to script</param>
         /// <returns>The create stored procedure script</returns>
         protected abstract string ScriptCreateStoredProcedure(ABaseDbStoredProcedure storedProcedure);
+
+        /// <summary>
+        /// Generates the create trigger script
+        /// </summary>
+        /// <param name="trigger">The trigger to script</param>
+        /// <returns>The create trigger script</returns>
+        protected abstract string ScriptCreateTrigger(ABaseDbTrigger trigger);
 
         /// <summary>
         /// Generates the create sequence script

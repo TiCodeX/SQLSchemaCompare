@@ -46,6 +46,13 @@ namespace SQLCompare.Core.Interfaces
         string GenerateCreateStoredProcedureScript(ABaseDbStoredProcedure storedProcedure);
 
         /// <summary>
+        /// Generates the create trigger script
+        /// </summary>
+        /// <param name="trigger">The trigger to be scripted</param>
+        /// <returns>The create script</returns>
+        string GenerateCreateTriggerScript(ABaseDbTrigger trigger);
+
+        /// <summary>
         /// Generates the create sequence script
         /// </summary>
         /// <param name="sequence">The sequence to be scripted</param>

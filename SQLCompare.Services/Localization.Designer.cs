@@ -475,6 +475,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Trigger.
+        /// </summary>
+        public static string LabelTrigger {
+            get {
+                return ResourceManager.GetString("LabelTrigger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
         public static string LabelType {

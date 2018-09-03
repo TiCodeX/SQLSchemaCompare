@@ -166,7 +166,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptCreateView(ABaseDbView view)
         {
             var sb = new StringBuilder();
-            sb.Append($"{view.ViewDefinition.TrimStart('\r', '\n')}");
+            sb.Append($"{view.ViewDefinition}");
             if (!view.ViewDefinition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
@@ -180,7 +180,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptCreateFunction(ABaseDbFunction sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
         {
             var sb = new StringBuilder();
-            sb.Append($"{sqlFunction.Definition.TrimStart('\r', '\n')}");
+            sb.Append($"{sqlFunction.Definition}");
             if (!sqlFunction.Definition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
@@ -194,8 +194,22 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptCreateStoredProcedure(ABaseDbStoredProcedure storedProcedure)
         {
             var sb = new StringBuilder();
-            sb.Append($"{storedProcedure.Definition.TrimStart('\r', '\n')}");
+            sb.Append($"{storedProcedure.Definition}");
             if (!storedProcedure.Definition.EndsWith("\n", StringComparison.Ordinal))
+            {
+                sb.AppendLine();
+            }
+
+            sb.AppendLine("GO");
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateTrigger(ABaseDbTrigger trigger)
+        {
+            var sb = new StringBuilder();
+            sb.Append($"{trigger.Definition}");
+            if (!trigger.Definition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
             }

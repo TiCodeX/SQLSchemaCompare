@@ -39,7 +39,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public override string ScriptObjectName(string objectSchema, string objectName)
+        public override string ScriptObjectName(string objectDatabase, string objectSchema, string objectName)
         {
             if (this.Options.Scripting.UseSchemaName)
             {

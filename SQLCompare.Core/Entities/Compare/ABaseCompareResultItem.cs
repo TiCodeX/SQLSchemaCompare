@@ -13,14 +13,14 @@ namespace SQLCompare.Core.Entities.Compare
         public Guid Id { get; } = Guid.NewGuid();
 
         /// <summary>
-        /// Gets the source item name
+        /// Gets or sets the source item name
         /// </summary>
-        public abstract string SourceItemName { get; }
+        public string SourceItemName { get; set; }
 
         /// <summary>
-        /// Gets the target item name
+        /// Gets or sets the target item name
         /// </summary>
-        public abstract string TargetItemName { get; }
+        public string TargetItemName { get; set; }
 
         /// <summary>
         /// Gets or sets the item type

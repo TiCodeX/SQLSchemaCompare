@@ -39,16 +39,17 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <returns>The normalized database object name</returns>
         public string ScriptObjectName(ABaseDbObject dbObject)
         {
-            return this.ScriptObjectName(dbObject.Schema, dbObject.Name);
+            return this.ScriptObjectName(dbObject.Database, dbObject.Schema, dbObject.Name);
         }
 
         /// <summary>
         /// Get the database object name
         /// </summary>
-        /// <param name="objectSchema">The database object schema</param>
-        /// <param name="objectName">The database object name</param>
+        /// <param name="objectDatabase">The object database</param>
+        /// <param name="objectSchema">The object schema</param>
+        /// <param name="objectName">The object name</param>
         /// <returns>The normalized database object name</returns>
-        public abstract string ScriptObjectName(string objectSchema, string objectName);
+        public abstract string ScriptObjectName(string objectDatabase, string objectSchema, string objectName);
 
         /// <summary>
         /// Script the given table column

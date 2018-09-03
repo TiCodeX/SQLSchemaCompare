@@ -127,25 +127,25 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             foreach (var table in db.Tables)
             {
                 table.Columns.AddRange(
-                    columns.Where(y => table.Catalog == y.Catalog
+                    columns.Where(y => table.Database == y.Database
                                            && table.Schema == y.Schema
                                            && table.Name == y.TableName));
                 table.ForeignKeys.AddRange(
-                    foreignKeys.Where(y => table.Catalog == y.TableCatalog
+                    foreignKeys.Where(y => table.Database == y.TableDatabase
                                            && table.Schema == y.TableSchema
                                            && table.Name == y.TableName));
                 table.PrimaryKeys.AddRange(
                     indexes.Where(y => y.IsPrimaryKey
-                                           && table.Catalog == y.TableCatalog
+                                           && table.Database == y.TableDatabase
                                            && table.Schema == y.TableSchema
                                            && table.Name == y.TableName));
                 table.Indexes.AddRange(
                     indexes.Where(y => y.IsPrimaryKey == false
-                                       && table.Catalog == y.TableCatalog
+                                       && table.Database == y.TableDatabase
                                        && table.Schema == y.TableSchema
                                        && table.Name == y.TableName));
                 table.Constraints.AddRange(
-                    constraints.Where(y => table.Catalog == y.TableCatalog
+                    constraints.Where(y => table.Database == y.TableDatabase
                                        && table.Schema == y.TableSchema
                                        && table.Name == y.TableName));
             }

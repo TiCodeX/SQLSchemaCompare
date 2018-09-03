@@ -9,6 +9,13 @@ namespace SQLCompare.Core.Interfaces
     public interface IDatabaseScripter
     {
         /// <summary>
+        /// Get the database object name
+        /// </summary>
+        /// <param name="dbObject">The database object</param>
+        /// <returns>The normalized database object name</returns>
+        string GenerateObjectName(ABaseDbObject dbObject);
+
+        /// <summary>
         /// Generates the full script to create the whole database
         /// </summary>
         /// <param name="database">The database</param>

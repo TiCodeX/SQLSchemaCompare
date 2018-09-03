@@ -50,6 +50,17 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected TScriptHelper ScriptHelper { get; }
 
         /// <inheritdoc/>
+        public string GenerateObjectName(ABaseDbObject dbObject)
+        {
+            if (dbObject == null)
+            {
+                throw new ArgumentNullException(nameof(dbObject));
+            }
+
+            return this.ScriptHelper.ScriptObjectName(dbObject);
+        }
+
+        /// <inheritdoc/>
         public string GenerateFullScript(ABaseDb database)
         {
             if (database == null)

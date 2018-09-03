@@ -313,35 +313,35 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var clonedTables = clonedDb.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name).ToList();
             tables.Should().BeEquivalentTo(clonedTables, options =>
             {
-                options.Excluding(x => x.Catalog);
+                options.Excluding(x => x.Database);
                 options.Excluding(x => x.ModifyDate);
-                options.Excluding(x => new Regex("^Columns\\[.+\\]\\.Catalog$").IsMatch(x.SelectedMemberPath));
-                options.Excluding(x => new Regex("^PrimaryKeys\\[.+\\]\\.TableCatalog$").IsMatch(x.SelectedMemberPath));
-                options.Excluding(x => new Regex("^PrimaryKeys\\[.+\\]\\.Catalog$").IsMatch(x.SelectedMemberPath));
-                options.Excluding(x => new Regex("^ForeignKeys\\[.+\\]\\.TableCatalog$").IsMatch(x.SelectedMemberPath));
-                options.Excluding(x => new Regex("^ForeignKeys\\[.+\\]\\.Catalog$").IsMatch(x.SelectedMemberPath));
-                options.Excluding(x => new Regex("^Indexes\\[.+\\]\\.TableCatalog$").IsMatch(x.SelectedMemberPath));
-                options.Excluding(x => new Regex("^Indexes\\[.+\\]\\.Catalog$").IsMatch(x.SelectedMemberPath));
-                options.Excluding(x => new Regex("^Constraints\\[.+\\]\\.TableCatalog$").IsMatch(x.SelectedMemberPath));
-                options.Excluding(x => new Regex("^Constraints\\[.+\\]\\.Catalog$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^Columns\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^PrimaryKeys\\[.+\\]\\.TableDatabase$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^PrimaryKeys\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^ForeignKeys\\[.+\\]\\.TableDatabase$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^ForeignKeys\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^Indexes\\[.+\\]\\.TableDatabase$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^Indexes\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^Constraints\\[.+\\]\\.TableDatabase$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^Constraints\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
                 return options;
             });
 
             var views = db.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name);
             var clonedViews = clonedDb.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name);
-            views.Should().BeEquivalentTo(clonedViews, options => options.Excluding(x => x.Catalog));
+            views.Should().BeEquivalentTo(clonedViews, options => options.Excluding(x => x.Database));
 
             var functions = db.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name);
             var clonedFunctions = clonedDb.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name);
-            functions.Should().BeEquivalentTo(clonedFunctions, options => options.Excluding(x => x.Catalog));
+            functions.Should().BeEquivalentTo(clonedFunctions, options => options.Excluding(x => x.Database));
 
             var storedProcedures = db.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name);
             var clonedStoredProcedures = clonedDb.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name);
-            storedProcedures.Should().BeEquivalentTo(clonedStoredProcedures, options => options.Excluding(x => x.Catalog));
+            storedProcedures.Should().BeEquivalentTo(clonedStoredProcedures, options => options.Excluding(x => x.Database));
 
             var triggers = db.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
             var clonedTriggers = clonedDb.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
-            triggers.Should().BeEquivalentTo(clonedTriggers, options => options.Excluding(x => x.Catalog));
+            triggers.Should().BeEquivalentTo(clonedTriggers, options => options.Excluding(x => x.Database));
 
             var dataTypes = db.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
             var clonedDataTypes = clonedDb.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
@@ -349,11 +349,11 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             // TODO: improve PostgreSQL datatype handling to retrieve only relevant types
             dataTypes = dataTypes.Where(x => x.Schema != "pg_toast");
             clonedDataTypes = clonedDataTypes.Where(x => x.Schema != "pg_toast");
-            dataTypes.Should().BeEquivalentTo(clonedDataTypes, options => options.Excluding(x => x.Catalog));
+            dataTypes.Should().BeEquivalentTo(clonedDataTypes, options => options.Excluding(x => x.Database));
 
             var sequences = db.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name);
             var clonedSequences = clonedDb.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name);
-            sequences.Should().BeEquivalentTo(clonedSequences, options => options.Excluding(x => x.Catalog));
+            sequences.Should().BeEquivalentTo(clonedSequences, options => options.Excluding(x => x.Database));
         }
     }
 }

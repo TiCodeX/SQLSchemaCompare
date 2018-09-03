@@ -48,7 +48,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as \"Name\",");
-            query.AppendLine("       TABLE_CATALOG as \"Catalog\",");
+            query.AppendLine("       TABLE_CATALOG as \"Database\",");
             query.AppendLine("       TABLE_SCHEMA as \"Schema\",");
             query.AppendLine("       self_referencing_column_name as \"SelfReferencingColumnName\",");
             query.AppendLine("       reference_generation as \"ReferenceGeneration\",");
@@ -75,7 +75,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
 
-            query.AppendLine("SELECT table_catalog as \"Catalog\",");
+            query.AppendLine("SELECT table_catalog as \"Database\",");
             query.AppendLine("       table_schema as \"Schema\",");
             query.AppendLine("       table_name as \"TableName\",");
             query.AppendLine("       column_name as \"Name\",");
@@ -145,10 +145,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
 
-            query.AppendLine("SELECT kcu.constraint_catalog AS \"Catalog\",");
+            query.AppendLine("SELECT kcu.constraint_catalog AS \"Database\",");
             query.AppendLine("       kcu.constraint_schema AS \"Schema\",");
             query.AppendLine("       kcu.constraint_name AS \"Name\",");
-            query.AppendLine("       kcu.table_catalog AS \"TableCatalog\",");
+            query.AppendLine("       kcu.table_catalog AS \"TableDatabase\",");
             query.AppendLine("       kcu.table_schema AS \"TableSchema\",");
             query.AppendLine("       kcu.table_name AS \"TableName\",");
             query.AppendLine("       kcu.column_name AS \"ColumnName\",");
@@ -158,7 +158,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       rc.match_option AS \"MatchOption\",");
             query.AppendLine("       rc.update_rule AS \"UpdateRule\",");
             query.AppendLine("       rc.delete_rule AS \"DeleteRule\",");
-            query.AppendLine("       ccu.table_catalog AS \"ReferencedTableCatalog\",");
+            query.AppendLine("       ccu.table_catalog AS \"ReferencedTableDatabase\",");
             query.AppendLine("       ccu.table_schema AS \"ReferencedTableSchema\",");
             query.AppendLine("       ccu.table_name AS \"ReferencedTableName\",");
             query.AppendLine("       ccu.column_name AS \"ReferencedColumnName\",");
@@ -185,10 +185,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbConstraint> GetConstraints(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Catalog\",");
+            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Database\",");
             query.AppendLine("       nc.nspname AS \"Schema\",");
             query.AppendLine("       c.conname AS \"Name\",");
-            query.AppendLine("       (current_database())::information_schema.sql_identifier AS \"TableCatalog\",");
+            query.AppendLine("       (current_database())::information_schema.sql_identifier AS \"TableDatabase\",");
             query.AppendLine("       nt.nspname AS \"TableSchema\",");
             query.AppendLine("       ct.relname AS \"TableName\",");
             query.AppendLine("       ccu.COLUMN_NAME as \"ColumnName\",");
@@ -212,10 +212,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbIndex> GetIndexes(PostgreSqlDb db, PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Catalog\",");
+            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Database\",");
             query.AppendLine("       ni.nspname AS \"Schema\",");
             query.AppendLine("       ci.relname AS \"Name\",");
-            query.AppendLine("       (current_database())::information_schema.sql_identifier AS \"TableCatalog\",");
+            query.AppendLine("       (current_database())::information_schema.sql_identifier AS \"TableDatabase\",");
             query.AppendLine("       nt.nspname AS \"TableSchema\",");
             query.AppendLine("       ct.relname AS \"TableName\",");
             query.AppendLine("       a.attname AS \"ColumnName\",");
@@ -249,7 +249,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as \"Name\",");
-            query.AppendLine("       TABLE_CATALOG as \"Catalog\",");
+            query.AppendLine("       TABLE_CATALOG as \"Database\",");
             query.AppendLine("       TABLE_SCHEMA as \"Schema\",");
             query.AppendLine("       VIEW_DEFINITION as \"ViewDefinition\",");
             query.AppendLine("       CHECK_OPTION as \"CheckOption\"");
@@ -263,7 +263,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbFunction> GetFunctions(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT r.routine_catalog as \"Catalog\",");
+            query.AppendLine("SELECT r.routine_catalog as \"Database\",");
             query.AppendLine("       r.routine_schema as \"Schema\",");
             query.AppendLine("       r.routine_name as \"Name\",");
             query.AppendLine("       r.routine_definition as \"Definition\",");
@@ -304,7 +304,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
 
-            query.AppendLine("SELECT current_database()::information_schema.sql_identifier AS \"Catalog\", ");
+            query.AppendLine("SELECT current_database()::information_schema.sql_identifier AS \"Database\", ");
             query.AppendLine("       n.nspname AS \"Schema\", ");
             query.AppendLine("       t.oid AS \"TypeId\", ");
             query.AppendLine("       t.typname AS \"Name\",");
@@ -345,7 +345,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbSequence> GetSequences(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT s.sequence_catalog AS \"Catalog\",");
+            query.AppendLine("SELECT s.sequence_catalog AS \"Database\",");
             query.AppendLine("       s.sequence_schema AS \"Schema\",");
             query.AppendLine("       s.sequence_name AS \"Name\",");
             query.AppendLine("       s.data_type AS \"DataType\",");

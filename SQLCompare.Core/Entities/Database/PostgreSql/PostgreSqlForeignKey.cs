@@ -26,9 +26,9 @@
         public string DeleteRule { get; set; }
 
         /// <summary>
-        /// Gets or sets the referenced table catalog
+        /// Gets or sets the referenced table database
         /// </summary>
-        public string ReferencedTableCatalog { get; set; }
+        public string ReferencedTableDatabase { get; set; }
 
         /// <summary>
         /// Gets or sets the referenced table schema

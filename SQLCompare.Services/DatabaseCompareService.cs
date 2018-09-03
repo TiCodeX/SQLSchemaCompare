@@ -256,16 +256,17 @@ namespace SQLCompare.Services
                         {
                             if (resultTable.SourceItem != null)
                             {
+                                resultTable.SourceItemName = scripter.GenerateObjectName(resultTable.SourceItem);
                                 resultTable.SourceCreateScript = scripter.GenerateCreateTableScript(resultTable.SourceItem);
                             }
 
                             if (resultTable.TargetItem != null)
                             {
+                                resultTable.TargetItemName = scripter.GenerateObjectName(resultTable.TargetItem);
                                 resultTable.TargetCreateScript = scripter.GenerateCreateTableScript(resultTable.TargetItem, resultTable.SourceItem);
                             }
 
                             resultTable.Equal = resultTable.SourceCreateScript == resultTable.TargetCreateScript;
-
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
@@ -274,11 +275,13 @@ namespace SQLCompare.Services
                         {
                             if (resultView.SourceItem != null)
                             {
+                                resultView.SourceItemName = scripter.GenerateObjectName(resultView.SourceItem);
                                 resultView.SourceCreateScript = scripter.GenerateCreateViewScript(resultView.SourceItem);
                             }
 
                             if (resultView.TargetItem != null)
                             {
+                                resultView.TargetItemName = scripter.GenerateObjectName(resultView.TargetItem);
                                 resultView.TargetCreateScript = scripter.GenerateCreateViewScript(resultView.TargetItem);
                             }
 
@@ -291,11 +294,13 @@ namespace SQLCompare.Services
                         {
                             if (resultFunction.SourceItem != null)
                             {
+                                resultFunction.SourceItemName = scripter.GenerateObjectName(resultFunction.SourceItem);
                                 resultFunction.SourceCreateScript = scripter.GenerateCreateFunctionScript(resultFunction.SourceItem, this.retrievedSourceDatabase.DataTypes);
                             }
 
                             if (resultFunction.TargetItem != null)
                             {
+                                resultFunction.TargetItemName = scripter.GenerateObjectName(resultFunction.TargetItem);
                                 resultFunction.TargetCreateScript = scripter.GenerateCreateFunctionScript(resultFunction.TargetItem, this.retrievedTargetDatabase.DataTypes);
                             }
 
@@ -308,11 +313,13 @@ namespace SQLCompare.Services
                         {
                             if (resultStoredProcedure.SourceItem != null)
                             {
+                                resultStoredProcedure.SourceItemName = scripter.GenerateObjectName(resultStoredProcedure.SourceItem);
                                 resultStoredProcedure.SourceCreateScript = scripter.GenerateCreateStoredProcedureScript(resultStoredProcedure.SourceItem);
                             }
 
                             if (resultStoredProcedure.TargetItem != null)
                             {
+                                resultStoredProcedure.TargetItemName = scripter.GenerateObjectName(resultStoredProcedure.TargetItem);
                                 resultStoredProcedure.TargetCreateScript = scripter.GenerateCreateStoredProcedureScript(resultStoredProcedure.TargetItem);
                             }
 
@@ -325,11 +332,13 @@ namespace SQLCompare.Services
                         {
                             if (resultTrigger.SourceItem != null)
                             {
+                                resultTrigger.SourceItemName = scripter.GenerateObjectName(resultTrigger.SourceItem);
                                 resultTrigger.SourceCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.SourceItem);
                             }
 
                             if (resultTrigger.TargetItem != null)
                             {
+                                resultTrigger.TargetItemName = scripter.GenerateObjectName(resultTrigger.TargetItem);
                                 resultTrigger.TargetCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.TargetItem);
                             }
 
@@ -342,11 +351,13 @@ namespace SQLCompare.Services
                         {
                             if (resultSequence.SourceItem != null)
                             {
+                                resultSequence.SourceItemName = scripter.GenerateObjectName(resultSequence.SourceItem);
                                 resultSequence.SourceCreateScript = scripter.GenerateCreateSequenceScript(resultSequence.SourceItem);
                             }
 
                             if (resultSequence.TargetItem != null)
                             {
+                                resultSequence.TargetItemName = scripter.GenerateObjectName(resultSequence.TargetItem);
                                 resultSequence.TargetCreateScript = scripter.GenerateCreateSequenceScript(resultSequence.TargetItem);
                             }
 
@@ -359,11 +370,13 @@ namespace SQLCompare.Services
                         {
                             if (resultType.SourceItem != null)
                             {
+                                resultType.SourceItemName = scripter.GenerateObjectName(resultType.SourceItem);
                                 resultType.SourceCreateScript = scripter.GenerateCreateTypeScript(resultType.SourceItem);
                             }
 
                             if (resultType.TargetItem != null)
                             {
+                                resultType.TargetItemName = scripter.GenerateObjectName(resultType.TargetItem);
                                 resultType.TargetCreateScript = scripter.GenerateCreateTypeScript(resultType.TargetItem);
                             }
 

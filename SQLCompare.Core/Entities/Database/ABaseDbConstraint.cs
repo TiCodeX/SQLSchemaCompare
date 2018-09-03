@@ -6,9 +6,9 @@
     public class ABaseDbConstraint : ABaseDbObject
     {
         /// <summary>
-        /// Gets or sets the table catalog
+        /// Gets or sets the table database
         /// </summary>
-        public string TableCatalog { get; set; }
+        public string TableDatabase { get; set; }
 
         /// <summary>
         /// Gets or sets the table schema

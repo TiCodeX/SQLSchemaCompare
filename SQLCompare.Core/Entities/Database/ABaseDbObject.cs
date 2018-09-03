@@ -16,8 +16,8 @@
         public string Schema { get; set; }
 
         /// <summary>
-        /// Gets or sets the object catalog
+        /// Gets or sets the object database
         /// </summary>
-        public string Catalog { get; set; }
+        public string Database { get; set; }
     }
 }

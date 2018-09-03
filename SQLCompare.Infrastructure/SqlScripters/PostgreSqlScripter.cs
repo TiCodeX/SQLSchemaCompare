@@ -245,7 +245,14 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptCreateTrigger(ABaseDbTrigger trigger)
         {
-            return trigger.Definition;
+            var sb = new StringBuilder();
+            sb.Append($"{trigger.Definition}");
+            if (!trigger.Definition.EndsWith(";", StringComparison.Ordinal))
+            {
+                sb.Append(";");
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc />

@@ -259,6 +259,9 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("SELECT DB_NAME() AS 'Database',");
             query.AppendLine("       object_schema_name(o.id) AS 'Schema',");
             query.AppendLine("       o.name AS 'Name',");
+            query.AppendLine("       DB_NAME() AS 'TableDatabase',");
+            query.AppendLine("       object_schema_name(o.parent_obj) AS 'TableSchema',");
+            query.AppendLine("       object_name(o.parent_obj) AS 'TableName',");
             query.AppendLine("       c.text AS 'Definition'");
             query.AppendLine("FROM sys.sysobjects o");
             query.AppendLine("INNER JOIN sys.syscomments AS c ON o.id = c.id");

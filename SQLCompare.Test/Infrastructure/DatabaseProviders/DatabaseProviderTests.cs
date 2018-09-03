@@ -341,7 +341,12 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 
             var triggers = db.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
             var clonedTriggers = clonedDb.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
-            triggers.Should().BeEquivalentTo(clonedTriggers, options => options.Excluding(x => x.Database));
+            triggers.Should().BeEquivalentTo(clonedTriggers, options =>
+            {
+                options.Excluding(x => x.Database);
+                options.Excluding(x => x.TableDatabase);
+                return options;
+            });
 
             var dataTypes = db.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
             var clonedDataTypes = clonedDb.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();

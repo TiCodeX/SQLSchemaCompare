@@ -296,7 +296,20 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override IEnumerable<ABaseDbTrigger> GetTriggers(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
-            return Enumerable.Empty<ABaseDbTrigger>();
+            var query = new StringBuilder();
+            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Database\",");
+            query.AppendLine("       nt.nspname AS \"Schema\",");
+            query.AppendLine("       t.tgname AS \"Name\",");
+            query.AppendLine("       (current_database())::information_schema.sql_identifier AS \"TableDatabase\",");
+            query.AppendLine("       nt.nspname AS \"TableSchema\",");
+            query.AppendLine("       ct.relname AS \"TableName\",");
+            query.AppendLine("       pg_get_triggerdef(t.oid) AS \"Definition\"");
+            query.AppendLine("FROM pg_catalog.pg_trigger t");
+            query.AppendLine("JOIN pg_catalog.pg_class ct ON t.tgrelid = ct.oid");
+            query.AppendLine("JOIN pg_catalog.pg_namespace nt ON ct.relnamespace = nt.oid");
+            query.AppendLine("WHERE t.tgisinternal = false");
+
+            return context.Query<ABaseDbTrigger>(query.ToString());
         }
 
         /// <inheritdoc/>

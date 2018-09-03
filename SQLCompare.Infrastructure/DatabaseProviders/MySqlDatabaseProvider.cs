@@ -221,7 +221,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var query = new StringBuilder();
             query.AppendLine("SELECT t.TRIGGER_SCHEMA AS 'Database',");
             query.AppendLine("       null AS 'Schema',");
-            query.AppendLine("       t.TRIGGER_NAME AS 'Name'");
+            query.AppendLine("       t.TRIGGER_NAME AS 'Name',");
+            query.AppendLine("       t.EVENT_OBJECT_SCHEMA AS 'TableDatabase',");
+            query.AppendLine("       null AS 'TableSchema',");
+            query.AppendLine("       t.EVENT_OBJECT_TABLE AS 'TableName'");
             query.AppendLine("FROM INFORMATION_SCHEMA.TRIGGERS t");
             query.AppendLine($"WHERE t.TRIGGER_SCHEMA = '{database.Name}'");
 

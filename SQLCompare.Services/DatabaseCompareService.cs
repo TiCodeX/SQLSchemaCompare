@@ -178,11 +178,17 @@ namespace SQLCompare.Services
                             this.result.Triggers.Add(new CompareResultItem<ABaseDbTrigger>
                             {
                                 SourceItem = trigger,
-                                TargetItem = this.retrievedTargetDatabase.Triggers.FirstOrDefault(x => x.Schema == trigger.Schema && x.Name == trigger.Name)
+                                TargetItem = this.retrievedTargetDatabase.Triggers.FirstOrDefault(x => x.Schema == trigger.Schema &&
+                                                                                                       x.Name == trigger.Name &&
+                                                                                                       x.TableSchema == trigger.TableSchema &&
+                                                                                                       x.TableName == trigger.TableName)
                             });
                         }
 
-                        foreach (var trigger in this.retrievedTargetDatabase.Triggers.Where(x => this.result.Triggers.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var trigger in this.retrievedTargetDatabase.Triggers.Where(x => this.result.Triggers.All(y => y.SourceItem.Schema != x.Schema &&
+                                                                                                                               y.SourceItem.Name != x.Name &&
+                                                                                                                               y.SourceItem.TableSchema != x.TableSchema &&
+                                                                                                                               y.SourceItem.TableName != x.TableName)).ToList())
                         {
                             this.result.Triggers.Add(new CompareResultItem<ABaseDbTrigger>
                             {

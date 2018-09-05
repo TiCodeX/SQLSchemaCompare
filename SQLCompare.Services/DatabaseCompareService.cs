@@ -377,13 +377,13 @@ namespace SQLCompare.Services
                             if (resultType.SourceItem != null)
                             {
                                 resultType.SourceItemName = scripter.GenerateObjectName(resultType.SourceItem);
-                                resultType.SourceCreateScript = scripter.GenerateCreateTypeScript(resultType.SourceItem);
+                                resultType.SourceCreateScript = scripter.GenerateCreateTypeScript(resultType.SourceItem, this.retrievedSourceDatabase.DataTypes);
                             }
 
                             if (resultType.TargetItem != null)
                             {
                                 resultType.TargetItemName = scripter.GenerateObjectName(resultType.TargetItem);
-                                resultType.TargetCreateScript = scripter.GenerateCreateTypeScript(resultType.TargetItem);
+                                resultType.TargetCreateScript = scripter.GenerateCreateTypeScript(resultType.TargetItem, this.retrievedTargetDatabase.DataTypes);
                             }
 
                             resultType.Equal = resultType.SourceCreateScript == resultType.TargetCreateScript;

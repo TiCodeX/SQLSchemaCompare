@@ -141,7 +141,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateFunction(ABaseDbFunction sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
+        protected override string ScriptCreateFunction(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             return sqlFunction.Definition;
         }
@@ -165,7 +165,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc />
-        protected override string ScriptCreateType(ABaseDbDataType type)
+        protected override string ScriptCreateType(ABaseDbDataType type, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             throw new NotImplementedException();
         }

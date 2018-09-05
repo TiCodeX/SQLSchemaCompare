@@ -43,7 +43,7 @@ namespace SQLCompare.Core.Interfaces
         /// <param name="sqlFunction">The function to be scripted</param>
         /// <param name="dataTypes">The list of database data types</param>
         /// <returns>The create script</returns>
-        string GenerateCreateFunctionScript(ABaseDbFunction sqlFunction, IEnumerable<ABaseDbObject> dataTypes);
+        string GenerateCreateFunctionScript(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes);
 
         /// <summary>
         /// Generates the create stored procedure script
@@ -70,7 +70,8 @@ namespace SQLCompare.Core.Interfaces
         /// Generates the create type script
         /// </summary>
         /// <param name="type">The type to be scripted</param>
+        /// <param name="dataTypes">The list of database data types</param>
         /// <returns>The create script</returns>
-        string GenerateCreateTypeScript(ABaseDbDataType type);
+        string GenerateCreateTypeScript(ABaseDbDataType type, IReadOnlyList<ABaseDbDataType> dataTypes);
     }
 }

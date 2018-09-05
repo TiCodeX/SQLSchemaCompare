@@ -157,7 +157,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
 
-            db.DataTypes.Count.Should().Be(449);
+            db.DataTypes.Count.Should().Be(459);
 
             db.Tables.Count.Should().Be(21);
             var table = db.Tables.FirstOrDefault(x => x.Name == "film");
@@ -270,16 +270,6 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 var sb = new StringBuilder();
                 sb.AppendLine("SET check_function_bodies = false;");
 
-                // TODO: implement create type in scripter
-                sb.AppendLine("CREATE TYPE mpaa_rating AS ENUM(");
-                sb.AppendLine("    'G',");
-                sb.AppendLine("    'PG',");
-                sb.AppendLine("    'PG-13',");
-                sb.AppendLine("    'R',");
-                sb.AppendLine("    'NC-17'");
-                sb.AppendLine(");");
-                sb.AppendLine("CREATE DOMAIN year AS integer");
-                sb.AppendLine("    CONSTRAINT year_check CHECK (((VALUE >= 1901) AND (VALUE <= 2155)));");
                 var firstViewFound = false;
                 foreach (var line in fullScript.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
                 {
@@ -348,12 +338,8 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 return options;
             });
 
-            var dataTypes = db.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
-            var clonedDataTypes = clonedDb.DataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
-
-            // TODO: improve PostgreSQL datatype handling to retrieve only relevant types
-            dataTypes = dataTypes.Where(x => x.Schema != "pg_toast");
-            clonedDataTypes = clonedDataTypes.Where(x => x.Schema != "pg_toast");
+            var dataTypes = db.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
+            var clonedDataTypes = clonedDb.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
             dataTypes.Should().BeEquivalentTo(clonedDataTypes, options => options.Excluding(x => x.Database));
 
             var sequences = db.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name);

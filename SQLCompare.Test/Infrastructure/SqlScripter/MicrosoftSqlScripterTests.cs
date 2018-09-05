@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
+using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MicrosoftSql;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Infrastructure.SqlScripters;
@@ -49,7 +51,7 @@ namespace SQLCompare.Test.Infrastructure.SqlScripter
         public void ScriptDataType(ProjectOptions options, MicrosoftSqlDataType dataType, string expectedResult)
         {
             var scripter = new MicrosoftSqlScripter(this.Logger, options);
-            scripter.GenerateCreateTypeScript(dataType).Should().Be(expectedResult);
+            scripter.GenerateCreateTypeScript(dataType, new List<ABaseDbDataType>()).Should().Be(expectedResult);
         }
     }
 }

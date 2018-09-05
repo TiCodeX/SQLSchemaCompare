@@ -73,7 +73,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             // Script the CREATE TYPE
             foreach (var userDataType in database.DataTypes.Where(x => x.IsUserDefined))
             {
-                sb.AppendLine(this.ScriptCreateType(userDataType));
+                sb.AppendLine(this.ScriptCreateType(userDataType, database.DataTypes));
             }
 
             // Script the CREATE SEQUENCE
@@ -216,7 +216,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateCreateFunctionScript(ABaseDbFunction sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
+        public string GenerateCreateFunctionScript(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             if (sqlFunction == null)
             {
@@ -265,14 +265,14 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateCreateTypeScript(ABaseDbDataType type)
+        public string GenerateCreateTypeScript(ABaseDbDataType type, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             if (type == null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
 
-            return this.ScriptCreateType(type);
+            return this.ScriptCreateType(type, dataTypes);
         }
 
         /// <summary>
@@ -324,7 +324,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="sqlFunction">The function to script</param>
         /// <param name="dataTypes">The list of database data types</param>
         /// <returns>The create function script</returns>
-        protected abstract string ScriptCreateFunction(ABaseDbFunction sqlFunction, IEnumerable<ABaseDbObject> dataTypes);
+        protected abstract string ScriptCreateFunction(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes);
 
         /// <summary>
         /// Generates the create stored procedure script
@@ -351,8 +351,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// Generates the create type script
         /// </summary>
         /// <param name="type">The type to script</param>
+        /// <param name="dataTypes">The list of database data types</param>
         /// <returns>The create type script</returns>
-        protected abstract string ScriptCreateType(ABaseDbDataType type);
+        protected abstract string ScriptCreateType(ABaseDbDataType type, IReadOnlyList<ABaseDbDataType> dataTypes);
 
         /// <summary>
         /// Get the table columns sorted depending on options and source table

@@ -174,7 +174,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateFunction(ABaseDbFunction sqlFunction, IEnumerable<ABaseDbObject> dataTypes)
+        protected override string ScriptCreateFunction(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             var sb = new StringBuilder();
 
@@ -231,14 +231,14 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE SEQUENCE {this.ScriptHelper.ScriptObjectName(sequence)}");
-            sb.AppendLine($"    AS {sequence.DataType}");
-            sb.AppendLine($"    START WITH {sequence.StartValue}");
-            sb.AppendLine($"    INCREMENT BY {sequence.Increment}");
+            sb.AppendLine($"{this.Indent}AS {sequence.DataType}");
+            sb.AppendLine($"{this.Indent}START WITH {sequence.StartValue}");
+            sb.AppendLine($"{this.Indent}INCREMENT BY {sequence.Increment}");
 
             // TODO: Handle min/max values correctly
-            sb.AppendLine("    NO MINVALUE");
-            sb.AppendLine("    NO MAXVALUE");
-            sb.AppendLine("    CACHE 1;");
+            sb.AppendLine($"{this.Indent}NO MINVALUE");
+            sb.AppendLine($"{this.Indent}NO MAXVALUE");
+            sb.AppendLine($"{this.Indent}CACHE 1;");
             return sb.ToString();
         }
 
@@ -256,9 +256,87 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc />
-        protected override string ScriptCreateType(ABaseDbDataType type)
+        protected override string ScriptCreateType(ABaseDbDataType type, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
-            return string.Empty;
+            var sb = new StringBuilder();
+            switch (type)
+            {
+                case PostgreSqlDataTypeEnumerated typeEnumerated:
+                    sb.Append($"CREATE TYPE {this.ScriptHelper.ScriptObjectName(typeEnumerated)} AS ENUM (");
+
+                    var labels = typeEnumerated.Labels.ToArray();
+                    for (var i = 0; i < labels.Length; i++)
+                    {
+                        sb.AppendLine();
+                        sb.Append($"{this.Indent}'{labels[i]}'");
+                        if (i != labels.Length - 1)
+                        {
+                            sb.Append(",");
+                        }
+                    }
+
+                    sb.AppendLine();
+                    sb.AppendLine(");");
+                    break;
+
+                case PostgreSqlDataTypeComposite typeComposite:
+                    sb.Append($"CREATE TYPE {this.ScriptHelper.ScriptObjectName(typeComposite)} AS (");
+
+                    var attributeNames = typeComposite.AttributeNames.ToArray();
+                    var attributeTypeIds = typeComposite.AttributeTypeIds.ToArray();
+                    for (var i = 0; i < attributeNames.Length; i++)
+                    {
+                        sb.AppendLine();
+                        sb.Append($"{this.Indent}{attributeNames[i]} {PostgreSqlScriptHelper.ScriptFunctionArgumentType(attributeTypeIds[i], dataTypes)}");
+                        if (i != attributeNames.Length - 1)
+                        {
+                            sb.Append(",");
+                        }
+                    }
+
+                    sb.AppendLine();
+                    sb.AppendLine(");");
+                    break;
+
+                case PostgreSqlDataTypeRange typeRange:
+                    sb.AppendLine($"CREATE TYPE {this.ScriptHelper.ScriptObjectName(typeRange)} AS RANGE (");
+                    sb.Append($"{this.Indent}SUBTYPE = {PostgreSqlScriptHelper.ScriptFunctionArgumentType(typeRange.SubTypeId, dataTypes)}");
+                    if (!string.IsNullOrEmpty(typeRange.Canonical))
+                    {
+                        sb.AppendLine(",");
+                        sb.Append($"{this.Indent}CANONICAL = {typeRange.Canonical}");
+                    }
+
+                    if (!string.IsNullOrEmpty(typeRange.SubTypeDiff))
+                    {
+                        sb.AppendLine(",");
+                        sb.Append($"{this.Indent}SUBTYPE_DIFF = {typeRange.SubTypeDiff}");
+                    }
+
+                    sb.AppendLine();
+                    sb.AppendLine(");");
+                    break;
+
+                case PostgreSqlDataTypeDomain typeDomain:
+                    sb.AppendLine($"CREATE DOMAIN {this.ScriptHelper.ScriptObjectName(typeDomain)}");
+                    sb.AppendLine($"{this.Indent}AS {PostgreSqlScriptHelper.ScriptFunctionArgumentType(typeDomain.BaseTypeId, dataTypes)}");
+                    if (!string.IsNullOrEmpty(typeDomain.ConstraintName))
+                    {
+                        sb.AppendLine($"{this.Indent}CONSTRAINT {this.ScriptHelper.ScriptObjectName(string.Empty, string.Empty, typeDomain.ConstraintName)}");
+                    }
+
+                    sb.Append(string.IsNullOrEmpty(typeDomain.ConstraintDefinition)
+                        ? $"{this.Indent}{(typeDomain.NotNull ? "NOT NULL" : "NULL")}"
+                        : $"{this.Indent}{typeDomain.ConstraintDefinition}");
+                    sb.AppendLine(";");
+
+                    break;
+
+                default:
+                    throw new NotSupportedException();
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc/>

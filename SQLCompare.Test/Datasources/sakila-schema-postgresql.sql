@@ -55,6 +55,18 @@ CREATE DOMAIN year AS integer
 
 ALTER DOMAIN year OWNER TO postgres;
 
+CREATE DOMAIN my_int_null AS integer NULL;
+
+CREATE DOMAIN my_int_not_null AS integer NOT NULL;
+
+CREATE TYPE compfoo AS (f1 int, f2 text);
+
+CREATE TYPE my_type_with_array AS (primo int, secondo int[], terzo text);
+
+CREATE TYPE bug_status AS ENUM ('new', 'open', 'closed');
+
+CREATE TYPE float8_range AS RANGE (subtype = float8, subtype_diff = float8mi);
+
 --
 -- Name: _group_concat(text, text); Type: FUNCTION; Schema: public; Owner: postgres
 --

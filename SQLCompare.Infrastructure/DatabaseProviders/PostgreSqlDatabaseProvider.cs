@@ -197,7 +197,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("           WHEN c.contype = 'u' THEN 'UNIQUE'");
             query.AppendLine("           WHEN c.contype = 'x' THEN 'EXCLUDE'");
             query.AppendLine("       END AS \"ConstraintType\",");
-            query.AppendLine("       pg_get_constraintdef(c.oid) AS \"Definition\"");
+            query.AppendLine("       pg_catalog.pg_get_constraintdef(c.oid) AS \"Definition\"");
             query.AppendLine("FROM pg_catalog.pg_constraint c");
             query.AppendLine("JOIN pg_catalog.pg_class ct ON c.conrelid = ct.oid");
             query.AppendLine("LEFT JOIN pg_catalog.pg_class cc ON c.conindid = cc.oid");
@@ -263,12 +263,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbFunction> GetFunctions(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT r.routine_catalog as \"Database\",");
-            query.AppendLine("       r.routine_schema as \"Schema\",");
-            query.AppendLine("       r.routine_name as \"Name\",");
-            query.AppendLine("       r.routine_definition as \"Definition\",");
-            query.AppendLine("       r.external_language as \"ExternalLanguage\",");
-            query.AppendLine("       r.security_type as \"SecurityType\",");
+            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier as \"Database\",");
+            query.AppendLine("       n.nspname as \"Schema\",");
+            query.AppendLine("       p.proname as \"Name\",");
+            query.AppendLine("       p.prosrc as \"Definition\",");
+            query.AppendLine("       upper(l.lanname) as \"ExternalLanguage\",");
+            query.AppendLine("       CASE WHEN p.prosecdef THEN 'DEFINER' ELSE 'INVOKER' END as \"SecurityType\",");
             query.AppendLine("       p.procost as \"Cost\",");
             query.AppendLine("       p.prorows as \"Rows\",");
             query.AppendLine("       p.proisstrict as \"IsStrict\",");
@@ -280,9 +280,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       p.proallargtypes as \"AllArgTypes\",");
             query.AppendLine("       p.proargmodes as \"ArgModes\",");
             query.AppendLine("       p.proargnames as \"ArgNames\"");
-            query.AppendLine("FROM information_schema.routines r");
-            query.AppendLine("INNER JOIN pg_catalog.pg_proc p ON r.routine_name = p.proname");
-            query.AppendLine($"WHERE routine_catalog = '{database.Name}' AND r.routine_schema = 'public' AND p.proisagg = 'false'");
+            query.AppendLine("FROM pg_catalog.pg_namespace n");
+            query.AppendLine("INNER JOIN pg_catalog.pg_proc p ON n.oid = p.pronamespace");
+            query.AppendLine("INNER JOIN pg_catalog.pg_language l ON p.prolang = l.oid");
+            query.AppendLine($"WHERE n.nspname = 'public' AND p.proisagg = 'false' AND upper(l.lanname) != 'INTERNAL'");
             return context.Query<PostgreSqlFunction>(query.ToString());
         }
 
@@ -303,7 +304,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       (current_database())::information_schema.sql_identifier AS \"TableDatabase\",");
             query.AppendLine("       nt.nspname AS \"TableSchema\",");
             query.AppendLine("       ct.relname AS \"TableName\",");
-            query.AppendLine("       pg_get_triggerdef(t.oid) AS \"Definition\"");
+            query.AppendLine("       pg_catalog.pg_get_triggerdef(t.oid) AS \"Definition\"");
             query.AppendLine("FROM pg_catalog.pg_trigger t");
             query.AppendLine("JOIN pg_catalog.pg_class ct ON t.tgrelid = ct.oid");
             query.AppendLine("JOIN pg_catalog.pg_namespace nt ON ct.relnamespace = nt.oid");
@@ -315,30 +316,97 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override IEnumerable<ABaseDbDataType> GetDataTypes(PostgreSqlDb database, PostgreSqlDatabaseContext context)
         {
-            var query = new StringBuilder();
+            var commonSelect = new StringBuilder();
+            commonSelect.AppendLine("SELECT current_database()::information_schema.sql_identifier AS \"Database\",");
+            commonSelect.AppendLine("       n.nspname AS \"Schema\",");
+            commonSelect.AppendLine("       t.typname AS \"Name\",");
+            commonSelect.AppendLine("       t.oid AS \"TypeId\", ");
+            commonSelect.AppendLine("       t.typarray AS \"ArrayTypeId\",");
+            commonSelect.AppendLine("       CASE");
+            commonSelect.AppendLine("              WHEN t.typcategory = 'A' THEN true");
+            commonSelect.AppendLine("              ELSE false");
+            commonSelect.AppendLine("       END AS \"IsArray\",");
 
-            query.AppendLine("SELECT current_database()::information_schema.sql_identifier AS \"Database\", ");
-            query.AppendLine("       n.nspname AS \"Schema\", ");
-            query.AppendLine("       t.oid AS \"TypeId\", ");
-            query.AppendLine("       t.typname AS \"Name\",");
-            query.AppendLine("       t.typarray AS \"ArrayTypeId\",");
-            query.AppendLine("       CASE");
-            query.AppendLine("              WHEN t.typcategory = 'A' THEN true");
-            query.AppendLine("              ELSE false");
-            query.AppendLine("       END AS \"IsArray\",");
-            query.AppendLine("       (");
-            query.AppendLine("              (t.typrelid = 0 OR c.relkind = 'c')");
-            query.AppendLine("              AND NOT EXISTS (SELECT 1");
-            query.AppendLine("                              FROM pg_catalog.pg_type el");
-            query.AppendLine("                              WHERE el.oid = t.typelem AND el.typarray = t.oid)");
-            query.AppendLine("              AND n.nspname <> 'pg_catalog'");
-            query.AppendLine("              AND n.nspname <> 'information_schema'");
-            query.AppendLine("              AND pg_catalog.pg_type_is_visible(t.oid)");
-            query.AppendLine("       ) AS \"IsUserDefined\"");
+            var commonWhereIsUserDefined = new StringBuilder();
+            commonWhereIsUserDefined.AppendLine("WHERE (");
+            commonWhereIsUserDefined.AppendLine("          (t.typrelid = 0 OR c.relkind = 'c')");
+            commonWhereIsUserDefined.AppendLine("          AND NOT EXISTS (SELECT 1");
+            commonWhereIsUserDefined.AppendLine("                          FROM pg_catalog.pg_type el");
+            commonWhereIsUserDefined.AppendLine("                          WHERE el.oid = t.typelem AND el.typarray = t.oid)");
+            commonWhereIsUserDefined.AppendLine("          AND n.nspname <> 'pg_catalog'");
+            commonWhereIsUserDefined.AppendLine("          AND n.nspname <> 'information_schema'");
+            commonWhereIsUserDefined.AppendLine("          AND pg_catalog.pg_type_is_visible(t.oid)");
+            commonWhereIsUserDefined.Append("      ) = ");
+
+            // System Types
+            var query = new StringBuilder();
+            query.Append(commonSelect);
+            query.AppendLine("       false AS \"IsUserDefined\"");
             query.AppendLine("FROM pg_catalog.pg_type t");
             query.AppendLine("INNER JOIN pg_catalog.pg_namespace n ON t.typnamespace = n.oid");
             query.AppendLine("LEFT JOIN pg_catalog.pg_class c ON c.oid = t.typrelid");
+            query.AppendLine($"{commonWhereIsUserDefined} false");
             var types = context.Query<PostgreSqlDataType>(query.ToString());
+
+            // User-Defined Enumerated Types
+            query = new StringBuilder();
+            query.Append(commonSelect);
+            query.AppendLine("       true AS \"IsUserDefined\",");
+            query.AppendLine("       array_agg(e.enumlabel ORDER BY e.enumsortorder) AS \"Labels\"");
+            query.AppendLine("FROM pg_catalog.pg_type t");
+            query.AppendLine("INNER JOIN pg_catalog.pg_namespace n ON t.typnamespace = n.oid");
+            query.AppendLine("LEFT JOIN pg_catalog.pg_class c ON c.oid = t.typrelid");
+            query.AppendLine("INNER JOIN pg_catalog.pg_enum e ON e.enumtypid = t.oid");
+            query.AppendLine($"{commonWhereIsUserDefined} true");
+            query.AppendLine("AND t.typtype = 'e'");
+            query.AppendLine("GROUP BY n.nspname, t.typname, t.oid, t.typtype, t.typcategory, t.typarray");
+            types.AddRange(context.Query<PostgreSqlDataTypeEnumerated>(query.ToString()));
+
+            // User-Defined Composite Types
+            query = new StringBuilder();
+            query.Append(commonSelect);
+            query.AppendLine("       true AS \"IsUserDefined\",");
+            query.AppendLine("       array_agg(a.attname ORDER BY a.attnum) AS \"AttributeNames\",");
+            query.AppendLine("       array_agg(a.atttypid ORDER BY a.attnum) AS \"AttributeTypeIds\"");
+            query.AppendLine("FROM pg_catalog.pg_type t");
+            query.AppendLine("INNER JOIN pg_catalog.pg_namespace n ON t.typnamespace = n.oid");
+            query.AppendLine("LEFT JOIN pg_catalog.pg_class c ON c.oid = t.typrelid");
+            query.AppendLine("INNER JOIN pg_catalog.pg_attribute a ON a.attrelid = t.typrelid");
+            query.AppendLine($"{commonWhereIsUserDefined} true");
+            query.AppendLine("AND t.typtype = 'c'");
+            query.AppendLine("GROUP BY n.nspname, t.typname, t.oid, t.typtype, t.typcategory, t.typarray");
+            types.AddRange(context.Query<PostgreSqlDataTypeComposite>(query.ToString()));
+
+            // User-Defined Range Types
+            query = new StringBuilder();
+            query.Append(commonSelect);
+            query.AppendLine("       true AS \"IsUserDefined\",");
+            query.AppendLine("       r.rngsubtype AS \"SubTypeId\",");
+            query.AppendLine("       CASE WHEN r.rngcanonical::regproc::oid = 0 THEN null ELSE r.rngcanonical::regproc::name END AS \"Canonical\",");
+            query.AppendLine("       CASE WHEN r.rngsubdiff::regproc::oid = 0 THEN null ELSE r.rngsubdiff::regproc::name END AS \"SubTypeDiff\"");
+            query.AppendLine("FROM pg_catalog.pg_type t");
+            query.AppendLine("INNER JOIN pg_catalog.pg_namespace n ON t.typnamespace = n.oid");
+            query.AppendLine("LEFT JOIN pg_catalog.pg_class c ON c.oid = t.typrelid");
+            query.AppendLine("INNER JOIN pg_catalog.pg_range r ON r.rngtypid = t.oid");
+            query.AppendLine($"{commonWhereIsUserDefined} true");
+            query.AppendLine("AND t.typtype = 'r'");
+            types.AddRange(context.Query<PostgreSqlDataTypeRange>(query.ToString()));
+
+            // User-Defined Domain Types
+            query = new StringBuilder();
+            query.Append(commonSelect);
+            query.AppendLine("       true AS \"IsUserDefined\",");
+            query.AppendLine("       t.typbasetype AS \"BaseTypeId\",");
+            query.AppendLine("       t.typnotnull AS \"NotNull\",");
+            query.AppendLine("       co.conname AS \"ConstraintName\",");
+            query.AppendLine("       pg_catalog.pg_get_constraintdef(co.oid, true) AS \"ConstraintDefinition\"");
+            query.AppendLine("FROM pg_catalog.pg_type t");
+            query.AppendLine("INNER JOIN pg_catalog.pg_namespace n ON t.typnamespace = n.oid");
+            query.AppendLine("LEFT JOIN pg_catalog.pg_class c ON c.oid = t.typrelid");
+            query.AppendLine("LEFT JOIN pg_catalog.pg_constraint co ON t.oid = co.contypid");
+            query.AppendLine($"{commonWhereIsUserDefined} true");
+            query.AppendLine("AND t.typtype = 'd'");
+            types.AddRange(context.Query<PostgreSqlDataTypeDomain>(query.ToString()));
 
             // Get all types that have an ArrayTypeId, those types need to be referenced by the array type
             // E.g.: type 'bool' has id 1 and ArrayTypeId 1000

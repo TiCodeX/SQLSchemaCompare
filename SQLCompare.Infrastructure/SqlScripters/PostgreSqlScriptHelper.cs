@@ -28,7 +28,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="argType">The argument data type</param>
         /// <param name="dataTypes">The list of database data types</param>
         /// <returns>The scripted function argument data type</returns>
-        public static string ScriptFunctionArgumentType(uint argType, IEnumerable<ABaseDbObject> dataTypes)
+        public static string ScriptFunctionArgumentType(uint argType, IEnumerable<ABaseDbDataType> dataTypes)
         {
             var type = (PostgreSqlDataType)dataTypes.FirstOrDefault(x => ((PostgreSqlDataType)x).TypeId == argType);
             if (type == null)
@@ -88,7 +88,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="argName">The argument name</param>
         /// <param name="dataTypes">The list of database data types</param>
         /// <returns>The scripted function argument</returns>
-        public static string ScriptFunctionArgument(uint argType, char argMode, string argName, IEnumerable<ABaseDbObject> dataTypes)
+        public static string ScriptFunctionArgument(uint argType, char argMode, string argName, IEnumerable<ABaseDbDataType> dataTypes)
         {
             var sb = new StringBuilder();
 
@@ -137,7 +137,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         public override string ScriptObjectName(string objectDatabase, string objectSchema, string objectName)
         {
-            if (this.Options.Scripting.UseSchemaName)
+            if (this.Options.Scripting.UseSchemaName && !string.IsNullOrEmpty(objectSchema))
             {
                 return $"\"{objectSchema}\".\"{objectName}\"";
             }

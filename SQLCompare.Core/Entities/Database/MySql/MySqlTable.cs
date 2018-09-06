@@ -46,5 +46,10 @@ namespace SQLCompare.Core.Entities.Database.MySql
         /// Gets or sets the table comment
         /// </summary>
         public string TableComment { get; set; }
+
+        /// <summary>
+        /// Gets or sets the table character set
+        /// </summary>
+        public string TableCharacterSet { get; set; }
     }
 }

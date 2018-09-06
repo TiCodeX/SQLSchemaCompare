@@ -116,7 +116,7 @@ namespace SQLCompare.Test
         /// </summary>
         /// <param name="connectToDatabase">if set to <c>true</c> it will connect directly to the test database</param>
         /// <returns>The PostgreSQL SQL database provider</returns>
-        internal PostgreSqlDatabaseProvider GetPostgreDatabaseProvider(bool connectToDatabase = true)
+        internal PostgreSqlDatabaseProvider GetPostgreSqlDatabaseProvider(bool connectToDatabase = true)
         {
             var dpf = new DatabaseProviderFactory(this.loggerFactory);
             return (PostgreSqlDatabaseProvider)dpf.Create(this.GetPostgreSqlDatabaseProviderOptions(connectToDatabase));

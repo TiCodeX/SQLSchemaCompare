@@ -24,9 +24,15 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
         }
 
+        /// <summary>
+        /// Gets the functions/stored procedures/triggers delimiter
+        /// </summary>
+        private static string Delimiter => "$$$$";
+
         /// <inheritdoc/>
         protected override string ScriptCreateTable(ABaseDbTable table, ABaseDbTable referenceTable = null)
         {
+            var mySqlTable = (MySqlTable)table;
             var ncol = table.Columns.Count;
 
             var columns = this.GetSortedTableColumns(table, referenceTable);
@@ -41,7 +47,18 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine((++i == ncol) ? string.Empty : ",");
             }
 
-            sb.AppendLine(");");
+            sb.Append(")");
+            if (!string.IsNullOrWhiteSpace(mySqlTable.Engine) && !mySqlTable.Engine.Equals("InnoDB", StringComparison.OrdinalIgnoreCase))
+            {
+                sb.Append($" ENGINE={mySqlTable.Engine}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(mySqlTable.TableCharacterSet))
+            {
+                sb.Append($" DEFAULT CHARSET={mySqlTable.TableCharacterSet}");
+            }
+
+            sb.AppendLine(";");
             return sb.ToString();
         }
 
@@ -137,25 +154,42 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptCreateView(ABaseDbView view)
         {
-            return view.ViewDefinition;
+            var sb = new StringBuilder();
+            sb.AppendLine($"{view.ViewDefinition.TrimEnd('\r', '\n', ' ', ';')};");
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
         protected override string ScriptCreateFunction(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
-            return sqlFunction.Definition;
+            var sb = new StringBuilder();
+            sb.AppendLine($"DELIMITER {MySqlScripter.Delimiter}");
+            sb.Append($"{sqlFunction.Definition.TrimEnd('\r', '\n', ' ')}");
+            sb.AppendLine($"{MySqlScripter.Delimiter}");
+            sb.AppendLine("DELIMITER ;");
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
         protected override string ScriptCreateStoredProcedure(ABaseDbStoredProcedure storedProcedure)
         {
-            return storedProcedure.Definition;
+            var sb = new StringBuilder();
+            sb.AppendLine($"DELIMITER {MySqlScripter.Delimiter}");
+            sb.Append($"{storedProcedure.Definition.TrimEnd('\r', '\n', ' ')}");
+            sb.AppendLine($"{MySqlScripter.Delimiter}");
+            sb.AppendLine("DELIMITER ;");
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
         protected override string ScriptCreateTrigger(ABaseDbTrigger trigger)
         {
-            return trigger.Definition;
+            var sb = new StringBuilder();
+            sb.AppendLine($"DELIMITER {MySqlScripter.Delimiter}");
+            sb.Append($"{trigger.Definition.TrimEnd('\r', '\n', ' ')}");
+            sb.AppendLine($"{MySqlScripter.Delimiter}");
+            sb.AppendLine("DELIMITER ;");
+            return sb.ToString();
         }
 
         /// <inheritdoc/>

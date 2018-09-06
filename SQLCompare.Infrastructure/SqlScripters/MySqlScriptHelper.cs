@@ -42,23 +42,40 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var col = (MySqlColumn)column;
 
             var sb = new StringBuilder();
-
             sb.Append($"`{col.Name}` {this.ScriptDataType(col)}");
 
-            if (!col.Extra.Equals("VIRTUAL GENERATED", StringComparison.OrdinalIgnoreCase) && !col.Extra.Equals("VIRTUAL GENERATED", StringComparison.OrdinalIgnoreCase))
+            if (col.Extra.Equals("VIRTUAL GENERATED", StringComparison.OrdinalIgnoreCase))
             {
-                sb.Append(col.IsNullable == "YES" ? " NULL" : " NOT NULL");
+                return sb.ToString();
+            }
 
-                if (col.ColumnDefault != null)
-                {
-                    sb.Append($" DEFAULT {col.ColumnDefault}");
-                }
+            sb.Append(col.IsNullable == "YES" ? " NULL" : " NOT NULL");
 
-                if (col.Extra != null)
+            if (!string.IsNullOrEmpty(col.ColumnDefault))
+            {
+                switch (col.DataType)
                 {
-                    sb.Append($" {col.Extra}");
+                    // Character strings
+                    case "enum":
+                    case "char":
+                    case "varchar":
+                    case "text":
+                    case "tinytext":
+                    case "mediumtext":
+                    case "longtext":
+                        sb.Append($" DEFAULT '{col.ColumnDefault}'");
+                        break;
+                    default:
+                        sb.Append($" DEFAULT {col.ColumnDefault}");
+                        break;
                 }
             }
+
+            // TODO: add the extra stuff, if contains AUTO_INCREMENT it should also specify PRIMARY KEY
+            /*if (col.Extra != null)
+            {
+                sb.Append($" {col.Extra}");
+            }*/
 
             return sb.ToString();
         }
@@ -137,8 +154,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 case "longtext":
                     {
                         var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
+                        var binary = column.CollationName == column.CharacterSetName + "_bin" ? " BINARY" : string.Empty;
                         var charachterSet = $" CHARACTER SET {column.CharacterSetName}";
-                        return $"{column.ColumnType}{charachterSet}{collate}";
+                        return $"{column.ColumnType}{binary}{charachterSet}{collate}";
                     }
 
                 default: throw new ArgumentException($"Unknown column data type: {column.DataType}");

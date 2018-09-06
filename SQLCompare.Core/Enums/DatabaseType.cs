@@ -11,7 +11,7 @@
         MicrosoftSql = 0,
 
         /// <summary>
-        /// Oracle MySQL
+        /// MySQL
         /// </summary>
         MySql = 1,
 

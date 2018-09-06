@@ -47,20 +47,22 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbTable> GetTables(MySqlDb database, MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT TABLE_NAME as Name,");
-            query.AppendLine("       TABLE_SCHEMA as 'Database',");
+            query.AppendLine("SELECT t.TABLE_NAME as Name,");
+            query.AppendLine("       t.TABLE_SCHEMA as 'Database',");
             query.AppendLine("       null as 'Schema',");
-            query.AppendLine("       ENGINE as Engine,");
-            query.AppendLine("       VERSION as Version,");
-            query.AppendLine("       ROW_FORMAT as RowFormat,");
-            query.AppendLine("       AUTO_INCREMENT as AutoIncrement,");
-            query.AppendLine("       CREATE_TIME as CreateDate,");
-            query.AppendLine("       UPDATE_TIME as ModifyDate,");
-            query.AppendLine("       TABLE_COLLATION as TableCollation,");
-            query.AppendLine("       CREATE_OPTIONS as CreateOptions,");
-            query.AppendLine("       TABLE_COMMENT as TableComment");
-            query.AppendLine("FROM INFORMATION_SCHEMA.TABLES");
-            query.AppendLine($"WHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = '{database.Name}'");
+            query.AppendLine("       t.ENGINE as Engine,");
+            query.AppendLine("       t.VERSION as Version,");
+            query.AppendLine("       t.ROW_FORMAT as RowFormat,");
+            query.AppendLine("       t.AUTO_INCREMENT as AutoIncrement,");
+            query.AppendLine("       t.CREATE_TIME as CreateDate,");
+            query.AppendLine("       t.UPDATE_TIME as ModifyDate,");
+            query.AppendLine("       t.TABLE_COLLATION as TableCollation,");
+            query.AppendLine("       t.CREATE_OPTIONS as CreateOptions,");
+            query.AppendLine("       t.TABLE_COMMENT as TableComment,");
+            query.AppendLine("       c.CHARACTER_SET_NAME as TableCharacterSet");
+            query.AppendLine("FROM INFORMATION_SCHEMA.TABLES t");
+            query.AppendLine("INNER JOIN INFORMATION_SCHEMA.COLLATION_CHARACTER_SET_APPLICABILITY c ON c.collation_name = t.table_collation");
+            query.AppendLine($"WHERE t.TABLE_TYPE = 'BASE TABLE' and t.TABLE_SCHEMA = '{database.Name}'");
 
             return context.Query<MySqlTable>(query.ToString());
         }
@@ -240,6 +242,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override IEnumerable<ABaseDbDataType> GetDataTypes(MySqlDb database, MySqlDatabaseContext context)
         {
+            // An empty list is returned because MySQL doesn't have user defined data types
             return Enumerable.Empty<ABaseDbDataType>();
         }
 

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -51,7 +53,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             dbList.Should().Contain("mysql");
             dbList.Should().Contain("sakila");
 
-            var pgsqldbp = this.dbFixture.GetPostgreDatabaseProvider(false);
+            var pgsqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider(false);
             dbList = pgsqldbp.GetDatabaseList();
             dbList.Should().Contain("postgres");
             dbList.Should().Contain("sakila");
@@ -152,7 +154,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         [IntegrationTest]
         public void GetPostgreSqlDatabase()
         {
-            var pgsqldbp = this.dbFixture.GetPostgreDatabaseProvider();
+            var pgsqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider();
             var db = pgsqldbp.GetDatabase();
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
@@ -242,7 +244,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         [IntegrationTest]
         public void ClonePostgreSqlDatabase()
         {
-            var postgresqldbp = this.dbFixture.GetPostgreDatabaseProvider();
+            var postgresqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider();
             var db = postgresqldbp.GetDatabase();
 
             var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
@@ -297,10 +299,65 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             CompareDatabase(db, clonedDb);
         }
 
+        /// <summary>
+        /// Test cloning MySQL 'sakila' database
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void CloneMySqlDatabase()
+        {
+            var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider();
+            var db = mysqldbp.GetDatabase();
+
+            var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
+            var scripter = scripterFactory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
+            var fullScript = scripter.GenerateFullScript(db);
+
+            var mysqldbpo = this.dbFixture.GetMySqlDatabaseProviderOptions();
+
+            var clonedDatabaseName = $"{mysqldbpo.Database}_clone";
+
+            var mySqlFullScript = new StringBuilder();
+            mySqlFullScript.AppendLine("SET @OLD_UNIQUE_CHECKS =@@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;");
+            mySqlFullScript.AppendLine("SET @OLD_FOREIGN_KEY_CHECKS =@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;");
+            mySqlFullScript.AppendLine("SET @OLD_SQL_MODE =@@SQL_MODE, SQL_MODE = 'TRADITIONAL';");
+            mySqlFullScript.AppendLine($"DROP SCHEMA IF EXISTS {clonedDatabaseName};");
+            mySqlFullScript.AppendLine($"CREATE SCHEMA {clonedDatabaseName};");
+            mySqlFullScript.AppendLine($"USE {clonedDatabaseName};");
+            mySqlFullScript.AppendLine(fullScript.Replace($"`{mysqldbpo.Database}`.`", $"`{clonedDatabaseName}`.`", StringComparison.InvariantCulture));
+            mySqlFullScript.AppendLine("SET SQL_MODE = @OLD_SQL_MODE;");
+            mySqlFullScript.AppendLine("SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;");
+            mySqlFullScript.AppendLine("SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;");
+
+            var pathMySql = Path.GetTempFileName();
+            File.WriteAllText(pathMySql, mySqlFullScript.ToString());
+
+            var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe",
+                Arguments = $"--user root -ptest1234 -e \"SOURCE {pathMySql}\"",
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+            });
+            process.Should().NotBeNull();
+            process.WaitForExit((int)TimeSpan.FromMinutes(5).TotalMilliseconds);
+            process.ExitCode.Should().Be(0);
+
+            mysqldbpo.Database = clonedDatabaseName;
+            var dpf = new DatabaseProviderFactory(this.LoggerFactory);
+            mysqldbp = (MySqlDatabaseProvider)dpf.Create(mysqldbpo);
+
+            var clonedDb = mysqldbp.GetDatabase();
+
+            CompareDatabase(db, clonedDb);
+        }
+
         private static void CompareDatabase(ABaseDb db, ABaseDb clonedDb)
         {
-            var tables = db.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name).ToList();
-            var clonedTables = clonedDb.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name).ToList();
+            // TODO: implement checks for child classes (e.g.: MicrosoftSqlColumn, ...)
+            var tables = db.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+            var clonedTables = clonedDb.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name);
             tables.Should().BeEquivalentTo(clonedTables, options =>
             {
                 options.Excluding(x => x.Database);
@@ -338,8 +395,8 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 return options;
             });
 
-            var dataTypes = db.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
-            var clonedDataTypes = clonedDb.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
+            var dataTypes = db.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name);
+            var clonedDataTypes = clonedDb.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name);
             dataTypes.Should().BeEquivalentTo(clonedDataTypes, options => options.Excluding(x => x.Database));
 
             var sequences = db.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name);

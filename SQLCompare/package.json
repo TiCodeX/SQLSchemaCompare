@@ -1,10 +1,12 @@
 {
     "name": "sqlcompare",
     "version": "2018.9.1",
-    "description": "SQL Compare",
+    "description": "The swiss army knive for DB schema comparison and synchronization which runs on multiple OS and supports various DB. TiCodeX SQL Compare runs on Windows, Mac and Linux and connects to Microsoft SQL (MS-SQL), mySQL and Postgress. In addition Azure SQL and MS-SQL on Amazon RDS is supported.",
     "main": "app.js",
+    "homepage": "https://www.ticodex.com",
     "author": {
-        "name": "TiCodeX SA"
+        "name": "TiCodeX SA",
+        "email": "support@ticodex.com"
     },
     "build": {
         "appId": "ch.ticodex.sqlcompare",
@@ -29,7 +31,14 @@
             "include": "installer.nsh"
         },
         "linux": {
-            "target": "AppImage"
+            "target": [ "deb", "rpm", "tar.gz" ],
+            "category": "Utility",
+            "synopsis": "The swiss army knive for DB schema comparison",
+            "artifactName": "${name}-${version}-${arch}.${ext}",
+            "publish": {
+                "provider": "generic",
+                "url": ""
+            }
         },
         "mac": {
             "target": "default",
@@ -58,9 +67,9 @@
         }
     },
     "scripts": {
-        "dist-win": "electron-builder --win --publish always",
-        "dist-linux": "electron-builder --linux --publish always",
-        "dist-mac": "electron-builder --mac --publish always"
+        "dist-win-x64": "electron-builder --win --publish always",
+        "dist-linux-x64": "electron-builder --linux --publish always",
+        "dist-osx-x64": "electron-builder --mac --publish always"
     },
     "postinstall": "electron-builder install-app-deps",
     "devDependencies": {

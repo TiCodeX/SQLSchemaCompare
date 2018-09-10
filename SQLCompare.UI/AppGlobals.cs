@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Services;
 
@@ -33,21 +35,48 @@ namespace SQLCompare.UI
         public string AuthorizationHeaderName => "CustomAuthToken";
 
         /// <inheritdoc/>
-        public string AppSettingsFullFilename => Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "SqlCompare",
-            "Config.conf");
+        public string AppSettingsFullFilename
+        {
+            get
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    return Path.Combine(
+                        Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).FullName,
+                        "Config.conf");
+                }
+
+                return Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                    "SqlCompare",
+                    "Config.conf");
+            }
+        }
 
         /// <inheritdoc/>
         public string LoggerLayout =>
             "${longdate}|${event-properties:item=EventId_Id}|${uppercase:${level}}|${logger}|${message} ${exception:format=tostring}";
 
         /// <inheritdoc/>
-        public string LoggerFile => Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "SqlCompare",
-            "log",
-            @"SqlCompare-${shortdate}-service.log");
+        public string LoggerFile
+        {
+            get
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    return Path.Combine(
+                        Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).FullName,
+                        "log",
+                        @"SqlCompare-${shortdate}-service.log");
+                }
+
+                return Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                    "SqlCompare",
+                    "log",
+                    @"SqlCompare-${shortdate}-service.log");
+            }
+        }
 
         /// <inheritdoc/>
         public int LoggerMaxArchiveFiles => 9;

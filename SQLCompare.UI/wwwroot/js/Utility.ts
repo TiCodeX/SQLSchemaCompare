@@ -32,11 +32,15 @@ class Utility {
             electron.webFrame.setVisualZoomLevelLimits(1, 1);
             electron.webFrame.setLayoutZoomLevelLimits(0, 0);
             // Register electron callbacks
-            electron.ipcRenderer.on("GetUpdateInfoResponse", (event: Electron.Event, info: { version: string }) => {
-                if (info !== null) {
+            electron.ipcRenderer.on("GetUpdateInfoResponse", (event: Electron.Event, info: { platform: string; version: string }) => {
+                if (info !== null && info.version !== "") {
                     let message: string = `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
                     message += "<br/>";
-                    message += `${Localization.Get("NotificationAutomaticUpdateAndInstall").replace("{0}", info.version)}`;
+                    if (info.platform === "linux") {
+                        message += `${Localization.Get("NotificationNewVersionAvailableMessage").replace("{0}", info.version)}`;
+                    } else {
+                        message += `${Localization.Get("NotificationAutomaticUpdateAndInstall").replace("{0}", info.version)}`;
+                    }
                     $("#myNotificationMessage").html(message);
                     $("#myNotification").show();
                 }

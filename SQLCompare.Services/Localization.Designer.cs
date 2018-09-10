@@ -727,6 +727,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The version v{0} has been released, please visit the TiCodeX website to download it..
+        /// </summary>
+        public static string NotificationNewVersionAvailableMessage {
+            get {
+                return ResourceManager.GetString("NotificationNewVersionAvailableMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string TitleError {

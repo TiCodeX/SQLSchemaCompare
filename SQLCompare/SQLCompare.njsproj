@@ -9,6 +9,8 @@
     <TSLintConfig>..\tslint.json</TSLintConfig>
     <TSLintProject>tsconfig.json</TSLintProject>
     <SaveNodeJsSettingsInProjectFile>True</SaveNodeJsSettingsInProjectFile>
+    <Environment>__DEBUG=*
+__TEST_UPDATER_PLATFORM=linux</Environment>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>

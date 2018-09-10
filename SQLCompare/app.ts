@@ -8,14 +8,17 @@ import windowStateKeeper = require("electron-window-state");
 import fs = require("fs");
 import glob = require("glob");
 import log4js = require("log4js");
+import path = require("path");
 /* tslint:enable:no-require-imports no-implicit-dependencies */
 
 electron.app.setAppUserModelId("ch.ticodex.sqlcompare");
 
 const initialPort: number = 5000;
 const splashUrl: string = `file://${__dirname}/splash.html`;
-const servicePath: string = `./bin/SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`;
-const loggerPath: string = "C:/ProgramData/SqlCompare/log/SqlCompare";
+const servicePath: string = path.join(path.dirname(process.execPath), "bin", `SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`);
+const loggerPath: string = process.platform === "win32" ?
+    "C:/ProgramData/SqlCompare/log/SqlCompare" :
+    path.join(path.dirname(process.execPath), "log", "SqlCompare");
 const loggerPattern: string = "-yyyy-MM-dd-ui.log";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;
@@ -65,8 +68,8 @@ logger.info("Starting application...");
 const autoUpdaterLogger: log4js.Logger = log4js.getLogger("electron-updater");
 autoUpdaterLogger.level = (process.defaultApp ? "debug" : "info");
 electronUpdater.autoUpdater.logger = autoUpdaterLogger;
-electronUpdater.autoUpdater.autoDownload = true;
-electronUpdater.autoUpdater.autoInstallOnAppQuit = true;
+electronUpdater.autoUpdater.autoDownload = !process.defaultApp && electronUpdater.getCurrentPlatform() !== "linux";
+electronUpdater.autoUpdater.autoInstallOnAppQuit = !process.defaultApp && electronUpdater.getCurrentPlatform() !== "linux";
 const autoUpdaterPublishOptions: builderUtilRuntime.GenericServerOptions = {
     provider: "generic",
     url: autoUpdaterUrl,
@@ -143,7 +146,11 @@ electron.ipcMain.on("ShowLoginWindow", (event: electron.Event) => {
 });
 // Register the renderer callback to retrieve the updates
 electron.ipcMain.on("GetUpdateInfo", (event: electron.Event) => {
-    event.sender.send("GetUpdateInfoResponse", autoUpdaterInfo);
+    event.sender.send("GetUpdateInfoResponse",
+        {
+            platform: electronUpdater.getCurrentPlatform(),
+            version: (autoUpdaterInfo === undefined ? "" : autoUpdaterInfo.version),
+        });
 });
 
 /**
@@ -260,6 +267,7 @@ function createLoginWindow(load: boolean): void {
  */
 function startSqlCompareBackend(webPort: number): void {
     if (fs.existsSync(servicePath)) {
+        logger.debug(`Starting service ${servicePath}`);
         serviceProcess = childProcess.spawn(servicePath, [`${webPort}`]);
         /*
         serviceProcess.stdout.on("data", data => {
@@ -272,6 +280,8 @@ function startSqlCompareBackend(webPort: number): void {
             console.log("closing code: " + code);
         });
         */
+    } else {
+        logger.error(`Unable to find executable: ${servicePath}`);
     }
 }
 

@@ -200,9 +200,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       i.allow_page_locks AS 'AllowPageLocks',");
             query.AppendLine("       i.has_filter AS 'HasFilter',");
             query.AppendLine("       i.filter_definition AS 'FilterDefinition',");
-            query.AppendLine("       i.compression_delay AS 'CompressionDelay',");
-            query.AppendLine("       i.suppress_dup_key_messages AS 'SuppressDupKeyMessages',");
-            query.AppendLine("       i.auto_created AS 'AutoCreated'");
+            query.AppendLine("       i.compression_delay AS 'CompressionDelay'");
             query.AppendLine("FROM sys.indexes i");
             query.AppendLine("JOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id");
             query.AppendLine("JOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id");

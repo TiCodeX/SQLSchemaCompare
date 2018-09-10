@@ -133,15 +133,5 @@
         /// Gets or sets the index compression delay
         /// </summary>
         public int? CompressionDelay { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether duplicate key messages are suppressed
-        /// </summary>
-        public bool? SuppressDupKeyMessages { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the index is auto created
-        /// </summary>
-        public bool? AutoCreated { get; set; }
     }
 }

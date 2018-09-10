@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Interfaces;
@@ -28,7 +29,7 @@ namespace SQLCompare.Services
             // Remove the database since we want to retrieve all of them
             options.Database = string.Empty;
             var provider = this.dbProviderFactory.Create(options);
-            return provider.GetDatabaseList();
+            return provider.GetDatabaseList().OrderBy(x => x).ToList();
         }
 
         /// <inheritdoc />

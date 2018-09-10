@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Services;
 
@@ -34,50 +33,21 @@ namespace SQLCompare.UI
         public string AuthorizationHeaderName => "CustomAuthToken";
 
         /// <inheritdoc/>
-        public string AppSettingsFullFilename
-        {
-            get
-            {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    return Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                        ".sqlcompare",
-                        "Config.conf");
-                }
-
-                return Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                    "SqlCompare",
-                    "Config.conf");
-            }
-        }
+        public string AppSettingsFullFilename => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+            ".SQLCompare",
+            "SQLCompare.conf");
 
         /// <inheritdoc/>
         public string LoggerLayout =>
             "${longdate}|${event-properties:item=EventId_Id}|${uppercase:${level}}|${logger}|${message} ${exception:format=tostring}";
 
         /// <inheritdoc/>
-        public string LoggerFile
-        {
-            get
-            {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    return Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                        ".sqlcompare",
-                        "log",
-                        @"SqlCompare-${shortdate}-service.log");
-                }
-
-                return Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                    "SqlCompare",
-                    "log",
-                    @"SqlCompare-${shortdate}-service.log");
-            }
-        }
+        public string LoggerFile => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+            ".SQLCompare",
+            "log",
+            @"SQLCompare-${shortdate}-service.log");
 
         /// <inheritdoc/>
         public int LoggerMaxArchiveFiles => 9;

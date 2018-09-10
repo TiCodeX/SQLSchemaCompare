@@ -15,6 +15,7 @@
         "remoteBuild": false,
         "win": {
             "target": "nsis",
+            "artifactName": "SQLCompare-${version}.${ext}",
             "publish": {
                 "provider": "generic",
                 "url": ""
@@ -34,7 +35,8 @@
             "target": [ "deb", "rpm", "tar.gz" ],
             "category": "Utility",
             "synopsis": "The swiss army knive for DB schema comparison",
-            "artifactName": "${name}-${version}-${arch}.${ext}",
+            "executableName": "SQLCompare",
+            "artifactName": "SQLCompare-${version}.${ext}",
             "publish": {
                 "provider": "generic",
                 "url": ""

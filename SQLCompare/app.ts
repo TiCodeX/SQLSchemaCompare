@@ -17,9 +17,7 @@ electron.app.setAppUserModelId("ch.ticodex.sqlcompare");
 const initialPort: number = 5000;
 const splashUrl: string = `file://${__dirname}/splash.html`;
 const servicePath: string = path.join(path.dirname(process.execPath), "bin", `SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`);
-const loggerPath: string = process.platform === "win32" ?
-    "C:/ProgramData/SqlCompare/log/SqlCompare" :
-    path.join(os.homedir(), ".sqlcompare", "log", "SqlCompare");
+const loggerPath: string = path.join(os.homedir(), ".SQLCompare", "log", "SQLCompare");
 const loggerPattern: string = "-yyyy-MM-dd-ui.log";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;

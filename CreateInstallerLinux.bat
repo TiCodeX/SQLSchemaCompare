@@ -40,13 +40,15 @@ if exist %~dp0\installer\linux-unpacked ( rmdir /S /Q %~dp0\installer\linux-unpa
 
 if ERRORLEVEL 1 goto:error
 
-REM Create backup of latest-linux.yml
-REM for /f "tokens=1-2" %%a in (%~dp0\installer\latest-linux..yml) do (
-REM     set "version=%%b"
-REM     goto:versionfound
-REM )
-REM :versionfound
-REM copy /Y %~dp0\installer\latest-linux..yml %~dp0\installer\latest-linux.-%version%.yml
+REM Create latest-linux.yml
+for /f "tokens=1,2" %%a in (%~dp0\SQLCompare\package.json) do (
+    if %%a=="version": (
+        set version=%%b
+        goto:versionfound
+    )
+)
+:versionfound
+echo version: %version:~1,-2%> %~dp0\installer\latest-linux.yml
 
 if ERRORLEVEL 1 goto:error
 

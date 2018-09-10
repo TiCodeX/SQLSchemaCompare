@@ -8,6 +8,7 @@ import windowStateKeeper = require("electron-window-state");
 import fs = require("fs");
 import glob = require("glob");
 import log4js = require("log4js");
+import os = require("os");
 import path = require("path");
 /* tslint:enable:no-require-imports no-implicit-dependencies */
 
@@ -18,7 +19,7 @@ const splashUrl: string = `file://${__dirname}/splash.html`;
 const servicePath: string = path.join(path.dirname(process.execPath), "bin", `SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`);
 const loggerPath: string = process.platform === "win32" ?
     "C:/ProgramData/SqlCompare/log/SqlCompare" :
-    path.join(path.dirname(process.execPath), "log", "SqlCompare");
+    path.join(os.homedir(), ".sqlcompare", "log", "SqlCompare");
 const loggerPattern: string = "-yyyy-MM-dd-ui.log";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;

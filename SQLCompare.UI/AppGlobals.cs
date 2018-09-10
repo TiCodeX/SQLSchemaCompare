@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Services;
@@ -42,7 +41,8 @@ namespace SQLCompare.UI
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
                     return Path.Combine(
-                        Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).FullName,
+                        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                        ".sqlcompare",
                         "Config.conf");
                 }
 
@@ -65,7 +65,8 @@ namespace SQLCompare.UI
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
                     return Path.Combine(
-                        Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).FullName,
+                        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                        ".sqlcompare",
                         "log",
                         @"SqlCompare-${shortdate}-service.log");
                 }

@@ -1,6 +1,6 @@
 {
     "name": "sqlcompare",
-    "version": "2018.8.5",
+    "version": "2018.9.1",
     "description": "SQL Compare",
     "main": "app.js",
     "author": {

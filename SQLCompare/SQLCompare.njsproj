@@ -31,6 +31,7 @@ __TEST_UPDATER_PLATFORM=linux</Environment>
     <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
     <EnableTypeScript>true</EnableTypeScript>
     <StartWebBrowser>False</StartWebBrowser>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,6 +41,12 @@ __TEST_UPDATER_PLATFORM=linux</Environment>
   </PropertyGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
+    <Content Include="app.js">
+      <DependentUpon>app.ts</DependentUpon>
+    </Content>
+    <Content Include="app.min.js">
+      <DependentUpon>app.js</DependentUpon>
+    </Content>
     <Content Include="font\OpenSans-Regular.ttf" />
     <Content Include="img\background.jpg" />
     <Content Include="img\Logo.png" />
@@ -53,6 +60,11 @@ __TEST_UPDATER_PLATFORM=linux</Environment>
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
+  <PropertyGroup>
+    <PostBuildEvent>
+      node node_modules\uglify-js\bin\uglifyjs app.js --compress --mangle --toplevel --output app.min.js
+    </PostBuildEvent>
+  </PropertyGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
   <Import Project="..\tslint.targets" />
   <ProjectExtensions>

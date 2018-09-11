@@ -2,7 +2,7 @@
     "name": "sqlcompare",
     "version": "2018.9.1",
     "description": "The swiss army knive for DB schema comparison and synchronization which runs on multiple OS and supports various DB. TiCodeX SQL Compare runs on Windows, Mac and Linux and connects to Microsoft SQL (MS-SQL), mySQL and Postgress. In addition Azure SQL and MS-SQL on Amazon RDS is supported.",
-    "main": "app.js",
+    "main": "app.min.js",
     "homepage": "https://www.ticodex.com",
     "author": {
         "name": "TiCodeX SA",
@@ -32,7 +32,11 @@
             "include": "installer.nsh"
         },
         "linux": {
-            "target": [ "deb", "rpm", "tar.gz" ],
+            "target": [
+                "deb",
+                "rpm",
+                "tar.gz"
+            ],
             "category": "Utility",
             "synopsis": "The swiss army knive for DB schema comparison",
             "executableName": "SQLCompare",
@@ -48,9 +52,11 @@
         },
         "files": [
             "!app.ts",
+            "!app.js",
             "!*.njsproj",
             "!*.njsproj.user",
             "!tsconfig.json",
+            "eula.html",
             "!bin",
             "!obj",
             "!build"
@@ -80,7 +86,8 @@
         "@types/glob": "^5.0.35",
         "@types/node": "^6.0.116",
         "electron": "^1.8.8",
-        "electron-builder": "^20.28.2"
+        "electron-builder": "^20.28.2",
+        "uglify-js": "^3.4.9"
     },
     "dependencies": {
         "detect-port": "^1.2.3",

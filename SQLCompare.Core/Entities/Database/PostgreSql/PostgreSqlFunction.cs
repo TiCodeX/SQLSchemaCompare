@@ -43,11 +43,6 @@ namespace SQLCompare.Core.Entities.Database.PostgreSql
         public char Volatile { get; set; }
 
         /// <summary>
-        /// Gets or sets the function arguments count
-        /// </summary>
-        public short ArgsCount { get; set; }
-
-        /// <summary>
         /// Gets or sets the function return type
         /// </summary>
         public uint ReturnType { get; set; }

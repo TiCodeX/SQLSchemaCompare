@@ -142,6 +142,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update and restart.
+        /// </summary>
+        public static string ButtonUpdateAndRestart {
+            get {
+                return ResourceManager.GetString("ButtonUpdateAndRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Account is locked.
         /// </summary>
         public static string ErrorAccountLocked {
@@ -709,15 +718,6 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The version v{0} has been released, it will be downloaded in background and installed automatically when you close the application..
-        /// </summary>
-        public static string NotificationAutomaticUpdateAndInstall {
-            get {
-                return ResourceManager.GetString("NotificationAutomaticUpdateAndInstall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to New version available!.
         /// </summary>
         public static string NotificationNewVersionAvailable {
@@ -727,11 +727,20 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The version v{0} has been released, please visit the TiCodeX website to download it..
+        ///   Looks up a localized string similar to The new version v{0} has been released, please visit the TiCodeX website to download it..
         /// </summary>
         public static string NotificationNewVersionAvailableMessage {
             get {
                 return ResourceManager.GetString("NotificationNewVersionAvailableMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The new version v{0} is available and ready to be installed..
+        /// </summary>
+        public static string NotificationUpdateReadyToBeInstalled {
+            get {
+                return ResourceManager.GetString("NotificationUpdateReadyToBeInstalled", resourceCulture);
             }
         }
         

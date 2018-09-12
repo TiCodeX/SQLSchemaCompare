@@ -26,6 +26,7 @@ let serviceUrl: string = "https://127.0.0.1:{port}";
 let loginUrl: string = "https://127.0.0.1:{port}/login";
 let serviceProcess: childProcess.ChildProcess;
 let autoUpdaterInfo: electronUpdater.UpdateInfo;
+let autoUpdaterReadyToBeInstalled: boolean = false;
 
 /**
  * Keep a global reference of the window object, if you don't, the window will
@@ -68,7 +69,7 @@ const autoUpdaterLogger: log4js.Logger = log4js.getLogger("electron-updater");
 autoUpdaterLogger.level = (process.defaultApp ? "debug" : "info");
 electronUpdater.autoUpdater.logger = autoUpdaterLogger;
 electronUpdater.autoUpdater.autoDownload = !process.defaultApp && electronUpdater.getCurrentPlatform() !== "linux";
-electronUpdater.autoUpdater.autoInstallOnAppQuit = !process.defaultApp && electronUpdater.getCurrentPlatform() !== "linux";
+electronUpdater.autoUpdater.autoInstallOnAppQuit = false;
 const autoUpdaterPublishOptions: builderUtilRuntime.GenericServerOptions = {
     provider: "generic",
     url: autoUpdaterUrl,
@@ -76,6 +77,18 @@ const autoUpdaterPublishOptions: builderUtilRuntime.GenericServerOptions = {
 electronUpdater.autoUpdater.setFeedURL(autoUpdaterPublishOptions);
 electronUpdater.autoUpdater.on("update-available", (info: electronUpdater.UpdateInfo) => {
     autoUpdaterInfo = info;
+});
+electronUpdater.autoUpdater.on("update-downloaded", (info: electronUpdater.UpdateInfo) => {
+    autoUpdaterReadyToBeInstalled = true;
+    const currentWindow: Electron.BrowserWindow = loginWindow !== undefined ? loginWindow : mainWindow;
+    if (currentWindow !== undefined) {
+        currentWindow.webContents.send("UpdateAvailable",
+            {
+                platform: electronUpdater.getCurrentPlatform(),
+                readyToBeInstalled: autoUpdaterReadyToBeInstalled,
+                version: info.version,
+            });
+    }
 });
 
 // Start an asynchronous function to delete old log files
@@ -144,12 +157,17 @@ electron.ipcMain.on("ShowLoginWindow", (event: electron.Event) => {
     }
 });
 // Register the renderer callback to retrieve the updates
-electron.ipcMain.on("GetUpdateInfo", (event: electron.Event) => {
-    event.sender.send("GetUpdateInfoResponse",
+electron.ipcMain.on("CheckUpdateAvailable", (event: electron.Event) => {
+    event.sender.send("UpdateAvailable",
         {
             platform: electronUpdater.getCurrentPlatform(),
+            readyToBeInstalled: autoUpdaterReadyToBeInstalled,
             version: (autoUpdaterInfo === undefined ? "" : autoUpdaterInfo.version),
         });
+});
+// Register the renderer callback to quit and install the update
+electron.ipcMain.on("QuitAndInstall", (event: electron.Event) => {
+    electronUpdater.autoUpdater.quitAndInstall(true, true);
 });
 
 /**

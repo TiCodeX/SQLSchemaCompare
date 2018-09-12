@@ -258,10 +258,13 @@
   <data name="ButtonQuit" xml:space="preserve">
     <value>Esci</value>
   </data>
-  <data name="NotificationAutomaticUpdateAndInstall" xml:space="preserve">
-    <value>La versione v{0} è stata rilasciata, verrà scaricata in background e installata automaticamente alla chiusura dell'applicazione.</value>
+  <data name="NotificationUpdateReadyToBeInstalled" xml:space="preserve">
+    <value>La nuova versione v{0} è disponibile e pronta per essere installata.</value>
   </data>
   <data name="NotificationNewVersionAvailableMessage" xml:space="preserve">
-    <value>La versione v{0} è stata rilasciata, si prega di visitare il sito web TiCodeX per scaricarla.</value>
+    <value>La nuova versione v{0} è stata rilasciata, si prega di visitare il sito web TiCodeX per scaricarla.</value>
+  </data>
+  <data name="ButtonUpdateAndRestart" xml:space="preserve">
+    <value>Aggiorna e riavvia</value>
   </data>
 </root>

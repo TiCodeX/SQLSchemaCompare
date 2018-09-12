@@ -32,20 +32,29 @@ class Utility {
             electron.webFrame.setVisualZoomLevelLimits(1, 1);
             electron.webFrame.setLayoutZoomLevelLimits(0, 0);
             // Register electron callbacks
-            electron.ipcRenderer.on("GetUpdateInfoResponse", (event: Electron.Event, info: { platform: string; version: string }) => {
+            electron.ipcRenderer.on("UpdateAvailable", (event: Electron.Event, info: { platform: string; readyToBeInstalled: boolean; version: string }) => {
                 if (info !== null && info.version !== "") {
-                    let message: string = `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
-                    message += "<br/>";
                     if (info.platform === "linux") {
+                        let message: string = "<a href=\"#\" class=\"close\" data-dismiss=\"alert\">&times;</a>";
+                        message += `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
+                        message += "<br/>";
                         message += `${Localization.Get("NotificationNewVersionAvailableMessage").replace("{0}", info.version)}`;
+                        $("#myNotification").html(message).show();
                     } else {
-                        message += `${Localization.Get("NotificationAutomaticUpdateAndInstall").replace("{0}", info.version)}`;
+                        // Windows & MacOS
+                        if (info.readyToBeInstalled) {
+                            let message: string = "<button type=\"button\" class=\"btn btn-primary float-right\" onclick=\"electron.ipcRenderer.send('QuitAndInstall');\">";
+                            message += `${Localization.Get("ButtonUpdateAndRestart")}`;
+                            message += "</button>";
+                            message += `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
+                            message += "<br/>";
+                            message += `${Localization.Get("NotificationUpdateReadyToBeInstalled").replace("{0}", info.version)}`;
+                            $("#myNotification").html(message).show();
+                        }
                     }
-                    $("#myNotificationMessage").html(message);
-                    $("#myNotification").show();
                 }
             });
-            electron.ipcRenderer.send("GetUpdateInfo");
+            electron.ipcRenderer.send("CheckUpdateAvailable");
         }
     }
 

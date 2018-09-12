@@ -192,4 +192,13 @@
   <data name="ButtonQuit" xml:space="preserve">
     <value>Beenden</value>
   </data>
+  <data name="NotificationUpdateReadyToBeInstalled" xml:space="preserve">
+    <value>Die neue version v{0} ist verfügbar und kann installiert werden.</value>
+  </data>
+  <data name="NotificationNewVersionAvailableMessage" xml:space="preserve">
+    <value>Die neue version v{0} wurde veröffentlicht. Bitte besuchen Sie die TiCodeX-Website, um sie herunterzuladen.</value>
+  </data>
+  <data name="ButtonUpdateAndRestart" xml:space="preserve">
+    <value>Aktualisieren und neu starten</value>
+  </data>
 </root>

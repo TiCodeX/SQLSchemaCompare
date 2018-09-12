@@ -309,8 +309,8 @@
   <data name="LabelUserDefinedType" xml:space="preserve">
     <value>User-Defined Data Type</value>
   </data>
-  <data name="NotificationAutomaticUpdateAndInstall" xml:space="preserve">
-    <value>The version v{0} has been released, it will be downloaded in background and installed automatically when you close the application.</value>
+  <data name="NotificationUpdateReadyToBeInstalled" xml:space="preserve">
+    <value>The new version v{0} is available and ready to be installed.</value>
   </data>
   <data name="NotificationNewVersionAvailable" xml:space="preserve">
     <value>New version available!</value>
@@ -352,6 +352,9 @@
     <value>Error</value>
   </data>
   <data name="NotificationNewVersionAvailableMessage" xml:space="preserve">
-    <value>The version v{0} has been released, please visit the TiCodeX website to download it.</value>
+    <value>The new version v{0} has been released, please visit the TiCodeX website to download it.</value>
+  </data>
+  <data name="ButtonUpdateAndRestart" xml:space="preserve">
+    <value>Update and restart</value>
   </data>
 </root>

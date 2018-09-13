@@ -49,7 +49,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var keys in table.PrimaryKeys.GroupBy(x => x.Name))
+            foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = (PostgreSqlIndex)keys.First();
                 var columnList = keys.OrderBy(x => ((PostgreSqlIndex)x).OrdinalPosition).Select(x => $"\"{((PostgreSqlIndex)x).ColumnName}\"");
@@ -67,7 +67,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var keys in table.ForeignKeys.GroupBy(x => x.Name))
+            foreach (var keys in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = (PostgreSqlForeignKey)keys.First();
                 var columnList = keys.OrderBy(x => ((PostgreSqlForeignKey)x).OrdinalPosition).Select(x => $"\"{((PostgreSqlForeignKey)x).ColumnName}\"");
@@ -93,7 +93,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptConstraintsAlterTable(ABaseDbTable table)
         {
             var sb = new StringBuilder();
-            foreach (var keys in table.Constraints.GroupBy(x => x.Name))
+            foreach (var keys in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = keys.First();
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
@@ -109,7 +109,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var indexes in table.Indexes.Cast<PostgreSqlIndex>().GroupBy(x => x.Name))
+            foreach (var indexes in table.Indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<PostgreSqlIndex>().GroupBy(x => x.Name))
             {
                 var index = indexes.First();
 

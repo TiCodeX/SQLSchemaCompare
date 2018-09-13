@@ -51,7 +51,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptPrimaryKeysAlterTable(ABaseDbTable table)
         {
             var sb = new StringBuilder();
-            foreach (var keys in table.PrimaryKeys.GroupBy(x => x.Name))
+            foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = (MicrosoftSqlIndex)keys.First();
                 var columnList = keys.OrderBy(x => ((MicrosoftSqlIndex)x).OrdinalPosition).Select(x => $"[{((MicrosoftSqlIndex)x).ColumnName}]");
@@ -70,7 +70,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var aBaseDbConstraint in table.ForeignKeys.OrderBy(x => x.Name))
+            foreach (var aBaseDbConstraint in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
                 var key = (MicrosoftSqlForeignKey)aBaseDbConstraint;
 
@@ -92,7 +92,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptConstraintsAlterTable(ABaseDbTable table)
         {
             var sb = new StringBuilder();
-            foreach (var keys in table.Constraints.GroupBy(x => x.Name))
+            foreach (var keys in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = keys.First();
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
@@ -111,8 +111,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             // Reorder: Clustered indexes must be created before Nonclustered
             var orderedIndexes = new List<MicrosoftSqlIndex>();
-            orderedIndexes.AddRange(table.Indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type == MicrosoftSqlIndex.IndexType.Clustered));
-            orderedIndexes.AddRange(table.Indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type != MicrosoftSqlIndex.IndexType.Clustered));
+            orderedIndexes.AddRange(table.Indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type == MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
+            orderedIndexes.AddRange(table.Indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type != MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
 
             foreach (var indexes in orderedIndexes.GroupBy(x => x.Name))
             {

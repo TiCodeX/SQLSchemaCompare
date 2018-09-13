@@ -66,7 +66,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptPrimaryKeysAlterTable(ABaseDbTable table)
         {
             var sb = new StringBuilder();
-            foreach (var keys in table.PrimaryKeys.GroupBy(x => x.Name))
+            foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = (MySqlIndex)keys.First();
                 var columnList = keys.OrderBy(x => ((MySqlIndex)x).OrdinalPosition).Select(x => $"`{((MySqlIndex)x).ColumnName}`");
@@ -84,7 +84,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var keys in table.ForeignKeys.GroupBy(x => x.Name))
+            foreach (var keys in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = (MySqlForeignKey)keys.First();
                 var columnList = keys.OrderBy(x => ((MySqlForeignKey)x).OrdinalPosition).Select(x => $"`{((MySqlForeignKey)x).ColumnName}`");
@@ -113,7 +113,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var indexes in table.Indexes.Cast<MySqlIndex>().GroupBy(x => x.Name))
+            foreach (var indexes in table.Indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>().GroupBy(x => x.Name))
             {
                 var index = indexes.First();
 

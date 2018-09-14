@@ -15,8 +15,8 @@ electron.app.setAppUserModelId("ch.ticodex.sqlcompare");
 const initialPort: number = 5000;
 const splashUrl: string = `file://${__dirname}/splash.html`;
 const servicePath: string = `./bin/SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`;
-const loggerPath: string = "C:\\ProgramData\\SqlCompare\\log\\";
-const loggerFile: string = "SqlCompare-yyyy-MM-dd-ui.log";
+const loggerPath: string = "C:/ProgramData/SqlCompare/log/SqlCompare";
+const loggerPattern: string = "-yyyy-MM-dd-ui.log";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;
 const autoUpdaterUrl: string = "http://www.debeonline.ch/sqlcompare";
@@ -38,7 +38,7 @@ log4js.configure({
         default: {
             type: "dateFile",
             filename: loggerPath,
-            pattern: loggerFile,
+            pattern: loggerPattern,
             layout: {
                 type: "pattern",
                 pattern: loggerLayout,
@@ -79,7 +79,7 @@ electronUpdater.autoUpdater.on("update-available", (info: electronUpdater.Update
 // Start an asynchronous function to delete old log files
 setTimeout(() => {
     try {
-        glob(loggerPath + loggerFile.replace("yyyy-MM-dd", "*"), (err: object, files: Array<string>) => {
+        glob(loggerPath + loggerPattern.replace("yyyy-MM-dd", "*"), (err: object, files: Array<string>) => {
             files.sort();
             files.reverse();
             files.slice(loggerMaxArchiveFiles).forEach((file: string) => {

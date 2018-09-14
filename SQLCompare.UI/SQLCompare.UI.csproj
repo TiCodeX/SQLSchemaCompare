@@ -4,8 +4,12 @@
     <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
     <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
-    <TypeScriptSourceMap>false</TypeScriptSourceMap>
-    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptLib>ES5,ES6,DOM</TypeScriptLib>
+    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
     <TSLintConfig>..\tslint.json</TSLintConfig>
     <TSLintProject>tsconfig.json</TSLintProject>
     <OutputType>Exe</OutputType>

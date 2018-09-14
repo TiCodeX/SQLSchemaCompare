@@ -163,7 +163,9 @@ class Project {
         };
 
         if (this.IsProjectPageOpen()) {
-            this.Edit(saveCall);
+            this.Edit().then((): void => {
+                saveCall();
+            });
         }
         else {
             saveCall();
@@ -231,10 +233,14 @@ class Project {
      * Serialize the project values in the UI and send them to the service
      * @param successCallback - The callback function in case of success
      */
-    public static Edit<T>(successCallback: JQuery.Ajax.SuccessCallback<ApiResponse<T>>): void {
+    public static async Edit<T>(): Promise<ApiResponse<T>> {
         const data: object = Utility.SerializeJSON($("#ProjectPage"));
 
-        Utility.AjaxCall(this.editUrl, Utility.HttpMethod.Post, data, successCallback);
+        return new Promise<ApiResponse<T>>((resolve: PromiseResolve<ApiResponse<T>>): void => {
+            Utility.AjaxCall(this.editUrl, Utility.HttpMethod.Post, data, (response: ApiResponse<T>): void => {
+                resolve(response);
+            });
+        });
     }
 
     /**
@@ -286,7 +292,7 @@ class Project {
      * Save the project and perform the comparison
      */
     public static EditAndCompare(): void {
-        this.Edit((): void => {
+        this.Edit().then((): void => {
             Project.Compare();
         });
     }

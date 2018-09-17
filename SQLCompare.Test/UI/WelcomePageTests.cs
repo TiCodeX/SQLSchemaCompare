@@ -28,7 +28,7 @@ namespace SQLCompare.Test.UI
         /// Test the connection to the web service
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Fact]
+        [Fact(Skip = "Unable to start webserver")]
         [IntegrationTest]
         public async Task ConnectionTest()
         {
@@ -40,7 +40,7 @@ namespace SQLCompare.Test.UI
         /// Test the loading of the WelcomePage
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Fact]
+        [Fact(Skip = "Unable to start webserver")]
         [IntegrationTest]
         public async Task WelcomePageLoadTest()
         {

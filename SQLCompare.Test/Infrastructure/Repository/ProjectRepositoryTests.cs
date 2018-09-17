@@ -159,6 +159,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
       <UseSchemaName>false</UseSchemaName>
     </Scripting>
   </Options>
+  <State>New</State>
 </CompareProject>";
 
             Assert.Equal(xmlFileExpected, xmlFile);

@@ -2,21 +2,21 @@
 let mainSplitter: Split.Instance;
 
 $(() => {
-    Utility.ApplicationStartup();
-
-    // Configure the monaco editor loader
-    amdRequire.config({
-        baseUrl: "lib/monaco-editor",
-    });
-
-    // Preload the monaco-editor
-    setTimeout((): void => {
-        amdRequire(["vs/editor/editor.main"], (): void => {
-            // Nothing to do
+    Utility.ApplicationStartup().then(() => {
+        // Configure the monaco editor loader
+        amdRequire.config({
+            baseUrl: "lib/monaco-editor",
         });
-    }, 0);
 
-    Menu.CreateMenu();
+        // Preload the monaco-editor
+        setTimeout((): void => {
+            amdRequire(["vs/editor/editor.main"], (): void => {
+                // Nothing to do
+            });
+        }, 0);
 
-    PageManager.LoadPage(PageManager.Page.Welcome);
+        Menu.CreateMenu();
+
+        PageManager.LoadPage(PageManager.Page.Welcome);
+    });
 });

@@ -70,41 +70,41 @@ class Login {
 }
 
 $((): void => {
-    Utility.ApplicationStartup();
+    Utility.ApplicationStartup().then((): void => {
+        // If it doesn't exist, means the saved session has been verified
+        const url: JQuery = $("#url");
+        if (url.length === 0) {
+            electron.ipcRenderer.send("OpenMainWindow");
 
-    // If it doesn't exist, means the saved session has been verified
-    const url: JQuery = $("#url");
-    if (url.length === 0) {
-        electron.ipcRenderer.send("OpenMainWindow");
-
-        return;
-    }
-
-    electron.ipcRenderer.send("ShowLoginWindow");
-
-    const webview: JQuery = $("#webview");
-    let redirectRequestDetected: boolean = false;
-    webview.on("did-get-redirect-request", (e: JQuery.Event): void => {
-        redirectRequestDetected = true;
-        e.preventDefault();
-        Login.handleRedirect((<HashChangeEvent>e.originalEvent).newURL, <string>url.val());
-    });
-    webview.on("did-fail-load", (e: JQuery.Event) => {
-        e.preventDefault();
-        if (redirectRequestDetected) {
             return;
         }
-        webview.hide();
-        $("#myModalText").html(Localization.Get("ErrorCannotContactTiCodeXWebsite"));
-        $("#myModalLink").html("www.ticodex.com");
-        $("#myModalLink").on("click", () => { Utility.OpenExternalBrowser("https://www.ticodex.com"); });
-        $("#closeButton").hide();
-        $("#myModal").modal("show");
-    });
-    webview.on("did-finish-load", (e: JQuery.Event): void => {
-        $(".tcx-loader").hide();
-    });
 
-    // Start loading the webview
-    webview.attr("src", <string>url.val());
+        electron.ipcRenderer.send("ShowLoginWindow");
+
+        const webview: JQuery = $("#webview");
+        let redirectRequestDetected: boolean = false;
+        webview.on("did-get-redirect-request", (e: JQuery.Event): void => {
+            redirectRequestDetected = true;
+            e.preventDefault();
+            Login.handleRedirect((<HashChangeEvent>e.originalEvent).newURL, <string>url.val());
+        });
+        webview.on("did-fail-load", (e: JQuery.Event) => {
+            e.preventDefault();
+            if (redirectRequestDetected) {
+                return;
+            }
+            webview.hide();
+            $("#myModalText").html(Localization.Get("ErrorCannotContactTiCodeXWebsite"));
+            $("#myModalLink").html("www.ticodex.com");
+            $("#myModalLink").on("click", () => { Utility.OpenExternalBrowser("https://www.ticodex.com"); });
+            $("#closeButton").hide();
+            $("#myModal").modal("show");
+        });
+        webview.on("did-finish-load", (e: JQuery.Event): void => {
+            $(".tcx-loader").hide();
+        });
+
+        // Start loading the webview
+        webview.attr("src", <string>url.val());
+    });
 });

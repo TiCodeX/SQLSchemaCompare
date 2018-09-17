@@ -45,17 +45,21 @@ class DialogManager {
      * Opens the save question dialog
      * @param callback - the action that should be done when the dialog returns
      */
-    public static OpenSaveQuestionDialog(callback: (response: number, checked: boolean) => void): void {
-        electron.remote.dialog.showMessageBox(
-            electron.remote.getCurrentWindow(),
-            {
-                type: "question",
-                message: Localization.Get("MessageDoYouWantToSaveProjectChanges"),
-                buttons: [Localization.Get("ButtonYes"), Localization.Get("ButtonNo"), Localization.Get("ButtonCancel")],
-                title: Localization.Get("Error"),
-            },
-            callback,
-        );
+    public static async OpenSaveQuestionDialog(): Promise<DialogManager.SaveDialogAnswers> {
+        return new Promise<DialogManager.SaveDialogAnswers>((resolve: PromiseResolve<DialogManager.SaveDialogAnswers>): void => {
+            electron.remote.dialog.showMessageBox(
+                electron.remote.getCurrentWindow(),
+                {
+                    type: "question",
+                    message: Localization.Get("MessageDoYouWantToSaveProjectChanges"),
+                    buttons: [Localization.Get("ButtonYes"), Localization.Get("ButtonNo"), Localization.Get("ButtonCancel")],
+                    title: Localization.Get("Error"),
+                },
+                (response: number, checked: boolean) => {
+                    resolve(response);
+                },
+            );
+        });
     }
 
     /**
@@ -65,17 +69,14 @@ class DialogManager {
      * @param data? The object data to send when the method is POST
      * @param callbackFunction? A function which will be called after opening the dialog
      */
-    public static OpenModalDialog(url: string, method: Utility.HttpMethod, data?: object, callbackFunction?: () => void): void {
-        Utility.AjaxCall(url, method, data, (result: string): void => {
+    public static async OpenModalDialog(url: string): Promise<void> {
+        return Utility.AjaxGetPage(url).then((result: string): void => {
             $("#myModalBody").html(result);
             $("#myModal > .modal-dialog").css("max-width", "");
             $("#myModal").modal("show");
             $("#myModal .tab-pane").matchHeight({
                 byRow: false,
             });
-            if (callbackFunction !== undefined) {
-                callbackFunction();
-            }
         });
     }
 

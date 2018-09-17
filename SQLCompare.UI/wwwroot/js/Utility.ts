@@ -15,7 +15,7 @@ class Utility {
     /**
      * Set the standard settings when the app starts
      */
-    public static ApplicationStartup(): void {
+    public static async ApplicationStartup(): Promise<void> {
         // Disable context menu
         window.addEventListener("contextmenu", (e: PointerEvent) => {
             e.preventDefault();
@@ -25,7 +25,7 @@ class Utility {
         $("[data-toggle='tooltip']").tooltip();
         $("[data-toggle='popover']").popover();
 
-        Localization.Load();
+        await Localization.Load();
 
         if (electron !== undefined) {
             // Prevent app zooming
@@ -60,7 +60,7 @@ class Utility {
 
     /**
      * Contact electron to open an external browser at the specified url
-     * @param url - The url to be opened in external browser
+     * @param url The url to be opened in external browser
      */
     public static OpenExternalBrowser(url: string): void {
         electron.shell.openExternal(url);
@@ -68,7 +68,7 @@ class Utility {
 
     /**
      * Indicates whether the specified string is null or an Empty string.
-     * @param s - The string to test.
+     * @param s The string to test
      */
     public static IsNullOrEmpty(s: string): boolean {
         return s === null || typeof s === "undefined" || s.length < 1;
@@ -76,7 +76,7 @@ class Utility {
 
     /**
      * Indicates whether a specified string is null, empty, or consists only of white-space characters.
-     * @param s - The string to test.
+     * @param s The string to test
      */
     public static IsNullOrWhitespace(s: string): boolean {
         return this.IsNullOrEmpty(s) || s.trim().length < 1;
@@ -85,6 +85,7 @@ class Utility {
     /**
      * Get a Logger for the specified category
      * @param category The logger category
+     * @return The logger
      */
     public static GetLogger(category: string): Logger {
         return new Logger(category);
@@ -92,7 +93,7 @@ class Utility {
 
     /**
      * Parse all the input elements in JSON format
-     * @param element - The container to search for input elements
+     * @param element The container to search for input elements
      * @returns The serialized JSON object
      */
     public static SerializeJSON(element: JQuery): object {
@@ -130,7 +131,7 @@ class Utility {
 
         const data: object = Utility.SerializeJSON(dataDiv);
 
-        Utility.AjaxCall(url, method, data, (response: ApiResponse<Array<string>>): void => {
+        Utility.AjaxCall(url, method, data).then((response: ApiResponse<Array<string>>): void => {
             select.find("option").remove();
             let options: string = "";
             $.each(response.Result, (index: number, value: string): void => {
@@ -144,35 +145,12 @@ class Utility {
 
     /**
      * Perform an asynchronous ajax call
-     * @param url - The URL of the ajax call
-     * @param method - The method (GET/POST)
-     * @param data - The object data to send when the method is POST
-     * @param successCallback - The callback function in case of success
+     * @param url The URL of the ajax call
+     * @param method The method (GET/POST)
+     * @param data The object data to send when the method is POST
+     * @return The ApiResponse
      */
-    public static AjaxCall<T>(url: string, method: Utility.HttpMethod, data: object, successCallback: JQuery.Ajax.SuccessCallback<ApiResponse<T>>): void {
-        this.AjaxCallInternal(url, method, true, data, successCallback);
-    }
-
-    /**
-     * Perform an synchronous ajax call
-     * @param url - The URL of the ajax call
-     * @param method - The method (GET/POST)
-     * @param data - The object data to send when the method is POST
-     * @param successCallback - The callback function in case of success
-     */
-    public static AjaxSyncCall<T>(url: string, method: Utility.HttpMethod, data: object, successCallback: JQuery.Ajax.SuccessCallback<ApiResponse<T>>): void {
-        this.AjaxCallInternal<T>(url, method, false, data, successCallback);
-    }
-
-    /**
-     * Perform an ajax call
-     * @param url - The URL of the ajax call
-     * @param method - The method (GET/POST)
-     * @param async - Whether to perform a synchronous or asynchronous call
-     * @param data - The object data to send when the method is POST
-     * @param successCallback - The callback function in case of success
-     */
-    private static AjaxCallInternal<T>(url: string, method: Utility.HttpMethod, async: boolean, data: object, successCallback: JQuery.Ajax.SuccessCallback<ApiResponse<T>>): void {
+    public static async AjaxCall<T>(url: string, method: Utility.HttpMethod, data?: object): Promise<ApiResponse<T>> {
         let ajaxMethod: string;
         switch (method) {
             case Utility.HttpMethod.Get:
@@ -186,21 +164,56 @@ class Utility {
         }
 
         this.logger.debug(`Executing AjaxCall... (Method=${ajaxMethod} Url=${url})`);
-        $.ajax(url, {
-            type: ajaxMethod,
-            beforeSend: (xhr: JQuery.jqXHR): void => {
-                xhr.setRequestHeader("XSRF-TOKEN",
-                    $("input:hidden[name='__RequestVerificationToken']").val().toString());
-            },
-            contentType: "application/json",
-            data: data !== undefined ? JSON.stringify(data) : "",
-            cache: false,
-            async: async,
-            success: successCallback,
-            error: (error: JQuery.jqXHR): void => {
-                this.logger.error(`Error executing AjaxCall: ${error.responseText}`);
-                DialogManager.ShowError("Error", "An unexpected error occured");
-            },
+
+        return new Promise<ApiResponse<T>>((resolve: PromiseResolve<ApiResponse<T>>): void => {
+            $.ajax(url, {
+                type: ajaxMethod,
+                beforeSend: (xhr: JQuery.jqXHR): void => {
+                    xhr.setRequestHeader("XSRF-TOKEN",
+                        $("input:hidden[name='__RequestVerificationToken']").val().toString());
+                },
+                contentType: "application/json",
+                data: data !== undefined ? JSON.stringify(data) : "",
+                cache: false,
+                async: false,
+                success: (response: ApiResponse<T>): void => {
+                    resolve(response);
+                },
+                error: (error: JQuery.jqXHR): void => {
+                    this.logger.error(`Error executing AjaxCall: ${error.responseText}`);
+                    DialogManager.ShowError("Error", "An unexpected error occured");
+                },
+            });
+        });
+    }
+
+    /**
+     * Perform an ajax call to load the html page
+     * @param url The URL of the ajax call
+     * @return The html of the page
+     */
+    public static async AjaxGetPage(url: string): Promise<string> {
+        this.logger.debug(`Executing AjaxGetPage... (Url=${url})`);
+
+        return new Promise<string>((resolve: PromiseResolve<string>): void => {
+            $.ajax(url, {
+                type: "GET",
+                beforeSend: (xhr: JQuery.jqXHR): void => {
+                    xhr.setRequestHeader("XSRF-TOKEN",
+                        $("input:hidden[name='__RequestVerificationToken']").val().toString());
+                },
+                contentType: "application/json",
+                data: "",
+                cache: false,
+                async: false,
+                success: (response: string): void => {
+                    resolve(response);
+                },
+                error: (error: JQuery.jqXHR): void => {
+                    this.logger.error(`Error executing AjaxGetPage: ${error.responseText}`);
+                    DialogManager.ShowError("Error", "An unexpected error occured");
+                },
+            });
         });
     }
 }

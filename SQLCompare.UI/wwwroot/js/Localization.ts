@@ -25,19 +25,18 @@ class Localization {
     /**
      * Load the localization
      */
-    public static Load(): void {
-        Utility.AjaxSyncCall("/Index?handler=LoadLocalization", Utility.HttpMethod.Get, undefined, (result: ApiResponse<object>): void => {
+    public static async Load(): Promise<void> {
+        const result: ApiResponse<object> = await Utility.AjaxCall("/Index?handler=LoadLocalization", Utility.HttpMethod.Get, undefined);
 
-            // Remove old localization
-            this.dictionary = new Array<[string, string]>();
+        // Remove old localization
+        this.dictionary = new Array<[string, string]>();
 
-            // Add new values
-            for (const key in result.Result) {
-                if (result.Result.hasOwnProperty(key)) {
-                    this.dictionary.push([key, <string>result.Result[key]]);
-                }
+        // Add new values
+        for (const key in result.Result) {
+            if (result.Result.hasOwnProperty(key)) {
+                this.dictionary.push([key, <string>result.Result[key]]);
             }
-        });
+        }
     }
 
 }

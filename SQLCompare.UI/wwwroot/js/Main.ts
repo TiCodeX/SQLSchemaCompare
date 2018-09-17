@@ -26,7 +26,7 @@ class Main {
      * Open the Main page
      */
     public static Open(): void {
-        PageManager.LoadPage(PageManager.Page.Main, true, (): void => {
+        PageManager.LoadPage(PageManager.Page.Main, true).then((): void => {
             this.RemoveSplitter();
         });
     }
@@ -53,7 +53,7 @@ class Main {
 
         $("#sqlDiff").empty();
 
-        Utility.AjaxCall(this.createScriptUrl + rowId, Utility.HttpMethod.Get, undefined, (response: ApiResponse<CreateScriptResult>): void => {
+        Utility.AjaxCall(this.createScriptUrl + rowId, Utility.HttpMethod.Get).then((response: ApiResponse<CreateScriptResult>): void => {
             const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(document.getElementById("sqlDiff"),
                 {
                     automaticLayout: true,
@@ -93,8 +93,7 @@ class Main {
 
     /**
      * Select the row and show the bottom panel
-     * @param e The click event
-     * @param rowId The id of the row to select
+     * @param rowElement The jQuery element of the clicked row
      */
     public static SelectRow(rowElement: JQuery): void {
         // Deselect the row

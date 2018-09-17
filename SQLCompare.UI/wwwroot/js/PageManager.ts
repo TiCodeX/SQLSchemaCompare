@@ -10,12 +10,15 @@ class PageManager {
     /**
      * Close the current page, if it's last it will open the welcome page
      */
-    public static ClosePage(): void {
+    public static async ClosePage(): Promise<void> {
         this.pageContainer.children("div:last").remove();
         this.pageContainer.children("div:last").removeClass("d-none");
+
         if (this.pageContainer.children("div").length === 0) {
-            this.LoadPage(PageManager.Page.Welcome);
+            return this.LoadPage(PageManager.Page.Welcome);
         }
+
+        return Promise.resolve();
     }
 
     /**
@@ -36,15 +39,17 @@ class PageManager {
      * Open the page
      * @param page The page to open
      * @param closePreviousPage Tell if the previous page needs to be closed
-     * @param callbackFunction? A function which will be called after opening the dialog
      */
-    public static LoadPage(page: PageManager.Page, closePreviousPage: boolean = true, callbackFunction?: () => void): void {
-        Utility.AjaxCall(this.GetPageUrl(page), Utility.HttpMethod.Get, undefined, (result: string): void => {
+    public static async LoadPage(page: PageManager.Page, closePreviousPage: boolean = true): Promise<void> {
+        return Utility.AjaxGetPage(this.GetPageUrl(page)).then((result: string): void => {
 
             if (closePreviousPage) {
                 this.pageContainer.children("div:last").remove();
             }
 
+            // Remove all the divs with the page attribute like the page we are opening
+            this.pageContainer.children(`div[page=${page}]`).remove();
+            // Hide all the remaining div
             this.pageContainer.children("div").addClass("d-none");
 
             const newPageDiv: JQuery = $("<div />");
@@ -55,10 +60,6 @@ class PageManager {
                 newPageDiv.addClass("my-auto");
             }
             newPageDiv.html(result);
-
-            if (callbackFunction !== undefined) {
-                callbackFunction();
-            }
         });
     }
 

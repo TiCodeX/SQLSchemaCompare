@@ -5,30 +5,18 @@ class Logout {
 
     /**
      * Logout the application
+     * @param ignoreDirty Whether to ignore if the project is dirty or prompt to save
      */
     public static Logout(ignoreDirty: boolean): void {
         const data: object = <object>JSON.parse(JSON.stringify(ignoreDirty));
 
-        Utility.AjaxCall("/Login?handler=logout", Utility.HttpMethod.Post, data, (response: ApiResponse<object>): void => {
+        Utility.AjaxCall("/Login?handler=logout", Utility.HttpMethod.Post, data).then((response: ApiResponse<string>): void => {
             if (response.Success) {
                 electron.ipcRenderer.send("OpenLoginWindow");
             } else {
-                if (response.ErrorCode === ApiResponse.EErrorCodes.ErrorProjectNeedToBeSaved) {
-                    DialogManager.OpenSaveQuestionDialog((answer: number, checked: boolean): void => {
-                        switch (answer) {
-                            case DialogManager.SaveDialogAnswers.Yes:
-                                Project.Save(false, (): void => { this.Logout(false); });
-                                break;
-                            case DialogManager.SaveDialogAnswers.No:
-                                this.Logout(true);
-                                break;
-                            default:
-                        }
-                    });
-                }
-                else {
-                    DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
-                }
+                Project.HandleProjectNeedToBeSavedError(response).then((): void => {
+                    this.Logout(true);
+                });
             }
         });
     }

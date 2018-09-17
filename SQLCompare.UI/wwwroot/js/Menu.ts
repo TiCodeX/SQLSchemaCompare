@@ -30,7 +30,7 @@ class Menu {
                         id: "menuOpenProject",
                         label: `${Localization.Get("MenuOpenProject")}...`,
                         click(): void {
-                            Project.Load(false);
+                            Project.Load();
                         },
                     },
                     {
@@ -87,7 +87,7 @@ class Menu {
                         label: Localization.Get("MenuEditProject"),
                         enabled: false,
                         click(): void {
-                            Project.Open();
+                            PageManager.LoadPage(PageManager.Page.Project, false);
                         },
                     },
                     {

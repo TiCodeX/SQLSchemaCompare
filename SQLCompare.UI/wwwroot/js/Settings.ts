@@ -16,8 +16,7 @@ class Settings {
      * Open the Settings page
      */
     public static Open(): void {
-        DialogManager.OpenModalDialog(this.pageUrl, Utility.HttpMethod.Get, undefined, () => {
-
+        DialogManager.OpenModalDialog(this.pageUrl).then(() => {
             $("#myModal > .modal-dialog").css("max-width", "300px");
             $("#myModal > .modal-title").html("Settings");
         });
@@ -29,7 +28,7 @@ class Settings {
      */
     public static Save(projectIsOpen: boolean): void {
         const data: object = Utility.SerializeJSON($("#Settings"));
-        Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data, (): void => {
+        Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data).then((): void => {
             // Load the new localization
             Localization.Load();
             // Recreate the menu with the new language

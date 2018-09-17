@@ -64,58 +64,30 @@ class Project {
         if (!this.isDirty) {
             this.isDirty = true;
 
-            Utility.AjaxCall(this.dirtyUrl, Utility.HttpMethod.Post, undefined, () => {
+            Utility.AjaxCall(this.dirtyUrl, Utility.HttpMethod.Post).then(() => {
                 Menu.ToggleProjectRelatedMenuStatus(true);
             });
         }
     }
 
     /**
-     * Check if the project is open
-     * @returns Whether the project is open
-     */
-    public static IsProjectPageOpen(): boolean {
-        return PageManager.GetOpenPage() === PageManager.Page.Project;
-    }
-
-    /**
-     * Open the Project page
-     */
-    public static Open(): void {
-        PageManager.LoadPage(PageManager.Page.Project, false);
-    }
-
-    /**
      * Open the new Project page
+     * @param ignoreDirty Whether to ignore if the project is dirty or prompt to save
      */
     public static New(ignoreDirty: boolean): void {
         const data: object = <object>JSON.parse(JSON.stringify(ignoreDirty));
 
-        Utility.AjaxCall(this.newUrl, Utility.HttpMethod.Post, data, (response: ApiResponse<string>): void => {
+        Utility.AjaxCall(this.newUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string>): void => {
             if (response.Success) {
                 this.isDirty = false;
                 this.filename = undefined;
-                PageManager.LoadPage(PageManager.Page.Project, true, (): void => {
+                PageManager.LoadPage(PageManager.Page.Project, true).then((): void => {
                     Menu.ToggleProjectRelatedMenuStatus(true);
                 });
-            }
-            else {
-                if (response.ErrorCode === ApiResponse.EErrorCodes.ErrorProjectNeedToBeSaved) {
-                    DialogManager.OpenSaveQuestionDialog((answer: number, checked: boolean): void => {
-                        switch (answer) {
-                            case DialogManager.SaveDialogAnswers.Yes:
-                                this.Save(false, (): void => { this.New(false); });
-                                break;
-                            case DialogManager.SaveDialogAnswers.No:
-                                this.New(true);
-                                break;
-                            default:
-                        }
-                    });
-                }
-                else {
-                    DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
-                }
+            } else {
+                this.HandleProjectNeedToBeSavedError(response).then((): void => {
+                    this.New(true);
+                });
             }
         });
     }
@@ -124,7 +96,7 @@ class Project {
      * Save the Project
      * @param showDialog Whether to show the save dialog
      */
-    public static Save(showDialog: boolean = false, saveCallback?: () => void): void {
+    public static async Save(showDialog: boolean = false): Promise<void> {
         let filename: string = this.filename;
         if (filename === undefined || showDialog) {
             filename = electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
@@ -140,46 +112,35 @@ class Project {
                 });
         }
         if (Utility.IsNullOrWhitespace(filename)) {
-            return;
+            return Promise.resolve();
         }
 
-        const saveCall: () => void = (): void => {
-            const data: object = <object>JSON.parse(JSON.stringify(filename));
-
-            Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data, (response: ApiResponse<object>): void => {
-                if (response.Success) {
-                    this.filename = filename;
-                    this.isDirty = false;
-                    Menu.ToggleProjectRelatedMenuStatus(true);
-                    DialogManager.ShowInformation(Localization.Get("TitleSaveProject"), Localization.Get("MessageProjectSavedSuccessfully"));
-                    if (saveCallback !== undefined) {
-                        saveCallback();
-                    }
-                }
-                else {
-                    DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
-                }
-            });
-        };
-
-        if (this.IsProjectPageOpen()) {
-            this.Edit().then((): void => {
-                saveCall();
-            });
+        if (PageManager.GetOpenPage() === PageManager.Page.Project) {
+            await this.Edit();
         }
-        else {
-            saveCall();
-        }
+
+        const data: object = <object>JSON.parse(JSON.stringify(filename));
+
+        return Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<object>): void => {
+            if (response.Success) {
+                this.filename = filename;
+                this.isDirty = false;
+                Menu.ToggleProjectRelatedMenuStatus(true);
+                DialogManager.ShowInformation(Localization.Get("TitleSaveProject"), Localization.Get("MessageProjectSavedSuccessfully"));
+            } else {
+                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
+            }
+        });
     }
 
     /**
      * Load the Project from the file, if not specified show the open file dialog
+     * @param ignoreDirty Whether to ignore if the project is dirty or prompt to save
      * @param filename The Project file path
      */
-    public static Load(ignoreDirty: boolean, filename?: string): void {
+    public static Load(ignoreDirty: boolean = false, filename?: string): void {
         let file: string = filename;
         if (file === undefined) {
-
             const filenames: Array<string> = electron.remote.dialog.showOpenDialog(electron.remote.getCurrentWindow(),
                 {
                     title: "Load Project",
@@ -200,44 +161,29 @@ class Project {
             file = filenames[0];
         }
 
-        Utility.AjaxCall(this.loadUrl, Utility.HttpMethod.Post, { IgnoreDirty: ignoreDirty, Filename: file }, (response: ApiResponse<object>): void => {
+        Utility.AjaxCall(this.loadUrl, Utility.HttpMethod.Post, { IgnoreDirty: ignoreDirty, Filename: file }).then((response: ApiResponse<string>): void => {
             if (response.Success) {
                 this.isDirty = false;
                 this.filename = file;
-                PageManager.LoadPage(PageManager.Page.Project, true, (): void => {
+                PageManager.LoadPage(PageManager.Page.Project, true).then((): void => {
                     Menu.ToggleProjectRelatedMenuStatus(true);
                 });
-            }
-            else {
-                if (response.ErrorCode === ApiResponse.EErrorCodes.ErrorProjectNeedToBeSaved) {
-                    DialogManager.OpenSaveQuestionDialog((answer: number, checked: boolean): void => {
-                        switch (answer) {
-                            case DialogManager.SaveDialogAnswers.Yes:
-                                this.Save(false, (): void => { this.Load(false, file); });
-                                break;
-                            case DialogManager.SaveDialogAnswers.No:
-                                this.Load(true, file);
-                                break;
-                            default:
-                        }
-                    });
-                }
-                else {
-                    DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
-                }
+            } else {
+                this.HandleProjectNeedToBeSavedError(response).then((): void => {
+                    this.Load(true, file);
+                });
             }
         });
     }
 
     /**
      * Serialize the project values in the UI and send them to the service
-     * @param successCallback - The callback function in case of success
      */
     public static async Edit<T>(): Promise<ApiResponse<T>> {
         const data: object = Utility.SerializeJSON($("#ProjectPage"));
 
         return new Promise<ApiResponse<T>>((resolve: PromiseResolve<ApiResponse<T>>): void => {
-            Utility.AjaxCall(this.editUrl, Utility.HttpMethod.Post, data, (response: ApiResponse<T>): void => {
+            Utility.AjaxCall(this.editUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<T>): void => {
                 resolve(response);
             });
         });
@@ -245,35 +191,21 @@ class Project {
 
     /**
      * Close the project, prompt for save
+     * @param ignoreDirty Whether to ignore if the project is dirty or prompt to save
      */
     public static Close(ignoreDirty: boolean): void {
         const data: object = <object>JSON.parse(JSON.stringify(ignoreDirty));
-        Utility.AjaxCall(this.closeUrl, Utility.HttpMethod.Post, data, (response: ApiResponse<string>) => {
+        Utility.AjaxCall(this.closeUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string>) => {
             if (response.Success) {
                 this.isDirty = false;
                 this.filename = undefined;
-                PageManager.LoadPage(PageManager.Page.Project, true, (): void => {
-                    PageManager.ClosePage();
+                PageManager.ClosePage().then((): void => {
                     Menu.ToggleProjectRelatedMenuStatus(false);
                 });
-            }
-            else {
-                if (response.ErrorCode === ApiResponse.EErrorCodes.ErrorProjectNeedToBeSaved) {
-                    DialogManager.OpenSaveQuestionDialog((answer: number, checked: boolean): void => {
-                        switch (answer) {
-                            case DialogManager.SaveDialogAnswers.Yes:
-                                this.Save(false, (): void => { this.Close(false); });
-                                break;
-                            case DialogManager.SaveDialogAnswers.No:
-                                this.Close(true);
-                                break;
-                            default:
-                        }
-                    });
-                }
-                else {
-                    DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
-                }
+            } else {
+                this.HandleProjectNeedToBeSavedError(response).then((): void => {
+                    this.Close(true);
+                });
             }
         });
     }
@@ -301,24 +233,51 @@ class Project {
      * Perform the comparison
      */
     public static Compare(): void {
-        Utility.AjaxCall(this.startCompareUrl, Utility.HttpMethod.Get, undefined, (): void => {
-            // TODO: move the polling functionality in Utility
+        Utility.AjaxCall(this.startCompareUrl, Utility.HttpMethod.Get).then((): void => {
             const pollingTime: number = 500;
             const polling: VoidFunction = (): void => {
-                setTimeout(() => {
-                    if ($("#stopPolling").length > 0) {
-                        // Open the main page only if there aren't failed tasks
-                        if ($("#taskFailed").length === 0) {
-                            DialogManager.CloseModalDialog();
-                            Main.Open();
-                        }
-                    } else {
-                        DialogManager.OpenModalDialog("/TaskStatusPageModel", Utility.HttpMethod.Get);
-                        polling();
+                if ($("#stopPolling").length > 0) {
+                    // Open the main page only if there aren't failed tasks
+                    if ($("#taskFailed").length === 0) {
+                        DialogManager.CloseModalDialog();
+                        Main.Open();
                     }
-                }, pollingTime);
+                } else {
+                    DialogManager.OpenModalDialog("/TaskStatusPageModel").then(() => {
+                        setTimeout(() => {
+                            polling();
+                        }, pollingTime);
+                    });
+                }
             };
             polling();
+        });
+    }
+
+    /**
+     * Handle the response with the ProjectNeedToBeSaved error code by prompt the user if wants to save
+     * @param response The response to handle
+     */
+    public static async HandleProjectNeedToBeSavedError(response: ApiResponse<string>): Promise<void> {
+        return new Promise<void>((resolve: PromiseResolve<void>, reject: PromiseReject): void => {
+            if (response.ErrorCode === ApiResponse.EErrorCodes.ErrorProjectNeedToBeSaved) {
+                DialogManager.OpenSaveQuestionDialog().then((answer: DialogManager.SaveDialogAnswers): void => {
+                    switch (answer) {
+                        case DialogManager.SaveDialogAnswers.Yes:
+                            this.Save(false).then((): void => {
+                                resolve();
+                            });
+                            break;
+                        case DialogManager.SaveDialogAnswers.No:
+                            resolve();
+                            break;
+                        default:
+                    }
+                });
+            } else {
+                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
+                reject();
+            }
         });
     }
 }

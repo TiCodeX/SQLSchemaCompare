@@ -1,0 +1,32 @@
+﻿@using Core.Interfaces
+@using Enums
+@using Services
+
+<div id="tcxModal" class="modal fade" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tcxModalTitle">@Localization.TitleError</h5>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-4">
+                            <p></p>
+                            <p class="text-center">
+                                <div class="tcx-logo"></div>
+                            </p>
+                        </div>
+                        <div class="col-8 my-auto">
+                            <div id="tcxModalText"></div>
+                            <a id="tcxModalLink" href="#"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closeButton" style="@ButtonStyle.Secondary" data-dismiss="modal" data-target="#tcxModal">@Localization.ButtonClose</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -23,14 +23,14 @@ class Menu {
                         id: "menuNewProject",
                         label: Localization.Get("MenuNewProject"),
                         click(): void {
-                            Project.New();
+                            Project.New(false);
                         },
                     },
                     {
                         id: "menuOpenProject",
                         label: `${Localization.Get("MenuOpenProject")}...`,
                         click(): void {
-                            Project.Load();
+                            Project.Load(false);
                         },
                     },
                     {
@@ -57,7 +57,7 @@ class Menu {
                         label: Localization.Get("MenuCloseProject"),
                         enabled: false,
                         click(): void {
-                            Project.Close(true);
+                            Project.Close(false);
                         },
                     },
                     {

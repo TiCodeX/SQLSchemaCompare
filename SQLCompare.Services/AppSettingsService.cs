@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities;
 using SQLCompare.Core.Interfaces.Repository;
@@ -35,11 +36,10 @@ namespace SQLCompare.Services
                 {
                     this.currentAppSettings = this.appSettingsRepository.Read();
                 }
-                catch (IOException ex)
+                catch (Exception ex)
                 {
                     this.logger.LogError(ex, "Error reading configuration file.");
                     this.currentAppSettings = new AppSettings();
-                    this.appSettingsRepository.Write(this.currentAppSettings);
                 }
             }
 

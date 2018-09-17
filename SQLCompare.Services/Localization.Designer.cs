@@ -106,6 +106,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string ButtonNo {
+            get {
+                return ResourceManager.GetString("ButtonNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Project.
         /// </summary>
         public static string ButtonOpenProject {
@@ -151,6 +160,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string ButtonYes {
+            get {
+                return ResourceManager.GetString("ButtonYes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Account is locked.
         /// </summary>
         public static string ErrorAccountLocked {
@@ -160,11 +178,38 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to close the project.
+        /// </summary>
+        public static string ErrorCannotCloseProject {
+            get {
+                return ResourceManager.GetString("ErrorCannotCloseProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to contact TiCodeX website:.
         /// </summary>
         public static string ErrorCannotContactTiCodeXWebsite {
             get {
                 return ResourceManager.GetString("ErrorCannotContactTiCodeXWebsite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to create a new project.
+        /// </summary>
+        public static string ErrorCannotCreateNewProject {
+            get {
+                return ResourceManager.GetString("ErrorCannotCreateNewProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to save the project: {0}.
+        /// </summary>
+        public static string ErrorCannotSaveProject {
+            get {
+                return ResourceManager.GetString("ErrorCannotSaveProject", resourceCulture);
             }
         }
         
@@ -309,6 +354,15 @@ namespace SQLCompare.Services {
         public static string ErrorTrialSubscriptionExpired {
             get {
                 return ResourceManager.GetString("ErrorTrialSubscriptionExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to load {0} settings from {1}.
+        /// </summary>
+        public static string ErrorUnableToReadAppSettings {
+            get {
+                return ResourceManager.GetString("ErrorUnableToReadAppSettings", resourceCulture);
             }
         }
         
@@ -718,6 +772,24 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to save the changes to the opened project?.
+        /// </summary>
+        public static string MessageDoYouWantToSaveProjectChanges {
+            get {
+                return ResourceManager.GetString("MessageDoYouWantToSaveProjectChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The project has been saved..
+        /// </summary>
+        public static string MessageProjectSavedSuccessfully {
+            get {
+                return ResourceManager.GetString("MessageProjectSavedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New version available!.
         /// </summary>
         public static string NotificationNewVersionAvailable {
@@ -759,6 +831,15 @@ namespace SQLCompare.Services {
         public static string TitleLoginError {
             get {
                 return ResourceManager.GetString("TitleLoginError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Project.
+        /// </summary>
+        public static string TitleSaveProject {
+            get {
+                return ResourceManager.GetString("TitleSaveProject", resourceCulture);
             }
         }
         

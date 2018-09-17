@@ -5,26 +5,42 @@
 @using Services
 @model WelcomePageModel
 
-<h1>@string.Format(Localization.TitleWelcome, AppGlobal.CompanyName + " " + AppGlobal.ProductName)</h1>
-<br />
+<div class="card tcx-welcome shadow mx-auto">
+    <div class="card-header">
+        <div class="row align-items-center">
+            <div class="col-3">
+                <div class="tcx-logo"></div>
+            </div>
+            <div class="col-9">
+                <h3>@string.Format(Localization.TitleWelcome, AppGlobal.ProductName)</h3>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-6">
+                <button style="@ButtonStyle.Primary" onclick="Project.New(false)">
+                    @Localization.ButtonNewProject
+                </button>
 
-<button style="@ButtonStyle.Primary" onclick="Project.New()">
-    @Localization.ButtonNewProject
-</button>
+                <button style="@ButtonStyle.Primary" onclick="Project.Load(false)">
+                    @Localization.ButtonOpenProject
+                </button>
 
-<button style="@ButtonStyle.Primary" onclick="Project.Load()">
-    @Localization.ButtonOpenProject
-</button>
+            </div>
+            <div class="col-6">
+                <div>
+                    @Localization.LabelRecentProjects:
+                    @for (var i = Model.RecentProjects.Count - 1; i >= 0; i--)
+                    {
+                        <br /> @:&bull;
+                        <button style="@ButtonStyle.Link" onclick="Project.Load(false, '@HttpUtility.JavaScriptStringEncode(Model.RecentProjects[i])')" class="p-0">
+                            @Model.RecentProjects[i]
+                        </button>
+                    }
+                </div>
 
-<br />
-<br />
-<div>
-    @Localization.LabelRecentProjects:
-    @for (var i = Model.RecentProjects.Count - 1; i >= 0; i--)
-    {
-        <br /> @:&bull;
-        <button style="@ButtonStyle.Link" onclick="Project.Load('@HttpUtility.JavaScriptStringEncode(Model.RecentProjects[i])')" class="p-0">
-            @Model.RecentProjects[i]
-        </button>
-    }
+            </div>
+        </div>
+    </div>
 </div>

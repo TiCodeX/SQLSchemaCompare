@@ -26,10 +26,8 @@ class Main {
      * Open the Main page
      */
     public static Open(): void {
-        Utility.AjaxCall(this.pageUrl, Utility.HttpMethod.Get, undefined, (result: string): void => {
-            Utility.CloseModalDialog();
+        PageManager.LoadPage(PageManager.Page.Main, true, (): void => {
             this.RemoveSplitter();
-            $("#mainDiv").html(result);
         });
     }
 

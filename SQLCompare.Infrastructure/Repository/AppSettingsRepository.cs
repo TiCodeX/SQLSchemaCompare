@@ -41,6 +41,13 @@ namespace SQLCompare.Infrastructure.Repository
         /// <inheritdoc/>
         public AppSettings Read()
         {
+            if (!File.Exists(this.appGlobals.AppSettingsFullFilename))
+            {
+                var appSettings = new AppSettings();
+                this.Write(appSettings);
+                return appSettings;
+            }
+
             var xml = new XmlSerializer(typeof(AppSettings));
             using (var f = File.OpenRead(this.appGlobals.AppSettingsFullFilename))
             {

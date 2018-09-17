@@ -161,6 +161,7 @@
   </data>
   <data name="TitleWelcome" xml:space="preserve">
     <value>Welcome to {0}</value>
+    <comment>{0}: product name</comment>
   </data>
   <data name="LabelDataSources" xml:space="preserve">
     <value>Data sources</value>
@@ -356,5 +357,33 @@
   </data>
   <data name="ButtonUpdateAndRestart" xml:space="preserve">
     <value>Update and restart</value>
+  </data>
+  <data name="ErrorUnableToReadAppSettings" xml:space="preserve">
+    <value>Unable to load {0} settings from {1}</value>
+    <comment>{0}: The application name; {1}: The settings file full path</comment>
+  </data>
+  <data name="ErrorCannotSaveProject" xml:space="preserve">
+    <value>Unable to save the project: {0}</value>
+  </data>
+  <data name="ErrorCannotCreateNewProject" xml:space="preserve">
+    <value>Unable to create a new project</value>
+  </data>
+  <data name="ButtonNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="ButtonYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="MessageDoYouWantToSaveProjectChanges" xml:space="preserve">
+    <value>Do you want to save the changes to the opened project?</value>
+  </data>
+  <data name="ErrorCannotCloseProject" xml:space="preserve">
+    <value>Unable to close the project</value>
+  </data>
+  <data name="MessageProjectSavedSuccessfully" xml:space="preserve">
+    <value>The project has been saved.</value>
+  </data>
+  <data name="TitleSaveProject" xml:space="preserve">
+    <value>Save Project</value>
   </data>
 </root>

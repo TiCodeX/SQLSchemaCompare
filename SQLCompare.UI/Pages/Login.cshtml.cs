@@ -4,8 +4,10 @@ using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Api;
 using SQLCompare.Core.Entities.Exceptions;
+using SQLCompare.Core.Enums;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.Services;
@@ -64,8 +66,17 @@ namespace SQLCompare.UI.Pages
             this.Title = $"{this.appGlobals.ProductName} - {this.appGlobals.CompanyName}";
             this.LoginEndpoint = this.appGlobals.LoginEndpoint;
 
-            var appSettings = this.appSettingsService.GetAppSettings();
-            var session = appSettings.Session;
+            AppSettings appSettings = null;
+            string session = null;
+            try
+            {
+                appSettings = this.appSettingsService.GetAppSettings();
+                session = appSettings.Session;
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Unable to get app settings");
+            }
 
             if (string.IsNullOrEmpty(session))
             {
@@ -94,7 +105,14 @@ namespace SQLCompare.UI.Pages
                 this.logger.LogError($"An error occurred while verifying the saved session token: {ex.ErrorCode} - {ex.Message}");
 
                 appSettings.Session = null;
-                this.appSettingsService.SaveAppSettings();
+                try
+                {
+                    this.appSettingsService.SaveAppSettings();
+                }
+                catch (Exception ex2)
+                {
+                    this.logger.LogError(ex2, "Unable to save app settings");
+                }
             }
             catch (Exception ex)
             {
@@ -225,24 +243,34 @@ namespace SQLCompare.UI.Pages
         /// <summary>
         /// Logout the users from the app
         /// </summary>
+        /// <param name="ignoreDirty">Logout even if there are unsaved changes to the project</param>
         /// <returns>The resulting json</returns>
-        public IActionResult OnPostLogout()
+        public IActionResult OnPostLogout([FromBody] bool ignoreDirty)
         {
-            if (this.projectService.NeedSave())
+            try
             {
-                return new JsonResult(new ApiResponse
+                if (!this.projectService.NeedSave() || ignoreDirty)
                 {
-                    Success = false,
-                    ErrorMessage = "Project need to be saved"
-                });
+                    this.appSettingsService.GetAppSettings().Session = null;
+                    this.appSettingsService.SaveAppSettings();
+
+                    this.accountService.Logout();
+                    return new JsonResult(new ApiResponse());
+                }
+                else
+                {
+                    return new JsonResult(new ApiResponse
+                    {
+                        Success = false,
+                        ErrorCode = EErrorCode.ErrorProjectNeedToBeSaved
+                    });
+                }
             }
-
-            this.appSettingsService.GetAppSettings().Session = null;
-            this.appSettingsService.SaveAppSettings();
-
-            this.accountService.Logout();
-
-            return new JsonResult(new ApiResponse());
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Error logging out");
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorUnexpected, ErrorMessage = Localization.ErrorGeneric });
+            }
         }
     }
 }

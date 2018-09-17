@@ -49,6 +49,10 @@ namespace ApiResponse {
          * The subscription is expired
          */
         ErrorSubscriptionExpired = 3004,
+        /**
+         * The project need to be saved
+         */
+        ErrorProjectNeedToBeSaved = 3008,
 
     }
 }

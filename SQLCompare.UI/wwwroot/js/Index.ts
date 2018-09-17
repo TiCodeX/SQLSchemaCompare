@@ -18,5 +18,5 @@ $(() => {
 
     Menu.CreateMenu();
 
-    Utility.OpenWelcomePage();
+    PageManager.LoadPage(PageManager.Page.Welcome);
 });

@@ -7,10 +7,10 @@
     var divId = Guid.NewGuid();
 }
 <div class="card">
-    <div class="card-header" data-toggle="collapse" data-target="#@divId">
+    <div class="card-header" data-toggle="collapse" data-target="#card_@(divId)">
         <h6 class="mb-0 font-weight-bold">@ViewBag.Title (@Model.Count)</h6>
     </div>
-    <div id="@divId" class="card-body p-0 collapse @(ViewBag.Show is bool && ViewBag.Show ? "show" : "")">
+    <div id="card_@(divId)" class="card-body p-0 collapse @(ViewBag.Show is bool && ViewBag.Show ? "show" : "")">
         <table class="table table-compact">
             <thead class="thead-light">
                 <tr>

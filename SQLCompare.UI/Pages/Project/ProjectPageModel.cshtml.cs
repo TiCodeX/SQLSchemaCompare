@@ -13,6 +13,7 @@ using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.Services;
 using SQLCompare.UI.Enums;
+using SQLCompare.UI.Models;
 using SQLCompare.UI.Models.Project;
 
 namespace SQLCompare.UI.Pages.Project
@@ -64,60 +65,105 @@ namespace SQLCompare.UI.Pages.Project
         /// </summary>
         public void OnGet()
         {
+            if (this.projectService.Project == null)
+            {
+                this.projectService.NewProject();
+            }
+
             this.Project = this.projectService.Project;
         }
 
         /// <summary>
-        /// Get the Project page for a new Project
+        /// Create a new project
         /// </summary>
-        public void OnGetNewProject()
+        /// <param name="ignoreDirty">Create new project even if current project is dirty</param>
+        /// <returns>The response</returns>
+        public IActionResult OnPostNewProject([FromBody] bool ignoreDirty)
         {
-            this.projectService.NewProject();
-            this.Project = this.projectService.Project;
+            try
+            {
+                if (!this.projectService.NeedSave() || ignoreDirty)
+                {
+                    this.projectService.NewProject();
+                    return new JsonResult(new ApiResponse());
+                }
+                else
+                {
+                    return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorProjectNeedToBeSaved });
+                }
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Error creating new project");
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorUnexpected, ErrorMessage = Localization.ErrorCannotCreateNewProject });
+            }
+        }
+
+        /// <summary>
+        /// Set the project to dirty
+        /// </summary>
+        /// <returns>The Api result</returns>
+        public IActionResult OnPostSetProjectDirtyState()
+        {
+            this.projectService.SetDirtyState();
+            return new JsonResult(new ApiResponse());
         }
 
         /// <summary>
         /// Get the Project page
         /// </summary>
-        /// <param name="projectFile">The project file to load</param>
+        /// <param name="req">The load project request</param>
         /// <returns>The API response with result information</returns>
-        public IActionResult OnPostLoadProject([FromBody] string projectFile)
+        public IActionResult OnPostLoadProject([FromBody] LoadProjectRequest req)
         {
             try
             {
-                this.projectService.LoadProject(projectFile);
+                if (!this.projectService.NeedSave() || req.IgnoreDirty)
+                {
+                    this.projectService.LoadProject(req.Filename);
+                }
+                else
+                {
+                    return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorProjectNeedToBeSaved });
+                }
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ex)
             {
+                this.logger.LogError(ex, $"Error loading project: {req?.Filename}");
                 return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProjectInvalidProjectFile, this.appGlobals.ProductName) });
             }
-            catch (FileNotFoundException)
+            catch (FileNotFoundException ex)
             {
+                this.logger.LogError(ex, $"Error loading project: {req?.Filename}");
                 return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = Localization.ErrorLoadProjectFileNotFound });
             }
-            catch (UnauthorizedAccessException)
+            catch (UnauthorizedAccessException ex)
             {
+                this.logger.LogError(ex, $"Error loading project: {req?.Filename}");
                 return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = Localization.ErrorLoadProjectUnauthorizedFileAccess });
             }
             catch (IOException ex)
             {
+                this.logger.LogError(ex, $"Error loading project: {req?.Filename}");
                 return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProjectIOError, ex.Message) });
             }
             catch (Exception ex)
             {
+                this.logger.LogError(ex, $"Error loading project: {req?.Filename}");
                 return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProject, ex.Message) });
             }
 
             var appSettings = this.appSettingsService.GetAppSettings();
-            appSettings.RecentProjects.Remove(projectFile);
-            appSettings.RecentProjects.Add(projectFile);
+            appSettings.RecentProjects.Remove(req.Filename);
+            appSettings.RecentProjects.Add(req.Filename);
 
             try
             {
                 this.appSettingsService.SaveAppSettings();
             }
-            catch
+            catch (Exception ex)
             {
+                this.logger.LogError(ex, "Error saving app settings");
             }
 
             this.Project = this.projectService.Project;
@@ -131,7 +177,14 @@ namespace SQLCompare.UI.Pages.Project
         /// <returns>TODO: boh</returns>
         public ActionResult OnPostSaveProject([FromBody] string filename)
         {
-            this.projectService.SaveProject(filename);
+            try
+            {
+                this.projectService.SaveProject(filename);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotSaveProject, ErrorMessage = string.Format(CultureInfo.InvariantCulture, Localization.ErrorCannotSaveProject, ex.Message) });
+            }
 
             var appSettings = this.appSettingsService.GetAppSettings();
             appSettings.RecentProjects.Remove(filename);
@@ -144,12 +197,27 @@ namespace SQLCompare.UI.Pages.Project
         /// <summary>
         /// Close the project
         /// </summary>
+        /// <param name="ignoreDirty">Close project even if current project is dirty</param>
         /// <returns>TODO: boh</returns>
-        public ActionResult OnGetCloseProject()
+        public ActionResult OnPostCloseProject([FromBody]bool ignoreDirty)
         {
-            this.projectService.CloseProject();
-
-            return new JsonResult(new ApiResponse());
+            try
+            {
+                if (!this.projectService.NeedSave() || ignoreDirty)
+                {
+                    this.projectService.CloseProject();
+                    return new JsonResult(new ApiResponse());
+                }
+                else
+                {
+                    return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorProjectNeedToBeSaved });
+                }
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Error closing project");
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorUnexpected, ErrorMessage = Localization.ErrorCannotCloseProject });
+            }
         }
 
         /// <summary>

@@ -59,29 +59,11 @@ class Utility {
     }
 
     /**
-     * Encode the HTML tags inside the string
-     * @param s - The string to encode
-     * @returns The string properly encoded
-     */
-    public static EncodeHtmlEntities(s: string): string {
-        return $("<div/>").text(s).html();
-    }
-
-    /**
      * Contact electron to open an external browser at the specified url
      * @param url - The url to be opened in external browser
      */
     public static OpenExternalBrowser(url: string): void {
         electron.shell.openExternal(url);
-    }
-
-    /**
-     * Decode the HTML tags inside the string
-     * @param s - The string to decode
-     * @returns The decoded string
-     */
-    public static DecodeHtmlEntities(s: string): string {
-        return $("<div/>").html(s).text();
     }
 
     /**
@@ -106,51 +88,6 @@ class Utility {
      */
     public static GetLogger(category: string): Logger {
         return new Logger(category);
-    }
-
-    /**
-     * Open the welcome page
-     */
-    public static OpenWelcomePage(): void {
-        this.OpenModalDialog("/WelcomePageModel", Utility.HttpMethod.Get);
-    }
-
-    /**
-     * Perform an ajax call and open the modal dialog filled with the response
-     * @param url The URL of the ajax call
-     * @param method The method (GET/POST)
-     * @param data? The object data to send when the method is POST
-     * @param callbackFunction? A function which will be called after opening the dialog
-     */
-    public static OpenModalDialog(url: string, method: Utility.HttpMethod, data?: object, callbackFunction?: () => void): void {
-        this.AjaxCall(url, method, data, (result: string): void => {
-            $("#myModalBody").html(result);
-            $(".modal-dialog").css("max-width", "");
-            $("#myModal").modal("show");
-            $("#myModal .tab-pane").matchHeight({
-                byRow: false,
-            });
-            if (callbackFunction !== undefined) {
-                callbackFunction();
-            }
-        });
-    }
-
-    /**
-     * Check if the modal dialog is open
-     * @returns Whether the modal dialog is open
-     */
-    public static IsModalDialogOpen(): boolean {
-        return $("#myModal").is(":visible");
-    }
-
-    /**
-     * Close the modal dialog
-     */
-    public static CloseModalDialog(): void {
-        $("#myModal").modal("hide");
-        $("#myModalBody").empty();
-        $(".modal-dialog").css("max-width", "");
     }
 
     /**
@@ -262,8 +199,7 @@ class Utility {
             success: successCallback,
             error: (error: JQuery.jqXHR): void => {
                 this.logger.error(`Error executing AjaxCall: ${error.responseText}`);
-                $("#myErrorModalText").html(error.responseText);
-                $("#myErrorModal").modal("show");
+                DialogManager.ShowError("Error", "An unexpected error occured");
             },
         });
     }

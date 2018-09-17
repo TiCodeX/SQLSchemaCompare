@@ -82,7 +82,7 @@ namespace SQLCompare.UI.WebServer
                 LoggerNamePattern = "Microsoft.AspNetCore.*",
                 Final = true,
             };
-            aspNetCoreRule.SetLoggingLevels(NLog.LogLevel.Trace, NLog.LogLevel.Debug);
+            aspNetCoreRule.SetLoggingLevels(NLog.LogLevel.Trace, NLog.LogLevel.Info);
             config.LoggingRules.Add(aspNetCoreRule);
 
             // Set the NLog internal logger level

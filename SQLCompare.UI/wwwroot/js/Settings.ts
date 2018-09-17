@@ -16,8 +16,10 @@ class Settings {
      * Open the Settings page
      */
     public static Open(): void {
-        Utility.OpenModalDialog(this.pageUrl, Utility.HttpMethod.Get, undefined, () => {
-            $(".modal-dialog").css("max-width", "300px");
+        DialogManager.OpenModalDialog(this.pageUrl, Utility.HttpMethod.Get, undefined, () => {
+
+            $("#myModal > .modal-dialog").css("max-width", "300px");
+            $("#myModal > .modal-title").html("Settings");
         });
     }
 
@@ -33,12 +35,6 @@ class Settings {
             // Recreate the menu with the new language
             Menu.CreateMenu();
             Menu.ToggleProjectRelatedMenuStatus(projectIsOpen);
-
-            if (projectIsOpen) {
-                Main.Open();
-            } else {
-                Utility.OpenWelcomePage();
-            }
         });
     }
 }

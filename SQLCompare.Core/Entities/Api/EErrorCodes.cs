@@ -137,6 +137,16 @@
         /// </summary>
         ErrorCannotLoadProject = 3006,
 
+        /// <summary>
+        /// Cannot save the SQLCompare project
+        /// </summary>
+        ErrorCannotSaveProject = 3007,
+
+        /// <summary>
+        /// The project needs to be saved
+        /// </summary>
+        ErrorProjectNeedToBeSaved = 3008,
+
         /**********************************************
         *** SqlCompare Warnings (from 4000 to 4999) ***
         **********************************************/

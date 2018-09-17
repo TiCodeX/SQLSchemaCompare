@@ -15,7 +15,7 @@
         <p class="card-text">
             <div class="form-group">
                 <label>@Localization.LabelType</label>
-                <select name="@(prefix)DatabaseType" class="form-control-sm">
+                <select name="@(prefix)DatabaseType" class="form-control-sm" onchange="Project.SetDirtyState()">
                     @{
                         @:<option value="@DatabaseType.MicrosoftSql" @(Model is MicrosoftSqlDatabaseProviderOptions ? "selected" : "")>Microsoft SQL Server</option>
                         @:<option value="@DatabaseType.MySql" @(Model is MySqlDatabaseProviderOptions ? "selected" : "")>MySQL Server</option>
@@ -25,15 +25,15 @@
             </div>
             <div class="form-group">
                 <label>@Localization.LabelHostname</label>
-                <input type="text" name="@(prefix)Hostname" value="@Model.Hostname" class="form-control-sm">
+                <input type="text" name="@(prefix)Hostname" value="@Model.Hostname" class="form-control-sm" oninput="Project.SetDirtyState()">
             </div>
             <div class="form-group">
                 <label>@Localization.LabelUsername</label>
-                <input type="text" name="@(prefix)Username" value="@Model.Username" class="form-control-sm">
+                <input type="text" name="@(prefix)Username" value="@Model.Username" class="form-control-sm" oninput="Project.SetDirtyState()">
             </div>
             <div class="form-group">
                 <label>@Localization.LabelPassword</label>
-                <input type="password" name="@(prefix)Password" value="@Model.Password" class="form-control-sm">
+                <input type="password" name="@(prefix)Password" value="@Model.Password" class="form-control-sm" oninput="Project.SetDirtyState()">
             </div>
 
 
@@ -44,7 +44,7 @@
                 <div class="col-3 text-right">
                     <label class="tcx-switch">
                         @{
-                            @:<input type="checkbox" name="@(prefix)UseWindowsAuthentication" data-value-type="boolean" @(Model is MicrosoftSqlDatabaseProviderOptions options && options.UseWindowsAuthentication ? "checked=\"checked\"" : "")>
+                            @:<input type="checkbox" name="@(prefix)UseWindowsAuthentication" data-value-type="boolean" @(Model is MicrosoftSqlDatabaseProviderOptions options && options.UseWindowsAuthentication ? "checked=\"checked\"" : "") onchange="Project.SetDirtyState()">
                         }
                         <span class="tcx-switch-slider"></span>
                     </label>
@@ -57,7 +57,7 @@
                 <div class="col-3 text-right">
                     <label class="tcx-switch">
                         @{
-                            @:<input type="checkbox" name="@(prefix)UseSSL" data-value-type="boolean" @(Model.UseSSL ? "checked=\"checked\"" : "")>
+                            @:<input type="checkbox" name="@(prefix)UseSSL" data-value-type="boolean" @(Model.UseSSL ? "checked=\"checked\"" : "") onchange="Project.SetDirtyState()">
                         }
                         <span class="tcx-switch-slider"></span>
                     </label>
@@ -66,7 +66,7 @@
             <div class="form-group ">
                 <label>@Localization.LabelDatabase</label>
                 <div class="input-group input-group-sm">
-                    <select name="@(prefix)Database" class="form-control-sm">
+                    <select name="@(prefix)Database" class="form-control-sm" onchange="Project.SetDirtyState()">
                         @if (!string.IsNullOrEmpty(Model.Database))
                         {
                             <option value="@Model.Database">@Model.Database</option>

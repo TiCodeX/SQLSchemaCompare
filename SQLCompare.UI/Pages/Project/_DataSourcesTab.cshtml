@@ -1,0 +1,23 @@
+﻿@using Core.Entities.Project
+@using Core.Interfaces
+@using Enums
+@using Core.Entities.DatabaseProvider
+@using Services
+@model CompareProject
+
+<div class="row">
+    <div class="col-6">
+        @await Html.PartialAsync("_DatabaseProviderOptions", Model.SourceProviderOptions, new ViewDataDictionary(this.ViewData)
+        {
+            { "Title", Localization.LabelSource },
+            { "Prefix", CompareDirection.Source},
+        })
+    </div>
+    <div class="col-6">
+        @await Html.PartialAsync("_DatabaseProviderOptions", Model.TargetProviderOptions, new ViewDataDictionary(this.ViewData)
+        {
+            { "Title", Localization.LabelTarget },
+            { "Prefix", CompareDirection.Target},
+        })
+    </div>
+</div>

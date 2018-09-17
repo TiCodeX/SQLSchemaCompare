@@ -36,6 +36,11 @@ namespace SQLCompare.Core.Interfaces.Services
         void LoadProject(string filename);
 
         /// <summary>
+        /// Set the opened project in the dirty state
+        /// </summary>
+        void SetDirtyState();
+
+        /// <summary>
         /// Check if the project need to be saved
         /// </summary>
         /// <returns>True if the project need to be saved</returns>

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Entities.Project;
+using SQLCompare.Core.Enums;
 using SQLCompare.Core.Interfaces.Repository;
 using SQLCompare.Core.Interfaces.Services;
 
@@ -37,7 +38,8 @@ namespace SQLCompare.Services
             {
                 SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
                 TargetProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
-                Options = new ProjectOptions()
+                Options = new ProjectOptions(),
+                State = ProjectState.New,
             };
             return true;
         }
@@ -48,6 +50,7 @@ namespace SQLCompare.Services
             if (this.Project != null)
             {
                 this.projectRepository.Write(this.Project, filename);
+                this.Project.State = ProjectState.Saved;
             }
         }
 
@@ -63,6 +66,7 @@ namespace SQLCompare.Services
             try
             {
                 this.Project = this.projectRepository.Read(filename);
+                this.Project.State = ProjectState.Saved;
             }
             catch (Exception ex)
             {
@@ -72,17 +76,18 @@ namespace SQLCompare.Services
         }
 
         /// <inheritdoc/>
+        public void SetDirtyState()
+        {
+            if (this.Project != null)
+            {
+                this.Project.State = ProjectState.Dirty;
+            }
+        }
+
+        /// <inheritdoc/>
         public bool NeedSave()
         {
-            bool isDirty = false;
-
-            // Todo: implement a way to detect if is dirty
-            if (this.Project != null && isDirty)
-            {
-                return true;
-            }
-
-            return false;
+            return this.Project != null && this.Project.State == ProjectState.Dirty;
         }
     }
 }

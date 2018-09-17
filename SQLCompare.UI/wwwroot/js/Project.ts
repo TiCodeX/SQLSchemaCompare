@@ -33,6 +33,11 @@ class Project {
     private static readonly closeUrl: string = `${Project.pageUrl}?handler=CloseProject`;
 
     /**
+     * Service URL for making the Project dirty
+     */
+    private static readonly dirtyUrl: string = `${Project.pageUrl}?handler=SetProjectDirtyState`;
+
+    /**
      * Service URL for retrieving the list of databases
      */
     private static readonly loadDatabaseListUrl: string = `${Project.pageUrl}?handler=LoadDatabaseList`;
@@ -48,26 +53,70 @@ class Project {
     private static filename: string;
 
     /**
+     * Defines if the current project is dirty
+     */
+    private static isDirty: boolean = false;
+
+    /**
+     * Set the current project to dirty
+     */
+    public static SetDirtyState(): void {
+        if (!this.isDirty) {
+            this.isDirty = true;
+
+            Utility.AjaxCall(this.dirtyUrl, Utility.HttpMethod.Post, undefined, () => {
+                Menu.ToggleProjectRelatedMenuStatus(true);
+            });
+        }
+    }
+
+    /**
      * Check if the project is open
      * @returns Whether the project is open
      */
     public static IsProjectPageOpen(): boolean {
-        return Utility.IsModalDialogOpen() && $("#ProjectPage").is(":visible");
+        return PageManager.GetOpenPage() === PageManager.Page.Project;
     }
 
     /**
      * Open the Project page
      */
     public static Open(): void {
-        Utility.OpenModalDialog(this.pageUrl, Utility.HttpMethod.Get);
+        PageManager.LoadPage(PageManager.Page.Project, false);
     }
 
     /**
      * Open the new Project page
      */
-    public static New(): void {
-        Utility.OpenModalDialog(this.newUrl, Utility.HttpMethod.Get, undefined, (): void => {
-            Menu.ToggleProjectRelatedMenuStatus(true);
+    public static New(ignoreDirty: boolean): void {
+        const data: object = <object>JSON.parse(JSON.stringify(ignoreDirty));
+
+        Utility.AjaxCall(this.newUrl, Utility.HttpMethod.Post, data, (response: ApiResponse<string>): void => {
+            if (response.Success) {
+                this.isDirty = false;
+                this.filename = undefined;
+                PageManager.LoadPage(PageManager.Page.Project, true, (): void => {
+                    Menu.ToggleProjectRelatedMenuStatus(true);
+                });
+            }
+            else {
+                if (response.ErrorCode === ApiResponse.EErrorCodes.ErrorProjectNeedToBeSaved) {
+                    DialogManager.OpenSaveQuestionDialog((answer: number, checked: boolean): void => {
+                        switch (answer) {
+                            case DialogManager.SaveDialogAnswers.Yes:
+                                this.Save(false, (): void => { this.New(false); });
+                                break;
+                            case DialogManager.SaveDialogAnswers.No:
+                                this.New(true);
+                                break;
+                            default:
+                        }
+                    });
+                }
+                else {
+                    DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
+                }
+            }
         });
     }
 
@@ -75,7 +124,7 @@ class Project {
      * Save the Project
      * @param showDialog Whether to show the save dialog
      */
-    public static Save(showDialog: boolean = false): void {
+    public static Save(showDialog: boolean = false, saveCallback?: () => void): void {
         let filename: string = this.filename;
         if (filename === undefined || showDialog) {
             filename = electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
@@ -98,14 +147,25 @@ class Project {
             const data: object = <object>JSON.parse(JSON.stringify(filename));
 
             Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data, (response: ApiResponse<object>): void => {
-                this.filename = filename;
-                alert("Saved successfully!");
+                if (response.Success) {
+                    this.filename = filename;
+                    this.isDirty = false;
+                    Menu.ToggleProjectRelatedMenuStatus(true);
+                    DialogManager.ShowInformation(Localization.Get("TitleSaveProject"), Localization.Get("MessageProjectSavedSuccessfully"));
+                    if (saveCallback !== undefined) {
+                        saveCallback();
+                    }
+                }
+                else {
+                    DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
+                }
             });
         };
 
         if (this.IsProjectPageOpen()) {
             this.Edit(saveCall);
-        } else {
+        }
+        else {
             saveCall();
         }
     }
@@ -114,7 +174,7 @@ class Project {
      * Load the Project from the file, if not specified show the open file dialog
      * @param filename The Project file path
      */
-    public static Load(filename?: string): void {
+    public static Load(ignoreDirty: boolean, filename?: string): void {
         let file: string = filename;
         if (file === undefined) {
 
@@ -138,17 +198,31 @@ class Project {
             file = filenames[0];
         }
 
-        const data: object = <object>JSON.parse(JSON.stringify(file));
-
-        Utility.AjaxCall(this.loadUrl, Utility.HttpMethod.Post, data, (result: ApiResponse<string>): void => {
-            if (result.Success) {
-                this.filename = filename;
-                Menu.ToggleProjectRelatedMenuStatus(true);
-                Project.Open();
+        Utility.AjaxCall(this.loadUrl, Utility.HttpMethod.Post, { IgnoreDirty: ignoreDirty, Filename: file }, (response: ApiResponse<object>): void => {
+            if (response.Success) {
+                this.isDirty = false;
+                this.filename = file;
+                PageManager.LoadPage(PageManager.Page.Project, true, (): void => {
+                    Menu.ToggleProjectRelatedMenuStatus(true);
+                });
             }
             else {
-                $("#myErrorModalText").html(result.ErrorMessage);
-                $("#myErrorModal").modal("show");
+                if (response.ErrorCode === ApiResponse.EErrorCodes.ErrorProjectNeedToBeSaved) {
+                    DialogManager.OpenSaveQuestionDialog((answer: number, checked: boolean): void => {
+                        switch (answer) {
+                            case DialogManager.SaveDialogAnswers.Yes:
+                                this.Save(false, (): void => { this.Load(false, file); });
+                                break;
+                            case DialogManager.SaveDialogAnswers.No:
+                                this.Load(true, file);
+                                break;
+                            default:
+                        }
+                    });
+                }
+                else {
+                    DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
+                }
             }
         });
     }
@@ -166,14 +240,35 @@ class Project {
     /**
      * Close the project, prompt for save
      */
-    public static Close(showWelcome: boolean = false): void {
-        Utility.AjaxCall(this.closeUrl, Utility.HttpMethod.Get, undefined, () => {
-            this.filename = undefined;
-            $("#mainDiv").empty();
-            if (showWelcome) {
-                Utility.OpenWelcomePage();
+    public static Close(ignoreDirty: boolean): void {
+        const data: object = <object>JSON.parse(JSON.stringify(ignoreDirty));
+        Utility.AjaxCall(this.closeUrl, Utility.HttpMethod.Post, data, (response: ApiResponse<string>) => {
+            if (response.Success) {
+                this.isDirty = false;
+                this.filename = undefined;
+                PageManager.LoadPage(PageManager.Page.Project, true, (): void => {
+                    PageManager.ClosePage();
+                    Menu.ToggleProjectRelatedMenuStatus(false);
+                });
             }
-            Menu.ToggleProjectRelatedMenuStatus(false);
+            else {
+                if (response.ErrorCode === ApiResponse.EErrorCodes.ErrorProjectNeedToBeSaved) {
+                    DialogManager.OpenSaveQuestionDialog((answer: number, checked: boolean): void => {
+                        switch (answer) {
+                            case DialogManager.SaveDialogAnswers.Yes:
+                                this.Save(false, (): void => { this.Close(false); });
+                                break;
+                            case DialogManager.SaveDialogAnswers.No:
+                                this.Close(true);
+                                break;
+                            default:
+                        }
+                    });
+                }
+                else {
+                    DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
+                }
+            }
         });
     }
 
@@ -208,10 +303,11 @@ class Project {
                     if ($("#stopPolling").length > 0) {
                         // Open the main page only if there aren't failed tasks
                         if ($("#taskFailed").length === 0) {
+                            DialogManager.CloseModalDialog();
                             Main.Open();
                         }
                     } else {
-                        Utility.OpenModalDialog("/TaskStatusPageModel", Utility.HttpMethod.Get);
+                        DialogManager.OpenModalDialog("/TaskStatusPageModel", Utility.HttpMethod.Get);
                         polling();
                     }
                 }, pollingTime);

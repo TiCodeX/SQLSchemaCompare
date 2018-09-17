@@ -35,12 +35,12 @@
 <div class="float-right">
     @if (Model.Project?.Result != null)
     {
-        <button style="@ButtonStyle.Secondary" onclick="Utility.CloseModalDialog();">@Localization.ButtonCancel</button>
+        <button style="@ButtonStyle.Secondary" data-dismiss="modal" data-target="#myModal">@Localization.ButtonCancel</button>
         <button style="@ButtonStyle.Primary" onclick="Settings.Save(true);">@Localization.ButtonSave</button>
     }
     else
     {
-        <button style="@ButtonStyle.Secondary" onclick="Utility.OpenWelcomePage();">@Localization.ButtonCancel</button>
+        <button style="@ButtonStyle.Secondary" data-dismiss="modal" data-target="#myModal">@Localization.ButtonCancel</button>
         <button style="@ButtonStyle.Primary" onclick="Settings.Save(false);">@Localization.ButtonSave</button>
     }
 </div>

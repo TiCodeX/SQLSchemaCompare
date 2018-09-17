@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
+using SQLCompare.Services;
 
 namespace SQLCompare.UI.Pages
 {
@@ -10,14 +13,17 @@ namespace SQLCompare.UI.Pages
     public class WelcomePageModel : PageModel
     {
         private readonly IAppSettingsService appSettingsService;
+        private readonly IAppGlobals appGlobals;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WelcomePageModel"/> class.
         /// </summary>
         /// <param name="appSettingsService">The injected app settings service</param>
-        public WelcomePageModel(IAppSettingsService appSettingsService)
+        /// <param name="appGlobals">The injected app globals</param>
+        public WelcomePageModel(IAppSettingsService appSettingsService, IAppGlobals appGlobals)
         {
             this.appSettingsService = appSettingsService;
+            this.appGlobals = appGlobals;
         }
 
         /// <summary>
@@ -31,7 +37,6 @@ namespace SQLCompare.UI.Pages
         public void OnGet()
         {
             var settings = this.appSettingsService.GetAppSettings();
-
             this.RecentProjects = settings.RecentProjects;
         }
     }

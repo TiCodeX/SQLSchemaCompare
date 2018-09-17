@@ -1,6 +1,7 @@
 ﻿using System.Xml.Serialization;
 using SQLCompare.Core.Entities.Compare;
 using SQLCompare.Core.Entities.DatabaseProvider;
+using SQLCompare.Core.Enums;
 
 namespace SQLCompare.Core.Entities.Project
 {
@@ -28,6 +29,11 @@ namespace SQLCompare.Core.Entities.Project
         /// Gets or sets the project options
         /// </summary>
         public ProjectOptions Options { get; set; }
+
+        /// <summary>
+        /// Gets or sets the project state
+        /// </summary>
+        public ProjectState State { get; set; }
 
         /// <summary>
         /// Gets or sets the result of the comparison

@@ -10,6 +10,11 @@ namespace SQLCompare.UI.TagHelpers
     /// </summary>
     public class SelectTagHelper : TagHelper
     {
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="SelectTagHelper"/> is disabled
+        /// </summary>
+        public bool Disabled { get; set; }
+
         /// <inheritdoc />
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -31,8 +36,14 @@ namespace SQLCompare.UI.TagHelpers
             }
 
             className.Add("form-control");
+            className.Add("form-control-sm");
 
             output.Attributes.SetAttribute("class", string.Join(" ", className));
+
+            if (this.Disabled)
+            {
+                output.Attributes.SetAttribute("disabled", "disabled");
+            }
         }
     }
 }

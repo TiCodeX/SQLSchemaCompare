@@ -34,6 +34,9 @@ class Settings {
             // Recreate the menu with the new language
             Menu.CreateMenu();
             Menu.ToggleProjectRelatedMenuStatus(projectIsOpen);
+            // Close the modal and reopen the current page
+            DialogManager.CloseModalDialog();
+            PageManager.LoadPage(PageManager.GetOpenPage());
         });
     }
 }

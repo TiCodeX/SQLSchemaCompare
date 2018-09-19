@@ -15,37 +15,49 @@
         <p class="card-text">
             <div class="form-group">
                 <label>@Localization.LabelType</label>
-                <select name="@(prefix)DatabaseType" class="form-control-sm" onchange="Project.SetDirtyState()">
-                    @{
-                        @:<option value="@DatabaseType.MicrosoftSql" @(Model is MicrosoftSqlDatabaseProviderOptions ? "selected" : "")>Microsoft SQL Server</option>
-                        @:<option value="@DatabaseType.MySql" @(Model is MySqlDatabaseProviderOptions ? "selected" : "")>MySQL Server</option>
-                        @:<option value="@DatabaseType.PostgreSql" @(Model is PostgreSqlDatabaseProviderOptions ? "selected" : "")>PostgreSQL Server</option>
-                    }
+                <select name="@(prefix)DatabaseType" onchange="Project.HandleDatabaseTypeOnChange($(this), '@prefix')">
+                    <option value="@((int) DatabaseType.MicrosoftSql)"
+                            selected="@(Model is MicrosoftSqlDatabaseProviderOptions)">
+                        Microsoft SQL Server
+                    </option>
+                    <option value="@((int) DatabaseType.MySql)"
+                            selected="@(Model is MySqlDatabaseProviderOptions)">
+                        MySQL Server
+                    </option>
+                    <option value="@((int) DatabaseType.PostgreSql)"
+                            selected="@(Model is PostgreSqlDatabaseProviderOptions)">
+                        PostgreSQL Server
+                    </option>
                 </select>
             </div>
             <div class="form-group">
                 <label>@Localization.LabelHostname</label>
-                <input type="text" name="@(prefix)Hostname" value="@Model.Hostname" class="form-control-sm" oninput="Project.SetDirtyState()">
+                <input type="text" name="@(prefix)Hostname" value="@Model.Hostname"
+                       oninput="Project.SetDirtyState()">
             </div>
             <div class="form-group">
                 <label>@Localization.LabelUsername</label>
-                <input type="text" name="@(prefix)Username" value="@Model.Username" class="form-control-sm" oninput="Project.SetDirtyState()">
+                <input type="text" name="@(prefix)Username" value="@Model.Username"
+                       disabled="@(Model is MicrosoftSqlDatabaseProviderOptions a && a.UseWindowsAuthentication)"
+                       oninput="Project.SetDirtyState()">
             </div>
             <div class="form-group">
                 <label>@Localization.LabelPassword</label>
-                <input type="password" name="@(prefix)Password" value="@Model.Password" class="form-control-sm" oninput="Project.SetDirtyState()">
+                <input type="password" name="@(prefix)Password" value="@Model.Password"
+                       disabled="@(Model is MicrosoftSqlDatabaseProviderOptions b && b.UseWindowsAuthentication)"
+                       oninput="Project.SetDirtyState()">
             </div>
 
-
-            <div class="form-group row">
+            <div class="form-group row" style="@(Model is MicrosoftSqlDatabaseProviderOptions ? string.Empty: "display: none;")">
                 <div class="col-9">
                     <label>@Localization.LabelUseWindowsAuthentication</label>
                 </div>
                 <div class="col-3 text-right">
                     <label class="tcx-switch">
-                        @{
-                            @:<input type="checkbox" name="@(prefix)UseWindowsAuthentication" data-value-type="boolean" @(Model is MicrosoftSqlDatabaseProviderOptions options && options.UseWindowsAuthentication ? "checked=\"checked\"" : "") onchange="Project.SetDirtyState()">
-                        }
+                        <input type="checkbox" name="@(prefix)UseWindowsAuthentication"
+                               data-value-type="boolean"
+                               checked="@(Model is MicrosoftSqlDatabaseProviderOptions c && c.UseWindowsAuthentication)"
+                               onchange="Project.HandleUseWindowsAuthenticationOnChange($(this), '@prefix')">
                         <span class="tcx-switch-slider"></span>
                     </label>
                 </div>
@@ -56,9 +68,10 @@
                 </div>
                 <div class="col-3 text-right">
                     <label class="tcx-switch">
-                        @{
-                            @:<input type="checkbox" name="@(prefix)UseSSL" data-value-type="boolean" @(Model.UseSSL ? "checked=\"checked\"" : "") onchange="Project.SetDirtyState()">
-                        }
+                        <input type="checkbox" name="@(prefix)UseSSL"
+                               data-value-type="boolean"
+                               checked="@Model.UseSSL"
+                               onchange="Project.SetDirtyState()">
                         <span class="tcx-switch-slider"></span>
                     </label>
                 </div>
@@ -66,7 +79,7 @@
             <div class="form-group ">
                 <label>@Localization.LabelDatabase</label>
                 <div class="input-group input-group-sm">
-                    <select name="@(prefix)Database" class="form-control-sm" onchange="Project.SetDirtyState()">
+                    <select name="@(prefix)Database" onchange="Project.SetDirtyState()">
                         @if (!string.IsNullOrEmpty(Model.Database))
                         {
                             <option value="@Model.Database">@Model.Database</option>

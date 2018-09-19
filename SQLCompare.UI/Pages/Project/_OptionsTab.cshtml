@@ -1,7 +1,5 @@
 ﻿@using Core.Entities.Project
 @using Core.Interfaces
-@using Enums
-@using Core.Entities.DatabaseProvider
 @using Services
 @model ProjectOptions
 <div class="row">
@@ -13,9 +11,10 @@
             </div>
             <div class="col-3 text-right">
                 <label class="tcx-switch">
-                    @{
-                        @:<input type="checkbox" name="ProjectOptions[Scripting[IgnoreCollate]]" data-value-type="boolean" @(Model.Scripting.IgnoreCollate ? "checked=\"checked\"" : "") onchange="Project.SetDirtyState()">
-                    }
+                    <input type="checkbox" name="ProjectOptions[Scripting[IgnoreCollate]]"
+                           data-value-type="boolean"
+                           checked="@Model.Scripting.IgnoreCollate"
+                           onchange="Project.SetDirtyState()">
                     <span class="tcx-switch-slider"></span>
                 </label>
             </div>
@@ -27,9 +26,10 @@
             </div>
             <div class="col-3 text-right">
                 <label class="tcx-switch">
-                    @{
-                        @:<input type="checkbox" name="ProjectOptions[Scripting[OrderColumnAlphabetically]]" data-value-type="boolean" @(Model.Scripting.OrderColumnAlphabetically ? "checked=\"checked\"" : "") onchange="Project.SetDirtyState()">
-                    }
+                    <input type="checkbox" name="ProjectOptions[Scripting[OrderColumnAlphabetically]]"
+                           data-value-type="boolean"
+                           checked="@Model.Scripting.OrderColumnAlphabetically"
+                           onchange="Project.SetDirtyState()">
                     <span class="tcx-switch-slider"></span>
                 </label>
             </div>
@@ -41,9 +41,10 @@
             </div>
             <div class="col-3 text-right">
                 <label class="tcx-switch">
-                    @{
-                        @:<input type="checkbox" name="ProjectOptions[Scripting[UseSchemaName]]" data-value-type="boolean" @(Model.Scripting.UseSchemaName ? "checked=\"checked\"" : "") onchange="Project.SetDirtyState()">
-                    }
+                    <input type="checkbox" name="ProjectOptions[Scripting[UseSchemaName]]"
+                           data-value-type="boolean"
+                           checked="@Model.Scripting.UseSchemaName"
+                           onchange="Project.SetDirtyState()">
                     <span class="tcx-switch-slider"></span>
                 </label>
             </div>
@@ -55,9 +56,10 @@
             </div>
             <div class="col-3 text-right">
                 <label class="tcx-switch">
-                    @{
-                        @:<input type="checkbox" name="ProjectOptions[Scripting[IgnoreReferenceTableColumnOrder]]" data-value-type="boolean" @(Model.Scripting.IgnoreReferenceTableColumnOrder ? "checked=\"checked\"" : "") onchange="Project.SetDirtyState()">
-                    }
+                    <input type="checkbox" name="ProjectOptions[Scripting[IgnoreReferenceTableColumnOrder]]"
+                           data-value-type="boolean"
+                           checked="@Model.Scripting.IgnoreReferenceTableColumnOrder"
+                           onchange="Project.SetDirtyState()">
                     <span class="tcx-switch-slider"></span>
                 </label>
             </div>
@@ -66,7 +68,9 @@
     </div>
     <div class="col-6">
         <label id="helptext">
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna
+            aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,
+            no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
         </label>
     </div>
 </div>

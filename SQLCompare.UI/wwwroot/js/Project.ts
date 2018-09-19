@@ -280,4 +280,51 @@ class Project {
             }
         });
     }
+
+    /**
+     * Handle the onChange event of the DatabaseType select
+     * @param select The jQuery element of the select
+     * @param prefix The page prefix (Source/Target)
+     */
+    public static HandleDatabaseTypeOnChange(select: JQuery, prefix: string): void {
+        const useWindowAuthentication: JQuery = $(`input[name='${prefix}UseWindowsAuthentication']`).parents(".form-group");
+        switch (+select.val()) {
+            case Project.DatabaseType.MicrosoftSql:
+                useWindowAuthentication.show();
+                break;
+            default:
+                useWindowAuthentication.hide();
+        }
+        this.SetDirtyState();
+    }
+
+    /**
+     * Handle the onChange event of the UseWindowsAuthentication checkbox
+     * @param checkbox The jQuery element of the checkbox
+     * @param prefix The page prefix (Source/Target)
+     */
+    public static HandleUseWindowsAuthenticationOnChange(checkbox: JQuery, prefix: string): void {
+        $(`input[name='${prefix}Username']`).prop("disabled", checkbox.is(":checked"));
+        $(`input[name='${prefix}Password']`).prop("disabled", checkbox.is(":checked"));
+        this.SetDirtyState();
+    }
+}
+
+namespace Project {
+    export enum DatabaseType {
+        /**
+         * Microsoft SQL Server
+         */
+        MicrosoftSql = 0,
+
+        /**
+         * MySQL
+         */
+        MySql = 1,
+
+        /**
+         * PostgreSQL
+         */
+        PostgreSql = 2,
+    }
 }

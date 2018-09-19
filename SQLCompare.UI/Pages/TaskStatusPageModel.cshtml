@@ -25,7 +25,7 @@
         <span id="taskFailed"></span>
 
         <div class="float-right">
-            <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">@Localization.ButtonCancel</button>
+            <button style="@ButtonStyle.Secondary" onclick="DialogManager.CloseModalDialog(); Project.Close(true);">@Localization.ButtonCancel</button>
         </div>
 
     }

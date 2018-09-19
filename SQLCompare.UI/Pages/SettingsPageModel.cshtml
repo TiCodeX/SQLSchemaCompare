@@ -8,26 +8,22 @@
 <div id="Settings">
     <div class="form-group">
         <label>@Localization.LabelLanguage</label>
-        <select name="Language" class="form-control-sm">
-            @{
-                @:<option value="@Language.English" @(Model.Settings.Language == Language.English ? "selected" : "")>English</option>
-                @:<option value="@Language.German" @(Model.Settings.Language == Language.German ? "selected" : "")>German</option>
-                @:<option value="@Language.Italian" @(Model.Settings.Language == Language.Italian ? "selected" : "")>Italian</option>
-            }
+        <select name="Language">
+            <option value="@Language.English" selected="@(Model.Settings.Language == Language.English)">English</option>
+            <option value="@Language.German" selected="@(Model.Settings.Language == Language.German)">German</option>
+            <option value="@Language.Italian" selected="@(Model.Settings.Language == Language.Italian)">Italian</option>
         </select>
     </div>
 
     <div class="form-group">
         <label>@Localization.LabelLogLevel</label>
-        <select name="LogLevel" class="form-control-sm">
-            @{
-                @:<option value="@LogLevel.Debug" @(Model.Settings.LogLevel == LogLevel.Debug ? "selected" : "")>Debug</option>
-                @:<option value="@LogLevel.Info" @(Model.Settings.LogLevel == LogLevel.Info ? "selected" : "")>Info</option>
-                @:<option value="@LogLevel.Warning" @(Model.Settings.LogLevel == LogLevel.Warning ? "selected" : "")>Warning</option>
-                @:<option value="@LogLevel.Error" @(Model.Settings.LogLevel == LogLevel.Error ? "selected" : "")>Error</option>
-                @:<option value="@LogLevel.Critical" @(Model.Settings.LogLevel == LogLevel.Critical ? "selected" : "")>Critical</option>
-                @:<option value="@LogLevel.None" @(Model.Settings.LogLevel == LogLevel.None ? "selected" : "")>None</option>
-            }
+        <select name="LogLevel">
+            <option value="@LogLevel.Debug" selected="@(Model.Settings.LogLevel == LogLevel.Debug)">Debug</option>
+            <option value="@LogLevel.Info" selected="@(Model.Settings.LogLevel == LogLevel.Info)">Info</option>
+            <option value="@LogLevel.Warning" selected="@(Model.Settings.LogLevel == LogLevel.Warning)">Warning</option>
+            <option value="@LogLevel.Error" selected="@(Model.Settings.LogLevel == LogLevel.Error)">Error</option>
+            <option value="@LogLevel.Critical" selected="@(Model.Settings.LogLevel == LogLevel.Critical)">Critical</option>
+            <option value="@LogLevel.None" selected="@(Model.Settings.LogLevel == LogLevel.None)">None</option>
         </select>
     </div>
 </div>

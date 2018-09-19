@@ -22,8 +22,8 @@ class Utility {
         }, false);
 
         // Enable bootstrap tooltips and popovers
-        $("[data-toggle='tooltip']").tooltip();
-        $("[data-toggle='popover']").popover();
+        $("body").tooltip({ selector: "[data-toggle='tooltip']" });
+        $("body").popover({ selector: "[data-toggle='popover']" });
 
         await Localization.Load();
 

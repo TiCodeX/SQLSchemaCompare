@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
-using SQLCompare.Services;
 
 namespace SQLCompare.UI.Pages
 {

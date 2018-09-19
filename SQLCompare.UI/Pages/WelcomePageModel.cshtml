@@ -34,8 +34,15 @@
                     @for (var i = Model.RecentProjects.Count - 1; i >= 0; i--)
                     {
                         <br /> @:&bull;
-                        <button style="@ButtonStyle.Link" onclick="Project.Load(false, '@HttpUtility.JavaScriptStringEncode(Model.RecentProjects[i])')" class="p-0">
-                            @Model.RecentProjects[i]
+                        <button style="@ButtonStyle.Link"
+                                onclick="Project.Load(false, '@HttpUtility.JavaScriptStringEncode(Model.RecentProjects[i])')"
+                                class="tcx-recent-project"
+                                data-toggle="tooltip" data-placement="top" title="@Model.RecentProjects[i]">
+                            @Model.RecentProjects[i].Split("\\").Last()
+                        </button>
+                        <button style="@ButtonStyle.Link" class="p-0"
+                                onclick="Project.RemoveRecentProject('@HttpUtility.JavaScriptStringEncode(Model.RecentProjects[i])')">
+                            <span class="fa fa-times text-danger"></span>
                         </button>
                     }
                 </div>

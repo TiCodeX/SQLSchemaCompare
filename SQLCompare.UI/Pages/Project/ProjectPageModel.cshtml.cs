@@ -258,6 +258,20 @@ namespace SQLCompare.UI.Pages.Project
             });
         }
 
+        /// <summary>
+        /// Remove the filename from the recent projects
+        /// </summary>
+        /// <param name="filename">The filename</param>
+        /// <returns>TODO: boh</returns>
+        public ActionResult OnPostRemoveRecentProject([FromBody] string filename)
+        {
+            var settings = this.appSettingsService.GetAppSettings();
+            settings.RecentProjects.Remove(filename);
+            this.appSettingsService.SaveAppSettings();
+
+            return new JsonResult(new ApiResponse());
+        }
+
         // TODO: move somewhere else and add missing parameters
         private ADatabaseProviderOptions GetDatabaseProviderOptions(CompareProjectOptions options, CompareDirection direction)
         {

@@ -13,7 +13,7 @@ $fa-font-size-base: $font-size-base;
 
 /*#region bootstrap overrides */
 .modal, .modal-backdrop {
-    top: $row-header-height; 
+    top: $row-header-height;
 }
 /*#endregion*/
 
@@ -63,7 +63,7 @@ $fa-font-size-base: $font-size-base;
     height: 100%;
 }
 
-.tcx-welcome{
+.tcx-welcome {
     width: 700px;
     height: 500px;
 }
@@ -71,6 +71,13 @@ $fa-font-size-base: $font-size-base;
 .tcx-project {
     width: 700px;
     height: 500px;
+}
+
+.tcx-recent-project {
+    padding: 0;
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /*#region checkbox switch */

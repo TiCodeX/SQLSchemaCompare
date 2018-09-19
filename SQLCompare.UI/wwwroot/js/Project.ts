@@ -48,6 +48,11 @@ class Project {
     private static readonly startCompareUrl: string = `${Project.pageUrl}?handler=StartCompare`;
 
     /**
+     * Service URL for starting the comparison
+     */
+    private static readonly removeRecentUrl: string = `${Project.pageUrl}?handler=RemoveRecentProject`;
+
+    /**
      * Current opened project file
      */
     private static filename: string;
@@ -251,6 +256,20 @@ class Project {
                 }
             };
             polling();
+        });
+    }
+
+    /**
+     * Remove the project from the recent list
+     * @param filename The Project file path
+     */
+    public static RemoveRecentProject(filename: string): void {
+        const data: object = <object>JSON.parse(JSON.stringify(filename));
+
+        Utility.AjaxCall(this.removeRecentUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string>): void => {
+            if (PageManager.GetOpenPage() === PageManager.Page.Welcome) {
+                PageManager.LoadPage(PageManager.Page.Welcome);
+            }
         });
     }
 

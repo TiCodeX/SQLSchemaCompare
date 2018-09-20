@@ -29,7 +29,13 @@ namespace SQLCompare.Infrastructure.EntityFramework
             this.logger = logger;
             this.DatabaseProviderOptions = dbpo;
             this.ConnectionString = $"Server={dbpo.Hostname};Database={dbpo.Database};User Id={dbpo.Username};Password={dbpo.Password};";
+            this.DatabaseName = dbpo.Database;
         }
+
+        /// <summary>
+        /// Gets the database name
+        /// </summary>
+        public string DatabaseName { get; }
 
         /// <summary>
         /// Gets the database provider options

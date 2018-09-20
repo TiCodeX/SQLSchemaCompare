@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Infrastructure.EntityFramework;
+using SQLCompare.Services;
 
 namespace SQLCompare.Infrastructure.DatabaseProviders
 {
@@ -53,18 +55,18 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         public abstract List<string> GetDatabaseList();
 
         /// <inheritdoc/>
-        public abstract ABaseDb GetDatabase();
+        public abstract ABaseDb GetDatabase(TaskInfo taskInfo);
 
         /// <summary>
         /// Discover the complete database structure
         /// </summary>
         /// <param name="context">The database context</param>
+        /// <param name="taskInfo">The task info for async operations</param>
         /// <returns>The discovered database structure</returns>
-        protected TDatabase DiscoverDatabase(TDatabaseContext context)
+        protected TDatabase DiscoverDatabase(TDatabaseContext context, TaskInfo taskInfo)
         {
-            var databaseName = context.Database.GetDbConnection().Database;
-            this.Logger.LogInformation($"DiscoverDatabase started for database '{databaseName}'");
-            var db = new TDatabase { Name = databaseName };
+            this.Logger.LogInformation($"DiscoverDatabase started for database '{context.DatabaseName}'");
+            var db = new TDatabase { Name = context.DatabaseName };
 
             var columns = new List<ABaseDbColumn>();
             var foreignKeys = new List<ABaseDbConstraint>();
@@ -75,6 +77,20 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 8;
+                taskInfo.Message = Localization.StatusConnecting;
+                context.Database.OpenConnection();
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error connecting to database");
+                throw;
+            }
+
+            try
+            {
+                taskInfo.Percentage = 16;
+                taskInfo.Message = Localization.StatusRetrievingTables;
                 db.Tables.AddRange(this.GetTables(db, context));
             }
             catch (Exception ex)
@@ -85,6 +101,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 24;
                 columns.AddRange(this.GetColumns(db, context));
             }
             catch (Exception ex)
@@ -95,6 +112,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 32;
+                taskInfo.Message = Localization.StatusRetrievingForeignKeys;
                 foreignKeys.AddRange(this.GetForeignKeys(db, context));
             }
             catch (Exception ex)
@@ -105,6 +124,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 40;
+                taskInfo.Message = Localization.StatusRetrievingIndexes;
                 indexes.AddRange(this.GetIndexes(db, context));
             }
             catch (Exception ex)
@@ -115,6 +136,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 48;
+                taskInfo.Message = Localization.StatusRetrievingConstraints;
                 constraints.AddRange(this.GetConstraints(db, context));
             }
             catch (Exception ex)
@@ -152,6 +175,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 56;
+                taskInfo.Message = Localization.StatusRetrievingViews;
                 db.Views.AddRange(this.GetViews(db, context));
                 db.Views.ForEach(x => { x.ViewDefinition = x.ViewDefinition.TrimStart('\r', '\n'); });
             }
@@ -163,6 +188,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 64;
+                taskInfo.Message = Localization.StatusRetrievingFunctions;
                 db.Functions.AddRange(this.GetFunctions(db, context));
                 db.Functions.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
             }
@@ -174,6 +201,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 72;
+                taskInfo.Message = Localization.StatusRetrievingStoredProcedures;
                 db.StoredProcedures.AddRange(this.GetStoredProcedures(db, context));
                 db.StoredProcedures.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
             }
@@ -185,6 +214,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 80;
+                taskInfo.Message = Localization.StatusRetrievingTriggers;
                 db.Triggers.AddRange(this.GetTriggers(db, context));
                 db.Triggers.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
             }
@@ -196,6 +227,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 88;
+                taskInfo.Message = Localization.StatusRetrievingDataTypes;
                 db.DataTypes.AddRange(this.GetDataTypes(db, context));
             }
             catch (Exception ex)
@@ -206,6 +239,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 96;
+                taskInfo.Message = Localization.StatusRetrievingSequences;
                 db.Sequences.AddRange(this.GetSequences(db, context));
             }
             catch (Exception ex)
@@ -213,6 +248,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 this.Logger.LogError(ex, "Error retrieving sequences");
                 exceptions.Add(ex);
             }
+
+            taskInfo.Percentage = 100;
 
             if (exceptions.Count > 0)
             {

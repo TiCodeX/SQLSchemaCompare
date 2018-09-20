@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MySql;
 using SQLCompare.Core.Entities.DatabaseProvider;
@@ -26,11 +27,11 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc />
-        public override ABaseDb GetDatabase()
+        public override ABaseDb GetDatabase(TaskInfo taskInfo)
         {
             using (var context = new MySqlDatabaseContext(this.LoggerFactory, this.Options))
             {
-                return this.DiscoverDatabase(context);
+                return this.DiscoverDatabase(context, taskInfo);
             }
         }
 

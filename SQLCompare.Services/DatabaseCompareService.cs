@@ -51,19 +51,8 @@ namespace SQLCompare.Services
                     true,
                     taskInfo =>
                     {
-                        taskInfo.Message = "Connecting to source server";
-                        for (short i = 1; i < 3; i++)
-                        {
-                            taskInfo.Percentage = (short)(i * 10);
-                        }
-
-                        taskInfo.Message = "Reading source tables";
                         this.retrievedSourceDatabase = this.databaseService.GetDatabase(
-                            this.projectService.Project.SourceProviderOptions);
-
-                        taskInfo.Message = string.Empty;
-                        taskInfo.Percentage = 100;
-
+                            this.projectService.Project.SourceProviderOptions, taskInfo);
                         return true;
                     }),
                 new TaskWork(
@@ -71,19 +60,8 @@ namespace SQLCompare.Services
                     true,
                     taskInfo =>
                     {
-                        taskInfo.Message = "Connecting to target server";
-                        for (short i = 1; i < 3; i++)
-                        {
-                            taskInfo.Percentage = (short)(i * 10);
-                        }
-
-                        taskInfo.Message = "Reading target tables";
                         this.retrievedTargetDatabase = this.databaseService.GetDatabase(
-                            this.projectService.Project.TargetProviderOptions);
-
-                        taskInfo.Message = string.Empty;
-                        taskInfo.Percentage = 100;
-
+                            this.projectService.Project.TargetProviderOptions, taskInfo);
                         return true;
                     }),
                 new TaskWork(

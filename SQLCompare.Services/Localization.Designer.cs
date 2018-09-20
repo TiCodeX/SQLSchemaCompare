@@ -817,6 +817,105 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connecting to server....
+        /// </summary>
+        public static string StatusConnecting {
+            get {
+                return ResourceManager.GetString("StatusConnecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving Constraints....
+        /// </summary>
+        public static string StatusRetrievingConstraints {
+            get {
+                return ResourceManager.GetString("StatusRetrievingConstraints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving User-Defined Data Types....
+        /// </summary>
+        public static string StatusRetrievingDataTypes {
+            get {
+                return ResourceManager.GetString("StatusRetrievingDataTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving Foreign Keys....
+        /// </summary>
+        public static string StatusRetrievingForeignKeys {
+            get {
+                return ResourceManager.GetString("StatusRetrievingForeignKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving Functions....
+        /// </summary>
+        public static string StatusRetrievingFunctions {
+            get {
+                return ResourceManager.GetString("StatusRetrievingFunctions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving Indexes....
+        /// </summary>
+        public static string StatusRetrievingIndexes {
+            get {
+                return ResourceManager.GetString("StatusRetrievingIndexes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving Sequences....
+        /// </summary>
+        public static string StatusRetrievingSequences {
+            get {
+                return ResourceManager.GetString("StatusRetrievingSequences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving Stored Procedures....
+        /// </summary>
+        public static string StatusRetrievingStoredProcedures {
+            get {
+                return ResourceManager.GetString("StatusRetrievingStoredProcedures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving Tables....
+        /// </summary>
+        public static string StatusRetrievingTables {
+            get {
+                return ResourceManager.GetString("StatusRetrievingTables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving Triggers.
+        /// </summary>
+        public static string StatusRetrievingTriggers {
+            get {
+                return ResourceManager.GetString("StatusRetrievingTriggers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving Views....
+        /// </summary>
+        public static string StatusRetrievingViews {
+            get {
+                return ResourceManager.GetString("StatusRetrievingViews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string TitleError {

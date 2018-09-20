@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Interfaces;
@@ -33,10 +34,10 @@ namespace SQLCompare.Services
         }
 
         /// <inheritdoc />
-        public ABaseDb GetDatabase(ADatabaseProviderOptions options)
+        public ABaseDb GetDatabase(ADatabaseProviderOptions options, TaskInfo taskInfo)
         {
             var provider = this.dbProviderFactory.Create(options);
-            return provider.GetDatabase();
+            return provider.GetDatabase(taskInfo);
         }
     }
 }

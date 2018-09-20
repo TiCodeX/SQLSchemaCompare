@@ -386,4 +386,37 @@
   <data name="TitleSaveProject" xml:space="preserve">
     <value>Save Project</value>
   </data>
+  <data name="StatusConnecting" xml:space="preserve">
+    <value>Connecting to server...</value>
+  </data>
+  <data name="StatusRetrievingConstraints" xml:space="preserve">
+    <value>Retrieving Constraints...</value>
+  </data>
+  <data name="StatusRetrievingDataTypes" xml:space="preserve">
+    <value>Retrieving User-Defined Data Types...</value>
+  </data>
+  <data name="StatusRetrievingForeignKeys" xml:space="preserve">
+    <value>Retrieving Foreign Keys...</value>
+  </data>
+  <data name="StatusRetrievingFunctions" xml:space="preserve">
+    <value>Retrieving Functions...</value>
+  </data>
+  <data name="StatusRetrievingIndexes" xml:space="preserve">
+    <value>Retrieving Indexes...</value>
+  </data>
+  <data name="StatusRetrievingSequences" xml:space="preserve">
+    <value>Retrieving Sequences...</value>
+  </data>
+  <data name="StatusRetrievingStoredProcedures" xml:space="preserve">
+    <value>Retrieving Stored Procedures...</value>
+  </data>
+  <data name="StatusRetrievingTables" xml:space="preserve">
+    <value>Retrieving Tables...</value>
+  </data>
+  <data name="StatusRetrievingTriggers" xml:space="preserve">
+    <value>Retrieving Triggers</value>
+  </data>
+  <data name="StatusRetrievingViews" xml:space="preserve">
+    <value>Retrieving Views...</value>
+  </data>
 </root>

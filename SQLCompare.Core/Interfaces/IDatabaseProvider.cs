@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Database;
 
 namespace SQLCompare.Core.Interfaces
@@ -11,8 +12,9 @@ namespace SQLCompare.Core.Interfaces
         /// <summary>
         /// Gets the database structure
         /// </summary>
+        /// <param name="taskInfo">The task info for async operations</param>
         /// <returns>The database structure</returns>
-        ABaseDb GetDatabase();
+        ABaseDb GetDatabase(TaskInfo taskInfo);
 
         /// <summary>
         /// Gets the list of available database

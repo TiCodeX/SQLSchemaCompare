@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
 
@@ -20,7 +21,8 @@ namespace SQLCompare.Core.Interfaces.Services
         /// Gets the database structure
         /// </summary>
         /// <param name="options">The options for the database</param>
+        /// <param name="taskInfo">The task info for async operations</param>
         /// <returns>The database structure</returns>
-        ABaseDb GetDatabase(ADatabaseProviderOptions options);
+        ABaseDb GetDatabase(ADatabaseProviderOptions options, TaskInfo taskInfo);
     }
 }

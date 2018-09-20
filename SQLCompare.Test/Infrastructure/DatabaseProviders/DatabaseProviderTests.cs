@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using FluentAssertions;
+using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Infrastructure.DatabaseProviders;
 using SQLCompare.Infrastructure.EntityFramework;
@@ -67,7 +68,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         public void GetMicrosoftSqlDatabase()
         {
             var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider();
-            var db = mssqldbp.GetDatabase();
+            var db = mssqldbp.GetDatabase(new TaskInfo("test"));
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
 
@@ -113,7 +114,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         public void GetMySqlDatabase()
         {
             var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider();
-            var db = mysqldbp.GetDatabase();
+            var db = mysqldbp.GetDatabase(new TaskInfo("test"));
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
 
@@ -155,7 +156,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         public void GetPostgreSqlDatabase()
         {
             var pgsqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider();
-            var db = pgsqldbp.GetDatabase();
+            var db = pgsqldbp.GetDatabase(new TaskInfo("test"));
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
 
@@ -196,7 +197,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         public void CloneMicrosoftSqlDatabase()
         {
             var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider();
-            var db = mssqldbp.GetDatabase();
+            var db = mssqldbp.GetDatabase(new TaskInfo("test"));
 
             var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
             var scripter = scripterFactory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
@@ -232,7 +233,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             mssqldbpo.Database = clonedDatabaseName;
             mssqldbp = (MicrosoftSqlDatabaseProvider)dpf.Create(mssqldbpo);
 
-            var clonedDb = mssqldbp.GetDatabase();
+            var clonedDb = mssqldbp.GetDatabase(new TaskInfo("test"));
 
             CompareDatabase(db, clonedDb);
         }
@@ -245,7 +246,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         public void ClonePostgreSqlDatabase()
         {
             var postgresqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider();
-            var db = postgresqldbp.GetDatabase();
+            var db = postgresqldbp.GetDatabase(new TaskInfo("test"));
 
             var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
             var scripter = scripterFactory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
@@ -294,7 +295,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var dpf = new DatabaseProviderFactory(this.LoggerFactory);
             postgresqldbp = (PostgreSqlDatabaseProvider)dpf.Create(postgresqldbpo);
 
-            var clonedDb = postgresqldbp.GetDatabase();
+            var clonedDb = postgresqldbp.GetDatabase(new TaskInfo("test"));
 
             CompareDatabase(db, clonedDb);
         }
@@ -307,7 +308,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         public void CloneMySqlDatabase()
         {
             var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider();
-            var db = mysqldbp.GetDatabase();
+            var db = mysqldbp.GetDatabase(new TaskInfo("test"));
 
             var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
             var scripter = scripterFactory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
@@ -348,7 +349,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var dpf = new DatabaseProviderFactory(this.LoggerFactory);
             mysqldbp = (MySqlDatabaseProvider)dpf.Create(mysqldbpo);
 
-            var clonedDb = mysqldbp.GetDatabase();
+            var clonedDb = mysqldbp.GetDatabase(new TaskInfo("test"));
 
             CompareDatabase(db, clonedDb);
         }

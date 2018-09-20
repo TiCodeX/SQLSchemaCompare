@@ -13,6 +13,8 @@ import path = require("path");
 /* tslint:enable:no-require-imports no-implicit-dependencies */
 
 electron.app.setAppUserModelId("ch.ticodex.sqlcompare");
+// Set the productName in the userData path instead of the default application name
+electron.app.setPath("userData", path.join(electron.app.getPath("appData"), "SQL Compare"));
 
 const initialPort: number = 5000;
 const splashUrl: string = `file://${__dirname}/splash.html`;
@@ -75,6 +77,9 @@ const autoUpdaterPublishOptions: builderUtilRuntime.GenericServerOptions = {
     url: autoUpdaterUrl,
 };
 electronUpdater.autoUpdater.setFeedURL(autoUpdaterPublishOptions);
+electronUpdater.autoUpdater.requestHeaders = {
+    "x-ms-version": "2018-03-28",
+};
 electronUpdater.autoUpdater.on("update-available", (info: electronUpdater.UpdateInfo) => {
     autoUpdaterInfo = info;
 });

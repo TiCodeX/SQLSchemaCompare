@@ -727,6 +727,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open Logs Folder.
+        /// </summary>
+        public static string MenuOpenLogsFolder {
+            get {
+                return ResourceManager.GetString("MenuOpenLogsFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Project.
         /// </summary>
         public static string MenuOpenProject {

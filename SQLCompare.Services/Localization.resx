@@ -425,4 +425,7 @@
   <data name="StatusError" xml:space="preserve">
     <value>Error</value>
   </data>
+  <data name="MenuOpenLogsFolder" xml:space="preserve">
+    <value>Open Logs Folder</value>
+  </data>
 </root>

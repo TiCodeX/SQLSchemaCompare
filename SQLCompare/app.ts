@@ -174,6 +174,10 @@ electron.ipcMain.on("CheckUpdateAvailable", (event: electron.Event) => {
 electron.ipcMain.on("QuitAndInstall", (event: electron.Event) => {
     electronUpdater.autoUpdater.quitAndInstall(true, true);
 });
+// Register the renderer callback to open the logs folder
+electron.ipcMain.on("OpenLogsFolder", (event: electron.Event) => {
+    electron.shell.openItem(path.dirname(loggerPath));
+});
 
 /**
  * Create the main window ensuring to destroy the login window

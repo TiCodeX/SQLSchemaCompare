@@ -133,6 +133,16 @@ class Menu {
                 label: Localization.Get("MenuHelp"),
                 submenu: [
                     {
+                        id: "menuOpenLogsFolder",
+                        label: `${Localization.Get("MenuOpenLogsFolder")}...`,
+                        click(): void {
+                            electron.ipcRenderer.send("OpenLogsFolder");
+                        },
+                    },
+                    {
+                        type: "separator",
+                    },
+                    {
                         label: Localization.Get("MenuAbout"),
                         click(): void {
                             electron.shell.openExternal("https://www.ticodex.com/");

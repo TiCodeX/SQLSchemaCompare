@@ -1,7 +1,7 @@
 {
     "name": "sqlcompare",
     "version": "2018.9.3",
-    "description": "The swiss army knive for DB schema comparison and synchronization which runs on multiple OS and supports various DB. TiCodeX SQL Compare runs on Windows, Mac and Linux and connects to Microsoft SQL (MS-SQL), mySQL and Postgress. In addition Azure SQL and MS-SQL on Amazon RDS is supported.",
+    "description": "The Swiss Army Knife of Database Schema Comparison for Microsoft SQL, mySQL and PostgreSQL which runs on Windows, Linux and macOS systems.",
     "main": "app.min.js",
     "homepage": "https://www.ticodex.com",
     "author": {

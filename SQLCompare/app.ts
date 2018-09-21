@@ -16,6 +16,7 @@ electron.app.setAppUserModelId("ch.ticodex.sqlcompare");
 // Set the productName in the userData path instead of the default application name
 electron.app.setPath("userData", path.join(electron.app.getPath("appData"), "SQL Compare"));
 
+const isDebug: boolean = process.defaultApp;
 const initialPort: number = 5000;
 const splashUrl: string = `file://${__dirname}/splash.html`;
 const servicePath: string = path.join(path.dirname(process.execPath), "bin", `SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`);
@@ -57,8 +58,8 @@ log4js.configure({
     },
     categories: {
         default: {
-            appenders: (process.defaultApp ? ["default", "console"] : ["default"]),
-            level: (process.defaultApp ? "debug" : "info"),
+            appenders: (isDebug ? ["default", "console"] : ["default"]),
+            level: (isDebug ? "debug" : "info"),
         },
     },
 });
@@ -68,13 +69,19 @@ logger.info("Starting application...");
 
 // Configure electron auto-updater
 const autoUpdaterLogger: log4js.Logger = log4js.getLogger("electron-updater");
-autoUpdaterLogger.level = (process.defaultApp ? "debug" : "info");
-electronUpdater.autoUpdater.logger = autoUpdaterLogger;
-electronUpdater.autoUpdater.autoDownload = !process.defaultApp && electronUpdater.getCurrentPlatform() !== "linux";
+autoUpdaterLogger.level = (isDebug ? "debug" : "info");
+electronUpdater.autoUpdater.logger = {
+    info: (message: string): void => { autoUpdaterLogger.info(message); },
+    warn: (message: string): void => { autoUpdaterLogger.warn(message); },
+    error: (message: string): void => { autoUpdaterLogger.error(message); },
+    debug: (message: string): void => { autoUpdaterLogger.debug(message); },
+};
+electronUpdater.autoUpdater.autoDownload = !isDebug && electronUpdater.getCurrentPlatform() !== "linux";
 electronUpdater.autoUpdater.autoInstallOnAppQuit = false;
 const autoUpdaterPublishOptions: builderUtilRuntime.GenericServerOptions = {
     provider: "generic",
     url: autoUpdaterUrl,
+    useMultipleRangeRequest: false,
 };
 electronUpdater.autoUpdater.setFeedURL(autoUpdaterPublishOptions);
 electronUpdater.autoUpdater.requestHeaders = {

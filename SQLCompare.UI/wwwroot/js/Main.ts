@@ -87,7 +87,7 @@ class Main {
     public static HideBottomPanel(): void {
         this.RemoveSplitter();
         // Deselect the row
-        $("#mainTop .table-info").removeClass("table-info");
+        $(".tcx-selected-row").removeClass("tcx-selected-row");
         $("#mainBottom").hide();
     }
 
@@ -97,9 +97,9 @@ class Main {
      */
     public static SelectRow(rowElement: JQuery): void {
         // Deselect the row
-        $("#mainTop .table-info").removeClass("table-info");
+        $(".tcx-selected-row").removeClass("tcx-selected-row");
         // Highlight the selected
-        rowElement.addClass("table-info");
+        rowElement.addClass("tcx-selected-row");
         rowElement.parents(".card-body").addClass("show");
         this.ShowBottomPanel(rowElement.get(0).id);
     }
@@ -108,14 +108,23 @@ class Main {
      * Select the previous row
      */
     public static SelectPrevRow(): void {
-        const selectedElement: JQuery = $(".table-info");
+        const selectedElement: JQuery = $(".tcx-selected-row");
         if (selectedElement.length === 0) {
             return;
         }
 
         let prevElement: JQuery = selectedElement.prev();
         if (prevElement.length === 0) {
-            prevElement = selectedElement.parents(".card").prev().find("tbody > tr:last");
+            let prevCard: JQuery = selectedElement.parents(".card");
+            while (prevCard.length > 0) {
+                prevCard = prevCard.prev();
+                if (prevCard.length > 0) {
+                    prevElement = prevCard.find("tbody > tr:last");
+                    if (prevElement.length > 0) {
+                        break;
+                    }
+                }
+            }
             if (prevElement.length === 0) {
                 return;
             }
@@ -129,14 +138,23 @@ class Main {
      * Select the next row
      */
     public static SelectNextRow(): void {
-        const selectedElement: JQuery = $(".table-info");
+        const selectedElement: JQuery = $(".tcx-selected-row");
         if (selectedElement.length === 0) {
             return;
         }
 
         let nextElement: JQuery = selectedElement.next();
         if (nextElement.length === 0) {
-            nextElement = selectedElement.parents(".card").next().find("tbody > tr:first");
+            let nextCard: JQuery = selectedElement.parents(".card");
+            while (nextCard.length > 0) {
+                nextCard = nextCard.next();
+                if (nextCard.length > 0) {
+                    nextElement = nextCard.find("tbody > tr:first");
+                    if (nextElement.length > 0) {
+                        break;
+                    }
+                }
+            }
             if (nextElement.length === 0) {
                 return;
             }
@@ -150,7 +168,7 @@ class Main {
      * Scroll the main view to the selected element
      */
     private static ScollToSelectedElement(): void {
-        const selectedElement: JQuery = $(".table-info");
+        const selectedElement: JQuery = $(".tcx-selected-row");
         if (selectedElement.length === 0) {
             return;
         }

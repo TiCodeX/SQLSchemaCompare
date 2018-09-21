@@ -87,6 +87,10 @@ $fa-font-size-base: $font-size-base;
     padding-bottom: 0 !important;
 }
 
+.tcx-selected-row {
+    @extend .table-info;
+}
+
 /*#region checkbox switch */
 .tcx-switch {
     position: relative;

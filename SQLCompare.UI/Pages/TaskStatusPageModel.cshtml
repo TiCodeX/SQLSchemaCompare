@@ -4,29 +4,59 @@
 @using Services
 @model TaskStatusPageModel
 
-@foreach (var taskInfo in Model.TaskInfos)
-{
-    <div class="card my-3 @(taskInfo.Status == TaskStatus.Faulted ? "border-danger" : string.Empty)">
-        <div class="card-body">
-            <h5 class="card-title @(taskInfo.Status == TaskStatus.Faulted ? "text-danger" : string.Empty)">@taskInfo.Name</h5>
-            <h6 class="card-subtitle mb-2 text-muted">@taskInfo.Message</h6>
-            <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: @taskInfo.Percentage%;">@taskInfo.Percentage%</div>
+<div class="tcx-task-status card mx-auto p-3">
+    @foreach (var taskInfo in Model.TaskInfos)
+    {
+        var titleColor = string.Empty;
+        var borderColor = string.Empty;
+        switch (taskInfo.Status)
+        {
+            case TaskStatus.Running:
+                titleColor = "text-info";
+                borderColor = "border-info";
+                break;
+            case TaskStatus.RanToCompletion:
+                titleColor = "text-success";
+                borderColor = "border-success";
+                break;
+            case TaskStatus.Faulted:
+                titleColor = "text-danger";
+                borderColor = "border-danger";
+                break;
+            case TaskStatus.Canceled:
+                break;
+        }
+        <div class="card mb-3 @borderColor">
+            <div class="card-body">
+                <h5 class="card-title @titleColor">@taskInfo.Name</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@taskInfo.Message</h6>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: @taskInfo.Percentage%;">@taskInfo.Percentage%</div>
+                </div>
+                @if (taskInfo.Exception != null)
+                {
+                    <div class="text-danger mt-2">
+                        @taskInfo.Exception.Message
+                    </div>
+                }
             </div>
         </div>
-    </div>
-}
-
-@if (Model.TaskInfos.All(x => x.Status == TaskStatus.RanToCompletion || x.Status == TaskStatus.Faulted))
-{
-    <span id="stopPolling"></span>
-    if (Model.TaskInfos.Any(x => x.Status == TaskStatus.Faulted))
-    {
-        <span id="taskFailed"></span>
-
-        <div class="float-right">
-            <button style="@ButtonStyle.Secondary" onclick="DialogManager.CloseModalDialog(); Project.Close(true);">@Localization.ButtonCancel</button>
-        </div>
-
     }
-}
+
+    @if (Model.TaskInfos.All(x => x.Status == TaskStatus.RanToCompletion ||
+                                  x.Status == TaskStatus.Faulted ||
+                                  x.Status == TaskStatus.Canceled))
+    {
+        <span id="stopPolling"></span>
+        if (Model.TaskInfos.Any(x => x.Status == TaskStatus.Faulted))
+        {
+            <span id="taskFailed"></span>
+
+            <div class="align-self-end mb-3">
+                <button style="@ButtonStyle.Secondary" onclick="PageManager.ClosePage(); Project.Close(true);">@Localization.ButtonClose</button>
+            </div>
+
+        }
+    }
+</div>
+

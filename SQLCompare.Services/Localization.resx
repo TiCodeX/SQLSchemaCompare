@@ -419,4 +419,10 @@
   <data name="StatusRetrievingViews" xml:space="preserve">
     <value>Retrieving Views...</value>
   </data>
+  <data name="StatusDone" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Error</value>
+  </data>
 </root>

@@ -25,14 +25,28 @@ namespace SQLCompare.Services
             Task.Factory.StartNew(
                 () =>
                 {
-                    var parallelTasks = new List<Task>();
-                    foreach (var task in tasks)
+                    var remainingTasks = new Queue<TaskWork>(tasks);
+                    var runningTasks = new List<Tuple<TaskWork, Task>>();
+                    var terminatedTasks = new List<TaskWork>();
+
+                    while (remainingTasks.Count > 0)
                     {
+                        var task = remainingTasks.Dequeue();
                         if (!task.RunInParallel)
                         {
-                            Task.WaitAll(parallelTasks.ToArray());
+                            Task.WaitAll(runningTasks.Select(x => x.Item2).ToArray());
+                            terminatedTasks.AddRange(runningTasks.Select(x => x.Item1));
+                            runningTasks.Clear();
+
+                            if (terminatedTasks.Any(x => x.Info.Status == TaskStatus.Faulted))
+                            {
+                                // Set the current and the remaining tasks as not executed
+                                task.Info.Status = TaskStatus.Canceled;
+                                remainingTasks.ToList().ForEach(x => { x.Info.Status = TaskStatus.Canceled; });
+                                break;
+                            }
                         }
-                        parallelTasks.Add(PerformTask(task));
+                        runningTasks.Add(new Tuple<TaskWork, Task>(task, PerformTask(task)));
                     }
                 },
                 CancellationToken.None,
@@ -51,9 +65,10 @@ namespace SQLCompare.Services
                         task.Work.Invoke(task.Info);
                         task.Info.Status = TaskStatus.RanToCompletion;
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         task.Info.Status = TaskStatus.Faulted;
+                        task.Info.Exception = ex;
                     }
                     finally
                     {

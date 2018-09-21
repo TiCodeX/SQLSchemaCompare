@@ -51,5 +51,10 @@ namespace SQLCompare.Core.Entities
         /// Gets or sets the time when the Task is finished
         /// </summary>
         public DateTime CompleteTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the exception in case of faulted task
+        /// </summary>
+        public Exception Exception { get; set; }
     }
 }

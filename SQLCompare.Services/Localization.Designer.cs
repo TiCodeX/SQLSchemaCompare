@@ -826,6 +826,24 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Done.
+        /// </summary>
+        public static string StatusDone {
+            get {
+                return ResourceManager.GetString("StatusDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string StatusError {
+            get {
+                return ResourceManager.GetString("StatusError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Retrieving Constraints....
         /// </summary>
         public static string StatusRetrievingConstraints {

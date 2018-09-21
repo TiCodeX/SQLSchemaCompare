@@ -71,6 +71,7 @@ class PageManager {
             case PageManager.Page.Main: return "/Main/MainPageModel";
             case PageManager.Page.Welcome: return "/WelcomePageModel";
             case PageManager.Page.Project: return "/Project/ProjectPageModel";
+            case PageManager.Page.TaskStatus: return "/TaskStatusPageModel";
             default: return undefined;
         }
     }
@@ -93,5 +94,9 @@ namespace PageManager {
          * The project page
          */
         Project,
+        /**
+         * The task status page
+         */
+        TaskStatus,
     }
 }

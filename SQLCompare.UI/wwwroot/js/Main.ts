@@ -26,7 +26,7 @@ class Main {
      * Open the Main page
      */
     public static Open(): void {
-        PageManager.LoadPage(PageManager.Page.Main, true).then((): void => {
+        PageManager.LoadPage(PageManager.Page.Main).then((): void => {
             this.RemoveSplitter();
         });
     }

@@ -250,9 +250,11 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             }
 
             taskInfo.Percentage = 100;
+            taskInfo.Message = Localization.StatusDone;
 
             if (exceptions.Count > 0)
             {
+                taskInfo.Message = Localization.StatusError;
                 throw new AggregateException(exceptions);
             }
 

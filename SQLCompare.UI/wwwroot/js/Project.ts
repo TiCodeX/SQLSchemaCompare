@@ -86,7 +86,7 @@ class Project {
             if (response.Success) {
                 this.isDirty = false;
                 this.filename = undefined;
-                PageManager.LoadPage(PageManager.Page.Project, true).then((): void => {
+                PageManager.LoadPage(PageManager.Page.Project).then((): void => {
                     Menu.ToggleProjectRelatedMenuStatus(true);
                 });
             } else {
@@ -170,7 +170,7 @@ class Project {
             if (response.Success) {
                 this.isDirty = false;
                 this.filename = file;
-                PageManager.LoadPage(PageManager.Page.Project, true).then((): void => {
+                PageManager.LoadPage(PageManager.Page.Project).then((): void => {
                     Menu.ToggleProjectRelatedMenuStatus(true);
                 });
             } else {
@@ -244,11 +244,10 @@ class Project {
                 if ($("#stopPolling").length > 0) {
                     // Open the main page only if there aren't failed tasks
                     if ($("#taskFailed").length === 0) {
-                        DialogManager.CloseModalDialog();
                         Main.Open();
                     }
                 } else {
-                    DialogManager.OpenModalDialog("/TaskStatusPageModel").then(() => {
+                    PageManager.LoadPage(PageManager.Page.TaskStatus).then(() => {
                         setTimeout(() => {
                             polling();
                         }, pollingTime);

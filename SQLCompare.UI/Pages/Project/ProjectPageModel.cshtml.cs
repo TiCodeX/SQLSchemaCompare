@@ -252,10 +252,18 @@ namespace SQLCompare.UI.Pages.Project
         /// <returns>The list of database names in JSON</returns>
         public ActionResult OnPostLoadDatabaseList([FromBody] CompareProjectOptions options)
         {
-            return new JsonResult(new ApiResponse<List<string>>
+            try
             {
-                Result = this.databaseService.ListDatabases(this.GetDatabaseProviderOptions(options, options.Direction))
-            });
+                return new JsonResult(new ApiResponse<List<string>>
+                {
+                    Result = this.databaseService.ListDatabases(this.GetDatabaseProviderOptions(options, options.Direction))
+                });
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Error retrieving databases");
+                return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorUnexpected, ErrorMessage = ex.Message });
+            }
         }
 
         /// <summary>

@@ -139,11 +139,16 @@ class Utility {
 
         Utility.AjaxCall(url, method, data).then((response: ApiResponse<Array<string>>): void => {
             select.find("option").remove();
-            let options: string = "";
-            $.each(response.Result, (index: number, value: string): void => {
-                options += `<option value="${value}">${value}</option>`;
-            });
-            select.append(options);
+            if (response.Success) {
+                let options: string = "";
+                $.each(response.Result,
+                    (index: number, value: string): void => {
+                        options += `<option value="${value}">${value}</option>`;
+                    });
+                select.append(options);
+            } else {
+                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
+            }
             select.removeAttr("disabled");
             button.removeClass("spin").removeAttr("disabled");
         });
@@ -181,7 +186,7 @@ class Utility {
                 contentType: "application/json",
                 data: data !== undefined ? JSON.stringify(data) : "",
                 cache: false,
-                async: false,
+                async: true,
                 success: (response: ApiResponse<T>): void => {
                     resolve(response);
                 },

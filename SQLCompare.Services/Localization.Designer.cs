@@ -504,6 +504,42 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Microsoft SQL Server Project.
+        /// </summary>
+        public static string LabelNewMicrosoftSQLServerProject {
+            get {
+                return ResourceManager.GetString("LabelNewMicrosoftSQLServerProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New MySql Project.
+        /// </summary>
+        public static string LabelNewMySqlProject {
+            get {
+                return ResourceManager.GetString("LabelNewMySqlProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New PostgreSQL Project.
+        /// </summary>
+        public static string LabelNewPostgreSQLProject {
+            get {
+                return ResourceManager.GetString("LabelNewPostgreSQLProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Project....
+        /// </summary>
+        public static string LabelNewProject {
+            get {
+                return ResourceManager.GetString("LabelNewProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only in Source.
         /// </summary>
         public static string LabelOnlyInSource {

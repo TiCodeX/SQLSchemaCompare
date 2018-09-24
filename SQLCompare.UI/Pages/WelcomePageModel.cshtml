@@ -15,7 +15,7 @@
         </div>
     </div>
     <div class="card-body px-2">
-        <div class="row no-gutters">
+        <div class="row no-gutters tcx-welcome-recent-row">
             <div class="col-6 border-right px-1">
                 <div class="list-group">
                     <div class="list-group-item border-0 pl-1 py-0 font-weight-bold">
@@ -54,22 +54,22 @@
                     <li class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
                         onclick="Project.New(false, Project.DatabaseType.MicrosoftSql)">
                         <i class="fas fa-plus pr-1"></i>
-                        New Microsoft SQL Server Project
+                        @Localization.LabelNewMicrosoftSQLServerProject
                     </li>
                     <li class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
                         onclick="Project.New(false, Project.DatabaseType.MySql)">
                         <i class="fas fa-plus pr-1"></i>
-                        New MySql Project
+                        @Localization.LabelNewMySqlProject
                     </li>
                     <li class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
                         onclick="Project.New(false, Project.DatabaseType.PostgreSql)">
                         <i class="fas fa-plus pr-1"></i>
-                        New PostgreSQL Project
+                        @Localization.LabelNewPostgreSQLProject
                     </li>
                     <li class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
                         onclick="Project.New(false)">
                         <i class="fas fa-plus pr-1"></i>
-                        New Project...
+                        @Localization.LabelNewProject
                     </li>
                 </ul>
             </div>

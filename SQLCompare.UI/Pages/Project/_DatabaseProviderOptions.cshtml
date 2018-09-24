@@ -7,6 +7,7 @@
 @{
     var divId = Guid.NewGuid().ToString();
     var prefix = ((CompareDirection)ViewBag.Prefix).ToString();
+    var disabled = !((bool)ViewBag.CanEdit);
 }
 <div class="card" id="@divId">
     <input type="hidden" name="Direction" value="@prefix">
@@ -15,7 +16,7 @@
         <p class="card-text">
             <div class="form-group">
                 <label>@Localization.LabelType</label>
-                <select name="@(prefix)DatabaseType" onchange="Project.HandleDatabaseTypeOnChange($(this), '@prefix')">
+                <select name="@(prefix)DatabaseType" onchange="Project.HandleDatabaseTypeOnChange($(this), '@prefix')" disabled="disabled">
                     <option value="@((int) DatabaseType.MicrosoftSql)"
                             selected="@(Model is MicrosoftSqlDatabaseProviderOptions)">
                         Microsoft SQL Server

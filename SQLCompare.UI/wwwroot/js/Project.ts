@@ -79,8 +79,11 @@ class Project {
      * Open the new Project page
      * @param ignoreDirty Whether to ignore if the project is dirty or prompt to save
      */
-    public static New(ignoreDirty: boolean): void {
-        const data: object = <object>JSON.parse(JSON.stringify(ignoreDirty));
+    public static New(ignoreDirty: boolean, databaseType?: Project.DatabaseType): void {
+        const data: { ignoreDirty: boolean; databaseType: Project.DatabaseType } = {
+            ignoreDirty: ignoreDirty,
+            databaseType: databaseType,
+        };
 
         Utility.AjaxCall(this.newUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string>): void => {
             if (response.Success) {
@@ -91,7 +94,7 @@ class Project {
                 });
             } else {
                 this.HandleProjectNeedToBeSavedError(response).then((): void => {
-                    this.New(true);
+                    this.New(true, databaseType);
                 });
             }
         });

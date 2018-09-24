@@ -67,7 +67,7 @@ namespace SQLCompare.UI.Pages.Project
         {
             if (this.projectService.Project == null)
             {
-                this.projectService.NewProject();
+                this.projectService.NewProject(DatabaseType.MicrosoftSql);
             }
 
             this.Project = this.projectService.Project;
@@ -76,15 +76,15 @@ namespace SQLCompare.UI.Pages.Project
         /// <summary>
         /// Create a new project
         /// </summary>
-        /// <param name="ignoreDirty">Create new project even if current project is dirty</param>
+        /// <param name="req">The new project request</param>
         /// <returns>The response</returns>
-        public IActionResult OnPostNewProject([FromBody] bool ignoreDirty)
+        public IActionResult OnPostNewProject([FromBody] NewProjectRequest req)
         {
             try
             {
-                if (!this.projectService.NeedSave() || ignoreDirty)
+                if (!this.projectService.NeedSave() || req.IgnoreDirty)
                 {
-                    this.projectService.NewProject();
+                    this.projectService.NewProject(req.DatabaseType);
                     return new JsonResult(new ApiResponse());
                 }
                 else

@@ -31,16 +31,54 @@ namespace SQLCompare.Services
         public CompareProject Project { get; private set; }
 
         /// <inheritdoc/>
-        public bool NewProject()
+        public bool NewProject(DatabaseType? databaseType)
         {
-            // TODO: return false if project is still open
-            this.Project = new CompareProject
+            if (databaseType.HasValue)
             {
-                SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
-                TargetProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
-                Options = new ProjectOptions(),
-                State = ProjectState.New,
-            };
+                switch (databaseType.Value)
+                {
+                    case DatabaseType.MicrosoftSql:
+                        this.Project = new CompareProject
+                        {
+                            SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
+                            TargetProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
+                            Options = new ProjectOptions(),
+                            State = ProjectState.New,
+                        };
+                        break;
+                    case DatabaseType.MySql:
+                        this.Project = new CompareProject
+                        {
+                            SourceProviderOptions = new MySqlDatabaseProviderOptions(),
+                            TargetProviderOptions = new MySqlDatabaseProviderOptions(),
+                            Options = new ProjectOptions(),
+                            State = ProjectState.New,
+                        };
+                        break;
+
+                    case DatabaseType.PostgreSql:
+                        this.Project = new CompareProject
+                        {
+                            SourceProviderOptions = new PostgreSqlDatabaseProviderOptions(),
+                            TargetProviderOptions = new PostgreSqlDatabaseProviderOptions(),
+                            Options = new ProjectOptions(),
+                            State = ProjectState.New,
+                        };
+                        break;
+                }
+            }
+            else
+            {
+                this.Project = new CompareProject
+                {
+                    SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
+                    TargetProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
+                    Options = new ProjectOptions(),
+                    State = ProjectState.New,
+                    EditableDatabaseType = true,
+                };
+            }
+
             return true;
         }
 

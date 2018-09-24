@@ -1,4 +1,5 @@
 ﻿using SQLCompare.Core.Entities.Project;
+using SQLCompare.Core.Enums;
 
 namespace SQLCompare.Core.Interfaces.Services
 {
@@ -15,8 +16,9 @@ namespace SQLCompare.Core.Interfaces.Services
         /// <summary>
         /// Create a new project
         /// </summary>
+        /// <param name="databaseType">The database type</param>
         /// <returns>Returns false whether there is a project open</returns>
-        bool NewProject();
+        bool NewProject(DatabaseType? databaseType);
 
         /// <summary>
         /// Saves the project

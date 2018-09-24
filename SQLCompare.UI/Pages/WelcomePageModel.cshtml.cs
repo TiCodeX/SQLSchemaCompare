@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
@@ -35,7 +36,7 @@ namespace SQLCompare.UI.Pages
         public void OnGet()
         {
             var settings = this.appSettingsService.GetAppSettings();
-            this.RecentProjects = settings.RecentProjects;
+            this.RecentProjects = settings.RecentProjects.TakeLast(10).Reverse().ToList();
         }
     }
 }

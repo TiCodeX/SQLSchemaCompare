@@ -448,4 +448,10 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelDoesNotExist" xml:space="preserve">
     <value>Does not exist</value>
   </data>
+  <data name="LabelCreateNewProjects" xml:space="preserve">
+    <value>Create New Project</value>
+  </data>
+  <data name="LabelOpen" xml:space="preserve">
+    <value>Open...</value>
+  </data>
 </root>

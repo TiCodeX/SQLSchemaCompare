@@ -67,19 +67,23 @@ $fa-font-size-base: $font-size-base;
     width: 700px;
     height: 500px;
 }
+.tcx-welcome-logo{
+    height: 80px;
+}
 
 .tcx-project {
     width: 700px;
     height: 500px;
 }
 
-.tcx-recent-project {
-    padding: 0;
-    max-width: 90%;
+.tcx-text-ellipsis {
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+.tcx-cursor-default{
+    cursor:default;
+}
 .tcx-task-status {
     width: 80%;
     max-width: 800px;

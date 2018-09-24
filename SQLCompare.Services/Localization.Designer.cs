@@ -367,6 +367,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create New Project.
+        /// </summary>
+        public static string LabelCreateNewProjects {
+            get {
+                return ResourceManager.GetString("LabelCreateNewProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Database.
         /// </summary>
         public static string LabelDatabase {
@@ -509,6 +518,15 @@ namespace SQLCompare.Services {
         public static string LabelOnlyInTarget {
             get {
                 return ResourceManager.GetString("LabelOnlyInTarget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open....
+        /// </summary>
+        public static string LabelOpen {
+            get {
+                return ResourceManager.GetString("LabelOpen", resourceCulture);
             }
         }
         

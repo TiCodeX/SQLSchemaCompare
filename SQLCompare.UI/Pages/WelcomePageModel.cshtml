@@ -7,46 +7,71 @@
 
 <div class="card tcx-welcome shadow mx-auto">
     <div class="card-header">
-        <div class="row align-items-center">
-            <div class="col-3">
-                <div class="tcx-logo"></div>
-            </div>
-            <div class="col-9">
-                <h3>@string.Format(Localization.TitleWelcome, AppGlobal.ProductName)</h3>
+        <div class="row">
+            <div class="col-12 d-flex">
+                <img src="~/img/logo-transparent.png" class="float-left tcx-welcome-logo pl-3" />
+                <h3 class="text-center m-auto">@string.Format(Localization.TitleWelcome, AppGlobal.ProductName)</h3>
             </div>
         </div>
     </div>
-    <div class="card-body">
-        <div class="row align-items-center">
-            <div class="col-6">
-                <button style="@ButtonStyle.Primary" onclick="Project.New(false)">
-                    @Localization.ButtonNewProject
-                </button>
-
-                <button style="@ButtonStyle.Primary" onclick="Project.Load(false)">
-                    @Localization.ButtonOpenProject
-                </button>
-
-            </div>
-            <div class="col-6">
-                <div>
-                    @Localization.LabelRecentProjects:
-                    @for (var i = Model.RecentProjects.Count - 1; i >= 0; i--)
+    <div class="card-body px-2">
+        <div class="row no-gutters">
+            <div class="col-6 border-right px-1">
+                <div class="list-group">
+                    <div class="list-group-item border-0 pl-1 py-0 font-weight-bold">
+                        <h6 class="font-weight-bold">@Localization.LabelRecentProjects:</h6>
+                    </div>
+                    @foreach (var item in Model.RecentProjects)
                     {
-                        <br /> @:&bull;
-                        <button style="@ButtonStyle.Link"
-                                onclick="Project.Load(false, '@HttpUtility.JavaScriptStringEncode(Model.RecentProjects[i])')"
-                                class="tcx-recent-project"
-                                data-toggle="tooltip" data-placement="top" title="@Model.RecentProjects[i]">
-                            @Model.RecentProjects[i].Split("\\").Last()
-                        </button>
-                        <button style="@ButtonStyle.Link" class="p-0"
-                                onclick="Project.RemoveRecentProject('@HttpUtility.JavaScriptStringEncode(Model.RecentProjects[i])')">
-                            <span class="fa fa-times text-danger"></span>
-                        </button>
+                        <div class="list-group-item list-group-item-action d-flex border-0 py-1 justify-content-between">
+                            <div onclick="Project.Load(false, '@HttpUtility.JavaScriptStringEncode(item)')"
+                                 class="w-100 tcx-text-ellipsis tcx-cursor-default"
+                                 data-toggle="tooltip" data-placement="top" title="@item">
+                                <i class="fas fa-database pr-1"></i>
+                                @(System.IO.Path.GetFileName(item))
+                            </div>
+                            <div>
+                                <i class="fas fa-times text-danger"
+                                   onclick="Project.RemoveRecentProject('@HttpUtility.JavaScriptStringEncode(item)')">
+                                </i>
+                            </div>
+                        </div>
                     }
-                </div>
+                    <div class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
+                         onclick="Project.Load()"
+                         data-toggle="tooltip" data-placement="top" title="@Localization.ButtonOpenProject">
+                        <i class="far fa-folder-open pr-1"></i>
+                        @Localization.LabelOpen
+                    </div>
 
+                </div>
+            </div>
+            <div class="col-6 border-left px-1">
+                <ul class="list-group px-2">
+                    <li class="list-group-item border-0 pl-1 py-0">
+                        <h6 class="font-weight-bold">@Localization.LabelCreateNewProjects:</h6>
+                    </li>
+                    <li class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
+                        onclick="Project.New(false, Project.DatabaseType.MicrosoftSql)">
+                        <i class="fas fa-plus pr-1"></i>
+                        New Microsoft SQL Server Project
+                    </li>
+                    <li class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
+                        onclick="Project.New(false, Project.DatabaseType.MySql)">
+                        <i class="fas fa-plus pr-1"></i>
+                        New MySql Project
+                    </li>
+                    <li class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
+                        onclick="Project.New(false, Project.DatabaseType.PostgreSql)">
+                        <i class="fas fa-plus pr-1"></i>
+                        New PostgreSQL Project
+                    </li>
+                    <li class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
+                        onclick="Project.New(false)">
+                        <i class="fas fa-plus pr-1"></i>
+                        New Project...
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

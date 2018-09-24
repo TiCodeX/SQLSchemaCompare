@@ -225,7 +225,27 @@ class Project {
      * @param dataDivId The id of the div with the data to serialize
      */
     public static LoadDatabaseSelectValues(button: JQuery, selectId: string, dataDivId: string): void {
-        Utility.LoadSelectValues(button, $(`select[name=${selectId}]`), Project.loadDatabaseListUrl, Utility.HttpMethod.Post, $(`#${dataDivId}`));
+        // Disable the button and start rotating it
+        button.attr("disabled", "disabled").addClass("spin");
+        // Close the dropdown and disable it temporarily
+        const select: JQuery = $(`input[name="${selectId}"]`);
+        select.trigger("blur").attr("disabled", "disabled");
+
+        const data: object = Utility.SerializeJSON($(`#${dataDivId}`));
+
+        Utility.AjaxCall(this.loadDatabaseListUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<Array<string>>): void => {
+            select.editableSelect("clear");
+            if (response.Success) {
+                $.each(response.Result,
+                    (index: number, value: string): void => {
+                        select.editableSelect("add", value);
+                    });
+            } else {
+                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
+            }
+            select.removeAttr("disabled");
+            button.removeClass("spin").removeAttr("disabled");
+        });
     }
 
     /**

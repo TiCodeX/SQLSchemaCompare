@@ -60,6 +60,13 @@ class PageManager {
                 newPageDiv.addClass("my-auto");
             }
             newPageDiv.html(result);
+
+            // Activate the editable selects in the new page
+            $(".editable-select", newPageDiv).editableSelect({
+                filter: false,
+                effects: "fade",
+                duration: "fast",
+            });
         });
     }
 

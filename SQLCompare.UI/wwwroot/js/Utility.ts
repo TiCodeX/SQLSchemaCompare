@@ -122,39 +122,6 @@ class Utility {
     }
 
     /**
-     * Perform an ajax call to retrieve the select values
-     * @param button The button jQuery element that triggered the load
-     * @param select The select jQuery element
-     * @param url The URL of the ajax call
-     * @param method The method (GET/POST)
-     * @param dataDiv The div with the data to serialize
-     */
-    public static LoadSelectValues(button: JQuery, select: JQuery, url: string, method: Utility.HttpMethod, dataDiv: JQuery): void {
-        // Disable the button and start rotating it
-        button.attr("disabled", "disabled").addClass("spin");
-        // Close the dropdown and disable it temporarily
-        select.trigger("blur").attr("disabled", "disabled");
-
-        const data: object = Utility.SerializeJSON(dataDiv);
-
-        Utility.AjaxCall(url, method, data).then((response: ApiResponse<Array<string>>): void => {
-            select.find("option").remove();
-            if (response.Success) {
-                let options: string = "";
-                $.each(response.Result,
-                    (index: number, value: string): void => {
-                        options += `<option value="${value}">${value}</option>`;
-                    });
-                select.append(options);
-            } else {
-                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
-            }
-            select.removeAttr("disabled");
-            button.removeClass("spin").removeAttr("disabled");
-        });
-    }
-
-    /**
      * Perform an asynchronous ajax call
      * @param url The URL of the ajax call
      * @param method The method (GET/POST)

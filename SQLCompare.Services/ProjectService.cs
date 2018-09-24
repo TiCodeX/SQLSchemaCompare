@@ -105,6 +105,7 @@ namespace SQLCompare.Services
             {
                 this.Project = this.projectRepository.Read(filename);
                 this.Project.State = ProjectState.Saved;
+                this.Project.EditableDatabaseType = false;
             }
             catch (Exception ex)
             {

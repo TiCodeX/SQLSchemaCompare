@@ -38,6 +38,7 @@ namespace SQLCompare.Core.Entities.Project
         /// <summary>
         /// Gets or sets a value indicating whether the database type is editalbe
         /// </summary>
+        [XmlIgnore]
         public bool EditableDatabaseType { get; set; } = false;
 
         /// <summary>

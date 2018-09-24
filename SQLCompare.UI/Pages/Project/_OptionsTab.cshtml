@@ -2,75 +2,47 @@
 @using Core.Interfaces
 @using Services
 @model ProjectOptions
+@{
+    var options = new List<(string id, string name, string label, bool value, string description)>();
+    options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[IgnoreCollate]]", Localization.LabelIgnoreCollate,
+        Model.Scripting.IgnoreCollate, Localization.LabelIgnoreCollateDescription));
+    options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[OrderColumnAlphabetically]]", Localization.LabelOrderColumnAlphabetically,
+        Model.Scripting.OrderColumnAlphabetically, Localization.LabelOrderColumnAlphabeticallyDescription));
+    options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[UseSchemaName]]", Localization.LabelUseSchemaName,
+        Model.Scripting.UseSchemaName, Localization.LabelUseSchemaNameDescription));
+    options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[IgnoreReferenceTableColumnOrder]]", Localization.LabelIgnoreReferenceTableColumnOrder,
+        Model.Scripting.IgnoreReferenceTableColumnOrder, Localization.LabelIgnoreReferenceTableColumnOrderDescription));
+}
 <div class="row">
     <div class="col-6">
-
-        <div class="form-group row">
-            <div class="col-9">
-                <label>@Localization.LabelIgnoreCollate</label>
+        @foreach (var option in options)
+        {
+            <div class="form-group row"
+                 onmouseover="Project.HandleOptionOnMouseOver('@option.id')"
+                 onmouseout="Project.HandleOptionOnMouseOut()">
+                <div class="col-9">
+                    <label>@option.label</label>
+                </div>
+                <div class="col-3 text-right">
+                    <label class="tcx-switch">
+                        <input type="checkbox" name="@option.name"
+                               data-value-type="boolean"
+                               checked="@option.value"
+                               onchange="Project.SetDirtyState()">
+                        <span class="tcx-switch-slider"></span>
+                    </label>
+                </div>
             </div>
-            <div class="col-3 text-right">
-                <label class="tcx-switch">
-                    <input type="checkbox" name="ProjectOptions[Scripting[IgnoreCollate]]"
-                           data-value-type="boolean"
-                           checked="@Model.Scripting.IgnoreCollate"
-                           onchange="Project.SetDirtyState()">
-                    <span class="tcx-switch-slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class="col-9">
-                <label>@Localization.LabelOrderColumnAlphabetically</label>
-            </div>
-            <div class="col-3 text-right">
-                <label class="tcx-switch">
-                    <input type="checkbox" name="ProjectOptions[Scripting[OrderColumnAlphabetically]]"
-                           data-value-type="boolean"
-                           checked="@Model.Scripting.OrderColumnAlphabetically"
-                           onchange="Project.SetDirtyState()">
-                    <span class="tcx-switch-slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class="col-9">
-                <label>@Localization.LabelUseSchemaName</label>
-            </div>
-            <div class="col-3 text-right">
-                <label class="tcx-switch">
-                    <input type="checkbox" name="ProjectOptions[Scripting[UseSchemaName]]"
-                           data-value-type="boolean"
-                           checked="@Model.Scripting.UseSchemaName"
-                           onchange="Project.SetDirtyState()">
-                    <span class="tcx-switch-slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class="col-9">
-                <label>@Localization.LabelIgnoreReferenceTableColumnOrder</label>
-            </div>
-            <div class="col-3 text-right">
-                <label class="tcx-switch">
-                    <input type="checkbox" name="ProjectOptions[Scripting[IgnoreReferenceTableColumnOrder]]"
-                           data-value-type="boolean"
-                           checked="@Model.Scripting.IgnoreReferenceTableColumnOrder"
-                           onchange="Project.SetDirtyState()">
-                    <span class="tcx-switch-slider"></span>
-                </label>
-            </div>
-        </div>
-
+        }
     </div>
-    <div class="col-6">
-        <label id="helptext">
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna
-            aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,
-            no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-        </label>
+    <div class="col-6 tcx-project-option-descriptions">
+        @foreach (var option in options)
+        {
+            <div id="@option.id">
+                <strong>@option.label</strong>
+                <br /><br />
+                <label>@option.description</label>
+            </div>
+        }
     </div>
 </div>

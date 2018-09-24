@@ -428,4 +428,18 @@
   <data name="MenuOpenLogsFolder" xml:space="preserve">
     <value>Open Logs Folder</value>
   </data>
+  <data name="LabelIgnoreCollateDescription" xml:space="preserve">
+    <value>Ignore collations on character data type columns when comparing databases.</value>
+  </data>
+  <data name="LabelIgnoreReferenceTableColumnOrderDescription" xml:space="preserve">
+    <value>During the comparison the column order of the target table is reordered referencing the order in the source.
+
+This option will ignore the matching and use the same order as when it was created.</value>
+  </data>
+  <data name="LabelOrderColumnAlphabeticallyDescription" xml:space="preserve">
+    <value>Reorder the columns alphabetically to ignore differences of tables created with a different order.</value>
+  </data>
+  <data name="LabelUseSchemaNameDescription" xml:space="preserve">
+    <value>Ignore the schema name when comparing databases.</value>
+  </data>
 </root>

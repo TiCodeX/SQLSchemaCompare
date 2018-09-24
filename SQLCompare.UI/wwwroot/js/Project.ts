@@ -326,6 +326,21 @@ class Project {
         $(`input[name='${prefix}Password']`).prop("disabled", checkbox.is(":checked"));
         this.SetDirtyState();
     }
+
+    /**
+     * Handle the onMouseOver event of the project option by displaying the related description
+     * @param id The id of the option
+     */
+    public static HandleOptionOnMouseOver(id: string): void {
+        $(`.tcx-project-option-descriptions > div[id='${id}']`).show();
+    }
+
+    /**
+     * Handle the onMouseOut event of the project option by hiding all the descriptions
+     */
+    public static HandleOptionOnMouseOut(): void {
+        $(".tcx-project-option-descriptions > div").hide();
+    }
 }
 
 namespace Project {

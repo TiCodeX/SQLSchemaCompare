@@ -91,12 +91,22 @@ $fa-font-size-base: $font-size-base;
     @extend .table-info;
 }
 
+.tcx-project-option-descriptions {
+    border-left: 1px solid #ddd;
+    min-height: 300px;
+}
+
+.tcx-project-option-descriptions > div {
+    display: none;
+}
+
 /*#region checkbox switch */
 .tcx-switch {
     position: relative;
     width: $switch-width;
     height: $switch-width / 2;
     margin-top: 2px;
+    white-space: initial;
 }
 
 .tcx-switch input {

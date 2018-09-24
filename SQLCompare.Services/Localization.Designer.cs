@@ -421,11 +421,31 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore collations on character data type columns when comparing databases..
+        /// </summary>
+        public static string LabelIgnoreCollateDescription {
+            get {
+                return ResourceManager.GetString("LabelIgnoreCollateDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignore source table column order.
         /// </summary>
         public static string LabelIgnoreReferenceTableColumnOrder {
             get {
                 return ResourceManager.GetString("LabelIgnoreReferenceTableColumnOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to During the comparison the column order of the target table is reordered referencing the order in the source.
+        ///
+        ///This option will ignore the matching and use the same order as when it was created..
+        /// </summary>
+        public static string LabelIgnoreReferenceTableColumnOrderDescription {
+            get {
+                return ResourceManager.GetString("LabelIgnoreReferenceTableColumnOrderDescription", resourceCulture);
             }
         }
         
@@ -498,6 +518,15 @@ namespace SQLCompare.Services {
         public static string LabelOrderColumnAlphabetically {
             get {
                 return ResourceManager.GetString("LabelOrderColumnAlphabetically", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reorder the columns alphabetically to ignore differences of tables created with a different order..
+        /// </summary>
+        public static string LabelOrderColumnAlphabeticallyDescription {
+            get {
+                return ResourceManager.GetString("LabelOrderColumnAlphabeticallyDescription", resourceCulture);
             }
         }
         
@@ -624,6 +653,15 @@ namespace SQLCompare.Services {
         public static string LabelUseSchemaName {
             get {
                 return ResourceManager.GetString("LabelUseSchemaName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore the schema name when comparing databases..
+        /// </summary>
+        public static string LabelUseSchemaNameDescription {
+            get {
+                return ResourceManager.GetString("LabelUseSchemaNameDescription", resourceCulture);
             }
         }
         

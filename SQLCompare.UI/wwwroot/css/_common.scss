@@ -58,6 +58,7 @@ body {
 label {
     font-size: $font-size-base;
     margin-bottom: 0.1rem;
+    white-space: pre-line;
 }
 
 .tab-content {

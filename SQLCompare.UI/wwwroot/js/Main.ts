@@ -51,8 +51,19 @@ class Main {
             this.ScollToSelectedElement();
         }
 
-        $("#sqlDiff").empty();
+        // Display the selected row item names
+        let sourceItem: string = $(`#${rowId} td:nth-child(2)`).text();
+        if (Utility.IsNullOrWhitespace(sourceItem)) {
+            sourceItem = Localization.Get("LabelDoesNotExist");
+        }
+        let targetItem: string = $(`#${rowId} td:nth-child(3)`).text();
+        if (Utility.IsNullOrWhitespace(targetItem)) {
+            targetItem = Localization.Get("LabelDoesNotExist");
+        }
+        $(".tcx-diff-item-name").html(`${sourceItem} <span class='fa fa-long-arrow-alt-right'></span> ${targetItem}`);
 
+        // Display the monaco editor
+        $("#sqlDiff").empty();
         Utility.AjaxCall(this.createScriptUrl + rowId, Utility.HttpMethod.Get).then((response: ApiResponse<CreateScriptResult>): void => {
             const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(document.getElementById("sqlDiff"),
                 {

@@ -385,6 +385,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Does not exist.
+        /// </summary>
+        public static string LabelDoesNotExist {
+            get {
+                return ResourceManager.GetString("LabelDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Function.
         /// </summary>
         public static string LabelFunction {
@@ -572,6 +581,15 @@ namespace SQLCompare.Services {
         public static string LabelSource {
             get {
                 return ResourceManager.GetString("LabelSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SQL View.
+        /// </summary>
+        public static string LabelSQLView {
+            get {
+                return ResourceManager.GetString("LabelSQLView", resourceCulture);
             }
         }
         

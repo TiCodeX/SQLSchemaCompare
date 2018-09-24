@@ -100,6 +100,22 @@ $fa-font-size-base: $font-size-base;
     display: none;
 }
 
+.tcx-diff-item-name {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.tcx-diff-item-name:before {
+    content: "";
+    margin-left: -100%;
+}
+
+.tcx-diff-item-name:after {
+    content: "";
+    margin-right: -100%;
+}
+
+
 /*#region checkbox switch */
 .tcx-switch {
     position: relative;

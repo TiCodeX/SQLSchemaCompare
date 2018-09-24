@@ -26,18 +26,13 @@
 
 <div id="mainBottom" style="display: none;">
     <div class="navbar p-0">
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs col-3">
             <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#sqlDiff">SQL</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#menu1">Menu 2</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#menu2">Menu 3</a>
+                <a class="nav-link active" data-toggle="tab" href="#sqlDiff">@Localization.LabelSQLView</a>
             </li>
         </ul>
-        <span>
+        <span class="col-3 tcx-diff-item-name"></span>
+        <span class="col-3 text-right pr-0">
             <button class="btn-mini" onclick="Main.SelectPrevRow();"><i class="fa fa-arrow-circle-up"></i> @Localization.ButtonPrev</button>
             <button class="btn-mini" onclick="Main.SelectNextRow();"><i class="fa fa-arrow-circle-down"></i> @Localization.ButtonNext</button>
             <button class="btn-mini mr-1" onclick="Main.HideBottomPanel();"><i class="fa fa-times"></i></button>
@@ -46,14 +41,6 @@
 
     <div class="tab-content" style="height: calc(100% - 36px);">
         <div id="sqlDiff" class="tab-pane fade show active" style="height: 100%;">
-        </div>
-        <div id="menu1" class="tab-pane fade" style="height: 100%;">
-            <h3>Menu 1</h3>
-            <p>Some content in menu 1.</p>
-        </div>
-        <div id="menu2" class="tab-pane fade" style="height: 100%;">
-            <h3>Menu 2</h3>
-            <p>Some content in menu 2.</p>
         </div>
     </div>
 </div>

@@ -442,4 +442,10 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelUseSchemaNameDescription" xml:space="preserve">
     <value>Ignore the schema name when comparing databases.</value>
   </data>
+  <data name="LabelSQLView" xml:space="preserve">
+    <value>SQL View</value>
+  </data>
+  <data name="LabelDoesNotExist" xml:space="preserve">
+    <value>Does not exist</value>
+  </data>
 </root>

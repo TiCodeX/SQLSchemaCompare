@@ -7,9 +7,11 @@ using System.Text.RegularExpressions;
 using FluentAssertions;
 using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Database;
+using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.Infrastructure.DatabaseProviders;
 using SQLCompare.Infrastructure.EntityFramework;
 using SQLCompare.Infrastructure.SqlScripters;
+using SQLCompare.Services;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -21,6 +23,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
     /// </summary>
     public class DatabaseProviderTests : BaseTests<DatabaseProviderTests>, IClassFixture<DatabaseFixture>
     {
+        private readonly ICipherService cipherService = new CipherService();
         private readonly DatabaseFixture dbFixture;
 
         /// <summary>
@@ -209,7 +212,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 
             // Connect without a database to drop/create the cloned one
             mssqldbpo.Database = string.Empty;
-            using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, mssqldbpo))
+            using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.cipherService, mssqldbpo))
             {
                 var dropDbQuery = new StringBuilder();
                 dropDbQuery.AppendLine($"IF EXISTS(select * from sys.databases where name= '{clonedDatabaseName}')");
@@ -229,7 +232,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 }
             }
 
-            var dpf = new DatabaseProviderFactory(this.LoggerFactory);
+            var dpf = new DatabaseProviderFactory(this.LoggerFactory, this.cipherService);
             mssqldbpo.Database = clonedDatabaseName;
             mssqldbp = (MicrosoftSqlDatabaseProvider)dpf.Create(mssqldbpo);
 
@@ -258,7 +261,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 
             // Connect without a database to drop/create the cloned one
             postgresqldbpo.Database = string.Empty;
-            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, postgresqldbpo))
+            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.cipherService, postgresqldbpo))
             {
                 var dropDbQuery = new StringBuilder();
                 dropDbQuery.AppendLine($"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{clonedDatabaseName}';");
@@ -268,7 +271,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             }
 
             postgresqldbpo.Database = clonedDatabaseName;
-            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, postgresqldbpo))
+            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.cipherService, postgresqldbpo))
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("SET check_function_bodies = false;");
@@ -292,7 +295,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 context.ExecuteNonQuery(sb.ToString());
             }
 
-            var dpf = new DatabaseProviderFactory(this.LoggerFactory);
+            var dpf = new DatabaseProviderFactory(this.LoggerFactory, this.cipherService);
             postgresqldbp = (PostgreSqlDatabaseProvider)dpf.Create(postgresqldbpo);
 
             var clonedDb = postgresqldbp.GetDatabase(new TaskInfo("test"));
@@ -346,7 +349,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             process.ExitCode.Should().Be(0);
 
             mysqldbpo.Database = clonedDatabaseName;
-            var dpf = new DatabaseProviderFactory(this.LoggerFactory);
+            var dpf = new DatabaseProviderFactory(this.LoggerFactory, this.cipherService);
             mysqldbp = (MySqlDatabaseProvider)dpf.Create(mysqldbpo);
 
             var clonedDb = mysqldbp.GetDatabase(new TaskInfo("test"));

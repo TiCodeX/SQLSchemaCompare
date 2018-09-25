@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.DatabaseProvider;
+using SQLCompare.Core.Interfaces.Services;
 
 namespace SQLCompare.Infrastructure.EntityFramework
 {
@@ -13,9 +14,10 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// Initializes a new instance of the <see cref="PostgreSqlDatabaseContext"/> class.
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory</param>
+        /// <param name="cipherService">The injected cipher service</param>
         /// <param name="dbpo">The PostgreSql database provider options</param>
-        public PostgreSqlDatabaseContext(ILoggerFactory loggerFactory, PostgreSqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory, loggerFactory.CreateLogger(nameof(PostgreSqlDatabaseContext)), dbpo)
+        public PostgreSqlDatabaseContext(ILoggerFactory loggerFactory, ICipherService cipherService, PostgreSqlDatabaseProviderOptions dbpo)
+            : base(loggerFactory, loggerFactory.CreateLogger(nameof(PostgreSqlDatabaseContext)), cipherService, dbpo)
         {
         }
 

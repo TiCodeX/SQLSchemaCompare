@@ -6,6 +6,7 @@ using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.PostgreSql;
 using SQLCompare.Core.Entities.DatabaseProvider;
+using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.Infrastructure.EntityFramework;
 
 namespace SQLCompare.Infrastructure.DatabaseProviders
@@ -20,16 +21,17 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// Initializes a new instance of the <see cref="PostgreSqlDatabaseProvider"/> class.
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory</param>
+        /// <param name="cipherService">The injected cipher service</param>
         /// <param name="options">The options to connect to the PostgreSQL Database</param>
-        public PostgreSqlDatabaseProvider(ILoggerFactory loggerFactory, PostgreSqlDatabaseProviderOptions options)
-            : base(loggerFactory, loggerFactory.CreateLogger(nameof(PostgreSqlDatabaseProvider)), options)
+        public PostgreSqlDatabaseProvider(ILoggerFactory loggerFactory, ICipherService cipherService, PostgreSqlDatabaseProviderOptions options)
+            : base(loggerFactory, loggerFactory.CreateLogger(nameof(PostgreSqlDatabaseProvider)), cipherService, options)
         {
         }
 
         /// <inheritdoc />
         public override ABaseDb GetDatabase(TaskInfo taskInfo)
         {
-            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.Options))
+            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options))
             {
                 return this.DiscoverDatabase(context, taskInfo);
             }
@@ -38,7 +40,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc />
         public override List<string> GetDatabaseList()
         {
-            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.Options))
+            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options))
             {
                 return context.Query("SELECT datname FROM pg_catalog.pg_database WHERE datistemplate = FALSE");
             }

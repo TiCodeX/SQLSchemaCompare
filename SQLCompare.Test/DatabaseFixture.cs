@@ -6,8 +6,10 @@ using System.Text;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.DatabaseProvider;
+using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.Infrastructure.DatabaseProviders;
 using SQLCompare.Infrastructure.EntityFramework;
+using SQLCompare.Services;
 
 namespace SQLCompare.Test
 {
@@ -17,6 +19,7 @@ namespace SQLCompare.Test
     /// <seealso cref="System.IDisposable" />
     public sealed class DatabaseFixture : IDisposable
     {
+        private readonly ICipherService cipherService = new CipherService();
         private ILoggerFactory loggerFactory = new XunitLoggerFactory(null);
 
         /// <summary>
@@ -25,7 +28,7 @@ namespace SQLCompare.Test
         public DatabaseFixture()
         {
             // MicrosoftSQL
-            using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.GetMicrosoftSqlDatabaseProviderOptions(false)))
+            using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetMicrosoftSqlDatabaseProviderOptions(false)))
             {
                 var dropDbQuery = new StringBuilder();
                 dropDbQuery.AppendLine("IF EXISTS(select * from sys.databases where name= 'sakila')");
@@ -58,7 +61,7 @@ namespace SQLCompare.Test
             process.ExitCode.Should().Be(0);
 
             // PostgreSQL
-            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.GetPostgreSqlDatabaseProviderOptions(false)))
+            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(false)))
             {
                 var dropDbQuery = new StringBuilder();
                 dropDbQuery.AppendLine("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='sakila';");
@@ -67,7 +70,7 @@ namespace SQLCompare.Test
                 context.ExecuteNonQuery(dropDbQuery.ToString());
             }
 
-            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.GetPostgreSqlDatabaseProviderOptions()))
+            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions()))
             {
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-postgresql.sql");
                 context.ExecuteNonQuery(File.ReadAllText(path));
@@ -96,7 +99,7 @@ namespace SQLCompare.Test
         /// <returns>The Microsoft SQL database provider</returns>
         internal MicrosoftSqlDatabaseProvider GetMicrosoftSqlDatabaseProvider(bool connectToDatabase = true)
         {
-            var dpf = new DatabaseProviderFactory(this.loggerFactory);
+            var dpf = new DatabaseProviderFactory(this.loggerFactory, this.cipherService);
             return (MicrosoftSqlDatabaseProvider)dpf.Create(this.GetMicrosoftSqlDatabaseProviderOptions(connectToDatabase));
         }
 
@@ -107,7 +110,7 @@ namespace SQLCompare.Test
         /// <returns>The MySQL SQL database provider</returns>
         internal MySqlDatabaseProvider GetMySqlDatabaseProvider(bool connectToDatabase = true)
         {
-            var dpf = new DatabaseProviderFactory(this.loggerFactory);
+            var dpf = new DatabaseProviderFactory(this.loggerFactory, this.cipherService);
             return (MySqlDatabaseProvider)dpf.Create(this.GetMySqlDatabaseProviderOptions(connectToDatabase));
         }
 
@@ -118,7 +121,7 @@ namespace SQLCompare.Test
         /// <returns>The PostgreSQL SQL database provider</returns>
         internal PostgreSqlDatabaseProvider GetPostgreSqlDatabaseProvider(bool connectToDatabase = true)
         {
-            var dpf = new DatabaseProviderFactory(this.loggerFactory);
+            var dpf = new DatabaseProviderFactory(this.loggerFactory, this.cipherService);
             return (PostgreSqlDatabaseProvider)dpf.Create(this.GetPostgreSqlDatabaseProviderOptions(connectToDatabase));
         }
 
@@ -149,7 +152,7 @@ namespace SQLCompare.Test
                 Hostname = "localhost",
                 Database = connectToDatabase ? "sakila" : string.Empty,
                 Username = "root",
-                Password = "test1234",
+                Password = this.cipherService.EncryptString("test1234"),
                 UseSSL = Environment.MachineName != "DESKTOP-VH0A18B", // debe's MySql Server doesn't support SSL
             };
         }
@@ -166,7 +169,7 @@ namespace SQLCompare.Test
                 Hostname = "localhost",
                 Database = connectToDatabase ? "sakila" : string.Empty,
                 Username = "postgres",
-                Password = "test1234",
+                Password = this.cipherService.EncryptString("test1234"),
             };
         }
     }

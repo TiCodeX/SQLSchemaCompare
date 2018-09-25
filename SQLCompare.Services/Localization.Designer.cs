@@ -621,6 +621,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save password.
+        /// </summary>
+        public static string LabelSavePassword {
+            get {
+                return ResourceManager.GetString("LabelSavePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sequence.
         /// </summary>
         public static string LabelSequence {

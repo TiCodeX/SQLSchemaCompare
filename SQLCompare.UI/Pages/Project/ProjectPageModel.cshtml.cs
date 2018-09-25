@@ -29,6 +29,7 @@ namespace SQLCompare.UI.Pages.Project
         private readonly IDatabaseService databaseService;
         private readonly IDatabaseCompareService databaseCompareService;
         private readonly IAppGlobals appGlobals;
+        private readonly ICipherService cipherService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectPageModel"/> class.
@@ -39,13 +40,15 @@ namespace SQLCompare.UI.Pages.Project
         /// <param name="databaseService">The injected database service</param>
         /// <param name="databaseCompareService">The injected database compare service</param>
         /// <param name="appGlobals">The injected app globals</param>
+        /// <param name="cipherService">The injected cipher service</param>
         public ProjectPageModel(
             ILoggerFactory loggerFactory,
             IAppSettingsService appSettingsService,
             IProjectService projectService,
             IDatabaseService databaseService,
             IDatabaseCompareService databaseCompareService,
-            IAppGlobals appGlobals)
+            IAppGlobals appGlobals,
+            ICipherService cipherService)
         {
             this.logger = loggerFactory.CreateLogger(nameof(ProjectPageModel));
             this.appSettingsService = appSettingsService;
@@ -53,6 +56,7 @@ namespace SQLCompare.UI.Pages.Project
             this.databaseService = databaseService;
             this.databaseCompareService = databaseCompareService;
             this.appGlobals = appGlobals;
+            this.cipherService = cipherService;
         }
 
         /// <summary>
@@ -286,7 +290,8 @@ namespace SQLCompare.UI.Pages.Project
             var type = direction == CompareDirection.Source ? options.SourceDatabaseType : options.TargetDatabaseType;
             var hostname = direction == CompareDirection.Source ? options.SourceHostname : options.TargetHostname;
             var username = direction == CompareDirection.Source ? options.SourceUsername : options.TargetUsername;
-            var password = direction == CompareDirection.Source ? options.SourcePassword : options.TargetPassword;
+            var password = this.cipherService.EncryptString(direction == CompareDirection.Source ? options.SourcePassword : options.TargetPassword);
+            var savePassword = direction == CompareDirection.Source ? options.SourceSavePassword : options.TargetSavePassword;
             var useWindowsAuthentication = direction == CompareDirection.Source ? options.SourceUseWindowsAuthentication : options.TargetUseWindowsAuthentication;
             var useSSL = direction == CompareDirection.Source ? options.SourceUseSSL : options.TargetUseSSL;
             var database = direction == CompareDirection.Source ? options.SourceDatabase : options.TargetDatabase;
@@ -299,6 +304,7 @@ namespace SQLCompare.UI.Pages.Project
                         Hostname = hostname,
                         Username = username,
                         Password = password,
+                        SavePassword = savePassword,
                         UseWindowsAuthentication = useWindowsAuthentication,
                         UseSSL = useSSL,
                         Database = database,
@@ -309,6 +315,7 @@ namespace SQLCompare.UI.Pages.Project
                         Hostname = hostname,
                         Username = username,
                         Password = password,
+                        SavePassword = savePassword,
                         UseSSL = useSSL,
                         Database = database,
                     };
@@ -318,6 +325,7 @@ namespace SQLCompare.UI.Pages.Project
                         Hostname = hostname,
                         Username = username,
                         Password = password,
+                        SavePassword = savePassword,
                         Database = database,
                     };
                 default:

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Xml;
+using FluentAssertions;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Infrastructure.Repository;
@@ -64,19 +65,19 @@ namespace SQLCompare.Test.Infrastructure.Repository
 
             var project = projectRepository.Read(filename);
 
-            Assert.NotNull(project);
+            project.Should().NotBeNull();
 
-            Assert.IsType<MicrosoftSqlDatabaseProviderOptions>(project.SourceProviderOptions);
-            Assert.Equal(sourceHostname, project.SourceProviderOptions.Hostname);
-            Assert.Equal(sourceUsername, project.SourceProviderOptions.Username);
-            Assert.Equal(sourcePassword, project.SourceProviderOptions.Password);
-            Assert.Equal(sourceDatabase, project.SourceProviderOptions.Database);
+            project.SourceProviderOptions.Should().BeOfType<MicrosoftSqlDatabaseProviderOptions>();
+            project.SourceProviderOptions.Hostname.Should().Be(sourceHostname);
+            project.SourceProviderOptions.Username.Should().Be(sourceUsername);
+            project.SourceProviderOptions.Password.Should().Be(sourcePassword);
+            project.SourceProviderOptions.Database.Should().Be(sourceDatabase);
 
-            Assert.IsType<PostgreSqlDatabaseProviderOptions>(project.TargetProviderOptions);
-            Assert.Equal(targetHostname, project.TargetProviderOptions.Hostname);
-            Assert.Equal(targetUsername, project.TargetProviderOptions.Username);
-            Assert.Equal(targetPassword, project.TargetProviderOptions.Password);
-            Assert.Equal(targetDatabase, project.TargetProviderOptions.Database);
+            project.TargetProviderOptions.Should().BeOfType<PostgreSqlDatabaseProviderOptions>();
+            project.TargetProviderOptions.Hostname.Should().Be(targetHostname);
+            project.TargetProviderOptions.Username.Should().Be(targetUsername);
+            project.TargetProviderOptions.Password.Should().Be(targetPassword);
+            project.TargetProviderOptions.Database.Should().Be(targetDatabase);
         }
 
         /// <summary>
@@ -89,6 +90,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
             const string sourceHostname = "localhost";
             const string sourceUsername = "admin";
             const string sourcePassword = "test";
+            const bool sourceSavePassword = true;
             const string sourceDatabase = "database1";
             const bool sourceUseWindowsAuthentication = true;
             const bool sourceUseSSL = false;
@@ -96,6 +98,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
             const string targetUsername = "pippo";
             const string targetPassword = "pluto";
             const string targetDatabase = "database2";
+            const bool targetSavePassword = false;
             const bool targetUseSSL = true;
 
             var compareProject = new CompareProject
@@ -106,6 +109,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
                     Database = sourceDatabase,
                     Username = sourceUsername,
                     Password = sourcePassword,
+                    SavePassword = sourceSavePassword,
                     UseWindowsAuthentication = sourceUseWindowsAuthentication,
                     UseSSL = sourceUseSSL
                 },
@@ -141,6 +145,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
     <Database>{sourceDatabase}</Database>
     <Username>{sourceUsername}</Username>
     <Password>{sourcePassword}</Password>
+    <SavePassword>{XmlConvert.ToString(sourceSavePassword)}</SavePassword>
     <UseSSL>{XmlConvert.ToString(sourceUseSSL)}</UseSSL>
     <UseWindowsAuthentication>{XmlConvert.ToString(sourceUseWindowsAuthentication)}</UseWindowsAuthentication>
   </SourceProviderOptions>
@@ -148,7 +153,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
     <Hostname>{targetHostname}</Hostname>
     <Database>{targetDatabase}</Database>
     <Username>{targetUsername}</Username>
-    <Password>{targetPassword}</Password>
+    <SavePassword>{XmlConvert.ToString(targetSavePassword)}</SavePassword>
     <UseSSL>{XmlConvert.ToString(targetUseSSL)}</UseSSL>
   </TargetProviderOptions>
   <Options>
@@ -162,7 +167,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
   <State>New</State>
 </CompareProject>";
 
-            Assert.Equal(xmlFileExpected, xmlFile);
+            xmlFile.Should().Be(xmlFileExpected);
         }
     }
 }

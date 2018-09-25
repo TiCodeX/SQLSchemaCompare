@@ -26,8 +26,22 @@
         public string Password { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to save the password in the config
+        /// </summary>
+        public bool SavePassword { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether to use SSL for the connection
         /// </summary>
         public bool UseSSL { get; set; }
+
+        /// <summary>
+        /// Specify whether to serialize the Password property
+        /// </summary>
+        /// <returns>True if the Password property should be serialized</returns>
+        public bool ShouldSerializePassword()
+        {
+            return this.SavePassword;
+        }
     }
 }

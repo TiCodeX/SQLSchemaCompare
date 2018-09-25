@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.DatabaseProvider;
+using SQLCompare.Core.Interfaces.Services;
 
 namespace SQLCompare.Infrastructure.EntityFramework
 {
@@ -13,9 +14,10 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// Initializes a new instance of the <see cref="MySqlDatabaseContext"/> class.
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory</param>
+        /// <param name="cipherService">The injected cipher service</param>
         /// <param name="dbpo">The MySql database provider options</param>
-        public MySqlDatabaseContext(ILoggerFactory loggerFactory, MySqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MySqlDatabaseContext)), dbpo)
+        public MySqlDatabaseContext(ILoggerFactory loggerFactory, ICipherService cipherService, MySqlDatabaseProviderOptions dbpo)
+            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MySqlDatabaseContext)), cipherService, dbpo)
         {
         }
 

@@ -35,6 +35,11 @@ namespace SQLCompare.UI.Models.Project
         public string SourcePassword { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to save the source password
+        /// </summary>
+        public bool SourceSavePassword { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether to use the windows authentication for the source
         /// </summary>
         public bool SourceUseWindowsAuthentication { get; set; }
@@ -68,6 +73,11 @@ namespace SQLCompare.UI.Models.Project
         /// Gets or sets the target password
         /// </summary>
         public string TargetPassword { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to save the target password
+        /// </summary>
+        public bool TargetSavePassword { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to use the windows authentication for the target

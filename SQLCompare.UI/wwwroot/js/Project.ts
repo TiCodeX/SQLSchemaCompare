@@ -347,6 +347,7 @@ class Project {
     public static HandleUseWindowsAuthenticationOnChange(checkbox: JQuery, prefix: string): void {
         $(`input[name='${prefix}Username']`).prop("disabled", checkbox.is(":checked"));
         $(`input[name='${prefix}Password']`).prop("disabled", checkbox.is(":checked"));
+        $(`input[name='${prefix}SavePassword']`).prop("disabled", checkbox.is(":checked"));
         this.SetDirtyState();
     }
 

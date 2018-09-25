@@ -175,6 +175,10 @@ $fa-font-size-base: $font-size-base;
 .tcx-switch > input:checked + .tcx-switch-slider:before {
     transform: translateX(0.75rem);
 }
+
+.tcx-switch > input:disabled + .tcx-switch-slider {
+    background-color: $switch-disabled-color;
+}
 /*#endregion*/
 
 /*#region splitter */

@@ -6,6 +6,7 @@ using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MicrosoftSql;
 using SQLCompare.Core.Entities.DatabaseProvider;
+using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.Infrastructure.EntityFramework;
 
 namespace SQLCompare.Infrastructure.DatabaseProviders
@@ -20,16 +21,17 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// Initializes a new instance of the <see cref="MicrosoftSqlDatabaseProvider"/> class.
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory</param>
+        /// <param name="cipherService">The injected cipher service</param>
         /// <param name="options">The options to connect to the Microsoft SQL Database</param>
-        public MicrosoftSqlDatabaseProvider(ILoggerFactory loggerFactory, MicrosoftSqlDatabaseProviderOptions options)
-            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MicrosoftSqlDatabaseProvider)), options)
+        public MicrosoftSqlDatabaseProvider(ILoggerFactory loggerFactory, ICipherService cipherService, MicrosoftSqlDatabaseProviderOptions options)
+            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MicrosoftSqlDatabaseProvider)), cipherService, options)
         {
         }
 
         /// <inheritdoc/>
         public override ABaseDb GetDatabase(TaskInfo taskInfo)
         {
-            using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.Options))
+            using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options))
             {
                 return this.DiscoverDatabase(context, taskInfo);
             }
@@ -38,7 +40,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         public override List<string> GetDatabaseList()
         {
-            using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.Options))
+            using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options))
             {
                 return context.Query("SELECT name FROM sysdatabases");
             }

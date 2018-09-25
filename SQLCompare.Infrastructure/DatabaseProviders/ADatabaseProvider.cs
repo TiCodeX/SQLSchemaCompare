@@ -7,6 +7,7 @@ using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Interfaces;
+using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.Infrastructure.EntityFramework;
 using SQLCompare.Services;
 
@@ -28,12 +29,14 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory used when using DBContext</param>
         /// <param name="logger">The logger created in the concrete class</param>
+        /// <param name="cipherService">The injected cipher service</param>
         /// <param name="options">The options to connect to the Database</param>
-        protected ADatabaseProvider(ILoggerFactory loggerFactory, ILogger logger, TDatabaseProviderOptions options)
+        protected ADatabaseProvider(ILoggerFactory loggerFactory, ILogger logger, ICipherService cipherService, TDatabaseProviderOptions options)
         {
             this.Options = options;
             this.LoggerFactory = loggerFactory;
             this.Logger = logger;
+            this.CipherService = cipherService;
         }
 
         /// <summary>
@@ -45,6 +48,11 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// Gets the injected logger factory
         /// </summary>
         protected ILoggerFactory LoggerFactory { get; }
+
+        /// <summary>
+        /// Gets the cipher service
+        /// </summary>
+        protected ICipherService CipherService { get; }
 
         /// <summary>
         /// Gets the options to connect to the Database

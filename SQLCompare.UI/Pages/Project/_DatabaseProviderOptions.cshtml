@@ -2,7 +2,9 @@
 @using Core.Interfaces
 @using Enums
 @using Core.Entities.DatabaseProvider
+@using Core.Interfaces.Services
 @using Services
+@inject ICipherService cipherService
 @model ADatabaseProviderOptions
 @{
     var divId = Guid.NewGuid().ToString();
@@ -65,11 +67,24 @@
             </div>
             <div class="form-group">
                 <label>@Localization.LabelPassword</label>
-                <input type="password" name="@(prefix)Password" value="@Model.Password"
+                <input type="password" name="@(prefix)Password" value="@cipherService.DecryptString(Model.Password)"
                        disabled="@(Model is MicrosoftSqlDatabaseProviderOptions b && b.UseWindowsAuthentication)"
                        oninput="Project.SetDirtyState()">
             </div>
-
+            <div class="form-group row">
+                <div class="col-9">
+                    <label>@Localization.LabelSavePassword</label>
+                </div>
+                <div class="col-3 text-right">
+                    <label class="tcx-switch">
+                        <input type="checkbox" name="@(prefix)SavePassword"
+                               data-value-type="boolean"
+                               checked="@Model.SavePassword"
+                               disabled="@(Model is MicrosoftSqlDatabaseProviderOptions c && c.UseWindowsAuthentication)">
+                        <span class="tcx-switch-slider"></span>
+                    </label>
+                </div>
+            </div>
             <div class="form-group row" style="@(Model is MicrosoftSqlDatabaseProviderOptions ? string.Empty: "display: none;")">
                 <div class="col-9">
                     <label>@Localization.LabelUseWindowsAuthentication</label>
@@ -78,7 +93,7 @@
                     <label class="tcx-switch">
                         <input type="checkbox" name="@(prefix)UseWindowsAuthentication"
                                data-value-type="boolean"
-                               checked="@(Model is MicrosoftSqlDatabaseProviderOptions c && c.UseWindowsAuthentication)"
+                               checked="@(Model is MicrosoftSqlDatabaseProviderOptions d && d.UseWindowsAuthentication)"
                                onchange="Project.HandleUseWindowsAuthenticationOnChange($(this), '@prefix')">
                         <span class="tcx-switch-slider"></span>
                     </label>

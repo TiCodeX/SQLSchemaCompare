@@ -466,4 +466,7 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelNewProject" xml:space="preserve">
     <value>New Project...</value>
   </data>
+  <data name="LabelSavePassword" xml:space="preserve">
+    <value>Save password</value>
+  </data>
 </root>

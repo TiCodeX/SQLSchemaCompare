@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.DatabaseProvider;
 using SQLCompare.Core.Entities.Exceptions;
+using SQLCompare.Core.Interfaces.Services;
 
 namespace SQLCompare.Infrastructure.EntityFramework
 {
@@ -22,13 +23,14 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="logger">The logger</param>
+        /// <param name="cipherService">The injected cipher service</param>
         /// <param name="dbpo">The database provider options</param>
-        protected ADatabaseContext(ILoggerFactory loggerFactory, ILogger logger, TDatabaseProviderOptions dbpo)
+        protected ADatabaseContext(ILoggerFactory loggerFactory, ILogger logger, ICipherService cipherService, TDatabaseProviderOptions dbpo)
         {
             this.loggerFactory = loggerFactory;
             this.logger = logger;
             this.DatabaseProviderOptions = dbpo;
-            this.ConnectionString = $"Server={dbpo.Hostname};Database={dbpo.Database};User Id={dbpo.Username};Password={dbpo.Password};";
+            this.ConnectionString = $"Server={dbpo.Hostname};Database={dbpo.Database};User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
             this.DatabaseName = dbpo.Database;
         }
 

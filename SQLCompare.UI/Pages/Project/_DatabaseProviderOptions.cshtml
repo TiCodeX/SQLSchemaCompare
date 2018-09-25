@@ -7,7 +7,7 @@
 @{
     var divId = Guid.NewGuid().ToString();
     var prefix = ((CompareDirection)ViewBag.Prefix).ToString();
-    var disabled = !((bool)ViewBag.CanEdit);
+    var editableDatabaseType = (bool)ViewBag.EditableDatabaseType;
 }
 <div class="card" id="@divId">
     <input type="hidden" name="Direction" value="@prefix">
@@ -16,20 +16,41 @@
         <p class="card-text">
             <div class="form-group">
                 <label>@Localization.LabelType</label>
-                <select name="@(prefix)DatabaseType" onchange="Project.HandleDatabaseTypeOnChange($(this), '@prefix')" disabled="disabled">
-                    <option value="@((int) DatabaseType.MicrosoftSql)"
-                            selected="@(Model is MicrosoftSqlDatabaseProviderOptions)">
-                        Microsoft SQL Server
-                    </option>
-                    <option value="@((int) DatabaseType.MySql)"
-                            selected="@(Model is MySqlDatabaseProviderOptions)">
-                        MySQL Server
-                    </option>
-                    <option value="@((int) DatabaseType.PostgreSql)"
-                            selected="@(Model is PostgreSqlDatabaseProviderOptions)">
-                        PostgreSQL Server
-                    </option>
-                </select>
+                @if (editableDatabaseType)
+                {
+                    <select name="@(prefix)DatabaseType" onchange="Project.HandleDatabaseTypeOnChange($(this), '@prefix')">
+                        <option value="@((int) DatabaseType.MicrosoftSql)"
+                                selected="@(Model is MicrosoftSqlDatabaseProviderOptions)">
+                            Microsoft SQL Server
+                        </option>
+                        <option value="@((int) DatabaseType.MySql)"
+                                selected="@(Model is MySqlDatabaseProviderOptions)">
+                            MySQL Server
+                        </option>
+                        <option value="@((int) DatabaseType.PostgreSql)"
+                                selected="@(Model is PostgreSqlDatabaseProviderOptions)">
+                            PostgreSQL Server
+                        </option>
+                    </select>
+                }
+                else
+                {
+                    if (Model is MicrosoftSqlDatabaseProviderOptions)
+                    {
+                        <input type="hidden" name="@(prefix)DatabaseType" value="@((int) DatabaseType.MicrosoftSql)" />
+                        <input type="text" disabled="@true" value="Microsoft SQL Server" />
+                    }
+                    else if (Model is MySqlDatabaseProviderOptions)
+                    {
+                        <input type="hidden" name="@(prefix)DatabaseType" value="@((int) DatabaseType.MySql)" />
+                        <input type="text" disabled="@true" value="MySQL Server" />
+                    }
+                    else if (Model is PostgreSqlDatabaseProviderOptions)
+                    {
+                        <input type="hidden" name="@(prefix)DatabaseType" value="@((int) DatabaseType.PostgreSql)" />
+                        <input type="text" disabled="@true" value="PostgreSQL Server" />
+                    }
+                }
             </div>
             <div class="form-group">
                 <label>@Localization.LabelHostname</label>

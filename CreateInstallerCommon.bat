@@ -10,6 +10,10 @@ set "publishDir=%~dp0\.publish"
 REM Cleanup folders
 if exist %publishDir% ( rmdir /S /Q %publishDir% )
 
+REM Clean solution
+msbuild %~dp0\SQLCompare.sln /t:Clean /p:Configuration=Release
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+
 echo.
 echo     _____________________
 echo    /\                    \  
@@ -19,7 +23,8 @@ echo      ^|  _________________^|_
 echo       \_/___________________/
 echo.
 
-msbuild %~dp0\SQLCompare
+msbuild %~dp0\SQLCompare /p:Configuration=Release
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 
 echo.
 echo     _____________________
@@ -31,6 +36,7 @@ echo       \_/___________________/
 echo.
 
 dotnet publish %~dp0\SQLCompare.UI\SQLCompare.UI.csproj -r %targetdotnet% -c %configuration%
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 
 REM Clean debug files
 del /Q %publishDir%\*.pdb

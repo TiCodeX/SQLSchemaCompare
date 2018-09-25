@@ -74,6 +74,21 @@ label {
 .btn:focus {
     box-shadow: none;
 }
+
+.tooltip.show {
+    opacity: 1;
+}
+
+.tooltip-inner {
+    max-width: 500px;
+    color: #212529;
+    background-color: #dadada;
+    border: 1px solid #bbb;
+}
+
+.bs-tooltip-top .arrow::before {
+    border-top-color: #555;
+}
 /*#endregion*/
 
 /*#region buttons */

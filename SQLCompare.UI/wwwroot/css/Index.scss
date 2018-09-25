@@ -67,11 +67,12 @@ $fa-font-size-base: $font-size-base;
     width: 700px;
     height: 500px;
 }
-.tcx-welcome-logo{
+
+.tcx-welcome-logo {
     height: 80px;
 }
 
-.tcx-welcome-recent-row{
+.tcx-welcome-recent-row {
     height: 350px;
 }
 
@@ -85,9 +86,11 @@ $fa-font-size-base: $font-size-base;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.tcx-cursor-default{
-    cursor:default;
+
+.tcx-cursor-default {
+    cursor: default;
 }
+
 .tcx-task-status {
     width: 80%;
     max-width: 800px;

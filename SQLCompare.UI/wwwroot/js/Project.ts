@@ -230,8 +230,10 @@ class Project {
         // Close the dropdown and disable it temporarily
         const select: JQuery = $(`input[name="${selectId}"]`);
         select.trigger("blur").attr("disabled", "disabled");
+        const databaseType: JQuery = $("[name='DatabaseType']");
 
         const data: object = Utility.SerializeJSON($(`#${dataDivId}`));
+        $.extend(data, { DatabaseType: databaseType.val()});
 
         Utility.AjaxCall(this.loadDatabaseListUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<Array<string>>): void => {
             select.editableSelect("clear");
@@ -327,8 +329,8 @@ class Project {
      * @param select The jQuery element of the select
      * @param prefix The page prefix (Source/Target)
      */
-    public static HandleDatabaseTypeOnChange(select: JQuery, prefix: string): void {
-        const useWindowAuthentication: JQuery = $(`input[name='${prefix}UseWindowsAuthentication']`).parents(".form-group");
+    public static HandleDatabaseTypeOnChange(select: JQuery): void {
+        const useWindowAuthentication: JQuery = $("input[name$='UseWindowsAuthentication']").parents(".form-group");
         switch (+select.val()) {
             case Project.DatabaseType.MicrosoftSql:
                 useWindowAuthentication.show();

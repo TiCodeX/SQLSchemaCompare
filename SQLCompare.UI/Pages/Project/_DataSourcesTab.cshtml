@@ -1,16 +1,59 @@
 ﻿@using Core.Entities.Project
 @using Core.Interfaces
+@using Core.Enums
+@using Core.Entities.DatabaseProvider
 @using Enums
 @using Services
 @model CompareProject
 
+<div class="row">
+    <div class="col-12">
+        <div class="form-group">
+            <label>@Localization.LabelType</label>
+            @if (Model.EditableDatabaseType)
+            {
+                <select name="DatabaseType" onchange="Project.HandleDatabaseTypeOnChange($(this))">
+                    <option value="@((int) DatabaseType.MicrosoftSql)"
+                            selected="@(Model.SourceProviderOptions is MicrosoftSqlDatabaseProviderOptions)">
+                        Microsoft SQL Server
+                    </option>
+                    <option value="@((int) DatabaseType.MySql)"
+                            selected="@(Model.SourceProviderOptions is MySqlDatabaseProviderOptions)">
+                        MySQL Server
+                    </option>
+                    <option value="@((int) DatabaseType.PostgreSql)"
+                            selected="@(Model.SourceProviderOptions is PostgreSqlDatabaseProviderOptions)">
+                        PostgreSQL Server
+                    </option>
+                </select>
+            }
+            else
+            {
+                if (Model.SourceProviderOptions is MicrosoftSqlDatabaseProviderOptions)
+                {
+                    <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.MicrosoftSql)" />
+                    <input type="text" disabled="@true" value="Microsoft SQL Server" />
+                }
+                else if (Model.SourceProviderOptions is MySqlDatabaseProviderOptions)
+                {
+                    <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.MySql)" />
+                    <input type="text" disabled="@true" value="MySQL Server" />
+                }
+                else if (Model.SourceProviderOptions is PostgreSqlDatabaseProviderOptions)
+                {
+                    <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.PostgreSql)" />
+                    <input type="text" disabled="@true" value="PostgreSQL Server" />
+                }
+            }
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-6">
         @await Html.PartialAsync("_DatabaseProviderOptions", Model.SourceProviderOptions, new ViewDataDictionary(this.ViewData)
         {
             { "Title", Localization.LabelSource },
             { "Prefix", CompareDirection.Source},
-            { "EditableDatabaseType", Model.EditableDatabaseType},
         })
     </div>
     <div class="col-6">
@@ -18,7 +61,6 @@
         {
             { "Title", Localization.LabelTarget },
             { "Prefix", CompareDirection.Target},
-            { "EditableDatabaseType", Model.EditableDatabaseType},
         })
     </div>
 </div>

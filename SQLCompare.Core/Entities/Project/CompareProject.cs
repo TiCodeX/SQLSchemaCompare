@@ -33,6 +33,7 @@ namespace SQLCompare.Core.Entities.Project
         /// <summary>
         /// Gets or sets the project state
         /// </summary>
+        [XmlIgnore]
         public ProjectState State { get; set; }
 
         /// <summary>

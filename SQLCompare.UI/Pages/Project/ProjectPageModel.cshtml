@@ -3,35 +3,37 @@
 @using Services
 @model ProjectPageModel
 
-<div class="tcx-project mx-auto" id="ProjectPage">
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a data-toggle="tab" href="#tabDataSources" class="nav-link active">@Localization.LabelDataSources</a>
-        </li>
-        <li class="nav-item">
-            <a data-toggle="tab" href="#tabOptions" class="nav-link">@Localization.LabelOptions</a>
-        </li>
-    </ul>
-    <div class="tab-content p-3 mb-3">
-        <div class="tab-pane active" id="tabDataSources">
-            @await Html.PartialAsync("_DataSourcesTab", Model.Project)
+<div class="card tcx-project shadow mx-auto" id="ProjectPage">
+    <div class="card-body">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a data-toggle="tab" href="#tabDataSources" class="nav-link active">@Localization.LabelDataSources</a>
+            </li>
+            <li class="nav-item">
+                <a data-toggle="tab" href="#tabOptions" class="nav-link">@Localization.LabelOptions</a>
+            </li>
+        </ul>
+        <div class="tab-content p-3 mb-3">
+            <div class="tab-pane active" id="tabDataSources">
+                @await Html.PartialAsync("_DataSourcesTab", Model.Project)
+            </div>
+            <div class="tab-pane" id="tabOptions">
+                @await Html.PartialAsync("_OptionsTab", Model.Project.Options)
+            </div>
         </div>
-        <div class="tab-pane" id="tabOptions">
-            @await Html.PartialAsync("_OptionsTab", Model.Project.Options)
-        </div>
-    </div>
 
-    <div class="float-right">
-        @if (Model.Project.Result != null)
-        {
-            <button style="@ButtonStyle.Secondary" onclick="PageManager.ClosePage()">@Localization.ButtonCancel</button>
-        }
-        else
-        {
-            <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">@Localization.ButtonCancel</button>
-        }
-        <button style="@ButtonStyle.Primary" onclick="Project.EditAndCompare()">
-            @Localization.ButtonCompareNow
-        </button>
+        <div class="float-right">
+            @if (Model.Project.Result != null)
+            {
+                <button style="@ButtonStyle.Secondary" onclick="PageManager.ClosePage()">@Localization.ButtonCancel</button>
+            }
+            else
+            {
+                <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">@Localization.ButtonCancel</button>
+            }
+            <button style="@ButtonStyle.Primary" onclick="Project.EditAndCompare()">
+                @Localization.ButtonCompareNow
+            </button>
+        </div>
     </div>
 </div>

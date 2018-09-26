@@ -287,7 +287,7 @@ namespace SQLCompare.UI.Pages.Project
         // TODO: move somewhere else and add missing parameters
         private ADatabaseProviderOptions GetDatabaseProviderOptions(CompareProjectOptions options, CompareDirection direction)
         {
-            var type = direction == CompareDirection.Source ? options.SourceDatabaseType : options.TargetDatabaseType;
+            var type = options.DatabaseType;
             var hostname = direction == CompareDirection.Source ? options.SourceHostname : options.TargetHostname;
             var username = direction == CompareDirection.Source ? options.SourceUsername : options.TargetUsername;
             var password = this.cipherService.EncryptString(direction == CompareDirection.Source ? options.SourcePassword : options.TargetPassword);

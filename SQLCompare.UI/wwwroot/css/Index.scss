@@ -56,6 +56,7 @@ $fa-font-size-base: $font-size-base;
 .tcx-row-main {
     height: 100vh;
     padding-bottom: $row-header-height;
+    background-color: $background-color;
 }
 
 .tcx-main-top {
@@ -78,7 +79,6 @@ $fa-font-size-base: $font-size-base;
 
 .tcx-project {
     width: 700px;
-    height: 500px;
 }
 
 .tcx-text-ellipsis {

@@ -1,19 +1,8 @@
 ﻿@import "font";
-@import "../lib/bootstrap/scss/functions";
-@import "../lib/bootstrap/scss/variables";
-
-$ourgreen: #39B54A;
-$row-header-height: 37px;
-$switch-width: 32px;
-$switch-on-color: $ourgreen;
-$switch-off-color: $gray-500;
-$switch-disabled-color: $gray-200;
-$switch-slider-color: $white;
-$color-scrollbar: $ourgreen;
-$color-scrollbar-track: $gray-200;
 
 /*#region bootstrap variables customization */
-$theme-colors: ( primary: $ourgreen );
+//$theme-colors: ( "primary": $ourgreen );
+$primary: #39B54A;
 $font-size-base: 0.8rem;
 $line-height-base: 1.3;
 $form-group-margin-bottom: 0.4rem;
@@ -22,6 +11,19 @@ $enable-shadows: true;
 /*#endregion*/
 
 @import "../lib/bootstrap/scss/bootstrap";
+
+$background-color: #E9ECEF;
+$row-header-height: 37px;
+$switch-width: 32px;
+$switch-on-color: $primary;
+$switch-off-color: $gray-500;
+$switch-disabled-color: $gray-200;
+$switch-slider-color: $white;
+$color-scrollbar: $primary;
+$color-scrollbar-track: $gray-200;
+
+
+
 
 /*#region bootstrap overrides */
 :root {

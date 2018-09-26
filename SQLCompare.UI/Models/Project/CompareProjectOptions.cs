@@ -15,9 +15,9 @@ namespace SQLCompare.UI.Models.Project
         public CompareDirection Direction { get; set; }
 
         /// <summary>
-        /// Gets or sets the source database type
+        /// Gets or sets the database type
         /// </summary>
-        public DatabaseType SourceDatabaseType { get; set; }
+        public DatabaseType DatabaseType { get; set; }
 
         /// <summary>
         /// Gets or sets the source hostname
@@ -53,11 +53,6 @@ namespace SQLCompare.UI.Models.Project
         /// Gets or sets the source database
         /// </summary>
         public string SourceDatabase { get; set; }
-
-        /// <summary>
-        /// Gets or sets the target database type
-        /// </summary>
-        public DatabaseType TargetDatabaseType { get; set; }
 
         /// <summary>
         /// Gets or sets the target hostname

@@ -11,6 +11,7 @@ for file in $changedFiles; do
     [ -z "${file##"SQLCompare/font/"*}" ] && continue;
     [ -z "${file##"SQLCompare/build/"*}" ] && continue;
     [ -z "${file##*".xlsx"}" ] && continue;
+    [ -z "${file##*".pfx"}" ] && continue;
     
     unix2dos < "$file" | cmp -s - "$file"
     if [ ! $? -eq 0 ]; then

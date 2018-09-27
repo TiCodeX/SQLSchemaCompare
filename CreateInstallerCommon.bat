@@ -38,6 +38,32 @@ echo.
 dotnet publish %~dp0\SQLCompare.UI\SQLCompare.UI.csproj -r %targetdotnet% -c %configuration%
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 
+echo.
+echo     _____________________
+echo    /\                    \  
+echo    \_^|   Code Signing    ^|  
+echo      ^|    SqlCompare     ^|  
+echo      ^|  _________________^|_ 
+echo       \_/___________________/
+echo.
+
+REM Set environment variables used in electron builder
+set CSC_LINK=../codesigningcert.pfx
+set CSC_KEY_PASSWORD=test1234
+
+signtool sign /f codesigningcert.pfx /p test1234 /t  http://timestamp.verisign.com/scripts/timstamp.dll /d "TiCodeX SA application" %publishDir%\SQLCompare.Core.dll
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+signtool sign /f codesigningcert.pfx /p test1234 /t  http://timestamp.verisign.com/scripts/timstamp.dll /d "TiCodeX SA application" %publishDir%\SQLCompare.Infrastructure.dll
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+signtool sign /f codesigningcert.pfx /p test1234 /t  http://timestamp.verisign.com/scripts/timstamp.dll /d "TiCodeX SA application" %publishDir%\SQLCompare.Services.dll
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+signtool sign /f codesigningcert.pfx /p test1234 /t  http://timestamp.verisign.com/scripts/timstamp.dll /d "TiCodeX SA application" %publishDir%\SQLCompare.UI.dll
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+signtool sign /f codesigningcert.pfx /p test1234 /t  http://timestamp.verisign.com/scripts/timstamp.dll /d "TiCodeX SA application" %publishDir%\SQLCompare.UI.exe
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+signtool sign /f codesigningcert.pfx /p test1234 /t  http://timestamp.verisign.com/scripts/timstamp.dll /d "TiCodeX SA application" %publishDir%\SQLCompare.Ui.Views.dll
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+
 REM Clean debug files
 del /Q %publishDir%\*.pdb
 del /Q %publishDir%\*.xml

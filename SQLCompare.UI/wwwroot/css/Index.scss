@@ -11,12 +11,6 @@ $fa-font-size-base: $font-size-base;
     font-size: .65em;
 }
 
-/*#region bootstrap overrides */
-.modal, .modal-backdrop {
-    top: $row-header-height;
-}
-/*#endregion*/
-
 /*#region monaco-editor overrides */
 .vs .monaco-scrollable-element > .scrollbar.vertical {
     background: $color-scrollbar-track;

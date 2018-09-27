@@ -11,7 +11,7 @@
     "build": {
         "appId": "ch.ticodex.sqlcompare",
         "productName": "SQL Compare",
-        "copyright": "Copyright @ 2018 ${author}",
+        "copyright": "Copyright @ 2018 TiCodeX SA",
         "remoteBuild": false,
         "win": {
             "target": "nsis",
@@ -38,7 +38,7 @@
                 "tar.gz"
             ],
             "category": "Utility",
-            "synopsis": "The swiss army knive for DB schema comparison",
+            "synopsis": "The Swiss Army Knife of Database Schema Comparison",
             "executableName": "SQLCompare",
             "artifactName": "SQLCompare-${version}.${ext}",
             "publish": {
@@ -47,8 +47,13 @@
             }
         },
         "mac": {
-            "target": "default",
-            "category": "public.app-category.productivity"
+            "target": "dmg",
+            "category": "public.app-category.productivity",
+            "artifactName": "SQLCompare-${version}.${ext}",
+            "publish": {
+                "provider": "generic",
+                "url": ""
+            }
         },
         "files": [
             "!app.ts",

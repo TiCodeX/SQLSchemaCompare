@@ -52,5 +52,8 @@ echo.
 echo FAILED.
 
 :exit
+REM Workaround to avoid VisualStudio complaining about published for a different target
+dotnet restore
+
 echo Press any key to close...
 pause > nul

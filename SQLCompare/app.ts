@@ -19,12 +19,22 @@ electron.app.setPath("userData", path.join(electron.app.getPath("appData"), "SQL
 const isDebug: boolean = process.defaultApp;
 const initialPort: number = 5000;
 const splashUrl: string = `file://${__dirname}/splash.html`;
-const servicePath: string = path.join(path.dirname(process.execPath), "bin", `SQLCompare.UI${process.platform === "win32" ? ".exe" : ""}`);
 const loggerPath: string = path.join(os.homedir(), ".SQLCompare", "log", "SQLCompare");
 const loggerPattern: string = "-yyyy-MM-dd-ui.log";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;
 const autoUpdaterUrl: string = "https://ticodex.blob.core.windows.net/releases";
+let servicePath: string;
+switch (electronUpdater.getCurrentPlatform()) {
+    case "linux":
+        servicePath = path.join(path.dirname(process.execPath), "bin", "SQLCompare.UI");
+        break;
+    case "darwin":
+        servicePath = path.join(path.dirname(path.dirname(process.execPath)), "bin", "SQLCompare.UI");
+        break;
+    default: // Windows
+        servicePath = path.join(path.dirname(process.execPath), "bin", "SQLCompare.UI.exe");
+}
 let serviceUrl: string = "https://127.0.0.1:{port}";
 let loginUrl: string = "https://127.0.0.1:{port}/login";
 let serviceProcess: childProcess.ChildProcess;
@@ -124,7 +134,7 @@ setTimeout(() => {
 }, 0);
 
 // Register the renderer callback for logging the UI
-electron.ipcMain.on("log", (event: electron.Event, data: { category: string; level: string; message: string }) => {
+electron.ipcMain.on("log", (event: Electron.Event, data: { category: string; level: string; message: string }) => {
     const uiLogger: log4js.Logger = log4js.getLogger(data.category);
     switch (data.level) {
         case "debug":
@@ -148,15 +158,15 @@ electron.ipcMain.on("log", (event: electron.Event, data: { category: string; lev
 });
 
 // Register the renderer callback for opening the main window
-electron.ipcMain.on("OpenMainWindow", (event: electron.Event) => {
+electron.ipcMain.on("OpenMainWindow", (event: Electron.Event) => {
     createMainWindow();
 });
 // Register the renderer callback for opening the login window
-electron.ipcMain.on("OpenLoginWindow", (event: electron.Event) => {
+electron.ipcMain.on("OpenLoginWindow", (event: Electron.Event) => {
     createLoginWindow(true);
 });
 // Register the renderer callback for opening the login window
-electron.ipcMain.on("ShowLoginWindow", (event: electron.Event) => {
+electron.ipcMain.on("ShowLoginWindow", (event: Electron.Event) => {
     // Destroy splash window
     if (splashWindow !== undefined) {
         splashWindow.destroy();
@@ -169,7 +179,7 @@ electron.ipcMain.on("ShowLoginWindow", (event: electron.Event) => {
     }
 });
 // Register the renderer callback to retrieve the updates
-electron.ipcMain.on("CheckUpdateAvailable", (event: electron.Event) => {
+electron.ipcMain.on("CheckUpdateAvailable", (event: Electron.Event) => {
     event.sender.send("UpdateAvailable",
         {
             platform: electronUpdater.getCurrentPlatform(),
@@ -178,20 +188,72 @@ electron.ipcMain.on("CheckUpdateAvailable", (event: electron.Event) => {
         });
 });
 // Register the renderer callback to quit and install the update
-electron.ipcMain.on("QuitAndInstall", (event: electron.Event) => {
+electron.ipcMain.on("QuitAndInstall", (event: Electron.Event) => {
     electronUpdater.autoUpdater.quitAndInstall(true, true);
 });
 // Register the renderer callback to open the logs folder
-electron.ipcMain.on("OpenLogsFolder", (event: electron.Event) => {
+electron.ipcMain.on("OpenLogsFolder", (event: Electron.Event) => {
     electron.shell.openItem(path.dirname(loggerPath));
 });
+
+/**
+ * Set an empty application menu (except OSX)
+ */
+function setEmptyApplicationMenu(): void {
+    if (!isDebug) {
+        if (electronUpdater.getCurrentPlatform() === "darwin") {
+            // On OSX is not possible to remove the menu, hence create only the Exit entry
+            electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate([
+                {
+                    label: "File",
+                    submenu: [
+                        {
+                            role: "close",
+                            label: "Exit",
+                        },
+                    ],
+                },
+            ]));
+        } else {
+            // On Windows and Linux remove the menu completely
+            electron.Menu.setApplicationMenu(null); // tslint:disable-line:no-null-keyword
+        }
+    } else {
+        // In debug mode it's useful to have the Reload and the developer tools
+        electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate([
+            {
+                label: "DEBUG",
+                submenu: [
+                    {
+                        label: "Reload",
+                        accelerator: "CmdOrCtrl+R",
+                        click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
+                            if (focusedWindow) {
+                                focusedWindow.reload();
+                            }
+                        },
+                    },
+                    {
+                        label: "Toggle Developer Tools",
+                        accelerator: "F12",
+                        click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
+                            if (focusedWindow) {
+                                focusedWindow.webContents.toggleDevTools();
+                            }
+                        },
+                    },
+                ],
+            },
+        ]));
+    }
+}
 
 /**
  * Create the main window ensuring to destroy the login window
  * @param url The url to pass for authentication purpose
  */
 function createMainWindow(): void {
-    const workAreaSize: electron.Size = electron.screen.getPrimaryDisplay().workAreaSize;
+    const workAreaSize: Electron.Size = electron.screen.getPrimaryDisplay().workAreaSize;
     logger.debug("Primary display size: %dx%d", workAreaSize.width, workAreaSize.height);
 
     // Load the previous state with fall-back to defaults
@@ -214,15 +276,7 @@ function createMainWindow(): void {
         },
     });
 
-    mainWindow.setMenu(electron.Menu.buildFromTemplate([{
-        label: "File",
-        submenu: [
-            {
-                role: "close",
-                label: "Exit",
-            },
-        ],
-    }]));
+    setEmptyApplicationMenu();
 
     /**
      * Let us register listeners on the window, so we can update the state
@@ -270,7 +324,10 @@ function createLoginWindow(load: boolean): void {
         show: false,
         center: true,
         resizable: false,
+        maximizable: false,
     });
+
+    setEmptyApplicationMenu();
 
     // Emitted when the window is closed.
     loginWindow.on("closed", () => {
@@ -323,7 +380,7 @@ function startSqlCompareBackend(webPort: number): void {
  */
 function startup(): void {
     // Setup request default auth header
-    const filter: electron.OnBeforeSendHeadersFilter = {
+    const filter: Electron.OnBeforeSendHeadersFilter = {
         urls: [
             "http://*/*",
             "https://*/*",
@@ -340,6 +397,8 @@ function startup(): void {
         transparent: true,
         frame: false,
         alwaysOnTop: false,
+        resizable: false,
+        maximizable: false,
     });
     splashWindow.loadURL(splashUrl);
     splashWindow.show();
@@ -350,11 +409,28 @@ function startup(): void {
         logger.error("Error checking for updates");
     });
 
+    let closeLoginWindow: boolean = true;
+    splashWindow.on("closed", () => {
+        if (closeLoginWindow) {
+            // Destroy login window
+            if (loginWindow !== undefined) {
+                loginWindow.destroy();
+                loginWindow = undefined;
+            }
+        }
+        splashWindow = undefined;
+    });
+
     portfinder(initialPort, (errorWebPort: Error, webPort: number) => {
         serviceUrl = serviceUrl.replace("{port}", `${webPort}`);
         loginUrl = loginUrl.replace("{port}", `${webPort}`);
 
         startSqlCompareBackend(webPort);
+
+        // Splash already closed
+        if (splashWindow === undefined) {
+            return;
+        }
 
         createLoginWindow(false);
         logger.debug("Login window started");
@@ -370,6 +446,8 @@ function startup(): void {
                 loadFailed = false;
                 loginWindow.loadURL(loginUrl);
             } else {
+                // Do not close the login window when the splash is closed
+                closeLoginWindow = false;
                 logger.info("Application started successfully");
             }
         });
@@ -389,19 +467,15 @@ electron.app.on("ready", startup);
 // This method will be called when Electron will quit the application
 electron.app.on("will-quit", () => {
     if (serviceProcess !== undefined) {
+        logger.debug("Stopping service");
         serviceProcess.kill();
     }
 });
 
 // Quit when all windows are closed.
 electron.app.on("window-all-closed", () => {
-    /**
-     * On OS X it is common for applications and their menu bar
-     * to stay active until the user quits explicitly with Cmd + Q
-     */
-    if (process.platform !== "darwin") {
-        electron.app.quit();
-    }
+    logger.info("Application closed");
+    electron.app.quit();
     log4js.shutdown(() => {
         // Do nothing
     });
@@ -418,7 +492,7 @@ electron.app.on("activate", () => {
 });
 
 // SSL/TSL: this is the self signed certificate support
-electron.app.on("certificate-error", (event: electron.Event, webContents: electron.WebContents, url: string, error: string, certificate: electron.Certificate, callback: Function) => {
+electron.app.on("certificate-error", (event: Electron.Event, webContents: Electron.WebContents, url: string, error: string, certificate: Electron.Certificate, callback: Function) => {
     /**
      * On certificate error we disable default behaviour (stop loading the page)
      * and we then say "it is all fine - true" to the callback

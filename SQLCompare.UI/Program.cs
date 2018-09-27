@@ -18,7 +18,7 @@ namespace SQLCompare.UI
         {
             Utility.ConfigureLogger();
 
-            var logger = LogManager.GetCurrentClassLogger();
+            var logger = LogManager.GetLogger(nameof(Program));
             try
             {
                 logger.Info(string.Empty);

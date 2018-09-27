@@ -3,11 +3,6 @@
  */
 class Menu {
     /**
-     * Keep a reference to the created menu
-     */
-    private static menu: Electron.Menu;
-
-    /**
      * Creates the main application menu
      */
     public static CreateMenu(): void {
@@ -101,35 +96,6 @@ class Menu {
                 ],
             },
             {
-                label: "DEBUG",
-                submenu: [
-                    {
-                        label: "Reload",
-                        accelerator: "CmdOrCtrl+R",
-                        click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
-                            if (focusedWindow) {
-                                focusedWindow.reload();
-                            }
-                        },
-                    },
-                    {
-                        label: "Toggle Developer Tools",
-                        accelerator: "F12",
-                        click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
-                            if (focusedWindow) {
-                                focusedWindow.webContents.toggleDevTools();
-                            }
-                        },
-                    },
-                    {
-                        type: "separator",
-                    },
-                    {
-                        role: "togglefullscreen",
-                    },
-                ],
-            },
-            {
                 label: Localization.Get("MenuHelp"),
                 submenu: [
                     {
@@ -152,9 +118,33 @@ class Menu {
             },
         ];
 
-        this.menu = electron.remote.Menu.buildFromTemplate(template);
+        if (electron.remote.process.defaultApp) { // tslint:disable-line:no-unsafe-any
+            template.push({
+                    label: "DEBUG",
+                    submenu: [
+                        {
+                            label: "Reload",
+                            accelerator: "CmdOrCtrl+R",
+                            click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
+                                if (focusedWindow) {
+                                    focusedWindow.reload();
+                                }
+                            },
+                        },
+                        {
+                            label: "Toggle Developer Tools",
+                            accelerator: "F12",
+                            click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
+                                if (focusedWindow) {
+                                    focusedWindow.webContents.toggleDevTools();
+                                }
+                            },
+                        },
+                    ],
+                });
+        }
 
-        electron.remote.getCurrentWindow().setMenu(this.menu);
+        electron.remote.Menu.setApplicationMenu(electron.remote.Menu.buildFromTemplate(template));
     }
 
     /**
@@ -162,14 +152,16 @@ class Menu {
      * @param enabled Whether to enable or disable the menu items
      */
     public static ToggleProjectRelatedMenuStatus(enable: boolean): void {
-        if (this.menu === undefined) {
+        if (electron === undefined) {
             return;
         }
 
-        this.menu.getMenuItemById("menuSaveProject").enabled = enable;
-        this.menu.getMenuItemById("menuSaveProjectAs").enabled = enable;
-        this.menu.getMenuItemById("menuCloseProject").enabled = enable;
-        this.menu.getMenuItemById("menuEditProject").enabled = enable;
-        this.menu.getMenuItemById("menuPerformCompare").enabled = enable;
+        const menu: Electron.Menu = electron.remote.Menu.getApplicationMenu();
+
+        menu.getMenuItemById("menuSaveProject").enabled = enable;
+        menu.getMenuItemById("menuSaveProjectAs").enabled = enable;
+        menu.getMenuItemById("menuCloseProject").enabled = enable;
+        menu.getMenuItemById("menuEditProject").enabled = enable;
+        menu.getMenuItemById("menuPerformCompare").enabled = enable;
     }
 }

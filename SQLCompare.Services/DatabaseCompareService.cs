@@ -80,7 +80,8 @@ namespace SQLCompare.Services
                             });
                         }
 
-                        foreach (var table in this.retrievedTargetDatabase.Tables.Where(x => this.result.Tables.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var table in this.retrievedTargetDatabase.Tables.Where(x =>
+                            !this.result.Tables.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
                         {
                             this.result.Tables.Add(new CompareResultItem<ABaseDbTable>
                             {
@@ -100,7 +101,8 @@ namespace SQLCompare.Services
                             });
                         }
 
-                        foreach (var view in this.retrievedTargetDatabase.Views.Where(x => this.result.Views.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var view in this.retrievedTargetDatabase.Views.Where(x =>
+                            !this.result.Views.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
                         {
                             this.result.Views.Add(new CompareResultItem<ABaseDbView>
                             {
@@ -120,7 +122,8 @@ namespace SQLCompare.Services
                             });
                         }
 
-                        foreach (var function in this.retrievedTargetDatabase.Functions.Where(x => this.result.Functions.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var function in this.retrievedTargetDatabase.Functions.Where(x =>
+                            !this.result.Functions.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
                         {
                             this.result.Functions.Add(new CompareResultItem<ABaseDbFunction>
                             {
@@ -140,7 +143,8 @@ namespace SQLCompare.Services
                             });
                         }
 
-                        foreach (var storedProcedure in this.retrievedTargetDatabase.StoredProcedures.Where(x => this.result.StoredProcedures.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var storedProcedure in this.retrievedTargetDatabase.StoredProcedures.Where(x =>
+                            !this.result.StoredProcedures.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
                         {
                             this.result.StoredProcedures.Add(new CompareResultItem<ABaseDbStoredProcedure>
                             {
@@ -163,10 +167,11 @@ namespace SQLCompare.Services
                             });
                         }
 
-                        foreach (var trigger in this.retrievedTargetDatabase.Triggers.Where(x => this.result.Triggers.All(y => y.SourceItem.Schema != x.Schema &&
-                                                                                                                               y.SourceItem.Name != x.Name &&
-                                                                                                                               y.SourceItem.TableSchema != x.TableSchema &&
-                                                                                                                               y.SourceItem.TableName != x.TableName)).ToList())
+                        foreach (var trigger in this.retrievedTargetDatabase.Triggers.Where(x =>
+                            !this.result.Triggers.Any(y => y.SourceItem.Schema == x.Schema &&
+                                y.SourceItem.Name == x.Name &&
+                                y.SourceItem.TableSchema == x.TableSchema &&
+                                y.SourceItem.TableName == x.TableName)).ToList())
                         {
                             this.result.Triggers.Add(new CompareResultItem<ABaseDbTrigger>
                             {
@@ -186,7 +191,8 @@ namespace SQLCompare.Services
                             });
                         }
 
-                        foreach (var sequence in this.retrievedTargetDatabase.Sequences.Where(x => this.result.Sequences.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var sequence in this.retrievedTargetDatabase.Sequences.Where(x =>
+                            !this.result.Sequences.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
                         {
                             this.result.Sequences.Add(new CompareResultItem<ABaseDbSequence>
                             {
@@ -206,7 +212,8 @@ namespace SQLCompare.Services
                             });
                         }
 
-                        foreach (var type in this.retrievedTargetDatabase.DataTypes.Where(x => x.IsUserDefined && this.result.DataTypes.All(y => y.SourceItem.Schema != x.Schema && y.SourceItem.Name != x.Name)).ToList())
+                        foreach (var type in this.retrievedTargetDatabase.DataTypes.Where(x => x.IsUserDefined &&
+                            !this.result.DataTypes.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
                         {
                             this.result.DataTypes.Add(new CompareResultItem<ABaseDbDataType>
                             {

@@ -5,23 +5,35 @@
 @model MainPageModel
 
 <div id="mainTop" class="tcx-main-top">
-    @await Html.PartialAsync("_ResultTable", Model.DifferentItems, new ViewDataDictionary(this.ViewData)
+    @if (Model.DifferentItems.Count > 0)
     {
-        { "Title", Localization.LabelInBothButDifferent },
-        { "Show", true }
-    })
-    @await Html.PartialAsync("_ResultTable", Model.OnlySourceItems, new ViewDataDictionary(this.ViewData)
+        @await Html.PartialAsync("_ResultTable", Model.DifferentItems, new ViewDataDictionary(this.ViewData)
+        {
+            {"Title", Localization.LabelInBothButDifferent},
+            {"Show", true}
+        });
+    }
+    @if (Model.OnlySourceItems.Count > 0)
     {
-        { "Title", Localization.LabelOnlyInSource }
-    })
-    @await Html.PartialAsync("_ResultTable", Model.OnlyTargetItems, new ViewDataDictionary(this.ViewData)
+        @await Html.PartialAsync("_ResultTable", Model.OnlySourceItems, new ViewDataDictionary(this.ViewData)
+        {
+            {"Title", Localization.LabelOnlyInSource}
+        });
+    }
+    @if (Model.OnlyTargetItems.Count > 0)
     {
-        { "Title", Localization.LabelOnlyInTarget }
-    })
-    @await Html.PartialAsync("_ResultTable", Model.SameItems, new ViewDataDictionary(this.ViewData)
+        @await Html.PartialAsync("_ResultTable", Model.OnlyTargetItems, new ViewDataDictionary(this.ViewData)
+        {
+            {"Title", Localization.LabelOnlyInTarget}
+        });
+    }
+    @if (Model.SameItems.Count > 0)
     {
-        { "Title", Localization.LabelIdentical }
-    })
+        @await Html.PartialAsync("_ResultTable", Model.SameItems, new ViewDataDictionary(this.ViewData)
+        {
+            {"Title", Localization.LabelIdentical}
+        });
+    }
 </div>
 
 <div id="mainBottom" style="display: none;">

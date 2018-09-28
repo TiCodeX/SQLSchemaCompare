@@ -12,7 +12,7 @@
             <label>@Localization.LabelType</label>
             @if (Model.EditableDatabaseType)
             {
-                <select name="DatabaseType" onchange="Project.HandleDatabaseTypeOnChange($(this))">
+                <select name="DatabaseType" onchange="Project.HandleDatabaseTypeOnChange($(this))" required>
                     <option value="@((int) DatabaseType.MicrosoftSql)"
                             selected="@(Model.SourceProviderOptions is MicrosoftSqlDatabaseProviderOptions)">
                         Microsoft SQL Server

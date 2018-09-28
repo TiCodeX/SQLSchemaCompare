@@ -111,14 +111,29 @@ class Utility {
 
         // Wrap content with a form
         const form: JQuery = element.wrapInner("<form></form>").find("> form");
+        // Disable browser default feedback
+        form.addClass("novalidate");
+        // Override browser default style
+        form.css("display", "inherit");
+        form.css("margin-top", "inherit");
 
-        // Serialize inputs
-        const result: object = <object>element.find("> form").serializeJSON(settings);
+        try {
+            if (element.hasClass("needs-validation")) {
+                const valid: boolean = (<HTMLFormElement>form[0]).checkValidity();
+                element.addClass("was-validated");
+                if (!valid) {
+                    return undefined;
+                }
+            }
 
-        // Eliminate newly created form
-        form.contents().unwrap();
+            // Serialize inputs
+            const result: object = <object>form.serializeJSON(settings);
 
-        return result;
+            return result;
+        } finally {
+            // Eliminate newly created form
+            form.contents().unwrap();
+        }
     }
 
     /**

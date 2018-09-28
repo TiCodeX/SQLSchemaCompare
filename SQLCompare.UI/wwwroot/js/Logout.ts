@@ -16,6 +16,8 @@ class Logout {
             } else {
                 Project.HandleProjectNeedToBeSavedError(response).then((): void => {
                     this.Logout(true);
+                }).catch((): void => {
+                    // Do nothing
                 });
             }
         });

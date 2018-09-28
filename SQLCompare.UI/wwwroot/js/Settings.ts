@@ -28,6 +28,10 @@ class Settings {
      */
     public static Save(projectIsOpen: boolean): void {
         const data: object = Utility.SerializeJSON($("#Settings"));
+        if (data === undefined) {
+            return;
+        }
+
         Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data).then((): void => {
             // Load the new localization
             Localization.Load();

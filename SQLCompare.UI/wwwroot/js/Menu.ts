@@ -36,7 +36,9 @@ class Menu {
                         label: `${Localization.Get("MenuSaveProject")}`,
                         enabled: false,
                         click(): void {
-                            Project.Save();
+                            Project.Save().catch((): void => {
+                                // Do nothing
+                            });
                         },
                     },
                     {
@@ -44,7 +46,9 @@ class Menu {
                         label: `${Localization.Get("MenuSaveProjectAs")}...`,
                         enabled: false,
                         click(): void {
-                            Project.Save(true);
+                            Project.Save(true).catch((): void => {
+                                // Do nothing
+                            });
                         },
                     },
                     {

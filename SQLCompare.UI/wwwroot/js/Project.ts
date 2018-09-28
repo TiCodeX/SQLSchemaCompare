@@ -95,6 +95,8 @@ class Project {
             } else {
                 this.HandleProjectNeedToBeSavedError(response).then((): void => {
                     this.New(true, databaseType);
+                }).catch((): void => {
+                    // Do nothing
                 });
             }
         });
@@ -105,6 +107,14 @@ class Project {
      * @param showDialog Whether to show the save dialog
      */
     public static async Save(showDialog: boolean = false): Promise<void> {
+        if (PageManager.GetOpenPage() === PageManager.Page.Project) {
+            try {
+                await this.Edit();
+            } catch (e) {
+                return Promise.reject();
+            }
+        }
+
         let filename: string = this.filename;
         if (filename === undefined || showDialog) {
             filename = electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
@@ -121,10 +131,6 @@ class Project {
         }
         if (Utility.IsNullOrWhitespace(filename)) {
             return Promise.resolve();
-        }
-
-        if (PageManager.GetOpenPage() === PageManager.Page.Project) {
-            await this.Edit();
         }
 
         const data: object = <object>JSON.parse(JSON.stringify(filename));
@@ -179,6 +185,8 @@ class Project {
             } else {
                 this.HandleProjectNeedToBeSavedError(response).then((): void => {
                     this.Load(true, file);
+                }).catch((): void => {
+                    // Do nothing
                 });
             }
         });
@@ -188,12 +196,15 @@ class Project {
      * Serialize the project values in the UI and send them to the service
      */
     public static async Edit<T>(): Promise<ApiResponse<T>> {
-        const data: object = Utility.SerializeJSON($("#ProjectPage"));
-
-        return new Promise<ApiResponse<T>>((resolve: PromiseResolve<ApiResponse<T>>): void => {
-            Utility.AjaxCall(this.editUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<T>): void => {
-                resolve(response);
-            });
+        return new Promise<ApiResponse<T>>((resolve: PromiseResolve<ApiResponse<T>>, reject: PromiseReject): void => {
+            const data: object = Utility.SerializeJSON($("#ProjectPage"));
+            if (data === undefined) {
+                reject();
+            } else {
+                Utility.AjaxCall(this.editUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<T>): void => {
+                    resolve(response);
+                });
+            }
         });
     }
 
@@ -213,6 +224,8 @@ class Project {
             } else {
                 this.HandleProjectNeedToBeSavedError(response).then((): void => {
                     this.Close(true);
+                }).catch((): void => {
+                    // Do nothing
                 });
             }
         });
@@ -230,17 +243,27 @@ class Project {
         // Close the dropdown and disable it temporarily
         const select: JQuery = $(`input[name="${selectId}"]`);
         select.trigger("blur").attr("disabled", "disabled");
-        const databaseType: JQuery = $("[name='DatabaseType']");
+        select.editableSelect("clear");
 
         const data: object = Utility.SerializeJSON($(`#${dataDivId}`));
-        $.extend(data, { DatabaseType: databaseType.val()});
+        if (data === undefined) {
+            select.removeAttr("disabled");
+            button.removeClass("spin").removeAttr("disabled");
+
+            return;
+        }
+
+        const databaseType: JQuery = $("[name='DatabaseType']");
+        $.extend(data, { DatabaseType: databaseType.val() });
 
         Utility.AjaxCall(this.loadDatabaseListUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<Array<string>>): void => {
-            select.editableSelect("clear");
             if (response.Success) {
                 $.each(response.Result,
                     (index: number, value: string): void => {
                         select.editableSelect("add", value);
+                        if (Utility.IsNullOrWhitespace(<string>select.val()) && index === 0) {
+                            select.val(value);
+                        }
                     });
             } else {
                 DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
@@ -256,6 +279,8 @@ class Project {
     public static EditAndCompare(): void {
         this.Edit().then((): void => {
             Project.Compare();
+        }).catch((): void => {
+            // Do nothing
         });
     }
 
@@ -309,6 +334,8 @@ class Project {
                         case DialogManager.SaveDialogAnswers.Yes:
                             this.Save(false).then((): void => {
                                 resolve();
+                            }).catch(() => {
+                                reject();
                             });
                             break;
                         case DialogManager.SaveDialogAnswers.No:

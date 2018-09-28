@@ -5,10 +5,10 @@
 @using Services
 @model SettingsPageModel
 
-<div id="Settings">
+<div id="Settings" class="needs-validation">
     <div class="form-group">
         <label>@Localization.LabelLanguage</label>
-        <select name="Language">
+        <select name="Language" required>
             <option value="@Language.English" selected="@(Model.Settings.Language == Language.English)">English</option>
             <option value="@Language.German" selected="@(Model.Settings.Language == Language.German)">German</option>
             <option value="@Language.Italian" selected="@(Model.Settings.Language == Language.Italian)">Italian</option>
@@ -17,7 +17,7 @@
 
     <div class="form-group">
         <label>@Localization.LabelLogLevel</label>
-        <select name="LogLevel">
+        <select name="LogLevel" required>
             <option value="@LogLevel.Debug" selected="@(Model.Settings.LogLevel == LogLevel.Debug)">Debug</option>
             <option value="@LogLevel.Info" selected="@(Model.Settings.LogLevel == LogLevel.Info)">Info</option>
             <option value="@LogLevel.Warning" selected="@(Model.Settings.LogLevel == LogLevel.Warning)">Warning</option>

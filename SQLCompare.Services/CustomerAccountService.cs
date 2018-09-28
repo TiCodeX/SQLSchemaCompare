@@ -14,14 +14,20 @@ namespace SQLCompare.Services
     public class CustomerAccountService : IAccountService
     {
         private readonly IAppGlobals appGlobals;
+        private readonly IProjectService projectService;
+        private readonly IAppSettingsService appSettingsService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomerAccountService"/> class
         /// </summary>
         /// <param name="appGlobals">Injected application global constants</param>
-        public CustomerAccountService(IAppGlobals appGlobals)
+        /// <param name="projectService">The injected project service</param>
+        /// <param name="appSettingsService">The injected app settings service</param>
+        public CustomerAccountService(IAppGlobals appGlobals, IProjectService projectService, IAppSettingsService appSettingsService)
         {
             this.appGlobals = appGlobals;
+            this.projectService = projectService;
+            this.appSettingsService = appSettingsService;
         }
 
         /// <inheritdoc/>
@@ -59,6 +65,11 @@ namespace SQLCompare.Services
         /// <inheritdoc/>
         public void Logout()
         {
+            this.projectService.CloseProject();
+
+            this.appSettingsService.GetAppSettings().Session = null;
+            this.appSettingsService.SaveAppSettings();
+
             this.CustomerInformation = null;
         }
     }

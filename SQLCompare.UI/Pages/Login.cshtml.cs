@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Api;
 using SQLCompare.Core.Entities.Exceptions;
-using SQLCompare.Core.Enums;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.Services;
@@ -251,9 +250,6 @@ namespace SQLCompare.UI.Pages
             {
                 if (!this.projectService.NeedSave() || ignoreDirty)
                 {
-                    this.appSettingsService.GetAppSettings().Session = null;
-                    this.appSettingsService.SaveAppSettings();
-
                     this.accountService.Logout();
                     return new JsonResult(new ApiResponse());
                 }

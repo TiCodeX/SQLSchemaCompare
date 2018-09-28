@@ -155,6 +155,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 }
 
                 sb.AppendLine($"INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(table)}({string.Join(",", columnList)})");
+                if (!string.IsNullOrWhiteSpace(index.FilterDefinition))
+                {
+                    sb.AppendLine($"    WHERE {index.FilterDefinition}");
+                }
+
                 sb.AppendLine("GO");
                 sb.AppendLine();
             }

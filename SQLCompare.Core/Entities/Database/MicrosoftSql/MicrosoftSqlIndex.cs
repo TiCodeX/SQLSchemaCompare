@@ -73,5 +73,10 @@
         /// Gets or sets a value indicating whether the index is unique
         /// </summary>
         public bool? IsUnique { get; set; }
+
+        /// <summary>
+        /// Gets or sets the filter definition (where clause)
+        /// </summary>
+        public string FilterDefinition { get; set; }
     }
 }

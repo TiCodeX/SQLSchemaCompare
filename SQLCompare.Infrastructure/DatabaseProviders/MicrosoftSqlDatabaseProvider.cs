@@ -172,7 +172,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       ic.key_ordinal AS 'OrdinalPosition',");
             query.AppendLine("       i.type AS Type,");
             query.AppendLine("       i.type_desc AS 'TypeDescription',");
-            query.AppendLine("       i.is_unique AS 'IsUnique'");
+            query.AppendLine("       i.is_unique AS 'IsUnique',");
+            query.AppendLine("       i.filter_definition AS 'FilterDefinition'");
             query.AppendLine("FROM sys.indexes i");
             query.AppendLine("JOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id");
             query.AppendLine("JOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id");

@@ -44,7 +44,7 @@ CREATE TABLE actor (
 GO
  ALTER TABLE actor ADD CONSTRAINT [DF_actor_last_update] DEFAULT (getdate()) FOR last_update
 GO
- CREATE  INDEX idx_actor_last_name ON actor(last_name) 
+ CREATE  INDEX idx_actor_last_name ON actor(last_name) WHERE (last_name IS NOT NULL)
 GO
 
 --

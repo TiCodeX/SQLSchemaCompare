@@ -56,7 +56,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       b.modify_date as ModifyDate");
             query.AppendLine("FROM INFORMATION_SCHEMA.TABLES a");
             query.AppendLine("JOIN SYS.objects b ON b.object_id = object_id(a.TABLE_SCHEMA + '.' + a.TABLE_NAME)");
-            query.AppendLine("WHERE b.type = 'U'");
+            query.AppendLine("WHERE b.type = 'U' AND a.TABLE_SCHEMA <> 'sys'");
 
             return context.Query<MicrosoftSqlTable>(query.ToString());
         }
@@ -87,7 +87,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
             query.AppendLine("LEFT JOIN sys.identity_columns b ON object_id(a.TABLE_SCHEMA + '.' + a.TABLE_NAME) = b.object_id AND a.COLUMN_NAME = b.name");
             query.AppendLine("LEFT JOIN sys.computed_columns c ON object_id(a.TABLE_SCHEMA + '.' + a.TABLE_NAME) = c.object_id AND a.COLUMN_NAME = c.name");
-            query.AppendLine($"WHERE a.TABLE_CATALOG = '{database.Name}'");
+            query.AppendLine($"WHERE a.TABLE_CATALOG = '{database.Name}' AND a.TABLE_SCHEMA <> 'sys'");
 
             return context.Query<MicrosoftSqlColumn>(query.ToString());
         }
@@ -124,7 +124,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("	ON reftb.schema_id = refs.schema_id");
             query.AppendLine("INNER JOIN sys.columns refcol");
             query.AppendLine("	ON refcol.column_id = fkc.referenced_column_id and refcol.object_id = reftb.object_id");
-            query.AppendLine($"WHERE tc.TABLE_CATALOG = '{database.Name}'");
+            query.AppendLine($"WHERE tc.TABLE_CATALOG = '{database.Name}' AND tc.CONSTRAINT_SCHEMA <> 'sys'");
             return context.Query<MicrosoftSqlForeignKey>(query.ToString());
         }
 
@@ -145,7 +145,9 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu ON tc.CONSTRAINT_NAME = ccu.CONSTRAINT_NAME");
             query.AppendLine("JOIN sys.objects o ON tc.CONSTRAINT_NAME = o.name");
             query.AppendLine("LEFT OUTER JOIN sys.check_constraints cc ON o.object_id = cc.object_id");
-            query.AppendLine("WHERE tc.CONSTRAINT_TYPE != 'PRIMARY KEY' and tc.CONSTRAINT_TYPE != 'FOREIGN KEY'");
+            query.AppendLine("WHERE tc.CONSTRAINT_TYPE != 'PRIMARY KEY' AND");
+            query.AppendLine("      tc.CONSTRAINT_TYPE != 'FOREIGN KEY' AND");
+            query.AppendLine("      tc.TABLE_SCHEMA <> 'sys'");
             return context.Query<ABaseDbConstraint>(query.ToString());
         }
 
@@ -188,6 +190,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       TABLE_SCHEMA as 'Schema',");
             query.AppendLine("       VIEW_DEFINITION as ViewDefinition");
             query.AppendLine("FROM INFORMATION_SCHEMA.VIEWS");
+            query.AppendLine("WHERE NULLIF(VIEW_DEFINITION, '') IS NOT NULL AND");
+            query.AppendLine("      TABLE_SCHEMA <> 'sys'");
 
             return context.Query<MicrosoftSqlView>(query.ToString());
         }
@@ -201,7 +205,9 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       ROUTINE_SCHEMA as 'Schema',");
             query.AppendLine("       ROUTINE_DEFINITION as Definition");
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
-            query.AppendLine("WHERE routine_type = 'FUNCTION'");
+            query.AppendLine("WHERE routine_type = 'FUNCTION' AND");
+            query.AppendLine("      NULLIF(ROUTINE_DEFINITION, '') IS NOT NULL AND");
+            query.AppendLine("      ROUTINE_SCHEMA <> 'sys'");
 
             return context.Query<MicrosoftSqlFunction>(query.ToString());
         }
@@ -215,7 +221,9 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       ROUTINE_SCHEMA as 'Schema',");
             query.AppendLine("       ROUTINE_DEFINITION as Definition");
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
-            query.AppendLine("WHERE routine_type = 'PROCEDURE'");
+            query.AppendLine("WHERE routine_type = 'PROCEDURE' AND");
+            query.AppendLine("      NULLIF(ROUTINE_DEFINITION, '') IS NOT NULL AND");
+            query.AppendLine("      ROUTINE_SCHEMA <> 'sys'");
 
             return context.Query<MicrosoftSqlStoredProcedure>(query.ToString());
         }
@@ -233,7 +241,9 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       c.text AS 'Definition'");
             query.AppendLine("FROM sys.sysobjects o");
             query.AppendLine("INNER JOIN sys.syscomments AS c ON o.id = c.id");
-            query.AppendLine("WHERE o.type = 'TR'");
+            query.AppendLine("WHERE o.type = 'TR' AND");
+            query.AppendLine("      NULLIF(c.text, '') IS NOT NULL AND");
+            query.AppendLine("      object_schema_name(o.id) <> 'sys'");
 
             return context.Query<ABaseDbTrigger>(query.ToString());
         }
@@ -279,6 +289,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       CONVERT(VARCHAR, s.minimum_value) AS 'MinValue',");
             query.AppendLine("       CONVERT(VARCHAR, s.maximum_value) AS 'MaxValue'");
             query.AppendLine("FROM sys.sequences s");
+            query.AppendLine("WHERE object_schema_name(s.object_id) <> 'sys'");
             return context.Query<ABaseDbSequence>(query.ToString());
         }
     }

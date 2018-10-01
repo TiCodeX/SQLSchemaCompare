@@ -39,7 +39,7 @@ class Login {
                             case ApiResponse.EErrorCodes.ErrorTrialSubscriptionExpired:
                                 $("#myModalLink").html("Get a subscription");
                                 $("#myModalLink").on("click", () => {
-                                    Utility.OpenExternalBrowser(`https://www.ticodex.com/Login?ReturnUrl=${encodeURI(`/Checkout&s=${response.Result}`)}`);
+                                    Utility.OpenExternalBrowser(`https://www.ticodex.com/Login?ReturnUrl=${encodeURI(`/Subscribe&s=${response.Result}`)}`);
                                 });
                                 break;
                             default:

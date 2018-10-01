@@ -25,7 +25,7 @@
                     {
                         <div class="list-group-item list-group-item-action d-flex border-0 py-1 justify-content-between">
                             <div onclick="Project.Load(false, '@HttpUtility.JavaScriptStringEncode(item)')"
-                                 class="w-100 tcx-text-ellipsis tcx-cursor-default"
+                                 class="w-100 tcx-text-ellipsis"
                                  data-toggle="tooltip" data-placement="top" title="@item">
                                 <i class="fas fa-database pr-1"></i>
                                 @(System.IO.Path.GetFileName(item))
@@ -37,7 +37,7 @@
                             </div>
                         </div>
                     }
-                    <div class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
+                    <div class="list-group-item list-group-item-action py-1 border-0"
                          onclick="Project.Load()"
                          data-toggle="tooltip" data-placement="top" title="@Localization.ButtonOpenProject">
                         <i class="far fa-folder-open pr-1"></i>
@@ -51,22 +51,22 @@
                     <li class="list-group-item border-0 pl-1 py-0">
                         <h6 class="font-weight-bold">@Localization.LabelCreateNewProjects:</h6>
                     </li>
-                    <li class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
+                    <li class="list-group-item list-group-item-action py-1 border-0"
                         onclick="Project.New(false, Project.DatabaseType.MicrosoftSql)">
                         <i class="fas fa-plus pr-1"></i>
                         @Localization.LabelNewMicrosoftSQLServerProject
                     </li>
-                    <li class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
+                    <li class="list-group-item list-group-item-action py-1 border-0"
                         onclick="Project.New(false, Project.DatabaseType.MySql)">
                         <i class="fas fa-plus pr-1"></i>
                         @Localization.LabelNewMySqlProject
                     </li>
-                    <li class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
+                    <li class="list-group-item list-group-item-action py-1 border-0"
                         onclick="Project.New(false, Project.DatabaseType.PostgreSql)">
                         <i class="fas fa-plus pr-1"></i>
                         @Localization.LabelNewPostgreSQLProject
                     </li>
-                    <li class="list-group-item list-group-item-action py-1 border-0 tcx-cursor-default"
+                    <li class="list-group-item list-group-item-action py-1 border-0"
                         onclick="Project.New(false)">
                         <i class="fas fa-plus pr-1"></i>
                         @Localization.LabelNewProject

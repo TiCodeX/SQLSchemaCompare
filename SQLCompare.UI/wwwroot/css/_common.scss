@@ -12,7 +12,7 @@ $enable-shadows: true;
 @import "../lib/bootstrap/scss/bootstrap";
 
 $background-color: #E9ECEF;
-$row-header-height: 37px;
+$row-header-height: 36px;
 $switch-width: 32px;
 $switch-on-color: $primary;
 $switch-off-color: $gray-500;
@@ -20,9 +20,6 @@ $switch-disabled-color: $gray-200;
 $switch-slider-color: $white;
 $color-scrollbar: $primary;
 $color-scrollbar-track: $gray-200;
-
-
-
 
 /*#region bootstrap overrides */
 :root {
@@ -91,6 +88,16 @@ label {
 .bs-tooltip-top .arrow::before {
     border-top-color: #555;
 }
+.bs-tooltip-right .arrow::before {
+    border-right-color: #555;
+}
+.bs-tooltip-bottom .arrow::before {
+    border-bottom-color: #555;
+}
+.bs-tooltip-left .arrow::before {
+    border-left-color: #555;
+}
+
 /*#endregion*/
 
 /*#region buttons */
@@ -112,6 +119,10 @@ label {
     background-color: $gray-400;
 }
 /*#endregion*/
+
+*[onclick] {
+    cursor: pointer;
+}
 
 @keyframes spin {
     0% {

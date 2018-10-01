@@ -10,6 +10,12 @@ namespace SQLCompare.UI
     /// </summary>
     internal class AppGlobals : IAppGlobals
     {
+#if DEBUG
+        private const string MyAccountBaseEndpoint = "https://localhost:44349";
+#else
+        private const string MyAccountBaseEndpoint = "https://myaccount-ticodex.azurewebsites.net";
+#endif
+
         /// <inheritdoc/>
         public string CompanyName => "TiCodeX SA";
 
@@ -58,18 +64,16 @@ namespace SQLCompare.UI
         /// <inheritdoc/>
         public string ProductCode => "SQLCMP";
 
-#if DEBUG
         /// <inheritdoc/>
-        public string LoginEndpoint => $"https://localhost:44349/login?culture={Localization.Culture.Name}&appId={this.ElectronAuthAppId}&product={this.ProductCode}";
+        public string MyAccountEndpoint => $"{MyAccountBaseEndpoint}/Login?culture={Localization.Culture.Name}&product={this.ProductCode}&returnUrl={Uri.EscapeDataString("/")}";
 
         /// <inheritdoc/>
-        public string VerifySessionEndpoint => "https://localhost:44349/api/VerifySession";
-#else
-        /// <inheritdoc/>
-        public string LoginEndpoint => $"http://myaccount-ticodex.azurewebsites.net/login?culture={Localization.Culture.Name}&appId={this.ElectronAuthAppId}&product={this.ProductCode}";
+        public string LoginEndpoint => $"{MyAccountBaseEndpoint}/Login?culture={Localization.Culture.Name}&product={this.ProductCode}&appId={this.ElectronAuthAppId}";
 
         /// <inheritdoc/>
-        public string VerifySessionEndpoint => "http://myaccount-ticodex.azurewebsites.net/api/VerifySession";
-#endif
+        public string SubscribeEndpoint => $"{MyAccountBaseEndpoint}/Login?culture={Localization.Culture.Name}&product={this.ProductCode}&returnUrl={Uri.EscapeDataString("/Subscribe")}";
+
+        /// <inheritdoc/>
+        public string VerifySessionEndpoint => $"{MyAccountBaseEndpoint}/api/VerifySession";
     }
 }

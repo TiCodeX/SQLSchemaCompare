@@ -3,36 +3,45 @@
 @using Enums
 @using Services
 @model MainPageModel
-
+@{
+    var show = true;
+}
 <div id="mainTop" class="tcx-main-top">
     @if (Model.DifferentItems.Count > 0)
     {
         @await Html.PartialAsync("_ResultTable", Model.DifferentItems, new ViewDataDictionary(this.ViewData)
         {
             {"Title", Localization.LabelInBothButDifferent},
-            {"Show", true}
+            {"Show", show}
         });
+        show = false;
     }
     @if (Model.OnlySourceItems.Count > 0)
     {
         @await Html.PartialAsync("_ResultTable", Model.OnlySourceItems, new ViewDataDictionary(this.ViewData)
         {
-            {"Title", Localization.LabelOnlyInSource}
+            {"Title", Localization.LabelOnlyInSource},
+            {"Show", show}
         });
+        show = false;
     }
     @if (Model.OnlyTargetItems.Count > 0)
     {
         @await Html.PartialAsync("_ResultTable", Model.OnlyTargetItems, new ViewDataDictionary(this.ViewData)
         {
-            {"Title", Localization.LabelOnlyInTarget}
+            {"Title", Localization.LabelOnlyInTarget},
+            {"Show", show}
         });
+        show = false;
     }
     @if (Model.SameItems.Count > 0)
     {
         @await Html.PartialAsync("_ResultTable", Model.SameItems, new ViewDataDictionary(this.ViewData)
         {
-            {"Title", Localization.LabelIdentical}
+            {"Title", Localization.LabelIdentical},
+            {"Show", show}
         });
+        show = false;
     }
 </div>
 

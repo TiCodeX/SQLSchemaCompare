@@ -12,40 +12,84 @@ $fa-font-size-base: $font-size-base;
 }
 
 /*#region monaco-editor overrides */
-.vs .monaco-scrollable-element > .scrollbar.vertical {
-    background: $color-scrollbar-track;
-    background-clip: content-box;
-    padding: 3px;
-    border-radius: 25px;
-}
+.vs {
+    .monaco-scrollable-element {
+        > .decorationsOverviewRuler {
+            background-color: $color-scrollbar-track
+        }
 
-.vs .monaco-scrollable-element > .scrollbar > .slider,
-.vs .monaco-scrollable-element > .scrollbar > .slider.active,
-.vs .monaco-scrollable-element > .scrollbar > .slider:hover {
-    background-color: $color-scrollbar;
-    border-radius: 25px;
-}
+        > .scrollbar {
 
-.vs .monaco-scrollable-element > .scrollbar.vertical > .slider,
-.vs .monaco-scrollable-element > .scrollbar.vertical > .slider.active,
-.vs .monaco-scrollable-element > .scrollbar.vertical > .slider:hover {
-    margin-left: 3px;
-    max-width: 8px;
-}
+            > .slider,
+            > .slider.active,
+            > .slider:hover {
+                background-color: $color-scrollbar !important;
+                border-radius: 25px;
+            }
 
-.vs .monaco-scrollable-element > .scrollbar.horizontal > .slider,
-.vs .monaco-scrollable-element > .scrollbar.horizontal > .slider.active,
-.vs .monaco-scrollable-element > .scrollbar.horizontal > .slider:hover {
-    margin-top: 3px;
-    max-height: 8px;
+            &.vertical {
+                background: $color-scrollbar-track;
+                background-clip: content-box;
+                padding: 3px;
+                border-radius: 25px;
+
+                > .slider,
+                > .slider.active,
+                > .slider:hover {
+                    margin-left: 3px;
+                    max-width: 8px;
+                }
+            }
+
+            &.horizontal {
+                > .slider,
+                > .slider.active,
+                > .slider:hover {
+                    margin-top: 3px;
+                    max-height: 8px;
+                }
+            }
+        }
+    }
 }
 /*#endregion*/
 
+/*#region Toolbar */
 .tcx-row-header {
     background-color: #292929;
-    padding: 2px 5px 2px 5px;
+    padding: 2px 3px;
     height: $row-header-height;
+
+    .btn {
+        height: 100%;
+    }
+
+    .dropdown-item {
+        padding-right: 5px;
+        padding-left: 1em;
+
+        .fa, .far {
+            margin-top: 2px;
+        }
+    }
+
+    .nav-separator {
+        border: 1px solid $gray-600;
+        border-radius: 10px;
+        height: 95%;
+        margin: auto;
+    }
+
+    .tcx-header-left > .nav-item {
+        margin-right: 3px;
+    }
+
+    .tcx-header-right > .nav-item {
+        margin-left: 3px;
+    }
 }
+
+/*#endregion*/
 
 .tcx-row-main {
     height: 100vh;
@@ -81,10 +125,6 @@ $fa-font-size-base: $font-size-base;
     text-overflow: ellipsis;
 }
 
-.tcx-cursor-default {
-    cursor: default;
-}
-
 .tcx-task-status {
     width: 80%;
     max-width: 800px;
@@ -108,18 +148,17 @@ $fa-font-size-base: $font-size-base;
 .tcx-diff-item-name {
     text-align: center;
     white-space: nowrap;
-}
 
-.tcx-diff-item-name:before {
-    content: "";
-    margin-left: -100%;
-}
+    &:before {
+        content: "";
+        margin-left: -100%;
+    }
 
-.tcx-diff-item-name:after {
-    content: "";
-    margin-right: -100%;
+    &:after {
+        content: "";
+        margin-right: -100%;
+    }
 }
-
 
 /*#region checkbox switch */
 .tcx-switch {
@@ -128,50 +167,50 @@ $fa-font-size-base: $font-size-base;
     height: $switch-width / 2;
     margin-top: 2px;
     white-space: initial;
-}
 
-.tcx-switch input {
-    display: none;
-}
+    > .tcx-switch-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: $switch-off-color;
+        transition: .4s;
+        border-radius: 34px;
 
-.tcx-switch > .tcx-switch-slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: $switch-off-color;
-    transition: .4s;
-    border-radius: 34px;
-}
+        &:before {
+            position: absolute;
+            content: "";
+            height: ($switch-width / 2 - 4);
+            width: ($switch-width / 2 - 4);
+            left: 4px;
+            bottom: 2px;
+            background-color: $switch-slider-color;
+            transition: .4s;
+            border-radius: 50%;
+        }
+    }
 
-.tcx-switch > .tcx-switch-slider:before {
-    position: absolute;
-    content: "";
-    height: ($switch-width / 2 - 4);
-    width: ($switch-width / 2 - 4);
-    left: 4px;
-    bottom: 2px;
-    background-color: $switch-slider-color;
-    transition: .4s;
-    border-radius: 50%;
-}
+    > input {
+        display: none;
 
-.tcx-switch > input:checked + .tcx-switch-slider {
-    background-color: $switch-on-color;
-}
+        &:checked + .tcx-switch-slider {
+            background-color: $switch-on-color;
+        }
 
-.tcx-switch > input:focus + .tcx-switch-slider {
-    box-shadow: 0 0 1px $switch-on-color;
-}
+        &:focus + .tcx-switch-slider {
+            box-shadow: 0 0 1px $switch-on-color;
+        }
 
-.tcx-switch > input:checked + .tcx-switch-slider:before {
-    transform: translateX(0.75rem);
-}
+        &:checked + .tcx-switch-slider:before {
+            transform: translateX(0.75rem);
+        }
 
-.tcx-switch > input:disabled + .tcx-switch-slider {
-    background-color: $switch-disabled-color;
+        &:disabled + .tcx-switch-slider {
+            background-color: $switch-disabled-color;
+        }
+    }
 }
 /*#endregion*/
 
@@ -180,15 +219,15 @@ $fa-font-size-base: $font-size-base;
     background-color: #CCCCCC;
     background-repeat: no-repeat;
     background-position: 50%;
-}
 
-.gutter.gutter-horizontal {
-    cursor: col-resize;
-    background-image: url("../img/gutter-horizontal.png");
-}
+    &.gutter-horizontal {
+        cursor: col-resize;
+        background-image: url("../img/gutter-horizontal.png");
+    }
 
-.gutter.gutter-vertical {
-    cursor: row-resize;
-    background-image: url("../img/gutter-vertical.png");
+    &.gutter-vertical {
+        cursor: row-resize;
+        background-image: url("../img/gutter-vertical.png");
+    }
 }
 /*#endregion*/

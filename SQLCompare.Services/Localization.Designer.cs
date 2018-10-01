@@ -837,6 +837,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage profile.
+        /// </summary>
+        public static string MenuManageProfile {
+            get {
+                return ResourceManager.GetString("MenuManageProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Project.
         /// </summary>
         public static string MenuNewProject {
@@ -896,6 +905,15 @@ namespace SQLCompare.Services {
         public static string MenuSettings {
             get {
                 return ResourceManager.GetString("MenuSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign out.
+        /// </summary>
+        public static string MenuSignOut {
+            get {
+                return ResourceManager.GetString("MenuSignOut", resourceCulture);
             }
         }
         

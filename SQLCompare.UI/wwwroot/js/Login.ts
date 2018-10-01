@@ -39,7 +39,7 @@ class Login {
                             case ApiResponse.EErrorCodes.ErrorTrialSubscriptionExpired:
                                 $("#myModalLink").html("Get a subscription");
                                 $("#myModalLink").on("click", () => {
-                                    Utility.OpenExternalBrowser(`https://www.ticodex.com/Login?ReturnUrl=${encodeURI(`/Subscribe&s=${response.Result}`)}`);
+                                    Utility.OpenExternalBrowser(`${$("#urlSubscribe").val()}&s=${response.Result}`);
                                 });
                                 break;
                             default:
@@ -52,6 +52,7 @@ class Login {
                 error: (error: JQuery.jqXHR): void => {
                     $("#webview").attr("src", webviewUrl);
                     $("#myModalText").html(Localization.Get("ErrorGeneric"));
+                    $("#myModalLink").hide();
                     $("#myModal").modal("show");
                 },
             });

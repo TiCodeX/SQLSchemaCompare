@@ -52,6 +52,11 @@ namespace SQLCompare.UI.Pages
         public string LoginEndpoint { get; set; }
 
         /// <summary>
+        /// Gets or sets the subscribe URL
+        /// </summary>
+        public string SubscribeEndpoint { get; set; }
+
+        /// <summary>
         /// Gets a value indicating whether the saved session has been verified
         /// </summary>
         public bool Verified { get; private set; }
@@ -64,6 +69,7 @@ namespace SQLCompare.UI.Pages
         {
             this.Title = $"{this.appGlobals.ProductName} - {this.appGlobals.CompanyName}";
             this.LoginEndpoint = this.appGlobals.LoginEndpoint;
+            this.SubscribeEndpoint = this.appGlobals.SubscribeEndpoint;
 
             AppSettings appSettings = null;
             string session = null;

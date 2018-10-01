@@ -167,5 +167,15 @@ class Menu {
         menu.getMenuItemById("menuCloseProject").enabled = enable;
         menu.getMenuItemById("menuEditProject").enabled = enable;
         menu.getMenuItemById("menuPerformCompare").enabled = enable;
+
+        if (enable) {
+            $("#toolbarSaveProject").removeAttr("disabled");
+            $("#toolbarEditProject").removeAttr("disabled");
+            $("#toolbarPerformCompare").removeAttr("disabled");
+        } else {
+            $("#toolbarSaveProject").attr("disabled", "disabled");
+            $("#toolbarEditProject").attr("disabled", "disabled");
+            $("#toolbarPerformCompare").attr("disabled", "disabled");
+        }
     }
 }

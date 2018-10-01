@@ -469,4 +469,10 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelSavePassword" xml:space="preserve">
     <value>Save password</value>
   </data>
+  <data name="MenuManageProfile" xml:space="preserve">
+    <value>Manage profile</value>
+  </data>
+  <data name="MenuSignOut" xml:space="preserve">
+    <value>Sign out</value>
+  </data>
 </root>

@@ -267,4 +267,55 @@
   <data name="ButtonUpdateAndRestart" xml:space="preserve">
     <value>Aggiorna e riavvia</value>
   </data>
+  <data name="MenuSignOut" xml:space="preserve">
+    <value>Disconnetti</value>
+  </data>
+  <data name="MenuManageProfile" xml:space="preserve">
+    <value>Gestisci profilo</value>
+  </data>
+  <data name="LabelSavePassword" xml:space="preserve">
+    <value>Salva password</value>
+  </data>
+  <data name="LabelNewProject" xml:space="preserve">
+    <value>Nuovo Progetto...</value>
+  </data>
+  <data name="LabelOpen" xml:space="preserve">
+    <value>Apri...</value>
+  </data>
+  <data name="LabelNewPostgreSQLProject" xml:space="preserve">
+    <value>Nuovo Progetto PostgreSQL</value>
+  </data>
+  <data name="LabelNewMySqlProject" xml:space="preserve">
+    <value>Nuovo Progetto di MySql</value>
+  </data>
+  <data name="LabelNewMicrosoftSQLServerProject" xml:space="preserve">
+    <value>Nuovo Progetto di Microsoft SQL Server</value>
+  </data>
+  <data name="LabelCreateNewProjects" xml:space="preserve">
+    <value>Crea nuovo Progetto</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Errore</value>
+  </data>
+  <data name="TitleSaveProject" xml:space="preserve">
+    <value>Salva Progetto</value>
+  </data>
+  <data name="ButtonYes" xml:space="preserve">
+    <value>Sì</value>
+  </data>
+  <data name="ButtonNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="ButtonNext" xml:space="preserve">
+    <value>Avanti</value>
+  </data>
+  <data name="ButtonPrev" xml:space="preserve">
+    <value>Indietro</value>
+  </data>
+  <data name="StatusConnecting" xml:space="preserve">
+    <value>Connessione al server...</value>
+  </data>
+  <data name="TitleError" xml:space="preserve">
+    <value>Errore</value>
+  </data>
 </root>

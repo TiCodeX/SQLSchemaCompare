@@ -56,9 +56,21 @@
         string ProductCode { get; }
 
         /// <summary>
+        /// Gets the myaccount endpoint
+        /// </summary>
+        /// <remarks>Required additional session parameter</remarks>
+        string MyAccountEndpoint { get; }
+
+        /// <summary>
         /// Gets the login endpoint
         /// </summary>
         string LoginEndpoint { get; }
+
+        /// <summary>
+        /// Gets the subscribe endpoint
+        /// </summary>
+        /// <remarks>Required additional session parameter</remarks>
+        string SubscribeEndpoint { get; }
 
         /// <summary>
         /// Gets the verify session endpoint

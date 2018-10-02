@@ -70,7 +70,7 @@ class Project {
             this.isDirty = true;
 
             Utility.AjaxCall(this.dirtyUrl, Utility.HttpMethod.Post).then(() => {
-                Menu.ToggleProjectRelatedMenuStatus(true);
+                MenuManager.ToggleProjectRelatedMenuStatus(true);
             });
         }
     }
@@ -90,7 +90,7 @@ class Project {
                 this.isDirty = false;
                 this.filename = undefined;
                 PageManager.LoadPage(PageManager.Page.Project).then((): void => {
-                    Menu.ToggleProjectRelatedMenuStatus(true);
+                    MenuManager.ToggleProjectRelatedMenuStatus(true);
                 });
             } else {
                 this.HandleProjectNeedToBeSavedError(response).then((): void => {
@@ -139,7 +139,7 @@ class Project {
             if (response.Success) {
                 this.filename = filename;
                 this.isDirty = false;
-                Menu.ToggleProjectRelatedMenuStatus(true);
+                MenuManager.ToggleProjectRelatedMenuStatus(true);
                 DialogManager.ShowInformation(Localization.Get("TitleSaveProject"), Localization.Get("MessageProjectSavedSuccessfully"));
             } else {
                 DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
@@ -180,7 +180,7 @@ class Project {
                 this.isDirty = false;
                 this.filename = file;
                 PageManager.LoadPage(PageManager.Page.Project).then((): void => {
-                    Menu.ToggleProjectRelatedMenuStatus(true);
+                    MenuManager.ToggleProjectRelatedMenuStatus(true);
                 });
             } else {
                 this.HandleProjectNeedToBeSavedError(response).then((): void => {
@@ -219,7 +219,7 @@ class Project {
                 this.isDirty = false;
                 this.filename = undefined;
                 PageManager.ClosePage().then((): void => {
-                    Menu.ToggleProjectRelatedMenuStatus(false);
+                    MenuManager.ToggleProjectRelatedMenuStatus(false);
                 });
             } else {
                 this.HandleProjectNeedToBeSavedError(response).then((): void => {

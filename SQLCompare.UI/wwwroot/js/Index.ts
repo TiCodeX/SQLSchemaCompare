@@ -15,7 +15,7 @@ $(() => {
             });
         }, 0);
 
-        Menu.CreateMenu();
+        MenuManager.CreateMenu();
 
         PageManager.LoadPage(PageManager.Page.Welcome);
 

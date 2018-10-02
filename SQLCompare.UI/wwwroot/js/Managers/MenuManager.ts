@@ -1,7 +1,7 @@
 /**
  * Contains utility method to handle the main application menu
  */
-class Menu {
+class MenuManager {
     /**
      * Creates the main application menu
      */

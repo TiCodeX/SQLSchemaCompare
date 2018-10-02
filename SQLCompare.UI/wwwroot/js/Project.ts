@@ -297,7 +297,7 @@ class Project {
                         Main.Open();
                     }
                 } else {
-                    PageManager.LoadPage(PageManager.Page.TaskStatus).then(() => {
+                    PageManager.LoadPage(PageManager.Page.TaskStatus, false).then(() => {
                         setTimeout(() => {
                             polling();
                         }, pollingTime);

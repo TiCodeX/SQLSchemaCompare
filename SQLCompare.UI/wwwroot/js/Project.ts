@@ -289,22 +289,15 @@ class Project {
      */
     public static Compare(): void {
         Utility.AjaxCall(this.startCompareUrl, Utility.HttpMethod.Get).then((): void => {
-            const pollingTime: number = 500;
-            const polling: VoidFunction = (): void => {
-                if ($("#stopPolling").length > 0) {
-                    // Open the main page only if there aren't failed tasks
-                    if ($("#taskFailed").length === 0) {
-                        Main.Open();
-                    }
-                } else {
-                    PageManager.LoadPage(PageManager.Page.TaskStatus, false).then(() => {
-                        setTimeout(() => {
-                            polling();
-                        }, pollingTime);
-                    });
-                }
-            };
-            polling();
+            TaskManager.CheckTask()
+                .then((): void => {
+                    // Close the task page and open the main page
+                    PageManager.ClosePage();
+                    Main.Open();
+                })
+                .catch((): void => {
+                    // Do nothing
+                });
         });
     }
 

@@ -124,28 +124,28 @@ class MenuManager {
 
         if (electron.remote.process.defaultApp) { // tslint:disable-line:no-unsafe-any
             template.push({
-                    label: "DEBUG",
-                    submenu: [
-                        {
-                            label: "Reload",
-                            accelerator: "CmdOrCtrl+R",
-                            click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
-                                if (focusedWindow) {
-                                    focusedWindow.reload();
-                                }
-                            },
+                label: "DEBUG",
+                submenu: [
+                    {
+                        label: "Reload",
+                        accelerator: "CmdOrCtrl+R",
+                        click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
+                            if (focusedWindow) {
+                                focusedWindow.reload();
+                            }
                         },
-                        {
-                            label: "Toggle Developer Tools",
-                            accelerator: "F12",
-                            click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
-                                if (focusedWindow) {
-                                    focusedWindow.webContents.toggleDevTools();
-                                }
-                            },
+                    },
+                    {
+                        label: "Toggle Developer Tools",
+                        accelerator: "F12",
+                        click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
+                            if (focusedWindow) {
+                                focusedWindow.webContents.toggleDevTools();
+                            }
                         },
-                    ],
-                });
+                    },
+                ],
+            });
         }
 
         electron.remote.Menu.setApplicationMenu(electron.remote.Menu.buildFromTemplate(template));
@@ -156,26 +156,68 @@ class MenuManager {
      * @param enabled Whether to enable or disable the menu items
      */
     public static ToggleProjectRelatedMenuStatus(enable: boolean): void {
+        this.ToggleMenuItems([
+            "menuSaveProject",
+            "menuSaveProjectAs",
+            "menuCloseProject",
+            "menuEditProject",
+            "menuPerformCompare",
+            "toolbarSaveProject",
+            "toolbarEditProject",
+            "toolbarPerformCompare",
+        ], enable);
+    }
+
+    /**
+     * Enable/Disable the menu items during the running task
+     * @param enabled Whether to enable or disable the menu items
+     */
+    public static ToggleRunningTaskRelatedMenuStatus(enable: boolean): void {
+        this.ToggleMenuItems([
+            "menuNewProject",
+            "menuOpenProject",
+            "menuSaveProject",
+            "menuSaveProjectAs",
+            "menuCloseProject",
+            "menuSettings",
+            "menuEditProject",
+            "menuPerformCompare",
+            "toolbarNewProject",
+            "toolbarOpenProject",
+            "toolbarSaveProject",
+            "toolbarEditProject",
+            "toolbarPerformCompare",
+        ], enable);
+    }
+
+    /**
+     * Enable/Disable the items specified in the array
+     * @param items The list of items
+     * @param enable Whether to enable or disable the menu items
+     */
+    private static ToggleMenuItems(items: Array<string>, enable: boolean): void {
         if (electron === undefined) {
             return;
         }
 
         const menu: Electron.Menu = electron.remote.Menu.getApplicationMenu();
 
-        menu.getMenuItemById("menuSaveProject").enabled = enable;
-        menu.getMenuItemById("menuSaveProjectAs").enabled = enable;
-        menu.getMenuItemById("menuCloseProject").enabled = enable;
-        menu.getMenuItemById("menuEditProject").enabled = enable;
-        menu.getMenuItemById("menuPerformCompare").enabled = enable;
+        for (const item of items) {
 
-        if (enable) {
-            $("#toolbarSaveProject").removeAttr("disabled");
-            $("#toolbarEditProject").removeAttr("disabled");
-            $("#toolbarPerformCompare").removeAttr("disabled");
-        } else {
-            $("#toolbarSaveProject").attr("disabled", "disabled");
-            $("#toolbarEditProject").attr("disabled", "disabled");
-            $("#toolbarPerformCompare").attr("disabled", "disabled");
+            const menuItem: Electron.MenuItem = menu.getMenuItemById(item);
+            if (menuItem !== undefined && menuItem !== null) {
+                menuItem.enabled = enable;
+                continue;
+            }
+
+            const toolbarItem: JQuery = $(`#${item}`);
+            if (toolbarItem.length > 0) {
+                if (enable) {
+                    toolbarItem.removeAttr("disabled");
+                } else {
+                    toolbarItem.attr("disabled", "disabled");
+                }
+            }
         }
     }
 }

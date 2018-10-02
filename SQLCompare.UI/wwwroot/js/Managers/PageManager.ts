@@ -18,6 +18,8 @@ class PageManager {
             return this.LoadPage(PageManager.Page.Welcome);
         }
 
+        this.RemoveTooltips();
+
         return Promise.resolve();
     }
 
@@ -51,6 +53,7 @@ class PageManager {
             this.pageContainer.children(`div[page=${page}]`).remove();
             // Hide all the remaining div
             this.pageContainer.children("div").addClass("d-none");
+            this.RemoveTooltips();
 
             const newPageDiv: JQuery = $("<div />");
             newPageDiv.appendTo(this.pageContainer);
@@ -68,6 +71,14 @@ class PageManager {
                 duration: "fast",
             });
         });
+    }
+
+    /**
+     * Remove all the tooltips/popovers from the page
+     */
+    public static RemoveTooltips(): void {
+        $("div.tooltip").remove();
+        $("div.popover").remove();
     }
 
     /**

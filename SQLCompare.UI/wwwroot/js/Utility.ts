@@ -24,11 +24,11 @@ class Utility {
         // Enable bootstrap tooltips and popovers
         $(document).tooltip({ selector: "[data-toggle='tooltip']" });
         $(document).on("click", "[data-toggle='tooltip']", () => {
-            $("div.tooltip").remove();
+            PageManager.RemoveTooltips();
         });
         $(document).popover({ selector: "[data-toggle='popover']" });
         $(document).on("click", "[data-toggle='popover']", () => {
-            $("div.popover").remove();
+            PageManager.RemoveTooltips();
         });
 
         await Localization.Load();

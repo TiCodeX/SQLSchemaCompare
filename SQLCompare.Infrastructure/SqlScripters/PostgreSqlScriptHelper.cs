@@ -246,25 +246,25 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     return $"{column.DataType}";
                 case "time with time zone":
                     {
-                        var precision = (column.DateTimePrecision != 6) ? $"({column.DateTimePrecision})" : string.Empty;
+                        var precision = column.DateTimePrecision != 6 ? $"({column.DateTimePrecision})" : string.Empty;
                         return $"time{precision} with time zone";
                     }
 
                 case "time without time zone":
                     {
-                        var precision = (column.DateTimePrecision != 6) ? $"({column.DateTimePrecision})" : string.Empty;
+                        var precision = column.DateTimePrecision != 6 ? $"({column.DateTimePrecision})" : string.Empty;
                         return $"time{precision} without time zone";
                     }
 
                 case "timestamp with time zone":
                     {
-                        var precision = (column.DateTimePrecision != 6) ? $"({column.DateTimePrecision})" : string.Empty;
+                        var precision = column.DateTimePrecision != 6 ? $"({column.DateTimePrecision})" : string.Empty;
                         return $"timestamp{precision} with time zone";
                     }
 
                 case "timestamp without time zone":
                     {
-                        var precision = (column.DateTimePrecision != 6) ? $"({column.DateTimePrecision})" : string.Empty;
+                        var precision = column.DateTimePrecision != 6 ? $"({column.DateTimePrecision})" : string.Empty;
                         return $"timestamp{precision} without time zone";
                     }
 
@@ -287,7 +287,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 case "bit":
                 case "bit varying":
                     {
-                        var precision = (column.CharacterMaxLenght != null) ? $"({column.CharacterMaxLenght})" : string.Empty;
+                        var precision = column.CharacterMaxLenght != null ? $"({column.CharacterMaxLenght})" : string.Empty;
                         return $"{column.DataType}{precision}";
                     }
 

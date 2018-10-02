@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SQLCompare.Core.Enums
+﻿namespace SQLCompare.Core.Enums
 {
     /// <summary>
     /// List of possible project status

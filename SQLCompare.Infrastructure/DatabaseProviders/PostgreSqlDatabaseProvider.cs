@@ -229,7 +229,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("FROM pg_catalog.pg_namespace n");
             query.AppendLine("INNER JOIN pg_catalog.pg_proc p ON n.oid = p.pronamespace");
             query.AppendLine("INNER JOIN pg_catalog.pg_language l ON p.prolang = l.oid");
-            query.AppendLine($"WHERE n.nspname = 'public' AND p.proisagg = 'false' AND upper(l.lanname) != 'INTERNAL'");
+            query.AppendLine("WHERE n.nspname = 'public' AND p.proisagg = 'false' AND upper(l.lanname) != 'INTERNAL'");
             return context.Query<PostgreSqlFunction>(query.ToString());
         }
 

@@ -41,12 +41,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         public override string ScriptObjectName(string objectDatabase, string objectSchema, string objectName)
         {
-            if (this.Options.Scripting.UseSchemaName)
-            {
-                return $"[{objectSchema}].[{objectName}]";
-            }
-
-            return $"[{objectName}]";
+            return this.Options.Scripting.UseSchemaName ?
+                $"[{objectSchema}].[{objectName}]" :
+                $"[{objectName}]";
         }
 
         /// <inheritdoc/>
@@ -114,7 +111,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
                 // Approximate numerics
                 case "float":
-                    return (column.NumericPrecision == 53) ? $"[{column.DataType}]" : $"[{column.DataType}]({column.NumericPrecision})";
+                    return column.NumericPrecision == 53 ? $"[{column.DataType}]" : $"[{column.DataType}]({column.NumericPrecision})";
                 case "real":
                     return $"[{column.DataType}]";
 

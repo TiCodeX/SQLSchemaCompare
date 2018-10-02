@@ -86,15 +86,13 @@ namespace SQLCompare.UI.Pages.Project
         {
             try
             {
-                if (!this.projectService.NeedSave() || req.IgnoreDirty)
-                {
-                    this.projectService.NewProject(req.DatabaseType);
-                    return new JsonResult(new ApiResponse());
-                }
-                else
+                if (this.projectService.NeedSave() && !req.IgnoreDirty)
                 {
                     return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorProjectNeedToBeSaved });
                 }
+
+                this.projectService.NewProject(req.DatabaseType);
+                return new JsonResult(new ApiResponse());
             }
             catch (Exception ex)
             {
@@ -122,14 +120,12 @@ namespace SQLCompare.UI.Pages.Project
         {
             try
             {
-                if (!this.projectService.NeedSave() || req.IgnoreDirty)
-                {
-                    this.projectService.LoadProject(req.Filename);
-                }
-                else
+                if (this.projectService.NeedSave() && !req.IgnoreDirty)
                 {
                     return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorProjectNeedToBeSaved });
                 }
+
+                this.projectService.LoadProject(req.Filename);
             }
             catch (InvalidOperationException ex)
             {
@@ -207,15 +203,13 @@ namespace SQLCompare.UI.Pages.Project
         {
             try
             {
-                if (!this.projectService.NeedSave() || ignoreDirty)
-                {
-                    this.projectService.CloseProject();
-                    return new JsonResult(new ApiResponse());
-                }
-                else
+                if (this.projectService.NeedSave() && !ignoreDirty)
                 {
                     return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorProjectNeedToBeSaved });
                 }
+
+                this.projectService.CloseProject();
+                return new JsonResult(new ApiResponse());
             }
             catch (Exception ex)
             {

@@ -85,11 +85,13 @@ namespace SQLCompare.Services
         /// <inheritdoc/>
         public void SaveProject(string filename)
         {
-            if (this.Project != null)
+            if (this.Project == null)
             {
-                this.projectRepository.Write(this.Project, filename);
-                this.Project.State = ProjectState.Saved;
+                return;
             }
+
+            this.projectRepository.Write(this.Project, filename);
+            this.Project.State = ProjectState.Saved;
         }
 
         /// <inheritdoc/>

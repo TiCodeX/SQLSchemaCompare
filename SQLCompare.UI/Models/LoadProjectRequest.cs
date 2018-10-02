@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace SQLCompare.UI.Models
+﻿namespace SQLCompare.UI.Models
 {
     /// <summary>
     /// Represent a load project request

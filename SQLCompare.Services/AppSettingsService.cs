@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities;
 using SQLCompare.Core.Interfaces.Repository;

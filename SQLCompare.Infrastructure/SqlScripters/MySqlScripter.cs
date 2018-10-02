@@ -44,7 +44,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             foreach (var col in columns)
             {
                 sb.Append($"{this.Indent}{this.ScriptHelper.ScriptColumn(col)}");
-                sb.AppendLine((++i == ncol) ? string.Empty : ",");
+                sb.AppendLine(++i == ncol ? string.Empty : ",");
             }
 
             sb.Append(")");
@@ -163,9 +163,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptCreateFunction(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"DELIMITER {MySqlScripter.Delimiter}");
+            sb.AppendLine($"DELIMITER {Delimiter}");
             sb.Append($"{sqlFunction.Definition.TrimEnd('\r', '\n', ' ')}");
-            sb.AppendLine($"{MySqlScripter.Delimiter}");
+            sb.AppendLine($"{Delimiter}");
             sb.AppendLine("DELIMITER ;");
             return sb.ToString();
         }
@@ -174,9 +174,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptCreateStoredProcedure(ABaseDbStoredProcedure storedProcedure)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"DELIMITER {MySqlScripter.Delimiter}");
+            sb.AppendLine($"DELIMITER {Delimiter}");
             sb.Append($"{storedProcedure.Definition.TrimEnd('\r', '\n', ' ')}");
-            sb.AppendLine($"{MySqlScripter.Delimiter}");
+            sb.AppendLine($"{Delimiter}");
             sb.AppendLine("DELIMITER ;");
             return sb.ToString();
         }
@@ -185,9 +185,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptCreateTrigger(ABaseDbTrigger trigger)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"DELIMITER {MySqlScripter.Delimiter}");
+            sb.AppendLine($"DELIMITER {Delimiter}");
             sb.Append($"{trigger.Definition.TrimEnd('\r', '\n', ' ')}");
-            sb.AppendLine($"{MySqlScripter.Delimiter}");
+            sb.AppendLine($"{Delimiter}");
             sb.AppendLine("DELIMITER ;");
             return sb.ToString();
         }

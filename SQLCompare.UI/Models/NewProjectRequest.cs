@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SQLCompare.Core.Enums;
+﻿using SQLCompare.Core.Enums;
 
 namespace SQLCompare.UI.Models
 {

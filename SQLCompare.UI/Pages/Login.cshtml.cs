@@ -254,19 +254,13 @@ namespace SQLCompare.UI.Pages
         {
             try
             {
-                if (!this.projectService.NeedSave() || ignoreDirty)
+                if (this.projectService.NeedSave() && !ignoreDirty)
                 {
-                    this.accountService.Logout();
-                    return new JsonResult(new ApiResponse());
+                    return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorProjectNeedToBeSaved });
                 }
-                else
-                {
-                    return new JsonResult(new ApiResponse
-                    {
-                        Success = false,
-                        ErrorCode = EErrorCode.ErrorProjectNeedToBeSaved
-                    });
-                }
+
+                this.accountService.Logout();
+                return new JsonResult(new ApiResponse());
             }
             catch (Exception ex)
             {

@@ -172,7 +172,7 @@ namespace SQLCompare.UI.WebServer
                     break;
             }
 
-            logConfig.SetLoggingLevels(nlogLevel, NLog.LogLevel.Fatal);
+            logConfig?.SetLoggingLevels(nlogLevel, NLog.LogLevel.Fatal);
 
             // Trigger the reconfiguration
             LogManager.ReconfigExistingLoggers();

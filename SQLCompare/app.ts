@@ -103,7 +103,7 @@ electronUpdater.autoUpdater.on("update-available", (info: electronUpdater.Update
 electronUpdater.autoUpdater.on("update-downloaded", (info: electronUpdater.UpdateInfo) => {
     autoUpdaterReadyToBeInstalled = true;
     const currentWindow: Electron.BrowserWindow = loginWindow !== undefined ? loginWindow : mainWindow;
-    if (currentWindow !== undefined) {
+    if (currentWindow !== undefined && currentWindow !== null) {
         currentWindow.webContents.send("UpdateAvailable",
             {
                 platform: electronUpdater.getCurrentPlatform(),

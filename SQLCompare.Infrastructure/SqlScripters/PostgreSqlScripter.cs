@@ -37,7 +37,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             foreach (var col in columns)
             {
                 sb.Append($"{this.Indent}{this.ScriptHelper.ScriptColumn(col)}");
-                sb.AppendLine((++i == ncol) ? string.Empty : ",");
+                sb.AppendLine(++i == ncol ? string.Empty : ",");
             }
 
             sb.AppendLine(");");

@@ -23,6 +23,11 @@ namespace SQLCompare.Services
 
             using (var aesAlg = Aes.Create())
             {
+                if (aesAlg == null)
+                {
+                    throw new NotSupportedException();
+                }
+
                 using (var encryptor = aesAlg.CreateEncryptor(Key, aesAlg.IV))
                 {
                     using (var msEncrypt = new MemoryStream())
@@ -64,6 +69,11 @@ namespace SQLCompare.Services
 
             using (var aesAlg = Aes.Create())
             {
+                if (aesAlg == null)
+                {
+                    throw new NotSupportedException();
+                }
+
                 using (var decryptor = aesAlg.CreateDecryptor(Key, iv))
                 {
                     string result;

@@ -23,12 +23,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         public override string ScriptObjectName(string objectDatabase, string objectSchema, string objectName)
         {
-            if (this.Options.Scripting.UseSchemaName)
-            {
-                return $"`{objectDatabase}`.`{objectName}`";
-            }
-
-            return $"`{objectName}`";
+            return this.Options.Scripting.UseSchemaName ?
+                $"`{objectDatabase}`.`{objectName}`" :
+                $"`{objectName}`";
         }
 
         /// <inheritdoc/>

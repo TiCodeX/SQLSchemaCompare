@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 
 namespace SQLCompare.UI.Pages
@@ -12,17 +11,14 @@ namespace SQLCompare.UI.Pages
     public class WelcomePageModel : PageModel
     {
         private readonly IAppSettingsService appSettingsService;
-        private readonly IAppGlobals appGlobals;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WelcomePageModel"/> class.
         /// </summary>
         /// <param name="appSettingsService">The injected app settings service</param>
-        /// <param name="appGlobals">The injected app globals</param>
-        public WelcomePageModel(IAppSettingsService appSettingsService, IAppGlobals appGlobals)
+        public WelcomePageModel(IAppSettingsService appSettingsService)
         {
             this.appSettingsService = appSettingsService;
-            this.appGlobals = appGlobals;
         }
 
         /// <summary>

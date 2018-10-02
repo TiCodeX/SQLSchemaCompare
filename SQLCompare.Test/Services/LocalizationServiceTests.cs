@@ -1,4 +1,7 @@
 ﻿using System.Globalization;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using FluentAssertions;
 using SQLCompare.Core.Enums;
 using SQLCompare.Services;
@@ -108,6 +111,37 @@ namespace SQLCompare.Test.Services
             {
                 // Restore the English language
                 this.localizationService.SetLanguage(Language.English);
+            }
+        }
+
+        /// <summary>
+        /// Checks the tokens used in TypeScript if they are present in the resource file
+        /// </summary>
+        [Fact]
+        [UnitTest]
+        public void CheckTypeScriptTokens()
+        {
+            this.localizationService.SetLanguage(Language.English);
+            var dict = this.localizationService.GetLocalizationDictionary();
+
+            // Find the root path of the solution
+            var solutionDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            while (!File.Exists(Path.Combine(solutionDir, "SQLCompare.sln")))
+            {
+                var parentDir = Directory.GetParent(solutionDir);
+                parentDir.Should().NotBeNull();
+                solutionDir = parentDir.FullName;
+            }
+
+            var expr = new Regex("Localization\\.Get\\(\\\"(?<token>\\w+)\\\"\\)");
+            foreach (var file in Directory.EnumerateFiles(Path.Combine(solutionDir, "SQLCompare.UI", "wwwroot", "js"), "*.ts", SearchOption.AllDirectories))
+            {
+                var content = File.ReadAllText(file);
+                foreach (Match x in expr.Matches(content))
+                {
+                    var token = x.Groups["token"].Value;
+                    dict.Should().ContainKey(token);
+                }
             }
         }
     }

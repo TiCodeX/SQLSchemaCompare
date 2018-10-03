@@ -20,5 +20,10 @@ namespace SQLCompare.Core.Interfaces.Services
         /// </summary>
         /// <param name="tasks">The list of Tasks to be executed</param>
         void ExecuteTasks(List<TaskWork> tasks);
+
+        /// <summary>
+        /// Aborts the current Task
+        /// </summary>
+        void Abort();
     }
 }

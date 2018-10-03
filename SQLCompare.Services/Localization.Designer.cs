@@ -61,6 +61,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Abort.
+        /// </summary>
+        public static string ButtonAbort {
+            get {
+                return ResourceManager.GetString("ButtonAbort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string ButtonCancel {
@@ -111,6 +120,15 @@ namespace SQLCompare.Services {
         public static string ButtonNo {
             get {
                 return ResourceManager.GetString("ButtonNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        public static string ButtonOpen {
+            get {
+                return ResourceManager.GetString("ButtonOpen", resourceCulture);
             }
         }
         
@@ -318,6 +336,24 @@ namespace SQLCompare.Services {
         public static string ErrorNoSubscriptionAvailable {
             get {
                 return ResourceManager.GetString("ErrorNoSubscriptionAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operation was canceled.
+        /// </summary>
+        public static string ErrorOperationCanceled {
+            get {
+                return ResourceManager.GetString("ErrorOperationCanceled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operation was not executed.
+        /// </summary>
+        public static string ErrorOperationNotExecuted {
+            get {
+                return ResourceManager.GetString("ErrorOperationNotExecuted", resourceCulture);
             }
         }
         
@@ -657,6 +693,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SQL Compare Project.
+        /// </summary>
+        public static string LabelSQLCompareProjectFile {
+            get {
+                return ResourceManager.GetString("LabelSQLCompareProjectFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SQL View.
         /// </summary>
         public static string LabelSQLView {
@@ -783,7 +828,7 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to About.
+        ///   Looks up a localized string similar to About....
         /// </summary>
         public static string MenuAbout {
             get {
@@ -932,6 +977,15 @@ namespace SQLCompare.Services {
         public static string MenuSignOut {
             get {
                 return ResourceManager.GetString("MenuSignOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to abort the operation?.
+        /// </summary>
+        public static string MessageConfirmAbortOperation {
+            get {
+                return ResourceManager.GetString("MessageConfirmAbortOperation", resourceCulture);
             }
         }
         
@@ -1107,6 +1161,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Abort Compare.
+        /// </summary>
+        public static string TitleAbortCompare {
+            get {
+                return ResourceManager.GetString("TitleAbortCompare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string TitleError {
@@ -1121,6 +1184,15 @@ namespace SQLCompare.Services {
         public static string TitleLoginError {
             get {
                 return ResourceManager.GetString("TitleLoginError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Project.
+        /// </summary>
+        public static string TitleOpenProject {
+            get {
+                return ResourceManager.GetString("TitleOpenProject", resourceCulture);
             }
         }
         

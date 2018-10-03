@@ -83,6 +83,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             var exceptions = new List<Exception>();
 
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
             try
             {
                 taskInfo.Percentage = 8;
@@ -94,6 +96,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 this.Logger.LogError(ex, "Error connecting to database");
                 throw;
             }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
             try
             {
@@ -107,6 +111,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 exceptions.Add(ex);
             }
 
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
             try
             {
                 taskInfo.Percentage = 24;
@@ -117,6 +123,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 this.Logger.LogError(ex, "Error retrieving columns");
                 exceptions.Add(ex);
             }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
             try
             {
@@ -130,6 +138,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 exceptions.Add(ex);
             }
 
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
             try
             {
                 taskInfo.Percentage = 40;
@@ -141,6 +151,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 this.Logger.LogError(ex, "Error retrieving indexes");
                 exceptions.Add(ex);
             }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
             try
             {
@@ -157,6 +169,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             // Assign the retrieved items to the related tables
             foreach (var table in db.Tables)
             {
+                taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
                 table.Columns.AddRange(
                     columns.Where(y => table.Database == y.Database
                                            && table.Schema == y.Schema
@@ -181,6 +195,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                                        && table.Name == y.TableName));
             }
 
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
             try
             {
                 taskInfo.Percentage = 56;
@@ -193,6 +209,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 this.Logger.LogError(ex, "Error retrieving views");
                 exceptions.Add(ex);
             }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
             try
             {
@@ -207,6 +225,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 exceptions.Add(ex);
             }
 
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
             try
             {
                 taskInfo.Percentage = 72;
@@ -219,6 +239,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 this.Logger.LogError(ex, "Error retrieving stored procedures");
                 exceptions.Add(ex);
             }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
             try
             {
@@ -233,6 +255,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 exceptions.Add(ex);
             }
 
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
             try
             {
                 taskInfo.Percentage = 88;
@@ -244,6 +268,8 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 this.Logger.LogError(ex, "Error retrieving data types");
                 exceptions.Add(ex);
             }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
             try
             {

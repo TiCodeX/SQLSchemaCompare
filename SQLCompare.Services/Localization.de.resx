@@ -234,4 +234,46 @@
   <data name="TitleError" xml:space="preserve">
     <value>Fehler</value>
   </data>
+  <data name="TitleSaveProject" xml:space="preserve">
+    <value>Projekt speichern</value>
+  </data>
+  <data name="TitleOpenProject" xml:space="preserve">
+    <value>Projekt öffnen</value>
+  </data>
+  <data name="ButtonOpen" xml:space="preserve">
+    <value>Öffnen</value>
+  </data>
+  <data name="LabelSQLCompareProjectFile" xml:space="preserve">
+    <value>SQL Compare Projekt</value>
+  </data>
+  <data name="MenuHelp" xml:space="preserve">
+    <value>Hilfe</value>
+  </data>
+  <data name="MenuAbout" xml:space="preserve">
+    <value>Über...</value>
+  </data>
+  <data name="LabelFunction" xml:space="preserve">
+    <value>Funktion</value>
+  </data>
+  <data name="LabelHostname" xml:space="preserve">
+    <value>Hostname</value>
+  </data>
+  <data name="LabelIdentical" xml:space="preserve">
+    <value>Gleich</value>
+  </data>
+  <data name="LabelDatabase" xml:space="preserve">
+    <value>Datenbank</value>
+  </data>
+  <data name="LabelInBothButDifferent" xml:space="preserve">
+    <value>In beiden, aber anders</value>
+  </data>
+  <data name="LabelName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="LabelOpen" xml:space="preserve">
+    <value>Öffnen...</value>
+  </data>
+  <data name="ButtonAbort" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
 </root>

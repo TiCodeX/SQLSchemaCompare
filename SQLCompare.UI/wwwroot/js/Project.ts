@@ -119,11 +119,11 @@ class Project {
         if (filename === undefined || showDialog) {
             filename = electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
                 {
-                    title: "Save Project",
-                    buttonLabel: "Save Project",
+                    title: Localization.Get("TitleSaveProject"),
+                    buttonLabel: Localization.Get("ButtonSave"),
                     filters: [
                         {
-                            name: "SQL Compare Project",
+                            name: Localization.Get("LabelSQLCompareProjectFile"),
                             extensions: ["xml"],
                         },
                     ],
@@ -157,11 +157,11 @@ class Project {
         if (file === undefined) {
             const filenames: Array<string> = electron.remote.dialog.showOpenDialog(electron.remote.getCurrentWindow(),
                 {
-                    title: "Load Project",
-                    buttonLabel: "Load Project",
+                    title: Localization.Get("TitleOpenProject"),
+                    buttonLabel: Localization.Get("ButtonOpen"),
                     filters: [
                         {
-                            name: "SQL Compare Project",
+                            name: Localization.Get("LabelSQLCompareProjectFile"),
                             extensions: ["xml"],
                         },
                     ],
@@ -322,21 +322,25 @@ class Project {
     public static async HandleProjectNeedToBeSavedError(response: ApiResponse<string>): Promise<void> {
         return new Promise<void>((resolve: PromiseResolve<void>, reject: PromiseReject): void => {
             if (response.ErrorCode === ApiResponse.EErrorCodes.ErrorProjectNeedToBeSaved) {
-                DialogManager.OpenSaveQuestionDialog().then((answer: DialogManager.SaveDialogAnswers): void => {
-                    switch (answer) {
-                        case DialogManager.SaveDialogAnswers.Yes:
-                            this.Save(false).then((): void => {
+                DialogManager.OpenQuestionDialog(
+                    Localization.Get("TitleSaveProject"),
+                    Localization.Get("MessageDoYouWantToSaveProjectChanges"),
+                    [DialogManager.DialogButton.Yes, DialogManager.DialogButton.No, DialogManager.DialogButton.Cancel])
+                    .then((answer: DialogManager.DialogButton): void => {
+                        switch (answer) {
+                            case DialogManager.DialogButton.Yes:
+                                this.Save(false).then((): void => {
+                                    resolve();
+                                }).catch(() => {
+                                    reject();
+                                });
+                                break;
+                            case DialogManager.DialogButton.No:
                                 resolve();
-                            }).catch(() => {
-                                reject();
-                            });
-                            break;
-                        case DialogManager.SaveDialogAnswers.No:
-                            resolve();
-                            break;
-                        default:
-                    }
-                });
+                                break;
+                            default:
+                        }
+                    });
             } else {
                 DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
                 reject();

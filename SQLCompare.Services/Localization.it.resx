@@ -166,7 +166,7 @@
     <value>Vista</value>
   </data>
   <data name="MenuAbout" xml:space="preserve">
-    <value>Aiuto</value>
+    <value>Informazioni...</value>
   </data>
   <data name="MenuCloseProject" xml:space="preserve">
     <value>Chiudi Progetto</value>
@@ -317,5 +317,35 @@
   </data>
   <data name="TitleError" xml:space="preserve">
     <value>Errore</value>
+  </data>
+  <data name="TitleOpenProject" xml:space="preserve">
+    <value>Apri Progetto</value>
+  </data>
+  <data name="ButtonOpen" xml:space="preserve">
+    <value>Apri</value>
+  </data>
+  <data name="LabelSQLCompareProjectFile" xml:space="preserve">
+    <value>Progetto SQL Compare</value>
+  </data>
+  <data name="ButtonAbort" xml:space="preserve">
+    <value>Interrompi</value>
+  </data>
+  <data name="LabelInBothButDifferent" xml:space="preserve">
+    <value>In entrambi, ma diversi</value>
+  </data>
+  <data name="LabelSequence" xml:space="preserve">
+    <value>Sequenza</value>
+  </data>
+  <data name="StatusDone" xml:space="preserve">
+    <value>Terminato</value>
+  </data>
+  <data name="MessageConfirmAbortOperation" xml:space="preserve">
+    <value>Sei sicuro di voler interrompere l'operazione?</value>
+  </data>
+  <data name="MessageProjectSavedSuccessfully" xml:space="preserve">
+    <value>Il progetto è stato salvato.</value>
+  </data>
+  <data name="MessageDoYouWantToSaveProjectChanges" xml:space="preserve">
+    <value>Vuoi salvare le modifiche al progetto aperto?</value>
   </data>
 </root>

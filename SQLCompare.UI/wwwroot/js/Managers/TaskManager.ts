@@ -8,6 +8,11 @@ class TaskManager {
     private static readonly checkFrequency: number = 500;
 
     /**
+     * Service URL for the TaskStatus page
+     */
+    private static readonly abortUrl: string = "/TaskStatusPageModel?handler=AbortTask";
+
+    /**
      * Check the status of the current running task
      */
     public static async CheckTask(): Promise<void> {
@@ -40,7 +45,18 @@ class TaskManager {
     /**
      * Abort the current running task
      */
-    public Abort(): void {
-        // TODO: implement
+    public static Abort(): void {
+        DialogManager.OpenQuestionDialog(
+            Localization.Get("TitleAbortCompare"),
+            Localization.Get("MessageConfirmAbortOperation"),
+            [DialogManager.DialogButton.Yes, DialogManager.DialogButton.No])
+            .then((answer: DialogManager.DialogButton): void => {
+                if (answer === DialogManager.DialogButton.Yes) {
+                    Utility.AjaxCall(this.abortUrl, Utility.HttpMethod.Get).then((): void => {
+                        // Allows to call abort only once, disable button
+                        $("#btnAbortTask").attr("disabled", "disabled");
+                    });
+                }
+            });
     }
 }

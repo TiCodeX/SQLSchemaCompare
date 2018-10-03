@@ -203,7 +203,7 @@
     <value>View</value>
   </data>
   <data name="MenuAbout" xml:space="preserve">
-    <value>About</value>
+    <value>About...</value>
   </data>
   <data name="MenuCloseProject" xml:space="preserve">
     <value>Close Project</value>
@@ -483,5 +483,29 @@ This option will ignore the matching and use the same order as when it was creat
   </data>
   <data name="MenuSignOut" xml:space="preserve">
     <value>Sign out</value>
+  </data>
+  <data name="ButtonAbort" xml:space="preserve">
+    <value>Abort</value>
+  </data>
+  <data name="TitleOpenProject" xml:space="preserve">
+    <value>Open Project</value>
+  </data>
+  <data name="ButtonOpen" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="LabelSQLCompareProjectFile" xml:space="preserve">
+    <value>SQL Compare Project</value>
+  </data>
+  <data name="TitleAbortCompare" xml:space="preserve">
+    <value>Abort Compare</value>
+  </data>
+  <data name="MessageConfirmAbortOperation" xml:space="preserve">
+    <value>Are you sure you want to abort the operation?</value>
+  </data>
+  <data name="ErrorOperationCanceled" xml:space="preserve">
+    <value>The operation was canceled</value>
+  </data>
+  <data name="ErrorOperationNotExecuted" xml:space="preserve">
+    <value>The operation was not executed</value>
   </data>
 </root>

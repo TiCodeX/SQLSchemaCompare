@@ -89,6 +89,7 @@ namespace SQLCompare.Services
                             });
                         }
 
+                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
                         taskInfo.Percentage = 15;
 
                         taskInfo.Message = "Mapping views...";
@@ -110,6 +111,7 @@ namespace SQLCompare.Services
                             });
                         }
 
+                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
                         taskInfo.Percentage = 30;
 
                         taskInfo.Message = "Mapping functions...";
@@ -131,6 +133,7 @@ namespace SQLCompare.Services
                             });
                         }
 
+                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
                         taskInfo.Percentage = 45;
 
                         taskInfo.Message = "Mapping stored procedures...";
@@ -152,6 +155,7 @@ namespace SQLCompare.Services
                             });
                         }
 
+                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
                         taskInfo.Percentage = 60;
 
                         taskInfo.Message = "Mapping triggers...";
@@ -179,6 +183,7 @@ namespace SQLCompare.Services
                             });
                         }
 
+                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
                         taskInfo.Percentage = 75;
 
                         taskInfo.Message = "Mapping sequences...";
@@ -200,6 +205,7 @@ namespace SQLCompare.Services
                             });
                         }
 
+                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
                         taskInfo.Percentage = 90;
 
                         taskInfo.Message = "Mapping user defined types...";
@@ -261,6 +267,8 @@ namespace SQLCompare.Services
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
+                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
                         taskInfo.Message = "Comparing views...";
                         foreach (var resultView in this.result.Views)
                         {
@@ -279,6 +287,8 @@ namespace SQLCompare.Services
                             resultView.Equal = resultView.SourceCreateScript == resultView.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
+
+                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
                         taskInfo.Message = "Comparing functions...";
                         foreach (var resultFunction in this.result.Functions)
@@ -299,6 +309,8 @@ namespace SQLCompare.Services
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
+                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
                         taskInfo.Message = "Comparing stored procedures...";
                         foreach (var resultStoredProcedure in this.result.StoredProcedures)
                         {
@@ -317,6 +329,8 @@ namespace SQLCompare.Services
                             resultStoredProcedure.Equal = resultStoredProcedure.SourceCreateScript == resultStoredProcedure.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
+
+                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
                         taskInfo.Message = "Comparing triggers...";
                         foreach (var resultTrigger in this.result.Triggers)
@@ -337,6 +351,8 @@ namespace SQLCompare.Services
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
+                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
                         taskInfo.Message = "Comparing sequences...";
                         foreach (var resultSequence in this.result.Sequences)
                         {
@@ -355,6 +371,8 @@ namespace SQLCompare.Services
                             resultSequence.Equal = resultSequence.SourceCreateScript == resultSequence.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
+
+                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
                         taskInfo.Message = "Comparing User-Defined Data Types...";
                         foreach (var resultType in this.result.DataTypes)

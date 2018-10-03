@@ -9,6 +9,7 @@
     {
         var titleColor = string.Empty;
         var borderColor = string.Empty;
+        var exceptionColor = string.Empty;
         switch (taskInfo.Status)
         {
             case TaskStatus.Running:
@@ -22,6 +23,7 @@
             case TaskStatus.Faulted:
                 titleColor = "text-danger";
                 borderColor = "border-danger";
+                exceptionColor = "text-danger";
                 break;
             case TaskStatus.Canceled:
                 break;
@@ -35,7 +37,7 @@
                 </div>
                 @if (taskInfo.Exception != null)
                 {
-                    <div class="text-danger mt-2">
+                    <div class="mt-2 @exceptionColor">
                         @taskInfo.Exception.Message
                     </div>
                 }
@@ -48,15 +50,25 @@
                                   x.Status == TaskStatus.Canceled))
     {
         <span id="stopPolling"></span>
-        if (Model.TaskInfos.Any(x => x.Status == TaskStatus.Faulted))
+        if (Model.TaskInfos.Any(x => x.Status == TaskStatus.Faulted ||
+                                     x.Status == TaskStatus.Canceled))
         {
             <span id="taskFailed"></span>
 
             <div class="align-self-end mb-3">
                 <button style="@ButtonStyle.Secondary" onclick="PageManager.ClosePage();">@Localization.ButtonClose</button>
             </div>
-
         }
+    }
+    else
+    {
+        <div class="align-self-end mb-3">
+            <button id="btnAbortTask" style="@ButtonStyle.Danger"
+                    onclick="TaskManager.Abort();"
+                    disabled="@Model.TaskInfos.Any(x => x.CancellationToken.IsCancellationRequested)">
+                @Localization.ButtonAbort
+            </button>
+        </div>
     }
 </div>
 

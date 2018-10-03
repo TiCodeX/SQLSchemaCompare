@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SQLCompare.Core.Entities
@@ -51,6 +52,11 @@ namespace SQLCompare.Core.Entities
         /// Gets or sets the time when the Task is finished
         /// </summary>
         public DateTime CompleteTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the cancellation token
+        /// </summary>
+        public CancellationToken CancellationToken { get; set; }
 
         /// <summary>
         /// Gets or sets the exception in case of faulted task

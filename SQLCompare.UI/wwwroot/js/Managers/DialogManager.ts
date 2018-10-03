@@ -42,18 +42,38 @@ class DialogManager {
     }
 
     /**
-     * Opens the save question dialog
-     * @param callback - the action that should be done when the dialog returns
+     * Opens the question dialog
+     * @param title The title of the dialog
+     * @param message The question message to display
+     * @param buttons The button choices
      */
-    public static async OpenSaveQuestionDialog(): Promise<DialogManager.SaveDialogAnswers> {
-        return new Promise<DialogManager.SaveDialogAnswers>((resolve: PromiseResolve<DialogManager.SaveDialogAnswers>): void => {
+    public static async OpenQuestionDialog(title: string, message: string, buttons: Array<DialogManager.DialogButton>): Promise<DialogManager.DialogButton> {
+
+        return new Promise<DialogManager.DialogButton>((resolve: PromiseResolve<DialogManager.DialogButton>): void => {
+
+            const buttonLabels: Array<string> = [];
+            for (const button of buttons) {
+                switch (button) {
+                    case DialogManager.DialogButton.Yes:
+                        buttonLabels.push(Localization.Get("ButtonYes"));
+                        break;
+                    case DialogManager.DialogButton.No:
+                        buttonLabels.push(Localization.Get("ButtonNo"));
+                        break;
+                    case DialogManager.DialogButton.Cancel:
+                        buttonLabels.push(Localization.Get("ButtonCancel"));
+                        break;
+                    default:
+                }
+            }
+
             electron.remote.dialog.showMessageBox(
                 electron.remote.getCurrentWindow(),
                 {
                     type: "question",
-                    message: Localization.Get("MessageDoYouWantToSaveProjectChanges"),
-                    buttons: [Localization.Get("ButtonYes"), Localization.Get("ButtonNo"), Localization.Get("ButtonCancel")],
-                    title: Localization.Get("Error"),
+                    message: message,
+                    buttons: buttonLabels,
+                    title: title,
                 },
                 (response: number, checked: boolean) => {
                     resolve(response);
@@ -92,7 +112,7 @@ class DialogManager {
     /**
      * Display the modal dialog
      */
-    private static ShowModal(title: string, message: string, link?: string, linkText?: string ): void {
+    private static ShowModal(title: string, message: string, link?: string, linkText?: string): void {
         $(this.modalTitleId).html(title);
         $(this.modalMessageId).html(message);
 
@@ -115,15 +135,15 @@ class DialogManager {
 
 namespace DialogManager {
     /**
-     * Save dialog answers
+     * Dialog buttons
      */
-    export enum SaveDialogAnswers {
+    export enum DialogButton {
         /**
-         * Yes answer
+         * Yes
          */
         Yes = 0,
         /**
-         * No answer
+         * No
          */
         No = 1,
         /**

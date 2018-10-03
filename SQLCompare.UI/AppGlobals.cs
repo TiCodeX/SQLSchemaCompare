@@ -65,6 +65,9 @@ namespace SQLCompare.UI
         public string ProductCode => "SQLCMP";
 
         /// <inheritdoc/>
+        public string AppVersion { get; set; }
+
+        /// <inheritdoc/>
         public string MyAccountEndpoint => $"{MyAccountBaseEndpoint}/Login?culture={Localization.Culture.Name}&product={this.ProductCode}&returnUrl={Uri.EscapeDataString("/")}";
 
         /// <inheritdoc/>

@@ -41,7 +41,14 @@ namespace SQLCompare.Services
                 httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
                 using (var client = new HttpClient(httpClientHandler))
                 {
-                    using (var response = await client.PostAsJsonAsync(this.appGlobals.VerifySessionEndpoint, sessionToken).ConfigureAwait(false))
+                    var request = new VerifySessionRequest
+                    {
+                        SessionToken = sessionToken,
+                        AppVersion = this.appGlobals.AppVersion,
+                        ProductCode = this.appGlobals.ProductCode,
+                    };
+
+                    using (var response = await client.PostAsJsonAsync(this.appGlobals.VerifySessionEndpoint, request).ConfigureAwait(false))
                     {
                         response.EnsureSuccessStatusCode();
                         var results = await response.Content.ReadAsAsync<ApiResponse<VerifySessionResult>>().ConfigureAwait(false);

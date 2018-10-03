@@ -178,6 +178,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A newer version of {0} is available. Please update it..
+        /// </summary>
+        public static string ErrorApplicationUpdateNeeded {
+            get {
+                return ResourceManager.GetString("ErrorApplicationUpdateNeeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to close the project.
         /// </summary>
         public static string ErrorCannotCloseProject {
@@ -909,6 +918,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download latest version.
+        /// </summary>
+        public static string MessageDownloadLatestVersion {
+            get {
+                return ResourceManager.GetString("MessageDownloadLatestVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign out.
         /// </summary>
         public static string MenuSignOut {
@@ -923,6 +941,15 @@ namespace SQLCompare.Services {
         public static string MessageDoYouWantToSaveProjectChanges {
             get {
                 return ResourceManager.GetString("MessageDoYouWantToSaveProjectChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get a subscription.
+        /// </summary>
+        public static string MessageGetASubscription {
+            get {
+                return ResourceManager.GetString("MessageGetASubscription", resourceCulture);
             }
         }
         

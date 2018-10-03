@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
@@ -57,17 +58,21 @@ namespace SQLCompare.UI.Pages
         public string SubscribeEndpoint { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether the saved session has been verified
+        /// Gets the result of the verify session call
         /// </summary>
-        public bool Verified { get; private set; }
+        public ApiResponse<string> VerifySessionResult { get; private set; }
 
         /// <summary>
         /// Get the Login page
         /// </summary>
+        /// <param name="v">The application version</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGet(string v)
         {
             this.Title = $"{this.appGlobals.ProductName} - {this.appGlobals.CompanyName}";
+
+            // Set application version
+            this.appGlobals.AppVersion = v;
             this.LoginEndpoint = this.appGlobals.LoginEndpoint;
             this.SubscribeEndpoint = this.appGlobals.SubscribeEndpoint;
 
@@ -88,43 +93,34 @@ namespace SQLCompare.UI.Pages
                 return this.Page();
             }
 
-            try
+            this.VerifySessionResult = await this.VerifySessionAsync(session).ConfigureAwait(false);
+            if (this.VerifySessionResult.Success)
             {
-                await this.accountService.VerifySession(session).ConfigureAwait(false);
-                if (this.accountService.CustomerInformation.SubscriptionPlan == null || !this.accountService.CustomerInformation.ExpirationDate.HasValue || this.accountService.CustomerInformation.ExpirationDate.Value < DateTime.Now)
-                {
-                    this.logger.LogError("Saved session token is not valid anymore");
-
-                    // Remove session from settings
-                    appSettings.Session = null;
-                    this.appSettingsService.SaveAppSettings();
-                }
-                else
-                {
-                    // Session verified successfully
-                    this.Verified = true;
-                }
+                // Session verified successfully
+                return this.Page();
             }
-            catch (AccountServiceException ex)
+            else if (this.VerifySessionResult.ErrorCode != EErrorCode.ErrorUnexpected)
             {
-                this.logger.LogError($"An error occurred while verifying the saved session token: {ex.ErrorCode} - {ex.Message}");
+                this.logger.LogError($"Verify session error: {this.VerifySessionResult.ErrorCode} - {this.VerifySessionResult.ErrorMessage}");
 
+                // Remove session from settings
                 appSettings.Session = null;
                 try
                 {
                     this.appSettingsService.SaveAppSettings();
                 }
-                catch (Exception ex2)
+                catch (Exception ex)
                 {
-                    this.logger.LogError(ex2, "Unable to save app settings");
+                    this.logger.LogError(ex, "Unable to save app settings");
                 }
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError($"An unexpected error occurred while verifying the saved session token: {ex.Message}");
-            }
 
-            return this.Page();
+                return this.Page();
+            }
+            else
+            {
+                this.logger.LogError($"An unexpected error occurred while verifying the saved session token: {this.VerifySessionResult.ErrorMessage}");
+                return this.Page();
+            }
         }
 
         /// <summary>
@@ -160,89 +156,7 @@ namespace SQLCompare.UI.Pages
                 });
             }
 
-            try
-            {
-                await this.accountService.VerifySession(sessionToken).ConfigureAwait(false);
-                if (this.accountService.CustomerInformation.SubscriptionPlan == null)
-                {
-                    this.logger.LogError("No subscription plan");
-                    return new JsonResult(new ApiResponse<string>
-                    {
-                        Success = false,
-                        ErrorCode = EErrorCode.ErrorNoSubscriptionAvailable,
-                        ErrorMessage = Localization.ErrorNoSubscriptionAvailable,
-                        Result = sessionToken,
-                    });
-                }
-
-                if (!this.accountService.CustomerInformation.ExpirationDate.HasValue || this.accountService.CustomerInformation.ExpirationDate.Value < DateTime.Now)
-                {
-                    if (this.accountService.CustomerInformation.IsTrial.HasValue && this.accountService.CustomerInformation.IsTrial.Value)
-                    {
-                        this.logger.LogError("Expired trial subscription");
-                        return new JsonResult(new ApiResponse<string>
-                        {
-                            Success = false,
-                            ErrorCode = EErrorCode.ErrorTrialSubscriptionExpired,
-                            ErrorMessage = Localization.ErrorTrialSubscriptionExpired,
-                            Result = sessionToken,
-                        });
-                    }
-
-                    this.logger.LogError("Expired subscription");
-                    return new JsonResult(new ApiResponse<string>
-                    {
-                        Success = false,
-                        ErrorCode = EErrorCode.ErrorSubscriptionExpired,
-                        ErrorMessage = Localization.ErrorSubscriptionExpired,
-                        Result = sessionToken,
-                    });
-                }
-
-                var settings = this.appSettingsService.GetAppSettings();
-                settings.Session = sessionToken;
-                this.appSettingsService.SaveAppSettings();
-
-                return new JsonResult(new ApiResponse { Success = true });
-            }
-            catch (AccountServiceException ex)
-            {
-                this.logger.LogError($"VerifySession error: {ex.ErrorCode} - {ex.Message}");
-                string error;
-
-                switch (ex.ErrorCode)
-                {
-                    case EErrorCode.ErrorAccountLocked:
-                        error = Localization.ErrorAccountLocked;
-                        break;
-                    case EErrorCode.ErrorEmailNotVerified:
-                        error = Localization.ErrorEmailNotVerified;
-                        break;
-                    case EErrorCode.ErrorSessionExpired:
-                        error = Localization.ErrorSessionExpired;
-                        break;
-                    default:
-                        error = Localization.ErrorGeneric;
-                        break;
-                }
-
-                return new JsonResult(new ApiResponse
-                {
-                    Success = false,
-                    ErrorCode = ex.ErrorCode,
-                    ErrorMessage = error
-                });
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError($"Error occured in index: {ex.Message}");
-                return new JsonResult(new ApiResponse
-                {
-                    Success = false,
-                    ErrorCode = EErrorCode.ErrorUnexpected,
-                    ErrorMessage = Localization.ErrorLoginVerificationFailed
-                });
-            }
+            return new JsonResult(await this.VerifySessionAsync(sessionToken).ConfigureAwait(false));
         }
 
         /// <summary>
@@ -266,6 +180,96 @@ namespace SQLCompare.UI.Pages
             {
                 this.logger.LogError(ex, "Error logging out");
                 return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorUnexpected, ErrorMessage = Localization.ErrorGeneric });
+            }
+        }
+
+        private async Task<ApiResponse<string>> VerifySessionAsync(string sessionToken)
+        {
+            try
+            {
+                await this.accountService.VerifySession(sessionToken).ConfigureAwait(false);
+                if (this.accountService.CustomerInformation.SubscriptionPlan == null)
+                {
+                    this.logger.LogError("No subscription plan");
+                    return new ApiResponse<string>
+                    {
+                        Success = false,
+                        ErrorCode = EErrorCode.ErrorNoSubscriptionAvailable,
+                        ErrorMessage = Localization.ErrorNoSubscriptionAvailable,
+                        Result = sessionToken,
+                    };
+                }
+
+                if (!this.accountService.CustomerInformation.ExpirationDate.HasValue || this.accountService.CustomerInformation.ExpirationDate.Value < DateTime.Now)
+                {
+                    if (this.accountService.CustomerInformation.IsTrial.HasValue && this.accountService.CustomerInformation.IsTrial.Value)
+                    {
+                        this.logger.LogError("Expired trial subscription");
+                        return new ApiResponse<string>
+                        {
+                            Success = false,
+                            ErrorCode = EErrorCode.ErrorTrialSubscriptionExpired,
+                            ErrorMessage = Localization.ErrorTrialSubscriptionExpired,
+                            Result = sessionToken,
+                        };
+                    }
+
+                    this.logger.LogError("Expired subscription");
+                    return new ApiResponse<string>
+                    {
+                        Success = false,
+                        ErrorCode = EErrorCode.ErrorSubscriptionExpired,
+                        ErrorMessage = Localization.ErrorSubscriptionExpired,
+                        Result = sessionToken,
+                    };
+                }
+
+                var settings = this.appSettingsService.GetAppSettings();
+                settings.Session = sessionToken;
+                this.appSettingsService.SaveAppSettings();
+
+                return new ApiResponse<string> { Success = true };
+            }
+            catch (AccountServiceException ex)
+            {
+                this.logger.LogError($"VerifySession error: {ex.ErrorCode} - {ex.Message}");
+                string error;
+
+                switch (ex.ErrorCode)
+                {
+                    case EErrorCode.ErrorAccountLocked:
+                        error = Localization.ErrorAccountLocked;
+                        break;
+                    case EErrorCode.ErrorEmailNotVerified:
+                        error = Localization.ErrorEmailNotVerified;
+                        break;
+                    case EErrorCode.ErrorSessionExpired:
+                        error = Localization.ErrorSessionExpired;
+                        break;
+                    case EErrorCode.ErrorApplicationUpdateNeeded:
+                        error = string.Format(CultureInfo.InvariantCulture, Localization.ErrorApplicationUpdateNeeded, this.appGlobals.ProductName);
+                        break;
+                    default:
+                        error = Localization.ErrorGeneric;
+                        break;
+                }
+
+                return new ApiResponse<string>
+                {
+                    Success = false,
+                    ErrorCode = ex.ErrorCode,
+                    ErrorMessage = error
+                };
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError($"Error occured in index: {ex.Message}");
+                return new ApiResponse<string>
+                {
+                    Success = false,
+                    ErrorCode = EErrorCode.ErrorUnexpected,
+                    ErrorMessage = Localization.ErrorLoginVerificationFailed
+                };
             }
         }
     }

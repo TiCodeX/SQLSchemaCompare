@@ -469,6 +469,15 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelSavePassword" xml:space="preserve">
     <value>Save password</value>
   </data>
+  <data name="ErrorApplicationUpdateNeeded" xml:space="preserve">
+    <value>A newer version of {0} is available. Please update it.</value>
+  </data>
+  <data name="MessageDownloadLatestVersion" xml:space="preserve">
+    <value>Download latest version</value>
+  </data>
+  <data name="MessageGetASubscription" xml:space="preserve">
+    <value>Get a subscription</value>
+  </data>
   <data name="MenuManageProfile" xml:space="preserve">
     <value>Manage profile</value>
   </data>

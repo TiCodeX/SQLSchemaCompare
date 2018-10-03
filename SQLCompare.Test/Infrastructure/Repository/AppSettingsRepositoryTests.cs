@@ -129,6 +129,8 @@ namespace SQLCompare.Test.Infrastructure.Repository
             public string SubscribeEndpoint => throw new System.NotImplementedException();
 
             public string VerifySessionEndpoint => throw new System.NotImplementedException();
+
+            public string AppVersion { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
         }
     }
 }

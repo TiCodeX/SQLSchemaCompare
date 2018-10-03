@@ -2,6 +2,8 @@
 @model Login
 @using Enums
 @using Services
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,9 +26,15 @@
         <div class="row tcx-row-login">
             <div class="col-12 p-0" id="mainDiv">
                 @* Url is stored in the input field because it will be set to the webview after registering the event handlers *@
-                @if (!Model.Verified)
+                @if (Model.VerifySessionResult == null || !Model.VerifySessionResult.Success)
                 {
                     <input id="url" type="hidden" value="@Model.LoginEndpoint" />
+                }
+                @if (Model.VerifySessionResult != null && !Model.VerifySessionResult.Success)
+                {
+                    <input id="verifySessionResultErrorMessage" type="hidden" value="@Model.VerifySessionResult.ErrorMessage" />
+                    <input id="verifySessionResultErrorCode" type="hidden" value="@((int)Model.VerifySessionResult.ErrorCode)" />
+                    <input id="verifySessionResultResult" type="hidden" value="@Model.VerifySessionResult.Result" />
                 }
                 <input id="urlSubscribe" type="hidden" value="@Model.SubscribeEndpoint" />
                 <webview class="tcx-login-webview" id="webview" partition="x"></webview>

@@ -32,34 +32,48 @@ class Login {
                         electron.ipcRenderer.send("OpenMainWindow");
                     } else {
                         $("#webview").attr("src", webviewUrl);
-                        $("#myModalText").html(response.ErrorMessage);
-                        switch (response.ErrorCode) {
-                            case ApiResponse.EErrorCodes.ErrorNoSubscriptionAvailable:
-                            case ApiResponse.EErrorCodes.ErrorSubscriptionExpired:
-                            case ApiResponse.EErrorCodes.ErrorTrialSubscriptionExpired:
-                                $("#myModalLink").html("Get a subscription");
-                                $("#myModalLink").on("click", () => {
-                                    Utility.OpenExternalBrowser(`${$("#urlSubscribe").val()}&s=${response.Result}`);
-                                });
-                                break;
-                            default:
-                        }
-
-                        $("#myModal").modal("show");
+                        Login.ShowErrorModal(response.ErrorMessage, response.ErrorCode, response.Result);
                     }
 
                 },
                 error: (error: JQuery.jqXHR): void => {
                     $("#webview").attr("src", webviewUrl);
-                    $("#myModalText").html(Localization.Get("ErrorGeneric"));
-                    $("#myModalLink").hide();
-                    $("#myModal").modal("show");
+                    Login.ShowErrorModal(Localization.Get("ErrorGeneric"), ApiResponse.EErrorCodes.ErrorUnexpected, undefined);
                 },
             });
         }
         else {
             return;
         }
+    }
+
+    /**
+     * Show the error modal
+     * @param errorMessage The error message to display
+     * @param errorCode The error code
+     * @param result The session token that can be used in the link
+     */
+    public static ShowErrorModal(errorMessage: string, errorCode: ApiResponse.EErrorCodes, result: string): void {
+        $("#myModalText").html(errorMessage);
+        switch (errorCode) {
+            case ApiResponse.EErrorCodes.ErrorNoSubscriptionAvailable:
+            case ApiResponse.EErrorCodes.ErrorSubscriptionExpired:
+            case ApiResponse.EErrorCodes.ErrorTrialSubscriptionExpired:
+                $("#myModalLink").html(Localization.Get("MessageGetASubscription"));
+                $("#myModalLink").on("click", () => {
+                    Utility.OpenExternalBrowser(`${$("#urlSubscribe").val()}&s=${result}`);
+                });
+                break;
+            case ApiResponse.EErrorCodes.ErrorApplicationUpdateNeeded:
+                $("#myModalLink").html(Localization.Get("MessageDownloadLatestVersion"));
+                $("#myModalLink").on("click", () => {
+                    Utility.OpenExternalBrowser("https://www.ticodex.com/");
+                });
+                break;
+            default:
+                $("#myModalLink").hide();
+        }
+        $("#myModal").modal("show");
     }
 
     /**
@@ -103,6 +117,20 @@ $((): void => {
         });
         webview.on("did-finish-load", (e: JQuery.Event): void => {
             $(".tcx-loader").hide();
+            const errorMessageElement: JQuery = $("#verifySessionResultErrorMessage");
+            const errorCodeElement: JQuery = $("#verifySessionResultErrorCode");
+            const resultElement: JQuery = $("#verifySessionResultResult");
+            if (errorMessageElement.length !== 0) {
+                const errorMessage: string = <string>errorMessageElement.val();
+                const errorCode: ApiResponse.EErrorCodes = <ApiResponse.EErrorCodes>+errorCodeElement.val();
+                const result: string = <string>resultElement.val();
+
+                errorMessageElement.remove();
+                errorCodeElement.remove();
+                resultElement.remove();
+
+                Login.ShowErrorModal(errorMessage, errorCode, result);
+            }
         });
 
         // Start loading the webview

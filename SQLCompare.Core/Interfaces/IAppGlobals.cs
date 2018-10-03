@@ -76,5 +76,10 @@
         /// Gets the verify session endpoint
         /// </summary>
         string VerifySessionEndpoint { get; }
+
+        /// <summary>
+        /// Gets or sets the application version
+        /// </summary>
+        string AppVersion { get; set; }
     }
 }

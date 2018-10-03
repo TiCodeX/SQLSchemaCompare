@@ -36,6 +36,16 @@ namespace ApiResponse {
         Success = 0,
 
         /**
+         * Unexpected error
+         */
+        ErrorUnexpected = 1020,
+
+        /**
+         * The application need to be updated
+         */
+        ErrorApplicationUpdateNeeded = 1021,
+
+        /**
          * The account has no subscription
          */
         ErrorNoSubscriptionAvailable = 3002,
@@ -49,6 +59,7 @@ namespace ApiResponse {
          * The subscription is expired
          */
         ErrorSubscriptionExpired = 3004,
+
         /**
          * The project need to be saved
          */

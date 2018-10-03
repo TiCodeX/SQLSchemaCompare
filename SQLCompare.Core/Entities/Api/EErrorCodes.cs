@@ -94,6 +94,11 @@
         /// </summary>
         ErrorNoLanguageSpecified = 1015,
 
+        /// <summary>
+        /// The application version is too old and needs to be updated
+        /// </summary>
+        ErrorApplicationUpdateNeeded = 1021,
+
         /*******************************************
         *** Website Warnings (from 2000 to 2999) ***
         *******************************************/

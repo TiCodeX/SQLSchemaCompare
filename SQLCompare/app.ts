@@ -36,7 +36,7 @@ switch (electronUpdater.getCurrentPlatform()) {
         servicePath = path.join(path.dirname(process.execPath), "bin", "SQLCompare.UI.exe");
 }
 let serviceUrl: string = "https://127.0.0.1:{port}";
-let loginUrl: string = "https://127.0.0.1:{port}/login";
+let loginUrl: string = `https://127.0.0.1:{port}/login?v=${electron.app.getVersion()}`;
 let serviceProcess: childProcess.ChildProcess;
 let autoUpdaterInfo: electronUpdater.UpdateInfo;
 let autoUpdaterReadyToBeInstalled: boolean = false;

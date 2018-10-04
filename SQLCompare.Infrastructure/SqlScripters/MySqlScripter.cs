@@ -109,17 +109,17 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateIndexes(ABaseDbTable table)
+        protected override string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbConstraint> indexes)
         {
             var sb = new StringBuilder();
 
-            foreach (var indexes in table.Indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>().GroupBy(x => x.Name))
+            foreach (var indexGroup in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>().GroupBy(x => x.Name))
             {
-                var index = indexes.First();
+                var index = indexGroup.First();
 
                 // If there is a column with descending order, specify the order on all columns
-                var scriptOrder = indexes.Any(x => x.IsDescending);
-                var columnList = indexes.OrderBy(x => x.OrdinalPosition).Select(x =>
+                var scriptOrder = indexGroup.Any(x => x.IsDescending);
+                var columnList = indexGroup.OrderBy(x => x.OrdinalPosition).Select(x =>
                     scriptOrder ? $"`{x.ColumnName}` {(x.IsDescending ? "DESC" : "ASC")}" : $"`{x.ColumnName}`");
 
                 sb.Append("CREATE ");
@@ -144,7 +144,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     sb.Append("USING HASH ");
                 }
 
-                sb.AppendLine($"ON {this.ScriptHelper.ScriptObjectName(table)}({string.Join(",", columnList)});");
+                sb.AppendLine($"ON {this.ScriptHelper.ScriptObjectName(dbObject)}({string.Join(",", columnList)});");
                 sb.AppendLine();
             }
 

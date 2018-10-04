@@ -210,6 +210,18 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 exceptions.Add(ex);
             }
 
+            // Assign the retrieved items to the related views
+            foreach (var view in db.Views)
+            {
+                taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
+                view.Indexes.AddRange(
+                    indexes.Where(y => y.IsPrimaryKey == false
+                                       && view.Database == y.TableDatabase
+                                       && view.Schema == y.TableSchema
+                                       && view.Name == y.TableName));
+            }
+
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
             try

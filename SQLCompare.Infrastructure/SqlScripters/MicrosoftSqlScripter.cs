@@ -43,7 +43,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
 
             sb.AppendLine(")");
-            sb.AppendLine("GO");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
 
@@ -58,7 +58,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT [{key.Name}] PRIMARY KEY {key.TypeDescription}({string.Join(",", columnList)})");
-                sb.AppendLine("GO");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                 sb.AppendLine();
             }
 
@@ -78,10 +78,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.Database, key.ReferencedTableSchema, key.ReferencedTableName)}([{key.ReferencedTableColumn}])");
                 sb.AppendLine($"ON DELETE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.DeleteReferentialAction)}");
                 sb.AppendLine($"ON UPDATE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.UpdateReferentialAction)}");
-                sb.AppendLine("GO");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                 sb.AppendLine();
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} CHECK CONSTRAINT[{key.Name}]");
-                sb.AppendLine("GO");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                 sb.AppendLine();
             }
 
@@ -97,7 +97,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 var key = keys.First();
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT [{key.Name}] CHECK {key.Definition}");
-                sb.AppendLine("GO");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                 sb.AppendLine();
             }
 
@@ -105,22 +105,22 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateIndexes(ABaseDbTable table)
+        protected override string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbConstraint> indexes)
         {
             var sb = new StringBuilder();
 
             // Reorder: Clustered indexes must be created before Nonclustered
             var orderedIndexes = new List<MicrosoftSqlIndex>();
-            orderedIndexes.AddRange(table.Indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type == MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
-            orderedIndexes.AddRange(table.Indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type != MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
+            orderedIndexes.AddRange(indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type == MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
+            orderedIndexes.AddRange(indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type != MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
 
-            foreach (var indexes in orderedIndexes.GroupBy(x => x.Name))
+            foreach (var indexGroup in orderedIndexes.GroupBy(x => x.Name))
             {
-                var index = indexes.First();
+                var index = indexGroup.First();
 
                 // If there is a column with descending order, specify the order on all columns
-                var scriptOrder = indexes.Any(x => x.IsDescending);
-                var columnList = indexes.OrderBy(x => x.OrdinalPosition).Select(x =>
+                var scriptOrder = indexGroup.Any(x => x.IsDescending);
+                var columnList = indexGroup.OrderBy(x => x.OrdinalPosition).Select(x =>
                     scriptOrder ? $"[{x.ColumnName}] {(x.IsDescending ? "DESC" : "ASC")}" : $"[{x.ColumnName}]");
 
                 sb.Append("CREATE ");
@@ -154,13 +154,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
                         throw new NotSupportedException($"Index of type '{index.Type.ToString()}' is not supported");
                 }
 
-                sb.AppendLine($"INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(table)}({string.Join(",", columnList)})");
+                sb.AppendLine($"INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(dbObject)}({string.Join(",", columnList)})");
                 if (!string.IsNullOrWhiteSpace(index.FilterDefinition))
                 {
                     sb.AppendLine($"    WHERE {index.FilterDefinition}");
                 }
 
-                sb.AppendLine("GO");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                 sb.AppendLine();
             }
 
@@ -177,7 +177,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
-            sb.AppendLine("GO");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
 
@@ -191,7 +191,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
-            sb.AppendLine("GO");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
 
@@ -205,7 +205,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
-            sb.AppendLine("GO");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
 
@@ -219,7 +219,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
-            sb.AppendLine("GO");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
 
@@ -235,7 +235,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             // TODO: Handle min/max values correctly
             sb.AppendLine("    NO MINVALUE");
             sb.AppendLine("    NO MAXVALUE");
-            sb.AppendLine("GO");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
 
@@ -275,7 +275,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
 
             sb.AppendLine(msType.IsNullable ? " NULL" : " NOT NULL");
-            sb.AppendLine("GO");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
 

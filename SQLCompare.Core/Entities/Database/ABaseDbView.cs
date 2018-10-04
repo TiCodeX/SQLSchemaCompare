@@ -1,4 +1,6 @@
-﻿namespace SQLCompare.Core.Entities.Database
+﻿using System.Collections.Generic;
+
+namespace SQLCompare.Core.Entities.Database
 {
     /// <summary>
     /// Provides generic information for database table classes
@@ -9,5 +11,10 @@
         /// Gets or sets the database view definition script
         /// </summary>
         public string ViewDefinition { get; set; }
+
+        /// <summary>
+        /// Gets the database view's indexes
+        /// </summary>
+        public List<ABaseDbConstraint> Indexes { get; } = new List<ABaseDbConstraint>();
     }
 }

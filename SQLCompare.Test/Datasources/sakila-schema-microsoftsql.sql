@@ -515,6 +515,20 @@ LEFT JOIN sakila.category c
 GROUP BY a.actor_id, a.first_name, a.last_name;
 */
 
+GO
+CREATE VIEW dbo.v_country_city_codes
+WITH SCHEMABINDING
+AS
+SELECT co.country_id,
+       ci.city_id,
+       co.last_update
+FROM dbo.country co,
+     dbo.city ci
+WHERE ci.country_id = co.country_id;
+GO
+CREATE UNIQUE CLUSTERED INDEX idx_country_city_codes ON dbo.v_country_city_codes(last_update);
+GO
+
 -- TO DO PROCEDURES
 -- TO DO TRIGGERS
 GO

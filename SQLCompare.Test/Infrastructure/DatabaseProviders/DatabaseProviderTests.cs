@@ -93,7 +93,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_inventory");
             table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_staff");
 
-            db.Views.Count.Should().Be(5);
+            db.Views.Count.Should().Be(6);
             db.Views.Should().ContainSingle(x => x.Name == "film_list");
 
             db.Functions.Should().BeEmpty();
@@ -380,7 +380,13 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
 
             var views = db.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name);
             var clonedViews = clonedDb.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name);
-            views.Should().BeEquivalentTo(clonedViews, options => options.Excluding(x => x.Database));
+            views.Should().BeEquivalentTo(clonedViews, options =>
+            {
+                options.Excluding(x => x.Database);
+                options.Excluding(x => new Regex("^Indexes\\[.+\\]\\.TableDatabase$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^Indexes\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
+                return options;
+            });
 
             var functions = db.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name);
             var clonedFunctions = clonedDb.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name);

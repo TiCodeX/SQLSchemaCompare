@@ -125,7 +125,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             {
                 sb.Append(this.ScriptPrimaryKeysAlterTable(table));
                 sb.Append(this.ScriptConstraintsAlterTable(table));
-                sb.Append(this.ScriptCreateIndexes(table));
+                sb.Append(this.ScriptCreateIndexes(table, table.Indexes));
             }
 
             sb.AppendLine();
@@ -154,6 +154,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     {
                         sb.AppendLine();
                     }
+
+                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                    sb.Append(this.ScriptCreateIndexes(view, view.Indexes));
                 }
             }
 
@@ -188,18 +191,33 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             // Script the CREATE TABLE
             sb.Append(this.ScriptCreateTable(table, referenceTable));
-            sb.AppendLine();
-            sb.AppendLine();
 
             // Script the ALTER TABLE for primary keys and indexes
-            sb.AppendLine(AScriptHelper.ScriptComment("Constraints and Indexes"));
-            sb.Append(this.ScriptPrimaryKeysAlterTable(table));
-            sb.Append(this.ScriptConstraintsAlterTable(table));
-            sb.AppendLine(this.ScriptCreateIndexes(table));
+            var constraintsAndIndexes = table.PrimaryKeys.Count > 0 ||
+                                         table.Constraints.Count > 0 ||
+                                         table.Indexes.Count > 0;
+            if (constraintsAndIndexes)
+            {
+                sb.AppendLine();
+                sb.AppendLine();
+                sb.AppendLine(AScriptHelper.ScriptComment("Constraints and Indexes"));
+                sb.Append(this.ScriptPrimaryKeysAlterTable(table));
+                sb.Append(this.ScriptConstraintsAlterTable(table));
+                sb.Append(this.ScriptCreateIndexes(table, table.Indexes));
+            }
 
             // Script the ALTER TABLE for foreign keys
-            sb.AppendLine(AScriptHelper.ScriptComment("Foreign keys"));
-            sb.AppendLine(this.ScriptForeignKeysAlterTable(table));
+            if (table.ForeignKeys.Count > 0)
+            {
+                sb.AppendLine();
+                if (!constraintsAndIndexes)
+                {
+                    sb.AppendLine();
+                }
+
+                sb.AppendLine(AScriptHelper.ScriptComment("Foreign keys"));
+                sb.Append(this.ScriptForeignKeysAlterTable(table));
+            }
 
             return sb.ToString();
         }
@@ -212,7 +230,17 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 throw new ArgumentNullException(nameof(view));
             }
 
-            return this.ScriptCreateView(view);
+            var sb = new StringBuilder();
+            sb.Append(this.ScriptCreateView(view));
+
+            if (view.Indexes.Count > 0)
+            {
+                sb.AppendLine();
+                sb.AppendLine(AScriptHelper.ScriptComment("Indexes"));
+                sb.Append(this.ScriptCreateIndexes(view, view.Indexes));
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -307,9 +335,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <summary>
         /// Generates the create index scripts for adding indexes after create table
         /// </summary>
-        /// <param name="table">The table to create the indexes</param>
+        /// <param name="dbObject">The object to create the indexes</param>
+        /// <param name="indexes">The list of indexes</param>
         /// <returns>The create index scripts</returns>
-        protected abstract string ScriptCreateIndexes(ABaseDbTable table);
+        protected abstract string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbConstraint> indexes);
 
         /// <summary>
         /// Generates the create view script

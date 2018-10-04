@@ -4,19 +4,27 @@ REM Bring dev tools into the PATH.
 call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsDevCmd.bat"
 
 set "targetdotnet=%1"
+if /i "%1" == "" ( set "targetdotnet=win-x64" )
 set "configuration=release"
 set "publishDir=%~dp0\.publish"
 set "certFile=TiCodeXCodeSigningCertificate.p12"
 set "certPass=test1234"
 set "certDesc=TiCodeX SA application"
 set "timeUrl=http://timestamp.verisign.com/scripts/timstamp.dll"
+REM Disable node reuse. Don't leave MSBuild.exe processes hanging around locking files after the build completes
+set MSBUILDDISABLENODEREUSE=1
 
 REM Cleanup folders
 if exist %publishDir% ( rmdir /S /Q %publishDir% )
 
-REM Clean solution
-REM msbuild %~dp0\SQLCompare.sln /t:Clean /p:Configuration=Release
-REM if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+REM Cleanup solution
+msbuild %~dp0\SQLCompare.sln /t:Clean /p:Configuration=Release
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+
+REM Cleanup generated javascript
+del /Q %~dp0\SQLCompare\app.js
+del /Q %~dp0\SQLCompare\app.min.js
+del /Q /S %~dp0\SQLCompare.UI\wwwroot\js\*.js
 
 echo.
 echo     _____________________
@@ -27,8 +35,25 @@ echo      ^|  _________________^|_
 echo       \_/___________________/
 echo.
 
-msbuild %~dp0\SQLCompare /p:Configuration=Release
+dotnet restore -r %targetdotnet%
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+
+msbuild %~dp0\SQLCompare.sln /p:Configuration=Release
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+
+REM Check generated files
+if not exist %~dp0\SQLCompare\app.min.js (
+  echo ERROR: app.min.js not generated
+  exit /b 999
+)
+if not exist %~dp0\SQLCompare.UI\wwwroot\js\Index.min.js (
+  echo ERROR: Index.min.js not generated
+  exit /b 999
+)
+if not exist %~dp0\SQLCompare.UI\wwwroot\js\Login.min.js (
+  echo ERROR: Login.min.js not generated
+  exit /b 999
+)
 
 echo.
 echo     _____________________
@@ -39,7 +64,7 @@ echo      ^|  _________________^|_
 echo       \_/___________________/
 echo.
 
-dotnet publish %~dp0\SQLCompare.UI\SQLCompare.UI.csproj -r %targetdotnet% -c %configuration%
+dotnet publish --no-build --no-restore %~dp0\SQLCompare.UI\SQLCompare.UI.csproj -r %targetdotnet% -c %configuration%
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 
 echo.

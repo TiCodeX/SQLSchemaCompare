@@ -21,7 +21,7 @@ namespace SQLCompare.UI
             var logger = LogManager.GetLogger(nameof(Program));
             try
             {
-                logger.Info(string.Empty);
+                logger.Info("===============================================================");
                 logger.Info("Starting WebHost Service...");
                 CreateWebHostBuilder(args)
                     .Build()

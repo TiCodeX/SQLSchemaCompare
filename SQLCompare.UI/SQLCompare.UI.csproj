@@ -14,6 +14,7 @@
     <TSLintProject>tsconfig.json</TSLintProject>
     <OutputType>Exe</OutputType>
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+    <RuntimeFrameworkVersion>2.1.0</RuntimeFrameworkVersion>
     <PublishDir>..\.publish</PublishDir>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
@@ -116,6 +117,10 @@
     <Exec Command="$(Obfuscar) obfuscar.xml" />
     <Exec Command="MOVE /Y ..\.publish\.obfuscated\* ..\.publish\" />
     <Exec Command="RMDIR ..\.publish\.obfuscated" />
+  </Target>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="del /Q /S wwwroot\js\*.js" />
   </Target>
 
 </Project>

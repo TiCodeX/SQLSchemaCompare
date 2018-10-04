@@ -75,7 +75,7 @@ log4js.configure({
 });
 
 const logger: log4js.Logger = log4js.getLogger("electron");
-logger.info("Starting application...");
+logger.info(`Starting SQL Compare v${electron.app.getVersion()}`);
 
 // Configure electron auto-updater
 const autoUpdaterLogger: log4js.Logger = log4js.getLogger("electron-updater");
@@ -357,7 +357,7 @@ function createLoginWindow(load: boolean): void {
  */
 function startSqlCompareBackend(webPort: number): void {
     if (fs.existsSync(servicePath)) {
-        logger.debug(`Starting service ${servicePath}`);
+        logger.info(`Starting service ${servicePath} (${webPort})`);
         serviceProcess = childProcess.spawn(servicePath, [`${webPort}`]);
         /*
         serviceProcess.stdout.on("data", data => {

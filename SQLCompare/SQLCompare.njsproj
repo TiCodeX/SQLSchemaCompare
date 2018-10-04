@@ -62,6 +62,9 @@ __TEST_UPDATER_PLATFORM=linux</Environment>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
   <PropertyGroup>
+    <PreBuildEvent>
+      del /Q app.js app.min.js
+    </PreBuildEvent>
     <PostBuildEvent>
       node node_modules\uglify-js\bin\uglifyjs app.js --compress --mangle --toplevel --output app.min.js
     </PostBuildEvent>

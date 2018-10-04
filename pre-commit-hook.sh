@@ -12,6 +12,7 @@ for file in $changedFiles; do
     [ -z "${file##"SQLCompare/build/"*}" ] && continue;
     [ -z "${file##*".xlsx"}" ] && continue;
     [ -z "${file##*".pfx"}" ] && continue;
+    [ -z "${file##*".p12"}" ] && continue;
     
     unix2dos < "$file" | cmp -s - "$file"
     if [ ! $? -eq 0 ]; then

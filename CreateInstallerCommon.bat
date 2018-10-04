@@ -6,7 +6,7 @@ call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Too
 set "targetdotnet=%1"
 set "configuration=release"
 set "publishDir=%~dp0\.publish"
-set "certFile=codesigningcert.pfx"
+set "certFile=TiCodeXCodeSigningCertificate.p12"
 set "certPass=test1234"
 set "certDesc=TiCodeX SA application"
 set "timeUrl=http://timestamp.verisign.com/scripts/timstamp.dll"
@@ -15,8 +15,8 @@ REM Cleanup folders
 if exist %publishDir% ( rmdir /S /Q %publishDir% )
 
 REM Clean solution
-msbuild %~dp0\SQLCompare.sln /t:Clean /p:Configuration=Release
-if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+REM msbuild %~dp0\SQLCompare.sln /t:Clean /p:Configuration=Release
+REM if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 
 echo.
 echo     _____________________
@@ -53,7 +53,7 @@ echo.
 
 REM Set environment variables used in electron builder
 set CSC_LINK=../%certFile%
-set CSC_KEY_PASSWORD=test1234
+set CSC_KEY_PASSWORD=%certPass%
 
 signtool sign /f %certFile% /p %certPass% /t %timeUrl% /d "%certDesc%" %publishDir%\SQLCompare.Core.dll
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%

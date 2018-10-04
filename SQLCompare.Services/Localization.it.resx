@@ -348,4 +348,147 @@
   <data name="MessageDoYouWantToSaveProjectChanges" xml:space="preserve">
     <value>Vuoi salvare le modifiche al progetto aperto?</value>
   </data>
+  <data name="LabelDataSources" xml:space="preserve">
+    <value>Sorgenti dati</value>
+  </data>
+  <data name="LabelIgnoreCollate" xml:space="preserve">
+    <value>Ignora le regole di confronto</value>
+  </data>
+  <data name="LabelIgnoreReferenceTableColumnOrder" xml:space="preserve">
+    <value>Ignora ordine dei campi della tabella di origine</value>
+  </data>
+  <data name="ErrorEmailNotSpecified" xml:space="preserve">
+    <value>E-mail non specificato</value>
+  </data>
+  <data name="ErrorEmailNotVerified" xml:space="preserve">
+    <value>E-mail non verificato</value>
+  </data>
+  <data name="ErrorLoginVerificationFailed" xml:space="preserve">
+    <value>Verifica del login fallita</value>
+  </data>
+  <data name="ErrorNoSubscriptionAvailable" xml:space="preserve">
+    <value>Nessun piano di abbonamento è stato trovato</value>
+  </data>
+  <data name="ErrorPasswordNotSpecified" xml:space="preserve">
+    <value>Password non specificata</value>
+  </data>
+  <data name="ErrorApplicationUpdateNeeded" xml:space="preserve">
+    <value>Una nuova versione di {0} è disponibile. Per favore aggiornare.</value>
+  </data>
+  <data name="ErrorCannotContactTiCodeXWebsite" xml:space="preserve">
+    <value>Impossibile contattare il sito web TiCodeX:</value>
+  </data>
+  <data name="ErrorCannotCloseProject" xml:space="preserve">
+    <value>Impossibile chiudere il progetto</value>
+  </data>
+  <data name="ErrorCannotCreateNewProject" xml:space="preserve">
+    <value>Impossibile creare un nuovo progetto</value>
+  </data>
+  <data name="ErrorCannotSaveProject" xml:space="preserve">
+    <value>Impossibile salvare il progetto: {0}</value>
+  </data>
+  <data name="ErrorLoadProject" xml:space="preserve">
+    <value>Impossibile aprire il file: {0}</value>
+  </data>
+  <data name="ErrorLoadProjectFileNotFound" xml:space="preserve">
+    <value>Impossibile caricare il progetto: file non trovato.</value>
+  </data>
+  <data name="ErrorLoadProjectUnauthorizedFileAccess" xml:space="preserve">
+    <value>Impossibile caricare il progetto: accesso negato.</value>
+  </data>
+  <data name="ErrorOperationCanceled" xml:space="preserve">
+    <value>L'operazione è stata annullata</value>
+  </data>
+  <data name="ErrorOperationNotExecuted" xml:space="preserve">
+    <value>L'operazione non è stata eseguita</value>
+  </data>
+  <data name="ErrorProductIsMissing" xml:space="preserve">
+    <value>Prodotto mancante</value>
+  </data>
+  <data name="ErrorSubscriptionExpired" xml:space="preserve">
+    <value>L'abbonamento corrente è scaduto</value>
+  </data>
+  <data name="ErrorTrialSubscriptionExpired" xml:space="preserve">
+    <value>L'abbonamento di prova è scaduto</value>
+  </data>
+  <data name="LabelTrigger" xml:space="preserve">
+    <value>Trigger</value>
+  </data>
+  <data name="MenuOpenLogsFolder" xml:space="preserve">
+    <value>Apri cartella dei log</value>
+  </data>
+  <data name="LabelLogLevel" xml:space="preserve">
+    <value>Livello di log</value>
+  </data>
+  <data name="MessageDownloadLatestVersion" xml:space="preserve">
+    <value>Scarica l'ultima versione</value>
+  </data>
+  <data name="MessageGetASubscription" xml:space="preserve">
+    <value>Ottieni un abbonamento</value>
+  </data>
+  <data name="TitleLoginError" xml:space="preserve">
+    <value>Errore di accesso</value>
+  </data>
+  <data name="ErrorLoadProjectInvalidProjectFile" xml:space="preserve">
+    <value>Impossibile caricare il file di progetto {0}: formato non valido.</value>
+  </data>
+  <data name="ErrorLoadProjectIOError" xml:space="preserve">
+    <value>Impossibile caricare il file di progetto perché si è verificato un errore durante la lettura del file: {0}</value>
+  </data>
+  <data name="ErrorUnableToReadAppSettings" xml:space="preserve">
+    <value>Impossibile caricare le impostazioni di {0} da {1}</value>
+  </data>
+  <data name="LabelDoesNotExist" xml:space="preserve">
+    <value>Non presente</value>
+  </data>
+  <data name="LabelSQLView" xml:space="preserve">
+    <value>Codice SQL</value>
+  </data>
+  <data name="TitleAbortCompare" xml:space="preserve">
+    <value>Interrompi comparazione</value>
+  </data>
+  <data name="LabelUserDefinedType" xml:space="preserve">
+    <value>Tipo di dati definito dall'utente</value>
+  </data>
+  <data name="StatusRetrievingTriggers" xml:space="preserve">
+    <value>Lettura dei Trigger in corso...</value>
+  </data>
+  <data name="StatusRetrievingTables" xml:space="preserve">
+    <value>Lettura delle Tabelle in corso...</value>
+  </data>
+  <data name="StatusRetrievingStoredProcedures" xml:space="preserve">
+    <value>Lettura delle Procedure in corso...</value>
+  </data>
+  <data name="StatusRetrievingSequences" xml:space="preserve">
+    <value>Lettura delle Sequenze in corso...</value>
+  </data>
+  <data name="StatusRetrievingIndexes" xml:space="preserve">
+    <value>Lettura degli Indici in corso...</value>
+  </data>
+  <data name="StatusRetrievingFunctions" xml:space="preserve">
+    <value>Lettura delle Funzioni in corso...</value>
+  </data>
+  <data name="StatusRetrievingForeignKeys" xml:space="preserve">
+    <value>Lettura delle Chiavi Esterne in corso...</value>
+  </data>
+  <data name="StatusRetrievingDataTypes" xml:space="preserve">
+    <value>Lettura dei Tipi di dati definiti dall'utente in corso...</value>
+  </data>
+  <data name="StatusRetrievingConstraints" xml:space="preserve">
+    <value>Lettura dei Vincoli in corso...</value>
+  </data>
+  <data name="StatusRetrievingViews" xml:space="preserve">
+    <value>Lettura delle Viste in corso...</value>
+  </data>
+  <data name="LabelOrderColumnAlphabeticallyDescription" xml:space="preserve">
+    <value>Riordinare le colonne in ordine alfabetico per ignorare le differenze delle tabelle create con un ordine diverso.</value>
+  </data>
+  <data name="LabelIgnoreReferenceTableColumnOrderDescription" xml:space="preserve">
+    <value>Durante il confronto viene riordinato l'ordine delle colonne della tabella di destinazione facendo riferimento all'ordine della tabella di origine.
+
+Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di quando è stata creata.</value>
+  </data>
+  <data name="LabelIgnoreCollateDescription" xml:space="preserve">
+    <value>Ignora le regole di confronto sulle colonne di tipo testuale quando si confrontano i database.</value>
+  </data>
 </root>

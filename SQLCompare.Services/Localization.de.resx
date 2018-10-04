@@ -265,7 +265,7 @@
     <value>Datenbank</value>
   </data>
   <data name="LabelInBothButDifferent" xml:space="preserve">
-    <value>In beiden, aber anders</value>
+    <value>In beiden, aber unterschiedlich</value>
   </data>
   <data name="LabelName" xml:space="preserve">
     <value>Name</value>
@@ -275,5 +275,110 @@
   </data>
   <data name="ButtonAbort" xml:space="preserve">
     <value>Abbrechen</value>
+  </data>
+  <data name="ButtonCompareNow" xml:space="preserve">
+    <value>Jetzt vergleichen</value>
+  </data>
+  <data name="LabelRecentProjects" xml:space="preserve">
+    <value>Zuletzt verwendete Projekte</value>
+  </data>
+  <data name="LabelType" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="LabelDataSources" xml:space="preserve">
+    <value>Datenquelle</value>
+  </data>
+  <data name="LabelOnlyInSource" xml:space="preserve">
+    <value>Nur in der Quelle vorhanden</value>
+  </data>
+  <data name="LabelOnlyInTarget" xml:space="preserve">
+    <value>Nur im Ziel vorhanden</value>
+  </data>
+  <data name="LabelSource" xml:space="preserve">
+    <value>Quelle</value>
+  </data>
+  <data name="LabelTarget" xml:space="preserve">
+    <value>Ziel</value>
+  </data>
+  <data name="LabelView" xml:space="preserve">
+    <value>Sicht</value>
+  </data>
+  <data name="MenuEditProject" xml:space="preserve">
+    <value>Ändern</value>
+  </data>
+  <data name="MenuSaveProjectAs" xml:space="preserve">
+    <value>Projekt speichern unter</value>
+  </data>
+  <data name="LabelIgnoreCollate" xml:space="preserve">
+    <value>Collation ignorieren</value>
+  </data>
+  <data name="LabelOrderColumnAlphabetically" xml:space="preserve">
+    <value>Zeilen alphabetisch sortieren</value>
+  </data>
+  <data name="LabelUseSchemaName" xml:space="preserve">
+    <value>Schema verwenden</value>
+  </data>
+  <data name="LabelStoredProcedure" xml:space="preserve">
+    <value>Gespeicherte Prozedur</value>
+  </data>
+  <data name="MenuCompare" xml:space="preserve">
+    <value>Vergleichen</value>
+  </data>
+  <data name="LabelIgnoreReferenceTableColumnOrder" xml:space="preserve">
+    <value>Reihenfolge der Spalten ignorieren</value>
+  </data>
+  <data name="ErrorGeneric" xml:space="preserve">
+    <value>Es ist ein Fehler aufgetreten</value>
+  </data>
+  <data name="ErrorInvalidUsernameOrPassword" xml:space="preserve">
+    <value>Nutzername oder Kennwort ungültig</value>
+  </data>
+  <data name="LabelSequence" xml:space="preserve">
+    <value>Reihenfolge</value>
+  </data>
+  <data name="LabelLogLevel" xml:space="preserve">
+    <value>Loglevel</value>
+  </data>
+  <data name="ErrorEmailNotSpecified" xml:space="preserve">
+    <value>Email wurde nicht angegeben</value>
+  </data>
+  <data name="ErrorEmailNotVerified" xml:space="preserve">
+    <value>Email wurde noch nicht verifiziert</value>
+  </data>
+  <data name="ErrorLoginVerificationFailed" xml:space="preserve">
+    <value>Verifizierung fehlgeschlagen</value>
+  </data>
+  <data name="ErrorNoSubscriptionAvailable" xml:space="preserve">
+    <value>Kein aktives Abonnement gefunden.</value>
+  </data>
+  <data name="ErrorPasswordNotSpecified" xml:space="preserve">
+    <value>Kennword wurde nicht angegeben</value>
+  </data>
+  <data name="ErrorProductIsMissing" xml:space="preserve">
+    <value>Produkt fehlt</value>
+  </data>
+  <data name="ErrorSessionExpired" xml:space="preserve">
+    <value>Ihre Sitzung ist verfallen</value>
+  </data>
+  <data name="ErrorSubscriptionExpired" xml:space="preserve">
+    <value>Das aktuelle Abonnement ist verfallen</value>
+  </data>
+  <data name="ErrorTrialSubscriptionExpired" xml:space="preserve">
+    <value>Die Probezeit ist abgelaufen</value>
+  </data>
+  <data name="ErrorCannotContactTiCodeXWebsite" xml:space="preserve">
+    <value>Verbindung mit den TiCodeX Servern nicht möglich:</value>
+  </data>
+  <data name="ButtonPrev" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="ButtonNext" xml:space="preserve">
+    <value>Vor</value>
+  </data>
+  <data name="LabelTrigger" xml:space="preserve">
+    <value>Trigger</value>
+  </data>
+  <data name="ErrorLoadProject" xml:space="preserve">
+    <value>Datei kann nicht geöffnet werden: {0}</value>
   </data>
 </root>

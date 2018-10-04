@@ -34,13 +34,14 @@ class Settings {
 
         Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data).then((): void => {
             // Load the new localization
-            Localization.Load();
-            // Recreate the menu with the new language
-            MenuManager.CreateMenu();
-            MenuManager.ToggleProjectRelatedMenuStatus(projectIsOpen);
-            // Close the modal and reopen the current page
-            DialogManager.CloseModalDialog();
-            PageManager.LoadPage(PageManager.GetOpenPage());
+            Localization.Load().then((): void => {
+                // Recreate the menu with the new language
+                MenuManager.CreateMenu();
+                MenuManager.ToggleProjectRelatedMenuStatus(projectIsOpen);
+                // Close the modal and reopen the current page
+                DialogManager.CloseModalDialog();
+                PageManager.LoadPage(PageManager.GetOpenPage());
+            });
         });
     }
 }

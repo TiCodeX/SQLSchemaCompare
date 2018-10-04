@@ -184,17 +184,11 @@
   <data name="LabelOptions" xml:space="preserve">
     <value>Options</value>
   </data>
-  <data name="LabelOwnerMapping" xml:space="preserve">
-    <value>Owner mapping</value>
-  </data>
   <data name="LabelSource" xml:space="preserve">
     <value>Source</value>
   </data>
   <data name="LabelTable" xml:space="preserve">
     <value>Table</value>
-  </data>
-  <data name="LabelTableMapping" xml:space="preserve">
-    <value>Table mapping</value>
   </data>
   <data name="LabelTarget" xml:space="preserve">
     <value>Target</value>
@@ -239,7 +233,7 @@
     <value>Save Project As</value>
   </data>
   <data name="LabelIgnoreCollate" xml:space="preserve">
-    <value>Ignore Collate</value>
+    <value>Ignore Collation</value>
   </data>
   <data name="LabelOrderColumnAlphabetically" xml:space="preserve">
     <value>Order columns alphabetically</value>
@@ -299,7 +293,7 @@
     <value>The current subscription has expired</value>
   </data>
   <data name="ErrorTrialSubscriptionExpired" xml:space="preserve">
-    <value>The current trial subscriptioin has expired</value>
+    <value>The current trial subscription has expired</value>
   </data>
   <data name="ErrorCannotContactTiCodeXWebsite" xml:space="preserve">
     <value>Unable to contact TiCodeX website:</value>
@@ -312,6 +306,7 @@
   </data>
   <data name="NotificationUpdateReadyToBeInstalled" xml:space="preserve">
     <value>The new version v{0} is available and ready to be installed.</value>
+    <comment>{0}: The application version</comment>
   </data>
   <data name="NotificationNewVersionAvailable" xml:space="preserve">
     <value>New version available!</value>
@@ -343,7 +338,7 @@
     <comment>{0}: The application name</comment>
   </data>
   <data name="ErrorLoadProjectIOError" xml:space="preserve">
-    <value>Cannot load the project file because an error has occured why reading the file: {0}</value>
+    <value>Cannot load the project file because an error has occurred while reading the file: {0}</value>
     <comment>{0}: The exception message</comment>
   </data>
   <data name="ErrorLoadProjectUnauthorizedFileAccess" xml:space="preserve">
@@ -354,6 +349,7 @@
   </data>
   <data name="NotificationNewVersionAvailableMessage" xml:space="preserve">
     <value>The new version v{0} has been released, please visit the TiCodeX website to download it.</value>
+    <comment>{0}: The application version</comment>
   </data>
   <data name="ButtonUpdateAndRestart" xml:space="preserve">
     <value>Update and restart</value>
@@ -364,6 +360,7 @@
   </data>
   <data name="ErrorCannotSaveProject" xml:space="preserve">
     <value>Unable to save the project: {0}</value>
+    <comment>{0}: The exception message</comment>
   </data>
   <data name="ErrorCannotCreateNewProject" xml:space="preserve">
     <value>Unable to create a new project</value>
@@ -414,7 +411,7 @@
     <value>Retrieving Tables...</value>
   </data>
   <data name="StatusRetrievingTriggers" xml:space="preserve">
-    <value>Retrieving Triggers</value>
+    <value>Retrieving Triggers...</value>
   </data>
   <data name="StatusRetrievingViews" xml:space="preserve">
     <value>Retrieving Views...</value>
@@ -429,7 +426,7 @@
     <value>Open Logs Folder</value>
   </data>
   <data name="LabelIgnoreCollateDescription" xml:space="preserve">
-    <value>Ignore collations on character data type columns when comparing databases.</value>
+    <value>Ignore Collations on character data type columns when comparing databases.</value>
   </data>
   <data name="LabelIgnoreReferenceTableColumnOrderDescription" xml:space="preserve">
     <value>During the comparison the column order of the target table is reordered referencing the order in the source.
@@ -471,6 +468,7 @@ This option will ignore the matching and use the same order as when it was creat
   </data>
   <data name="ErrorApplicationUpdateNeeded" xml:space="preserve">
     <value>A newer version of {0} is available. Please update it.</value>
+    <comment>{0}: The application name</comment>
   </data>
   <data name="MessageDownloadLatestVersion" xml:space="preserve">
     <value>Download latest version</value>

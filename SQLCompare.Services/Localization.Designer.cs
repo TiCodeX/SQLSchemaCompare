@@ -304,7 +304,7 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot load the project file because an error has occured why reading the file: {0}.
+        ///   Looks up a localized string similar to Cannot load the project file because an error has occurred while reading the file: {0}.
         /// </summary>
         public static string ErrorLoadProjectIOError {
             get {
@@ -394,7 +394,7 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The current trial subscriptioin has expired.
+        ///   Looks up a localized string similar to The current trial subscription has expired.
         /// </summary>
         public static string ErrorTrialSubscriptionExpired {
             get {
@@ -475,7 +475,7 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignore Collate.
+        ///   Looks up a localized string similar to Ignore Collation.
         /// </summary>
         public static string LabelIgnoreCollate {
             get {
@@ -484,7 +484,7 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignore collations on character data type columns when comparing databases..
+        ///   Looks up a localized string similar to Ignore Collations on character data type columns when comparing databases..
         /// </summary>
         public static string LabelIgnoreCollateDescription {
             get {
@@ -639,15 +639,6 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Owner mapping.
-        /// </summary>
-        public static string LabelOwnerMapping {
-            get {
-                return ResourceManager.GetString("LabelOwnerMapping", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
         public static string LabelPassword {
@@ -725,15 +716,6 @@ namespace SQLCompare.Services {
         public static string LabelTable {
             get {
                 return ResourceManager.GetString("LabelTable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Table mapping.
-        /// </summary>
-        public static string LabelTableMapping {
-            get {
-                return ResourceManager.GetString("LabelTableMapping", resourceCulture);
             }
         }
         
@@ -963,15 +945,6 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download latest version.
-        /// </summary>
-        public static string MessageDownloadLatestVersion {
-            get {
-                return ResourceManager.GetString("MessageDownloadLatestVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Sign out.
         /// </summary>
         public static string MenuSignOut {
@@ -986,6 +959,15 @@ namespace SQLCompare.Services {
         public static string MessageConfirmAbortOperation {
             get {
                 return ResourceManager.GetString("MessageConfirmAbortOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download latest version.
+        /// </summary>
+        public static string MessageDownloadLatestVersion {
+            get {
+                return ResourceManager.GetString("MessageDownloadLatestVersion", resourceCulture);
             }
         }
         
@@ -1143,7 +1125,7 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Retrieving Triggers.
+        ///   Looks up a localized string similar to Retrieving Triggers....
         /// </summary>
         public static string StatusRetrievingTriggers {
             get {

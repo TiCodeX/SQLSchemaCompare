@@ -10,7 +10,7 @@ set "publishDir=%~dp0\.publish"
 set "certFile=TiCodeXCodeSigningCertificate.p12"
 set "certPass=test1234"
 set "certDesc=TiCodeX SA application"
-set "timeUrl=http://timestamp.verisign.com/scripts/timstamp.dll"
+set "timeUrl=http://timestamp.comodoca.com"
 REM Disable node reuse. Don't leave MSBuild.exe processes hanging around locking files after the build completes
 set MSBUILDDISABLENODEREUSE=1
 
@@ -81,17 +81,23 @@ set CSC_LINK=../%certFile%
 set CSC_KEY_PASSWORD=%certPass%
 
 signtool sign /f %certFile% /p %certPass% /t %timeUrl% /d "%certDesc%" %publishDir%\SQLCompare.Core.dll
+signtool sign /as /fd sha256 /f %certFile% /p %certPass% /tr %timeUrl% /d "%certDesc%" %publishDir%\SQLCompare.Core.dll
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 signtool sign /f %certFile% /p %certPass% /t %timeUrl% /d "%certDesc%" %publishDir%\SQLCompare.Infrastructure.dll
+signtool sign /as /fd sha256 /f %certFile% /p %certPass% /tr %timeUrl% /d "%certDesc%" %publishDir%\SQLCompare.Infrastructure.dll
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 signtool sign /f %certFile% /p %certPass% /t %timeUrl% /d "%certDesc%" %publishDir%\SQLCompare.Services.dll
+signtool sign /as /fd sha256 /f %certFile% /p %certPass% /tr %timeUrl% /d "%certDesc%" %publishDir%\SQLCompare.Services.dll
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 signtool sign /f %certFile% /p %certPass% /t %timeUrl% /d "%certDesc%" %publishDir%\SQLCompare.UI.dll
+signtool sign /as /fd sha256 /f %certFile% /p %certPass% /tr %timeUrl% /d "%certDesc%" %publishDir%\SQLCompare.UI.dll
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 signtool sign /f %certFile% /p %certPass% /t %timeUrl% /d "%certDesc%" %publishDir%\SQLCompare.UI.Views.dll
+signtool sign /as /fd sha256 /f %certFile% /p %certPass% /tr %timeUrl% /d "%certDesc%" %publishDir%\SQLCompare.UI.Views.dll
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 if exist %publishDir%\SQLCompare.UI.exe (
   signtool sign /f %certFile% /p %certPass% /t %timeUrl% /d "%certDesc%" %publishDir%\SQLCompare.UI.exe
+  signtool sign /as /fd sha256 /f %certFile% /p %certPass% /tr %timeUrl% /d "%certDesc%" %publishDir%\SQLCompare.UI.exe
   if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 )
 

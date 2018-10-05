@@ -5,11 +5,12 @@ class MenuManager {
     /**
      * Creates the main application menu
      */
-    public static CreateMenu(): void {
+    public static async CreateMenu(): Promise<void> {
         if (electron === undefined) {
             return;
         }
 
+        //#region Electron Menu
         const template: Array<Electron.MenuItemConstructorOptions> = [
             {
                 label: Localization.Get("MenuFile"),
@@ -149,6 +150,17 @@ class MenuManager {
         }
 
         electron.remote.Menu.setApplicationMenu(electron.remote.Menu.buildFromTemplate(template));
+        //#endregion
+
+        //#region Toolbar
+
+        await Utility.AjaxGetPage("/ToolbarPageModel").then((result: string): void => {
+            $(".tcx-row-header").html(result);
+        });
+
+        //#endregion
+
+        Promise.resolve();
     }
 
     /**

@@ -47,6 +47,27 @@ class PageManager {
     }
 
     /**
+     * Refresh all the currently opened pages
+     */
+    public static async RefreshOpenPages(): Promise<void> {
+        const pages: Array<PageManager.Page> = [];
+        this.pageContainer.children("div").each((index: number, element: HTMLElement) => {
+            const pageAttribute: number = Number($(element).attr("page"));
+
+            pages.push(PageManager.Page[PageManager.Page[pageAttribute]]); // tslint:disable-line:no-unsafe-any
+        });
+
+        // Remove all the pages
+        this.pageContainer.children("div").remove();
+
+        for (const page of pages) {
+            await this.LoadPage(page, false);
+        }
+
+        Promise.resolve();
+    }
+
+    /**
      * Open the page
      * @param page The page to open
      * @param closePreviousPage Tell if the previous page needs to be closed

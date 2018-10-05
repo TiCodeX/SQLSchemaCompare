@@ -39,7 +39,7 @@ class Main {
 
         $("#mainBottom").show();
 
-        if (this.mainSplitter === undefined) {
+        if (this.mainSplitter === undefined || $(".gutter").length === 0) {
             this.mainSplitter = Split(["#mainTop", "#mainBottom"], {
                 direction: "vertical",
                 gutterSize: 7,

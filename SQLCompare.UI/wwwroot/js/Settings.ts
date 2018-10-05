@@ -36,11 +36,12 @@ class Settings {
             // Load the new localization
             Localization.Load().then((): void => {
                 // Recreate the menu with the new language
-                MenuManager.CreateMenu();
-                MenuManager.ToggleProjectRelatedMenuStatus(projectIsOpen);
+                MenuManager.CreateMenu().then((): void => {
+                    MenuManager.ToggleProjectRelatedMenuStatus(projectIsOpen);
+                });
                 // Close the modal and reopen the current page
                 DialogManager.CloseModalDialog();
-                PageManager.LoadPage(PageManager.GetOpenPage());
+                PageManager.RefreshOpenPages();
             });
         });
     }

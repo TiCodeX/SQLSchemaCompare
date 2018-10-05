@@ -1,0 +1,63 @@
+﻿@page
+@using Core.Interfaces
+@using Enums
+@using Services
+@model ToolbarPageModel
+
+<ul class="nav nav-pills tcx-header-left">
+    <li class="nav-item">
+        <button type="button" style="@ButtonStyle.Primary" id="toolbarNewProject"
+                onclick="Project.New();"
+                data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuNewProject">
+            <i class="far fa-file fa-lg"></i>
+        </button>
+    </li>
+    <li class="nav-item">
+        <button type="button" style="@ButtonStyle.Primary" id="toolbarOpenProject"
+                onclick="Project.Load();"
+                data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuOpenProject">
+            <i class="far fa-folder-open fa-lg"></i>
+        </button>
+    </li>
+    <li class="nav-item">
+        <button type="button" style="@ButtonStyle.Primary" id="toolbarSaveProject"
+                onclick="Project.Save();"
+                data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuSaveProject"
+                disabled="@true">
+            <i class="far fa-save fa-lg"></i>
+        </button>
+    </li>
+    <li class="nav-item nav-separator"></li>
+    <li class="nav-item">
+        <button type="button" style="@ButtonStyle.Primary" id="toolbarEditProject"
+                onclick="PageManager.LoadPage(PageManager.Page.Project, false);"
+                data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuEditProject"
+                disabled="@true">
+            <i class="far fa-edit fa-lg"></i> @Localization.MenuEditProject
+        </button>
+    </li>
+    <li class="nav-item">
+        <button type="button" style="@ButtonStyle.Primary" id="toolbarPerformCompare"
+                onclick="Project.Compare();"
+                data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuCompare"
+                disabled="@true">
+            <i class="fa fa-sync"></i> @Localization.MenuCompare
+        </button>
+    </li>
+</ul>
+<ul class="nav nav-pills tcx-header-right">
+    <li class="nav-item dropdown">
+        <button type="button" style="@ButtonStyle.Secondary" data-toggle="dropdown">
+            <i class="fa fa-user-circle fa-lg align-middle"></i> @Model.AccountEmail
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" onclick="Utility.OpenExternalBrowser('@Model.MyAccountEndpoint');">
+                @Localization.MenuManageProfile <i class="fa fa-external-link-alt float-right text-secondary"></i>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" onclick="Logout.Logout(false);">
+                @Localization.MenuSignOut
+            </a>
+        </div>
+    </li>
+</ul>

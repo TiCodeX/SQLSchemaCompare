@@ -38,14 +38,19 @@ class Utility {
             electron.webFrame.setVisualZoomLevelLimits(1, 1);
             electron.webFrame.setLayoutZoomLevelLimits(0, 0);
             // Register electron callbacks
-            electron.ipcRenderer.on("UpdateAvailable", (event: Electron.Event, info: { platform: string; readyToBeInstalled: boolean; version: string }) => {
+            electron.ipcRenderer.on("UpdateAvailable", (event: Electron.Event, info: {
+                platform: string;
+                readyToBeInstalled: boolean;
+                autoDownloadFailed: boolean;
+                version: string;
+            }) => {
                 if (info !== null && info.version !== "") {
+                    let genericMessage: string = "<a href=\"#\" class=\"close\" data-dismiss=\"alert\">&times;</a>";
+                    genericMessage += `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
+                    genericMessage += "<br/>";
+                    genericMessage += `${Localization.Get("NotificationNewVersionAvailableMessage").replace("{0}", info.version)}`;
                     if (info.platform === "linux") {
-                        let message: string = "<a href=\"#\" class=\"close\" data-dismiss=\"alert\">&times;</a>";
-                        message += `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
-                        message += "<br/>";
-                        message += `${Localization.Get("NotificationNewVersionAvailableMessage").replace("{0}", info.version)}`;
-                        $("#myNotification").html(message).show();
+                        $("#myNotification").html(genericMessage).show();
                     } else {
                         // Windows & MacOS
                         if (info.readyToBeInstalled) {
@@ -56,6 +61,8 @@ class Utility {
                             message += "<br/>";
                             message += `${Localization.Get("NotificationUpdateReadyToBeInstalled").replace("{0}", info.version)}`;
                             $("#myNotification").html(message).show();
+                        } else if (info.autoDownloadFailed) {
+                            $("#myNotification").html(genericMessage).show();
                         }
                     }
                 }

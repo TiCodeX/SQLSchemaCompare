@@ -40,6 +40,7 @@ let loginUrl: string = `https://127.0.0.1:{port}/login?v=${electron.app.getVersi
 let serviceProcess: childProcess.ChildProcess;
 let autoUpdaterInfo: electronUpdater.UpdateInfo;
 let autoUpdaterReadyToBeInstalled: boolean = false;
+let autoUpdaterAutoDownloadFailed: boolean = false;
 
 /**
  * Keep a global reference of the window object, if you don't, the window will
@@ -77,7 +78,7 @@ log4js.configure({
 const logger: log4js.Logger = log4js.getLogger("electron");
 logger.info(`Starting SQL Compare v${electron.app.getVersion()}`);
 
-// Configure electron auto-updater
+//#region Configure electron auto-updater
 const autoUpdaterLogger: log4js.Logger = log4js.getLogger("electron-updater");
 autoUpdaterLogger.level = (isDebug ? "debug" : "info");
 electronUpdater.autoUpdater.logger = {
@@ -97,23 +98,40 @@ electronUpdater.autoUpdater.setFeedURL(autoUpdaterPublishOptions);
 electronUpdater.autoUpdater.requestHeaders = {
     "x-ms-version": "2018-03-28",
 };
-electronUpdater.autoUpdater.on("update-available", (info: electronUpdater.UpdateInfo) => {
-    autoUpdaterInfo = info;
-});
-electronUpdater.autoUpdater.on("update-downloaded", (info: electronUpdater.UpdateInfo) => {
-    autoUpdaterReadyToBeInstalled = true;
+
+/**
+ * Send a notification to the window that an update is available
+ */
+function NotifyUpdateAvailable(): void {
     const currentWindow: Electron.BrowserWindow = loginWindow !== undefined ? loginWindow : mainWindow;
     if (currentWindow !== undefined && currentWindow !== null) {
         currentWindow.webContents.send("UpdateAvailable",
             {
                 platform: electronUpdater.getCurrentPlatform(),
                 readyToBeInstalled: autoUpdaterReadyToBeInstalled,
-                version: info.version,
+                autoDownloadFailed: autoUpdaterAutoDownloadFailed,
+                version: (autoUpdaterInfo === undefined ? "" : autoUpdaterInfo.version),
             });
     }
-});
+}
 
-// Start an asynchronous function to delete old log files
+electronUpdater.autoUpdater.on("update-available", (info: electronUpdater.UpdateInfo) => {
+    autoUpdaterInfo = info;
+});
+electronUpdater.autoUpdater.on("update-downloaded", (info: electronUpdater.UpdateInfo) => {
+    autoUpdaterReadyToBeInstalled = true;
+    NotifyUpdateAvailable();
+});
+electronUpdater.autoUpdater.on("error", (error: Error) => {
+    // Only set that an error occurred if there is an update available
+    if (autoUpdaterInfo !== undefined) {
+        autoUpdaterAutoDownloadFailed = true;
+        NotifyUpdateAvailable();
+    }
+});
+//#endregion
+
+//#region Start an asynchronous function to delete old log files
 setTimeout(() => {
     try {
         glob(loggerPath + loggerPattern.replace("yyyy-MM-dd", "*"), (err: object, files: Array<string>) => {
@@ -132,7 +150,9 @@ setTimeout(() => {
         logger.log(`Error deleting old log files: ${ex}`);
     }
 }, 0);
+//#endregion
 
+//#region Register the rendered callbacks
 // Register the renderer callback for logging the UI
 electron.ipcMain.on("log", (event: Electron.Event, data: { category: string; level: string; message: string }) => {
     const uiLogger: log4js.Logger = log4js.getLogger(data.category);
@@ -156,7 +176,6 @@ electron.ipcMain.on("log", (event: Electron.Event, data: { category: string; lev
             uiLogger.info(data.message);
     }
 });
-
 // Register the renderer callback for opening the main window
 electron.ipcMain.on("OpenMainWindow", (event: Electron.Event) => {
     createMainWindow();
@@ -180,12 +199,7 @@ electron.ipcMain.on("ShowLoginWindow", (event: Electron.Event) => {
 });
 // Register the renderer callback to retrieve the updates
 electron.ipcMain.on("CheckUpdateAvailable", (event: Electron.Event) => {
-    event.sender.send("UpdateAvailable",
-        {
-            platform: electronUpdater.getCurrentPlatform(),
-            readyToBeInstalled: autoUpdaterReadyToBeInstalled,
-            version: (autoUpdaterInfo === undefined ? "" : autoUpdaterInfo.version),
-        });
+    NotifyUpdateAvailable();
 });
 // Register the renderer callback to quit and install the update
 electron.ipcMain.on("QuitAndInstall", (event: Electron.Event) => {
@@ -195,6 +209,7 @@ electron.ipcMain.on("QuitAndInstall", (event: Electron.Event) => {
 electron.ipcMain.on("OpenLogsFolder", (event: Electron.Event) => {
     electron.shell.openItem(path.dirname(loggerPath));
 });
+//#endregion
 
 /**
  * Set an empty application menu (except OSX)

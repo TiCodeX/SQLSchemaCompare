@@ -75,7 +75,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT \"{key.Name}\" FOREIGN KEY ({string.Join(",", columnList)})");
-                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.Database, key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)}) {PostgreSqlScriptHelper.ScriptForeignKeyMatchOption(key.MatchOption)}");
+                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)}) {PostgreSqlScriptHelper.ScriptForeignKeyMatchOption(key.MatchOption)}");
                 sb.AppendLine($"ON DELETE {key.DeleteRule}");
                 sb.AppendLine($"ON UPDATE {key.UpdateRule}");
 
@@ -322,7 +322,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     sb.AppendLine($"{this.Indent}AS {PostgreSqlScriptHelper.ScriptFunctionArgumentType(typeDomain.BaseTypeId, dataTypes)}");
                     if (!string.IsNullOrEmpty(typeDomain.ConstraintName))
                     {
-                        sb.AppendLine($"{this.Indent}CONSTRAINT {this.ScriptHelper.ScriptObjectName(string.Empty, string.Empty, typeDomain.ConstraintName)}");
+                        sb.AppendLine($"{this.Indent}CONSTRAINT {this.ScriptHelper.ScriptObjectName(string.Empty, typeDomain.ConstraintName)}");
                     }
 
                     sb.Append(string.IsNullOrEmpty(typeDomain.ConstraintDefinition)

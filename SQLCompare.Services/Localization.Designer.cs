@@ -412,6 +412,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Constraints and Indexes.
+        /// </summary>
+        public static string LabelConstraintsAndIndexes {
+            get {
+                return ResourceManager.GetString("LabelConstraintsAndIndexes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create New Project.
         /// </summary>
         public static string LabelCreateNewProjects {
@@ -426,6 +435,15 @@ namespace SQLCompare.Services {
         public static string LabelDatabase {
             get {
                 return ResourceManager.GetString("LabelDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comparison of Databases.
+        /// </summary>
+        public static string LabelDatabaseComparison {
+            get {
+                return ResourceManager.GetString("LabelDatabaseComparison", resourceCulture);
             }
         }
         
@@ -448,11 +466,29 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Foreign Keys.
+        /// </summary>
+        public static string LabelForeignKeys {
+            get {
+                return ResourceManager.GetString("LabelForeignKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Function.
         /// </summary>
         public static string LabelFunction {
             get {
                 return ResourceManager.GetString("LabelFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Functions.
+        /// </summary>
+        public static string LabelFunctions {
+            get {
+                return ResourceManager.GetString("LabelFunctions", resourceCulture);
             }
         }
         
@@ -522,6 +558,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Indexes.
+        /// </summary>
+        public static string LabelIndexes {
+            get {
+                return ResourceManager.GetString("LabelIndexes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string LabelLanguage {
@@ -536,6 +581,15 @@ namespace SQLCompare.Services {
         public static string LabelLogLevel {
             get {
                 return ResourceManager.GetString("LabelLogLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping Database Objects.
+        /// </summary>
+        public static string LabelMappingDatabaseObjects {
+            get {
+                return ResourceManager.GetString("LabelMappingDatabaseObjects", resourceCulture);
             }
         }
         
@@ -657,6 +711,24 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Retrieve the Source Database.
+        /// </summary>
+        public static string LabelRetrieveSourceDatabase {
+            get {
+                return ResourceManager.GetString("LabelRetrieveSourceDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieve the Target Database.
+        /// </summary>
+        public static string LabelRetrieveTargetDatabase {
+            get {
+                return ResourceManager.GetString("LabelRetrieveTargetDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save password.
         /// </summary>
         public static string LabelSavePassword {
@@ -711,6 +783,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stored Procedures.
+        /// </summary>
+        public static string LabelStoredProcedures {
+            get {
+                return ResourceManager.GetString("LabelStoredProcedures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Table.
         /// </summary>
         public static string LabelTable {
@@ -734,6 +815,15 @@ namespace SQLCompare.Services {
         public static string LabelTrigger {
             get {
                 return ResourceManager.GetString("LabelTrigger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Triggers.
+        /// </summary>
+        public static string LabelTriggers {
+            get {
+                return ResourceManager.GetString("LabelTriggers", resourceCulture);
             }
         }
         
@@ -765,24 +855,6 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use schema name.
-        /// </summary>
-        public static string LabelUseSchemaName {
-            get {
-                return ResourceManager.GetString("LabelUseSchemaName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ignore the schema name when comparing databases..
-        /// </summary>
-        public static string LabelUseSchemaNameDescription {
-            get {
-                return ResourceManager.GetString("LabelUseSchemaNameDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Use SSL.
         /// </summary>
         public static string LabelUseSSL {
@@ -806,6 +878,15 @@ namespace SQLCompare.Services {
         public static string LabelView {
             get {
                 return ResourceManager.GetString("LabelView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Views.
+        /// </summary>
+        public static string LabelViews {
+            get {
+                return ResourceManager.GetString("LabelViews", resourceCulture);
             }
         }
         
@@ -1026,6 +1107,69 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Comparing User-Defined Data Types....
+        /// </summary>
+        public static string StatusComparingDataTypes {
+            get {
+                return ResourceManager.GetString("StatusComparingDataTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comparing Functions....
+        /// </summary>
+        public static string StatusComparingFunctions {
+            get {
+                return ResourceManager.GetString("StatusComparingFunctions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comparing Sequences....
+        /// </summary>
+        public static string StatusComparingSequences {
+            get {
+                return ResourceManager.GetString("StatusComparingSequences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comparing Stored Procedures....
+        /// </summary>
+        public static string StatusComparingStoredProcedures {
+            get {
+                return ResourceManager.GetString("StatusComparingStoredProcedures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comparing Tables....
+        /// </summary>
+        public static string StatusComparingTables {
+            get {
+                return ResourceManager.GetString("StatusComparingTables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comparing Triggers....
+        /// </summary>
+        public static string StatusComparingTriggers {
+            get {
+                return ResourceManager.GetString("StatusComparingTriggers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comparing Views....
+        /// </summary>
+        public static string StatusComparingViews {
+            get {
+                return ResourceManager.GetString("StatusComparingViews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connecting to server....
         /// </summary>
         public static string StatusConnecting {
@@ -1049,6 +1193,69 @@ namespace SQLCompare.Services {
         public static string StatusError {
             get {
                 return ResourceManager.GetString("StatusError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping User-Defined Data Types....
+        /// </summary>
+        public static string StatusMappingDataTypes {
+            get {
+                return ResourceManager.GetString("StatusMappingDataTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping Functions....
+        /// </summary>
+        public static string StatusMappingFunctions {
+            get {
+                return ResourceManager.GetString("StatusMappingFunctions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping Sequences....
+        /// </summary>
+        public static string StatusMappingSequences {
+            get {
+                return ResourceManager.GetString("StatusMappingSequences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping Stored Procedures....
+        /// </summary>
+        public static string StatusMappingStoredProcedures {
+            get {
+                return ResourceManager.GetString("StatusMappingStoredProcedures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping Tables....
+        /// </summary>
+        public static string StatusMappingTables {
+            get {
+                return ResourceManager.GetString("StatusMappingTables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping Triggers....
+        /// </summary>
+        public static string StatusMappingTriggers {
+            get {
+                return ResourceManager.GetString("StatusMappingTriggers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping Views....
+        /// </summary>
+        public static string StatusMappingViews {
+            get {
+                return ResourceManager.GetString("StatusMappingViews", resourceCulture);
             }
         }
         

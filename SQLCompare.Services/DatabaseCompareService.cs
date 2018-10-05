@@ -47,7 +47,7 @@ namespace SQLCompare.Services
             this.taskService.ExecuteTasks(new List<TaskWork>
             {
                 new TaskWork(
-                    new TaskInfo("Registering source database"),
+                    new TaskInfo(Localization.LabelRetrieveSourceDatabase),
                     true,
                     taskInfo =>
                     {
@@ -56,7 +56,7 @@ namespace SQLCompare.Services
                         return true;
                     }),
                 new TaskWork(
-                    new TaskInfo("Registering target database"),
+                    new TaskInfo(Localization.LabelRetrieveTargetDatabase),
                     true,
                     taskInfo =>
                     {
@@ -65,12 +65,12 @@ namespace SQLCompare.Services
                         return true;
                     }),
                 new TaskWork(
-                    new TaskInfo("Mapping databases"),
+                    new TaskInfo(Localization.LabelMappingDatabaseObjects),
                     false,
                     taskInfo =>
                     {
                         // TODO: Perform mapping with user config from project
-                        taskInfo.Message = "Mapping tables...";
+                        taskInfo.Message = Localization.StatusMappingTables;
                         foreach (var table in this.retrievedSourceDatabase.Tables)
                         {
                             this.result.Tables.Add(new CompareResultItem<ABaseDbTable>
@@ -92,7 +92,7 @@ namespace SQLCompare.Services
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
                         taskInfo.Percentage = 15;
 
-                        taskInfo.Message = "Mapping views...";
+                        taskInfo.Message = Localization.StatusMappingViews;
                         foreach (var view in this.retrievedSourceDatabase.Views)
                         {
                             this.result.Views.Add(new CompareResultItem<ABaseDbView>
@@ -114,7 +114,7 @@ namespace SQLCompare.Services
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
                         taskInfo.Percentage = 30;
 
-                        taskInfo.Message = "Mapping functions...";
+                        taskInfo.Message = Localization.StatusMappingFunctions;
                         foreach (var function in this.retrievedSourceDatabase.Functions)
                         {
                             this.result.Functions.Add(new CompareResultItem<ABaseDbFunction>
@@ -136,7 +136,7 @@ namespace SQLCompare.Services
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
                         taskInfo.Percentage = 45;
 
-                        taskInfo.Message = "Mapping stored procedures...";
+                        taskInfo.Message = Localization.StatusMappingStoredProcedures;
                         foreach (var storedProcedure in this.retrievedSourceDatabase.StoredProcedures)
                         {
                             this.result.StoredProcedures.Add(new CompareResultItem<ABaseDbStoredProcedure>
@@ -158,7 +158,7 @@ namespace SQLCompare.Services
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
                         taskInfo.Percentage = 60;
 
-                        taskInfo.Message = "Mapping triggers...";
+                        taskInfo.Message = Localization.StatusMappingTriggers;
                         foreach (var trigger in this.retrievedSourceDatabase.Triggers)
                         {
                             this.result.Triggers.Add(new CompareResultItem<ABaseDbTrigger>
@@ -186,7 +186,7 @@ namespace SQLCompare.Services
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
                         taskInfo.Percentage = 75;
 
-                        taskInfo.Message = "Mapping sequences...";
+                        taskInfo.Message = Localization.StatusMappingSequences;
                         foreach (var sequence in this.retrievedSourceDatabase.Sequences)
                         {
                             this.result.Sequences.Add(new CompareResultItem<ABaseDbSequence>
@@ -208,7 +208,7 @@ namespace SQLCompare.Services
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
                         taskInfo.Percentage = 90;
 
-                        taskInfo.Message = "Mapping user defined types...";
+                        taskInfo.Message = Localization.StatusMappingDataTypes;
                         foreach (var type in this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined))
                         {
                             this.result.DataTypes.Add(new CompareResultItem<ABaseDbDataType>
@@ -233,7 +233,7 @@ namespace SQLCompare.Services
                         return true;
                     }),
                 new TaskWork(
-                    new TaskInfo("Comparing databases"),
+                    new TaskInfo(Localization.LabelDatabaseComparison),
                     false,
                     taskInfo =>
                     {
@@ -248,7 +248,7 @@ namespace SQLCompare.Services
                             this.retrievedSourceDatabase,
                             this.projectService.Project.Options);
 
-                        taskInfo.Message = "Comparing tables...";
+                        taskInfo.Message = Localization.StatusComparingTables;
                         foreach (var resultTable in this.result.Tables)
                         {
                             if (resultTable.SourceItem != null)
@@ -269,7 +269,7 @@ namespace SQLCompare.Services
 
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-                        taskInfo.Message = "Comparing views...";
+                        taskInfo.Message = Localization.StatusComparingViews;
                         foreach (var resultView in this.result.Views)
                         {
                             if (resultView.SourceItem != null)
@@ -290,7 +290,7 @@ namespace SQLCompare.Services
 
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-                        taskInfo.Message = "Comparing functions...";
+                        taskInfo.Message = Localization.StatusComparingFunctions;
                         foreach (var resultFunction in this.result.Functions)
                         {
                             if (resultFunction.SourceItem != null)
@@ -311,7 +311,7 @@ namespace SQLCompare.Services
 
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-                        taskInfo.Message = "Comparing stored procedures...";
+                        taskInfo.Message = Localization.StatusComparingStoredProcedures;
                         foreach (var resultStoredProcedure in this.result.StoredProcedures)
                         {
                             if (resultStoredProcedure.SourceItem != null)
@@ -332,7 +332,7 @@ namespace SQLCompare.Services
 
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-                        taskInfo.Message = "Comparing triggers...";
+                        taskInfo.Message = Localization.StatusComparingTriggers;
                         foreach (var resultTrigger in this.result.Triggers)
                         {
                             if (resultTrigger.SourceItem != null)
@@ -353,7 +353,7 @@ namespace SQLCompare.Services
 
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-                        taskInfo.Message = "Comparing sequences...";
+                        taskInfo.Message = Localization.StatusComparingSequences;
                         foreach (var resultSequence in this.result.Sequences)
                         {
                             if (resultSequence.SourceItem != null)
@@ -374,7 +374,7 @@ namespace SQLCompare.Services
 
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-                        taskInfo.Message = "Comparing User-Defined Data Types...";
+                        taskInfo.Message = Localization.StatusComparingDataTypes;
                         foreach (var resultType in this.result.DataTypes)
                         {
                             if (resultType.SourceItem != null)

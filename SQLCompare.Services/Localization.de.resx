@@ -315,9 +315,6 @@
   <data name="LabelOrderColumnAlphabetically" xml:space="preserve">
     <value>Zeilen alphabetisch sortieren</value>
   </data>
-  <data name="LabelUseSchemaName" xml:space="preserve">
-    <value>Schema verwenden</value>
-  </data>
   <data name="LabelStoredProcedure" xml:space="preserve">
     <value>Gespeicherte Prozedur</value>
   </data>

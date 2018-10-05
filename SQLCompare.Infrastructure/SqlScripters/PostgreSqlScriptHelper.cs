@@ -135,14 +135,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public override string ScriptObjectName(string objectDatabase, string objectSchema, string objectName)
+        public override string ScriptObjectName(string objectSchema, string objectName)
         {
-            if (this.Options.Scripting.UseSchemaName && !string.IsNullOrEmpty(objectSchema))
-            {
-                return $"\"{objectSchema}\".\"{objectName}\"";
-            }
-
-            return $"\"{objectName}\"";
+            return !string.IsNullOrEmpty(objectSchema) ?
+                $"\"{objectSchema}\".\"{objectName}\"" :
+                $"\"{objectName}\"";
         }
 
         /// <inheritdoc/>

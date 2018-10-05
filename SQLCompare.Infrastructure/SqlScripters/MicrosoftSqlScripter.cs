@@ -75,7 +75,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 var key = (MicrosoftSqlForeignKey)aBaseDbConstraint;
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} WITH CHECK ADD CONSTRAINT [{key.Name}] FOREIGN KEY([{key.ColumnName}])");
-                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.Database, key.ReferencedTableSchema, key.ReferencedTableName)}([{key.ReferencedTableColumn}])");
+                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)}([{key.ReferencedTableColumn}])");
                 sb.AppendLine($"ON DELETE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.DeleteReferentialAction)}");
                 sb.AppendLine($"ON UPDATE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.UpdateReferentialAction)}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());

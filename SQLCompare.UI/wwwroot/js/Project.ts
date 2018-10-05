@@ -218,7 +218,7 @@ class Project {
             if (response.Success) {
                 this.isDirty = false;
                 this.filename = undefined;
-                PageManager.ClosePage().then((): void => {
+                PageManager.CloseAllPages().then((): void => {
                     MenuManager.ToggleProjectRelatedMenuStatus(false);
                 });
             } else {

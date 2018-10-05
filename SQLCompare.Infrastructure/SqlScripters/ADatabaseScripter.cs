@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Interfaces;
+using SQLCompare.Services;
 
 namespace SQLCompare.Infrastructure.SqlScripters
 {
@@ -92,7 +93,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             sb.AppendLine();
 
             // Script the functions
-            sb.AppendLine(AScriptHelper.ScriptComment("Functions"));
+            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelFunctions));
             if (database.Functions.Count > 0)
             {
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
@@ -106,7 +107,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             sb.AppendLine();
 
             // Script the stored procedures
-            sb.AppendLine(AScriptHelper.ScriptComment("Stored Procedures"));
+            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelStoredProcedures));
             if (database.StoredProcedures.Count > 0)
             {
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
@@ -120,7 +121,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             sb.AppendLine();
 
             // Script the ALTER TABLE for primary keys and indexes
-            sb.AppendLine(AScriptHelper.ScriptComment("Constraints and Indexes"));
+            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraintsAndIndexes));
             foreach (var table in database.Tables)
             {
                 sb.Append(this.ScriptPrimaryKeysAlterTable(table));
@@ -132,7 +133,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             sb.AppendLine();
 
             // Script the ALTER TABLE for foreign keys
-            sb.AppendLine(AScriptHelper.ScriptComment("Foreign keys"));
+            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
             foreach (var table in database.Tables)
             {
                 sb.AppendLine(this.ScriptForeignKeysAlterTable(table));
@@ -142,7 +143,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             sb.AppendLine();
 
             // Script the views
-            sb.AppendLine(AScriptHelper.ScriptComment("Views"));
+            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelViews));
             if (database.Views.Count > 0)
             {
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
@@ -161,7 +162,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
 
             // Script the triggers
-            sb.AppendLine(AScriptHelper.ScriptComment("Triggers"));
+            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
             if (database.Triggers.Count > 0)
             {
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
@@ -200,7 +201,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             {
                 sb.AppendLine();
                 sb.AppendLine();
-                sb.AppendLine(AScriptHelper.ScriptComment("Constraints and Indexes"));
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraintsAndIndexes));
                 sb.Append(this.ScriptPrimaryKeysAlterTable(table));
                 sb.Append(this.ScriptConstraintsAlterTable(table));
                 sb.Append(this.ScriptCreateIndexes(table, table.Indexes));
@@ -215,7 +216,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     sb.AppendLine();
                 }
 
-                sb.AppendLine(AScriptHelper.ScriptComment("Foreign keys"));
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
                 sb.Append(this.ScriptForeignKeysAlterTable(table));
             }
 
@@ -236,7 +237,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (view.Indexes.Count > 0)
             {
                 sb.AppendLine();
-                sb.AppendLine(AScriptHelper.ScriptComment("Indexes"));
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
                 sb.Append(this.ScriptCreateIndexes(view, view.Indexes));
             }
 

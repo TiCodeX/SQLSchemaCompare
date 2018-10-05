@@ -223,10 +223,10 @@
     <value>Usa autenticazione di Windows</value>
   </data>
   <data name="LabelOnlyInSource" xml:space="preserve">
-    <value>Solo nell'origine</value>
+    <value>Solo nell'Origine</value>
   </data>
   <data name="LabelOnlyInTarget" xml:space="preserve">
-    <value>Solo nella destinazione</value>
+    <value>Solo nella Destinazione</value>
   </data>
   <data name="LabelSource" xml:space="preserve">
     <value>Origine</value>
@@ -490,5 +490,80 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   </data>
   <data name="LabelIgnoreCollateDescription" xml:space="preserve">
     <value>Ignora le regole di confronto sulle colonne di tipo testuale quando si confrontano i database.</value>
+  </data>
+  <data name="StatusMappingTables" xml:space="preserve">
+    <value>Mappatura delle Tabelle in corso...</value>
+  </data>
+  <data name="StatusMappingViews" xml:space="preserve">
+    <value>Mappatura delle Viste in corso...</value>
+  </data>
+  <data name="StatusMappingFunctions" xml:space="preserve">
+    <value>Mappatura delle Funzioni in corso...</value>
+  </data>
+  <data name="StatusMappingStoredProcedures" xml:space="preserve">
+    <value>Mappatura delle Procedure in corso...</value>
+  </data>
+  <data name="StatusMappingTriggers" xml:space="preserve">
+    <value>Mappatura dei Trigger in corso...</value>
+  </data>
+  <data name="StatusMappingSequences" xml:space="preserve">
+    <value>Mappatura delle Sequenze in corso...</value>
+  </data>
+  <data name="StatusMappingDataTypes" xml:space="preserve">
+    <value>Mappatura dei Tipi di dati definiti dall'utente in corso...</value>
+  </data>
+  <data name="LabelDatabaseComparison" xml:space="preserve">
+    <value>Confronto dei Database</value>
+  </data>
+  <data name="LabelRetrieveSourceDatabase" xml:space="preserve">
+    <value>Lettura del Database di Origine</value>
+  </data>
+  <data name="LabelRetrieveTargetDatabase" xml:space="preserve">
+    <value>Lettura del Database di Destinazione</value>
+  </data>
+  <data name="LabelMappingDatabaseObjects" xml:space="preserve">
+    <value>Mappatura degli Oggetti del Database</value>
+  </data>
+  <data name="StatusComparingTables" xml:space="preserve">
+    <value>Confronto delle Tabelle in corso...</value>
+  </data>
+  <data name="StatusComparingViews" xml:space="preserve">
+    <value>Confronto delle Viste in corso...</value>
+  </data>
+  <data name="StatusComparingFunctions" xml:space="preserve">
+    <value>Confronto delle Funzioni in corso...</value>
+  </data>
+  <data name="StatusComparingStoredProcedures" xml:space="preserve">
+    <value>Confronto delle Procedure in corso...</value>
+  </data>
+  <data name="StatusComparingTriggers" xml:space="preserve">
+    <value>Confronto dei Trigger in corso...</value>
+  </data>
+  <data name="StatusComparingSequences" xml:space="preserve">
+    <value>Confronto delle Sequenze in corso...</value>
+  </data>
+  <data name="StatusComparingDataTypes" xml:space="preserve">
+    <value>Confronto dei Tipi di dati definiti dall'utente in corso...</value>
+  </data>
+  <data name="LabelFunctions" xml:space="preserve">
+    <value>Funzioni</value>
+  </data>
+  <data name="LabelStoredProcedures" xml:space="preserve">
+    <value>Procedure</value>
+  </data>
+  <data name="LabelConstraintsAndIndexes" xml:space="preserve">
+    <value>Vincoli e Indici</value>
+  </data>
+  <data name="LabelForeignKeys" xml:space="preserve">
+    <value>Chiavi Esterne</value>
+  </data>
+  <data name="LabelIndexes" xml:space="preserve">
+    <value>Indici</value>
+  </data>
+  <data name="LabelTriggers" xml:space="preserve">
+    <value>Triggers</value>
+  </data>
+  <data name="LabelViews" xml:space="preserve">
+    <value>Viste</value>
   </data>
 </root>

@@ -19,10 +19,5 @@
         /// Gets or sets a value indicating whether the reference table columns order should be ignored when scripting columns
         /// </summary>
         public bool IgnoreReferenceTableColumnOrder { get; set; } = false;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether use schema name in scripting objects
-        /// </summary>
-        public bool UseSchemaName { get; set; } = true;
     }
 }

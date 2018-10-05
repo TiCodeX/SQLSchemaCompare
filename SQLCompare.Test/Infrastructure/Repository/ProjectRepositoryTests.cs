@@ -128,7 +128,6 @@ namespace SQLCompare.Test.Infrastructure.Repository
                         IgnoreCollate = true,
                         OrderColumnAlphabetically = true,
                         IgnoreReferenceTableColumnOrder = true,
-                        UseSchemaName = false,
                     }
                 }
             };
@@ -161,7 +160,6 @@ namespace SQLCompare.Test.Infrastructure.Repository
       <IgnoreCollate>true</IgnoreCollate>
       <OrderColumnAlphabetically>true</OrderColumnAlphabetically>
       <IgnoreReferenceTableColumnOrder>true</IgnoreReferenceTableColumnOrder>
-      <UseSchemaName>false</UseSchemaName>
     </Scripting>
   </Options>
 </CompareProject>";

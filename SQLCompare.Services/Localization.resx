@@ -238,9 +238,6 @@
   <data name="LabelOrderColumnAlphabetically" xml:space="preserve">
     <value>Order columns alphabetically</value>
   </data>
-  <data name="LabelUseSchemaName" xml:space="preserve">
-    <value>Use schema name</value>
-  </data>
   <data name="LabelFunction" xml:space="preserve">
     <value>Function</value>
   </data>
@@ -436,9 +433,6 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelOrderColumnAlphabeticallyDescription" xml:space="preserve">
     <value>Reorder the columns alphabetically to ignore differences of tables created with a different order.</value>
   </data>
-  <data name="LabelUseSchemaNameDescription" xml:space="preserve">
-    <value>Ignore the schema name when comparing databases.</value>
-  </data>
   <data name="LabelSQLView" xml:space="preserve">
     <value>SQL View</value>
   </data>
@@ -505,5 +499,80 @@ This option will ignore the matching and use the same order as when it was creat
   </data>
   <data name="ErrorOperationNotExecuted" xml:space="preserve">
     <value>The operation was not executed</value>
+  </data>
+  <data name="LabelRetrieveSourceDatabase" xml:space="preserve">
+    <value>Retrieve the Source Database</value>
+  </data>
+  <data name="LabelRetrieveTargetDatabase" xml:space="preserve">
+    <value>Retrieve the Target Database</value>
+  </data>
+  <data name="LabelMappingDatabaseObjects" xml:space="preserve">
+    <value>Mapping Database Objects</value>
+  </data>
+  <data name="StatusMappingTables" xml:space="preserve">
+    <value>Mapping Tables...</value>
+  </data>
+  <data name="StatusMappingViews" xml:space="preserve">
+    <value>Mapping Views...</value>
+  </data>
+  <data name="StatusMappingFunctions" xml:space="preserve">
+    <value>Mapping Functions...</value>
+  </data>
+  <data name="StatusMappingStoredProcedures" xml:space="preserve">
+    <value>Mapping Stored Procedures...</value>
+  </data>
+  <data name="StatusMappingTriggers" xml:space="preserve">
+    <value>Mapping Triggers...</value>
+  </data>
+  <data name="StatusMappingSequences" xml:space="preserve">
+    <value>Mapping Sequences...</value>
+  </data>
+  <data name="StatusMappingDataTypes" xml:space="preserve">
+    <value>Mapping User-Defined Data Types...</value>
+  </data>
+  <data name="LabelDatabaseComparison" xml:space="preserve">
+    <value>Comparison of Databases</value>
+  </data>
+  <data name="StatusComparingTables" xml:space="preserve">
+    <value>Comparing Tables...</value>
+  </data>
+  <data name="StatusComparingViews" xml:space="preserve">
+    <value>Comparing Views...</value>
+  </data>
+  <data name="StatusComparingFunctions" xml:space="preserve">
+    <value>Comparing Functions...</value>
+  </data>
+  <data name="StatusComparingStoredProcedures" xml:space="preserve">
+    <value>Comparing Stored Procedures...</value>
+  </data>
+  <data name="StatusComparingTriggers" xml:space="preserve">
+    <value>Comparing Triggers...</value>
+  </data>
+  <data name="StatusComparingSequences" xml:space="preserve">
+    <value>Comparing Sequences...</value>
+  </data>
+  <data name="StatusComparingDataTypes" xml:space="preserve">
+    <value>Comparing User-Defined Data Types...</value>
+  </data>
+  <data name="LabelFunctions" xml:space="preserve">
+    <value>Functions</value>
+  </data>
+  <data name="LabelStoredProcedures" xml:space="preserve">
+    <value>Stored Procedures</value>
+  </data>
+  <data name="LabelConstraintsAndIndexes" xml:space="preserve">
+    <value>Constraints and Indexes</value>
+  </data>
+  <data name="LabelForeignKeys" xml:space="preserve">
+    <value>Foreign Keys</value>
+  </data>
+  <data name="LabelIndexes" xml:space="preserve">
+    <value>Indexes</value>
+  </data>
+  <data name="LabelTriggers" xml:space="preserve">
+    <value>Triggers</value>
+  </data>
+  <data name="LabelViews" xml:space="preserve">
+    <value>Views</value>
   </data>
 </root>

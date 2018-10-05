@@ -24,6 +24,15 @@ class PageManager {
     }
 
     /**
+     * Closes all the pages and open the welcome page
+     */
+    public static async CloseAllPages(): Promise<void> {
+        this.pageContainer.children("div").remove();
+
+        return this.ClosePage();
+    }
+
+    /**
      * Get the currently opened page
      */
     public static GetOpenPage(): PageManager.Page {

@@ -178,6 +178,10 @@ class MenuManager {
             "toolbarEditProject",
             "toolbarPerformCompare",
         ], enable);
+
+        if (!enable) {
+            this.ToggleMainOpenRelatedMenuStatus(enable);
+        }
     }
 
     /**
@@ -200,6 +204,18 @@ class MenuManager {
             "toolbarEditProject",
             "toolbarPerformCompare",
         ], enable);
+
+        if (!enable) {
+            this.ToggleMainOpenRelatedMenuStatus(enable);
+        }
+    }
+
+    /**
+     * Enable/Disable the menu items related to the main page open
+     * @param enable Whether to enable or disable the menu items
+     */
+    public static ToggleMainOpenRelatedMenuStatus(enable: boolean): void {
+        this.ToggleMenuItems(["toolbarGenerateScript"], enable);
     }
 
     /**

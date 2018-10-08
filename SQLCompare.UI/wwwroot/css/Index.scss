@@ -160,6 +160,11 @@ $fa-font-size-base: $font-size-base;
     }
 }
 
+.tcx-sql-editor {
+    height: 80vh;
+    border-bottom: 1px solid $gray-400;
+}
+
 /*#region checkbox switch */
 .tcx-switch {
     position: relative;

@@ -9,6 +9,16 @@ namespace SQLCompare.Core.Entities.Compare
     public class CompareResult
     {
         /// <summary>
+        /// Gets or sets the source full script
+        /// </summary>
+        public string SourceFullScript { get; set; }
+
+        /// <summary>
+        /// Gets or sets the target full script
+        /// </summary>
+        public string TargetFullScript { get; set; }
+
+        /// <summary>
         /// Gets the list of Table results
         /// </summary>
         public List<CompareResultItem<ABaseDbTable>> Tables { get; } = new List<CompareResultItem<ABaseDbTable>>();

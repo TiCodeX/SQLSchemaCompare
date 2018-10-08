@@ -13,6 +13,16 @@ class Main {
     private static readonly createScriptUrl: string = `${Main.pageUrl}?handler=CreateScript&id=`;
 
     /**
+     * Service URL for retrieving the sql script
+     */
+    private static readonly sqlScriptUrl: string = "/Main/SqlScriptPageModel";
+
+    /**
+     * Service URL for retrieving the full sql source/target script
+     */
+    private static readonly fullSqlScriptUrl: string = `${Main.sqlScriptUrl}?handler=FullScript&direction=`;
+
+    /**
      * Contains a reference to the splitter instance
      */
     private static mainSplitter: Split.Instance;
@@ -23,11 +33,37 @@ class Main {
     private static mainSplitterSizes: Array<number> = [60, 40]; // tslint:disable-line:no-magic-numbers
 
     /**
+     * Default monaco-editor options
+     */
+    private static readonly defaultMonacoOptions: monaco.editor.IEditorOptions = {
+        automaticLayout: true,
+        scrollBeyondLastLine: false,
+        readOnly: true,
+        stopRenderingLineAfter: -1,
+        links: false,
+        contextmenu: false,
+        quickSuggestions: false,
+        autoClosingBrackets: false,
+        selectionHighlight: false,
+        occurrencesHighlight: false,
+        folding: false,
+        matchBrackets: false,
+        scrollbar: {
+            vertical: "visible",
+        },
+        /*fontWeight: "normal",*/
+        /*fontFamily: "Open Sans",*/
+        fontSize: 13,
+        /*lineHeight: 1,*/
+    };
+
+    /**
      * Open the Main page
      */
     public static Open(): void {
         PageManager.LoadPage(PageManager.Page.Main).then((): void => {
             this.RemoveSplitter();
+            MenuManager.ToggleMainOpenRelatedMenuStatus(true);
         });
     }
 
@@ -65,26 +101,11 @@ class Main {
         // Display the monaco editor
         $("#sqlDiff").empty();
         Utility.AjaxCall(this.createScriptUrl + rowId, Utility.HttpMethod.Get).then((response: ApiResponse<CreateScriptResult>): void => {
-            const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(document.getElementById("sqlDiff"),
-                {
-                    automaticLayout: true,
-                    scrollBeyondLastLine: false,
-                    readOnly: true,
-                    stopRenderingLineAfter: -1,
-                    links: false,
-                    contextmenu: false,
-                    quickSuggestions: false,
-                    autoClosingBrackets: false,
-                    selectionHighlight: false,
-                    occurrencesHighlight: false,
-                    folding: false,
-                    matchBrackets: false,
-                    ignoreTrimWhitespace: false,
-                    /*fontWeight: "normal",*/
-                    /*fontFamily: "Open Sans",*/
-                    fontSize: 13,
-                    /*lineHeight: 1,*/
-                });
+
+            const options: monaco.editor.IDiffEditorConstructionOptions = $.extend({}, this.defaultMonacoOptions);
+            options.ignoreTrimWhitespace = false;
+
+            const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(document.getElementById("sqlDiff"), options);
             diffEditor.setModel({
                 original: monaco.editor.createModel(response.Result.SourceSql, "sql"),
                 modified: monaco.editor.createModel(response.Result.TargetSql, "sql"),
@@ -176,6 +197,28 @@ class Main {
     }
 
     /**
+     * Show the full script page
+     * @param direction The source or target
+     */
+    public static ShowFullScript(direction: Main.CompareDirection): void {
+        const title: string = direction === Main.CompareDirection.Source
+            ? Localization.Get("MenuFullSourceDatabaseScript")
+            : Localization.Get("MenuFullTargetDatabaseScript");
+        DialogManager.OpenModalDialog(title, this.sqlScriptUrl).then((): void => {
+            Utility.AjaxCall(`${this.fullSqlScriptUrl}${direction}`, Utility.HttpMethod.Get).then((response: ApiResponse<string>): void => {
+                const options: monaco.editor.IEditorConstructionOptions = $.extend({}, this.defaultMonacoOptions);
+                options.minimap = {
+                    enabled: false,
+                };
+                options.value = response.Result;
+                options.language = "sql";
+
+                monaco.editor.create(document.getElementById("sqlEditor"), options);
+            });
+        });
+    }
+
+    /**
      * Scroll the main view to the selected element
      */
     private static ScollToSelectedElement(): void {
@@ -202,5 +245,19 @@ class Main {
         } finally {
             this.mainSplitter = undefined;
         }
+    }
+}
+
+namespace Main {
+    export enum CompareDirection {
+        /**
+         * Represent the source database
+         */
+        Source = 0,
+
+        /**
+         * Represent the target database
+         */
+        Target = 1,
     }
 }

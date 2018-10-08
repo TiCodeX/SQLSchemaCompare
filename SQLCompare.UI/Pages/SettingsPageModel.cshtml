@@ -5,38 +5,32 @@
 @using Services
 @model SettingsPageModel
 
-<div id="Settings" class="needs-validation">
-    <div class="form-group">
-        <label>@Localization.LabelLanguage</label>
-        <select name="Language" required>
-            <option value="@Language.English" selected="@(Model.Settings.Language == Language.English)">English</option>
-            <option value="@Language.German" selected="@(Model.Settings.Language == Language.German)">German</option>
-            <option value="@Language.Italian" selected="@(Model.Settings.Language == Language.Italian)">Italian</option>
-        </select>
+<div class="d-flex flex-column p-2">
+    <div id="Settings" class="needs-validation">
+        <div class="form-group">
+            <label>@Localization.LabelLanguage</label>
+            <select name="Language" required>
+                <option value="@Language.English" selected="@(Model.Settings.Language == Language.English)">English</option>
+                <option value="@Language.German" selected="@(Model.Settings.Language == Language.German)">German</option>
+                <option value="@Language.Italian" selected="@(Model.Settings.Language == Language.Italian)">Italian</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>@Localization.LabelLogLevel</label>
+            <select name="LogLevel" required>
+                <option value="@LogLevel.Debug" selected="@(Model.Settings.LogLevel == LogLevel.Debug)">Debug</option>
+                <option value="@LogLevel.Info" selected="@(Model.Settings.LogLevel == LogLevel.Info)">Info</option>
+                <option value="@LogLevel.Warning" selected="@(Model.Settings.LogLevel == LogLevel.Warning)">Warning</option>
+                <option value="@LogLevel.Error" selected="@(Model.Settings.LogLevel == LogLevel.Error)">Error</option>
+                <option value="@LogLevel.Critical" selected="@(Model.Settings.LogLevel == LogLevel.Critical)">Critical</option>
+                <option value="@LogLevel.None" selected="@(Model.Settings.LogLevel == LogLevel.None)">None</option>
+            </select>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label>@Localization.LabelLogLevel</label>
-        <select name="LogLevel" required>
-            <option value="@LogLevel.Debug" selected="@(Model.Settings.LogLevel == LogLevel.Debug)">Debug</option>
-            <option value="@LogLevel.Info" selected="@(Model.Settings.LogLevel == LogLevel.Info)">Info</option>
-            <option value="@LogLevel.Warning" selected="@(Model.Settings.LogLevel == LogLevel.Warning)">Warning</option>
-            <option value="@LogLevel.Error" selected="@(Model.Settings.LogLevel == LogLevel.Error)">Error</option>
-            <option value="@LogLevel.Critical" selected="@(Model.Settings.LogLevel == LogLevel.Critical)">Critical</option>
-            <option value="@LogLevel.None" selected="@(Model.Settings.LogLevel == LogLevel.None)">None</option>
-        </select>
+    <div class="align-self-end mt-2">
+        <button style="@ButtonStyle.Secondary" data-dismiss="modal" data-target="#myModal">@Localization.ButtonCancel</button>
+        <button style="@ButtonStyle.Primary" onclick="Settings.Save(@(Model.Project != null ? "true" : "false"));">@Localization.ButtonSave</button>
     </div>
-</div>
-
-<div class="float-right">
-    @if (Model.Project?.Result != null)
-    {
-        <button style="@ButtonStyle.Secondary" data-dismiss="modal" data-target="#myModal">@Localization.ButtonCancel</button>
-        <button style="@ButtonStyle.Primary" onclick="Settings.Save(true);">@Localization.ButtonSave</button>
-    }
-    else
-    {
-        <button style="@ButtonStyle.Secondary" data-dismiss="modal" data-target="#myModal">@Localization.ButtonCancel</button>
-        <button style="@ButtonStyle.Primary" onclick="Settings.Save(false);">@Localization.ButtonSave</button>
-    }
 </div>

@@ -72,21 +72,24 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
 
             // Script the CREATE TYPE
+            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelUserDefinedTypes));
             foreach (var userDataType in database.DataTypes.Where(x => x.IsUserDefined))
             {
                 sb.AppendLine(this.ScriptCreateType(userDataType, database.DataTypes));
             }
 
             // Script the CREATE SEQUENCE
+            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelSequences));
             foreach (var sequence in database.Sequences)
             {
                 sb.AppendLine(this.ScriptCreateSequence(sequence));
             }
 
             // Script the CREATE TABLE
+            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTables));
             foreach (var table in database.Tables)
             {
-                sb.Append(this.ScriptCreateTable(table));
+                sb.AppendLine(this.ScriptCreateTable(table));
             }
 
             sb.AppendLine();

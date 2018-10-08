@@ -575,4 +575,22 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelViews" xml:space="preserve">
     <value>Views</value>
   </data>
+  <data name="MenuGenerateScript" xml:space="preserve">
+    <value>Generate Script</value>
+  </data>
+  <data name="MenuFullSourceDatabaseScript" xml:space="preserve">
+    <value>Full Source Database Script</value>
+  </data>
+  <data name="MenuFullTargetDatabaseScript" xml:space="preserve">
+    <value>Full Target Database Script</value>
+  </data>
+  <data name="LabelTables" xml:space="preserve">
+    <value>Tables</value>
+  </data>
+  <data name="LabelUserDefinedTypes" xml:space="preserve">
+    <value>User-Defined Data Types</value>
+  </data>
+  <data name="LabelSequences" xml:space="preserve">
+    <value>Sequences</value>
+  </data>
 </root>

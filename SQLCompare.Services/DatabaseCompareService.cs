@@ -393,6 +393,9 @@ namespace SQLCompare.Services
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
+                        this.result.SourceFullScript = scripter.GenerateFullScript(this.retrievedSourceDatabase);
+                        this.result.TargetFullScript = scripter.GenerateFullScript(this.retrievedTargetDatabase);
+
                         this.projectService.Project.Result = this.result;
 
                         return true;

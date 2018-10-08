@@ -566,4 +566,22 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelViews" xml:space="preserve">
     <value>Viste</value>
   </data>
+  <data name="MenuGenerateScript" xml:space="preserve">
+    <value>Genera Script</value>
+  </data>
+  <data name="MenuFullSourceDatabaseScript" xml:space="preserve">
+    <value>Script completo Database Origine</value>
+  </data>
+  <data name="MenuFullTargetDatabaseScript" xml:space="preserve">
+    <value>Script completo Database Destinazione</value>
+  </data>
+  <data name="LabelTables" xml:space="preserve">
+    <value>Tabelle</value>
+  </data>
+  <data name="LabelUserDefinedTypes" xml:space="preserve">
+    <value>Tipi di dati definiti dall'utente</value>
+  </data>
+  <data name="LabelSequences" xml:space="preserve">
+    <value>Sequenze</value>
+  </data>
 </root>

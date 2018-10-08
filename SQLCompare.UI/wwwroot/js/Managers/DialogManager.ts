@@ -88,16 +88,17 @@ class DialogManager {
 
     /**
      * Perform an ajax call and open the modal dialog filled with the response
+     * @param title The title of the dialog
      * @param url The URL of the ajax call
-     * @param method The method (GET/POST)
-     * @param data? The object data to send when the method is POST
-     * @param callbackFunction? A function which will be called after opening the dialog
+     * @param maxWidth CSS value for the dialog max-width
      */
-    public static async OpenModalDialog(url: string): Promise<void> {
+    public static async OpenModalDialog(title: string, url: string, maxWidth?: string): Promise<void> {
         return Utility.AjaxGetPage(url).then((result: string): void => {
-            $("#myModalBody").html(result);
-            $("#myModal > .modal-dialog").css("max-width", "");
+            $("#myModal .modal-title").html(title);
+            $("#myModal .modal-body").html(result);
+            $("#myModal .modal-dialog").css("max-width", maxWidth !== undefined ? maxWidth : "");
             $("#myModal").modal("show");
+            // Fix tabs height
             $("#myModal .tab-pane").matchHeight({
                 byRow: false,
             });
@@ -109,8 +110,8 @@ class DialogManager {
      */
     public static CloseModalDialog(): void {
         $("#myModal").modal("hide");
-        $("#myModalBody").empty();
-        $(".modal-dialog").css("max-width", "");
+        $("#myModal .modal-title").empty();
+        $("#myModal .modal-body").empty();
     }
 
     /**

@@ -16,10 +16,7 @@ class Settings {
      * Open the Settings page
      */
     public static Open(): void {
-        DialogManager.OpenModalDialog(this.pageUrl).then(() => {
-            $("#myModal > .modal-dialog").css("max-width", "300px");
-            $("#myModal > .modal-title").html("Settings");
-        });
+        DialogManager.OpenModalDialog(Localization.Get("MenuSettings"), this.pageUrl, "300px");
     }
 
     /**
@@ -38,6 +35,7 @@ class Settings {
                 // Recreate the menu with the new language
                 MenuManager.CreateMenu().then((): void => {
                     MenuManager.ToggleProjectRelatedMenuStatus(projectIsOpen);
+                    MenuManager.ToggleMainOpenRelatedMenuStatus(PageManager.GetOpenPage() === PageManager.Page.Main);
                 });
                 // Close the modal and reopen the current page
                 DialogManager.CloseModalDialog();

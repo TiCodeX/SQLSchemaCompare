@@ -747,6 +747,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sequences.
+        /// </summary>
+        public static string LabelSequences {
+            get {
+                return ResourceManager.GetString("LabelSequences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Source.
         /// </summary>
         public static string LabelSource {
@@ -801,6 +810,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tables.
+        /// </summary>
+        public static string LabelTables {
+            get {
+                return ResourceManager.GetString("LabelTables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Target.
         /// </summary>
         public static string LabelTarget {
@@ -842,6 +860,15 @@ namespace SQLCompare.Services {
         public static string LabelUserDefinedType {
             get {
                 return ResourceManager.GetString("LabelUserDefinedType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User-Defined Data Types.
+        /// </summary>
+        public static string LabelUserDefinedTypes {
+            get {
+                return ResourceManager.GetString("LabelUserDefinedTypes", resourceCulture);
             }
         }
         
@@ -941,6 +968,33 @@ namespace SQLCompare.Services {
         public static string MenuFile {
             get {
                 return ResourceManager.GetString("MenuFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full Source Database Script.
+        /// </summary>
+        public static string MenuFullSourceDatabaseScript {
+            get {
+                return ResourceManager.GetString("MenuFullSourceDatabaseScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full Target Database Script.
+        /// </summary>
+        public static string MenuFullTargetDatabaseScript {
+            get {
+                return ResourceManager.GetString("MenuFullTargetDatabaseScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generate Script.
+        /// </summary>
+        public static string MenuGenerateScript {
+            get {
+                return ResourceManager.GetString("MenuGenerateScript", resourceCulture);
             }
         }
         

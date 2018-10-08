@@ -1,0 +1,12 @@
+﻿@page
+@using Core.Interfaces
+@using Enums
+@using Services
+@model SqlScriptPageModel
+
+<div id="sqlEditor" class="tcx-sql-editor">
+</div>
+
+<div class="d-flex justify-content-end p-1">
+    <button style="@ButtonStyle.Secondary" data-dismiss="modal" data-target="#myModal">@Localization.ButtonClose</button>
+</div>

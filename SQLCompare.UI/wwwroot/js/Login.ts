@@ -36,7 +36,7 @@ class Login {
                     }
 
                 },
-                error: (error: JQuery.jqXHR): void => {
+                error: (): void => {
                     $("#webview").attr("src", webviewUrl);
                     Login.ShowErrorModal(Localization.Get("ErrorGeneric"), ApiResponse.EErrorCodes.ErrorUnexpected, undefined);
                 },
@@ -61,14 +61,16 @@ class Login {
             case ApiResponse.EErrorCodes.ErrorTrialSubscriptionExpired:
                 $("#myModalLink").html(Localization.Get("MessageGetASubscription"));
                 $("#myModalLink").on("click", () => {
-                    Utility.OpenExternalBrowser(`${$("#urlSubscribe").val()}&s=${result}`);
+                    Utility.OpenExternalBrowser(`${$("#urlSubscribe").val()}&s=${encodeURIComponent(result)}`);
                 });
+                $("#myModalLink").show();
                 break;
             case ApiResponse.EErrorCodes.ErrorApplicationUpdateNeeded:
                 $("#myModalLink").html(Localization.Get("MessageDownloadLatestVersion"));
                 $("#myModalLink").on("click", () => {
                     Utility.OpenExternalBrowser("https://www.ticodex.com/");
                 });
+                $("#myModalLink").show();
                 break;
             default:
                 $("#myModalLink").hide();
@@ -111,11 +113,14 @@ $((): void => {
             webview.hide();
             $("#myModalText").html(Localization.Get("ErrorCannotContactTiCodeXWebsite"));
             $("#myModalLink").html("www.ticodex.com");
-            $("#myModalLink").on("click", () => { Utility.OpenExternalBrowser("https://www.ticodex.com"); });
+            $("#myModalLink").on("click", () => {
+                Utility.OpenExternalBrowser("https://www.ticodex.com");
+            });
+            $("#myModalLink").show();
             $("#closeButton").hide();
             $("#myModal").modal("show");
         });
-        webview.on("did-finish-load", (e: JQuery.Event): void => {
+        webview.on("did-finish-load", (): void => {
             $(".tcx-loader").hide();
             const errorMessageElement: JQuery = $("#verifySessionResultErrorMessage");
             const errorCodeElement: JQuery = $("#verifySessionResultErrorCode");

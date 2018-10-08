@@ -58,7 +58,7 @@ namespace SQLCompare.UI.Pages
                 this.logger.LogError(ex, "Unable to get app settings");
             }
 
-            this.MyAccountEndpoint = $"{this.appGlobals.MyAccountEndpoint}&s={session}";
+            this.MyAccountEndpoint = $"{this.appGlobals.MyAccountEndpoint}&s={Uri.EscapeDataString(session)}";
         }
     }
 }

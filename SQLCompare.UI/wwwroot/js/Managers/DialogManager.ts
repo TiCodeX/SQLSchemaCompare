@@ -52,6 +52,7 @@ class DialogManager {
         return new Promise<DialogManager.DialogButton>((resolve: PromiseResolve<DialogManager.DialogButton>): void => {
 
             const buttonLabels: Array<string> = [];
+            let cancelId: number = buttons.length - 1;
             for (const button of buttons) {
                 switch (button) {
                     case DialogManager.DialogButton.Yes:
@@ -62,6 +63,7 @@ class DialogManager {
                         break;
                     case DialogManager.DialogButton.Cancel:
                         buttonLabels.push(Localization.Get("ButtonCancel"));
+                        cancelId = buttonLabels.length - 1;
                         break;
                     default:
                 }
@@ -73,9 +75,11 @@ class DialogManager {
                     type: "question",
                     message: message,
                     buttons: buttonLabels,
+                    cancelId: cancelId,
+                    noLink: true,
                     title: title,
                 },
-                (response: number, checked: boolean) => {
+                (response: number) => {
                     resolve(response);
                 },
             );

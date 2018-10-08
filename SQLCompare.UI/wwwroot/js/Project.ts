@@ -308,7 +308,7 @@ class Project {
     public static RemoveRecentProject(filename: string): void {
         const data: object = <object>JSON.parse(JSON.stringify(filename));
 
-        Utility.AjaxCall(this.removeRecentUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string>): void => {
+        Utility.AjaxCall(this.removeRecentUrl, Utility.HttpMethod.Post, data).then((): void => {
             if (PageManager.GetOpenPage() === PageManager.Page.Welcome) {
                 PageManager.LoadPage(PageManager.Page.Welcome);
             }

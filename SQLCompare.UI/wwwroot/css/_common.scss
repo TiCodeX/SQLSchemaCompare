@@ -88,14 +88,21 @@ label {
 .bs-tooltip-top .arrow::before {
     border-top-color: #555;
 }
+
 .bs-tooltip-right .arrow::before {
     border-right-color: #555;
 }
+
 .bs-tooltip-bottom .arrow::before {
     border-bottom-color: #555;
 }
+
 .bs-tooltip-left .arrow::before {
     border-left-color: #555;
+}
+
+.needs-validation {
+    /*Bootstrap doesn't define this class and linter doesn't like it*/
 }
 
 /*#endregion*/
@@ -120,7 +127,7 @@ label {
 }
 /*#endregion*/
 
-*[onclick] {
+*[onclick]:not(:disabled):not(.disabled) {
     cursor: pointer;
 }
 

@@ -78,6 +78,20 @@ log4js.configure({
 const logger: log4js.Logger = log4js.getLogger("electron");
 logger.info(`Starting SQL Compare v${electron.app.getVersion()}`);
 
+//#region Check Single Instance
+const isSecondInstance: boolean = electron.app.makeSingleInstance(() => {
+    // Someone tried to run a second instance, we should focus our current window
+    const currentWindow: Electron.BrowserWindow = loginWindow !== undefined ? loginWindow : mainWindow;
+    if (currentWindow !== undefined && currentWindow !== null) {
+        if (currentWindow.isMinimized()) {
+            currentWindow.restore();
+        }
+        currentWindow.show();
+        currentWindow.focus();
+    }
+});
+//#endregion
+
 //#region Configure electron auto-updater
 const autoUpdaterLogger: log4js.Logger = log4js.getLogger("electron-updater");
 autoUpdaterLogger.level = (isDebug ? "debug" : "info");
@@ -87,7 +101,7 @@ electronUpdater.autoUpdater.logger = {
     error: (message: string): void => { autoUpdaterLogger.error(message); },
     debug: (message: string): void => { autoUpdaterLogger.debug(message); },
 };
-electronUpdater.autoUpdater.autoDownload = !isDebug && electronUpdater.getCurrentPlatform() !== "linux";
+electronUpdater.autoUpdater.autoDownload = !isDebug && !isSecondInstance && electronUpdater.getCurrentPlatform() !== "linux";
 electronUpdater.autoUpdater.autoInstallOnAppQuit = false;
 const autoUpdaterPublishOptions: builderUtilRuntime.GenericServerOptions = {
     provider: "generic",
@@ -394,6 +408,13 @@ function startSqlCompareBackend(webPort: number): void {
  * Startup function called when Electron is ready
  */
 function startup(): void {
+    if (isSecondInstance) {
+        logger.info("Another instance is already running");
+        electron.app.quit();
+
+        return;
+    }
+
     // Setup request default auth header
     const filter: Electron.OnBeforeSendHeadersFilter = {
         urls: [
@@ -482,18 +503,19 @@ electron.app.on("ready", startup);
 // This method will be called when Electron will quit the application
 electron.app.on("will-quit", () => {
     if (serviceProcess !== undefined) {
-        logger.debug("Stopping service");
+        logger.info("Stopping service");
         serviceProcess.kill();
     }
+
+    logger.info("Application closed");
+    log4js.shutdown(() => {
+        // Do nothing
+    });
 });
 
 // Quit when all windows are closed.
 electron.app.on("window-all-closed", () => {
-    logger.info("Application closed");
     electron.app.quit();
-    log4js.shutdown(() => {
-        // Do nothing
-    });
 });
 
 electron.app.on("activate", () => {

@@ -25,6 +25,11 @@ namespace SQLCompare.UI.Models.Project
         public string SourceHostname { get; set; }
 
         /// <summary>
+        /// Gets or sets the source port
+        /// </summary>
+        public short? SourcePort { get; set; }
+
+        /// <summary>
         /// Gets or sets the source username
         /// </summary>
         public string SourceUsername { get; set; }
@@ -58,6 +63,11 @@ namespace SQLCompare.UI.Models.Project
         /// Gets or sets the target hostname
         /// </summary>
         public string TargetHostname { get; set; }
+
+        /// <summary>
+        /// Gets or sets the target port
+        /// </summary>
+        public short? TargetPort { get; set; }
 
         /// <summary>
         /// Gets or sets the target username

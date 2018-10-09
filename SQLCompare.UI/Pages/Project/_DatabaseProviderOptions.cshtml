@@ -17,18 +17,25 @@
             <div class="form-group">
                 <label>@Localization.LabelHostname</label>
                 <input type="text" name="@(prefix)Hostname" value="@Model.Hostname"
+                       oninput="Project.HandleHostnameOnInput($(this), '@prefix')" required>
+            </div>
+            <div class="form-group">
+                <label>Port</label>
+                <input type="number" name="@(prefix)Port" value="@Model.Port"
+                       min="1" max="65535" class="col-4"
+                       disabled="@(Model is MicrosoftSqlDatabaseProviderOptions a && !string.IsNullOrEmpty(a.Hostname) && a.Hostname.Contains('\\'))"
                        oninput="Project.SetDirtyState()" required>
             </div>
             <div class="form-group">
                 <label>@Localization.LabelUsername</label>
                 <input type="text" name="@(prefix)Username" value="@Model.Username"
-                       disabled="@(Model is MicrosoftSqlDatabaseProviderOptions a && a.UseWindowsAuthentication)"
+                       disabled="@(Model is MicrosoftSqlDatabaseProviderOptions b && b.UseWindowsAuthentication)"
                        oninput="Project.SetDirtyState()" required>
             </div>
             <div class="form-group">
                 <label>@Localization.LabelPassword</label>
                 <input type="password" name="@(prefix)Password" value="@cipherService.DecryptString(Model.Password)"
-                       disabled="@(Model is MicrosoftSqlDatabaseProviderOptions b && b.UseWindowsAuthentication)"
+                       disabled="@(Model is MicrosoftSqlDatabaseProviderOptions c && c.UseWindowsAuthentication)"
                        oninput="Project.SetDirtyState()" required>
             </div>
             <div class="form-group row">
@@ -40,7 +47,7 @@
                         <input type="checkbox" name="@(prefix)SavePassword"
                                data-value-type="boolean"
                                checked="@Model.SavePassword"
-                               disabled="@(Model is MicrosoftSqlDatabaseProviderOptions c && c.UseWindowsAuthentication)">
+                               disabled="@(Model is MicrosoftSqlDatabaseProviderOptions d && d.UseWindowsAuthentication)">
                         <span class="tcx-switch-slider"></span>
                     </label>
                 </div>
@@ -53,7 +60,7 @@
                     <label class="tcx-switch">
                         <input type="checkbox" name="@(prefix)UseWindowsAuthentication"
                                data-value-type="boolean"
-                               checked="@(Model is MicrosoftSqlDatabaseProviderOptions d && d.UseWindowsAuthentication)"
+                               checked="@(Model is MicrosoftSqlDatabaseProviderOptions e && e.UseWindowsAuthentication)"
                                onchange="Project.HandleUseWindowsAuthenticationOnChange($(this), '@prefix')">
                         <span class="tcx-switch-slider"></span>
                     </label>

@@ -17,26 +17,32 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// <param name="cipherService">The injected cipher service</param>
         /// <param name="dbpo">The MySql database provider options</param>
         public MySqlDatabaseContext(ILoggerFactory loggerFactory, ICipherService cipherService, MySqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MySqlDatabaseContext)), cipherService, dbpo)
+            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MySqlDatabaseContext)), dbpo)
         {
+            var connStr = $"Server={dbpo.Hostname};Port={dbpo.Port};Database={dbpo.Database};User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
+
+            if (dbpo.UseSSL)
+            {
+                connStr += "SslMode=Required;";
+            }
+            else
+            {
+                connStr += "SslMode=None;";
+            }
+
+            this.ConnectionString = connStr;
         }
+
+        /// <summary>
+        /// Gets the string used for the connection
+        /// </summary>
+        private string ConnectionString { get; }
 
         /// <inheritdoc/>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-
-            var connectionString = this.ConnectionString;
-            if (this.DatabaseProviderOptions.UseSSL)
-            {
-                connectionString += "SslMode=Required;";
-            }
-            else
-            {
-                connectionString += "SslMode=None;";
-            }
-
-            optionsBuilder.UseMySQL(connectionString);
+            optionsBuilder.UseMySQL(this.ConnectionString);
         }
     }
 }

@@ -17,30 +17,46 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// <param name="cipherService">The injected cipher service</param>
         /// <param name="dbpo">The MicrosoftSql database provider options</param>
         public MicrosoftSqlDatabaseContext(ILoggerFactory loggerFactory, ICipherService cipherService, MicrosoftSqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MicrosoftSqlDatabaseContext)), cipherService, dbpo)
+            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MicrosoftSqlDatabaseContext)), dbpo)
         {
+            var server = dbpo.Hostname;
+            if (!server.Contains("\\"))
+            {
+                server += $",{dbpo.Port}";
+            }
+
+            var connStr = $"Server={server};Database={dbpo.Database};";
+
+            if (dbpo.UseWindowsAuthentication)
+            {
+                connStr += "Integrated Security=SSPI;";
+            }
+            else
+            {
+                connStr += $"User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
+            }
+
+            if (dbpo.UseSSL)
+            {
+                connStr += "Encrypt=true;";
+            }
+
+            connStr += "Connection Timeout=30;";
+            connStr += "Persist Security Info=False;";
+
+            this.ConnectionString = connStr;
         }
+
+        /// <summary>
+        /// Gets the string used for the connection
+        /// </summary>
+        private string ConnectionString { get; }
 
         /// <inheritdoc/>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-
-            var connectionString = this.ConnectionString;
-            if (this.DatabaseProviderOptions.UseWindowsAuthentication)
-            {
-                connectionString = $"Server={this.DatabaseProviderOptions.Hostname};Database={this.DatabaseProviderOptions.Database};Integrated Security=SSPI;";
-            }
-
-            if (this.DatabaseProviderOptions.UseSSL)
-            {
-                connectionString += "Encrypt=true;";
-            }
-
-            connectionString += "Connection Timeout=30;";
-            connectionString += "Persist Security Info=False;";
-
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseSqlServer(this.ConnectionString);
         }
     }
 }

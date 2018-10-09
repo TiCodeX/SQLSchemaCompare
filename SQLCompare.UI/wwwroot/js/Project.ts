@@ -351,16 +351,31 @@ class Project {
     /**
      * Handle the onChange event of the DatabaseType select
      * @param select The jQuery element of the select
-     * @param prefix The page prefix (Source/Target)
      */
     public static HandleDatabaseTypeOnChange(select: JQuery): void {
         const useWindowAuthentication: JQuery = $("input[name$='UseWindowsAuthentication']").parents(".form-group");
         switch (+select.val()) {
             case Project.DatabaseType.MicrosoftSql:
                 useWindowAuthentication.show();
+                this.HandleHostnameOnInput($("input[name='SourceHostname']"), "Source");
+                this.HandleHostnameOnInput($("input[name='TargetHostname']"), "Target");
                 break;
             default:
                 useWindowAuthentication.hide();
+                $("input[name$='Port']").prop("disabled", false);
+        }
+        this.SetDirtyState();
+    }
+
+    /**
+     * Handle the onInput event of the Hostname field
+     * @param input The jQuery element of the input
+     * @param prefix The page prefix (Source/Target)
+     */
+    public static HandleHostnameOnInput(input: JQuery, prefix: string): void {
+        const databaseType: JQuery = $("[name='DatabaseType']");
+        if (+databaseType.val() === Project.DatabaseType.MicrosoftSql) {
+            $(`input[name='${prefix}Port']`).prop("disabled", (<string>input.val()).includes("\\"));
         }
         this.SetDirtyState();
     }

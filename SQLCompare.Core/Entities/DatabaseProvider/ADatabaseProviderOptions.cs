@@ -11,6 +11,11 @@
         public string Hostname { get; set; }
 
         /// <summary>
+        /// Gets or sets the port
+        /// </summary>
+        public short Port { get; set; }
+
+        /// <summary>
         /// Gets or sets the database name
         /// </summary>
         public string Database { get; set; }

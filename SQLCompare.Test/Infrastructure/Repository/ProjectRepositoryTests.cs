@@ -141,6 +141,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
 <CompareProject xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <SourceProviderOptions xsi:type=""MicrosoftSqlDatabaseProviderOptions"">
     <Hostname>{sourceHostname}</Hostname>
+    <Port>1433</Port>
     <Database>{sourceDatabase}</Database>
     <Username>{sourceUsername}</Username>
     <Password>{sourcePassword}</Password>
@@ -150,6 +151,7 @@ namespace SQLCompare.Test.Infrastructure.Repository
   </SourceProviderOptions>
   <TargetProviderOptions xsi:type=""PostgreSqlDatabaseProviderOptions"">
     <Hostname>{targetHostname}</Hostname>
+    <Port>5432</Port>
     <Database>{targetDatabase}</Database>
     <Username>{targetUsername}</Username>
     <SavePassword>{XmlConvert.ToString(targetSavePassword)}</SavePassword>

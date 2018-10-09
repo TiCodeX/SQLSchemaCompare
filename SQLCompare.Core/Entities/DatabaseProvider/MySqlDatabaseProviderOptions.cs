@@ -5,5 +5,17 @@
     /// </summary>
     public class MySqlDatabaseProviderOptions : ADatabaseProviderOptions
     {
+        /// <summary>
+        /// The default port
+        /// </summary>
+        public const short DefaultPort = 3306;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MySqlDatabaseProviderOptions"/> class
+        /// </summary>
+        public MySqlDatabaseProviderOptions()
+        {
+            this.Port = DefaultPort;
+        }
     }
 }

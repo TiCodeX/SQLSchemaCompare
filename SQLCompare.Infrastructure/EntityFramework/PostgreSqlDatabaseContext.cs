@@ -17,22 +17,28 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// <param name="cipherService">The injected cipher service</param>
         /// <param name="dbpo">The PostgreSql database provider options</param>
         public PostgreSqlDatabaseContext(ILoggerFactory loggerFactory, ICipherService cipherService, PostgreSqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory, loggerFactory.CreateLogger(nameof(PostgreSqlDatabaseContext)), cipherService, dbpo)
+            : base(loggerFactory, loggerFactory.CreateLogger(nameof(PostgreSqlDatabaseContext)), dbpo)
         {
+            var connStr = $"Server={dbpo.Hostname};Port={dbpo.Port};Database={dbpo.Database};User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
+
+            if (dbpo.UseSSL)
+            {
+                connStr += "SSL Mode=Require;";
+            }
+
+            this.ConnectionString = connStr;
         }
+
+        /// <summary>
+        /// Gets the string used for the connection
+        /// </summary>
+        private string ConnectionString { get; }
 
         /// <inheritdoc/>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-
-            var connectionString = this.ConnectionString;
-            if (this.DatabaseProviderOptions.UseSSL)
-            {
-                connectionString += "SSL Mode=Require;";
-            }
-
-            optionsBuilder.UseNpgsql(connectionString);
+            optionsBuilder.UseNpgsql(this.ConnectionString);
         }
     }
 }

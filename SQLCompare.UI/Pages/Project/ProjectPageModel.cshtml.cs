@@ -283,6 +283,7 @@ namespace SQLCompare.UI.Pages.Project
         {
             var type = options.DatabaseType;
             var hostname = direction == CompareDirection.Source ? options.SourceHostname : options.TargetHostname;
+            var port = direction == CompareDirection.Source ? options.SourcePort : options.TargetPort;
             var username = direction == CompareDirection.Source ? options.SourceUsername : options.TargetUsername;
             var password = this.cipherService.EncryptString(direction == CompareDirection.Source ? options.SourcePassword : options.TargetPassword);
             var savePassword = direction == CompareDirection.Source ? options.SourceSavePassword : options.TargetSavePassword;
@@ -296,6 +297,7 @@ namespace SQLCompare.UI.Pages.Project
                     return new MicrosoftSqlDatabaseProviderOptions
                     {
                         Hostname = hostname,
+                        Port = port ?? MicrosoftSqlDatabaseProviderOptions.DefaultPort,
                         Username = username,
                         Password = password,
                         SavePassword = savePassword,
@@ -307,6 +309,7 @@ namespace SQLCompare.UI.Pages.Project
                     return new MySqlDatabaseProviderOptions
                     {
                         Hostname = hostname,
+                        Port = port ?? MySqlDatabaseProviderOptions.DefaultPort,
                         Username = username,
                         Password = password,
                         SavePassword = savePassword,
@@ -317,6 +320,7 @@ namespace SQLCompare.UI.Pages.Project
                     return new PostgreSqlDatabaseProviderOptions
                     {
                         Hostname = hostname,
+                        Port = port ?? PostgreSqlDatabaseProviderOptions.DefaultPort,
                         Username = username,
                         Password = password,
                         SavePassword = savePassword,

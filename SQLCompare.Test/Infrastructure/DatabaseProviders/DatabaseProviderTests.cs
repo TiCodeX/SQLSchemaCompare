@@ -96,7 +96,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             db.Views.Count.Should().Be(6);
             db.Views.Should().ContainSingle(x => x.Name == "film_list");
 
-            db.Functions.Should().BeEmpty();
+            db.Functions.Count.Should().Be(2);
             db.StoredProcedures.Should().BeEmpty();
 
             db.Triggers.Should().NotBeNullOrEmpty();

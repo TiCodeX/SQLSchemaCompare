@@ -72,112 +72,129 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
 
             // Script the CREATE TYPE
-            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelUserDefinedTypes));
-            foreach (var userDataType in database.DataTypes.Where(x => x.IsUserDefined))
+            var userDefinedDataTypes = database.DataTypes.Where(x => x.IsUserDefined).ToList();
+            if (userDefinedDataTypes.Count > 0)
             {
-                sb.AppendLine(this.ScriptCreateType(userDataType, database.DataTypes));
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelUserDefinedTypes));
+                foreach (var userDataType in userDefinedDataTypes)
+                {
+                    sb.AppendLine(this.ScriptCreateType(userDataType, database.DataTypes));
+                }
+
+                sb.AppendLine();
             }
 
             // Script the CREATE SEQUENCE
-            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelSequences));
-            foreach (var sequence in database.Sequences)
+            if (database.Sequences.Count > 0)
             {
-                sb.AppendLine(this.ScriptCreateSequence(sequence));
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelSequences));
+                foreach (var sequence in database.Sequences)
+                {
+                    sb.AppendLine(this.ScriptCreateSequence(sequence));
+                }
+
+                sb.AppendLine();
             }
 
             // Script the CREATE TABLE
-            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTables));
-            foreach (var table in database.Tables)
+            if (database.Tables.Count > 0)
             {
-                sb.AppendLine(this.ScriptCreateTable(table));
-            }
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTables));
+                foreach (var table in database.Tables)
+                {
+                    sb.AppendLine(this.ScriptCreateTable(table));
+                }
 
-            sb.AppendLine();
-            sb.AppendLine();
+                sb.AppendLine();
+            }
 
             // Script the functions
-            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelFunctions));
             if (database.Functions.Count > 0)
             {
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelFunctions));
                 foreach (var function in database.Functions)
                 {
+                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                     sb.Append(this.ScriptCreateFunction(function, database.DataTypes));
+                    sb.AppendLine();
                 }
-            }
 
-            sb.AppendLine();
-            sb.AppendLine();
+                sb.AppendLine();
+            }
 
             // Script the stored procedures
-            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelStoredProcedures));
             if (database.StoredProcedures.Count > 0)
             {
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelStoredProcedures));
                 foreach (var storedProcedure in database.StoredProcedures)
                 {
+                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                     sb.Append(this.ScriptCreateStoredProcedure(storedProcedure));
+                    sb.AppendLine();
                 }
-            }
 
-            sb.AppendLine();
-            sb.AppendLine();
+                sb.AppendLine();
+            }
 
             // Script the ALTER TABLE for primary keys and indexes
-            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraintsAndIndexes));
-            foreach (var table in database.Tables)
+            var constraintsAndIndexes = database.Tables.Count > 0 &&
+                                        database.Tables.Any(x => x.PrimaryKeys.Count > 0 ||
+                                                                 x.Constraints.Count > 0 ||
+                                                                 x.Indexes.Count > 0);
+            if (constraintsAndIndexes)
             {
-                sb.Append(this.ScriptPrimaryKeysAlterTable(table));
-                sb.Append(this.ScriptConstraintsAlterTable(table));
-                sb.Append(this.ScriptCreateIndexes(table, table.Indexes));
-            }
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraintsAndIndexes));
+                foreach (var table in database.Tables)
+                {
+                    sb.Append(this.ScriptPrimaryKeysAlterTable(table));
+                    sb.Append(this.ScriptConstraintsAlterTable(table));
+                    sb.Append(this.ScriptCreateIndexes(table, table.Indexes));
+                }
 
-            sb.AppendLine();
-            sb.AppendLine();
+                sb.AppendLine();
+            }
 
             // Script the ALTER TABLE for foreign keys
-            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-            foreach (var table in database.Tables)
+            if (database.Tables.Count > 0 && database.Tables.Any(x => x.ForeignKeys.Count > 0))
             {
-                sb.AppendLine(this.ScriptForeignKeysAlterTable(table));
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
+                foreach (var table in database.Tables)
+                {
+                    sb.Append(this.ScriptForeignKeysAlterTable(table));
+                }
+
+                sb.AppendLine();
             }
 
-            sb.AppendLine();
-            sb.AppendLine();
-
             // Script the views
-            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelViews));
             if (database.Views.Count > 0)
             {
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelViews));
                 foreach (var view in database.Views)
                 {
-                    var viewScript = this.ScriptCreateView(view);
-                    sb.Append(viewScript);
-                    if (!viewScript.EndsWith("\n", StringComparison.Ordinal))
-                    {
-                        sb.AppendLine();
-                    }
-
                     sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-                    sb.Append(this.ScriptCreateIndexes(view, view.Indexes));
+                    sb.AppendLine(this.ScriptCreateView(view));
+
+                    if (view.Indexes.Count > 0)
+                    {
+                        sb.Append(this.ScriptCreateIndexes(view, view.Indexes));
+                    }
                 }
+
+                sb.AppendLine();
             }
 
             // Script the triggers
-            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
             if (database.Triggers.Count > 0)
             {
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
                 foreach (var trigger in database.Triggers)
                 {
-                    var triggerScript = this.ScriptCreateTrigger(trigger);
-                    sb.Append(triggerScript);
-                    if (!triggerScript.EndsWith("\n", StringComparison.Ordinal))
-                    {
-                        sb.AppendLine();
-                    }
+                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                    sb.AppendLine(this.ScriptCreateTrigger(trigger));
                 }
+
+                sb.AppendLine();
             }
 
             return sb.ToString();

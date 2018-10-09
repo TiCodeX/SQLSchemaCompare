@@ -215,7 +215,6 @@ namespace SQLCompare.Infrastructure.SqlScripters
             sb.Append("AS $BODY$");
             sb.Append(function.Definition);
             sb.AppendLine("$BODY$;");
-            sb.AppendLine();
 
             return sb.ToString();
         }
@@ -251,6 +250,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
             {
                 sb.Append(";");
             }
+
+            sb.AppendLine();
 
             return sb.ToString();
         }

@@ -259,6 +259,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No objects found, both databases are empty.
+        /// </summary>
+        public static string ErrorEmptyDatabases {
+            get {
+                return ResourceManager.GetString("ErrorEmptyDatabases", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred.
         /// </summary>
         public static string ErrorGeneric {

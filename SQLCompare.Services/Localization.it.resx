@@ -584,4 +584,7 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelSequences" xml:space="preserve">
     <value>Sequenze</value>
   </data>
+  <data name="ErrorEmptyDatabases" xml:space="preserve">
+    <value>Nessun oggetto trovato, entrambi i database sono vuoti</value>
+  </data>
 </root>

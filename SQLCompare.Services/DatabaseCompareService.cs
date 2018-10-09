@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Compare;
@@ -243,6 +244,11 @@ namespace SQLCompare.Services
                                          this.result.StoredProcedures.Count +
                                          this.result.Triggers.Count +
                                          this.result.DataTypes.Count;
+                        if (totalItems == 0)
+                        {
+                            throw new DataException(Localization.ErrorEmptyDatabases);
+                        }
+
                         var processedItems = 1;
                         var scripter = this.databaseScripterFactory.Create(
                             this.retrievedSourceDatabase,

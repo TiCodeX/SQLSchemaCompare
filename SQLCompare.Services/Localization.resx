@@ -593,4 +593,7 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelSequences" xml:space="preserve">
     <value>Sequences</value>
   </data>
+  <data name="ErrorEmptyDatabases" xml:space="preserve">
+    <value>No objects found, both databases are empty</value>
+  </data>
 </root>

@@ -638,4 +638,19 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="StatusComparingForeignKeys" xml:space="preserve">
     <value>Comparing Foreign Keys...</value>
   </data>
+  <data name="MenuCopy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="MenuSelectAll" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="MenuFind" xml:space="preserve">
+    <value>Find...</value>
+  </data>
+  <data name="MenuGoToLine" xml:space="preserve">
+    <value>Go to Line...</value>
+  </data>
+  <data name="MenuShowLineNumbers" xml:space="preserve">
+    <value>Show line numbers</value>
+  </data>
 </root>

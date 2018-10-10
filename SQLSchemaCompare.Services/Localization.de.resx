@@ -629,4 +629,19 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="StatusComparingForeignKeys" xml:space="preserve">
     <value>Vergleiche Fremdschlüssel...</value>
   </data>
+  <data name="MenuCopy" xml:space="preserve">
+    <value>Kopieren</value>
+  </data>
+  <data name="MenuSelectAll" xml:space="preserve">
+    <value>Alles auswählen</value>
+  </data>
+  <data name="MenuFind" xml:space="preserve">
+    <value>Suchen...</value>
+  </data>
+  <data name="MenuGoToLine" xml:space="preserve">
+    <value>Gehe zu Zeile...</value>
+  </data>
+  <data name="MenuShowLineNumbers" xml:space="preserve">
+    <value>Zeilennummern anzeigen</value>
+  </data>
 </root>

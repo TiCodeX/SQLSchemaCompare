@@ -1008,6 +1008,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string MenuCopy {
+            get {
+                return ResourceManager.GetString("MenuCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
         public static string MenuEdit {
@@ -1044,6 +1053,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Find....
+        /// </summary>
+        public static string MenuFind {
+            get {
+                return ResourceManager.GetString("MenuFind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Full Migration Script.
         /// </summary>
         public static string MenuFullMigrationScript {
@@ -1076,6 +1094,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string MenuGenerateScript {
             get {
                 return ResourceManager.GetString("MenuGenerateScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go to Line....
+        /// </summary>
+        public static string MenuGoToLine {
+            get {
+                return ResourceManager.GetString("MenuGoToLine", resourceCulture);
             }
         }
         
@@ -1152,11 +1179,29 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select All.
+        /// </summary>
+        public static string MenuSelectAll {
+            get {
+                return ResourceManager.GetString("MenuSelectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         public static string MenuSettings {
             get {
                 return ResourceManager.GetString("MenuSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show line numbers.
+        /// </summary>
+        public static string MenuShowLineNumbers {
+            get {
+                return ResourceManager.GetString("MenuShowLineNumbers", resourceCulture);
             }
         }
         

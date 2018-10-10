@@ -38,42 +38,6 @@ class Main {
     private static mainSplitterSizes: Array<number> = [60, 40]; // tslint:disable-line:no-magic-numbers
 
     /**
-     * Default monaco-editor options
-     */
-    private static readonly defaultMonacoOptions: monaco.editor.IEditorOptions = {
-        automaticLayout: true,
-        scrollBeyondLastLine: false,
-        readOnly: true,
-        stopRenderingLineAfter: -1,
-        links: false,
-        contextmenu: false,
-        quickSuggestions: false,
-        autoClosingBrackets: false,
-        selectionHighlight: false,
-        occurrencesHighlight: false,
-        folding: false,
-        minimap: {
-            enabled: false,
-        },
-        matchBrackets: false,
-        scrollbar: {
-            vertical: "visible",
-        },
-        /*fontWeight: "normal",*/
-        /*fontFamily: "Open Sans",*/
-        fontSize: 13,
-        /*lineHeight: 1,*/
-    };
-
-    /**
-     * Default monaco-editor options for the diff
-     */
-    private static readonly defaultMonacoOptionsDiff: monaco.editor.IDiffEditorConstructionOptions = $.extend({}, Main.defaultMonacoOptions,
-        {
-            ignoreTrimWhitespace: false,
-        });
-
-    /**
      * Open the Main page
      */
     public static Open(): void {
@@ -122,18 +86,15 @@ class Main {
         }
         $(".tcx-diff-item-name").html(`${sourceItem} <span class='fa fa-long-arrow-alt-right'></span> ${targetItem}`);
 
-        // Display the monaco editor
-        $("#sqlDiff").empty();
-        $("#sqlAlterScript").empty();
         Utility.AjaxCall(this.resultItemScriptsUrl + rowId, Utility.HttpMethod.Get).then((response: ApiResponse<CompareResultItemScripts>): void => {
-            const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(document.getElementById("sqlDiff"), this.defaultMonacoOptionsDiff);
-            diffEditor.setModel({
-                original: monaco.editor.createModel(response.Result.SourceCreateScript, "sql"),
-                modified: monaco.editor.createModel(response.Result.TargetCreateScript, "sql"),
-            });
 
-            const editor: monaco.editor.IStandaloneCodeEditor = monaco.editor.create(document.getElementById("sqlAlterScript"), this.defaultMonacoOptions);
-            editor.setModel(monaco.editor.createModel(response.Result.AlterScript, "sql"));
+            EditorManager.CreateEditor(EditorManager.Type.Diff, "sqlDiff",
+                {
+                    original: monaco.editor.createModel(response.Result.SourceCreateScript, "sql"),
+                    modified: monaco.editor.createModel(response.Result.TargetCreateScript, "sql"),
+                });
+
+            EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlAlterScript", monaco.editor.createModel(response.Result.AlterScript, "sql"));
         });
     }
 
@@ -230,8 +191,7 @@ class Main {
             : Localization.Get("MenuFullTargetDatabaseScript");
         DialogManager.OpenModalDialog(title, this.sqlScriptUrl).then((): void => {
             Utility.AjaxCall(`${this.fullSqlScriptUrl}${direction}`, Utility.HttpMethod.Get).then((response: ApiResponse<string>): void => {
-                const editor: monaco.editor.IStandaloneCodeEditor = monaco.editor.create(document.getElementById("sqlEditor"), this.defaultMonacoOptions);
-                editor.setModel(monaco.editor.createModel(response.Result, "sql"));
+                EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlEditor", monaco.editor.createModel(response.Result, "sql"));
             });
         });
     }
@@ -242,8 +202,7 @@ class Main {
     public static ShowFullAlterScript(): void {
         DialogManager.OpenModalDialog(Localization.Get("MenuFullMigrationScript"), this.sqlScriptUrl).then((): void => {
             Utility.AjaxCall(`${this.fullSqlAlterScriptUrl}`, Utility.HttpMethod.Get).then((response: ApiResponse<string>): void => {
-                const editor: monaco.editor.IStandaloneCodeEditor = monaco.editor.create(document.getElementById("sqlEditor"), this.defaultMonacoOptions);
-                editor.setModel(monaco.editor.createModel(response.Result, "sql"));
+                EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlEditor", monaco.editor.createModel(response.Result, "sql"));
             });
         });
     }

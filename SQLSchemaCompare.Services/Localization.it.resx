@@ -629,4 +629,19 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="StatusComparingForeignKeys" xml:space="preserve">
     <value>Confronto delle Chiavi Esterne in corso...</value>
   </data>
+  <data name="MenuCopy" xml:space="preserve">
+    <value>Copia</value>
+  </data>
+  <data name="MenuSelectAll" xml:space="preserve">
+    <value>Seleziona tutto</value>
+  </data>
+  <data name="MenuFind" xml:space="preserve">
+    <value>Trova...</value>
+  </data>
+  <data name="MenuGoToLine" xml:space="preserve">
+    <value>Vai alla riga...</value>
+  </data>
+  <data name="MenuShowLineNumbers" xml:space="preserve">
+    <value>Mostra i numeri di riga</value>
+  </data>
 </root>

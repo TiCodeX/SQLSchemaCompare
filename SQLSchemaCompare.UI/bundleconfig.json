@@ -5,6 +5,7 @@
             "wwwroot/js/Entities/ApiResponse.js",
             "wwwroot/js/Entities/CompareResultItemScripts.js",
             "wwwroot/js/Managers/DialogManager.js",
+            "wwwroot/js/Managers/EditorManager.js",
             "wwwroot/js/Managers/MenuManager.js",
             "wwwroot/js/Managers/PageManager.js",
             "wwwroot/js/Managers/TaskManager.js",

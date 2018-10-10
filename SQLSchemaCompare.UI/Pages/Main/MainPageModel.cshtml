@@ -54,11 +54,17 @@
             </li>
         </ul>
         <span class="col-3 tcx-diff-item-name"></span>
-        <span class="col-3 text-right pr-0">
-            <button class="btn-mini" onclick="Main.SelectPrevRow();"><i class="fa fa-arrow-circle-up"></i> @Localization.ButtonPrev</button>
-            <button class="btn-mini" onclick="Main.SelectNextRow();"><i class="fa fa-arrow-circle-down"></i> @Localization.ButtonNext</button>
-            <button class="btn-mini mr-1" onclick="Main.HideBottomPanel();"><i class="fa fa-times"></i></button>
-        </span>
+        <ul class="nav nav-pills col-3 justify-content-end pr-0">
+            <li class="nav-item mr-1">
+                <button class="btn-mini" onclick="Main.SelectPrevRow();"><i class="fa fa-arrow-circle-up"></i> @Localization.ButtonPrev</button>
+            </li>
+            <li class="nav-item mr-1">
+                <button class="btn-mini" onclick="Main.SelectNextRow();"><i class="fa fa-arrow-circle-down"></i> @Localization.ButtonNext</button>
+            </li>
+            <li class="nav-item">
+                <button class="btn-mini mr-1" onclick="Main.HideBottomPanel();"><i class="fa fa-times"></i></button>
+            </li>
+        </ul>
     </div>
 
     <div class="tab-content">

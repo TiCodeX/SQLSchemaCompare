@@ -354,16 +354,28 @@ class Project {
      */
     public static HandleDatabaseTypeOnChange(select: JQuery): void {
         const useWindowAuthentication: JQuery = $("input[name$='UseWindowsAuthentication']").parents(".form-group");
+        const sourcePort: JQuery = $("input[name='SourcePort']");
+        const targetPort: JQuery = $("input[name='TargetPort']");
         switch (+select.val()) {
             case Project.DatabaseType.MicrosoftSql:
                 useWindowAuthentication.show();
                 this.HandleHostnameOnInput($("input[name='SourceHostname']"), "Source");
                 this.HandleHostnameOnInput($("input[name='TargetHostname']"), "Target");
+                sourcePort.val($("input[name='DefaultMicrosoftSqlPort']").val());
+                targetPort.val($("input[name='DefaultMicrosoftSqlPort']").val());
+                break;
+            case Project.DatabaseType.MySql:
+                sourcePort.val($("input[name='DefaultMySqlPort']").val());
+                targetPort.val($("input[name='DefaultMySqlPort']").val());
+                break;
+            case Project.DatabaseType.PostgreSql:
+                sourcePort.val($("input[name='DefaultPostgreSqlPort']").val());
+                targetPort.val($("input[name='DefaultPostgreSqlPort']").val());
                 break;
             default:
-                useWindowAuthentication.hide();
-                $("input[name$='Port']").prop("disabled", false);
         }
+        useWindowAuthentication.hide();
+        $("input[name$='Port']").prop("disabled", false);
         this.SetDirtyState();
     }
 

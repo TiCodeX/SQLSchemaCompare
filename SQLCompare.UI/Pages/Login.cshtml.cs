@@ -101,8 +101,6 @@ namespace SQLCompare.UI.Pages
             }
             else if (this.VerifySessionResult.ErrorCode != EErrorCode.ErrorUnexpected)
             {
-                this.logger.LogError($"Verify session error: {this.VerifySessionResult.ErrorCode} - {this.VerifySessionResult.ErrorMessage}");
-
                 // Remove session from settings
                 appSettings.Session = null;
                 try
@@ -263,7 +261,7 @@ namespace SQLCompare.UI.Pages
             }
             catch (Exception ex)
             {
-                this.logger.LogError($"Error occured in index: {ex.Message}");
+                this.logger.LogError($"VerifySession unexpected error: {ex.Message}");
                 return new ApiResponse<string>
                 {
                     Success = false,

@@ -163,7 +163,7 @@ class Utility {
                 ajaxMethod = "GET";
         }
 
-        this.logger.debug(`Executing AjaxCall... (Method=${ajaxMethod} Url=${url})`);
+        /*this.logger.debug(`Executing AjaxCall... (Method=${ajaxMethod} Url=${url})`);*/
 
         return new Promise<ApiResponse<T>>((resolve: PromiseResolve<ApiResponse<T>>): void => {
             $.ajax(url, {

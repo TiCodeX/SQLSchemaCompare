@@ -1,6 +1,6 @@
 {
     "name": "sqlcompare",
-    "version": "2018.10.1",
+    "version": "2018.10.2",
     "description": "The Swiss Army Knife of Database Schema Comparison for Microsoft SQL, mySQL and PostgreSQL which runs on Windows, Linux and macOS systems.",
     "main": "app.min.js",
     "homepage": "https://www.ticodex.com",
@@ -8,6 +8,7 @@
         "name": "TiCodeX SA",
         "email": "support@ticodex.com"
     },
+    "private": true,
     "build": {
         "appId": "ch.ticodex.sqlcompare",
         "productName": "SQL Compare",

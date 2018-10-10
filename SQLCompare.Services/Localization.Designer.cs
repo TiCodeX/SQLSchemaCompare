@@ -711,6 +711,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Port.
+        /// </summary>
+        public static string LabelPort {
+            get {
+                return ResourceManager.GetString("LabelPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Recent Projects.
         /// </summary>
         public static string LabelRecentProjects {

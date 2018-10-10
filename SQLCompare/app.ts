@@ -132,11 +132,11 @@ function NotifyUpdateAvailable(): void {
 electronUpdater.autoUpdater.on("update-available", (info: electronUpdater.UpdateInfo) => {
     autoUpdaterInfo = info;
 });
-electronUpdater.autoUpdater.on("update-downloaded", (info: electronUpdater.UpdateInfo) => {
+electronUpdater.autoUpdater.on("update-downloaded", () => {
     autoUpdaterReadyToBeInstalled = true;
     NotifyUpdateAvailable();
 });
-electronUpdater.autoUpdater.on("error", (error: Error) => {
+electronUpdater.autoUpdater.on("error", () => {
     // Only set that an error occurred if there is an update available
     if (autoUpdaterInfo !== undefined) {
         autoUpdaterAutoDownloadFailed = true;
@@ -191,15 +191,15 @@ electron.ipcMain.on("log", (event: Electron.Event, data: { category: string; lev
     }
 });
 // Register the renderer callback for opening the main window
-electron.ipcMain.on("OpenMainWindow", (event: Electron.Event) => {
+electron.ipcMain.on("OpenMainWindow", () => {
     createMainWindow();
 });
 // Register the renderer callback for opening the login window
-electron.ipcMain.on("OpenLoginWindow", (event: Electron.Event) => {
+electron.ipcMain.on("OpenLoginWindow", () => {
     createLoginWindow(true);
 });
 // Register the renderer callback for opening the login window
-electron.ipcMain.on("ShowLoginWindow", (event: Electron.Event) => {
+electron.ipcMain.on("ShowLoginWindow", () => {
     // Destroy splash window
     if (splashWindow !== undefined) {
         splashWindow.destroy();
@@ -212,15 +212,15 @@ electron.ipcMain.on("ShowLoginWindow", (event: Electron.Event) => {
     }
 });
 // Register the renderer callback to retrieve the updates
-electron.ipcMain.on("CheckUpdateAvailable", (event: Electron.Event) => {
+electron.ipcMain.on("CheckUpdateAvailable", () => {
     NotifyUpdateAvailable();
 });
 // Register the renderer callback to quit and install the update
-electron.ipcMain.on("QuitAndInstall", (event: Electron.Event) => {
+electron.ipcMain.on("QuitAndInstall", () => {
     electronUpdater.autoUpdater.quitAndInstall(true, true);
 });
 // Register the renderer callback to open the logs folder
-electron.ipcMain.on("OpenLogsFolder", (event: Electron.Event) => {
+electron.ipcMain.on("OpenLogsFolder", () => {
     electron.shell.openItem(path.dirname(loggerPath));
 });
 //#endregion
@@ -381,7 +381,7 @@ function createLoginWindow(load: boolean): void {
 }
 
 /**
- * Start the SQL Compare backend process
+ * Start the SQL Compare back-end process
  * @param webPort The port to start the web server
  */
 function startSqlCompareBackend(webPort: number): void {
@@ -531,7 +531,7 @@ electron.app.on("activate", () => {
 // SSL/TSL: this is the self signed certificate support
 electron.app.on("certificate-error", (event: Electron.Event, webContents: Electron.WebContents, url: string, error: string, certificate: Electron.Certificate, callback: Function) => {
     /**
-     * On certificate error we disable default behaviour (stop loading the page)
+     * On certificate error we disable default behavior (stop loading the page)
      * and we then say "it is all fine - true" to the callback
      */
     event.preventDefault();

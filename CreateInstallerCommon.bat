@@ -26,6 +26,9 @@ del /Q %~dp0\SQLCompare\app.js
 del /Q %~dp0\SQLCompare\app.min.js
 del /Q /S %~dp0\SQLCompare.UI\wwwroot\js\*.js
 
+REM Cleanup node_modules
+rd /Q /S %~dp0\SQLCompare\node_modules
+
 echo.
 echo     _____________________
 echo    /\                    \  
@@ -34,6 +37,10 @@ echo      ^|    SqlCompare     ^|
 echo      ^|  _________________^|_ 
 echo       \_/___________________/
 echo.
+
+pushd %~dp0\SQLCompare
+call npm install
+popd
 
 dotnet restore -r %targetdotnet%
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%

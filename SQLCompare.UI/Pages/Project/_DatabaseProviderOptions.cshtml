@@ -20,7 +20,7 @@
                        oninput="Project.HandleHostnameOnInput($(this), '@prefix')" required>
             </div>
             <div class="form-group">
-                <label>Port</label>
+                <label>@Localization.LabelPort</label>
                 <input type="number" name="@(prefix)Port" value="@Model.Port"
                        min="1" max="65535" class="col-4"
                        disabled="@(Model is MicrosoftSqlDatabaseProviderOptions a && !string.IsNullOrEmpty(a.Hostname) && a.Hostname.Contains('\\'))"

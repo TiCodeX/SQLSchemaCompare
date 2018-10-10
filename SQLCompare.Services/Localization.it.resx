@@ -587,4 +587,7 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="ErrorEmptyDatabases" xml:space="preserve">
     <value>Nessun oggetto trovato, entrambi i database sono vuoti</value>
   </data>
+  <data name="LabelPort" xml:space="preserve">
+    <value>Porta</value>
+  </data>
 </root>

@@ -29,7 +29,7 @@ namespace SQLCompare.UI.WebServer
         /// <inheritdoc/>
         public IFileInfo GetFileInfo(string subpath)
         {
-            this.logger.LogDebug($"Requested embedded file: {subpath}");
+            this.logger.LogTrace($"Requested embedded file: {subpath}");
 
             if (string.IsNullOrEmpty(subpath))
             {

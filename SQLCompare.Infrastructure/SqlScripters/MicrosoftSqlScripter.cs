@@ -158,7 +158,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine($"INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(dbObject)}({string.Join(",", columnList)})");
                 if (!string.IsNullOrWhiteSpace(index.FilterDefinition))
                 {
-                    sb.AppendLine($"    WHERE {index.FilterDefinition}");
+                    sb.AppendLine($"{this.Indent}WHERE {index.FilterDefinition}");
                 }
 
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
@@ -210,11 +210,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterView(ABaseDbView sourceView, ABaseDbView targetView)
         {
-            const string pattern = @"^\s*CREATE\s+VIEW\s+(\[.*\]|\[.*\]\s*\.\s*\[.*\]|[^\[\]\s]*)\s+AS";
-            const string replacement = @"ALTER VIEW $1 AS";
+            const string pattern = @"^\s*CREATE\s+VIEW\s+";
+            const string replacement = @"ALTER VIEW ";
 
             var sb = new StringBuilder();
-            sb.AppendLine(Regex.Replace(sourceView.ViewDefinition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Singleline));
+            sb.Append(Regex.Replace(sourceView.ViewDefinition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Singleline));
             if (!sourceView.ViewDefinition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
@@ -250,7 +250,18 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterFunction(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
-            return "TODO: Alter Function Script";
+            const string pattern = @"^\s*CREATE\s+FUNCTION\s+";
+            const string replacement = @"ALTER FUNCTION ";
+
+            var sb = new StringBuilder();
+            sb.Append(Regex.Replace(sourceFunction.Definition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Singleline));
+            if (!sourceFunction.Definition.EndsWith("\n", StringComparison.Ordinal))
+            {
+                sb.AppendLine();
+            }
+
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -279,7 +290,18 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterStoredProcedure(ABaseDbStoredProcedure sourceStoredProcedure, ABaseDbStoredProcedure targetStoredProcedure)
         {
-            return "TODO: Alter Stored Procedure Script";
+            const string pattern = @"^\s*CREATE\s+(PROC|PROCEDURE)\s+";
+            const string replacement = @"ALTER PROCEDURE ";
+
+            var sb = new StringBuilder();
+            sb.Append(Regex.Replace(sourceStoredProcedure.Definition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Singleline));
+            if (!sourceStoredProcedure.Definition.EndsWith("\n", StringComparison.Ordinal))
+            {
+                sb.AppendLine();
+            }
+
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -308,21 +330,43 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterTrigger(ABaseDbTrigger sourceTrigger, ABaseDbTrigger targetTrigger)
         {
-            return "TODO: Alter Trigger Script";
+            const string pattern = @"^\s*CREATE\s+TRIGGER\s+";
+            const string replacement = @"ALTER TRIGGER ";
+
+            var sb = new StringBuilder();
+            sb.Append(Regex.Replace(sourceTrigger.Definition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Singleline));
+            if (!sourceTrigger.Definition.EndsWith("\n", StringComparison.Ordinal))
+            {
+                sb.AppendLine();
+            }
+
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
         protected override string ScriptCreateSequence(ABaseDbSequence sequence)
         {
+            var sequenceMicrosoft = sequence as MicrosoftSqlSequence;
+            if (sequenceMicrosoft == null)
+            {
+                throw new ArgumentNullException(nameof(sequence));
+            }
+
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE SEQUENCE {this.ScriptHelper.ScriptObjectName(sequence)}");
-            sb.AppendLine($"    AS {sequence.DataType}");
-            sb.AppendLine($"    START WITH {sequence.StartValue}");
-            sb.AppendLine($"    INCREMENT BY {sequence.Increment}");
+            sb.AppendLine($"{this.Indent}AS {sequence.DataType}");
+            sb.AppendLine($"{this.Indent}START WITH {sequence.StartValue}");
+            sb.AppendLine($"{this.Indent}INCREMENT BY {sequence.Increment}");
+            sb.AppendLine($"{this.Indent}MINVALUE {sequence.MinValue}");
+            sb.AppendLine($"{this.Indent}MAXVALUE {sequence.MaxValue}");
+            sb.AppendLine(sequence.IsCycling ?
+                $"{this.Indent}CYCLE" :
+                $"{this.Indent}NO CYCLE");
+            sb.AppendLine(sequenceMicrosoft.IsCached ?
+                $"{this.Indent}CACHE" :
+                $"{this.Indent}NO CACHE");
 
-            // TODO: Handle min/max values correctly
-            sb.AppendLine("    NO MINVALUE");
-            sb.AppendLine("    NO MAXVALUE");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
@@ -339,7 +383,56 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterSequence(ABaseDbSequence sourceSequence, ABaseDbSequence targetSequence)
         {
-            return "TODO: Alter Sequence Script";
+            var sourceSequenceMicrosoft = sourceSequence as MicrosoftSqlSequence;
+            if (sourceSequenceMicrosoft == null)
+            {
+                throw new ArgumentNullException(nameof(sourceSequence));
+            }
+
+            var targetSequenceMicrosoft = targetSequence as MicrosoftSqlSequence;
+            if (targetSequenceMicrosoft == null)
+            {
+                throw new ArgumentNullException(nameof(targetSequence));
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"ALTER SEQUENCE {this.ScriptHelper.ScriptObjectName(targetSequence)}");
+            if (sourceSequence.StartValue != targetSequence.StartValue)
+            {
+                sb.AppendLine($"{this.Indent}RESTART WITH {sourceSequence.StartValue}");
+            }
+
+            if (sourceSequence.Increment != targetSequence.Increment)
+            {
+                sb.AppendLine($"{this.Indent}INCREMENT BY {sourceSequence.Increment}");
+            }
+
+            if (sourceSequence.MinValue != targetSequence.MinValue)
+            {
+                sb.AppendLine($"{this.Indent}MINVALUE {sourceSequence.MinValue}");
+            }
+
+            if (sourceSequence.MaxValue != targetSequence.MaxValue)
+            {
+                sb.AppendLine($"{this.Indent}MAXVALUE {sourceSequence.MaxValue}");
+            }
+
+            if (sourceSequence.IsCycling != targetSequence.IsCycling)
+            {
+                sb.AppendLine(sourceSequence.IsCycling ?
+                    $"{this.Indent}CYCLE" :
+                    $"{this.Indent}NO CYCLE");
+            }
+
+            if (sourceSequenceMicrosoft.IsCached != targetSequenceMicrosoft.IsCached)
+            {
+                sb.AppendLine(sourceSequenceMicrosoft.IsCached ?
+                    $"{this.Indent}CACHE" :
+                    $"{this.Indent}NO CACHE");
+            }
+
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
         }
 
         /// <inheritdoc />

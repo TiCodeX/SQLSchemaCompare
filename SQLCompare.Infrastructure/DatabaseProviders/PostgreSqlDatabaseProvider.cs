@@ -379,9 +379,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       s.start_value AS \"StartValue\",");
             query.AppendLine("       s.increment AS \"Increment\",");
             query.AppendLine("       s.minimum_value AS \"MinValue\",");
-            query.AppendLine("       s.maximum_value AS \"MaxValue\"");
+            query.AppendLine("       s.maximum_value AS \"MaxValue\",");
+            query.AppendLine("       ps.seqcycle AS \"IsCycling\",");
+            query.AppendLine("       ps.seqcache AS \"Cache\"");
             query.AppendLine("FROM information_schema.sequences s");
-            return context.Query<ABaseDbSequence>(query.ToString());
+            query.AppendLine("JOIN pg_catalog.pg_sequence ps ON s.sequence_name::REGCLASS::OID = ps.seqrelid");
+            return context.Query<PostgreSqlSequence>(query.ToString());
         }
     }
 }

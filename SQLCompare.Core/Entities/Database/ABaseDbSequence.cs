@@ -29,5 +29,10 @@
         /// Gets or sets the maximum value
         /// </summary>
         public string MaxValue { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether is cycling
+        /// </summary>
+        public bool IsCycling { get; set; }
     }
 }

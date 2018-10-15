@@ -288,10 +288,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       CONVERT(VARCHAR, s.start_value) AS 'StartValue',");
             query.AppendLine("       CONVERT(VARCHAR, s.increment) AS 'Increment',");
             query.AppendLine("       CONVERT(VARCHAR, s.minimum_value) AS 'MinValue',");
-            query.AppendLine("       CONVERT(VARCHAR, s.maximum_value) AS 'MaxValue'");
+            query.AppendLine("       CONVERT(VARCHAR, s.maximum_value) AS 'MaxValue',");
+            query.AppendLine("       s.is_cycling AS 'IsCycling',");
+            query.AppendLine("       s.is_cached AS 'IsCached'");
             query.AppendLine("FROM sys.sequences s");
             query.AppendLine("WHERE object_schema_name(s.object_id) <> 'sys'");
-            return context.Query<ABaseDbSequence>(query.ToString());
+            return context.Query<MicrosoftSqlSequence>(query.ToString());
         }
     }
 }

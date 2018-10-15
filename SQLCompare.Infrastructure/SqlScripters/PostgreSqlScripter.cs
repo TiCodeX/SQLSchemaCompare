@@ -313,16 +313,23 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptCreateSequence(ABaseDbSequence sequence)
         {
+            var sequencePgsql = sequence as PostgreSqlSequence;
+            if (sequencePgsql == null)
+            {
+                throw new ArgumentNullException(nameof(sequence));
+            }
+
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE SEQUENCE {this.ScriptHelper.ScriptObjectName(sequence)}");
             sb.AppendLine($"{this.Indent}AS {sequence.DataType}");
             sb.AppendLine($"{this.Indent}START WITH {sequence.StartValue}");
             sb.AppendLine($"{this.Indent}INCREMENT BY {sequence.Increment}");
-
-            // TODO: Handle min/max values correctly
-            sb.AppendLine($"{this.Indent}NO MINVALUE");
-            sb.AppendLine($"{this.Indent}NO MAXVALUE");
-            sb.AppendLine($"{this.Indent}CACHE 1;");
+            sb.AppendLine($"{this.Indent}MINVALUE {sequence.MinValue}");
+            sb.AppendLine($"{this.Indent}MAXVALUE {sequence.MaxValue}");
+            sb.AppendLine(sequence.IsCycling ?
+                $"{this.Indent}CYCLE" :
+                $"{this.Indent}NO CYCLE");
+            sb.AppendLine($"{this.Indent}CACHE {sequencePgsql.Cache};");
             return sb.ToString();
         }
 

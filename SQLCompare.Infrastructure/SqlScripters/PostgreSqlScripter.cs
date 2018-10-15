@@ -105,7 +105,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbConstraint> indexes)
+        protected override string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes)
         {
             var sb = new StringBuilder();
 
@@ -146,6 +146,21 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
                 sb.AppendLine($"({string.Join(",", columnList)});");
                 sb.AppendLine();
+            }
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptDropIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var indexGroup in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<PostgreSqlIndex>().GroupBy(x => x.Name))
+            {
+                var index = indexGroup.First();
+
+                sb.AppendLine($"DROP INDEX {index.Name};");
             }
 
             return sb.ToString();
@@ -237,9 +252,62 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        protected override string ScriptDropFunction(ABaseDbFunction sqlFunction)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP FUNCTION {this.ScriptHelper.ScriptObjectName(sqlFunction)};");
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterFunction(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
+        {
+            return "TODO: Alter Function Script";
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptCreateStoredProcedure(ABaseDbStoredProcedure storedProcedure)
         {
             throw new NotSupportedException("PostgreSQL doesn't have stored procedures, only functions");
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptDropStoredProcedure(ABaseDbStoredProcedure storedProcedure)
+        {
+            throw new NotSupportedException("PostgreSQL doesn't have stored procedures, only functions");
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterStoredProcedure(ABaseDbStoredProcedure sourceStoredProcedure, ABaseDbStoredProcedure targetStoredProcedure)
+        {
+            throw new NotSupportedException("PostgreSQL doesn't have stored procedures, only functions");
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptCreateTrigger(ABaseDbTrigger trigger)
+        {
+            var sb = new StringBuilder();
+            sb.Append($"{trigger.Definition}");
+            if (!trigger.Definition.EndsWith(";", StringComparison.Ordinal))
+            {
+                sb.Append(";");
+            }
+
+            sb.AppendLine();
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptDropTrigger(ABaseDbTrigger trigger)
+        {
+            return "TODO: Drop Trigger Script";
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterTrigger(ABaseDbTrigger sourceTrigger, ABaseDbTrigger targetTrigger)
+        {
+            return "TODO: Alter Trigger Script";
         }
 
         /// <inheritdoc/>
@@ -259,18 +327,17 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateTrigger(ABaseDbTrigger trigger)
+        protected override string ScriptDropSequence(ABaseDbSequence sequence)
         {
             var sb = new StringBuilder();
-            sb.Append($"{trigger.Definition}");
-            if (!trigger.Definition.EndsWith(";", StringComparison.Ordinal))
-            {
-                sb.Append(";");
-            }
-
-            sb.AppendLine();
-
+            sb.AppendLine($"DROP SEQUENCE {this.ScriptHelper.ScriptObjectName(sequence)};");
             return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterSequence(ABaseDbSequence sourceSequence, ABaseDbSequence targetSequence)
+        {
+            return "TODO: Alter Sequence Script";
         }
 
         /// <inheritdoc />
@@ -354,6 +421,37 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     throw new NotSupportedException();
             }
 
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptDropType(ABaseDbDataType type)
+        {
+            var sb = new StringBuilder();
+            switch (type)
+            {
+                case PostgreSqlDataTypeEnumerated _:
+                case PostgreSqlDataTypeComposite _:
+                case PostgreSqlDataTypeRange _:
+                    sb.AppendLine($"DROP TYPE {this.ScriptHelper.ScriptObjectName(type)};");
+                    break;
+
+                case PostgreSqlDataTypeDomain _:
+                    sb.AppendLine($"DROP DOMAIN {this.ScriptHelper.ScriptObjectName(type)};");
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterType(ABaseDbDataType sourceType, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> dataTypes)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptDropType(targetType));
+            sb.AppendLine(this.ScriptCreateType(sourceType, dataTypes));
             return sb.ToString();
         }
 

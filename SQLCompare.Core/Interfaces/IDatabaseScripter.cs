@@ -23,7 +23,7 @@ namespace SQLCompare.Core.Interfaces
         string GenerateFullScript(ABaseDb database);
 
         /// <summary>
-        /// Generates the create table script
+        /// Generates the create table script and related keys/indexes
         /// </summary>
         /// <param name="table">The table to be scripted</param>
         /// <param name="referenceTable">The reference table for comparison, used for column order</param>
@@ -31,11 +31,26 @@ namespace SQLCompare.Core.Interfaces
         string GenerateCreateTableScript(ABaseDbTable table, ABaseDbTable referenceTable = null);
 
         /// <summary>
-        /// Generates the create view script
+        /// Generates the alter table script
+        /// </summary>
+        /// <param name="sourceTable">The source table</param>
+        /// <param name="targetTable">The target table</param>
+        /// <returns>The alter script</returns>
+        string GenerateAlterTableScript(ABaseDbTable sourceTable, ABaseDbTable targetTable);
+
+        /// <summary>
+        /// Generates the create view script and related indexes
         /// </summary>
         /// <param name="view">The view to be scripted</param>
         /// <returns>The create script</returns>
         string GenerateCreateViewScript(ABaseDbView view);
+
+        /// <summary>
+        /// Generates the drop view script and related drop indexes
+        /// </summary>
+        /// <param name="view">The view</param>
+        /// <returns>The drop script</returns>
+        string GenerateDropViewScript(ABaseDbView view);
 
         /// <summary>
         /// Generates the alter view script
@@ -54,11 +69,28 @@ namespace SQLCompare.Core.Interfaces
         string GenerateCreateFunctionScript(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes);
 
         /// <summary>
+        /// Generates the alter function script
+        /// </summary>
+        /// <param name="sourceFunction">The source function</param>
+        /// <param name="targetFunction">The target function</param>
+        /// <param name="dataTypes">The list of database data types</param>
+        /// <returns>The alter script</returns>
+        string GenerateAlterFunctionScript(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes);
+
+        /// <summary>
         /// Generates the create stored procedure script
         /// </summary>
         /// <param name="storedProcedure">The stored procedure to be scripted</param>
         /// <returns>The create script</returns>
         string GenerateCreateStoredProcedureScript(ABaseDbStoredProcedure storedProcedure);
+
+        /// <summary>
+        /// Generates the alter stored procedure script
+        /// </summary>
+        /// <param name="sourceStoredProcedure">The source stored procedure</param>
+        /// <param name="targetStoredProcedure">The target stored procedure</param>
+        /// <returns>The alter script</returns>
+        string GenerateAlterStoredProcedureScript(ABaseDbStoredProcedure sourceStoredProcedure, ABaseDbStoredProcedure targetStoredProcedure);
 
         /// <summary>
         /// Generates the create trigger script
@@ -68,11 +100,27 @@ namespace SQLCompare.Core.Interfaces
         string GenerateCreateTriggerScript(ABaseDbTrigger trigger);
 
         /// <summary>
+        /// Generates the alter trigger script
+        /// </summary>
+        /// <param name="sourceTrigger">The source trigger</param>
+        /// <param name="targetTrigger">The target trigger</param>
+        /// <returns>The alter script</returns>
+        string GenerateAlterTriggerScript(ABaseDbTrigger sourceTrigger, ABaseDbTrigger targetTrigger);
+
+        /// <summary>
         /// Generates the create sequence script
         /// </summary>
         /// <param name="sequence">The sequence to be scripted</param>
         /// <returns>The create script</returns>
         string GenerateCreateSequenceScript(ABaseDbSequence sequence);
+
+        /// <summary>
+        /// Generates the alter sequence script
+        /// </summary>
+        /// <param name="sourceSequence">The source sequence</param>
+        /// <param name="targetSequence">The target sequence</param>
+        /// <returns>The alter script</returns>
+        string GenerateAlterSequenceScript(ABaseDbSequence sourceSequence, ABaseDbSequence targetSequence);
 
         /// <summary>
         /// Generates the create type script
@@ -81,5 +129,14 @@ namespace SQLCompare.Core.Interfaces
         /// <param name="dataTypes">The list of database data types</param>
         /// <returns>The create script</returns>
         string GenerateCreateTypeScript(ABaseDbDataType type, IReadOnlyList<ABaseDbDataType> dataTypes);
+
+        /// <summary>
+        /// Generates the alter type script
+        /// </summary>
+        /// <param name="sourceType">The source type</param>
+        /// <param name="targetType">The target type</param>
+        /// <param name="dataTypes">The list of database data types</param>
+        /// <returns>The alter script</returns>
+        string GenerateAlterTypeScript(ABaseDbDataType sourceType, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> dataTypes);
     }
 }

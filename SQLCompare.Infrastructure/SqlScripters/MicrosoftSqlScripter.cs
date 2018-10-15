@@ -106,7 +106,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbConstraint> indexes)
+        protected override string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes)
         {
             var sb = new StringBuilder();
 
@@ -169,6 +169,22 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        protected override string ScriptDropIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var indexGroup in indexes.Cast<MicrosoftSqlIndex>().OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
+            {
+                var index = indexGroup.First();
+
+                sb.AppendLine($"DROP INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(dbObject)};");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            }
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptCreateView(ABaseDbView view)
         {
             var sb = new StringBuilder();
@@ -223,6 +239,21 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        protected override string ScriptDropFunction(ABaseDbFunction sqlFunction)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP FUNCTION {this.ScriptHelper.ScriptObjectName(sqlFunction)};");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterFunction(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
+        {
+            return "TODO: Alter Function Script";
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptCreateStoredProcedure(ABaseDbStoredProcedure storedProcedure)
         {
             var sb = new StringBuilder();
@@ -234,6 +265,21 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptDropStoredProcedure(ABaseDbStoredProcedure storedProcedure)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP PROCEDURE {this.ScriptHelper.ScriptObjectName(storedProcedure)};");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterStoredProcedure(ABaseDbStoredProcedure sourceStoredProcedure, ABaseDbStoredProcedure targetStoredProcedure)
+        {
+            return "TODO: Alter Stored Procedure Script";
         }
 
         /// <inheritdoc/>
@@ -251,6 +297,21 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        protected override string ScriptDropTrigger(ABaseDbTrigger trigger)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP TRIGGER {this.ScriptHelper.ScriptObjectName(trigger)};");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterTrigger(ABaseDbTrigger sourceTrigger, ABaseDbTrigger targetTrigger)
+        {
+            return "TODO: Alter Trigger Script";
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptCreateSequence(ABaseDbSequence sequence)
         {
             var sb = new StringBuilder();
@@ -264,6 +325,21 @@ namespace SQLCompare.Infrastructure.SqlScripters
             sb.AppendLine("    NO MAXVALUE");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptDropSequence(ABaseDbSequence sequence)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP SEQUENCE {this.ScriptHelper.ScriptObjectName(sequence)};");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterSequence(ABaseDbSequence sourceSequence, ABaseDbSequence targetSequence)
+        {
+            return "TODO: Alter Sequence Script";
         }
 
         /// <inheritdoc />
@@ -303,6 +379,24 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             sb.AppendLine(msType.IsNullable ? " NULL" : " NOT NULL");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptDropType(ABaseDbDataType type)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP TYPE {this.ScriptHelper.ScriptObjectName(type)};");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterType(ABaseDbDataType sourceType, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> dataTypes)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptDropType(targetType));
+            sb.AppendLine(this.ScriptCreateType(sourceType, dataTypes));
             return sb.ToString();
         }
 

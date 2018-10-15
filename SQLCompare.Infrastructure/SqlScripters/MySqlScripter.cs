@@ -110,7 +110,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbConstraint> indexes)
+        protected override string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes)
         {
             var sb = new StringBuilder();
 
@@ -147,6 +147,21 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
                 sb.AppendLine($"ON {this.ScriptHelper.ScriptObjectName(dbObject)}({string.Join(",", columnList)});");
                 sb.AppendLine();
+            }
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptDropIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var indexGroup in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>().GroupBy(x => x.Name))
+            {
+                var index = indexGroup.First();
+
+                sb.AppendLine($"DROP INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(dbObject)};");
             }
 
             return sb.ToString();
@@ -193,6 +208,20 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        protected override string ScriptDropFunction(ABaseDbFunction sqlFunction)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP FUNCTION {this.ScriptHelper.ScriptObjectName(sqlFunction)};");
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterFunction(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
+        {
+            return "TODO: Alter Function Script";
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptCreateStoredProcedure(ABaseDbStoredProcedure storedProcedure)
         {
             var sb = new StringBuilder();
@@ -201,6 +230,20 @@ namespace SQLCompare.Infrastructure.SqlScripters
             sb.AppendLine($"{Delimiter}");
             sb.AppendLine("DELIMITER ;");
             return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptDropStoredProcedure(ABaseDbStoredProcedure storedProcedure)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP PROCEDURE {this.ScriptHelper.ScriptObjectName(storedProcedure)};");
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterStoredProcedure(ABaseDbStoredProcedure sourceStoredProcedure, ABaseDbStoredProcedure targetStoredProcedure)
+        {
+            return "TODO: Alter Stored Procedure Script";
         }
 
         /// <inheritdoc/>
@@ -215,7 +258,33 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        protected override string ScriptDropTrigger(ABaseDbTrigger trigger)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP TRIGGER {this.ScriptHelper.ScriptObjectName(trigger)};");
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterTrigger(ABaseDbTrigger sourceTrigger, ABaseDbTrigger targetTrigger)
+        {
+            return "TODO: Alter Trigger Script";
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptCreateSequence(ABaseDbSequence sequence)
+        {
+            throw new NotSupportedException("MySQL doesn't support sequences");
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptDropSequence(ABaseDbSequence sequence)
+        {
+            throw new NotSupportedException("MySQL doesn't support sequences");
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterSequence(ABaseDbSequence sourceSequence, ABaseDbSequence targetSequence)
         {
             throw new NotSupportedException("MySQL doesn't support sequences");
         }
@@ -223,7 +292,19 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc />
         protected override string ScriptCreateType(ABaseDbDataType type, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("MySQL doesn't support user defined types");
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptDropType(ABaseDbDataType type)
+        {
+            throw new NotSupportedException("MySQL doesn't support user defined types");
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterType(ABaseDbDataType sourceType, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> dataTypes)
+        {
+            throw new NotSupportedException("MySQL doesn't support user defined types");
         }
 
         /// <inheritdoc/>

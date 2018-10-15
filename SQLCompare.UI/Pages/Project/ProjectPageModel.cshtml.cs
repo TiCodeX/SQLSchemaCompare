@@ -174,7 +174,7 @@ namespace SQLCompare.UI.Pages.Project
         /// Save the project
         /// </summary>
         /// <param name="filename">The filename</param>
-        /// <returns>TODO: boh</returns>
+        /// <returns>The ApiResponse in JSON</returns>
         public ActionResult OnPostSaveProject([FromBody] string filename)
         {
             try
@@ -198,7 +198,7 @@ namespace SQLCompare.UI.Pages.Project
         /// Close the project
         /// </summary>
         /// <param name="ignoreDirty">Close project even if current project is dirty</param>
-        /// <returns>TODO: boh</returns>
+        /// <returns>The ApiResponse in JSON</returns>
         public ActionResult OnPostCloseProject([FromBody]bool ignoreDirty)
         {
             try
@@ -222,7 +222,7 @@ namespace SQLCompare.UI.Pages.Project
         /// Edit the project with the new values from the UI
         /// </summary>
         /// <param name="options">The project options</param>
-        /// <returns>TODO: boh</returns>
+        /// <returns>The ApiResponse in JSON</returns>
         public ActionResult OnPostEditProject([FromBody] CompareProjectOptions options)
         {
             this.projectService.Project.SourceProviderOptions = this.GetDatabaseProviderOptions(options, CompareDirection.Source);
@@ -235,7 +235,7 @@ namespace SQLCompare.UI.Pages.Project
         /// <summary>
         /// Perform the database comparison
         /// </summary>
-        /// <returns>TODO: boh</returns>
+        /// <returns>The ApiResponse in JSON</returns>
         public ActionResult OnGetStartCompare()
         {
             this.databaseCompareService.StartCompare();
@@ -268,7 +268,7 @@ namespace SQLCompare.UI.Pages.Project
         /// Remove the filename from the recent projects
         /// </summary>
         /// <param name="filename">The filename</param>
-        /// <returns>TODO: boh</returns>
+        /// <returns>The ApiResponse in JSON</returns>
         public ActionResult OnPostRemoveRecentProject([FromBody] string filename)
         {
             var settings = this.appSettingsService.GetAppSettings();
@@ -278,7 +278,6 @@ namespace SQLCompare.UI.Pages.Project
             return new JsonResult(new ApiResponse());
         }
 
-        // TODO: move somewhere else and add missing parameters
         private ADatabaseProviderOptions GetDatabaseProviderOptions(CompareProjectOptions options, CompareDirection direction)
         {
             var type = options.DatabaseType;

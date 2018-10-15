@@ -201,7 +201,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateCreateTableScript(ABaseDbTable table, ABaseDbTable referenceTable)
+        public string GenerateCreateTableScript(ABaseDbTable table, ABaseDbTable referenceTable = null)
         {
             if (table == null)
             {
@@ -244,6 +244,24 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        public string GenerateAlterTableScript(ABaseDbTable sourceTable, ABaseDbTable targetTable)
+        {
+            if (sourceTable == null && targetTable == null)
+            {
+                throw new ArgumentNullException(nameof(sourceTable));
+            }
+
+            if (targetTable == null)
+            {
+                return this.GenerateCreateTableScript(sourceTable);
+            }
+
+            return sourceTable == null ?
+                "TODO: Drop Table Script" :
+                "TODO: Alter Table Script";
+        }
+
+        /// <inheritdoc/>
         public string GenerateCreateViewScript(ABaseDbView view)
         {
             if (view == null)
@@ -265,6 +283,26 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        public string GenerateDropViewScript(ABaseDbView view)
+        {
+            if (view == null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            var sb = new StringBuilder();
+
+            if (view.Indexes.Count > 0)
+            {
+                sb.Append(this.ScriptDropIndexes(view, view.Indexes));
+            }
+
+            sb.Append(this.ScriptDropView(view));
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
         public string GenerateAlterViewScript(ABaseDbView sourceView, ABaseDbView targetView)
         {
             if (sourceView == null && targetView == null)
@@ -278,7 +316,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
 
             return sourceView == null ?
-                this.ScriptDropView(targetView) :
+                this.GenerateDropViewScript(targetView) :
                 this.ScriptAlterView(sourceView, targetView);
         }
 
@@ -299,6 +337,24 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        public string GenerateAlterFunctionScript(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
+        {
+            if (sourceFunction == null && targetFunction == null)
+            {
+                throw new ArgumentNullException(nameof(sourceFunction));
+            }
+
+            if (targetFunction == null)
+            {
+                return this.GenerateCreateFunctionScript(sourceFunction, dataTypes);
+            }
+
+            return sourceFunction == null ?
+                this.ScriptDropFunction(targetFunction) :
+                this.ScriptAlterFunction(sourceFunction, targetFunction, dataTypes);
+        }
+
+        /// <inheritdoc/>
         public string GenerateCreateStoredProcedureScript(ABaseDbStoredProcedure storedProcedure)
         {
             if (storedProcedure == null)
@@ -307,6 +363,24 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
 
             return this.ScriptCreateStoredProcedure(storedProcedure);
+        }
+
+        /// <inheritdoc/>
+        public string GenerateAlterStoredProcedureScript(ABaseDbStoredProcedure sourceStoredProcedure, ABaseDbStoredProcedure targetStoredProcedure)
+        {
+            if (sourceStoredProcedure == null && targetStoredProcedure == null)
+            {
+                throw new ArgumentNullException(nameof(sourceStoredProcedure));
+            }
+
+            if (targetStoredProcedure == null)
+            {
+                return this.GenerateCreateStoredProcedureScript(sourceStoredProcedure);
+            }
+
+            return sourceStoredProcedure == null ?
+                this.ScriptDropStoredProcedure(targetStoredProcedure) :
+                this.ScriptAlterStoredProcedure(sourceStoredProcedure, targetStoredProcedure);
         }
 
         /// <inheritdoc/>
@@ -321,6 +395,24 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        public string GenerateAlterTriggerScript(ABaseDbTrigger sourceTrigger, ABaseDbTrigger targetTrigger)
+        {
+            if (sourceTrigger == null && targetTrigger == null)
+            {
+                throw new ArgumentNullException(nameof(sourceTrigger));
+            }
+
+            if (targetTrigger == null)
+            {
+                return this.GenerateCreateTriggerScript(sourceTrigger);
+            }
+
+            return sourceTrigger == null ?
+                this.ScriptDropTrigger(targetTrigger) :
+                this.ScriptAlterTrigger(sourceTrigger, targetTrigger);
+        }
+
+        /// <inheritdoc/>
         public string GenerateCreateSequenceScript(ABaseDbSequence sequence)
         {
             if (sequence == null)
@@ -332,6 +424,24 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        public string GenerateAlterSequenceScript(ABaseDbSequence sourceSequence, ABaseDbSequence targetSequence)
+        {
+            if (sourceSequence == null && targetSequence == null)
+            {
+                throw new ArgumentNullException(nameof(sourceSequence));
+            }
+
+            if (targetSequence == null)
+            {
+                return this.GenerateCreateSequenceScript(sourceSequence);
+            }
+
+            return sourceSequence == null ?
+                this.ScriptDropSequence(targetSequence) :
+                this.ScriptAlterSequence(sourceSequence, targetSequence);
+        }
+
+        /// <inheritdoc/>
         public string GenerateCreateTypeScript(ABaseDbDataType type, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             if (type == null)
@@ -340,6 +450,24 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
 
             return this.ScriptCreateType(type, dataTypes);
+        }
+
+        /// <inheritdoc/>
+        public string GenerateAlterTypeScript(ABaseDbDataType sourceType, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> dataTypes)
+        {
+            if (sourceType == null && targetType == null)
+            {
+                throw new ArgumentNullException(nameof(sourceType));
+            }
+
+            if (targetType == null)
+            {
+                return this.GenerateCreateTypeScript(sourceType, dataTypes);
+            }
+
+            return sourceType == null ?
+                this.ScriptDropType(targetType) :
+                this.ScriptAlterType(sourceType, targetType, dataTypes);
         }
 
         /// <summary>
@@ -374,10 +502,18 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <summary>
         /// Generates the create index scripts for adding indexes after create table
         /// </summary>
-        /// <param name="dbObject">The object to create the indexes</param>
+        /// <param name="dbObject">The database object related to the indexes</param>
         /// <param name="indexes">The list of indexes</param>
         /// <returns>The create index scripts</returns>
-        protected abstract string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbConstraint> indexes);
+        protected abstract string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes);
+
+        /// <summary>
+        /// Generates the drop index scripts
+        /// </summary>
+        /// <param name="dbObject">The database object related to the indexes</param>
+        /// <param name="indexes">The list of indexes</param>
+        /// <returns>The drop index scripts</returns>
+        protected abstract string ScriptDropIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes);
 
         /// <summary>
         /// Generates the create view script
@@ -410,11 +546,42 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected abstract string ScriptCreateFunction(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes);
 
         /// <summary>
+        /// Generates the drop function script
+        /// </summary>
+        /// <param name="sqlFunction">The function to script</param>
+        /// <returns>The drop function script</returns>
+        protected abstract string ScriptDropFunction(ABaseDbFunction sqlFunction);
+
+        /// <summary>
+        /// Generates the alter function script
+        /// </summary>
+        /// <param name="sourceFunction">The source function</param>
+        /// <param name="targetFunction">The target function</param>
+        /// <param name="dataTypes">The list of database data types</param>
+        /// <returns>The alter function script</returns>
+        protected abstract string ScriptAlterFunction(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes);
+
+        /// <summary>
         /// Generates the create stored procedure script
         /// </summary>
         /// <param name="storedProcedure">The stored procedure to script</param>
         /// <returns>The create stored procedure script</returns>
         protected abstract string ScriptCreateStoredProcedure(ABaseDbStoredProcedure storedProcedure);
+
+        /// <summary>
+        /// Generates the drop stored procedure script
+        /// </summary>
+        /// <param name="storedProcedure">The stored procedure</param>
+        /// <returns>The drop stored procedure script</returns>
+        protected abstract string ScriptDropStoredProcedure(ABaseDbStoredProcedure storedProcedure);
+
+        /// <summary>
+        /// Generates the alter stored procedure script
+        /// </summary>
+        /// <param name="sourceStoredProcedure">The source stored procedure</param>
+        /// <param name="targetStoredProcedure">The target stored procedure</param>
+        /// <returns>The alter stored procedure script</returns>
+        protected abstract string ScriptAlterStoredProcedure(ABaseDbStoredProcedure sourceStoredProcedure, ABaseDbStoredProcedure targetStoredProcedure);
 
         /// <summary>
         /// Generates the create trigger script
@@ -424,11 +591,41 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected abstract string ScriptCreateTrigger(ABaseDbTrigger trigger);
 
         /// <summary>
+        /// Generates the drop trigger script
+        /// </summary>
+        /// <param name="trigger">The trigger</param>
+        /// <returns>The drop trigger script</returns>
+        protected abstract string ScriptDropTrigger(ABaseDbTrigger trigger);
+
+        /// <summary>
+        /// Generates the alter trigger script
+        /// </summary>
+        /// <param name="sourceTrigger">The source trigger</param>
+        /// <param name="targetTrigger">The target trigger</param>
+        /// <returns>The alter trigger script</returns>
+        protected abstract string ScriptAlterTrigger(ABaseDbTrigger sourceTrigger, ABaseDbTrigger targetTrigger);
+
+        /// <summary>
         /// Generates the create sequence script
         /// </summary>
         /// <param name="sequence">The sequence to script</param>
         /// <returns>The create sequence script</returns>
         protected abstract string ScriptCreateSequence(ABaseDbSequence sequence);
+
+        /// <summary>
+        /// Generates the drop sequence script
+        /// </summary>
+        /// <param name="sequence">The sequence</param>
+        /// <returns>The drop sequence script</returns>
+        protected abstract string ScriptDropSequence(ABaseDbSequence sequence);
+
+        /// <summary>
+        /// Generates the alter sequence script
+        /// </summary>
+        /// <param name="sourceSequence">The source sequence</param>
+        /// <param name="targetSequence">The target sequence</param>
+        /// <returns>The alter sequence script</returns>
+        protected abstract string ScriptAlterSequence(ABaseDbSequence sourceSequence, ABaseDbSequence targetSequence);
 
         /// <summary>
         /// Generates the create type script
@@ -437,6 +634,22 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="dataTypes">The list of database data types</param>
         /// <returns>The create type script</returns>
         protected abstract string ScriptCreateType(ABaseDbDataType type, IReadOnlyList<ABaseDbDataType> dataTypes);
+
+        /// <summary>
+        /// Generates the drop type script
+        /// </summary>
+        /// <param name="type">The type</param>
+        /// <returns>The drop type script</returns>
+        protected abstract string ScriptDropType(ABaseDbDataType type);
+
+        /// <summary>
+        /// Generates the alter type script
+        /// </summary>
+        /// <param name="sourceType">The source type</param>
+        /// <param name="targetType">The target type</param>
+        /// <param name="dataTypes">The list of database data types</param>
+        /// <returns>The alter type script</returns>
+        protected abstract string ScriptAlterType(ABaseDbDataType sourceType, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> dataTypes);
 
         /// <summary>
         /// Get the table columns sorted depending on options and source table

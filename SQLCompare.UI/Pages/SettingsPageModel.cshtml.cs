@@ -61,7 +61,7 @@ namespace SQLCompare.UI.Pages
         /// Save the settings
         /// </summary>
         /// <param name="settings">The settings to save</param>
-        /// <returns>TODO: boh</returns>
+        /// <returns>The ApiResponse in JSON</returns>
         public ActionResult OnPostSave([FromBody] AppSettings settings)
         {
             this.logger.LogDebug("Saving settings...");

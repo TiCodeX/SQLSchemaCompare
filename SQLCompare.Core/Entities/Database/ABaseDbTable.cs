@@ -31,7 +31,7 @@ namespace SQLCompare.Core.Entities.Database
         /// <summary>
         /// Gets the database table's indexes
         /// </summary>
-        public List<ABaseDbConstraint> Indexes { get; } = new List<ABaseDbConstraint>();
+        public List<ABaseDbIndex> Indexes { get; } = new List<ABaseDbIndex>();
 
         /// <summary>
         /// Gets the database table's constraints

@@ -270,6 +270,12 @@ namespace SQLCompare.Services
                             }
 
                             resultTable.Equal = resultTable.Scripts.SourceCreateScript == resultTable.Scripts.TargetCreateScript;
+
+                            if (!resultTable.Equal)
+                            {
+                                resultTable.Scripts.AlterScript = scripter.GenerateAlterTableScript(resultTable.SourceItem, resultTable.TargetItem);
+                            }
+
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
@@ -290,9 +296,13 @@ namespace SQLCompare.Services
                                 resultView.Scripts.TargetCreateScript = scripter.GenerateCreateViewScript(resultView.TargetItem);
                             }
 
-                            resultView.Scripts.AlterScript = scripter.GenerateAlterViewScript(resultView.SourceItem, resultView.TargetItem);
-
                             resultView.Equal = resultView.Scripts.SourceCreateScript == resultView.Scripts.TargetCreateScript;
+
+                            if (!resultView.Equal)
+                            {
+                                resultView.Scripts.AlterScript = scripter.GenerateAlterViewScript(resultView.SourceItem, resultView.TargetItem);
+                            }
+
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
@@ -314,6 +324,12 @@ namespace SQLCompare.Services
                             }
 
                             resultFunction.Equal = resultFunction.Scripts.SourceCreateScript == resultFunction.Scripts.TargetCreateScript;
+
+                            if (!resultFunction.Equal)
+                            {
+                                resultFunction.Scripts.AlterScript = scripter.GenerateAlterFunctionScript(resultFunction.SourceItem, resultFunction.TargetItem, this.retrievedTargetDatabase.DataTypes);
+                            }
+
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
@@ -335,6 +351,12 @@ namespace SQLCompare.Services
                             }
 
                             resultStoredProcedure.Equal = resultStoredProcedure.Scripts.SourceCreateScript == resultStoredProcedure.Scripts.TargetCreateScript;
+
+                            if (!resultStoredProcedure.Equal)
+                            {
+                                resultStoredProcedure.Scripts.AlterScript = scripter.GenerateAlterStoredProcedureScript(resultStoredProcedure.SourceItem, resultStoredProcedure.TargetItem);
+                            }
+
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
@@ -356,6 +378,12 @@ namespace SQLCompare.Services
                             }
 
                             resultTrigger.Equal = resultTrigger.Scripts.SourceCreateScript == resultTrigger.Scripts.TargetCreateScript;
+
+                            if (!resultTrigger.Equal)
+                            {
+                                resultTrigger.Scripts.AlterScript = scripter.GenerateAlterTriggerScript(resultTrigger.SourceItem, resultTrigger.TargetItem);
+                            }
+
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
@@ -377,6 +405,12 @@ namespace SQLCompare.Services
                             }
 
                             resultSequence.Equal = resultSequence.Scripts.SourceCreateScript == resultSequence.Scripts.TargetCreateScript;
+
+                            if (!resultSequence.Equal)
+                            {
+                                resultSequence.Scripts.AlterScript = scripter.GenerateAlterSequenceScript(resultSequence.SourceItem, resultSequence.TargetItem);
+                            }
+
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
@@ -398,6 +432,12 @@ namespace SQLCompare.Services
                             }
 
                             resultType.Equal = resultType.Scripts.SourceCreateScript == resultType.Scripts.TargetCreateScript;
+
+                            if (!resultType.Equal)
+                            {
+                                resultType.Scripts.AlterScript = scripter.GenerateAlterTypeScript(resultType.SourceItem, resultType.TargetItem, this.retrievedTargetDatabase.DataTypes);
+                            }
+
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 

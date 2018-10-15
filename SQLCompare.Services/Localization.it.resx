@@ -590,4 +590,7 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelPort" xml:space="preserve">
     <value>Porta</value>
   </data>
+  <data name="LabelMigrationScript" xml:space="preserve">
+    <value>Script di migrazione</value>
+  </data>
 </root>

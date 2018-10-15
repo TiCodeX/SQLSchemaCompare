@@ -102,6 +102,18 @@ $fa-font-size-base: $font-size-base;
     height: 100%;
 }
 
+.tcx-main-bottom {
+    display: none;
+
+    > .tab-content {
+        height: calc(100% - 36px);
+
+        > .tab-pane {
+            height: 100%;
+        }
+    }
+}
+
 .tcx-welcome {
     width: 700px;
     height: 500px;

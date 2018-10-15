@@ -603,6 +603,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Migration Script.
+        /// </summary>
+        public static string LabelMigrationScript {
+            get {
+                return ResourceManager.GetString("LabelMigrationScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string LabelName {

@@ -265,6 +265,24 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        public string GenerateAlterViewScript(ABaseDbView sourceView, ABaseDbView targetView)
+        {
+            if (sourceView == null && targetView == null)
+            {
+                throw new ArgumentNullException(nameof(sourceView));
+            }
+
+            if (targetView == null)
+            {
+                return this.GenerateCreateViewScript(sourceView);
+            }
+
+            return sourceView == null ?
+                this.ScriptDropView(targetView) :
+                this.ScriptAlterView(sourceView, targetView);
+        }
+
+        /// <inheritdoc/>
         public string GenerateCreateFunctionScript(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             if (sqlFunction == null)
@@ -367,6 +385,21 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="view">The view to script</param>
         /// <returns>The create view script</returns>
         protected abstract string ScriptCreateView(ABaseDbView view);
+
+        /// <summary>
+        /// Generates the drop view script
+        /// </summary>
+        /// <param name="view">The view to script</param>
+        /// <returns>The drop view script</returns>
+        protected abstract string ScriptDropView(ABaseDbView view);
+
+        /// <summary>
+        /// Generates the alter view script
+        /// </summary>
+        /// <param name="sourceView">The source view</param>
+        /// <param name="targetView">The target view</param>
+        /// <returns>The alter view script</returns>
+        protected abstract string ScriptAlterView(ABaseDbView sourceView, ABaseDbView targetView);
 
         /// <summary>
         /// Generates the create function script

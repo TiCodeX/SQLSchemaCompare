@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Api;
 using SQLCompare.Core.Entities.Compare;
 using SQLCompare.Core.Interfaces.Services;
-using SQLCompare.UI.Models.Main;
 
 namespace SQLCompare.UI.Pages.Main
 {
@@ -95,11 +94,11 @@ namespace SQLCompare.UI.Pages.Main
         }
 
         /// <summary>
-        /// Get the create script of two items
+        /// Get the result item scripts
         /// </summary>
         /// <param name="id">The requested compare result item</param>
-        /// <returns>A JSON object with the source and target create scripts</returns>
-        public ActionResult OnGetCreateScript(Guid id)
+        /// <returns>A JSON object with the scripts</returns>
+        public ActionResult OnGetResultItemScripts(Guid id)
         {
             var resultItem = (ABaseCompareResultItem)this.projectService.Project.Result.Tables.FirstOrDefault(x => x.Id == id) ??
                              (ABaseCompareResultItem)this.projectService.Project.Result.Views.FirstOrDefault(x => x.Id == id) ??
@@ -115,13 +114,9 @@ namespace SQLCompare.UI.Pages.Main
                 throw new NotImplementedException("Unable to find the item specified");
             }
 
-            return new JsonResult(new ApiResponse<CreateScriptResult>
+            return new JsonResult(new ApiResponse<CompareResultItemScripts>
             {
-                Result = new CreateScriptResult
-                {
-                    SourceSql = resultItem.SourceCreateScript,
-                    TargetSql = resultItem.TargetCreateScript,
-                }
+                Result = resultItem.Scripts
             });
         }
     }

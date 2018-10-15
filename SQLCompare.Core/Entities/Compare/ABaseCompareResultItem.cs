@@ -33,13 +33,8 @@ namespace SQLCompare.Core.Entities.Compare
         public bool Equal { get; set; }
 
         /// <summary>
-        /// Gets or sets the creation script of the source item
+        /// Gets or sets the scripts
         /// </summary>
-        public string SourceCreateScript { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the creation script of the target item
-        /// </summary>
-        public string TargetCreateScript { get; set; } = string.Empty;
+        public CompareResultItemScripts Scripts { get; set; } = new CompareResultItemScripts();
     }
 }

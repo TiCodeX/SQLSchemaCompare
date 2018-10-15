@@ -174,6 +174,23 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        protected override string ScriptDropView(ABaseDbView view)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP VIEW {this.ScriptHelper.ScriptObjectName(view)};");
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterView(ABaseDbView sourceView, ABaseDbView targetView)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptDropView(targetView));
+            sb.AppendLine(this.ScriptCreateView(sourceView));
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptCreateFunction(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             var sb = new StringBuilder();

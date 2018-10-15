@@ -38,6 +38,14 @@ namespace SQLCompare.Core.Interfaces
         string GenerateCreateViewScript(ABaseDbView view);
 
         /// <summary>
+        /// Generates the alter view script
+        /// </summary>
+        /// <param name="sourceView">The source view</param>
+        /// <param name="targetView">The target view</param>
+        /// <returns>The alter script</returns>
+        string GenerateAlterViewScript(ABaseDbView sourceView, ABaseDbView targetView);
+
+        /// <summary>
         /// Generates the create function script
         /// </summary>
         /// <param name="sqlFunction">The function to be scripted</param>

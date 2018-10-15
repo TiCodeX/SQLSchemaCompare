@@ -3,7 +3,7 @@
         "outputFileName": "wwwroot/js/Index.min.js",
         "inputFiles": [
             "wwwroot/js/Entities/ApiResponse.js",
-            "wwwroot/js/Entities/CreateScriptResult.js",
+            "wwwroot/js/Entities/CompareResultItemScripts.js",
             "wwwroot/js/Managers/DialogManager.js",
             "wwwroot/js/Managers/MenuManager.js",
             "wwwroot/js/Managers/PageManager.js",

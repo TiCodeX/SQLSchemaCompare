@@ -599,4 +599,7 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelPort" xml:space="preserve">
     <value>Port</value>
   </data>
+  <data name="LabelMigrationScript" xml:space="preserve">
+    <value>Migration Script</value>
+  </data>
 </root>

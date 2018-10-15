@@ -43,11 +43,14 @@
     }
 </div>
 
-<div id="mainBottom" style="display: none;">
+<div id="mainBottom" class="tcx-main-bottom">
     <div class="navbar p-0">
         <ul class="nav nav-tabs col-3">
             <li class="nav-item">
                 <a class="nav-link active" data-toggle="tab" href="#sqlDiff">@Localization.LabelSQLView</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#sqlAlterScript">@Localization.LabelMigrationScript</a>
             </li>
         </ul>
         <span class="col-3 tcx-diff-item-name"></span>
@@ -58,8 +61,10 @@
         </span>
     </div>
 
-    <div class="tab-content" style="height: calc(100% - 36px);">
-        <div id="sqlDiff" class="tab-pane fade show active" style="height: 100%;">
+    <div class="tab-content">
+        <div id="sqlDiff" class="tab-pane show active">
+        </div>
+        <div id="sqlAlterScript" class="tab-pane">
         </div>
     </div>
 </div>

@@ -260,16 +260,16 @@ namespace SQLCompare.Services
                             if (resultTable.SourceItem != null)
                             {
                                 resultTable.SourceItemName = scripter.GenerateObjectName(resultTable.SourceItem);
-                                resultTable.SourceCreateScript = scripter.GenerateCreateTableScript(resultTable.SourceItem);
+                                resultTable.Scripts.SourceCreateScript = scripter.GenerateCreateTableScript(resultTable.SourceItem);
                             }
 
                             if (resultTable.TargetItem != null)
                             {
                                 resultTable.TargetItemName = scripter.GenerateObjectName(resultTable.TargetItem);
-                                resultTable.TargetCreateScript = scripter.GenerateCreateTableScript(resultTable.TargetItem, resultTable.SourceItem);
+                                resultTable.Scripts.TargetCreateScript = scripter.GenerateCreateTableScript(resultTable.TargetItem, resultTable.SourceItem);
                             }
 
-                            resultTable.Equal = resultTable.SourceCreateScript == resultTable.TargetCreateScript;
+                            resultTable.Equal = resultTable.Scripts.SourceCreateScript == resultTable.Scripts.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
@@ -281,16 +281,18 @@ namespace SQLCompare.Services
                             if (resultView.SourceItem != null)
                             {
                                 resultView.SourceItemName = scripter.GenerateObjectName(resultView.SourceItem);
-                                resultView.SourceCreateScript = scripter.GenerateCreateViewScript(resultView.SourceItem);
+                                resultView.Scripts.SourceCreateScript = scripter.GenerateCreateViewScript(resultView.SourceItem);
                             }
 
                             if (resultView.TargetItem != null)
                             {
                                 resultView.TargetItemName = scripter.GenerateObjectName(resultView.TargetItem);
-                                resultView.TargetCreateScript = scripter.GenerateCreateViewScript(resultView.TargetItem);
+                                resultView.Scripts.TargetCreateScript = scripter.GenerateCreateViewScript(resultView.TargetItem);
                             }
 
-                            resultView.Equal = resultView.SourceCreateScript == resultView.TargetCreateScript;
+                            resultView.Scripts.AlterScript = scripter.GenerateAlterViewScript(resultView.SourceItem, resultView.TargetItem);
+
+                            resultView.Equal = resultView.Scripts.SourceCreateScript == resultView.Scripts.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
@@ -302,16 +304,16 @@ namespace SQLCompare.Services
                             if (resultFunction.SourceItem != null)
                             {
                                 resultFunction.SourceItemName = scripter.GenerateObjectName(resultFunction.SourceItem);
-                                resultFunction.SourceCreateScript = scripter.GenerateCreateFunctionScript(resultFunction.SourceItem, this.retrievedSourceDatabase.DataTypes);
+                                resultFunction.Scripts.SourceCreateScript = scripter.GenerateCreateFunctionScript(resultFunction.SourceItem, this.retrievedSourceDatabase.DataTypes);
                             }
 
                             if (resultFunction.TargetItem != null)
                             {
                                 resultFunction.TargetItemName = scripter.GenerateObjectName(resultFunction.TargetItem);
-                                resultFunction.TargetCreateScript = scripter.GenerateCreateFunctionScript(resultFunction.TargetItem, this.retrievedTargetDatabase.DataTypes);
+                                resultFunction.Scripts.TargetCreateScript = scripter.GenerateCreateFunctionScript(resultFunction.TargetItem, this.retrievedTargetDatabase.DataTypes);
                             }
 
-                            resultFunction.Equal = resultFunction.SourceCreateScript == resultFunction.TargetCreateScript;
+                            resultFunction.Equal = resultFunction.Scripts.SourceCreateScript == resultFunction.Scripts.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
@@ -323,16 +325,16 @@ namespace SQLCompare.Services
                             if (resultStoredProcedure.SourceItem != null)
                             {
                                 resultStoredProcedure.SourceItemName = scripter.GenerateObjectName(resultStoredProcedure.SourceItem);
-                                resultStoredProcedure.SourceCreateScript = scripter.GenerateCreateStoredProcedureScript(resultStoredProcedure.SourceItem);
+                                resultStoredProcedure.Scripts.SourceCreateScript = scripter.GenerateCreateStoredProcedureScript(resultStoredProcedure.SourceItem);
                             }
 
                             if (resultStoredProcedure.TargetItem != null)
                             {
                                 resultStoredProcedure.TargetItemName = scripter.GenerateObjectName(resultStoredProcedure.TargetItem);
-                                resultStoredProcedure.TargetCreateScript = scripter.GenerateCreateStoredProcedureScript(resultStoredProcedure.TargetItem);
+                                resultStoredProcedure.Scripts.TargetCreateScript = scripter.GenerateCreateStoredProcedureScript(resultStoredProcedure.TargetItem);
                             }
 
-                            resultStoredProcedure.Equal = resultStoredProcedure.SourceCreateScript == resultStoredProcedure.TargetCreateScript;
+                            resultStoredProcedure.Equal = resultStoredProcedure.Scripts.SourceCreateScript == resultStoredProcedure.Scripts.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
@@ -344,16 +346,16 @@ namespace SQLCompare.Services
                             if (resultTrigger.SourceItem != null)
                             {
                                 resultTrigger.SourceItemName = scripter.GenerateObjectName(resultTrigger.SourceItem);
-                                resultTrigger.SourceCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.SourceItem);
+                                resultTrigger.Scripts.SourceCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.SourceItem);
                             }
 
                             if (resultTrigger.TargetItem != null)
                             {
                                 resultTrigger.TargetItemName = scripter.GenerateObjectName(resultTrigger.TargetItem);
-                                resultTrigger.TargetCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.TargetItem);
+                                resultTrigger.Scripts.TargetCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.TargetItem);
                             }
 
-                            resultTrigger.Equal = resultTrigger.SourceCreateScript == resultTrigger.TargetCreateScript;
+                            resultTrigger.Equal = resultTrigger.Scripts.SourceCreateScript == resultTrigger.Scripts.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
@@ -365,16 +367,16 @@ namespace SQLCompare.Services
                             if (resultSequence.SourceItem != null)
                             {
                                 resultSequence.SourceItemName = scripter.GenerateObjectName(resultSequence.SourceItem);
-                                resultSequence.SourceCreateScript = scripter.GenerateCreateSequenceScript(resultSequence.SourceItem);
+                                resultSequence.Scripts.SourceCreateScript = scripter.GenerateCreateSequenceScript(resultSequence.SourceItem);
                             }
 
                             if (resultSequence.TargetItem != null)
                             {
                                 resultSequence.TargetItemName = scripter.GenerateObjectName(resultSequence.TargetItem);
-                                resultSequence.TargetCreateScript = scripter.GenerateCreateSequenceScript(resultSequence.TargetItem);
+                                resultSequence.Scripts.TargetCreateScript = scripter.GenerateCreateSequenceScript(resultSequence.TargetItem);
                             }
 
-                            resultSequence.Equal = resultSequence.SourceCreateScript == resultSequence.TargetCreateScript;
+                            resultSequence.Equal = resultSequence.Scripts.SourceCreateScript == resultSequence.Scripts.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 
@@ -386,16 +388,16 @@ namespace SQLCompare.Services
                             if (resultType.SourceItem != null)
                             {
                                 resultType.SourceItemName = scripter.GenerateObjectName(resultType.SourceItem);
-                                resultType.SourceCreateScript = scripter.GenerateCreateTypeScript(resultType.SourceItem, this.retrievedSourceDatabase.DataTypes);
+                                resultType.Scripts.SourceCreateScript = scripter.GenerateCreateTypeScript(resultType.SourceItem, this.retrievedSourceDatabase.DataTypes);
                             }
 
                             if (resultType.TargetItem != null)
                             {
                                 resultType.TargetItemName = scripter.GenerateObjectName(resultType.TargetItem);
-                                resultType.TargetCreateScript = scripter.GenerateCreateTypeScript(resultType.TargetItem, this.retrievedTargetDatabase.DataTypes);
+                                resultType.Scripts.TargetCreateScript = scripter.GenerateCreateTypeScript(resultType.TargetItem, this.retrievedTargetDatabase.DataTypes);
                             }
 
-                            resultType.Equal = resultType.SourceCreateScript == resultType.TargetCreateScript;
+                            resultType.Equal = resultType.Scripts.SourceCreateScript == resultType.Scripts.TargetCreateScript;
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
                         }
 

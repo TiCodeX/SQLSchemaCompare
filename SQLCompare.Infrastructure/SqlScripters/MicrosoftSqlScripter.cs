@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MicrosoftSql;
@@ -173,6 +174,32 @@ namespace SQLCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
             sb.Append($"{view.ViewDefinition}");
             if (!view.ViewDefinition.EndsWith("\n", StringComparison.Ordinal))
+            {
+                sb.AppendLine();
+            }
+
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptDropView(ABaseDbView view)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP VIEW {this.ScriptHelper.ScriptObjectName(view)};");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterView(ABaseDbView sourceView, ABaseDbView targetView)
+        {
+            const string pattern = @"^\s*CREATE\s+VIEW\s+(\[.*\]|\[.*\]\s*\.\s*\[.*\]|[^\[\]\s]*)\s+AS";
+            const string replacement = @"ALTER VIEW $1 AS";
+
+            var sb = new StringBuilder();
+            sb.AppendLine(Regex.Replace(sourceView.ViewDefinition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Singleline));
+            if (!sourceView.ViewDefinition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
             }

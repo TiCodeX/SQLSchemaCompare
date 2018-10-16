@@ -27,8 +27,14 @@ namespace SQLCompare.Infrastructure.EntityFramework
         {
             this.loggerFactory = loggerFactory;
             this.logger = logger;
+            this.Hostname = dbpo.Hostname;
             this.DatabaseName = dbpo.Database;
         }
+
+        /// <summary>
+        /// Gets the hostname
+        /// </summary>
+        public string Hostname { get; }
 
         /// <summary>
         /// Gets the database name
@@ -44,7 +50,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
         public List<T> Query<T>(string query)
             where T : new()
         {
-            this.logger.LogDebug($"ExecuteQuery:{Environment.NewLine}{query}");
+            /*this.logger.LogDebug($"ExecuteQuery:{Environment.NewLine}{query}");*/
             var result = new List<T>();
             this.Database.OpenConnection();
             using (var command = this.Database.GetDbConnection().CreateCommand())
@@ -104,7 +110,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// <returns>The list of the requested column</returns>
         public List<string> Query(string query, int columnIndex = 0)
         {
-            this.logger.LogDebug($"ExecuteQuery:{Environment.NewLine}{query}");
+            /*this.logger.LogDebug($"ExecuteQuery:{Environment.NewLine}{query}");*/
             var result = new List<string>();
             this.Database.OpenConnection();
             using (var command = this.Database.GetDbConnection().CreateCommand())
@@ -128,7 +134,7 @@ namespace SQLCompare.Infrastructure.EntityFramework
         /// <param name="query">The SQL query</param>
         public void ExecuteNonQuery(string query)
         {
-            this.logger.LogDebug($"ExecuteQuery:{Environment.NewLine}{query}");
+            /*this.logger.LogDebug($"ExecuteQuery:{Environment.NewLine}{query}");*/
             this.Database.OpenConnection();
             using (var command = this.Database.GetDbConnection().CreateCommand())
             {

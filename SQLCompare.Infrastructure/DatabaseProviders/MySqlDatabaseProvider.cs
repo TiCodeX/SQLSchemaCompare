@@ -46,8 +46,14 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             }
         }
 
+        /// <inheritdoc/>
+        protected override string GetServerVersion(MySqlDatabaseContext context)
+        {
+            return context.Query("SELECT VERSION()").FirstOrDefault() ?? string.Empty;
+        }
+
         /// <inheritdoc />
-        protected override IEnumerable<ABaseDbTable> GetTables(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbTable> GetTables(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT t.TABLE_NAME as Name,");
@@ -59,13 +65,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       c.CHARACTER_SET_NAME as TableCharacterSet");
             query.AppendLine("FROM INFORMATION_SCHEMA.TABLES t");
             query.AppendLine("INNER JOIN INFORMATION_SCHEMA.COLLATION_CHARACTER_SET_APPLICABILITY c ON c.collation_name = t.table_collation");
-            query.AppendLine($"WHERE t.TABLE_TYPE = 'BASE TABLE' and t.TABLE_SCHEMA = '{database.Name}'");
+            query.AppendLine($"WHERE t.TABLE_TYPE = 'BASE TABLE' and t.TABLE_SCHEMA = '{context.DatabaseName}'");
 
             return context.Query<MySqlTable>(query.ToString());
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<ABaseDbColumn> GetColumns(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbColumn> GetColumns(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT a.TABLE_SCHEMA as 'Database',");
@@ -82,12 +88,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       a.EXTRA as Extra,");
             query.AppendLine("       a.COLUMN_TYPE as ColumnType");
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
-            query.AppendLine($"WHERE TABLE_SCHEMA = '{database.Name}'");
+            query.AppendLine($"WHERE TABLE_SCHEMA = '{context.DatabaseName}'");
             return context.Query<MySqlColumn>(query.ToString());
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT kcu.CONSTRAINT_SCHEMA as 'Database',");
@@ -107,13 +113,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("FROM information_schema.key_column_usage kcu");
             query.AppendLine("INNER JOIN information_schema.table_constraints tc ON tc.table_name = kcu.table_name AND tc.table_schema = kcu.table_schema AND tc.constraint_name = kcu.constraint_name");
             query.AppendLine("INNER JOIN information_schema.REFERENTIAL_CONSTRAINTS rc ON rc.constraint_catalog = kcu.constraint_catalog AND rc.constraint_schema = kcu.constraint_schema AND rc.constraint_name = kcu.constraint_name ");
-            query.AppendLine($"WHERE kcu.TABLE_SCHEMA = '{database.Name}' AND tc.constraint_type = 'FOREIGN KEY'");
+            query.AppendLine($"WHERE kcu.TABLE_SCHEMA = '{context.DatabaseName}' AND tc.constraint_type = 'FOREIGN KEY'");
 
             return context.Query<MySqlForeignKey>(query.ToString());
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbConstraint> GetConstraints(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbConstraint> GetConstraints(MySqlDatabaseContext context)
         {
             // An empty list is returned because:
             // - CHECK constraints doesn't exist
@@ -122,7 +128,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbIndex> GetIndexes(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbIndex> GetIndexes(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT s.TABLE_SCHEMA AS 'Database',");
@@ -140,20 +146,20 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("FROM INFORMATION_SCHEMA.STATISTICS s");
             query.AppendLine("LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc");
             query.AppendLine("  ON tc.table_name = s.table_name AND tc.table_schema = s.table_schema AND tc.constraint_name = s.index_name");
-            query.AppendLine($"WHERE s.table_schema = '{database.Name}'");
+            query.AppendLine($"WHERE s.table_schema = '{context.DatabaseName}'");
 
             return context.Query<MySqlIndex>(query.ToString());
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbView> GetViews(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbView> GetViews(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as Name,");
             query.AppendLine("       TABLE_SCHEMA as 'Database',");
             query.AppendLine("       null as 'Schema'");
             query.AppendLine("FROM INFORMATION_SCHEMA.VIEWS");
-            query.AppendLine($"WHERE TABLE_SCHEMA = '{database.Name}'");
+            query.AppendLine($"WHERE TABLE_SCHEMA = '{context.DatabaseName}'");
 
             var result = context.Query<MySqlView>(query.ToString());
             foreach (var view in result)
@@ -166,14 +172,14 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbFunction> GetFunctions(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbFunction> GetFunctions(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT ROUTINE_NAME as Name,");
             query.AppendLine("       ROUTINE_SCHEMA as 'Database',");
             query.AppendLine("       null as 'Schema'");
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
-            query.AppendLine($"WHERE routine_type = 'FUNCTION' and ROUTINE_SCHEMA = '{database.Name}'");
+            query.AppendLine($"WHERE routine_type = 'FUNCTION' and ROUTINE_SCHEMA = '{context.DatabaseName}'");
 
             var result = context.Query<MySqlFunction>(query.ToString());
             foreach (var function in result)
@@ -185,14 +191,14 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT ROUTINE_NAME as Name,");
             query.AppendLine("       ROUTINE_SCHEMA as 'Database',");
             query.AppendLine("       null as 'Schema'");
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
-            query.AppendLine($"WHERE routine_type = 'PROCEDURE' and ROUTINE_SCHEMA = '{database.Name}'");
+            query.AppendLine($"WHERE routine_type = 'PROCEDURE' and ROUTINE_SCHEMA = '{context.DatabaseName}'");
 
             var result = context.Query<MySqlStoredProcedure>(query.ToString());
             foreach (var procedure in result)
@@ -204,7 +210,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbTrigger> GetTriggers(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbTrigger> GetTriggers(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT t.TRIGGER_SCHEMA AS 'Database',");
@@ -214,7 +220,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       null AS 'TableSchema',");
             query.AppendLine("       t.EVENT_OBJECT_TABLE AS 'TableName'");
             query.AppendLine("FROM INFORMATION_SCHEMA.TRIGGERS t");
-            query.AppendLine($"WHERE t.TRIGGER_SCHEMA = '{database.Name}'");
+            query.AppendLine($"WHERE t.TRIGGER_SCHEMA = '{context.DatabaseName}'");
 
             var result = context.Query<ABaseDbTrigger>(query.ToString());
             foreach (var trigger in result)
@@ -226,14 +232,14 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbDataType> GetDataTypes(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbDataType> GetDataTypes(MySqlDatabaseContext context)
         {
             // An empty list is returned because MySQL doesn't have user defined data types
             return Enumerable.Empty<ABaseDbDataType>();
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbSequence> GetSequences(MySqlDb database, MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbSequence> GetSequences(MySqlDatabaseContext context)
         {
             // An empty list is returned because MySQL doesn't have sequences
             return Enumerable.Empty<ABaseDbSequence>();

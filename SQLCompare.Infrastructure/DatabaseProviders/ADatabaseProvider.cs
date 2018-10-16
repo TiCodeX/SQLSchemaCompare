@@ -73,7 +73,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <returns>The discovered database structure</returns>
         protected TDatabase DiscoverDatabase(TDatabaseContext context, TaskInfo taskInfo)
         {
-            this.Logger.LogInformation($"DiscoverDatabase started for database '{context.DatabaseName}'");
+            this.Logger.LogInformation($"DiscoverDatabase started for database '{context.DatabaseName}' on server '{context.Hostname}'");
             var db = new TDatabase { Name = context.DatabaseName };
 
             var columns = new List<ABaseDbColumn>();
@@ -87,7 +87,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
-                taskInfo.Percentage = 8;
+                taskInfo.Percentage = 4;
                 taskInfo.Message = Localization.StatusConnecting;
                 context.Database.OpenConnection();
             }
@@ -101,9 +101,22 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 8;
+                db.ServerVersion = this.GetServerVersion(context);
+                this.Logger.LogInformation($"Server '{context.Hostname}' version: {db.ServerVersion}");
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving server version");
+            }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
+            try
+            {
                 taskInfo.Percentage = 16;
                 taskInfo.Message = Localization.StatusRetrievingTables;
-                db.Tables.AddRange(this.GetTables(db, context));
+                db.Tables.AddRange(this.GetTables(context));
             }
             catch (Exception ex)
             {
@@ -116,7 +129,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             try
             {
                 taskInfo.Percentage = 24;
-                columns.AddRange(this.GetColumns(db, context));
+                columns.AddRange(this.GetColumns(context));
             }
             catch (Exception ex)
             {
@@ -130,7 +143,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 32;
                 taskInfo.Message = Localization.StatusRetrievingForeignKeys;
-                foreignKeys.AddRange(this.GetForeignKeys(db, context));
+                foreignKeys.AddRange(this.GetForeignKeys(context));
             }
             catch (Exception ex)
             {
@@ -144,7 +157,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 40;
                 taskInfo.Message = Localization.StatusRetrievingIndexes;
-                indexes.AddRange(this.GetIndexes(db, context));
+                indexes.AddRange(this.GetIndexes(context));
             }
             catch (Exception ex)
             {
@@ -158,7 +171,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 48;
                 taskInfo.Message = Localization.StatusRetrievingConstraints;
-                constraints.AddRange(this.GetConstraints(db, context));
+                constraints.AddRange(this.GetConstraints(context));
             }
             catch (Exception ex)
             {
@@ -201,7 +214,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 56;
                 taskInfo.Message = Localization.StatusRetrievingViews;
-                db.Views.AddRange(this.GetViews(db, context));
+                db.Views.AddRange(this.GetViews(context));
                 db.Views.ForEach(x => { x.ViewDefinition = x.ViewDefinition.TrimStart('\r', '\n'); });
             }
             catch (Exception ex)
@@ -228,7 +241,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 64;
                 taskInfo.Message = Localization.StatusRetrievingFunctions;
-                db.Functions.AddRange(this.GetFunctions(db, context));
+                db.Functions.AddRange(this.GetFunctions(context));
                 db.Functions.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
             }
             catch (Exception ex)
@@ -243,7 +256,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 72;
                 taskInfo.Message = Localization.StatusRetrievingStoredProcedures;
-                db.StoredProcedures.AddRange(this.GetStoredProcedures(db, context));
+                db.StoredProcedures.AddRange(this.GetStoredProcedures(context));
                 db.StoredProcedures.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
             }
             catch (Exception ex)
@@ -258,7 +271,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 80;
                 taskInfo.Message = Localization.StatusRetrievingTriggers;
-                db.Triggers.AddRange(this.GetTriggers(db, context));
+                db.Triggers.AddRange(this.GetTriggers(context));
                 db.Triggers.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
             }
             catch (Exception ex)
@@ -273,7 +286,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 88;
                 taskInfo.Message = Localization.StatusRetrievingDataTypes;
-                db.DataTypes.AddRange(this.GetDataTypes(db, context));
+                db.DataTypes.AddRange(this.GetDataTypes(context));
             }
             catch (Exception ex)
             {
@@ -287,7 +300,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 96;
                 taskInfo.Message = Localization.StatusRetrievingSequences;
-                db.Sequences.AddRange(this.GetSequences(db, context));
+                db.Sequences.AddRange(this.GetSequences(context));
             }
             catch (Exception ex)
             {
@@ -308,91 +321,87 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <summary>
+        /// Get the SQL server version
+        /// </summary>
+        /// <param name="context">The database context</param>
+        /// <returns>The version string</returns>
+        protected abstract string GetServerVersion(TDatabaseContext context);
+
+        /// <summary>
         /// Get the database tables
         /// </summary>
-        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of tables</returns>
-        protected abstract IEnumerable<ABaseDbTable> GetTables(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbTable> GetTables(TDatabaseContext context);
 
         /// <summary>
         /// Get the table columns
         /// </summary>
-        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of columns</returns>
-        protected abstract IEnumerable<ABaseDbColumn> GetColumns(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbColumn> GetColumns(TDatabaseContext context);
 
         /// <summary>
         /// Get the table foreign keys
         /// </summary>
-        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of foreign keys</returns>
-        protected abstract IEnumerable<ABaseDbConstraint> GetForeignKeys(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbConstraint> GetForeignKeys(TDatabaseContext context);
 
         /// <summary>
         /// Get the table constraints
         /// </summary>
-        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of constraints</returns>
-        protected abstract IEnumerable<ABaseDbConstraint> GetConstraints(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbConstraint> GetConstraints(TDatabaseContext context);
 
         /// <summary>
         /// Get the table indexes
         /// </summary>
-        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of indexes</returns>
-        protected abstract IEnumerable<ABaseDbIndex> GetIndexes(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbIndex> GetIndexes(TDatabaseContext context);
 
         /// <summary>
         /// Get the database views
         /// </summary>
-        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of views</returns>
-        protected abstract IEnumerable<ABaseDbView> GetViews(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbView> GetViews(TDatabaseContext context);
 
         /// <summary>
         /// Get the database functions
         /// </summary>
-        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of functions</returns>
-        protected abstract IEnumerable<ABaseDbFunction> GetFunctions(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbFunction> GetFunctions(TDatabaseContext context);
 
         /// <summary>
         /// Get the database stored procedures
         /// </summary>
-        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of stored procedures</returns>
-        protected abstract IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(TDatabaseContext context);
 
         /// <summary>
         /// Get the database triggers
         /// </summary>
-        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of triggers</returns>
-        protected abstract IEnumerable<ABaseDbTrigger> GetTriggers(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbTrigger> GetTriggers(TDatabaseContext context);
 
         /// <summary>
         /// Get the database data types
         /// </summary>
-        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of data types</returns>
-        protected abstract IEnumerable<ABaseDbDataType> GetDataTypes(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbDataType> GetDataTypes(TDatabaseContext context);
 
         /// <summary>
         /// Get the database sequences
         /// </summary>
-        /// <param name="database">The database information</param>
         /// <param name="context">The database context</param>
         /// <returns>The list of sequences</returns>
-        protected abstract IEnumerable<ABaseDbSequence> GetSequences(TDatabase database, TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbSequence> GetSequences(TDatabaseContext context);
     }
 }

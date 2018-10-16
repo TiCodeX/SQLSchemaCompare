@@ -46,8 +46,14 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             }
         }
 
+        /// <inheritdoc/>
+        protected override string GetServerVersion(PostgreSqlDatabaseContext context)
+        {
+            return context.Query("SHOW server_version").FirstOrDefault() ?? string.Empty;
+        }
+
         /// <inheritdoc />
-        protected override IEnumerable<ABaseDbTable> GetTables(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbTable> GetTables(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as \"Name\",");
@@ -60,7 +66,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<ABaseDbColumn> GetColumns(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbColumn> GetColumns(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
 
@@ -84,13 +90,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       collation_name as \"CollationName\",");
             query.AppendLine("       udt_name as \"UdtName\"");
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-            query.AppendLine($"WHERE TABLE_CATALOG = '{database.Name}'");
+            query.AppendLine($"WHERE TABLE_CATALOG = '{context.DatabaseName}'");
 
             return context.Query<PostgreSqlColumn>(query.ToString());
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
 
@@ -124,12 +130,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("    ON kcu.constraint_name = rc.constraint_name AND kcu.constraint_schema = rc.constraint_schema AND kcu.constraint_catalog = rc.constraint_catalog");
             query.AppendLine("INNER JOIN information_schema.constraint_column_usage ccu");
             query.AppendLine("    ON kcu.constraint_name = ccu.constraint_name AND kcu.constraint_schema = ccu.constraint_schema AND kcu.constraint_catalog = ccu.constraint_catalog");
-            query.AppendLine($"WHERE kcu.constraint_catalog = '{database.Name}' AND tu.constraint_type = 'FOREIGN KEY'");
+            query.AppendLine($"WHERE kcu.constraint_catalog = '{context.DatabaseName}' AND tu.constraint_type = 'FOREIGN KEY'");
             return context.Query<PostgreSqlForeignKey>(query.ToString());
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbConstraint> GetConstraints(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbConstraint> GetConstraints(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Database\",");
@@ -156,7 +162,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbIndex> GetIndexes(PostgreSqlDb db, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbIndex> GetIndexes(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Database\",");
@@ -192,7 +198,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbView> GetViews(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbView> GetViews(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as \"Name\",");
@@ -201,13 +207,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       VIEW_DEFINITION as \"ViewDefinition\",");
             query.AppendLine("       CHECK_OPTION as \"CheckOption\"");
             query.AppendLine("FROM INFORMATION_SCHEMA.VIEWS");
-            query.AppendLine($"WHERE TABLE_CATALOG = '{database.Name}' AND TABLE_SCHEMA = 'public'");
+            query.AppendLine($"WHERE TABLE_CATALOG = '{context.DatabaseName}' AND TABLE_SCHEMA = 'public'");
 
             return context.Query<PostgreSqlView>(query.ToString());
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbFunction> GetFunctions(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbFunction> GetFunctions(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT (current_database())::information_schema.sql_identifier as \"Database\",");
@@ -234,14 +240,14 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(PostgreSqlDatabaseContext context)
         {
             // In PostgreSql Stored Procedures doesn't exists. Therefore we will return an empty list;
             return Enumerable.Empty<ABaseDbStoredProcedure>();
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbTrigger> GetTriggers(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbTrigger> GetTriggers(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Database\",");
@@ -260,7 +266,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbDataType> GetDataTypes(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbDataType> GetDataTypes(PostgreSqlDatabaseContext context)
         {
             var commonSelect = new StringBuilder();
             commonSelect.AppendLine("SELECT current_database()::information_schema.sql_identifier AS \"Database\",");
@@ -369,7 +375,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbSequence> GetSequences(PostgreSqlDb database, PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbSequence> GetSequences(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT s.sequence_catalog AS \"Database\",");

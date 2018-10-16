@@ -47,7 +47,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbTable> GetTables(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        protected override string GetServerVersion(MicrosoftSqlDatabaseContext context)
+        {
+            return context.Query("SELECT SERVERPROPERTY('ProductVersion')").FirstOrDefault() ?? string.Empty;
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbTable> GetTables(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT a.TABLE_NAME as Name,");
@@ -62,7 +68,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbColumn> GetColumns(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbColumn> GetColumns(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT a.TABLE_CATALOG as 'Database',");
@@ -87,13 +93,13 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
             query.AppendLine("LEFT JOIN sys.identity_columns b ON object_id(a.TABLE_SCHEMA + '.' + a.TABLE_NAME) = b.object_id AND a.COLUMN_NAME = b.name");
             query.AppendLine("LEFT JOIN sys.computed_columns c ON object_id(a.TABLE_SCHEMA + '.' + a.TABLE_NAME) = c.object_id AND a.COLUMN_NAME = c.name");
-            query.AppendLine($"WHERE a.TABLE_CATALOG = '{database.Name}' AND a.TABLE_SCHEMA <> 'sys'");
+            query.AppendLine($"WHERE a.TABLE_CATALOG = '{context.DatabaseName}' AND a.TABLE_SCHEMA <> 'sys'");
 
             return context.Query<MicrosoftSqlColumn>(query.ToString());
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT tc.CONSTRAINT_CATALOG as 'Database',");
@@ -124,12 +130,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("	ON reftb.schema_id = refs.schema_id");
             query.AppendLine("INNER JOIN sys.columns refcol");
             query.AppendLine("	ON refcol.column_id = fkc.referenced_column_id and refcol.object_id = reftb.object_id");
-            query.AppendLine($"WHERE tc.TABLE_CATALOG = '{database.Name}' AND tc.CONSTRAINT_SCHEMA <> 'sys'");
+            query.AppendLine($"WHERE tc.TABLE_CATALOG = '{context.DatabaseName}' AND tc.CONSTRAINT_SCHEMA <> 'sys'");
             return context.Query<MicrosoftSqlForeignKey>(query.ToString());
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbConstraint> GetConstraints(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbConstraint> GetConstraints(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT tc.TABLE_CATALOG AS 'TableDatabase',");
@@ -152,7 +158,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbIndex> GetIndexes(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbIndex> GetIndexes(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT DB_NAME() AS 'Database',");
@@ -183,7 +189,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbView> GetViews(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbView> GetViews(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as Name,");
@@ -198,7 +204,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbFunction> GetFunctions(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbFunction> GetFunctions(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT ROUTINE_NAME as Name,");
@@ -214,7 +220,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(MicrosoftSqlDb db, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT ROUTINE_NAME as Name,");
@@ -230,7 +236,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbTrigger> GetTriggers(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbTrigger> GetTriggers(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT DB_NAME() AS 'Database',");
@@ -250,7 +256,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbDataType> GetDataTypes(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbDataType> GetDataTypes(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT DB_NAME() AS 'Database',");
@@ -278,7 +284,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbSequence> GetSequences(MicrosoftSqlDb database, MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbSequence> GetSequences(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT DB_NAME() AS 'Database',");

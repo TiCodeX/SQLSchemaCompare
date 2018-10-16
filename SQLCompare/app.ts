@@ -474,15 +474,22 @@ function startup(): void {
         logger.debug("Login window started");
 
         let loadFailed: boolean = false;
+        let retries: number = 100;
         loginWindow.webContents.on("did-fail-load", () => {
             loadFailed = true;
+            retries--;
         });
         loginWindow.webContents.on("did-finish-load", () => {
             if (loadFailed) {
-                logger.debug("Unable to contact service, retrying...");
-                // Reset the flag and trigger a new load
-                loadFailed = false;
-                loginWindow.loadURL(loginUrl);
+                logger.debug(`Unable to contact service, retrying... (${retries})`);
+                if (retries > 0) {
+                    // Reset the flag and trigger a new load
+                    loadFailed = false;
+                    loginWindow.loadURL(loginUrl);
+                } else {
+                    electron.dialog.showErrorBox("SQL Compare - Error", "An unexpected error has occurred");
+                    electron.app.quit();
+                }
             } else {
                 // Do not close the login window when the splash is closed
                 closeLoginWindow = false;

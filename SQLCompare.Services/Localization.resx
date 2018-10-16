@@ -320,9 +320,6 @@
   <data name="ButtonNext" xml:space="preserve">
     <value>Next</value>
   </data>
-  <data name="LabelTrigger" xml:space="preserve">
-    <value>Trigger</value>
-  </data>
   <data name="ErrorLoadProject" xml:space="preserve">
     <value>Cannot load the file: {0}</value>
     <comment>{0}: The exception message</comment>
@@ -521,9 +518,6 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="StatusMappingStoredProcedures" xml:space="preserve">
     <value>Mapping Stored Procedures...</value>
   </data>
-  <data name="StatusMappingTriggers" xml:space="preserve">
-    <value>Mapping Triggers...</value>
-  </data>
   <data name="StatusMappingSequences" xml:space="preserve">
     <value>Mapping Sequences...</value>
   </data>
@@ -544,9 +538,6 @@ This option will ignore the matching and use the same order as when it was creat
   </data>
   <data name="StatusComparingStoredProcedures" xml:space="preserve">
     <value>Comparing Stored Procedures...</value>
-  </data>
-  <data name="StatusComparingTriggers" xml:space="preserve">
-    <value>Comparing Triggers...</value>
   </data>
   <data name="StatusComparingSequences" xml:space="preserve">
     <value>Comparing Sequences...</value>

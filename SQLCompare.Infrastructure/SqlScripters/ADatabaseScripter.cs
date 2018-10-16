@@ -76,7 +76,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (userDefinedDataTypes.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelUserDefinedTypes));
-                foreach (var userDataType in userDefinedDataTypes)
+                foreach (var userDataType in userDefinedDataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
                     sb.AppendLine(this.ScriptCreateType(userDataType, database.DataTypes));
                 }
@@ -88,7 +88,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (database.Sequences.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelSequences));
-                foreach (var sequence in database.Sequences)
+                foreach (var sequence in database.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
                     sb.AppendLine(this.ScriptCreateSequence(sequence));
                 }
@@ -100,7 +100,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (database.Tables.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTables));
-                foreach (var table in database.Tables)
+                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
                     sb.AppendLine(this.ScriptCreateTable(table));
                 }
@@ -112,7 +112,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (database.Functions.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelFunctions));
-                foreach (var function in database.Functions)
+                foreach (var function in database.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
                     sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                     sb.Append(this.ScriptCreateFunction(function, database.DataTypes));
@@ -126,11 +126,27 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (database.StoredProcedures.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelStoredProcedures));
-                foreach (var storedProcedure in database.StoredProcedures)
+                foreach (var storedProcedure in database.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
                     sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                     sb.Append(this.ScriptCreateStoredProcedure(storedProcedure));
                     sb.AppendLine();
+                }
+
+                sb.AppendLine();
+            }
+
+            // Script the triggers
+            if (database.Tables.Count > 0 && database.Tables.Any(x => x.Triggers.Count > 0))
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
+                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    foreach (var trigger in table.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    {
+                        sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                        sb.AppendLine(this.ScriptCreateTrigger(trigger));
+                    }
                 }
 
                 sb.AppendLine();
@@ -144,7 +160,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (constraintsAndIndexes)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraintsAndIndexes));
-                foreach (var table in database.Tables)
+                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
                     sb.Append(this.ScriptPrimaryKeysAlterTable(table));
                     sb.Append(this.ScriptConstraintsAlterTable(table));
@@ -158,7 +174,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (database.Tables.Count > 0 && database.Tables.Any(x => x.ForeignKeys.Count > 0))
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-                foreach (var table in database.Tables)
+                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
                     sb.Append(this.ScriptForeignKeysAlterTable(table));
                 }
@@ -170,7 +186,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (database.Views.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelViews));
-                foreach (var view in database.Views)
+                foreach (var view in database.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
                     sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                     sb.AppendLine(this.ScriptCreateView(view));
@@ -179,19 +195,6 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     {
                         sb.Append(this.ScriptCreateIndexes(view, view.Indexes));
                     }
-                }
-
-                sb.AppendLine();
-            }
-
-            // Script the triggers
-            if (database.Triggers.Count > 0)
-            {
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
-                foreach (var trigger in database.Triggers)
-                {
-                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-                    sb.AppendLine(this.ScriptCreateTrigger(trigger));
                 }
 
                 sb.AppendLine();
@@ -213,6 +216,18 @@ namespace SQLCompare.Infrastructure.SqlScripters
             // Script the CREATE TABLE
             sb.Append(this.ScriptCreateTable(table, referenceTable));
 
+            // Script the Triggers
+            if (table.Triggers.Count > 0)
+            {
+                sb.AppendLine();
+                sb.AppendLine();
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
+                foreach (var trigger in table.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.AppendLine(this.ScriptCreateTrigger(trigger));
+                }
+            }
+
             // Script the ALTER TABLE for primary keys and indexes
             var constraintsAndIndexes = table.PrimaryKeys.Count > 0 ||
                                          table.Constraints.Count > 0 ||
@@ -220,7 +235,11 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (constraintsAndIndexes)
             {
                 sb.AppendLine();
-                sb.AppendLine();
+                if (table.Triggers.Count == 0)
+                {
+                    sb.AppendLine();
+                }
+
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraintsAndIndexes));
                 sb.Append(this.ScriptPrimaryKeysAlterTable(table));
                 sb.Append(this.ScriptConstraintsAlterTable(table));

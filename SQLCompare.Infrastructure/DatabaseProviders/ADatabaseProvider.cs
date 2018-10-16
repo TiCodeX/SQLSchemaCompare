@@ -80,6 +80,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var foreignKeys = new List<ABaseDbConstraint>();
             var indexes = new List<ABaseDbIndex>();
             var constraints = new List<ABaseDbConstraint>();
+            var triggers = new List<ABaseDbTrigger>();
 
             var exceptions = new List<Exception>();
 
@@ -179,6 +180,21 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 exceptions.Add(ex);
             }
 
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
+            try
+            {
+                taskInfo.Percentage = 56;
+                taskInfo.Message = Localization.StatusRetrievingTriggers;
+                triggers.AddRange(this.GetTriggers(context));
+                triggers.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving triggers");
+                exceptions.Add(ex);
+            }
+
             // Assign the retrieved items to the related tables
             foreach (var table in db.Tables)
             {
@@ -206,13 +222,18 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                     constraints.Where(y => table.Database == y.TableDatabase
                                        && table.Schema == y.TableSchema
                                        && table.Name == y.TableName));
+
+                table.Triggers.AddRange(
+                    triggers.Where(y => table.Database == y.TableDatabase
+                                           && table.Schema == y.TableSchema
+                                           && table.Name == y.TableName));
             }
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
             try
             {
-                taskInfo.Percentage = 56;
+                taskInfo.Percentage = 64;
                 taskInfo.Message = Localization.StatusRetrievingViews;
                 db.Views.AddRange(this.GetViews(context));
                 db.Views.ForEach(x => { x.ViewDefinition = x.ViewDefinition.TrimStart('\r', '\n'); });
@@ -239,7 +260,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
-                taskInfo.Percentage = 64;
+                taskInfo.Percentage = 72;
                 taskInfo.Message = Localization.StatusRetrievingFunctions;
                 db.Functions.AddRange(this.GetFunctions(context));
                 db.Functions.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
@@ -254,7 +275,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
 
             try
             {
-                taskInfo.Percentage = 72;
+                taskInfo.Percentage = 80;
                 taskInfo.Message = Localization.StatusRetrievingStoredProcedures;
                 db.StoredProcedures.AddRange(this.GetStoredProcedures(context));
                 db.StoredProcedures.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
@@ -262,21 +283,6 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             catch (Exception ex)
             {
                 this.Logger.LogError(ex, "Error retrieving stored procedures");
-                exceptions.Add(ex);
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-
-            try
-            {
-                taskInfo.Percentage = 80;
-                taskInfo.Message = Localization.StatusRetrievingTriggers;
-                db.Triggers.AddRange(this.GetTriggers(context));
-                db.Triggers.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
-            }
-            catch (Exception ex)
-            {
-                this.Logger.LogError(ex, "Error retrieving triggers");
                 exceptions.Add(ex);
             }
 

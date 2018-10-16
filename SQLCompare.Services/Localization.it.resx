@@ -411,9 +411,6 @@
   <data name="ErrorTrialSubscriptionExpired" xml:space="preserve">
     <value>L'abbonamento di prova è scaduto</value>
   </data>
-  <data name="LabelTrigger" xml:space="preserve">
-    <value>Trigger</value>
-  </data>
   <data name="MenuOpenLogsFolder" xml:space="preserve">
     <value>Apri cartella dei log</value>
   </data>
@@ -503,9 +500,6 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="StatusMappingStoredProcedures" xml:space="preserve">
     <value>Mappatura delle Procedure in corso...</value>
   </data>
-  <data name="StatusMappingTriggers" xml:space="preserve">
-    <value>Mappatura dei Trigger in corso...</value>
-  </data>
   <data name="StatusMappingSequences" xml:space="preserve">
     <value>Mappatura delle Sequenze in corso...</value>
   </data>
@@ -535,9 +529,6 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   </data>
   <data name="StatusComparingStoredProcedures" xml:space="preserve">
     <value>Confronto delle Procedure in corso...</value>
-  </data>
-  <data name="StatusComparingTriggers" xml:space="preserve">
-    <value>Confronto dei Trigger in corso...</value>
   </data>
   <data name="StatusComparingSequences" xml:space="preserve">
     <value>Confronto delle Sequenze in corso...</value>

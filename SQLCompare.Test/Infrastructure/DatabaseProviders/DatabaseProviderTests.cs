@@ -99,10 +99,6 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             db.Functions.Count.Should().Be(2);
             db.StoredProcedures.Should().BeEmpty();
 
-            db.Triggers.Should().NotBeNullOrEmpty();
-            db.Triggers.Count.Should().Be(1);
-            db.Triggers.First().Name.Should().Be("reminder1");
-
             db.DataTypes.Should().NotBeNullOrEmpty();
             db.DataTypes.Count.Should().Be(37);
 
@@ -375,6 +371,8 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 options.Excluding(x => new Regex("^Indexes\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
                 options.Excluding(x => new Regex("^Constraints\\[.+\\]\\.TableDatabase$").IsMatch(x.SelectedMemberPath));
                 options.Excluding(x => new Regex("^Constraints\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^Triggers\\[.+\\]\\.TableDatabase$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^Triggers\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
                 return options;
             });
 
@@ -395,15 +393,6 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var storedProcedures = db.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name);
             var clonedStoredProcedures = clonedDb.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name);
             storedProcedures.Should().BeEquivalentTo(clonedStoredProcedures, options => options.Excluding(x => x.Database));
-
-            var triggers = db.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
-            var clonedTriggers = clonedDb.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name).AsEnumerable();
-            triggers.Should().BeEquivalentTo(clonedTriggers, options =>
-            {
-                options.Excluding(x => x.Database);
-                options.Excluding(x => x.TableDatabase);
-                return options;
-            });
 
             var dataTypes = db.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name);
             var clonedDataTypes = clonedDb.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name);

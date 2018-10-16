@@ -855,15 +855,6 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Trigger.
-        /// </summary>
-        public static string LabelTrigger {
-            get {
-                return ResourceManager.GetString("LabelTrigger", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Triggers.
         /// </summary>
         public static string LabelTriggers {
@@ -1233,15 +1224,6 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Comparing Triggers....
-        /// </summary>
-        public static string StatusComparingTriggers {
-            get {
-                return ResourceManager.GetString("StatusComparingTriggers", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Comparing Views....
         /// </summary>
         public static string StatusComparingViews {
@@ -1319,15 +1301,6 @@ namespace SQLCompare.Services {
         public static string StatusMappingTables {
             get {
                 return ResourceManager.GetString("StatusMappingTables", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mapping Triggers....
-        /// </summary>
-        public static string StatusMappingTriggers {
-            get {
-                return ResourceManager.GetString("StatusMappingTriggers", resourceCulture);
             }
         }
         

@@ -37,5 +37,10 @@ namespace SQLCompare.Core.Entities.Database
         /// Gets the database table's constraints
         /// </summary>
         public List<ABaseDbConstraint> Constraints { get; } = new List<ABaseDbConstraint>();
+
+        /// <summary>
+        /// Gets the database's triggers
+        /// </summary>
+        public List<ABaseDbTrigger> Triggers { get; } = new List<ABaseDbTrigger>();
     }
 }

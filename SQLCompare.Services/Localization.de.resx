@@ -372,9 +372,6 @@
   <data name="ButtonNext" xml:space="preserve">
     <value>Vor</value>
   </data>
-  <data name="LabelTrigger" xml:space="preserve">
-    <value>Trigger</value>
-  </data>
   <data name="ErrorLoadProject" xml:space="preserve">
     <value>Datei kann nicht geöffnet werden: {0}</value>
   </data>

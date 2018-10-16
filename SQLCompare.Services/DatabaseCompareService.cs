@@ -91,7 +91,7 @@ namespace SQLCompare.Services
                         }
 
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
-                        taskInfo.Percentage = 15;
+                        taskInfo.Percentage = 20;
 
                         taskInfo.Message = Localization.StatusMappingViews;
                         foreach (var view in this.retrievedSourceDatabase.Views)
@@ -113,7 +113,7 @@ namespace SQLCompare.Services
                         }
 
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
-                        taskInfo.Percentage = 30;
+                        taskInfo.Percentage = 40;
 
                         taskInfo.Message = Localization.StatusMappingFunctions;
                         foreach (var function in this.retrievedSourceDatabase.Functions)
@@ -135,7 +135,7 @@ namespace SQLCompare.Services
                         }
 
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
-                        taskInfo.Percentage = 45;
+                        taskInfo.Percentage = 60;
 
                         taskInfo.Message = Localization.StatusMappingStoredProcedures;
                         foreach (var storedProcedure in this.retrievedSourceDatabase.StoredProcedures)
@@ -157,35 +157,7 @@ namespace SQLCompare.Services
                         }
 
                         taskInfo.CancellationToken.ThrowIfCancellationRequested();
-                        taskInfo.Percentage = 60;
-
-                        taskInfo.Message = Localization.StatusMappingTriggers;
-                        foreach (var trigger in this.retrievedSourceDatabase.Triggers)
-                        {
-                            this.result.Triggers.Add(new CompareResultItem<ABaseDbTrigger>
-                            {
-                                SourceItem = trigger,
-                                TargetItem = this.retrievedTargetDatabase.Triggers.FirstOrDefault(x => x.Schema == trigger.Schema &&
-                                                                                                       x.Name == trigger.Name &&
-                                                                                                       x.TableSchema == trigger.TableSchema &&
-                                                                                                       x.TableName == trigger.TableName)
-                            });
-                        }
-
-                        foreach (var trigger in this.retrievedTargetDatabase.Triggers.Where(x =>
-                            !this.result.Triggers.Any(y => y.SourceItem.Schema == x.Schema &&
-                                y.SourceItem.Name == x.Name &&
-                                y.SourceItem.TableSchema == x.TableSchema &&
-                                y.SourceItem.TableName == x.TableName)).ToList())
-                        {
-                            this.result.Triggers.Add(new CompareResultItem<ABaseDbTrigger>
-                            {
-                                TargetItem = trigger
-                            });
-                        }
-
-                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
-                        taskInfo.Percentage = 75;
+                        taskInfo.Percentage = 80;
 
                         taskInfo.Message = Localization.StatusMappingSequences;
                         foreach (var sequence in this.retrievedSourceDatabase.Sequences)
@@ -242,7 +214,6 @@ namespace SQLCompare.Services
                                          this.result.Views.Count +
                                          this.result.Functions.Count +
                                          this.result.StoredProcedures.Count +
-                                         this.result.Triggers.Count +
                                          this.result.DataTypes.Count;
                         if (totalItems == 0)
                         {
@@ -355,33 +326,6 @@ namespace SQLCompare.Services
                             if (!resultStoredProcedure.Equal)
                             {
                                 resultStoredProcedure.Scripts.AlterScript = scripter.GenerateAlterStoredProcedureScript(resultStoredProcedure.SourceItem, resultStoredProcedure.TargetItem);
-                            }
-
-                            taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
-                        }
-
-                        taskInfo.CancellationToken.ThrowIfCancellationRequested();
-
-                        taskInfo.Message = Localization.StatusComparingTriggers;
-                        foreach (var resultTrigger in this.result.Triggers)
-                        {
-                            if (resultTrigger.SourceItem != null)
-                            {
-                                resultTrigger.SourceItemName = scripter.GenerateObjectName(resultTrigger.SourceItem);
-                                resultTrigger.Scripts.SourceCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.SourceItem);
-                            }
-
-                            if (resultTrigger.TargetItem != null)
-                            {
-                                resultTrigger.TargetItemName = scripter.GenerateObjectName(resultTrigger.TargetItem);
-                                resultTrigger.Scripts.TargetCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.TargetItem);
-                            }
-
-                            resultTrigger.Equal = resultTrigger.Scripts.SourceCreateScript == resultTrigger.Scripts.TargetCreateScript;
-
-                            if (!resultTrigger.Equal)
-                            {
-                                resultTrigger.Scripts.AlterScript = scripter.GenerateAlterTriggerScript(resultTrigger.SourceItem, resultTrigger.TargetItem);
                             }
 
                             taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);

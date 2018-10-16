@@ -453,7 +453,22 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 case "nvarchar":
                 case "varbinary":
                 case "varchar":
-                    sb.Append($"({(msType.MaxLength == -1 ? "max" : msType.MaxLength.ToString(CultureInfo.InvariantCulture))})");
+                    if (msType.MaxLength == -1)
+                    {
+                        sb.Append("(max)");
+                    }
+                    else
+                    {
+                        var maxLength = msType.MaxLength;
+                        if (msType.SystemType.Name == "nchar" ||
+                            msType.SystemType.Name == "nvarchar")
+                        {
+                            maxLength /= 2;
+                        }
+
+                        sb.Append($"({maxLength.ToString(CultureInfo.InvariantCulture)})");
+                    }
+
                     break;
 
                 // Cases with the configurable Scale parameter only

@@ -4,7 +4,7 @@ import childProcess = require("child_process");
 import portfinder = require("detect-port");
 import electron = require("electron");
 import electronUpdater = require("electron-updater");
-import windowStateKeeper = require("electron-window-state");
+import electronWindowState = require("electron-window-state");
 import fs = require("fs");
 import glob = require("glob");
 import log4js = require("log4js");
@@ -79,7 +79,9 @@ const logger: log4js.Logger = log4js.getLogger("electron");
 logger.info(`Starting SQL Compare v${electron.app.getVersion()}`);
 
 //#region Check Single Instance
-const isSecondInstance: boolean = electron.app.makeSingleInstance(() => {
+// If it's not able to get the lock it means that another instance already have it
+const isSecondInstance: boolean = !electron.app.requestSingleInstanceLock();
+electron.app.on("second-instance", () => {
     // Someone tried to run a second instance, we should focus our current window
     const currentWindow: Electron.BrowserWindow = loginWindow !== undefined ? loginWindow : mainWindow;
     if (currentWindow !== undefined && currentWindow !== null) {
@@ -286,7 +288,7 @@ function createMainWindow(): void {
     logger.debug("Primary display size: %dx%d", workAreaSize.width, workAreaSize.height);
 
     // Load the previous state with fall-back to defaults
-    const mainWindowState: { width: number; height: number; x: number; y: number; manage: Function } = windowStateKeeper({
+    const mainWindowState: electronWindowState.State = electronWindowState({
         defaultWidth: workAreaSize.width - 200,
         defaultHeight: workAreaSize.height - 100,
     });

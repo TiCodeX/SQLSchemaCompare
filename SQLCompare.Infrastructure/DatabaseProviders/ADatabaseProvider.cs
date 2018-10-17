@@ -59,6 +59,11 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// </summary>
         protected TDatabaseProviderOptions Options { get; }
 
+        /// <summary>
+        /// Gets or sets the current server version
+        /// </summary>
+        protected Version CurrentServerVersion { get; set; } = new Version(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
+
         /// <inheritdoc/>
         public abstract List<string> GetDatabaseList();
 
@@ -103,8 +108,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             try
             {
                 taskInfo.Percentage = 8;
-                db.ServerVersion = this.GetServerVersion(context);
-                this.Logger.LogInformation($"Server '{context.Hostname}' version: {db.ServerVersion}");
+                var version = this.GetServerVersion(context);
+                this.Logger.LogInformation($"Server '{context.Hostname}' version: {version}");
+                if (Version.TryParse(version, out var result))
+                {
+                    this.CurrentServerVersion = result;
+                }
             }
             catch (Exception ex)
             {

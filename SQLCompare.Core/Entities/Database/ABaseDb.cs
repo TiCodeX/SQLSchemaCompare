@@ -8,11 +8,6 @@ namespace SQLCompare.Core.Entities.Database
     public abstract class ABaseDb : ABaseDbObject
     {
         /// <summary>
-        /// Gets or sets the database version
-        /// </summary>
-        public string ServerVersion { get; set; }
-
-        /// <summary>
         /// Gets the database's tables
         /// </summary>
         public List<ABaseDbTable> Tables { get; } = new List<ABaseDbTable>();

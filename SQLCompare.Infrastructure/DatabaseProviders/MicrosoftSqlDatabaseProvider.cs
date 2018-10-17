@@ -77,7 +77,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       a.COLUMN_NAME as Name,");
             query.AppendLine("       a.ORDINAL_POSITION as OrdinalPosition,");
             query.AppendLine("       a.COLUMN_DEFAULT as ColumnDefault,");
-            query.AppendLine("       CAST(IIF(a.IS_NULLABLE = 'no',0,1) as BIT) as IsNullable,");
+            query.AppendLine("       CASE a.IS_NULLABLE WHEN 'no' THEN 0 ELSE 1 END as IsNullable,");
             query.AppendLine("       a.DATA_TYPE as DataType,");
             query.AppendLine("       a.CHARACTER_MAXIMUM_LENGTH as CharacterMaxLenght,");
             query.AppendLine("       a.NUMERIC_PRECISION as NumericPrecision,");
@@ -286,6 +286,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override IEnumerable<ABaseDbSequence> GetSequences(MicrosoftSqlDatabaseContext context)
         {
+            // Sequences are supported only from MS SQL Server 2012
+            if (this.CurrentServerVersion.Major < 11)
+            {
+                return Enumerable.Empty<ABaseDbSequence>();
+            }
+
             var query = new StringBuilder();
             query.AppendLine("SELECT DB_NAME() AS 'Database',");
             query.AppendLine("       object_schema_name(s.object_id) AS 'Schema',");

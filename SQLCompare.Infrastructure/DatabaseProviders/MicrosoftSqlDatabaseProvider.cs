@@ -59,9 +59,9 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("SELECT a.TABLE_NAME as Name,");
             query.AppendLine("       a.TABLE_CATALOG as 'Database',");
             query.AppendLine("       a.TABLE_SCHEMA as 'Schema',");
-            query.AppendLine("       b.modify_date as ModifyDate");
+            query.AppendLine("       b.modify_date as 'ModifyDate'");
             query.AppendLine("FROM INFORMATION_SCHEMA.TABLES a");
-            query.AppendLine("JOIN SYS.objects b ON b.object_id = object_id(a.TABLE_SCHEMA + '.' + a.TABLE_NAME)");
+            query.AppendLine("JOIN SYS.objects b ON b.object_id = object_id(QUOTENAME(a.TABLE_SCHEMA) + '.' + QUOTENAME(a.TABLE_NAME))");
             query.AppendLine("WHERE b.type = 'U' AND a.TABLE_SCHEMA <> 'sys'");
 
             return context.Query<MicrosoftSqlTable>(query.ToString());
@@ -71,29 +71,35 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbColumn> GetColumns(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT a.TABLE_CATALOG as 'Database',");
-            query.AppendLine("       a.TABLE_SCHEMA as 'Schema',");
-            query.AppendLine("       a.TABLE_NAME as TableName,");
-            query.AppendLine("       a.COLUMN_NAME as Name,");
-            query.AppendLine("       a.ORDINAL_POSITION as OrdinalPosition,");
-            query.AppendLine("       a.COLUMN_DEFAULT as ColumnDefault,");
-            query.AppendLine("       CASE a.IS_NULLABLE WHEN 'no' THEN 0 ELSE 1 END as IsNullable,");
-            query.AppendLine("       a.DATA_TYPE as DataType,");
-            query.AppendLine("       a.CHARACTER_MAXIMUM_LENGTH as CharacterMaxLenght,");
-            query.AppendLine("       a.NUMERIC_PRECISION as NumericPrecision,");
-            query.AppendLine("       a.NUMERIC_SCALE as NumericScale,");
-            query.AppendLine("       a.DATETIME_PRECISION as DateTimePrecision,");
-            query.AppendLine("       a.CHARACTER_SET_NAME as CharacterSetName,");
-            query.AppendLine("       a.COLLATION_NAME as CollationName,");
-            query.AppendLine("       IsNull(b.is_identity, 0) as IsIdentity,");
-            query.AppendLine("       IsNull(b.seed_value, 0) as IdentitySeed,");
-            query.AppendLine("       IsNull(b.increment_value, 0) as IdentityIncrement,");
-            query.AppendLine("       IsNull(c.is_computed, 0) as IsComputed,");
-            query.AppendLine("       c.definition as Definition");
-            query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
-            query.AppendLine("LEFT JOIN sys.identity_columns b ON object_id(a.TABLE_SCHEMA + '.' + a.TABLE_NAME) = b.object_id AND a.COLUMN_NAME = b.name");
-            query.AppendLine("LEFT JOIN sys.computed_columns c ON object_id(a.TABLE_SCHEMA + '.' + a.TABLE_NAME) = c.object_id AND a.COLUMN_NAME = c.name");
-            query.AppendLine($"WHERE a.TABLE_CATALOG = '{context.DatabaseName}' AND a.TABLE_SCHEMA <> 'sys'");
+            query.AppendLine("SELECT isc.TABLE_CATALOG as 'Database',");
+            query.AppendLine("       isc.TABLE_SCHEMA as 'Schema',");
+            query.AppendLine("       isc.TABLE_NAME as 'TableName',");
+            query.AppendLine("       isc.COLUMN_NAME as 'Name',");
+            query.AppendLine("       isc.ORDINAL_POSITION as 'OrdinalPosition',");
+            query.AppendLine("       isc.COLUMN_DEFAULT as 'ColumnDefault',");
+            query.AppendLine("       dc.name as 'DefaultConstraintName',");
+            query.AppendLine("       CASE isc.IS_NULLABLE WHEN 'no' THEN 0 ELSE 1 END as 'IsNullable',");
+            query.AppendLine("       isc.DATA_TYPE as 'DataType',");
+            query.AppendLine("       isc.CHARACTER_MAXIMUM_LENGTH as 'CharacterMaxLength',");
+            query.AppendLine("       isc.NUMERIC_PRECISION as 'NumericPrecision',");
+            query.AppendLine("       isc.NUMERIC_SCALE as 'NumericScale',");
+            query.AppendLine("       isc.DATETIME_PRECISION as 'DateTimePrecision',");
+            query.AppendLine("       isc.CHARACTER_SET_NAME as 'CharacterSetName',");
+            query.AppendLine("       isc.COLLATION_NAME as 'CollationName',");
+            query.AppendLine("       IsNull(ic.is_identity, 0) as 'IsIdentity',");
+            query.AppendLine("       IsNull(ic.seed_value, 0) as 'IdentitySeed',");
+            query.AppendLine("       IsNull(ic.increment_value, 0) as 'IdentityIncrement',");
+            query.AppendLine("       IsNull(cc.is_computed, 0) as 'IsComputed',");
+            query.AppendLine("       IsNull(c.is_rowguidcol, 0) as 'IsRowGuidCol',");
+            query.AppendLine("       cc.definition as 'Definition',");
+            query.AppendLine("       isc.DOMAIN_SCHEMA as 'UserDefinedDataTypeSchema',");
+            query.AppendLine("       isc.DOMAIN_NAME as 'UserDefinedDataType'");
+            query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS isc");
+            query.AppendLine("JOIN sys.columns c ON object_id(QUOTENAME(isc.TABLE_SCHEMA) + '.' + QUOTENAME(isc.TABLE_NAME)) = c.object_id AND isc.COLUMN_NAME = c.name");
+            query.AppendLine("LEFT JOIN sys.identity_columns ic ON c.object_id = ic.object_id AND c.column_id = ic.column_id");
+            query.AppendLine("LEFT JOIN sys.computed_columns cc ON c.object_id = cc.object_id AND c.column_id = cc.column_id");
+            query.AppendLine("LEFT JOIN sys.default_constraints dc ON c.object_id = dc.parent_object_id AND c.column_id = dc.parent_column_id");
+            query.AppendLine($"WHERE isc.TABLE_CATALOG = '{context.DatabaseName}' AND isc.TABLE_SCHEMA <> 'sys'");
 
             return context.Query<MicrosoftSqlColumn>(query.ToString());
         }
@@ -104,32 +110,26 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var query = new StringBuilder();
             query.AppendLine("SELECT tc.CONSTRAINT_CATALOG as 'Database',");
             query.AppendLine("       tc.CONSTRAINT_SCHEMA as 'Schema',");
-            query.AppendLine("       tc.CONSTRAINT_NAME as Name,");
-            query.AppendLine("       tc.TABLE_CATALOG as TableDatabase,");
-            query.AppendLine("       tc.TABLE_SCHEMA as TableSchema,");
-            query.AppendLine("       tc.TABLE_NAME as TableName,");
-            query.AppendLine("       col.name as ColumnName,");
-            query.AppendLine("       tc.CONSTRAINT_TYPE as ConstraintType,");
-            query.AppendLine("       reftb.name as ReferencedTableName,");
-            query.AppendLine("       refs.name as ReferencedTableSchema,");
-            query.AppendLine("       refcol.name as ReferencedTableColumn,");
-            query.AppendLine("       fk.delete_referential_action as DeleteReferentialAction,");
-            query.AppendLine("       fk.update_referential_action as UpdateReferentialAction");
+            query.AppendLine("       tc.CONSTRAINT_NAME as 'Name',");
+            query.AppendLine("       tc.TABLE_CATALOG as 'TableDatabase',");
+            query.AppendLine("       tc.TABLE_SCHEMA as 'TableSchema',");
+            query.AppendLine("       tc.TABLE_NAME as 'TableName',");
+            query.AppendLine("       col.name as 'ColumnName',");
+            query.AppendLine("       tc.CONSTRAINT_TYPE as 'ConstraintType',");
+            query.AppendLine("       reftb.name as 'ReferencedTableName',");
+            query.AppendLine("       refs.name as 'ReferencedTableSchema',");
+            query.AppendLine("       refcol.name as 'ReferencedTableColumn',");
+            query.AppendLine("       fk.delete_referential_action as 'DeleteReferentialAction',");
+            query.AppendLine("       fk.update_referential_action as 'UpdateReferentialAction',");
+            query.AppendLine("       fk.is_disabled as 'Disabled'");
             query.AppendLine("FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc");
-            query.AppendLine("INNER JOIN sys.foreign_keys fk");
-            query.AppendLine("	ON fk.name = tc.CONSTRAINT_NAME");
-            query.AppendLine("INNER JOIN sys.foreign_key_columns fkc");
-            query.AppendLine("	ON fkc.constraint_object_id = fk.object_id");
-            query.AppendLine("INNER JOIN sys.tables tb");
-            query.AppendLine("	ON tb.object_id = fkc.parent_object_id");
-            query.AppendLine("INNER JOIN sys.columns col");
-            query.AppendLine("	ON col.column_id = fkc.parent_column_id and col.object_id = tb.object_id");
-            query.AppendLine("INNER JOIN sys.tables reftb");
-            query.AppendLine("	ON reftb.object_id = fkc.referenced_object_id");
-            query.AppendLine("INNER JOIN sys.schemas refs");
-            query.AppendLine("	ON reftb.schema_id = refs.schema_id");
-            query.AppendLine("INNER JOIN sys.columns refcol");
-            query.AppendLine("	ON refcol.column_id = fkc.referenced_column_id and refcol.object_id = reftb.object_id");
+            query.AppendLine("INNER JOIN sys.foreign_keys fk ON fk.name = tc.CONSTRAINT_NAME");
+            query.AppendLine("INNER JOIN sys.foreign_key_columns fkc ON fkc.constraint_object_id = fk.object_id");
+            query.AppendLine("INNER JOIN sys.tables tb ON tb.object_id = fkc.parent_object_id");
+            query.AppendLine("INNER JOIN sys.columns col ON col.column_id = fkc.parent_column_id and col.object_id = tb.object_id");
+            query.AppendLine("INNER JOIN sys.tables reftb ON reftb.object_id = fkc.referenced_object_id");
+            query.AppendLine("INNER JOIN sys.schemas refs ON reftb.schema_id = refs.schema_id");
+            query.AppendLine("INNER JOIN sys.columns refcol ON refcol.column_id = fkc.referenced_column_id and refcol.object_id = reftb.object_id");
             query.AppendLine($"WHERE tc.TABLE_CATALOG = '{context.DatabaseName}' AND tc.CONSTRAINT_SCHEMA <> 'sys'");
             return context.Query<MicrosoftSqlForeignKey>(query.ToString());
         }
@@ -192,10 +192,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbView> GetViews(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT TABLE_NAME as Name,");
+            query.AppendLine("SELECT TABLE_NAME as 'Name',");
             query.AppendLine("       TABLE_CATALOG as 'Database',");
             query.AppendLine("       TABLE_SCHEMA as 'Schema',");
-            query.AppendLine("       VIEW_DEFINITION as ViewDefinition");
+            query.AppendLine("       VIEW_DEFINITION as 'ViewDefinition'");
             query.AppendLine("FROM INFORMATION_SCHEMA.VIEWS");
             query.AppendLine("WHERE NULLIF(VIEW_DEFINITION, '') IS NOT NULL AND");
             query.AppendLine("      TABLE_SCHEMA <> 'sys'");
@@ -207,10 +207,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbFunction> GetFunctions(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT ROUTINE_NAME as Name,");
+            query.AppendLine("SELECT ROUTINE_NAME as 'Name',");
             query.AppendLine("       ROUTINE_CATALOG as 'Database',");
             query.AppendLine("       ROUTINE_SCHEMA as 'Schema',");
-            query.AppendLine("       ROUTINE_DEFINITION as Definition");
+            query.AppendLine("       ROUTINE_DEFINITION as 'Definition'");
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
             query.AppendLine("WHERE routine_type = 'FUNCTION' AND");
             query.AppendLine("      NULLIF(ROUTINE_DEFINITION, '') IS NOT NULL AND");
@@ -223,10 +223,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT ROUTINE_NAME as Name,");
+            query.AppendLine("SELECT ROUTINE_NAME as 'Name',");
             query.AppendLine("       ROUTINE_CATALOG as 'Database',");
             query.AppendLine("       ROUTINE_SCHEMA as 'Schema',");
-            query.AppendLine("       ROUTINE_DEFINITION as Definition");
+            query.AppendLine("       ROUTINE_DEFINITION as 'Definition'");
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
             query.AppendLine("WHERE routine_type = 'PROCEDURE' AND");
             query.AppendLine("      NULLIF(ROUTINE_DEFINITION, '') IS NOT NULL AND");

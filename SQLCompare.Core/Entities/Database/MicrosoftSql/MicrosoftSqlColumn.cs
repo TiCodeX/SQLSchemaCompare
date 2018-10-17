@@ -21,9 +21,9 @@
         public int? NumericScale { get; set; }
 
         /// <summary>
-        /// Gets or sets the column character maximum lenght
+        /// Gets or sets the column character maximum length
         /// </summary>
-        public int? CharacterMaxLenght { get; set; }
+        public int? CharacterMaxLength { get; set; }
 
         /// <summary>
         /// Gets or sets the column date time precision
@@ -56,8 +56,28 @@
         public bool IsComputed { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the column is a ROWGUIDCOL
+        /// </summary>
+        public bool IsRowGuidCol { get; set; }
+
+        /// <summary>
         /// Gets or sets the definition of a computed column
         /// </summary>
         public string Definition { get; set; }
+
+        /// <summary>
+        /// Gets or sets the schema of the user defined data type
+        /// </summary>
+        public string UserDefinedDataTypeSchema { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user defined data type
+        /// </summary>
+        public string UserDefinedDataType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the default constraint name
+        /// </summary>
+        public string DefaultConstraintName { get; set; }
     }
 }

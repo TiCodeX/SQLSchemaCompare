@@ -55,5 +55,10 @@
         /// Gets or sets the update referential action
         /// </summary>
         public ReferentialAction UpdateReferentialAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the foreign key is disabled
+        /// </summary>
+        public bool Disabled { get; set; }
     }
 }

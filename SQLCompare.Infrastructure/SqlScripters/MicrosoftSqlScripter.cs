@@ -57,8 +57,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 var key = (MicrosoftSqlIndex)keys.First();
                 var columnList = keys.OrderBy(x => ((MicrosoftSqlIndex)x).OrdinalPosition).Select(x => $"[{((MicrosoftSqlIndex)x).ColumnName}]");
 
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT [{key.Name}] PRIMARY KEY {key.TypeDescription}({string.Join(",", columnList)})");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD CONSTRAINT [{key.Name}]");
+                sb.AppendLine($"PRIMARY KEY {key.TypeDescription} ({string.Join(",", columnList)})");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                 sb.AppendLine();
             }
@@ -75,13 +75,21 @@ namespace SQLCompare.Infrastructure.SqlScripters
             {
                 var key = (MicrosoftSqlForeignKey)aBaseDbConstraint;
 
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} WITH CHECK ADD CONSTRAINT [{key.Name}] FOREIGN KEY([{key.ColumnName}])");
-                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)}([{key.ReferencedTableColumn}])");
+                sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} WITH ");
+                sb.Append(key.Disabled ? "NOCHECK" : "CHECK");
+                sb.AppendLine($" ADD CONSTRAINT [{key.Name}]");
+
+                sb.Append($"FOREIGN KEY ([{key.ColumnName}]) ");
+                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ([{key.ReferencedTableColumn}])");
+
                 sb.AppendLine($"ON DELETE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.DeleteReferentialAction)}");
                 sb.AppendLine($"ON UPDATE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.UpdateReferentialAction)}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-                sb.AppendLine();
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} CHECK CONSTRAINT[{key.Name}]");
+
+                sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ");
+                sb.Append(key.Disabled ? "NOCHECK" : "CHECK");
+                sb.AppendLine($" CONSTRAINT [{key.Name}]");
+
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                 sb.AppendLine();
             }
@@ -96,8 +104,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
             foreach (var keys in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = keys.First();
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT [{key.Name}] CHECK {key.Definition}");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD CONSTRAINT [{key.Name}]");
+                sb.AppendLine($"CHECK {key.Definition}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                 sb.AppendLine();
             }
@@ -136,10 +144,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                         }
 
                         // If CLUSTERED is not specified, a NONCLUSTERED index is created
-                        if (index.Type == MicrosoftSqlIndex.IndexType.Clustered)
-                        {
-                            sb.Append("CLUSTERED ");
-                        }
+                        sb.Append(index.Type == MicrosoftSqlIndex.IndexType.Clustered ? "CLUSTERED " : "NONCLUSTERED ");
 
                         break;
 
@@ -155,7 +160,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                         throw new NotSupportedException($"Index of type '{index.Type.ToString()}' is not supported");
                 }
 
-                sb.AppendLine($"INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(dbObject)}({string.Join(",", columnList)})");
+                sb.AppendLine($"INDEX [{index.Name}] ON {this.ScriptHelper.ScriptObjectName(dbObject)}({string.Join(",", columnList)})");
                 if (!string.IsNullOrWhiteSpace(index.FilterDefinition))
                 {
                     sb.AppendLine($"{this.Indent}WHERE {index.FilterDefinition}");

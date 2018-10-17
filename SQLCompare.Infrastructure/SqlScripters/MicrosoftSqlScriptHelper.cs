@@ -41,7 +41,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         public override string ScriptObjectName(string objectSchema, string objectName)
         {
-            return !string.IsNullOrEmpty(objectSchema) ?
+            return !string.IsNullOrWhiteSpace(objectSchema) ?
                 $"[{objectSchema}].[{objectName}]" :
                 $"[{objectName}]";
         }
@@ -67,12 +67,22 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     sb.Append($"IDENTITY({col.IdentitySeed},{col.IdentityIncrement}) ");
                 }
 
-                if (col.ColumnDefault != null)
+                sb.Append(col.IsNullable ? "NULL" : "NOT NULL");
+
+                if (col.IsRowGuidCol)
                 {
-                    sb.Append($"DEFAULT {col.ColumnDefault} ");
+                    sb.Append(" ROWGUIDCOL");
                 }
 
-                sb.Append(col.IsNullable ? "NULL" : "NOT NULL");
+                if (col.ColumnDefault != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(col.DefaultConstraintName))
+                    {
+                        sb.Append($" CONSTRAINT [{col.DefaultConstraintName}]");
+                    }
+
+                    sb.Append($" DEFAULT {col.ColumnDefault}");
+                }
             }
 
             return sb.ToString();
@@ -92,6 +102,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (column.IsComputed)
             {
                 return $"AS {column.Definition}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(column.UserDefinedDataType))
+            {
+                return !string.IsNullOrWhiteSpace(column.UserDefinedDataTypeSchema) ?
+                    $"[{column.UserDefinedDataTypeSchema}].[{column.UserDefinedDataType}]" :
+                    $"[{column.UserDefinedDataType}]";
             }
 
             switch (column.DataType)
@@ -131,13 +148,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 case "nchar":
                     {
                         var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
-                        return $"[{column.DataType}]({column.CharacterMaxLenght}){collate}";
+                        return $"[{column.DataType}]({column.CharacterMaxLength}){collate}";
                     }
 
                 case "varchar":
                 case "nvarchar":
                     {
-                        var length = column.CharacterMaxLenght == -1 ? "max" : $"{column.CharacterMaxLenght}";
+                        var length = column.CharacterMaxLength == -1 ? "max" : $"{column.CharacterMaxLength}";
                         var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
 
                         return $"[{column.DataType}]({length}){collate}";
@@ -152,10 +169,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
                 // Binary strings
                 case "binary":
-                    return $"[{column.DataType}]({column.CharacterMaxLenght})";
+                    return $"[{column.DataType}]({column.CharacterMaxLength})";
                 case "varbinary":
                     {
-                        var length = column.CharacterMaxLenght == -1 ? "max" : $"{column.CharacterMaxLenght}";
+                        var length = column.CharacterMaxLength == -1 ? "max" : $"{column.CharacterMaxLength}";
                         return $"[{column.DataType}]({length})";
                     }
 

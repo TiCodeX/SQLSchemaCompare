@@ -23,7 +23,7 @@ const loggerPath: string = path.join(os.homedir(), ".SQLCompare", "log", "SQLCom
 const loggerPattern: string = "-yyyy-MM-dd-ui.log";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;
-const autoUpdaterUrl: string = "https://ticodex.blob.core.windows.net/releases";
+const autoUpdaterUrl: string = "https://download.ticodex.com/sqlcompare";
 let servicePath: string;
 switch (electronUpdater.getCurrentPlatform()) {
     case "linux":

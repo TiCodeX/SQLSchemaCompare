@@ -204,39 +204,9 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 exceptions.Add(ex);
             }
 
-            // Assign the retrieved items to the related tables
-            foreach (var table in db.Tables)
-            {
-                taskInfo.CancellationToken.ThrowIfCancellationRequested();
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-                table.Columns.AddRange(
-                    columns.Where(y => table.Database == y.Database
-                                           && table.Schema == y.Schema
-                                           && table.Name == y.TableName));
-                table.ForeignKeys.AddRange(
-                    foreignKeys.Where(y => table.Database == y.TableDatabase
-                                           && table.Schema == y.TableSchema
-                                           && table.Name == y.TableName));
-                table.PrimaryKeys.AddRange(
-                    indexes.Where(y => y.IsPrimaryKey
-                                           && table.Database == y.TableDatabase
-                                           && table.Schema == y.TableSchema
-                                           && table.Name == y.TableName));
-                table.Indexes.AddRange(
-                    indexes.Where(y => y.IsPrimaryKey == false
-                                       && table.Database == y.TableDatabase
-                                       && table.Schema == y.TableSchema
-                                       && table.Name == y.TableName));
-                table.Constraints.AddRange(
-                    constraints.Where(y => table.Database == y.TableDatabase
-                                       && table.Schema == y.TableSchema
-                                       && table.Name == y.TableName));
-
-                table.Triggers.AddRange(
-                    triggers.Where(y => table.Database == y.TableDatabase
-                                           && table.Schema == y.TableSchema
-                                           && table.Name == y.TableName));
-            }
+            AssignRetrievedItemsToRelatedTables(taskInfo, db, columns, foreignKeys, indexes, constraints, triggers);
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
@@ -253,17 +223,9 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 exceptions.Add(ex);
             }
 
-            // Assign the retrieved items to the related views
-            foreach (var view in db.Views)
-            {
-                taskInfo.CancellationToken.ThrowIfCancellationRequested();
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-                view.Indexes.AddRange(
-                    indexes.Where(y => y.IsPrimaryKey == false
-                                       && view.Database == y.TableDatabase
-                                       && view.Schema == y.TableSchema
-                                       && view.Name == y.TableName));
-            }
+            AssignRetrievedItemsToRelatedViews(taskInfo, db, indexes);
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
@@ -418,5 +380,62 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// <param name="context">The database context</param>
         /// <returns>The list of sequences</returns>
         protected abstract IEnumerable<ABaseDbSequence> GetSequences(TDatabaseContext context);
+
+        private static void AssignRetrievedItemsToRelatedTables(
+            TaskInfo taskInfo,
+            TDatabase db,
+            IReadOnlyCollection<ABaseDbColumn> columns,
+            IReadOnlyCollection<ABaseDbConstraint> foreignKeys,
+            IReadOnlyCollection<ABaseDbIndex> indexes,
+            IReadOnlyCollection<ABaseDbConstraint> constraints,
+            IReadOnlyCollection<ABaseDbTrigger> triggers)
+        {
+            foreach (var table in db.Tables)
+            {
+                taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
+                table.Columns.AddRange(
+                    columns.Where(y => table.Database == y.Database
+                                       && table.Schema == y.Schema
+                                       && table.Name == y.TableName));
+                table.ForeignKeys.AddRange(
+                    foreignKeys.Where(y => table.Database == y.TableDatabase
+                                           && table.Schema == y.TableSchema
+                                           && table.Name == y.TableName));
+                table.PrimaryKeys.AddRange(
+                    indexes.Where(y => y.IsPrimaryKey
+                                       && table.Database == y.TableDatabase
+                                       && table.Schema == y.TableSchema
+                                       && table.Name == y.TableName));
+                table.Indexes.AddRange(
+                    indexes.Where(y => y.IsPrimaryKey == false
+                                       && table.Database == y.TableDatabase
+                                       && table.Schema == y.TableSchema
+                                       && table.Name == y.TableName));
+                table.Constraints.AddRange(
+                    constraints.Where(y => table.Database == y.TableDatabase
+                                           && table.Schema == y.TableSchema
+                                           && table.Name == y.TableName));
+
+                table.Triggers.AddRange(
+                    triggers.Where(y => table.Database == y.TableDatabase
+                                        && table.Schema == y.TableSchema
+                                        && table.Name == y.TableName));
+            }
+        }
+
+        private static void AssignRetrievedItemsToRelatedViews(TaskInfo taskInfo, TDatabase db, IReadOnlyCollection<ABaseDbIndex> indexes)
+        {
+            foreach (var view in db.Views)
+            {
+                taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
+                view.Indexes.AddRange(
+                    indexes.Where(y => y.IsPrimaryKey == false
+                                       && view.Database == y.TableDatabase
+                                       && view.Schema == y.TableSchema
+                                       && view.Name == y.TableName));
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using SQLCompare.Core.Entities.Database;
@@ -198,6 +199,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
         }
 
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Switch with lot of cases")]
         private string ScriptDataType(PostgreSqlColumn column)
         {
             switch (column.DataType)

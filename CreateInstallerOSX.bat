@@ -32,6 +32,7 @@ if ERRORLEVEL 1 goto:error
 REM Copy files to OSX
 pscp -pw %remotePass% -r %publishDir% %remoteUser%@%remoteIp%:%remoteDir%
 pscp -pw %remotePass% -r %electronDir% %remoteUser%@%remoteIp%:%remoteDir%
+pscp -pw %remotePass% %~dp0\%certFile% %remoteUser%@%remoteIp%:%remoteDir%
 
 if ERRORLEVEL 1 goto:error
 
@@ -51,13 +52,16 @@ plink -pw %remotePass% %remoteUser%@%remoteIp% (^
    cd %remoteDir%/SQLCompare;^
    chmod -R a+rwx ./node_modules;^
    chmod +x ../.publish/SQLCompare.UI;^
-   export CSC_IDENTITY_AUTO_DISCOVERY=false;^
+   export CSC_LINK=%remoteDir%/%certFile%;^
+   export CSC_KEY_PASSWORD=%certPass%;^
    npm run dist-%target%;^
 )
 
 if ERRORLEVEL 1 goto:error
 
 REM Copy generated files to local
+mkdir %~dp0\installer
+pscp -pw %remotePass% %remoteUser%@%remoteIp%:%remoteDir%/installer/*.zip %~dp0\installer\
 pscp -pw %remotePass% %remoteUser%@%remoteIp%:%remoteDir%/installer/*.dmg %~dp0\installer\
 pscp -pw %remotePass% %remoteUser%@%remoteIp%:%remoteDir%/installer/*.blockmap %~dp0\installer\
 pscp -pw %remotePass% %remoteUser%@%remoteIp%:%remoteDir%/installer/*.yml %~dp0\installer\

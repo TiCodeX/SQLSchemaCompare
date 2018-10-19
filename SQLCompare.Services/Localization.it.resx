@@ -486,7 +486,7 @@
 Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di quando è stata creata.</value>
   </data>
   <data name="LabelIgnoreCollateDescription" xml:space="preserve">
-    <value>Ignora le regole di confronto sulle colonne di tipo testuale quando si confrontano i database.</value>
+    <value>Ignora le regole di confronto (Collations) sulle colonne di tipo testuale quando si confrontano i database.</value>
   </data>
   <data name="StatusMappingTables" xml:space="preserve">
     <value>Mappatura delle Tabelle in corso...</value>

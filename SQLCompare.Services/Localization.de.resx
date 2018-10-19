@@ -310,7 +310,7 @@
     <value>Projekt speichern unter</value>
   </data>
   <data name="LabelIgnoreCollate" xml:space="preserve">
-    <value>Collation ignorieren</value>
+    <value>Datenbanksortierung ignorieren</value>
   </data>
   <data name="LabelOrderColumnAlphabetically" xml:space="preserve">
     <value>Zeilen alphabetisch sortieren</value>
@@ -374,5 +374,214 @@
   </data>
   <data name="ErrorLoadProject" xml:space="preserve">
     <value>Datei kann nicht geöffnet werden: {0}</value>
+  </data>
+  <data name="ErrorApplicationUpdateNeeded" xml:space="preserve">
+    <value>Es ist eine neue Version von {0} verfügbar. Bitte aktualisieren.</value>
+  </data>
+  <data name="ErrorCannotCloseProject" xml:space="preserve">
+    <value>Projekt kann nicht geschlossen werden.</value>
+  </data>
+  <data name="ErrorCannotCreateNewProject" xml:space="preserve">
+    <value>Es kann kein neues Projekt erstellt werden.</value>
+  </data>
+  <data name="ErrorCannotSaveProject" xml:space="preserve">
+    <value>Projekt kann nicht gespeichert werden: {0}</value>
+  </data>
+  <data name="ErrorEmptyDatabases" xml:space="preserve">
+    <value>Keine Objekte gefunden. Beide Datenbanken sind leer.</value>
+  </data>
+  <data name="ErrorLoadProjectFileNotFound" xml:space="preserve">
+    <value>Projekt kann nicht geladen werden. Datei nicht gefunden.</value>
+  </data>
+  <data name="ErrorLoadProjectInvalidProjectFile" xml:space="preserve">
+    <value>Die Projekt {0} kann nicht geladen werden. Format ungültig.</value>
+  </data>
+  <data name="ErrorLoadProjectIOError" xml:space="preserve">
+    <value>Projekt kann nicht geladen werden, da ein Fehler aufgetreten ist {0}</value>
+  </data>
+  <data name="ErrorLoadProjectUnauthorizedFileAccess" xml:space="preserve">
+    <value>Projekt kann nicht geladen werden, Zugriff verweigert.</value>
+  </data>
+  <data name="ErrorOperationCanceled" xml:space="preserve">
+    <value>Der Vorgang wurde abgebrochen.</value>
+  </data>
+  <data name="ErrorOperationNotExecuted" xml:space="preserve">
+    <value>Der Vorgang wurde nicht ausgeführt.</value>
+  </data>
+  <data name="ErrorUnableToReadAppSettings" xml:space="preserve">
+    <value>Die Einstellungen {0} konnten nicht von {1} geladen werden.</value>
+  </data>
+  <data name="LabelDatabaseComparison" xml:space="preserve">
+    <value>Datenbankvergleich</value>
+  </data>
+  <data name="LabelDoesNotExist" xml:space="preserve">
+    <value>Nicht vorhanden</value>
+  </data>
+  <data name="LabelForeignKeys" xml:space="preserve">
+    <value>Fremdschlüssel</value>
+  </data>
+  <data name="LabelFunctions" xml:space="preserve">
+    <value>Funktionen</value>
+  </data>
+  <data name="LabelIndexes" xml:space="preserve">
+    <value>Index</value>
+  </data>
+  <data name="LabelMappingDatabaseObjects" xml:space="preserve">
+    <value>Zuordnung der Datenbankobjekte</value>
+  </data>
+  <data name="LabelMigrationScript" xml:space="preserve">
+    <value>Migrationsscript</value>
+  </data>
+  <data name="LabelConstraintsAndIndexes" xml:space="preserve">
+    <value>Constraints und Indizes</value>
+  </data>
+  <data name="LabelPort" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="LabelRetrieveSourceDatabase" xml:space="preserve">
+    <value>Lese Quelldatenbank</value>
+  </data>
+  <data name="LabelRetrieveTargetDatabase" xml:space="preserve">
+    <value>Lese Zieldatenbank</value>
+  </data>
+  <data name="LabelStoredProcedures" xml:space="preserve">
+    <value>Gespeicherte Prozeduren</value>
+  </data>
+  <data name="LabelTables" xml:space="preserve">
+    <value>Tabellen</value>
+  </data>
+  <data name="LabelUserDefinedType" xml:space="preserve">
+    <value>Benutzerdefinerter Datentyp</value>
+  </data>
+  <data name="LabelUserDefinedTypes" xml:space="preserve">
+    <value>Benutzerdefineirte Datentypen</value>
+  </data>
+  <data name="LabelViews" xml:space="preserve">
+    <value>Sichten</value>
+  </data>
+  <data name="MenuFullSourceDatabaseScript" xml:space="preserve">
+    <value>Vollständiges Quelldatenbank-Skript</value>
+  </data>
+  <data name="MenuFullTargetDatabaseScript" xml:space="preserve">
+    <value>Vollständiges Zieldatenbank-Skript</value>
+  </data>
+  <data name="MenuGenerateScript" xml:space="preserve">
+    <value>Skript erstellen</value>
+  </data>
+  <data name="MenuManageProfile" xml:space="preserve">
+    <value>Profil verwalten</value>
+  </data>
+  <data name="MenuOpenLogsFolder" xml:space="preserve">
+    <value>Logverzeichnis öffnen</value>
+  </data>
+  <data name="MessageConfirmAbortOperation" xml:space="preserve">
+    <value>Soll der Vorgang wirklich abgebrochen werden?</value>
+  </data>
+  <data name="MessageDownloadLatestVersion" xml:space="preserve">
+    <value>Neuste Version herunterladen</value>
+  </data>
+  <data name="MessageDoYouWantToSaveProjectChanges" xml:space="preserve">
+    <value>Sollen die Änderungen vom geöffneten Projekt gespeichert werden?</value>
+  </data>
+  <data name="MessageGetASubscription" xml:space="preserve">
+    <value>Abonnement kaufen</value>
+  </data>
+  <data name="MessageProjectSavedSuccessfully" xml:space="preserve">
+    <value>Das Projekt wurde gespeichert.</value>
+  </data>
+  <data name="StatusComparingDataTypes" xml:space="preserve">
+    <value>Vergleiche Benutzerdefinierte Datentypen...</value>
+  </data>
+  <data name="StatusComparingFunctions" xml:space="preserve">
+    <value>Vergleiche Funktionen...</value>
+  </data>
+  <data name="StatusComparingStoredProcedures" xml:space="preserve">
+    <value>Vergleiche gespeicherte Prozeduren...</value>
+  </data>
+  <data name="StatusComparingTables" xml:space="preserve">
+    <value>Vergleiche Tabellen...</value>
+  </data>
+  <data name="StatusComparingViews" xml:space="preserve">
+    <value>Vergleiche Sichten...</value>
+  </data>
+  <data name="StatusConnecting" xml:space="preserve">
+    <value>Veribinde zum Server...</value>
+  </data>
+  <data name="StatusDone" xml:space="preserve">
+    <value>Beendet</value>
+  </data>
+  <data name="StatusMappingDataTypes" xml:space="preserve">
+    <value>Benutzerdefinierte Datentypen zuordnen...</value>
+  </data>
+  <data name="StatusMappingFunctions" xml:space="preserve">
+    <value>Funktionen zuordnen...</value>
+  </data>
+  <data name="StatusMappingStoredProcedures" xml:space="preserve">
+    <value>Gespeicherte Prozeduren zuordnen...</value>
+  </data>
+  <data name="StatusMappingTables" xml:space="preserve">
+    <value>Tabellen zuordnen...</value>
+  </data>
+  <data name="StatusMappingViews" xml:space="preserve">
+    <value>Sichten zuordnen.</value>
+  </data>
+  <data name="StatusRetrievingDataTypes" xml:space="preserve">
+    <value>Lese Benutzerdefinierte Datentypen...</value>
+  </data>
+  <data name="StatusRetrievingForeignKeys" xml:space="preserve">
+    <value>Lese Fremdschlüssel...</value>
+  </data>
+  <data name="StatusRetrievingFunctions" xml:space="preserve">
+    <value>Lese Funktionen...</value>
+  </data>
+  <data name="StatusRetrievingIndexes" xml:space="preserve">
+    <value>Lese Indizes...</value>
+  </data>
+  <data name="StatusRetrievingStoredProcedures" xml:space="preserve">
+    <value>Lese gespeicherte Prozeduren...</value>
+  </data>
+  <data name="StatusRetrievingTables" xml:space="preserve">
+    <value>Lese Tabellen...</value>
+  </data>
+  <data name="StatusRetrievingViews" xml:space="preserve">
+    <value>Lese Sichten...</value>
+  </data>
+  <data name="TitleAbortCompare" xml:space="preserve">
+    <value>Vergleichen abbrechen</value>
+  </data>
+  <data name="StatusRetrievingConstraints" xml:space="preserve">
+    <value>Lese Einschränkungen...</value>
+  </data>
+  <data name="StatusRetrievingTriggers" xml:space="preserve">
+    <value>Lese Trigger...</value>
+  </data>
+  <data name="StatusRetrievingSequences" xml:space="preserve">
+    <value>Lese Sequenzen...</value>
+  </data>
+  <data name="StatusMappingSequences" xml:space="preserve">
+    <value>Sequenzen zuordnen...</value>
+  </data>
+  <data name="StatusComparingSequences" xml:space="preserve">
+    <value>Vergleiche Sequenzen...</value>
+  </data>
+  <data name="LabelTriggers" xml:space="preserve">
+    <value>Trigger</value>
+  </data>
+  <data name="LabelSQLView" xml:space="preserve">
+    <value>SQL Ansicht</value>
+  </data>
+  <data name="LabelSequences" xml:space="preserve">
+    <value>Sequenzen</value>
+  </data>
+  <data name="LabelOrderColumnAlphabeticallyDescription" xml:space="preserve">
+    <value>Spalten alphabethisch Anordnen um unterschiede zu ignorieren von Tabellen deren Spalten in unterschiedlicher Reienfolge erstellt wurden.</value>
+  </data>
+  <data name="LabelIgnoreCollateDescription" xml:space="preserve">
+    <value>Datenbanksortierung beim Vergleichen von Text-Spalten ignorieren.</value>
+  </data>
+  <data name="LabelIgnoreReferenceTableColumnOrderDescription" xml:space="preserve">
+    <value>Während dem Vergleich werden die Spalten der Zieltabelle entsprechend der Quelle angeordnet.
+
+Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welcher Sie erstellt wurden.</value>
   </data>
 </root>

@@ -48,7 +48,7 @@
             }
         },
         "mac": {
-            "target": "dmg",
+            "target": "default",
             "category": "public.app-category.productivity",
             "artifactName": "SQLCompare-${version}.${ext}",
             "publish": {

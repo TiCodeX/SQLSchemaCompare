@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MySql;
@@ -81,6 +82,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             return string.Empty;
         }
 
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Switch with lot of cases")]
         private string ScriptDataType(MySqlColumn column)
         {
             if (column.Extra.Equals("VIRTUAL GENERATED", StringComparison.OrdinalIgnoreCase))

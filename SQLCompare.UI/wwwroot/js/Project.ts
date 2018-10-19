@@ -365,17 +365,19 @@ class Project {
                 targetPort.val($("input[name='DefaultMicrosoftSqlPort']").val());
                 break;
             case Project.DatabaseType.MySql:
+                useWindowAuthentication.hide();
+                $("input[name$='Port']").prop("disabled", false);
                 sourcePort.val($("input[name='DefaultMySqlPort']").val());
                 targetPort.val($("input[name='DefaultMySqlPort']").val());
                 break;
             case Project.DatabaseType.PostgreSql:
+                useWindowAuthentication.hide();
+                $("input[name$='Port']").prop("disabled", false);
                 sourcePort.val($("input[name='DefaultPostgreSqlPort']").val());
                 targetPort.val($("input[name='DefaultPostgreSqlPort']").val());
                 break;
             default:
         }
-        useWindowAuthentication.hide();
-        $("input[name$='Port']").prop("disabled", false);
         this.SetDirtyState();
     }
 

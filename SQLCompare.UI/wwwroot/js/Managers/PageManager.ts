@@ -100,6 +100,11 @@ class PageManager {
                 effects: "fade",
                 duration: "fast",
             });
+
+            // Fix tabs height
+            $(".tab-pane", newPageDiv).matchHeight({
+                byRow: false,
+            });
         });
     }
 

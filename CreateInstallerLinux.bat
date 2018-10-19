@@ -49,6 +49,7 @@ for /f "tokens=1,2" %%a in (%~dp0\SQLCompare\package.json) do (
 )
 :versionfound
 echo version: %version:~1,-2%> %~dp0\installer\latest-linux.yml
+echo path: SQLCompare-%version:~1,-2%.xxx>> %~dp0\installer\latest-linux.yml
 
 if ERRORLEVEL 1 goto:error
 

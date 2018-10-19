@@ -29,7 +29,6 @@
             "installerHeader": "installerHeader.bmp",
             "installerSidebar": "installerSidebar.bmp",
             "uninstallerSidebar": "installerSidebar.bmp",
-            "license": "eula.html",
             "include": "installer.nsh"
         },
         "linux": {
@@ -67,7 +66,6 @@
             "!build",
             "font/*",
             "img/*",
-            "eula.html",
             "splash.html",
             "app.min.js"
         ],

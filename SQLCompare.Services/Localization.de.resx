@@ -187,7 +187,7 @@
     <value>Neue Version verfügbar!</value>
   </data>
   <data name="ButtonClose" xml:space="preserve">
-    <value>Schließen</value>
+    <value>Schliessen</value>
   </data>
   <data name="ButtonQuit" xml:space="preserve">
     <value>Beenden</value>
@@ -196,7 +196,7 @@
     <value>Die neue version v{0} ist verfügbar und kann installiert werden.</value>
   </data>
   <data name="NotificationNewVersionAvailableMessage" xml:space="preserve">
-    <value>Die neue version v{0} wurde veröffentlicht. Bitte besuchen Sie die TiCodeX-Website, um sie herunterzuladen.</value>
+    <value>Die neue Version v{0} wurde veröffentlicht. Bitte besuchen Sie die TiCodeX-Website, um sie herunterzuladen.</value>
   </data>
   <data name="ButtonUpdateAndRestart" xml:space="preserve">
     <value>Aktualisieren und neu starten</value>
@@ -211,13 +211,13 @@
     <value>Neues Projekt</value>
   </data>
   <data name="LabelNewPostgreSQLProject" xml:space="preserve">
-    <value>Neue PostgreSQL Projekt</value>
+    <value>Neues PostgreSQL Projekt</value>
   </data>
   <data name="LabelNewMySqlProject" xml:space="preserve">
-    <value>Neue MySql Projekt</value>
+    <value>Neues MySql Projekt</value>
   </data>
   <data name="LabelNewMicrosoftSQLServerProject" xml:space="preserve">
-    <value>Neue Microsoft SQL Server Projekt</value>
+    <value>Neues Microsoft SQL Server Projekt</value>
   </data>
   <data name="LabelCreateNewProjects" xml:space="preserve">
     <value>Neues Projekt erstellen</value>
@@ -349,13 +349,13 @@
     <value>Kein aktives Abonnement gefunden.</value>
   </data>
   <data name="ErrorPasswordNotSpecified" xml:space="preserve">
-    <value>Kennword wurde nicht angegeben</value>
+    <value>Kennwort wurde nicht angegeben</value>
   </data>
   <data name="ErrorProductIsMissing" xml:space="preserve">
     <value>Produkt fehlt</value>
   </data>
   <data name="ErrorSessionExpired" xml:space="preserve">
-    <value>Ihre Sitzung ist verfallen</value>
+    <value>Ihre Sitzung ist abgelaufen</value>
   </data>
   <data name="ErrorSubscriptionExpired" xml:space="preserve">
     <value>Das aktuelle Abonnement ist verfallen</value>
@@ -370,7 +370,7 @@
     <value>Zurück</value>
   </data>
   <data name="ButtonNext" xml:space="preserve">
-    <value>Vor</value>
+    <value>Weiter</value>
   </data>
   <data name="ErrorLoadProject" xml:space="preserve">
     <value>Datei kann nicht geöffnet werden: {0}</value>
@@ -394,7 +394,7 @@
     <value>Projekt kann nicht geladen werden. Datei nicht gefunden.</value>
   </data>
   <data name="ErrorLoadProjectInvalidProjectFile" xml:space="preserve">
-    <value>Die Projekt {0} kann nicht geladen werden. Format ungültig.</value>
+    <value>Das Projekt {0} kann nicht geladen werden. Format ungültig.</value>
   </data>
   <data name="ErrorLoadProjectIOError" xml:space="preserve">
     <value>Projekt kann nicht geladen werden, da ein Fehler aufgetreten ist {0}</value>
@@ -430,10 +430,10 @@
     <value>Zuordnung der Datenbankobjekte</value>
   </data>
   <data name="LabelMigrationScript" xml:space="preserve">
-    <value>Migrationsscript</value>
+    <value>Migrationsskript</value>
   </data>
   <data name="LabelConstraintsAndIndexes" xml:space="preserve">
-    <value>Constraints und Indizes</value>
+    <value>Einschränkungen und Indizes</value>
   </data>
   <data name="LabelPort" xml:space="preserve">
     <value>Port</value>
@@ -454,7 +454,7 @@
     <value>Benutzerdefinerter Datentyp</value>
   </data>
   <data name="LabelUserDefinedTypes" xml:space="preserve">
-    <value>Benutzerdefineirte Datentypen</value>
+    <value>Benutzerdefinierte Datentypen</value>
   </data>
   <data name="LabelViews" xml:space="preserve">
     <value>Sichten</value>
@@ -478,7 +478,7 @@
     <value>Soll der Vorgang wirklich abgebrochen werden?</value>
   </data>
   <data name="MessageDownloadLatestVersion" xml:space="preserve">
-    <value>Neuste Version herunterladen</value>
+    <value>Neueste Version herunterladen</value>
   </data>
   <data name="MessageDoYouWantToSaveProjectChanges" xml:space="preserve">
     <value>Sollen die Änderungen vom geöffneten Projekt gespeichert werden?</value>
@@ -574,7 +574,7 @@
     <value>Sequenzen</value>
   </data>
   <data name="LabelOrderColumnAlphabeticallyDescription" xml:space="preserve">
-    <value>Spalten alphabethisch Anordnen um unterschiede zu ignorieren von Tabellen deren Spalten in unterschiedlicher Reienfolge erstellt wurden.</value>
+    <value>Spalten alphabethisch anordnen um die Unterschiede der Tabellen von einer anderen Sortierung zu ignorieren.</value>
   </data>
   <data name="LabelIgnoreCollateDescription" xml:space="preserve">
     <value>Datenbanksortierung beim Vergleichen von Text-Spalten ignorieren.</value>

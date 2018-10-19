@@ -47,7 +47,6 @@ __TEST_UPDATER_PLATFORM=linux</Environment>
     <Content Include="app.min.js">
       <DependentUpon>app.js</DependentUpon>
     </Content>
-    <Content Include="eula.html" />
     <Content Include="font\OpenSans-Regular.ttf" />
     <Content Include="img\background.jpg" />
     <Content Include="img\Logo.png" />

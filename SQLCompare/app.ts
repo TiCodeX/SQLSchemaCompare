@@ -428,6 +428,12 @@ function startup(): void {
         details.requestHeaders["CustomAuthToken"] = "prova"; // tslint:disable-line:no-string-literal
         callback({ cancel: false, requestHeaders: details.requestHeaders });
     });
+    // Notify the login window about a redirect
+    electron.session.fromPartition("login").webRequest.onBeforeRedirect(filter, (details: { redirectURL: string }) => {
+        if (loginWindow !== undefined && loginWindow !== null) {
+            loginWindow.webContents.send("LoginRedirect", details.redirectURL);
+        }
+    });
 
     splashWindow = new electron.BrowserWindow({
         width: 640,

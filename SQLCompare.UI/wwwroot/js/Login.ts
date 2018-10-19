@@ -100,14 +100,17 @@ $((): void => {
 
         const webview: JQuery = $("#webview");
         let redirectRequestDetected: boolean = false;
-        webview.on("did-get-redirect-request", (e: JQuery.Event): void => {
+        electron.ipcRenderer.on("LoginRedirect", (event: Electron.Event, redirectURL: string) => {
             redirectRequestDetected = true;
-            e.preventDefault();
-            Login.handleRedirect((<HashChangeEvent>e.originalEvent).newURL, <string>url.val());
+            Login.handleRedirect(redirectURL, <string>url.val());
         });
         webview.on("did-fail-load", (e: JQuery.Event) => {
             e.preventDefault();
             if (redirectRequestDetected) {
+                return;
+            }
+            // Handle regression in Electron 3.0 (https://github.com/electron/electron/issues/14004)
+            if ((<any>e.originalEvent).errorCode === -3) { // tslint:disable-line:no-any no-magic-numbers
                 return;
             }
             webview.hide();

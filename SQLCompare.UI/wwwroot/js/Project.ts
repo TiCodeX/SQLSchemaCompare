@@ -3,6 +3,11 @@
  */
 class Project {
     /**
+     * Extension of the project file
+     */
+    private static readonly projectFileExtension: string = "tcxsc";
+
+    /**
      * Service URL for a Project page
      */
     private static readonly pageUrl: string = "/Project/ProjectPageModel";
@@ -124,7 +129,7 @@ class Project {
                     filters: [
                         {
                             name: Localization.Get("LabelSQLCompareProjectFile"),
-                            extensions: ["xml"],
+                            extensions: [this.projectFileExtension],
                         },
                     ],
                 });
@@ -162,7 +167,7 @@ class Project {
                     filters: [
                         {
                             name: Localization.Get("LabelSQLCompareProjectFile"),
-                            extensions: ["xml"],
+                            extensions: [this.projectFileExtension],
                         },
                     ],
                     properties: ["openFile"],

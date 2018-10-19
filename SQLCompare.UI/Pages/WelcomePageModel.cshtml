@@ -27,7 +27,7 @@
                                  class="w-100 tcx-text-ellipsis"
                                  data-toggle="tooltip" data-placement="top" title="@item">
                                 <i class="fas fa-database pr-1"></i>
-                                @(System.IO.Path.GetFileName(item))
+                                @(System.IO.Path.GetFileNameWithoutExtension(item))
                             </div>
                             <div>
                                 <i class="fas fa-times text-danger"

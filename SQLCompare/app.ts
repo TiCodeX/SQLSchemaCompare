@@ -490,7 +490,14 @@ function startup(): void {
                 if (retries > 0) {
                     // Reset the flag and trigger a new load
                     loadFailed = false;
-                    loginWindow.loadURL(loginUrl);
+                    if (electronUpdater.getCurrentPlatform() !== "linux") {
+                        loginWindow.loadURL(loginUrl);
+                    } else {
+                        // Add a small delay on linux because the fail event is triggered very fast
+                        setTimeout(() => {
+                            loginWindow.loadURL(loginUrl);
+                        }, 400);
+                    }
                 } else {
                     electron.dialog.showErrorBox("SQL Compare - Error", "An unexpected error has occurred");
                     electron.app.quit();

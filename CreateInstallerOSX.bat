@@ -70,6 +70,7 @@ if ERRORLEVEL 1 goto:error
 
 REM Cleanup folders
 plink -pw %remotePass% %remoteUser%@%remoteIp% rm -rf %remoteDir%
+if exist %publishDir% ( rmdir /S /Q %publishDir% )
 
 if ERRORLEVEL 1 goto:error
 

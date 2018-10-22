@@ -113,5 +113,4 @@ del /Q %publishDir%\*.pdb
 del /Q %publishDir%\*.xml
 del /Q %publishDir%\Mapping.txt
 del /Q %publishDir%\web.config
-del /Q %publishDir%\createdump
 REM TODO: remove other unnecessary files

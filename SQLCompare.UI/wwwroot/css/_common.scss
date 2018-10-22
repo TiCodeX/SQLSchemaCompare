@@ -60,6 +60,21 @@ label {
     white-space: pre-line;
 }
 
+.nav-tabs {
+    .nav-item {
+        .nav-link {
+            color: inherit;
+            background-color: $white;
+            border-color: $gray-300;
+
+            &.active {
+                color: $primary;
+                border-bottom-color: $white;
+            }
+        }
+    }
+}
+
 .tab-content {
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;

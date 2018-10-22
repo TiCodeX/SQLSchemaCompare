@@ -121,6 +121,11 @@ class Main {
 
             const editor: monaco.editor.IStandaloneCodeEditor = monaco.editor.create(document.getElementById("sqlAlterScript"), this.defaultMonacoOptions);
             editor.setModel(monaco.editor.createModel(response.Result.AlterScript, "sql"));
+
+            // Fix the tab height
+            $("#mainBottom .tab-pane").matchHeight({
+                byRow: false,
+            });
         });
     }
 

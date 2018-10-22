@@ -95,6 +95,7 @@ $fa-font-size-base: $font-size-base;
     height: 100vh;
     padding-bottom: $row-header-height;
     background-color: $background-color;
+    overflow: auto;
 }
 
 .tcx-main-top {

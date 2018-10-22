@@ -111,9 +111,6 @@ const autoUpdaterPublishOptions: builderUtilRuntime.GenericServerOptions = {
     useMultipleRangeRequest: false,
 };
 electronUpdater.autoUpdater.setFeedURL(autoUpdaterPublishOptions);
-electronUpdater.autoUpdater.requestHeaders = {
-    "x-ms-version": "2018-03-28",
-};
 
 /**
  * Send a notification to the window that an update is available
@@ -301,6 +298,7 @@ function createMainWindow(): void {
         y: mainWindowState.y,
         width: mainWindowState.width,
         height: mainWindowState.height,
+        title: "SQL Compare - TiCodeX SA",
         show: false,
         webPreferences: {
             nodeIntegration: true,
@@ -352,6 +350,7 @@ function createLoginWindow(load: boolean): void {
     loginWindow = new electron.BrowserWindow({
         width: 700,
         height: 650,
+        title: "SQL Compare - TiCodeX SA",
         show: false,
         center: true,
         resizable: false,

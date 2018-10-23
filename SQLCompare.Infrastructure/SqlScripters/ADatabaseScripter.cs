@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Database;
+using SQLCompare.Core.Entities.Database.MicrosoftSql;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Services;
@@ -73,7 +74,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             var sb = new StringBuilder();
 
-            // Script the CREATE TYPE
+            // User-Defined Types
             var userDefinedDataTypes = database.DataTypes.Where(x => x.IsUserDefined).ToList();
             if (userDefinedDataTypes.Count > 0)
             {
@@ -86,7 +87,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
-            // Script the CREATE SEQUENCE
+            // Sequences
             if (database.Sequences.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelSequences));
@@ -98,7 +99,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
-            // Script the CREATE TABLE
+            // Tables with PK, FK, Constraints, Indexes, Triggers
             if (database.Tables.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTables));
@@ -108,9 +109,57 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 }
 
                 sb.AppendLine();
+
+                // Primary Keys
+                if (database.Tables.Any(x => x.PrimaryKeys.Count > 0))
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
+                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    {
+                        sb.Append(this.ScriptAlterTableAddPrimaryKeys(table));
+                    }
+
+                    sb.AppendLine();
+                }
+
+                // Foreign Keys
+                if (database.Tables.Any(x => x.ForeignKeys.Count > 0))
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
+                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    {
+                        sb.Append(this.ScriptAlterTableAddForeignKeys(table));
+                    }
+
+                    sb.AppendLine();
+                }
+
+                // Constraints
+                if (database.Tables.Any(x => x.Constraints.Count > 0))
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
+                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    {
+                        sb.Append(this.ScriptAlterTableAddConstraints(table));
+                    }
+
+                    sb.AppendLine();
+                }
+
+                // Indexes
+                if (database.Tables.Any(x => x.Indexes.Count > 0))
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
+                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    {
+                        sb.Append(this.ScriptCreateIndexes(table, table.Indexes));
+                    }
+
+                    sb.AppendLine();
+                }
             }
 
-            // Script the functions
+            // Functions
             if (database.Functions.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelFunctions));
@@ -124,7 +173,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
-            // Script the stored procedures
+            // Stored Procedures
             if (database.StoredProcedures.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelStoredProcedures));
@@ -138,53 +187,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
-            // Script the triggers
-            if (database.Tables.Count > 0 && database.Tables.Any(x => x.Triggers.Count > 0))
-            {
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
-                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-                {
-                    foreach (var trigger in table.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-                    {
-                        sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-                        sb.AppendLine(this.ScriptCreateTrigger(trigger));
-                    }
-                }
-
-                sb.AppendLine();
-            }
-
-            // Script the ALTER TABLE for primary keys and indexes
-            var constraintsAndIndexes = database.Tables.Count > 0 &&
-                                        database.Tables.Any(x => x.PrimaryKeys.Count > 0 ||
-                                                                 x.Constraints.Count > 0 ||
-                                                                 x.Indexes.Count > 0);
-            if (constraintsAndIndexes)
-            {
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraintsAndIndexes));
-                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-                {
-                    sb.Append(this.ScriptPrimaryKeysAlterTable(table));
-                    sb.Append(this.ScriptConstraintsAlterTable(table));
-                    sb.Append(this.ScriptCreateIndexes(table, table.Indexes));
-                }
-
-                sb.AppendLine();
-            }
-
-            // Script the ALTER TABLE for foreign keys
-            if (database.Tables.Count > 0 && database.Tables.Any(x => x.ForeignKeys.Count > 0))
-            {
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-                {
-                    sb.Append(this.ScriptForeignKeysAlterTable(table));
-                }
-
-                sb.AppendLine();
-            }
-
-            // Script the views
+            // Views and related Indexes
             if (database.Views.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelViews));
@@ -196,6 +199,22 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     if (view.Indexes.Count > 0)
                     {
                         sb.Append(this.ScriptCreateIndexes(view, view.Indexes));
+                    }
+                }
+
+                sb.AppendLine();
+            }
+
+            // Triggers
+            if (database.Tables.Any(x => x.Triggers.Count > 0))
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
+                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    foreach (var trigger in table.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    {
+                        sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                        sb.AppendLine(this.ScriptCreateTrigger(trigger));
                     }
                 }
 
@@ -215,14 +234,57 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             var sb = new StringBuilder();
 
-            // Script the CREATE TABLE
             sb.Append(this.ScriptCreateTable(table, referenceTable));
 
-            // Script the Triggers
+            var additionalEmptyLine = true;
+            if (table.PrimaryKeys.Count > 0)
+            {
+                sb.AppendLine();
+                if (additionalEmptyLine)
+                {
+                    sb.AppendLine();
+                    additionalEmptyLine = false;
+                }
+
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
+                sb.Append(this.ScriptAlterTableAddPrimaryKeys(table));
+            }
+
+            if (table.ForeignKeys.Count > 0)
+            {
+                sb.AppendLine();
+                if (additionalEmptyLine)
+                {
+                    sb.AppendLine();
+                    additionalEmptyLine = false;
+                }
+
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
+                sb.Append(this.ScriptAlterTableAddForeignKeys(table));
+            }
+
+            if (table.Constraints.Count > 0)
+            {
+                sb.AppendLine();
+                if (additionalEmptyLine)
+                {
+                    sb.AppendLine();
+                    additionalEmptyLine = false;
+                }
+
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
+                sb.Append(this.ScriptAlterTableAddConstraints(table));
+            }
+
             if (table.Triggers.Count > 0)
             {
                 sb.AppendLine();
-                sb.AppendLine();
+                if (additionalEmptyLine)
+                {
+                    sb.AppendLine();
+                    additionalEmptyLine = false;
+                }
+
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
                 foreach (var trigger in table.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
@@ -230,35 +292,17 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 }
             }
 
-            // Script the ALTER TABLE for primary keys and indexes
-            var constraintsAndIndexes = table.PrimaryKeys.Count > 0 ||
-                                         table.Constraints.Count > 0 ||
-                                         table.Indexes.Count > 0;
-            if (constraintsAndIndexes)
+            if (table.Indexes.Count > 0)
             {
                 sb.AppendLine();
-                if (table.Triggers.Count == 0)
+                if (additionalEmptyLine)
                 {
                     sb.AppendLine();
+                    additionalEmptyLine = false;
                 }
 
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraintsAndIndexes));
-                sb.Append(this.ScriptPrimaryKeysAlterTable(table));
-                sb.Append(this.ScriptConstraintsAlterTable(table));
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
                 sb.Append(this.ScriptCreateIndexes(table, table.Indexes));
-            }
-
-            // Script the ALTER TABLE for foreign keys
-            if (table.ForeignKeys.Count > 0)
-            {
-                sb.AppendLine();
-                if (!constraintsAndIndexes)
-                {
-                    sb.AppendLine();
-                }
-
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-                sb.Append(this.ScriptForeignKeysAlterTable(table));
             }
 
             return sb.ToString();
@@ -277,9 +321,57 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 return this.GenerateCreateTableScript(sourceTable);
             }
 
-            return sourceTable == null ?
-                "TODO: Drop Table Script" :
-                "TODO: Alter Table Script";
+            var sb = new StringBuilder();
+
+            if (sourceTable == null)
+            {
+                /*TODO: Drop Foreign key on other tables referencing the PK*/
+
+                if (targetTable.PrimaryKeys.Count > 0)
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
+                    sb.Append(this.ScriptAlterTableDropPrimaryKeys(targetTable));
+                    sb.AppendLine();
+                }
+
+                if (targetTable.ForeignKeys.Count > 0)
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
+                    sb.Append(this.ScriptAlterTableDropForeignKeys(targetTable));
+                    sb.AppendLine();
+                }
+
+                if (targetTable.Constraints.Count > 0 || targetTable.Columns.Any(x => !string.IsNullOrWhiteSpace(((MicrosoftSqlColumn)x).DefaultConstraintName)))
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
+                    sb.Append(this.ScriptAlterTableDropConstraints(targetTable));
+                    sb.AppendLine();
+                }
+
+                if (targetTable.Triggers.Count > 0)
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
+                    foreach (var trigger in targetTable.Triggers)
+                    {
+                        sb.Append(this.ScriptDropTrigger(trigger));
+                    }
+
+                    sb.AppendLine();
+                }
+
+                if (targetTable.Indexes.Count > 0)
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
+                    sb.Append(this.ScriptDropIndexes(targetTable, targetTable.Indexes));
+                    sb.AppendLine();
+                }
+
+                sb.Append(this.ScriptDropTable(targetTable));
+                return sb.ToString();
+            }
+
+            sb.AppendLine("TODO: Alter Table Script");
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -500,28 +592,56 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected abstract string ScriptCreateTable(ABaseDbTable table, ABaseDbTable referenceTable = null);
 
         /// <summary>
-        /// Generates the alter table for adding primary keys after create table
+        /// Generates the drop table script
+        /// </summary>
+        /// <param name="table">The table to drop</param>
+        /// <returns>The drop table script</returns>
+        protected abstract string ScriptDropTable(ABaseDbTable table);
+
+        /// <summary>
+        /// Generates the alter table for adding the primary keys to the table
         /// </summary>
         /// <param name="table">The table to alter</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptPrimaryKeysAlterTable(ABaseDbTable table);
+        protected abstract string ScriptAlterTableAddPrimaryKeys(ABaseDbTable table);
 
         /// <summary>
-        /// Generates the alter table for adding foreign keys after create table
+        /// Generates the alter table for dropping the primary keys from the table
         /// </summary>
         /// <param name="table">The table to alter</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptForeignKeysAlterTable(ABaseDbTable table);
+        protected abstract string ScriptAlterTableDropPrimaryKeys(ABaseDbTable table);
 
         /// <summary>
-        /// Generates the alter table for adding the constraints after create table
+        /// Generates the alter table for adding foreign keys to the table
         /// </summary>
         /// <param name="table">The table to alter</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptConstraintsAlterTable(ABaseDbTable table);
+        protected abstract string ScriptAlterTableAddForeignKeys(ABaseDbTable table);
 
         /// <summary>
-        /// Generates the create index scripts for adding indexes after create table
+        /// Generates the alter table for dropping the foreign keys from the table
+        /// </summary>
+        /// <param name="table">The table to alter</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterTableDropForeignKeys(ABaseDbTable table);
+
+        /// <summary>
+        /// Generates the alter table for adding the constraints to the table
+        /// </summary>
+        /// <param name="table">The table to alter</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterTableAddConstraints(ABaseDbTable table);
+
+        /// <summary>
+        /// Generates the alter table for dropping the constraints from the table
+        /// </summary>
+        /// <param name="table">The table to alter</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterTableDropConstraints(ABaseDbTable table);
+
+        /// <summary>
+        /// Generates the create index scripts for adding the indexes to the object
         /// </summary>
         /// <param name="dbObject">The database object related to the indexes</param>
         /// <param name="indexes">The list of indexes</param>

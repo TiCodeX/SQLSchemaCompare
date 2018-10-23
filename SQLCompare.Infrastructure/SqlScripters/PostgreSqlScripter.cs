@@ -45,7 +45,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptPrimaryKeysAlterTable(ABaseDbTable table)
+        protected override string ScriptDropTable(ABaseDbTable table)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterTableAddPrimaryKeys(ABaseDbTable table)
         {
             var sb = new StringBuilder();
 
@@ -63,7 +69,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptForeignKeysAlterTable(ABaseDbTable table)
+        protected override string ScriptAlterTableDropPrimaryKeys(ABaseDbTable table)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterTableAddForeignKeys(ABaseDbTable table)
         {
             var sb = new StringBuilder();
 
@@ -90,7 +102,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptConstraintsAlterTable(ABaseDbTable table)
+        protected override string ScriptAlterTableDropForeignKeys(ABaseDbTable table)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterTableAddConstraints(ABaseDbTable table)
         {
             var sb = new StringBuilder();
             foreach (var keys in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
@@ -102,6 +120,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
             }
 
             return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterTableDropConstraints(ABaseDbTable table)
+        {
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc/>

@@ -551,9 +551,6 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelStoredProcedures" xml:space="preserve">
     <value>Stored Procedures</value>
   </data>
-  <data name="LabelConstraintsAndIndexes" xml:space="preserve">
-    <value>Constraints and Indexes</value>
-  </data>
   <data name="LabelForeignKeys" xml:space="preserve">
     <value>Foreign Keys</value>
   </data>
@@ -592,5 +589,11 @@ This option will ignore the matching and use the same order as when it was creat
   </data>
   <data name="LabelMigrationScript" xml:space="preserve">
     <value>Migration Script</value>
+  </data>
+  <data name="LabelConstraints" xml:space="preserve">
+    <value>Constraints</value>
+  </data>
+  <data name="LabelPrimaryKeys" xml:space="preserve">
+    <value>Primary Keys</value>
   </data>
 </root>

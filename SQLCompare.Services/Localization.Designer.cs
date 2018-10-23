@@ -421,11 +421,11 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Constraints and Indexes.
+        ///   Looks up a localized string similar to Constraints.
         /// </summary>
-        public static string LabelConstraintsAndIndexes {
+        public static string LabelConstraints {
             get {
-                return ResourceManager.GetString("LabelConstraintsAndIndexes", resourceCulture);
+                return ResourceManager.GetString("LabelConstraints", resourceCulture);
             }
         }
         
@@ -725,6 +725,15 @@ namespace SQLCompare.Services {
         public static string LabelPort {
             get {
                 return ResourceManager.GetString("LabelPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Primary Keys.
+        /// </summary>
+        public static string LabelPrimaryKeys {
+            get {
+                return ResourceManager.GetString("LabelPrimaryKeys", resourceCulture);
             }
         }
         

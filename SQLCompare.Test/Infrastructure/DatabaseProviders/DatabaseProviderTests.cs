@@ -23,6 +23,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
     /// </summary>
     public class DatabaseProviderTests : BaseTests<DatabaseProviderTests>, IClassFixture<DatabaseFixture>
     {
+        private const bool ExportGeneratedFullScript = false;
         private readonly ICipherService cipherService = new CipherService();
         private readonly DatabaseFixture dbFixture;
 
@@ -202,6 +203,11 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var scripter = scripterFactory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
             var fullScript = scripter.GenerateFullScript(db);
 
+            if (ExportGeneratedFullScript)
+            {
+                File.WriteAllText("c:\\temp\\FullScriptMicrosoftSQL.sql", fullScript);
+            }
+
             var mssqldbpo = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions();
 
             var clonedDatabaseName = $"{mssqldbpo.Database}_clone";
@@ -250,6 +256,11 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
             var scripter = scripterFactory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
             var fullScript = scripter.GenerateFullScript(db);
+
+            if (ExportGeneratedFullScript)
+            {
+                File.WriteAllText("c:\\temp\\FullScriptPostgreSQL.sql", fullScript);
+            }
 
             var postgresqldbpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions();
 
@@ -312,6 +323,11 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
             var scripter = scripterFactory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
             var fullScript = scripter.GenerateFullScript(db);
+
+            if (ExportGeneratedFullScript)
+            {
+                File.WriteAllText("c:\\temp\\FullScriptMySQL.sql", fullScript);
+            }
 
             var mysqldbpo = this.dbFixture.GetMySqlDatabaseProviderOptions();
 

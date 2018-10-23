@@ -424,16 +424,13 @@
     <value>Funktionen</value>
   </data>
   <data name="LabelIndexes" xml:space="preserve">
-    <value>Index</value>
+    <value>Indizes</value>
   </data>
   <data name="LabelMappingDatabaseObjects" xml:space="preserve">
     <value>Zuordnung der Datenbankobjekte</value>
   </data>
   <data name="LabelMigrationScript" xml:space="preserve">
     <value>Migrationsskript</value>
-  </data>
-  <data name="LabelConstraintsAndIndexes" xml:space="preserve">
-    <value>Einschränkungen und Indizes</value>
   </data>
   <data name="LabelPort" xml:space="preserve">
     <value>Port</value>
@@ -583,5 +580,11 @@
     <value>Während dem Vergleich werden die Spalten der Zieltabelle entsprechend der Quelle angeordnet.
 
 Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welcher Sie erstellt wurden.</value>
+  </data>
+  <data name="LabelConstraints" xml:space="preserve">
+    <value>Einschränkungen</value>
+  </data>
+  <data name="LabelPrimaryKeys" xml:space="preserve">
+    <value>Primärschlüssel</value>
   </data>
 </root>

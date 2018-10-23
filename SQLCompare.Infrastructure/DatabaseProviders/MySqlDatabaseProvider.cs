@@ -164,8 +164,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var result = context.Query<MySqlView>(query.ToString());
             foreach (var view in result)
             {
-                var createView = context.Query($"SHOW CREATE VIEW {view.Database}.{view.Name}", 1).FirstOrDefault();
-                view.ViewDefinition = createView;
+                view.ViewDefinition = context.Query($"SHOW CREATE VIEW `{view.Database}`.`{view.Name}`", 1).FirstOrDefault();
             }
 
             return result;
@@ -184,7 +183,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var result = context.Query<MySqlFunction>(query.ToString());
             foreach (var function in result)
             {
-                function.Definition = context.Query($"SHOW CREATE FUNCTION {function.Database}.{function.Name}", 2).FirstOrDefault();
+                function.Definition = context.Query($"SHOW CREATE FUNCTION `{function.Database}`.`{function.Name}`", 2).FirstOrDefault();
             }
 
             return result;
@@ -203,7 +202,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var result = context.Query<MySqlStoredProcedure>(query.ToString());
             foreach (var procedure in result)
             {
-                procedure.Definition = context.Query($"SHOW CREATE PROCEDURE {procedure.Database}.{procedure.Name}", 2).FirstOrDefault();
+                procedure.Definition = context.Query($"SHOW CREATE PROCEDURE `{procedure.Database}`.`{procedure.Name}`", 2).FirstOrDefault();
             }
 
             return result;
@@ -225,7 +224,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var result = context.Query<ABaseDbTrigger>(query.ToString());
             foreach (var trigger in result)
             {
-                trigger.Definition = context.Query($"SHOW CREATE TRIGGER {trigger.Database}.{trigger.Name}", 2).FirstOrDefault();
+                trigger.Definition = context.Query($"SHOW CREATE TRIGGER `{trigger.Database}`.`{trigger.Name}`", 2).FirstOrDefault();
             }
 
             return result;

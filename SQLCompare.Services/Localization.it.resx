@@ -542,9 +542,6 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelStoredProcedures" xml:space="preserve">
     <value>Procedure</value>
   </data>
-  <data name="LabelConstraintsAndIndexes" xml:space="preserve">
-    <value>Vincoli e Indici</value>
-  </data>
   <data name="LabelForeignKeys" xml:space="preserve">
     <value>Chiavi Esterne</value>
   </data>
@@ -583,5 +580,11 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   </data>
   <data name="LabelMigrationScript" xml:space="preserve">
     <value>Script di migrazione</value>
+  </data>
+  <data name="LabelConstraints" xml:space="preserve">
+    <value>Vincoli</value>
+  </data>
+  <data name="LabelPrimaryKeys" xml:space="preserve">
+    <value>Chiavi Primarie</value>
   </data>
 </root>

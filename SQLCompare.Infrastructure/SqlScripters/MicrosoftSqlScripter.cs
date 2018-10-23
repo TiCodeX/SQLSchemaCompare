@@ -49,9 +49,20 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptPrimaryKeysAlterTable(ABaseDbTable table)
+        protected override string ScriptDropTable(ABaseDbTable table)
         {
             var sb = new StringBuilder();
+            sb.AppendLine($"DROP TABLE {this.ScriptHelper.ScriptObjectName(table)}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterTableAddPrimaryKeys(ABaseDbTable table)
+        {
+            var sb = new StringBuilder();
+
+            // GroupBy because there might be multiple columns with the same key
             foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = (MicrosoftSqlIndex)keys.First();
@@ -67,14 +78,28 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptForeignKeysAlterTable(ABaseDbTable table)
+        protected override string ScriptAlterTableDropPrimaryKeys(ABaseDbTable table)
         {
             var sb = new StringBuilder();
 
-            foreach (var aBaseDbConstraint in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+            // GroupBy because there might be multiple columns with the same key
+            foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
-                var key = (MicrosoftSqlForeignKey)aBaseDbConstraint;
+                var key = (MicrosoftSqlIndex)keys.First();
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT [{key.Name}]");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            }
 
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterTableAddForeignKeys(ABaseDbTable table)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MicrosoftSqlForeignKey>())
+            {
                 sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} WITH ");
                 sb.Append(key.Disabled ? "NOCHECK" : "CHECK");
                 sb.AppendLine($" ADD CONSTRAINT [{key.Name}]");
@@ -98,16 +123,51 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptConstraintsAlterTable(ABaseDbTable table)
+        protected override string ScriptAlterTableDropForeignKeys(ABaseDbTable table)
         {
             var sb = new StringBuilder();
-            foreach (var keys in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
+
+            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
-                var key = keys.First();
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD CONSTRAINT [{key.Name}]");
-                sb.AppendLine($"CHECK {key.Definition}");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT [{key.Name}]");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            }
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterTableAddConstraints(ABaseDbTable table)
+        {
+            var sb = new StringBuilder();
+            foreach (var constraint in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD CONSTRAINT [{constraint.Name}]");
+                sb.AppendLine($"CHECK {constraint.Definition}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                 sb.AppendLine();
+            }
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterTableDropConstraints(ABaseDbTable table)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var constraint in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT [{constraint.Name}]");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            }
+
+            foreach (var column in table.Columns.Cast<MicrosoftSqlColumn>()
+                .Where(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName))
+                .OrderBy(x => x.DefaultConstraintName))
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT [{column.DefaultConstraintName}]");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             }
 
             return sb.ToString();
@@ -123,6 +183,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             orderedIndexes.AddRange(indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type == MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
             orderedIndexes.AddRange(indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type != MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
 
+            // GroupBy because there might be multiple columns with the same index
             foreach (var indexGroup in orderedIndexes.GroupBy(x => x.Name))
             {
                 var index = indexGroup.First();
@@ -178,7 +239,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var indexGroup in indexes.Cast<MicrosoftSqlIndex>().OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
+            // GroupBy because there might be multiple columns with the same index
+            foreach (var indexGroup in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var index = indexGroup.First();
 

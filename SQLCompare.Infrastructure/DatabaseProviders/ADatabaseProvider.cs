@@ -402,6 +402,10 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                     foreignKeys.Where(y => table.Database == y.TableDatabase
                                            && table.Schema == y.TableSchema
                                            && table.Name == y.TableName));
+                table.ReferencingForeignKeys.AddRange(
+                    foreignKeys.Where(y => table.Database == y.Database
+                                           && table.Schema == y.ReferencedTableSchema
+                                           && table.Name == y.ReferencedTableName));
                 table.PrimaryKeys.AddRange(
                     indexes.Where(y => y.IsPrimaryKey
                                        && table.Database == y.TableDatabase

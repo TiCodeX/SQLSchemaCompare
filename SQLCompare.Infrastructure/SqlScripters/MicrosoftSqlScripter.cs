@@ -66,9 +66,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
             foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = (MicrosoftSqlIndex)keys.First();
-                var columnList = keys.OrderBy(x => ((MicrosoftSqlIndex)x).OrdinalPosition).Select(x => $"[{((MicrosoftSqlIndex)x).ColumnName}]");
+                var columnList = keys.OrderBy(x => ((MicrosoftSqlIndex)x).OrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(((MicrosoftSqlIndex)x).ColumnName)}");
 
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD CONSTRAINT [{key.Name}]");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
                 sb.AppendLine($"PRIMARY KEY {key.TypeDescription} ({string.Join(",", columnList)})");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                 sb.AppendLine();
@@ -86,7 +86,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = (MicrosoftSqlIndex)keys.First();
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT [{key.Name}]");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             }
 
@@ -102,10 +102,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
             {
                 sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} WITH ");
                 sb.Append(key.Disabled ? "NOCHECK" : "CHECK");
-                sb.AppendLine($" ADD CONSTRAINT [{key.Name}]");
+                sb.AppendLine($" ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
 
-                sb.Append($"FOREIGN KEY ([{key.ColumnName}]) ");
-                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ([{key.ReferencedColumnName}])");
+                sb.Append($"FOREIGN KEY ({this.ScriptHelper.ScriptObjectName(key.ColumnName)}) ");
+                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ({this.ScriptHelper.ScriptObjectName(key.ReferencedColumnName)})");
 
                 sb.AppendLine($"ON DELETE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.DeleteReferentialAction)}");
                 sb.AppendLine($"ON UPDATE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.UpdateReferentialAction)}");
@@ -113,7 +113,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
                 sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ");
                 sb.Append(key.Disabled ? "NOCHECK" : "CHECK");
-                sb.AppendLine($" CONSTRAINT [{key.Name}]");
+                sb.AppendLine($" CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
 
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                 sb.AppendLine();
@@ -129,7 +129,21 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT [{key.Name}]");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            }
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterTableDropReferencingForeignKeys(ABaseDbTable table)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var key in table.ReferencingForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             }
 
@@ -140,9 +154,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterTableAddConstraints(ABaseDbTable table)
         {
             var sb = new StringBuilder();
-            foreach (var constraint in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+            foreach (var constraintGroup in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD CONSTRAINT [{constraint.Name}]");
+                var constraint = constraintGroup.First();
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(constraint.Name)}");
                 sb.AppendLine($"CHECK {constraint.Definition}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                 sb.AppendLine();
@@ -156,9 +171,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var constraint in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+            foreach (var constraintGroup in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT [{constraint.Name}]");
+                var constraint = constraintGroup.First();
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(constraint.Name)}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             }
 
@@ -166,7 +182,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 .Where(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName))
                 .OrderBy(x => x.DefaultConstraintName))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT [{column.DefaultConstraintName}]");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(column.DefaultConstraintName)}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             }
 
@@ -190,8 +206,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
                 // If there is a column with descending order, specify the order on all columns
                 var scriptOrder = indexGroup.Any(x => x.IsDescending);
-                var columnList = indexGroup.OrderBy(x => x.OrdinalPosition).Select(x =>
-                    scriptOrder ? $"[{x.ColumnName}] {(x.IsDescending ? "DESC" : "ASC")}" : $"[{x.ColumnName}]");
+                var columnList = indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => scriptOrder ?
+                        $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)} {(x.IsDescending ? "DESC" : "ASC")}" :
+                        $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}");
 
                 sb.Append("CREATE ");
                 switch (index.Type)
@@ -221,7 +238,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                         throw new NotSupportedException($"Index of type '{index.Type.ToString()}' is not supported");
                 }
 
-                sb.AppendLine($"INDEX [{index.Name}] ON {this.ScriptHelper.ScriptObjectName(dbObject)}({string.Join(",", columnList)})");
+                sb.AppendLine($"INDEX {this.ScriptHelper.ScriptObjectName(index.Name)} ON {this.ScriptHelper.ScriptObjectName(dbObject)}({string.Join(",", columnList)})");
                 if (!string.IsNullOrWhiteSpace(index.FilterDefinition))
                 {
                     sb.AppendLine($"{this.Indent}WHERE {index.FilterDefinition}");
@@ -244,7 +261,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             {
                 var index = indexGroup.First();
 
-                sb.AppendLine($"DROP INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(dbObject)};");
+                sb.AppendLine($"DROP INDEX {this.ScriptHelper.ScriptObjectName(index.Name)} ON {this.ScriptHelper.ScriptObjectName(dbObject)}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             }
 
@@ -309,7 +326,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptDropFunction(ABaseDbFunction sqlFunction)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"DROP FUNCTION {this.ScriptHelper.ScriptObjectName(sqlFunction)};");
+            sb.AppendLine($"DROP FUNCTION {this.ScriptHelper.ScriptObjectName(sqlFunction)}");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
@@ -349,7 +366,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptDropStoredProcedure(ABaseDbStoredProcedure storedProcedure)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"DROP PROCEDURE {this.ScriptHelper.ScriptObjectName(storedProcedure)};");
+            sb.AppendLine($"DROP PROCEDURE {this.ScriptHelper.ScriptObjectName(storedProcedure)}");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
@@ -389,7 +406,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptDropTrigger(ABaseDbTrigger trigger)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"DROP TRIGGER {this.ScriptHelper.ScriptObjectName(trigger)};");
+            sb.AppendLine($"DROP TRIGGER {this.ScriptHelper.ScriptObjectName(trigger)}");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
@@ -442,7 +459,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptDropSequence(ABaseDbSequence sequence)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"DROP SEQUENCE {this.ScriptHelper.ScriptObjectName(sequence)};");
+            sb.AppendLine($"DROP SEQUENCE {this.ScriptHelper.ScriptObjectName(sequence)}");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
@@ -509,7 +526,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE TYPE {this.ScriptHelper.ScriptObjectName(type)}");
-            sb.Append($"    FROM {msType.SystemType.Name}");
+            sb.Append($"{this.Indent}FROM {msType.SystemType.Name}");
 
             switch (msType.SystemType.Name)
             {
@@ -561,7 +578,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptDropType(ABaseDbDataType type)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"DROP TYPE {this.ScriptHelper.ScriptObjectName(type)};");
+            sb.AppendLine($"DROP TYPE {this.ScriptHelper.ScriptObjectName(type)}");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }

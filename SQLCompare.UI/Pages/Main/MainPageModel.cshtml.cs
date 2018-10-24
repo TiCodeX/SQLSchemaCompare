@@ -74,12 +74,12 @@ namespace SQLCompare.UI.Pages.Main
             this.OnlySourceItems.AddRange(result.DataTypes.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Only Source items => {this.OnlySourceItems.Count}");
 
-            this.OnlyTargetItems.AddRange(result.Tables.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
-            this.OnlyTargetItems.AddRange(result.Views.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
-            this.OnlyTargetItems.AddRange(result.Functions.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
-            this.OnlyTargetItems.AddRange(result.StoredProcedures.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
-            this.OnlyTargetItems.AddRange(result.Sequences.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
-            this.OnlyTargetItems.AddRange(result.DataTypes.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.SourceItemName));
+            this.OnlyTargetItems.AddRange(result.Tables.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
+            this.OnlyTargetItems.AddRange(result.Views.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
+            this.OnlyTargetItems.AddRange(result.Functions.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
+            this.OnlyTargetItems.AddRange(result.StoredProcedures.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
+            this.OnlyTargetItems.AddRange(result.Sequences.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
+            this.OnlyTargetItems.AddRange(result.DataTypes.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
             this.logger.LogDebug($"Only Target items => {this.OnlyTargetItems.Count}");
 
             this.SameItems.AddRange(result.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));

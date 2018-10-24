@@ -325,7 +325,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             if (sourceTable == null)
             {
-                /*TODO: Drop Foreign key on other tables referencing the PK*/
+                if (targetTable.ReferencingForeignKeys.Count > 0)
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelReferencingForeignKeys));
+                    sb.Append(this.ScriptAlterTableDropReferencingForeignKeys(targetTable));
+                    sb.AppendLine();
+                }
 
                 if (targetTable.PrimaryKeys.Count > 0)
                 {
@@ -366,6 +371,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     sb.AppendLine();
                 }
 
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTable));
                 sb.Append(this.ScriptDropTable(targetTable));
                 return sb.ToString();
             }
@@ -625,6 +631,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="table">The table to alter</param>
         /// <returns>The alter table script</returns>
         protected abstract string ScriptAlterTableDropForeignKeys(ABaseDbTable table);
+
+        /// <summary>
+        /// Generates the alter table for dropping the foreign keys referencing the table
+        /// </summary>
+        /// <param name="table">The table to alter</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterTableDropReferencingForeignKeys(ABaseDbTable table);
 
         /// <summary>
         /// Generates the alter table for adding the constraints to the table

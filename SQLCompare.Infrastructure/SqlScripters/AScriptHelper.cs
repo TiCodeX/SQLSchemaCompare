@@ -45,6 +45,16 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <summary>
         /// Get the database object name
         /// </summary>
+        /// <param name="objectName">The object name</param>
+        /// <returns>The normalized database object name</returns>
+        public string ScriptObjectName(string objectName)
+        {
+            return this.ScriptObjectName(string.Empty, objectName);
+        }
+
+        /// <summary>
+        /// Get the database object name
+        /// </summary>
         /// <param name="objectSchema">The object schema</param>
         /// <param name="objectName">The object name</param>
         /// <returns>The normalized database object name</returns>

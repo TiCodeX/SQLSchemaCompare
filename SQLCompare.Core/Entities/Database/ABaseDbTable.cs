@@ -19,9 +19,14 @@ namespace SQLCompare.Core.Entities.Database
         public List<ABaseDbColumn> Columns { get; } = new List<ABaseDbColumn>();
 
         /// <summary>
-        /// Gets the database table's foreing keys
+        /// Gets the database table's foreign keys
         /// </summary>
         public List<ABaseDbForeignKey> ForeignKeys { get; } = new List<ABaseDbForeignKey>();
+
+        /// <summary>
+        /// Gets the foreign keys referencing this table
+        /// </summary>
+        public List<ABaseDbForeignKey> ReferencingForeignKeys { get; } = new List<ABaseDbForeignKey>();
 
         /// <summary>
         /// Gets the database table's primary keys

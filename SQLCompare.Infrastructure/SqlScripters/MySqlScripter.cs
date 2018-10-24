@@ -131,6 +131,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        protected override string ScriptAlterTableDropReferencingForeignKeys(ABaseDbTable table)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptAlterTableAddConstraints(ABaseDbTable table)
         {
             // Empty because there aren't constraints, already handled by table and indexes

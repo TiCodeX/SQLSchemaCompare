@@ -108,6 +108,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        protected override string ScriptAlterTableDropReferencingForeignKeys(ABaseDbTable table)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptAlterTableAddConstraints(ABaseDbTable table)
         {
             var sb = new StringBuilder();

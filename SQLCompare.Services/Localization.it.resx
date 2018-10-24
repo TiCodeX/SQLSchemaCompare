@@ -587,4 +587,7 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelPrimaryKeys" xml:space="preserve">
     <value>Chiavi Primarie</value>
   </data>
+  <data name="LabelReferencingForeignKeys" xml:space="preserve">
+    <value>Chiavi Esterne che fanno riferimento a questa tabella</value>
+  </data>
 </root>

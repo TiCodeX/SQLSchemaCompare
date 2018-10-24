@@ -435,6 +435,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 options.Excluding(x => new Regex("^PrimaryKeys\\[.+\\]\\.TableDatabase$").IsMatch(x.SelectedMemberPath));
                 options.Excluding(x => new Regex("^PrimaryKeys\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
                 options.Excluding(x => ((ABaseDbTable)x).ForeignKeys);
+                options.Excluding(x => ((ABaseDbTable)x).ReferencingForeignKeys);
                 options.Excluding(x => ((ABaseDbTable)x).Indexes);
                 options.Excluding(x => new Regex("^Constraints\\[.+\\]\\.TableDatabase$").IsMatch(x.SelectedMemberPath));
                 options.Excluding(x => new Regex("^Constraints\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
@@ -454,6 +455,15 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 var tableForeignKeys = table.ForeignKeys.OrderBy(x => x.ColumnName).Select(x => Convert.ChangeType(x, foreignKeyType, CultureInfo.InvariantCulture));
                 var clonedTableForeignKeys = clonedTable.ForeignKeys.OrderBy(x => x.ColumnName).Select(x => Convert.ChangeType(x, foreignKeyType, CultureInfo.InvariantCulture));
                 tableForeignKeys.Should().BeEquivalentTo(clonedTableForeignKeys, options =>
+                {
+                    options.Excluding(x => ((ABaseDbForeignKey)x).TableDatabase);
+                    options.Excluding(x => ((ABaseDbForeignKey)x).Database);
+                    return options;
+                });
+
+                var tableReferencingForeignKeys = table.ReferencingForeignKeys.OrderBy(x => x.ColumnName).Select(x => Convert.ChangeType(x, foreignKeyType, CultureInfo.InvariantCulture));
+                var clonedTableReferencingForeignKeys = clonedTable.ReferencingForeignKeys.OrderBy(x => x.ColumnName).Select(x => Convert.ChangeType(x, foreignKeyType, CultureInfo.InvariantCulture));
+                tableReferencingForeignKeys.Should().BeEquivalentTo(clonedTableReferencingForeignKeys, options =>
                 {
                     options.Excluding(x => ((ABaseDbForeignKey)x).TableDatabase);
                     options.Excluding(x => ((ABaseDbForeignKey)x).Database);

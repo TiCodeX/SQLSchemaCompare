@@ -151,8 +151,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu ON tc.CONSTRAINT_NAME = ccu.CONSTRAINT_NAME");
             query.AppendLine("JOIN sys.objects o ON tc.CONSTRAINT_NAME = o.name");
             query.AppendLine("LEFT OUTER JOIN sys.check_constraints cc ON o.object_id = cc.object_id");
-            query.AppendLine("WHERE tc.CONSTRAINT_TYPE != 'PRIMARY KEY' AND");
-            query.AppendLine("      tc.CONSTRAINT_TYPE != 'FOREIGN KEY' AND");
+            query.AppendLine("WHERE tc.CONSTRAINT_TYPE = 'CHECK' AND");
             query.AppendLine("      tc.TABLE_SCHEMA <> 'sys'");
             return context.Query<ABaseDbConstraint>(query.ToString());
         }

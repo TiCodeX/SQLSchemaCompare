@@ -747,6 +747,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Foreign Keys referencing this table.
+        /// </summary>
+        public static string LabelReferencingForeignKeys {
+            get {
+                return ResourceManager.GetString("LabelReferencingForeignKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Retrieve the Source Database.
         /// </summary>
         public static string LabelRetrieveSourceDatabase {

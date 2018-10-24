@@ -105,7 +105,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine($" ADD CONSTRAINT [{key.Name}]");
 
                 sb.Append($"FOREIGN KEY ([{key.ColumnName}]) ");
-                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ([{key.ReferencedTableColumn}])");
+                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ([{key.ReferencedColumnName}])");
 
                 sb.AppendLine($"ON DELETE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.DeleteReferentialAction)}");
                 sb.AppendLine($"ON UPDATE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.UpdateReferentialAction)}");

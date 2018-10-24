@@ -3,7 +3,7 @@
     /// <summary>
     /// Specific MicrosoftSql foreign key definition
     /// </summary>
-    public class MicrosoftSqlForeignKey : ABaseDbConstraint
+    public class MicrosoftSqlForeignKey : ABaseDbForeignKey
     {
         /// <summary>
         /// List of possible action for foreign keys for ON DELETE and ON UPDATE
@@ -30,21 +30,6 @@
             /// </summary>
             SETDEFAULT = 3
         }
-
-        /// <summary>
-        /// Gets or sets referenced table schema
-        /// </summary>
-        public string ReferencedTableSchema { get; set; }
-
-        /// <summary>
-        /// Gets or sets referenced table name
-        /// </summary>
-        public string ReferencedTableName { get; set; }
-
-        /// <summary>
-        /// Gets or sets referenced table column
-        /// </summary>
-        public string ReferencedTableColumn { get; set; }
 
         /// <summary>
         /// Gets or sets the delete referential action

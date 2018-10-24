@@ -18,16 +18,16 @@ USE sakila;
 -- User-Defined Data Types
 --
 
-CREATE TYPE phone_number
-    FROM varchar(14) NOT NULL
-GO
-
 CREATE TYPE custom_decimal
     FROM decimal(29, 8) NULL
 GO
 
 CREATE TYPE custom_varchar_max
     FROM varchar(max) NOT NULL
+GO
+
+CREATE TYPE phone_number
+    FROM varchar(14) NOT NULL
 GO
 
 --
@@ -128,7 +128,9 @@ ALTER TABLE address ADD CONSTRAINT [DF_address_last_update] DEFAULT (getdate()) 
 GO
 CREATE  INDEX idx_fk_city_id ON address(city_id) 
 GO
-ALTER TABLE address ADD  CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES city (city_id) ON DELETE NO ACTION ON UPDATE CASCADE
+ALTER TABLE address WITH NOCHECK ADD  CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES city (city_id) ON DELETE NO ACTION ON UPDATE CASCADE
+GO
+ALTER TABLE address NOCHECK CONSTRAINT fk_address_city
 GO
 
 --
@@ -294,7 +296,7 @@ GO
 GO
  CREATE  INDEX idx_fk_film_id ON inventory(film_id) 
 GO
- CREATE  INDEX idx_fk_film_id_store_id ON inventory(store_id,film_id) 
+ CREATE  INDEX idx_fk_film_id_store_id ON inventory(store_id DESC, film_id ASC) 
 GO
 
 --

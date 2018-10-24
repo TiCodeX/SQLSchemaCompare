@@ -21,7 +21,7 @@ namespace SQLCompare.Core.Entities.Database
         /// <summary>
         /// Gets the database table's foreing keys
         /// </summary>
-        public List<ABaseDbConstraint> ForeignKeys { get; } = new List<ABaseDbConstraint>();
+        public List<ABaseDbForeignKey> ForeignKeys { get; } = new List<ABaseDbForeignKey>();
 
         /// <summary>
         /// Gets the database table's primary keys

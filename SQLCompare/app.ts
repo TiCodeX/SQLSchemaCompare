@@ -479,14 +479,16 @@ function startup(): void {
         logger.debug("Login window started");
 
         let loadFailed: boolean = false;
+        let loadFailedError: string;
         let retries: number = 100;
-        loginWindow.webContents.on("did-fail-load", () => {
+        loginWindow.webContents.on("did-fail-load", (event: electron.Event, errorCode: number, errorDescription: string) => {
             loadFailed = true;
+            loadFailedError = errorDescription;
             retries--;
         });
         loginWindow.webContents.on("did-finish-load", () => {
             if (loadFailed) {
-                logger.debug(`Unable to contact service, retrying... (${retries})`);
+                logger.debug(`Unable to contact service (${loadFailedError}), retrying... (${retries})`);
                 if (retries > 0) {
                     // Reset the flag and trigger a new load
                     loadFailed = false;

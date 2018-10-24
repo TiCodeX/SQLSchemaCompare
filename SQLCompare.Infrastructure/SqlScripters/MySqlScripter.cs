@@ -76,10 +76,20 @@ namespace SQLCompare.Infrastructure.SqlScripters
             foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = (MySqlIndex)keys.First();
-                var columnList = keys.OrderBy(x => ((MySqlIndex)x).OrdinalPosition).Select(x => $"`{((MySqlIndex)x).ColumnName}`");
+                var columnList = keys.OrderBy(x => ((MySqlIndex)x).OrdinalPosition).ToList();
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT `{key.Name}` PRIMARY KEY ({string.Join(",", columnList)});");
+                sb.AppendLine($"ADD CONSTRAINT `{key.Name}` PRIMARY KEY ({string.Join(",", columnList.Select(x => $"`{((MySqlIndex)x).ColumnName}`"))});");
+                foreach (var colConstraint in columnList)
+                {
+                    if (table.Columns.FirstOrDefault(x => x.Name == colConstraint.ColumnName) is MySqlColumn col &&
+                        col.Extra.ToUpperInvariant() == "AUTO_INCREMENT")
+                    {
+                        sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
+                        sb.AppendLine($"MODIFY {this.ScriptHelper.ScriptColumn(col)} AUTO_INCREMENT;");
+                    }
+                }
+
                 sb.AppendLine();
             }
 

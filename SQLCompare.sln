@@ -15,12 +15,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		CodeAnalysis.ruleset = CodeAnalysis.ruleset
-		codesigningcert.pfx = codesigningcert.pfx
 		CreateInstallerCommon.bat = CreateInstallerCommon.bat
 		CreateInstallerLinux.bat = CreateInstallerLinux.bat
+		CreateInstallerOSX.bat = CreateInstallerOSX.bat
 		CreateInstallerWin.bat = CreateInstallerWin.bat
 		pre-commit-hook.sh = pre-commit-hook.sh
 		RunTests.bat = RunTests.bat
+		TiCodeXCodeSigningCertificate.p12 = TiCodeXCodeSigningCertificate.p12
 		tslint.json = tslint.json
 		tslint.targets = tslint.targets
 	EndProjectSection

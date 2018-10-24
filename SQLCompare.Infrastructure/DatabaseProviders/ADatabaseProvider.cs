@@ -82,7 +82,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             var db = new TDatabase { Name = context.DatabaseName };
 
             var columns = new List<ABaseDbColumn>();
-            var foreignKeys = new List<ABaseDbConstraint>();
+            var foreignKeys = new List<ABaseDbForeignKey>();
             var indexes = new List<ABaseDbIndex>();
             var constraints = new List<ABaseDbConstraint>();
             var triggers = new List<ABaseDbTrigger>();
@@ -323,7 +323,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         /// </summary>
         /// <param name="context">The database context</param>
         /// <returns>The list of foreign keys</returns>
-        protected abstract IEnumerable<ABaseDbConstraint> GetForeignKeys(TDatabaseContext context);
+        protected abstract IEnumerable<ABaseDbForeignKey> GetForeignKeys(TDatabaseContext context);
 
         /// <summary>
         /// Get the table constraints
@@ -385,7 +385,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             TaskInfo taskInfo,
             TDatabase db,
             IReadOnlyCollection<ABaseDbColumn> columns,
-            IReadOnlyCollection<ABaseDbConstraint> foreignKeys,
+            IReadOnlyCollection<ABaseDbForeignKey> foreignKeys,
             IReadOnlyCollection<ABaseDbIndex> indexes,
             IReadOnlyCollection<ABaseDbConstraint> constraints,
             IReadOnlyCollection<ABaseDbTrigger> triggers)

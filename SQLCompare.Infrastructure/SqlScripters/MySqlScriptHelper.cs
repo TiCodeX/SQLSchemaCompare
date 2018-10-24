@@ -67,11 +67,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 }
             }
 
-            // TODO: add the extra stuff, if contains AUTO_INCREMENT it should also specify PRIMARY KEY
-            /*if (col.Extra != null)
+            // Append the Extra properties only if it's not auto_increment because it has
+            // to be defined when the primary key is added
+            if (col.Extra.ToUpperInvariant() != "AUTO_INCREMENT")
             {
                 sb.Append($" {col.Extra}");
-            }*/
+            }
 
             return sb.ToString();
         }

@@ -96,7 +96,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(PostgreSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbForeignKey> GetForeignKeys(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
 

@@ -8,6 +8,10 @@ Choice /M "Run integration tests"
 
 If %ERRORLEVEL% == 2 ( set "filter=--filter Category!=IntegrationTest" )
 
+Choice /M "Export Generated Full Script to C:\temp"
+
+If %ERRORLEVEL% == 1 ( set ExportGeneratedFullScript=1 )
+
 if "%build%" == "true" (
     REM Bring dev tools into the PATH.
     call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsDevCmd.bat"

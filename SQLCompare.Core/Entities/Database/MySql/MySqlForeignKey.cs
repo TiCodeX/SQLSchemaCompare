@@ -3,22 +3,12 @@
     /// <summary>
     /// Specific MySql foreign key definition
     /// </summary>
-    public class MySqlForeignKey : MySqlIndex
+    public class MySqlForeignKey : ABaseDbForeignKey
     {
         /// <summary>
-        /// Gets or sets the referenced table schema
+        /// Gets or sets ordinal position
         /// </summary>
-        public string ReferencedTableSchema { get; set; }
-
-        /// <summary>
-        /// Gets or sets the referenced table name
-        /// </summary>
-        public string ReferencedTableName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the referenced column name
-        /// </summary>
-        public string ReferencedColumnName { get; set; }
+        public uint OrdinalPosition { get; set; }
 
         /// <summary>
         /// Gets or sets the update rule

@@ -105,7 +105,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(MicrosoftSqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbForeignKey> GetForeignKeys(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT tc.CONSTRAINT_CATALOG as 'Database',");
@@ -118,7 +118,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       tc.CONSTRAINT_TYPE as 'ConstraintType',");
             query.AppendLine("       reftb.name as 'ReferencedTableName',");
             query.AppendLine("       refs.name as 'ReferencedTableSchema',");
-            query.AppendLine("       refcol.name as 'ReferencedTableColumn',");
+            query.AppendLine("       refcol.name as 'ReferencedColumnName',");
             query.AppendLine("       fk.delete_referential_action as 'DeleteReferentialAction',");
             query.AppendLine("       fk.update_referential_action as 'UpdateReferentialAction',");
             query.AppendLine("       fk.is_disabled as 'Disabled'");

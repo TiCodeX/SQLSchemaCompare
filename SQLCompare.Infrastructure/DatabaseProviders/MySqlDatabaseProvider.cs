@@ -93,7 +93,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
-        protected override IEnumerable<ABaseDbConstraint> GetForeignKeys(MySqlDatabaseContext context)
+        protected override IEnumerable<ABaseDbForeignKey> GetForeignKeys(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT kcu.CONSTRAINT_SCHEMA as 'Database',");
@@ -105,7 +105,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       kcu.COLUMN_NAME as ColumnName,");
             query.AppendLine("       tc.constraint_type as ConstraintType,");
             query.AppendLine("       kcu.ORDINAL_POSITION as OrdinalPosition,");
-            query.AppendLine("       kcu.REFERENCED_TABLE_SCHEMA as ReferencedTableSchema,");
+            query.AppendLine("       null as ReferencedTableSchema,");
             query.AppendLine("       kcu.REFERENCED_TABLE_NAME as ReferencedTableName,");
             query.AppendLine("       kcu.REFERENCED_COLUMN_NAME as ReferencedColumnName,");
             query.AppendLine("       rc.UPDATE_RULE as UpdateRule,");

@@ -3,8 +3,13 @@
     /// <summary>
     /// Specific PostgreSql foreign key definition
     /// </summary>
-    public class PostgreSqlForeignKey : PostgreSqlIndex
+    public class PostgreSqlForeignKey : ABaseDbForeignKey
     {
+        /// <summary>
+        /// Gets or sets ordinal position
+        /// </summary>
+        public int OrdinalPosition { get; set; }
+
         /// <summary>
         /// Gets or sets the match option
         /// </summary>
@@ -19,21 +24,6 @@
         /// Gets or sets the delete rule
         /// </summary>
         public string DeleteRule { get; set; }
-
-        /// <summary>
-        /// Gets or sets the referenced table schema
-        /// </summary>
-        public string ReferencedTableSchema { get; set; }
-
-        /// <summary>
-        /// Gets or sets the referenced table name
-        /// </summary>
-        public string ReferencedTableName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the referenced column name
-        /// </summary>
-        public string ReferencedColumnName { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the foreign key is deferrable

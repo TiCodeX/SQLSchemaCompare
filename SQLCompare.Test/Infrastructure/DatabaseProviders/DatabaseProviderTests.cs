@@ -1,16 +1,19 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MicrosoftSql;
 using SQLCompare.Core.Entities.Database.MySql;
 using SQLCompare.Core.Entities.Database.PostgreSql;
+using SQLCompare.Core.Enums;
+using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 using SQLCompare.Infrastructure.DatabaseProviders;
 using SQLCompare.Infrastructure.EntityFramework;
@@ -50,19 +53,19 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         [IntegrationTest]
         public void GetDatabaseList()
         {
-            var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider(false);
+            var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider();
             var dbList = mssqldbp.GetDatabaseList();
             dbList.Should().Contain("msdb");
             dbList.Should().Contain("master");
             dbList.Should().Contain("sakila");
 
-            var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider(false);
+            var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider();
             dbList = mysqldbp.GetDatabaseList();
             dbList.Should().Contain("sys");
             dbList.Should().Contain("mysql");
             dbList.Should().Contain("sakila");
 
-            var pgsqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider(false);
+            var pgsqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider();
             dbList = pgsqldbp.GetDatabaseList();
             dbList.Should().Contain("postgres");
             dbList.Should().Contain("sakila");
@@ -75,7 +78,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         [IntegrationTest]
         public void GetMicrosoftSqlDatabase()
         {
-            var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider();
+            var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider("sakila");
             var db = mssqldbp.GetDatabase(new TaskInfo("test"));
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
@@ -117,7 +120,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         [IntegrationTest]
         public void GetMySqlDatabase()
         {
-            var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider();
+            var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider("sakila");
             var db = mysqldbp.GetDatabase(new TaskInfo("test"));
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
@@ -159,7 +162,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         [IntegrationTest]
         public void GetPostgreSqlDatabase()
         {
-            var pgsqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider();
+            var pgsqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider("sakila");
             var db = pgsqldbp.GetDatabase(new TaskInfo("test"));
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
@@ -200,37 +203,26 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         [IntegrationTest]
         public void CloneMicrosoftSqlDatabase()
         {
-            var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider();
+            const string databaseName = "sakila";
+            const string clonedDatabaseName = "sakila_clone";
+
+            var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider(databaseName);
             var db = mssqldbp.GetDatabase(new TaskInfo("test"));
 
             var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
             var scripter = scripterFactory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
-            var fullScript = scripter.GenerateFullScript(db);
+            var fullScript = scripter.GenerateFullCreateScript(db);
 
             if (this.exportGeneratedFullScript)
             {
                 File.WriteAllText("c:\\temp\\FullScriptMicrosoftSQL.sql", fullScript);
             }
 
-            var mssqldbpo = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions();
+            this.dbFixture.DropAndCreateMicrosoftSqlDatabase(clonedDatabaseName);
 
-            var clonedDatabaseName = $"{mssqldbpo.Database}_clone";
-
-            // Connect without a database to drop/create the cloned one
-            mssqldbpo.Database = string.Empty;
+            var mssqldbpo = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions(clonedDatabaseName);
             using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.cipherService, mssqldbpo))
             {
-                var dropDbQuery = new StringBuilder();
-                dropDbQuery.AppendLine($"IF EXISTS(select * from sys.databases where name= '{clonedDatabaseName}')");
-                dropDbQuery.AppendLine("BEGIN");
-                dropDbQuery.AppendLine($"  ALTER DATABASE {clonedDatabaseName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE"); // Close existing connections
-                dropDbQuery.AppendLine($"  DROP DATABASE {clonedDatabaseName}");
-                dropDbQuery.AppendLine("END");
-                context.ExecuteNonQuery(dropDbQuery.ToString());
-
-                context.ExecuteNonQuery($"CREATE DATABASE {clonedDatabaseName}");
-                context.ExecuteNonQuery($"USE {clonedDatabaseName}");
-
                 var queries = fullScript.Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
                 foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
                 {
@@ -238,13 +230,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 }
             }
 
-            var dpf = new DatabaseProviderFactory(this.LoggerFactory, this.cipherService);
-            mssqldbpo.Database = clonedDatabaseName;
-            mssqldbp = (MicrosoftSqlDatabaseProvider)dpf.Create(mssqldbpo);
-
-            var clonedDb = mssqldbp.GetDatabase(new TaskInfo("test"));
-
-            CompareDatabase(db, clonedDb);
+            this.CompareDatabases(DatabaseType.MicrosoftSql, clonedDatabaseName, databaseName);
         }
 
         /// <summary>
@@ -254,34 +240,24 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         [IntegrationTest]
         public void ClonePostgreSqlDatabase()
         {
-            var postgresqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider();
+            const string databaseName = "sakila";
+            const string clonedDatabaseName = "sakila_clone";
+
+            var postgresqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider(databaseName);
             var db = postgresqldbp.GetDatabase(new TaskInfo("test"));
 
             var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
             var scripter = scripterFactory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
-            var fullScript = scripter.GenerateFullScript(db);
+            var fullScript = scripter.GenerateFullCreateScript(db);
 
             if (this.exportGeneratedFullScript)
             {
                 File.WriteAllText("c:\\temp\\FullScriptPostgreSQL.sql", fullScript);
             }
 
-            var postgresqldbpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions();
+            this.dbFixture.DropAndCreatePostgreSqlDatabase(clonedDatabaseName);
 
-            var clonedDatabaseName = $"{postgresqldbpo.Database}_clone";
-
-            // Connect without a database to drop/create the cloned one
-            postgresqldbpo.Database = string.Empty;
-            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.cipherService, postgresqldbpo))
-            {
-                var dropDbQuery = new StringBuilder();
-                dropDbQuery.AppendLine($"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{clonedDatabaseName}';");
-                dropDbQuery.AppendLine($"DROP DATABASE IF EXISTS {clonedDatabaseName};");
-                dropDbQuery.AppendLine($"CREATE DATABASE {clonedDatabaseName};");
-                context.ExecuteNonQuery(dropDbQuery.ToString());
-            }
-
-            postgresqldbpo.Database = clonedDatabaseName;
+            var postgresqldbpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(clonedDatabaseName);
             using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.cipherService, postgresqldbpo))
             {
                 var sb = new StringBuilder();
@@ -306,12 +282,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 context.ExecuteNonQuery(sb.ToString());
             }
 
-            var dpf = new DatabaseProviderFactory(this.LoggerFactory, this.cipherService);
-            postgresqldbp = (PostgreSqlDatabaseProvider)dpf.Create(postgresqldbpo);
-
-            var clonedDb = postgresqldbp.GetDatabase(new TaskInfo("test"));
-
-            CompareDatabase(db, clonedDb);
+            this.CompareDatabases(DatabaseType.PostgreSql, clonedDatabaseName, databaseName);
         }
 
         /// <summary>
@@ -321,21 +292,20 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
         [IntegrationTest]
         public void CloneMySqlDatabase()
         {
-            var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider();
+            const string databaseName = "sakila";
+            const string clonedDatabaseName = "sakila_clone";
+
+            var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider(databaseName);
             var db = mysqldbp.GetDatabase(new TaskInfo("test"));
 
             var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
             var scripter = scripterFactory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
-            var fullScript = scripter.GenerateFullScript(db);
+            var fullScript = scripter.GenerateFullCreateScript(db);
 
             if (this.exportGeneratedFullScript)
             {
                 File.WriteAllText("c:\\temp\\FullScriptMySQL.sql", fullScript);
             }
-
-            var mysqldbpo = this.dbFixture.GetMySqlDatabaseProviderOptions();
-
-            var clonedDatabaseName = $"{mysqldbpo.Database}_clone";
 
             var mySqlFullScript = new StringBuilder();
             mySqlFullScript.AppendLine("SET @OLD_UNIQUE_CHECKS =@@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;");
@@ -344,7 +314,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             mySqlFullScript.AppendLine($"DROP SCHEMA IF EXISTS {clonedDatabaseName};");
             mySqlFullScript.AppendLine($"CREATE SCHEMA {clonedDatabaseName};");
             mySqlFullScript.AppendLine($"USE {clonedDatabaseName};");
-            mySqlFullScript.AppendLine(fullScript.Replace($"`{mysqldbpo.Database}`.`", $"`{clonedDatabaseName}`.`", StringComparison.InvariantCulture));
+            mySqlFullScript.AppendLine(fullScript.Replace($"`{databaseName}`.`", $"`{clonedDatabaseName}`.`", StringComparison.InvariantCulture));
             mySqlFullScript.AppendLine("SET SQL_MODE = @OLD_SQL_MODE;");
             mySqlFullScript.AppendLine("SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;");
             mySqlFullScript.AppendLine("SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;");
@@ -352,29 +322,111 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var pathMySql = Path.GetTempFileName();
             File.WriteAllText(pathMySql, mySqlFullScript.ToString());
 
-            var process = Process.Start(new ProcessStartInfo
-            {
-                FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe",
-                Arguments = $"--user root -ptest1234 -e \"SOURCE {pathMySql}\"",
-                UseShellExecute = false,
-                RedirectStandardError = true,
-                RedirectStandardOutput = true,
-            });
-            process.Should().NotBeNull();
-            process.WaitForExit((int)TimeSpan.FromMinutes(5).TotalMilliseconds);
-            process.ExitCode.Should().Be(0);
+            this.dbFixture.ExecuteMySqlScript(pathMySql);
 
-            mysqldbpo.Database = clonedDatabaseName;
-            var dpf = new DatabaseProviderFactory(this.LoggerFactory, this.cipherService);
-            mysqldbp = (MySqlDatabaseProvider)dpf.Create(mysqldbpo);
-
-            var clonedDb = mysqldbp.GetDatabase(new TaskInfo("test"));
-
-            CompareDatabase(db, clonedDb);
+            this.CompareDatabases(DatabaseType.MySql, clonedDatabaseName, databaseName);
         }
 
-        private static void CompareDatabase(ABaseDb db, ABaseDb clonedDb)
+        /// <summary>
+        /// Test migration script when source db is empty (a.k.a. drop whole target)
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseSourceEmpty()
         {
+            const string sourceDatabaseName = "sakila_empty";
+            const string targetDatabaseName = "sakila_migrated_to_empty";
+
+            // Create the empty database
+            this.dbFixture.DropAndCreateMicrosoftSqlDatabase(sourceDatabaseName);
+
+            // Create the database with sakila to be migrated to empty
+            this.dbFixture.CreateMicrosoftSqlSakilaDatabase(targetDatabaseName);
+
+            // Perform the compare
+            var projectService = new ProjectService(null, this.LoggerFactory);
+            projectService.NewProject(DatabaseType.MicrosoftSql);
+            projectService.Project.SourceProviderOptions = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions(sourceDatabaseName);
+            projectService.Project.TargetProviderOptions = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName);
+            this.PerformCompareAndWaitResult(projectService);
+            projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
+
+            if (this.exportGeneratedFullScript)
+            {
+                File.WriteAllText("c:\\temp\\FullDropScriptMicrosoftSQL.sql", projectService.Project.Result.FullAlterScript);
+            }
+
+            // Execute the full alter script
+            var mssqldbpo = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName);
+            using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.cipherService, mssqldbpo))
+            {
+                var queries = projectService.Project.Result.FullAlterScript.Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
+                foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    context.ExecuteNonQuery(query);
+                }
+            }
+
+            this.CompareDatabases(DatabaseType.MicrosoftSql, targetDatabaseName, sourceDatabaseName);
+        }
+
+        /// <summary>
+        /// Test migration script when source db is empty (a.k.a. re-create whole source)
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetEmpty()
+        {
+            const string sourceDatabaseName = "sakila";
+            const string targetDatabaseName = "sakila_migrated_from_empty";
+
+            this.dbFixture.DropAndCreateMicrosoftSqlDatabase(targetDatabaseName);
+
+            // Perform the compare
+            var projectService = new ProjectService(null, this.LoggerFactory);
+            projectService.NewProject(DatabaseType.MicrosoftSql);
+            projectService.Project.SourceProviderOptions = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions(sourceDatabaseName);
+            projectService.Project.TargetProviderOptions = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName);
+            this.PerformCompareAndWaitResult(projectService);
+            projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
+
+            // Execute the full alter script
+            var mssqldbpo = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName);
+            using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.cipherService, mssqldbpo))
+            {
+                var queries = projectService.Project.Result.FullAlterScript.Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
+                foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    context.ExecuteNonQuery(query);
+                }
+            }
+
+            this.CompareDatabases(DatabaseType.MicrosoftSql, targetDatabaseName, sourceDatabaseName);
+        }
+
+        private void CompareDatabases(DatabaseType type, string sourceDatabaseName, string targetDatabaseName)
+        {
+            IDatabaseProvider sourceProvider = null;
+            IDatabaseProvider targetProvider = null;
+            switch (type)
+            {
+                case DatabaseType.MicrosoftSql:
+                    sourceProvider = this.dbFixture.GetMicrosoftSqlDatabaseProvider(sourceDatabaseName);
+                    targetProvider = this.dbFixture.GetMicrosoftSqlDatabaseProvider(targetDatabaseName);
+                    break;
+                case DatabaseType.MySql:
+                    sourceProvider = this.dbFixture.GetMySqlDatabaseProvider(sourceDatabaseName);
+                    targetProvider = this.dbFixture.GetMySqlDatabaseProvider(targetDatabaseName);
+                    break;
+                case DatabaseType.PostgreSql:
+                    sourceProvider = this.dbFixture.GetPostgreSqlDatabaseProvider(sourceDatabaseName);
+                    targetProvider = this.dbFixture.GetPostgreSqlDatabaseProvider(targetDatabaseName);
+                    break;
+            }
+
+            var sourceDb = sourceProvider.GetDatabase(new TaskInfo("test"));
+            var targetDb = targetProvider.GetDatabase(new TaskInfo("test"));
+
             var tableType = typeof(ABaseDbTable);
             var columnType = typeof(ABaseDbColumn);
             var foreignKeyType = typeof(ABaseDbForeignKey);
@@ -384,9 +436,9 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
             var storedProcedureType = typeof(ABaseDbStoredProcedure);
             var dataType = typeof(ABaseDbDataType);
             var sequenceType = typeof(ABaseDbSequence);
-            switch (db)
+            switch (type)
             {
-                case MicrosoftSqlDb _:
+                case DatabaseType.MicrosoftSql:
                     tableType = typeof(MicrosoftSqlTable);
                     columnType = typeof(MicrosoftSqlColumn);
                     foreignKeyType = typeof(MicrosoftSqlForeignKey);
@@ -398,7 +450,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                     sequenceType = typeof(MicrosoftSqlSequence);
                     break;
 
-                case MySqlDb _:
+                case DatabaseType.MySql:
                     tableType = typeof(MySqlTable);
                     columnType = typeof(MySqlColumn);
                     foreignKeyType = typeof(MySqlForeignKey);
@@ -411,7 +463,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                     // No specific sequence type
                     break;
 
-                case PostgreSqlDb _:
+                case DatabaseType.PostgreSql:
                     tableType = typeof(PostgreSqlTable);
                     columnType = typeof(PostgreSqlColumn);
                     foreignKeyType = typeof(PostgreSqlForeignKey);
@@ -425,8 +477,8 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                     break;
             }
 
-            var tables = db.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, tableType, CultureInfo.InvariantCulture)).ToList();
-            var clonedTables = clonedDb.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, tableType, CultureInfo.InvariantCulture)).ToList();
+            var tables = sourceDb.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, tableType, CultureInfo.InvariantCulture)).ToList();
+            var clonedTables = targetDb.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, tableType, CultureInfo.InvariantCulture)).ToList();
             tables.Should().BeEquivalentTo(clonedTables, options =>
             {
                 options.Excluding(x => ((ABaseDbTable)x).Database);
@@ -480,8 +532,8 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 });
             }
 
-            var views = db.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, viewType, CultureInfo.InvariantCulture)).ToList();
-            var clonedViews = clonedDb.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, viewType, CultureInfo.InvariantCulture)).ToList();
+            var views = sourceDb.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, viewType, CultureInfo.InvariantCulture)).ToList();
+            var clonedViews = targetDb.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, viewType, CultureInfo.InvariantCulture)).ToList();
             views.Should().BeEquivalentTo(clonedViews, options =>
             {
                 options.Excluding(x => ((ABaseDbView)x).Database);
@@ -500,8 +552,8 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 });
             }
 
-            var functions = db.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, functionType, CultureInfo.InvariantCulture));
-            var clonedFunctions = clonedDb.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, functionType, CultureInfo.InvariantCulture));
+            var functions = sourceDb.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, functionType, CultureInfo.InvariantCulture));
+            var clonedFunctions = targetDb.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, functionType, CultureInfo.InvariantCulture));
             functions.Should().BeEquivalentTo(clonedFunctions, options =>
             {
                 options.Excluding(x => ((ABaseDbFunction)x).Database);
@@ -514,16 +566,16 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 return options;
             });
 
-            var storedProcedures = db.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, storedProcedureType, CultureInfo.InvariantCulture));
-            var clonedStoredProcedures = clonedDb.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, storedProcedureType, CultureInfo.InvariantCulture));
+            var storedProcedures = sourceDb.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, storedProcedureType, CultureInfo.InvariantCulture));
+            var clonedStoredProcedures = targetDb.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, storedProcedureType, CultureInfo.InvariantCulture));
             storedProcedures.Should().BeEquivalentTo(clonedStoredProcedures, options => options.Excluding(x => ((ABaseDbStoredProcedure)x).Database));
 
             var dataTypes = dataType == typeof(ABaseDbDataType) ?
-                db.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name) :
-                db.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, dataType, CultureInfo.InvariantCulture));
+                sourceDb.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name) :
+                sourceDb.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, dataType, CultureInfo.InvariantCulture));
             var clonedDataTypes = dataType == typeof(ABaseDbDataType) ?
-                clonedDb.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name) :
-                clonedDb.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, dataType, CultureInfo.InvariantCulture));
+                targetDb.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name) :
+                targetDb.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, dataType, CultureInfo.InvariantCulture));
             dataTypes.Should().BeEquivalentTo(clonedDataTypes, options =>
             {
                 options.Excluding(x => ((ABaseDbDataType)x).Database);
@@ -533,7 +585,7 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                     options.Excluding(x => ((MicrosoftSqlDataType)x).SystemType.Database);
                 }
 
-                if (db is PostgreSqlDb)
+                if (sourceDb is PostgreSqlDb)
                 {
                     options.Excluding(x => ((PostgreSqlDataType)x).TypeId);
                     options.Excluding(x => ((PostgreSqlDataType)x).ArrayTypeId);
@@ -542,9 +594,32 @@ namespace SQLCompare.Test.Infrastructure.DatabaseProviders
                 return options;
             });
 
-            var sequences = db.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, sequenceType, CultureInfo.InvariantCulture));
-            var clonedSequences = clonedDb.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, sequenceType, CultureInfo.InvariantCulture));
+            var sequences = sourceDb.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, sequenceType, CultureInfo.InvariantCulture));
+            var clonedSequences = targetDb.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, sequenceType, CultureInfo.InvariantCulture));
             sequences.Should().BeEquivalentTo(clonedSequences, options => options.Excluding(x => ((ABaseDbSequence)x).Database));
+        }
+
+        private void PerformCompareAndWaitResult(IProjectService projectService)
+        {
+            var taskService = new TaskService();
+            var dbCompareService = new DatabaseCompareService(
+                this.LoggerFactory,
+                projectService,
+                new DatabaseService(new DatabaseProviderFactory(this.LoggerFactory, new CipherService())),
+                new DatabaseScripterFactory(this.LoggerFactory),
+                taskService);
+            dbCompareService.StartCompare();
+
+            while (!taskService.CurrentTaskInfos.All(x => x.Status == TaskStatus.RanToCompletion ||
+                                                          x.Status == TaskStatus.Faulted ||
+                                                          x.Status == TaskStatus.Canceled))
+            {
+                Thread.Sleep(200);
+            }
+
+            taskService.CurrentTaskInfos.Any(x => x.Status == TaskStatus.Faulted ||
+                                                  x.Status == TaskStatus.Canceled).Should().BeFalse();
+            projectService.Project.Result.Should().NotBeNull();
         }
     }
 }

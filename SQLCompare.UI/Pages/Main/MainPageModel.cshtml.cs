@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -31,64 +30,34 @@ namespace SQLCompare.UI.Pages.Main
         }
 
         /// <summary>
-        /// Gets the list of different items
+        /// Gets or sets the list of different items
         /// </summary>
-        public List<ABaseCompareResultItem> DifferentItems { get; } = new List<ABaseCompareResultItem>();
+        public IReadOnlyCollection<ABaseCompareResultItem> DifferentItems { get; set; }
 
         /// <summary>
-        /// Gets the list of items only on the source
+        /// Gets or sets the list of items only on the source
         /// </summary>
-        public List<ABaseCompareResultItem> OnlySourceItems { get; } = new List<ABaseCompareResultItem>();
+        public IReadOnlyCollection<ABaseCompareResultItem> OnlySourceItems { get; set; }
 
         /// <summary>
-        /// Gets the list of items only on the target
+        /// Gets or sets the list of items only on the target
         /// </summary>
-        public List<ABaseCompareResultItem> OnlyTargetItems { get; } = new List<ABaseCompareResultItem>();
+        public IReadOnlyCollection<ABaseCompareResultItem> OnlyTargetItems { get; set; }
 
         /// <summary>
-        /// Gets the list of items which are the same in both
+        /// Gets or sets the list of items which are the same in both
         /// </summary>
-        public List<ABaseCompareResultItem> SameItems { get; } = new List<ABaseCompareResultItem>();
+        public IReadOnlyCollection<ABaseCompareResultItem> SameItems { get; set; }
 
         /// <summary>
         /// Get the Main page
         /// </summary>
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
         public void OnGet()
         {
-            var result = this.projectService.Project.Result;
-
-            this.DifferentItems.AddRange(result.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-            this.DifferentItems.AddRange(result.Views.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-            this.DifferentItems.AddRange(result.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-            this.DifferentItems.AddRange(result.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-            this.DifferentItems.AddRange(result.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-            this.DifferentItems.AddRange(result.DataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-            this.logger.LogDebug($"Different items => {this.DifferentItems.Count}");
-
-            this.OnlySourceItems.AddRange(result.Tables.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
-            this.OnlySourceItems.AddRange(result.Views.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
-            this.OnlySourceItems.AddRange(result.Functions.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
-            this.OnlySourceItems.AddRange(result.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
-            this.OnlySourceItems.AddRange(result.Sequences.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
-            this.OnlySourceItems.AddRange(result.DataTypes.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
-            this.logger.LogDebug($"Only Source items => {this.OnlySourceItems.Count}");
-
-            this.OnlyTargetItems.AddRange(result.Tables.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
-            this.OnlyTargetItems.AddRange(result.Views.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
-            this.OnlyTargetItems.AddRange(result.Functions.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
-            this.OnlyTargetItems.AddRange(result.StoredProcedures.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
-            this.OnlyTargetItems.AddRange(result.Sequences.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
-            this.OnlyTargetItems.AddRange(result.DataTypes.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
-            this.logger.LogDebug($"Only Target items => {this.OnlyTargetItems.Count}");
-
-            this.SameItems.AddRange(result.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-            this.SameItems.AddRange(result.Views.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-            this.SameItems.AddRange(result.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-            this.SameItems.AddRange(result.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-            this.SameItems.AddRange(result.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-            this.SameItems.AddRange(result.DataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-            this.logger.LogDebug($"Same items => {this.SameItems.Count}");
+            this.DifferentItems = this.projectService.Project.Result.DifferentItems;
+            this.OnlySourceItems = this.projectService.Project.Result.OnlySourceItems;
+            this.OnlyTargetItems = this.projectService.Project.Result.OnlyTargetItems;
+            this.SameItems = this.projectService.Project.Result.SameItems;
         }
 
         /// <summary>
@@ -98,12 +67,10 @@ namespace SQLCompare.UI.Pages.Main
         /// <returns>A JSON object with the scripts</returns>
         public ActionResult OnGetResultItemScripts(Guid id)
         {
-            var resultItem = (ABaseCompareResultItem)this.projectService.Project.Result.Tables.FirstOrDefault(x => x.Id == id) ??
-                             (ABaseCompareResultItem)this.projectService.Project.Result.Views.FirstOrDefault(x => x.Id == id) ??
-                             (ABaseCompareResultItem)this.projectService.Project.Result.Functions.FirstOrDefault(x => x.Id == id) ??
-                             (ABaseCompareResultItem)this.projectService.Project.Result.StoredProcedures.FirstOrDefault(x => x.Id == id) ??
-                             (ABaseCompareResultItem)this.projectService.Project.Result.Sequences.FirstOrDefault(x => x.Id == id) ??
-                             (ABaseCompareResultItem)this.projectService.Project.Result.DataTypes.FirstOrDefault(x => x.Id == id);
+            var resultItem = this.projectService.Project.Result.DifferentItems.FirstOrDefault(x => x.Id == id) ??
+                             this.projectService.Project.Result.OnlySourceItems.FirstOrDefault(x => x.Id == id) ??
+                             this.projectService.Project.Result.OnlyTargetItems.FirstOrDefault(x => x.Id == id) ??
+                             this.projectService.Project.Result.SameItems.FirstOrDefault(x => x.Id == id);
 
             if (resultItem == null)
             {

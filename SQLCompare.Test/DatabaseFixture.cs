@@ -28,49 +28,14 @@ namespace SQLCompare.Test
         public DatabaseFixture()
         {
             // MicrosoftSQL
-            using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetMicrosoftSqlDatabaseProviderOptions(false)))
-            {
-                var dropDbQuery = new StringBuilder();
-                dropDbQuery.AppendLine("IF EXISTS(select * from sys.databases where name= 'sakila')");
-                dropDbQuery.AppendLine("BEGIN");
-                dropDbQuery.AppendLine("  ALTER DATABASE sakila SET SINGLE_USER WITH ROLLBACK IMMEDIATE"); // Close existing connections
-                dropDbQuery.AppendLine("  DROP DATABASE sakila");
-                dropDbQuery.AppendLine("END");
-                context.ExecuteNonQuery(dropDbQuery.ToString());
-
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-microsoftsql.sql");
-                var queries = File.ReadAllText(path).Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
-                foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
-                {
-                    context.ExecuteNonQuery(query);
-                }
-            }
+            this.CreateMicrosoftSqlSakilaDatabase("sakila");
 
             // MySQL
-            var pathMySql = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-mysql.sql");
-            var process = Process.Start(new ProcessStartInfo
-            {
-                FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe",
-                Arguments = $"--user root -ptest1234 -e \"SOURCE {pathMySql}\"",
-                UseShellExecute = false,
-                RedirectStandardError = true,
-                RedirectStandardOutput = true,
-            });
-            process.Should().NotBeNull();
-            process.WaitForExit((int)TimeSpan.FromMinutes(5).TotalMilliseconds);
-            process.ExitCode.Should().Be(0);
+            this.ExecuteMySqlScript(Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-mysql.sql"));
 
             // PostgreSQL
-            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(false)))
-            {
-                var dropDbQuery = new StringBuilder();
-                dropDbQuery.AppendLine("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='sakila';");
-                dropDbQuery.AppendLine("DROP DATABASE IF EXISTS sakila;");
-                dropDbQuery.AppendLine("CREATE DATABASE sakila;");
-                context.ExecuteNonQuery(dropDbQuery.ToString());
-            }
-
-            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions()))
+            this.DropAndCreatePostgreSqlDatabase("sakila");
+            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions("sakila")))
             {
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-postgresql.sql");
                 context.ExecuteNonQuery(File.ReadAllText(path));
@@ -93,49 +58,123 @@ namespace SQLCompare.Test
         }
 
         /// <summary>
+        /// Executes my SQL script
+        /// </summary>
+        /// <param name="path">The path</param>
+        internal void ExecuteMySqlScript(string path)
+        {
+            var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe",
+                Arguments = $"--user root -ptest1234 -e \"SOURCE {path}\"",
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+            });
+            process.Should().NotBeNull();
+            process.WaitForExit((int)TimeSpan.FromMinutes(5).TotalMilliseconds);
+            process.ExitCode.Should().Be(0);
+        }
+
+        /// <summary>
+        /// Drops the and create microsoft database
+        /// </summary>
+        /// <param name="databaseName">Name of the database</param>
+        internal void DropAndCreateMicrosoftSqlDatabase(string databaseName)
+        {
+            using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetMicrosoftSqlDatabaseProviderOptions(string.Empty)))
+            {
+                var dropDbQuery = new StringBuilder();
+                dropDbQuery.AppendLine($"IF EXISTS(select * from sys.databases where name= '{databaseName}')");
+                dropDbQuery.AppendLine("BEGIN");
+                dropDbQuery.AppendLine($"  ALTER DATABASE {databaseName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE"); // Close existing connections
+                dropDbQuery.AppendLine($"  DROP DATABASE {databaseName}");
+                dropDbQuery.AppendLine("END");
+                context.ExecuteNonQuery(dropDbQuery.ToString());
+
+                context.ExecuteNonQuery($"CREATE DATABASE {databaseName}");
+            }
+        }
+
+        /// <summary>
+        /// Drops the and create postgresql database
+        /// </summary>
+        /// <param name="databaseName">Name of the database</param>
+        internal void DropAndCreatePostgreSqlDatabase(string databaseName)
+        {
+            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(string.Empty)))
+            {
+                var dropDbQuery = new StringBuilder();
+                dropDbQuery.AppendLine($"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{databaseName}';");
+                dropDbQuery.AppendLine($"DROP DATABASE IF EXISTS {databaseName};");
+                dropDbQuery.AppendLine($"CREATE DATABASE {databaseName};");
+                context.ExecuteNonQuery(dropDbQuery.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Creates the sakila database
+        /// </summary>
+        /// <param name="databaseName">Name of the database</param>
+        internal void CreateMicrosoftSqlSakilaDatabase(string databaseName)
+        {
+            this.DropAndCreateMicrosoftSqlDatabase(databaseName);
+
+            using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetMicrosoftSqlDatabaseProviderOptions(databaseName)))
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-microsoftsql.sql");
+                var queries = File.ReadAllText(path).Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
+                foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    context.ExecuteNonQuery(query);
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the Microsoft SQL database provider
         /// </summary>
-        /// <param name="connectToDatabase">if set to <c>true</c> it will connect directly to the test database</param>
+        /// <param name="databaseName">The database name to connect</param>
         /// <returns>The Microsoft SQL database provider</returns>
-        internal MicrosoftSqlDatabaseProvider GetMicrosoftSqlDatabaseProvider(bool connectToDatabase = true)
+        internal MicrosoftSqlDatabaseProvider GetMicrosoftSqlDatabaseProvider(string databaseName = "")
         {
             var dpf = new DatabaseProviderFactory(this.loggerFactory, this.cipherService);
-            return (MicrosoftSqlDatabaseProvider)dpf.Create(this.GetMicrosoftSqlDatabaseProviderOptions(connectToDatabase));
+            return (MicrosoftSqlDatabaseProvider)dpf.Create(this.GetMicrosoftSqlDatabaseProviderOptions(databaseName));
         }
 
         /// <summary>
         /// Gets the MySQL database provider
         /// </summary>
-        /// <param name="connectToDatabase">if set to <c>true</c> it will connect directly to the test database</param>
+        /// <param name="databaseName">The database name to connect</param>
         /// <returns>The MySQL SQL database provider</returns>
-        internal MySqlDatabaseProvider GetMySqlDatabaseProvider(bool connectToDatabase = true)
+        internal MySqlDatabaseProvider GetMySqlDatabaseProvider(string databaseName = "")
         {
             var dpf = new DatabaseProviderFactory(this.loggerFactory, this.cipherService);
-            return (MySqlDatabaseProvider)dpf.Create(this.GetMySqlDatabaseProviderOptions(connectToDatabase));
+            return (MySqlDatabaseProvider)dpf.Create(this.GetMySqlDatabaseProviderOptions(databaseName));
         }
 
         /// <summary>
         /// Gets the PostgreSQL database provider
         /// </summary>
-        /// <param name="connectToDatabase">if set to <c>true</c> it will connect directly to the test database</param>
+        /// <param name="databaseName">The database name to connect</param>
         /// <returns>The PostgreSQL SQL database provider</returns>
-        internal PostgreSqlDatabaseProvider GetPostgreSqlDatabaseProvider(bool connectToDatabase = true)
+        internal PostgreSqlDatabaseProvider GetPostgreSqlDatabaseProvider(string databaseName = "")
         {
             var dpf = new DatabaseProviderFactory(this.loggerFactory, this.cipherService);
-            return (PostgreSqlDatabaseProvider)dpf.Create(this.GetPostgreSqlDatabaseProviderOptions(connectToDatabase));
+            return (PostgreSqlDatabaseProvider)dpf.Create(this.GetPostgreSqlDatabaseProviderOptions(databaseName));
         }
 
         /// <summary>
         /// Gets the Microsoft SQL database provider options
         /// </summary>
-        /// <param name="connectToDatabase">if set to <c>true</c> it will connect directly to the test database</param>
+        /// <param name="databaseName">The database name to connect</param>
         /// <returns>The Microsoft SQL database provider options</returns>
-        internal MicrosoftSqlDatabaseProviderOptions GetMicrosoftSqlDatabaseProviderOptions(bool connectToDatabase = true)
+        internal MicrosoftSqlDatabaseProviderOptions GetMicrosoftSqlDatabaseProviderOptions(string databaseName)
         {
             return new MicrosoftSqlDatabaseProviderOptions
             {
                 Hostname = "localhost\\SQLEXPRESS",
-                Database = connectToDatabase ? "sakila" : string.Empty,
+                Database = databaseName,
                 UseWindowsAuthentication = true,
             };
         }
@@ -143,14 +182,14 @@ namespace SQLCompare.Test
         /// <summary>
         /// Gets the MySQL database provider options
         /// </summary>
-        /// <param name="connectToDatabase">if set to <c>true</c> it will connect directly to the test database</param>
+        /// <param name="databaseName">The database name to connect</param>
         /// <returns>The MySQL database provider options</returns>
-        internal MySqlDatabaseProviderOptions GetMySqlDatabaseProviderOptions(bool connectToDatabase = true)
+        internal MySqlDatabaseProviderOptions GetMySqlDatabaseProviderOptions(string databaseName)
         {
             return new MySqlDatabaseProviderOptions
             {
                 Hostname = "localhost",
-                Database = connectToDatabase ? "sakila" : string.Empty,
+                Database = databaseName,
                 Username = "root",
                 Password = this.cipherService.EncryptString("test1234"),
                 UseSSL = Environment.MachineName != "DESKTOP-VH0A18B", // debe's MySql Server doesn't support SSL
@@ -160,14 +199,14 @@ namespace SQLCompare.Test
         /// <summary>
         /// Gets the PostgreSQL database provider options
         /// </summary>
-        /// <param name="connectToDatabase">if set to <c>true</c> it will connect directly to the test database</param>
+        /// <param name="databaseName">The database name to connect</param>
         /// <returns>The PostgreSQL database provider options</returns>
-        internal PostgreSqlDatabaseProviderOptions GetPostgreSqlDatabaseProviderOptions(bool connectToDatabase = true)
+        internal PostgreSqlDatabaseProviderOptions GetPostgreSqlDatabaseProviderOptions(string databaseName)
         {
             return new PostgreSqlDatabaseProviderOptions
             {
                 Hostname = "localhost",
-                Database = connectToDatabase ? "sakila" : string.Empty,
+                Database = databaseName,
                 Username = "postgres",
                 Password = this.cipherService.EncryptString("test1234"),
             };

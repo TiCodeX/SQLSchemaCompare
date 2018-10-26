@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SQLCompare.Core.Entities.Compare;
 using SQLCompare.Core.Entities.Database;
 
 namespace SQLCompare.Core.Interfaces
@@ -19,8 +20,26 @@ namespace SQLCompare.Core.Interfaces
         /// Generates the full script to create the whole database
         /// </summary>
         /// <param name="database">The database</param>
-        /// <returns>The full script</returns>
-        string GenerateFullScript(ABaseDb database);
+        /// <returns>The full create script</returns>
+        string GenerateFullCreateScript(ABaseDb database);
+
+        /// <summary>
+        /// Generates the full alter script
+        /// </summary>
+        /// <param name="differentItems">The different items</param>
+        /// <param name="onlySourceItems">The items only on source</param>
+        /// <param name="onlyTargetItems">The items only target</param>
+        /// <returns>
+        /// The full alter script
+        /// </returns>
+        string GenerateFullAlterScript(List<ABaseCompareResultItem> differentItems, ABaseDb onlySourceItems, ABaseDb onlyTargetItems);
+
+        /// <summary>
+        /// Generates the full script to drop the whole database
+        /// </summary>
+        /// <param name="database">The database</param>
+        /// <returns>The full drop script</returns>
+        string GenerateFullDropScript(ABaseDb database);
 
         /// <summary>
         /// Generates the create table script and related keys/indexes

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using SQLCompare.Core.Entities.Database;
 
 namespace SQLCompare.Core.Entities.Compare
 {
@@ -19,33 +18,28 @@ namespace SQLCompare.Core.Entities.Compare
         public string TargetFullScript { get; set; }
 
         /// <summary>
-        /// Gets the list of Table results
+        /// Gets or sets the full alter script
         /// </summary>
-        public List<CompareResultItem<ABaseDbTable>> Tables { get; } = new List<CompareResultItem<ABaseDbTable>>();
+        public string FullAlterScript { get; set; }
 
         /// <summary>
-        /// Gets the list of View results
+        /// Gets the list of different items
         /// </summary>
-        public List<CompareResultItem<ABaseDbView>> Views { get; } = new List<CompareResultItem<ABaseDbView>>();
+        public List<ABaseCompareResultItem> DifferentItems { get; } = new List<ABaseCompareResultItem>();
 
         /// <summary>
-        /// Gets the list of Function results
+        /// Gets the list of items only on the source
         /// </summary>
-        public List<CompareResultItem<ABaseDbFunction>> Functions { get; } = new List<CompareResultItem<ABaseDbFunction>>();
+        public List<ABaseCompareResultItem> OnlySourceItems { get; } = new List<ABaseCompareResultItem>();
 
         /// <summary>
-        /// Gets the list of Stored Procedures results
+        /// Gets the list of items only on the target
         /// </summary>
-        public List<CompareResultItem<ABaseDbStoredProcedure>> StoredProcedures { get; } = new List<CompareResultItem<ABaseDbStoredProcedure>>();
+        public List<ABaseCompareResultItem> OnlyTargetItems { get; } = new List<ABaseCompareResultItem>();
 
         /// <summary>
-        /// Gets the list of Sequences results
+        /// Gets the list of items which are the same in both
         /// </summary>
-        public List<CompareResultItem<ABaseDbSequence>> Sequences { get; } = new List<CompareResultItem<ABaseDbSequence>>();
-
-        /// <summary>
-        /// Gets the list of user defined types results
-        /// </summary>
-        public List<CompareResultItem<ABaseDbDataType>> DataTypes { get; } = new List<CompareResultItem<ABaseDbDataType>>();
+        public List<ABaseCompareResultItem> SameItems { get; } = new List<ABaseCompareResultItem>();
     }
 }

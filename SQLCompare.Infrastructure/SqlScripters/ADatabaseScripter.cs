@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using SQLCompare.Core.Entities.Compare;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MicrosoftSql;
 using SQLCompare.Core.Entities.Project;
@@ -17,7 +18,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
     /// </summary>
     /// <typeparam name="TScriptHelper">The specific script helper class</typeparam>
     public abstract class ADatabaseScripter<TScriptHelper> : IDatabaseScripter
-                where TScriptHelper : AScriptHelper
+        where TScriptHelper : AScriptHelper
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ADatabaseScripter{TScriptHelper}"/> class.
@@ -65,7 +66,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
         /// <inheritdoc/>
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
-        public string GenerateFullScript(ABaseDb database)
+        public string GenerateFullCreateScript(ABaseDb database)
         {
             if (database == null)
             {
@@ -99,7 +100,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
-            // Tables with PK, FK, Constraints, Indexes, Triggers
+            // Tables with PK, FK, Constraints, Indexes
             if (database.Tables.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTables));
@@ -225,6 +226,158 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        public string GenerateFullAlterScript(List<ABaseCompareResultItem> differentItems, ABaseDb onlySourceItems, ABaseDb onlyTargetItems)
+        {
+            var sb = new StringBuilder();
+
+            // Drop all items only on target
+            sb.Append(this.GenerateFullDropScript(onlyTargetItems));
+
+            /*Alter*/
+
+            sb.Append(this.GenerateFullCreateScript(onlySourceItems));
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        public string GenerateFullDropScript(ABaseDb database)
+        {
+            var sb = new StringBuilder();
+
+            // Triggers
+            if (database.Tables.Any(x => x.Triggers.Count > 0))
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
+                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    foreach (var trigger in table.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    {
+                        sb.Append(this.ScriptDropTrigger(trigger));
+                    }
+                }
+
+                sb.AppendLine();
+            }
+
+            // Views and related Indexes
+            if (database.Views.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelViews));
+                foreach (var view in database.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    if (view.Indexes.Count > 0)
+                    {
+                        sb.Append(this.ScriptDropIndexes(view, view.Indexes));
+                    }
+
+                    sb.Append(this.ScriptDropView(view));
+                }
+
+                sb.AppendLine();
+            }
+
+            // Functions
+            if (database.Functions.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelFunctions));
+                foreach (var function in database.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptDropFunction(function));
+                }
+
+                sb.AppendLine();
+            }
+
+            // Stored Procedures
+            if (database.StoredProcedures.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelStoredProcedures));
+                foreach (var storedProcedure in database.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptDropStoredProcedure(storedProcedure));
+                }
+
+                sb.AppendLine();
+            }
+
+            if (database.Tables.Count > 0)
+            {
+                // Foreign Keys
+                if (database.Tables.Any(x => x.ForeignKeys.Count > 0))
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
+                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    {
+                        sb.Append(this.ScriptAlterTableDropForeignKeys(table));
+                    }
+
+                    sb.AppendLine();
+                }
+
+                // Indexes
+                if (database.Tables.Any(x => x.Indexes.Count > 0))
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
+                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    {
+                        sb.Append(this.ScriptDropIndexes(table, table.Indexes));
+                    }
+
+                    sb.AppendLine();
+                }
+
+                // Constraints
+                if (database.Tables.Any(x => x.Constraints.Count > 0))
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
+                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    {
+                        sb.Append(this.ScriptAlterTableDropConstraints(table));
+                    }
+
+                    sb.AppendLine();
+                }
+
+                // Tables
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTables));
+                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptDropTable(table));
+                }
+
+                sb.AppendLine();
+            }
+
+            // User-Defined Types
+            var userDefinedDataTypes = database.DataTypes.Where(x => x.IsUserDefined).ToList();
+            if (userDefinedDataTypes.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelUserDefinedTypes));
+                foreach (var userDataType in userDefinedDataTypes.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptDropType(userDataType));
+                }
+
+                sb.AppendLine();
+            }
+
+            // Sequences
+            if (database.Sequences.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelSequences));
+                foreach (var sequence in database.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptDropSequence(sequence));
+                }
+
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
         public string GenerateCreateTableScript(ABaseDbTable table, ABaseDbTable referenceTable = null)
         {
             if (table == null)
@@ -325,6 +478,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             if (sourceTable == null)
             {
+                if (targetTable.Indexes.Count > 0)
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
+                    sb.Append(this.ScriptDropIndexes(targetTable, targetTable.Indexes));
+                    sb.AppendLine();
+                }
+
                 if (targetTable.ReferencingForeignKeys.Count > 0)
                 {
                     sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelReferencingForeignKeys));
@@ -361,13 +521,6 @@ namespace SQLCompare.Infrastructure.SqlScripters
                         sb.Append(this.ScriptDropTrigger(trigger));
                     }
 
-                    sb.AppendLine();
-                }
-
-                if (targetTable.Indexes.Count > 0)
-                {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
-                    sb.Append(this.ScriptDropIndexes(targetTable, targetTable.Indexes));
                     sb.AppendLine();
                 }
 

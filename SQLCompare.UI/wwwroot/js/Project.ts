@@ -439,6 +439,46 @@ class Project {
     public static HandleOptionOnMouseOut(): void {
         $(".tcx-project-option-descriptions > div").hide();
     }
+
+    /**
+     * Copy the project settings left/right or exchange
+     * @param direction The direction to copy the options
+     */
+    public static CopySettings(direction: Project.CopyDirection): void {
+        const prefixFrom: string = direction === Project.CopyDirection.Left ? "Target" : "Source";
+        const prefixTo: string = direction === Project.CopyDirection.Left ? "Source" : "Target";
+
+        const inputFields: Array<string> = ["Hostname", "Port", "Username", "Password", "Database"];
+        const checkboxFields: Array<string> = ["SavePassword", "UseWindowsAuthentication", "UseSSL"];
+
+        for (const field of inputFields) {
+            const tmpValue: string = <string>$(`input[name='${prefixTo}${field}'`).val();
+            const tmpDisabled: boolean = $(`input[name='${prefixTo}${field}'`).is(":disabled");
+
+            $(`input[name='${prefixTo}${field}'`).val($(`input[name='${prefixFrom}${field}'`).val());
+            $(`input[name='${prefixTo}${field}'`).prop("disabled", $(`input[name='${prefixFrom}${field}'`).is(":disabled"));
+
+            if (direction === Project.CopyDirection.Exchange) {
+                $(`input[name='${prefixFrom}${field}'`).val(tmpValue);
+                $(`input[name='${prefixFrom}${field}'`).prop("disabled", tmpDisabled);
+            }
+        }
+
+        for (const field of checkboxFields) {
+            const tmpValue: boolean = $(`input[name='${prefixTo}${field}'`).is(":checked");
+            const tmpDisabled: boolean = $(`input[name='${prefixTo}${field}'`).is(":disabled");
+
+            $(`input[name='${prefixTo}${field}'`).prop("checked", $(`input[name='${prefixFrom}${field}'`).is(":checked"));
+            $(`input[name='${prefixTo}${field}'`).prop("disabled", $(`input[name='${prefixFrom}${field}'`).is(":disabled"));
+
+            if (direction === Project.CopyDirection.Exchange) {
+                $(`input[name='${prefixFrom}${field}'`).prop("checked", tmpValue);
+                $(`input[name='${prefixFrom}${field}'`).prop("disabled", tmpDisabled);
+            }
+        }
+
+        this.SetDirtyState();
+    }
 }
 
 namespace Project {
@@ -457,5 +497,11 @@ namespace Project {
          * PostgreSQL
          */
         PostgreSql = 2,
+    }
+
+    export enum CopyDirection {
+        Left = 0,
+        Right = 1,
+        Exchange = 2,
     }
 }

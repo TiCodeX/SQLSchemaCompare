@@ -602,4 +602,13 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="MenuFullMigrationScript" xml:space="preserve">
     <value>Full Migration Script</value>
   </data>
+  <data name="LabelCopySettingsLeft" xml:space="preserve">
+    <value>Copy connection settings left</value>
+  </data>
+  <data name="LabelCopySettingsExchange" xml:space="preserve">
+    <value>Switch left and right connection settings</value>
+  </data>
+  <data name="LabelCopySettingsRight" xml:space="preserve">
+    <value>Copy connection settings right</value>
+  </data>
 </root>

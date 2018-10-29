@@ -120,6 +120,15 @@ label {
     /*Bootstrap doesn't define this class and linter doesn't like it*/
 }
 
+.col-22p {
+    flex: 0 0 22%;
+    max-width: 22%;
+}
+
+.col-39p {
+    flex: 0 0 39%;
+    max-width: 39%;
+}
 /*#endregion*/
 
 /*#region buttons */

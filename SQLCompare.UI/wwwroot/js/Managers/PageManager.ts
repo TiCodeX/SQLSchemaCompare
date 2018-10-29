@@ -112,8 +112,16 @@ class PageManager {
      * Remove all the tooltips/popovers from the page
      */
     public static RemoveTooltips(): void {
-        $("div.tooltip").remove();
-        $("div.popover").remove();
+        try {
+            $("div.tooltip").tooltip("hide");
+        } catch (e) {
+            $("div.tooltip").remove();
+        }
+        try {
+            $("div.popover").popover("hide");
+        } catch (e) {
+            $("div.popover").remove();
+        }
     }
 
     /**

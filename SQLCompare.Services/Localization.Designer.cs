@@ -430,6 +430,33 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Switch left and right connection settings.
+        /// </summary>
+        public static string LabelCopySettingsExchange {
+            get {
+                return ResourceManager.GetString("LabelCopySettingsExchange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy connection settings left.
+        /// </summary>
+        public static string LabelCopySettingsLeft {
+            get {
+                return ResourceManager.GetString("LabelCopySettingsLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy connection settings right.
+        /// </summary>
+        public static string LabelCopySettingsRight {
+            get {
+                return ResourceManager.GetString("LabelCopySettingsRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create New Project.
         /// </summary>
         public static string LabelCreateNewProjects {

@@ -593,4 +593,13 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="MenuFullMigrationScript" xml:space="preserve">
     <value>Script completo di migrazione</value>
   </data>
+  <data name="LabelCopySettingsExchange" xml:space="preserve">
+    <value>Cambia le impostazioni di connessione sinistra e destra</value>
+  </data>
+  <data name="LabelCopySettingsLeft" xml:space="preserve">
+    <value>Copia le impostazioni di connessione a sinistra</value>
+  </data>
+  <data name="LabelCopySettingsRight" xml:space="preserve">
+    <value>Copia le impostazioni di connessione a destra</value>
+  </data>
 </root>

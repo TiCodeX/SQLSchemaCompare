@@ -22,18 +22,42 @@
             </div>
         </div>
 
-        <div class="float-right">
-            @if (Model.Project.Result != null)
-            {
-                <button style="@ButtonStyle.Secondary" onclick="PageManager.ClosePage()">@Localization.ButtonCancel</button>
-            }
-            else
-            {
-                <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">@Localization.ButtonCancel</button>
-            }
-            <button style="@ButtonStyle.Primary" onclick="Project.EditAndCompare()">
-                @Localization.ButtonCompareNow
-            </button>
+        <div class="row">
+            <div class="col col-39p">
+                <button type="button" style="@ButtonStyle.Primary" onclick="Project.Save();">
+                    <i class="far fa-save fa-lg"></i>  @Localization.MenuSaveProject
+                </button>
+            </div>
+            <div class="col col-22p text-center">
+                <button type="button" style="@ButtonStyle.Secondary"
+                        onclick="Project.CopySettings(Project.CopyDirection.Left);"
+                        data-toggle="tooltip" data-placement="top" title="@Localization.LabelCopySettingsLeft">
+                    <i class="fa fa-arrow-left"></i>
+                </button>
+                <button type="button" style="@ButtonStyle.Secondary"
+                        onclick="Project.CopySettings(Project.CopyDirection.Exchange);"
+                        data-toggle="tooltip" data-placement="top" title="@Localization.LabelCopySettingsExchange">
+                    <i class="fa fa-exchange-alt"></i>
+                </button>
+                <button type="button" style="@ButtonStyle.Secondary"
+                        onclick="Project.CopySettings(Project.CopyDirection.Right);"
+                        data-toggle="tooltip" data-placement="top" title="@Localization.LabelCopySettingsRight">
+                    <i class="fa fa-arrow-right"></i>
+                </button>
+            </div>
+            <div class="col col-39p text-right">
+                @if (Model.Project.Result != null)
+                {
+                    <button style="@ButtonStyle.Secondary" onclick="PageManager.ClosePage()">@Localization.ButtonCancel</button>
+                }
+                else
+                {
+                    <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">@Localization.ButtonCancel</button>
+                }
+                <button style="@ButtonStyle.Primary" onclick="Project.EditAndCompare()">
+                    @Localization.ButtonCompareNow
+                </button>
+            </div>
         </div>
     </div>
 </div>

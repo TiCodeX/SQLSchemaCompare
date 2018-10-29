@@ -593,4 +593,13 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="MenuFullMigrationScript" xml:space="preserve">
     <value>Vollständiges Migrationsskript</value>
   </data>
+  <data name="LabelCopySettingsRight" xml:space="preserve">
+    <value>Verbindungseinstellungen rechts kopieren</value>
+  </data>
+  <data name="LabelCopySettingsLeft" xml:space="preserve">
+    <value>Verbindungseinstellungen links kopieren</value>
+  </data>
+  <data name="LabelCopySettingsExchange" xml:space="preserve">
+    <value>Verbindungseinstellungen tauschen</value>
+  </data>
 </root>

@@ -609,7 +609,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateAlterFunctionScript(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
+        public string GenerateAlterFunctionScript(ABaseDbFunction sourceFunction, IReadOnlyList<ABaseDbDataType> sourceDataTypes, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> targetDataTypes)
         {
             if (sourceFunction == null && targetFunction == null)
             {
@@ -618,12 +618,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             if (targetFunction == null)
             {
-                return this.GenerateCreateFunctionScript(sourceFunction, dataTypes);
+                return this.GenerateCreateFunctionScript(sourceFunction, sourceDataTypes);
             }
 
             return sourceFunction == null ?
                 this.ScriptDropFunction(targetFunction) :
-                this.ScriptAlterFunction(sourceFunction, targetFunction, dataTypes);
+                this.ScriptAlterFunction(sourceFunction, targetFunction, targetDataTypes);
         }
 
         /// <inheritdoc/>
@@ -725,7 +725,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateAlterTypeScript(ABaseDbDataType sourceType, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> dataTypes)
+        public string GenerateAlterTypeScript(ABaseDbDataType sourceType, IReadOnlyList<ABaseDbDataType> sourceDataTypes, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> targetDataTypes)
         {
             if (sourceType == null && targetType == null)
             {
@@ -734,12 +734,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             if (targetType == null)
             {
-                return this.GenerateCreateTypeScript(sourceType, dataTypes);
+                return this.GenerateCreateTypeScript(sourceType, sourceDataTypes);
             }
 
             return sourceType == null ?
                 this.ScriptDropType(targetType) :
-                this.ScriptAlterType(sourceType, targetType, dataTypes);
+                this.ScriptAlterType(sourceType, targetType, sourceDataTypes);
         }
 
         /// <summary>

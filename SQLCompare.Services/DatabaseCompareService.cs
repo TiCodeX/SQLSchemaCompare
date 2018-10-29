@@ -7,6 +7,8 @@ using SQLCompare.Core.Entities;
 using SQLCompare.Core.Entities.Compare;
 using SQLCompare.Core.Entities.Database;
 using SQLCompare.Core.Entities.Database.MicrosoftSql;
+using SQLCompare.Core.Entities.Database.MySql;
+using SQLCompare.Core.Entities.Database.PostgreSql;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Core.Interfaces.Services;
 
@@ -318,7 +320,7 @@ namespace SQLCompare.Services
 
                 if (!resultFunction.Equal)
                 {
-                    resultFunction.Scripts.AlterScript = scripter.GenerateAlterFunctionScript(resultFunction.SourceItem, resultFunction.TargetItem, this.retrievedTargetDatabase.DataTypes);
+                    resultFunction.Scripts.AlterScript = scripter.GenerateAlterFunctionScript(resultFunction.SourceItem, this.retrievedSourceDatabase.DataTypes, resultFunction.TargetItem, this.retrievedTargetDatabase.DataTypes);
                 }
 
                 taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
@@ -399,7 +401,7 @@ namespace SQLCompare.Services
 
                 if (!resultType.Equal)
                 {
-                    resultType.Scripts.AlterScript = scripter.GenerateAlterTypeScript(resultType.SourceItem, resultType.TargetItem, this.retrievedTargetDatabase.DataTypes);
+                    resultType.Scripts.AlterScript = scripter.GenerateAlterTypeScript(resultType.SourceItem, this.retrievedSourceDatabase.DataTypes, resultType.TargetItem, this.retrievedTargetDatabase.DataTypes);
                 }
 
                 taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
@@ -455,19 +457,39 @@ namespace SQLCompare.Services
             result.SameItems.AddRange(this.dataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Same items => {result.SameItems.Count}");
 
-            var onlySourceDb = new MicrosoftSqlDb();
+            ABaseDb onlySourceDb = null;
+            ABaseDb onlyTargetDb = null;
+            switch (this.retrievedSourceDatabase)
+            {
+                case MicrosoftSqlDb _:
+                    onlySourceDb = new MicrosoftSqlDb();
+                    onlyTargetDb = new MicrosoftSqlDb();
+                    break;
+
+                case MySqlDb _:
+                    onlySourceDb = new MySqlDb();
+                    onlyTargetDb = new MySqlDb();
+                    break;
+
+                case PostgreSqlDb _:
+                    onlySourceDb = new PostgreSqlDb();
+                    onlyTargetDb = new PostgreSqlDb();
+                    break;
+            }
+
             onlySourceDb.Tables.AddRange(onlySourceTables.Select(x => x.SourceItem));
             onlySourceDb.Views.AddRange(onlySourceViews.Select(x => x.SourceItem));
             onlySourceDb.Functions.AddRange(onlySourceFunctions.Select(x => x.SourceItem));
             onlySourceDb.StoredProcedures.AddRange(onlySourceStoredProcedures.Select(x => x.SourceItem));
+            onlySourceDb.DataTypes.AddRange(this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined == false));
             onlySourceDb.DataTypes.AddRange(onlySourceDataTypes.Select(x => x.SourceItem));
             onlySourceDb.Sequences.AddRange(onlySourceSequences.Select(x => x.SourceItem));
 
-            var onlyTargetDb = new MicrosoftSqlDb();
             onlyTargetDb.Tables.AddRange(onlyTargetTables.Select(x => x.TargetItem));
             onlyTargetDb.Views.AddRange(onlyTargetViews.Select(x => x.TargetItem));
             onlyTargetDb.Functions.AddRange(onlyTargetFunctions.Select(x => x.TargetItem));
             onlyTargetDb.StoredProcedures.AddRange(onlyTargetStoredProcedures.Select(x => x.TargetItem));
+            onlySourceDb.DataTypes.AddRange(this.retrievedTargetDatabase.DataTypes.Where(x => x.IsUserDefined == false));
             onlyTargetDb.DataTypes.AddRange(onlyTargetDataTypes.Select(x => x.TargetItem));
             onlyTargetDb.Sequences.AddRange(onlyTargetSequences.Select(x => x.TargetItem));
 

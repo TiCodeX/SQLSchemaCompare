@@ -91,10 +91,11 @@ namespace SQLCompare.Core.Interfaces
         /// Generates the alter function script
         /// </summary>
         /// <param name="sourceFunction">The source function</param>
+        /// <param name="sourceDataTypes">The list of source database data types</param>
         /// <param name="targetFunction">The target function</param>
-        /// <param name="dataTypes">The list of database data types</param>
+        /// <param name="targetDataTypes">The list of target database data types</param>
         /// <returns>The alter script</returns>
-        string GenerateAlterFunctionScript(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes);
+        string GenerateAlterFunctionScript(ABaseDbFunction sourceFunction, IReadOnlyList<ABaseDbDataType> sourceDataTypes, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> targetDataTypes);
 
         /// <summary>
         /// Generates the create stored procedure script
@@ -153,9 +154,10 @@ namespace SQLCompare.Core.Interfaces
         /// Generates the alter type script
         /// </summary>
         /// <param name="sourceType">The source type</param>
+        /// <param name="sourceDataTypes">The list of source database data types</param>
         /// <param name="targetType">The target type</param>
-        /// <param name="dataTypes">The list of database data types</param>
+        /// <param name="targetDataTypes">The list of target database data types</param>
         /// <returns>The alter script</returns>
-        string GenerateAlterTypeScript(ABaseDbDataType sourceType, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> dataTypes);
+        string GenerateAlterTypeScript(ABaseDbDataType sourceType, IReadOnlyList<ABaseDbDataType> sourceDataTypes, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> targetDataTypes);
     }
 }

@@ -18,6 +18,7 @@ class MenuManager {
                     {
                         id: "menuNewProject",
                         label: Localization.Get("MenuNewProject"),
+                        accelerator: "CmdOrCtrl+N",
                         click(): void {
                             Project.New(false);
                         },
@@ -25,6 +26,7 @@ class MenuManager {
                     {
                         id: "menuOpenProject",
                         label: `${Localization.Get("MenuOpenProject")}...`,
+                        accelerator: "CmdOrCtrl+O",
                         click(): void {
                             Project.Load();
                         },
@@ -35,6 +37,7 @@ class MenuManager {
                     {
                         id: "menuSaveProject",
                         label: `${Localization.Get("MenuSaveProject")}`,
+                        accelerator: "CmdOrCtrl+S",
                         enabled: false,
                         click(): void {
                             Project.Save().catch((): void => {
@@ -45,6 +48,7 @@ class MenuManager {
                     {
                         id: "menuSaveProjectAs",
                         label: `${Localization.Get("MenuSaveProjectAs")}...`,
+                        accelerator: "CmdOrCtrl+Shift+S",
                         enabled: false,
                         click(): void {
                             Project.Save(true).catch((): void => {
@@ -55,6 +59,7 @@ class MenuManager {
                     {
                         id: "menuCloseProject",
                         label: Localization.Get("MenuCloseProject"),
+                        accelerator: "CmdOrCtrl+Q",
                         enabled: false,
                         click(): void {
                             Project.Close(false);
@@ -76,6 +81,7 @@ class MenuManager {
                     {
                         role: "close",
                         label: Localization.Get("MenuExit"),
+                        accelerator: "Alt+F4",
                     },
                 ],
             },
@@ -85,6 +91,7 @@ class MenuManager {
                     {
                         id: "menuEditProject",
                         label: Localization.Get("MenuEditProject"),
+                        accelerator: "CmdOrCtrl+E",
                         enabled: false,
                         click(): void {
                             Project.OpenPage(false);
@@ -93,6 +100,7 @@ class MenuManager {
                     {
                         id: "menuPerformCompare",
                         label: Localization.Get("MenuCompare"),
+                        accelerator: "CmdOrCtrl+R",
                         enabled: false,
                         click(): void {
                             Project.Compare();
@@ -115,6 +123,7 @@ class MenuManager {
                     },
                     {
                         label: Localization.Get("MenuAbout"),
+                        accelerator: "F1",
                         click(): void {
                             electron.shell.openExternal("https://www.ticodex.com/");
                         },
@@ -129,7 +138,7 @@ class MenuManager {
                 submenu: [
                     {
                         label: "Reload",
-                        accelerator: "CmdOrCtrl+R",
+                        accelerator: "F5",
                         click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
                             if (focusedWindow) {
                                 focusedWindow.reload();

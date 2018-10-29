@@ -590,4 +590,7 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="LabelReferencingForeignKeys" xml:space="preserve">
     <value>Fremdschlüssel referenzieren diese Tabelle</value>
   </data>
+  <data name="MenuFullMigrationScript" xml:space="preserve">
+    <value>Vollständiges Migrationsskript</value>
+  </data>
 </root>

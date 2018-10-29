@@ -30,7 +30,7 @@
     <li class="nav-item nav-separator"></li>
     <li class="nav-item">
         <button type="button" style="@ButtonStyle.Primary" id="toolbarEditProject"
-                onclick="PageManager.LoadPage(PageManager.Page.Project, false);"
+                onclick="Project.OpenPage(false);"
                 data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuEditProject"
                 disabled="@true">
             <i class="far fa-edit fa-lg"></i> @Localization.MenuEditProject
@@ -55,6 +55,9 @@
             </a>
             <a class="dropdown-item" onclick="Main.ShowFullScript(@((int) CompareDirection.Target));">
                 @Localization.MenuFullTargetDatabaseScript
+            </a>
+            <a class="dropdown-item" onclick="Main.ShowFullAlterScript();">
+                @Localization.MenuFullMigrationScript
             </a>
         </div>
     </li>

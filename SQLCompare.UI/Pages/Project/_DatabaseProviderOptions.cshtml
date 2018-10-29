@@ -84,10 +84,7 @@
                 <label>@Localization.LabelDatabase</label>
                 <div class="input-group input-group-sm">
                     <select name="@(prefix)Database" class="editable-select" onchange="Project.SetDirtyState()" required>
-                        @if (!string.IsNullOrEmpty(Model.Database))
-                        {
-                            <option value="@Model.Database" selected>@Model.Database</option>
-                        }
+                        <option value="@Model.Database" selected>@Model.Database</option>
                     </select>
                     <div class="input-group-append">
                         <button style="@ButtonStyle.Primary" onclick="Project.LoadDatabaseSelectValues($(this), '@(prefix)Database', '@divId');">

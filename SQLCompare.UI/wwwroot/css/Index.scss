@@ -109,8 +109,12 @@ $fa-font-size-base: $font-size-base;
     > .tab-content {
         height: calc(100% - 36px);
 
+        @media screen and (max-width: 1073px) {
+            height: calc(100% - 52px);
+        }
+
         > .tab-pane {
-            height: 100%;
+            height: 100% !important;
         }
     }
 }

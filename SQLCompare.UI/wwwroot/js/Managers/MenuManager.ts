@@ -87,7 +87,7 @@ class MenuManager {
                         label: Localization.Get("MenuEditProject"),
                         enabled: false,
                         click(): void {
-                            PageManager.LoadPage(PageManager.Page.Project, false);
+                            Project.OpenPage(false);
                         },
                     },
                     {

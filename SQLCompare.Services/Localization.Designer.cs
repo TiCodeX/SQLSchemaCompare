@@ -1008,6 +1008,15 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Full Migration Script.
+        /// </summary>
+        public static string MenuFullMigrationScript {
+            get {
+                return ResourceManager.GetString("MenuFullMigrationScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Full Source Database Script.
         /// </summary>
         public static string MenuFullSourceDatabaseScript {

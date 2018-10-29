@@ -294,8 +294,8 @@ function createMainWindow(): void {
 
     // Create the browser window.
     mainWindow = new electron.BrowserWindow({
-        x: mainWindowState.x,
-        y: mainWindowState.y,
+        x: mainWindowState.x < workAreaSize.width ? mainWindowState.x : undefined,
+        y: mainWindowState.y < workAreaSize.height ? mainWindowState.y : undefined,
         width: mainWindowState.width,
         height: mainWindowState.height,
         title: "SQL Compare - TiCodeX SA",

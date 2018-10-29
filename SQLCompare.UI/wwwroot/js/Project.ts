@@ -68,6 +68,23 @@ class Project {
     private static isDirty: boolean = false;
 
     /**
+     * Open the project page
+     * @param closePreviousPage Tell if the previous page needs to be closed
+     */
+    public static async OpenPage(closePreviousPage: boolean = true): Promise<void> {
+        return PageManager.LoadPage(PageManager.Page.Project, closePreviousPage).then((): void => {
+            MenuManager.ToggleProjectRelatedMenuStatus(true);
+            $(".editable-select").on("show.editable-select", (e: Event) => {
+                const list: JQuery = <JQuery>$(e.target).siblings("ul.es-list");
+                list.empty();
+                list.append("<li class=\"es-visible\" disabled>Loading...</li>");
+                this.LoadDatabaseSelectValues(<JQuery>$(e.target).siblings(".input-group-append").find("button"),
+                    (<HTMLInputElement>e.target).name, (<HTMLDivElement>$(e.target).parents(".card")[0]).id);
+            });
+        });
+    }
+
+    /**
      * Set the current project to dirty
      */
     public static SetDirtyState(): void {
@@ -94,9 +111,7 @@ class Project {
             if (response.Success) {
                 this.isDirty = false;
                 this.filename = undefined;
-                PageManager.LoadPage(PageManager.Page.Project).then((): void => {
-                    MenuManager.ToggleProjectRelatedMenuStatus(true);
-                });
+                this.OpenPage(true);
             } else {
                 this.HandleProjectNeedToBeSavedError(response).then((): void => {
                     this.New(true, databaseType);
@@ -184,9 +199,7 @@ class Project {
             if (response.Success) {
                 this.isDirty = false;
                 this.filename = file;
-                PageManager.LoadPage(PageManager.Page.Project).then((): void => {
-                    MenuManager.ToggleProjectRelatedMenuStatus(true);
-                });
+                this.OpenPage(true);
             } else {
                 this.HandleProjectNeedToBeSavedError(response).then((): void => {
                     this.Load(true, file);
@@ -248,7 +261,6 @@ class Project {
         // Close the dropdown and disable it temporarily
         const select: JQuery = $(`input[name="${selectId}"]`);
         select.trigger("blur").attr("disabled", "disabled");
-        select.editableSelect("clear");
 
         const data: object = Utility.SerializeJSON($(`#${dataDivId}`));
         if (data === undefined) {
@@ -263,6 +275,7 @@ class Project {
 
         Utility.AjaxCall(this.loadDatabaseListUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<Array<string>>): void => {
             if (response.Success) {
+                select.editableSelect("clear");
                 $.each(response.Result,
                     (index: number, value: string): void => {
                         select.editableSelect("add", value);
@@ -271,6 +284,7 @@ class Project {
                         }
                     });
             } else {
+                select.editableSelect("hide");
                 DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
             }
             select.removeAttr("disabled");

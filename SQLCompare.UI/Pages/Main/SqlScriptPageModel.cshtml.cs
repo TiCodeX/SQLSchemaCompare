@@ -36,5 +36,17 @@ namespace SQLCompare.UI.Pages.Main
                     : this.projectService.Project.Result.TargetFullScript
             });
         }
+
+        /// <summary>
+        /// Get the full alter script
+        /// </summary>
+        /// <returns>A JSON object with the full alter script</returns>
+        public ActionResult OnGetFullAlterScript()
+        {
+            return new JsonResult(new ApiResponse<string>
+            {
+                Result = this.projectService.Project.Result.FullAlterScript
+            });
+        }
     }
 }

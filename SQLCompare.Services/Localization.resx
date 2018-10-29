@@ -599,4 +599,7 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelReferencingForeignKeys" xml:space="preserve">
     <value>Foreign Keys referencing this table</value>
   </data>
+  <data name="MenuFullMigrationScript" xml:space="preserve">
+    <value>Full Migration Script</value>
+  </data>
 </root>

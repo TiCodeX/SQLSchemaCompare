@@ -23,6 +23,11 @@ class Main {
     private static readonly fullSqlScriptUrl: string = `${Main.sqlScriptUrl}?handler=FullScript&direction=`;
 
     /**
+     * Service URL for retrieving the full sql alter script
+     */
+    private static readonly fullSqlAlterScriptUrl: string = `${Main.sqlScriptUrl}?handler=FullAlterScript`;
+
+    /**
      * Contains a reference to the splitter instance
      */
     private static mainSplitter: Split.Instance;
@@ -91,8 +96,16 @@ class Main {
                 direction: "vertical",
                 gutterSize: 7,
                 sizes: this.mainSplitterSizes,
+                onDragStart: (): void => {
+                    // Hide overflow temporary
+                    $(".tcx-row-main").css("overflow", "hidden");
+                },
                 onDragEnd: (): void => {
                     this.mainSplitterSizes = this.mainSplitter.getSizes();
+                    // Trigger monaco-editor recalculate height
+                    $(".monaco-sash").height(0);
+                    // Restore original overflow
+                    $(".tcx-row-main").css("overflow", "");
                 },
             });
             this.ScollToSelectedElement();
@@ -121,11 +134,6 @@ class Main {
 
             const editor: monaco.editor.IStandaloneCodeEditor = monaco.editor.create(document.getElementById("sqlAlterScript"), this.defaultMonacoOptions);
             editor.setModel(monaco.editor.createModel(response.Result.AlterScript, "sql"));
-
-            // Fix the tab height
-            $("#mainBottom .tab-pane").matchHeight({
-                byRow: false,
-            });
         });
     }
 
@@ -222,6 +230,18 @@ class Main {
             : Localization.Get("MenuFullTargetDatabaseScript");
         DialogManager.OpenModalDialog(title, this.sqlScriptUrl).then((): void => {
             Utility.AjaxCall(`${this.fullSqlScriptUrl}${direction}`, Utility.HttpMethod.Get).then((response: ApiResponse<string>): void => {
+                const editor: monaco.editor.IStandaloneCodeEditor = monaco.editor.create(document.getElementById("sqlEditor"), this.defaultMonacoOptions);
+                editor.setModel(monaco.editor.createModel(response.Result, "sql"));
+            });
+        });
+    }
+
+    /**
+     * Show the full alter script page
+     */
+    public static ShowFullAlterScript(): void {
+        DialogManager.OpenModalDialog(Localization.Get("MenuFullMigrationScript"), this.sqlScriptUrl).then((): void => {
+            Utility.AjaxCall(`${this.fullSqlAlterScriptUrl}`, Utility.HttpMethod.Get).then((response: ApiResponse<string>): void => {
                 const editor: monaco.editor.IStandaloneCodeEditor = monaco.editor.create(document.getElementById("sqlEditor"), this.defaultMonacoOptions);
                 editor.setModel(monaco.editor.createModel(response.Result, "sql"));
             });

@@ -6,7 +6,6 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using SQLCompare.Core.Entities.Compare;
 using SQLCompare.Core.Entities.Database;
-using SQLCompare.Core.Entities.Database.MicrosoftSql;
 using SQLCompare.Core.Entities.Project;
 using SQLCompare.Core.Interfaces;
 using SQLCompare.Services;
@@ -506,7 +505,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                     sb.AppendLine();
                 }
 
-                if (targetTable.Constraints.Count > 0 || targetTable.Columns.Any(x => !string.IsNullOrWhiteSpace(((MicrosoftSqlColumn)x).DefaultConstraintName)))
+                if (targetTable.Constraints.Count > 0 || targetTable.Columns.Any(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName)))
                 {
                     sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
                     sb.Append(this.ScriptAlterTableDropConstraints(targetTable));

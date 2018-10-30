@@ -66,7 +66,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptDropTable(ABaseDbTable table)
         {
-            throw new NotImplementedException();
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP TABLE {this.ScriptHelper.ScriptObjectName(table)};");
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -99,7 +101,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterTableDropPrimaryKeys(ABaseDbTable table)
         {
-            throw new NotImplementedException();
+            var sb = new StringBuilder();
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP PRIMARY KEY;");
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -127,26 +131,39 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterTableDropForeignKeys(ABaseDbTable table)
         {
-            throw new NotImplementedException();
+            var sb = new StringBuilder();
+
+            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP FOREIGN KEY {this.ScriptHelper.ScriptObjectName(key.Name)};");
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
         protected override string ScriptAlterTableDropReferencingForeignKeys(ABaseDbTable table)
         {
-            throw new NotImplementedException();
+            var sb = new StringBuilder();
+
+            foreach (var key in table.ReferencingForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableName)} DROP FOREIGN KEY {this.ScriptHelper.ScriptObjectName(key.Name)};");
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
         protected override string ScriptAlterTableAddConstraints(ABaseDbTable table)
         {
-            // Empty because there aren't constraints, already handled by table and indexes
-            return string.Empty;
+            throw new NotSupportedException("MySQL doesn't have CHECK constraints");
         }
 
         /// <inheritdoc/>
         protected override string ScriptAlterTableDropConstraints(ABaseDbTable table)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("MySQL doesn't have CHECK constraints");
         }
 
         /// <inheritdoc/>

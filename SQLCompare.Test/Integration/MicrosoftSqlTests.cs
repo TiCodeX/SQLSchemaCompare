@@ -116,7 +116,7 @@ namespace SQLCompare.Test.Integration
         }
 
         /// <summary>
-        /// Test migration script when source db is empty (a.k.a. re-create whole source)
+        /// Test migration script when target db is empty (a.k.a. re-create whole source)
         /// </summary>
         [Fact]
         [IntegrationTest]

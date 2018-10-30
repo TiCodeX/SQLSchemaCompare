@@ -74,10 +74,5 @@
         /// Gets or sets the user defined data type
         /// </summary>
         public string UserDefinedDataType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the default constraint name
-        /// </summary>
-        public string DefaultConstraintName { get; set; }
     }
 }

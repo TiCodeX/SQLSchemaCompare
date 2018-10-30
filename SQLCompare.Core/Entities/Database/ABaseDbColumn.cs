@@ -16,6 +16,11 @@
         public string ColumnDefault { get; set; }
 
         /// <summary>
+        /// Gets or sets the default constraint name
+        /// </summary>
+        public string DefaultConstraintName { get; set; }
+
+        /// <summary>
         /// Gets or sets the column data type
         /// </summary>
         public string DataType { get; set; }

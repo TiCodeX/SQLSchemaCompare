@@ -22,6 +22,7 @@ using SQLCompare.Infrastructure.DatabaseProviders;
 using SQLCompare.Infrastructure.EntityFramework;
 using SQLCompare.Infrastructure.SqlScripters;
 using SQLCompare.Services;
+using Xunit.Sdk;
 
 namespace SQLCompare.Test
 {
@@ -53,7 +54,7 @@ namespace SQLCompare.Test
                 this.CreateMicrosoftSqlSakilaDatabase("sakila");
 
                 // MySQL
-                this.ExecuteMySqlScript(Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-mysql.sql"));
+                this.CreateMySqlSakilaDatabase("sakila");
 
                 // PostgreSQL
                 this.DropAndCreatePostgreSqlDatabase("sakila");
@@ -88,17 +89,40 @@ namespace SQLCompare.Test
         /// <param name="path">The path</param>
         internal void ExecuteMySqlScript(string path)
         {
-            var process = Process.Start(new ProcessStartInfo
+            var standardOutput = new StringBuilder();
+            var standardError = new StringBuilder();
+            var process = new Process
             {
-                FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe",
-                Arguments = $"--user root -ptest1234 -e \"SOURCE {path}\"",
-                UseShellExecute = false,
-                RedirectStandardError = true,
-                RedirectStandardOutput = true,
-            });
-            process.Should().NotBeNull();
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe",
+                    Arguments = $"--user root -ptest1234 -e \"SOURCE {path}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                }
+            };
+            process.OutputDataReceived += (sender, data) => standardOutput.AppendLine(data.Data);
+            process.ErrorDataReceived += (sender, data) => standardError.AppendLine(data.Data);
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+
             process.WaitForExit((int)TimeSpan.FromMinutes(5).TotalMilliseconds);
-            process.ExitCode.Should().Be(0);
+
+            if (process.ExitCode == 0)
+            {
+                return;
+            }
+
+            var exceptionMessage = new StringBuilder();
+            exceptionMessage.AppendLine($"Failed executing script '{path}'");
+            exceptionMessage.AppendLine("Standard Output:");
+            exceptionMessage.AppendLine(standardOutput.ToString());
+            exceptionMessage.AppendLine("Standard Error:");
+            exceptionMessage.AppendLine(standardError.ToString());
+            throw new XunitException(exceptionMessage.ToString());
         }
 
         /// <summary>
@@ -169,6 +193,24 @@ namespace SQLCompare.Test
                     context.ExecuteNonQuery(query);
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates the sakila database
+        /// </summary>
+        /// <param name="databaseName">Name of the database</param>
+        internal void CreateMySqlSakilaDatabase(string databaseName)
+        {
+            this.DropAndCreateMySqlDatabase(databaseName);
+
+            var sakilaScript = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-mysql.sql"));
+
+            sakilaScript = sakilaScript.Replace("USE sakila;", $"USE {databaseName};", StringComparison.InvariantCulture);
+            sakilaScript = sakilaScript.Replace("sakila.", $"{databaseName}.", StringComparison.InvariantCulture);
+
+            var pathMySql = Path.GetTempFileName();
+            File.WriteAllText(pathMySql, sakilaScript);
+            this.ExecuteMySqlScript(pathMySql);
         }
 
         /// <summary>
@@ -475,8 +517,19 @@ namespace SQLCompare.Test
                 Thread.Sleep(200);
             }
 
-            taskService.CurrentTaskInfos.Any(x => x.Status == TaskStatus.Faulted ||
-                                                  x.Status == TaskStatus.Canceled).Should().BeFalse();
+            if (taskService.CurrentTaskInfos.Any(x => x.Status == TaskStatus.Faulted ||
+                                                      x.Status == TaskStatus.Canceled))
+            {
+                var exception = taskService.CurrentTaskInfos.FirstOrDefault(x => x.Status == TaskStatus.Faulted ||
+                                                                                 x.Status == TaskStatus.Canceled)?.Exception;
+                if (exception != null)
+                {
+                    throw exception;
+                }
+
+                throw new XunitException("Unknown error during compare task");
+            }
+
             projectService.Project.Result.Should().NotBeNull();
         }
     }

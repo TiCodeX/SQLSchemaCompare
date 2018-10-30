@@ -74,7 +74,48 @@ namespace SQLCompare.Test.Integration
         }
 
         /// <summary>
-        /// Test migration script when source db is empty (a.k.a. re-create whole source)
+        /// Test migration script when source db is empty (a.k.a. drop whole target)
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseSourceEmpty()
+        {
+            const string sourceDatabaseName = "sakila_empty";
+            const string targetDatabaseName = "sakila_migrated_to_empty";
+
+            // Create the empty database
+            this.dbFixture.DropAndCreateMySqlDatabase(sourceDatabaseName);
+
+            // Create the database with sakila to be migrated to empty
+            this.dbFixture.CreateMySqlSakilaDatabase(targetDatabaseName);
+
+            // Perform the compare
+            var projectService = new ProjectService(null, this.LoggerFactory);
+            projectService.NewProject(DatabaseType.MySql);
+            projectService.Project.SourceProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(sourceDatabaseName);
+            projectService.Project.TargetProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(targetDatabaseName);
+            this.dbFixture.PerformCompareAndWaitResult(projectService);
+            projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
+
+            if (this.exportGeneratedFullScript)
+            {
+                File.WriteAllText("c:\\temp\\FullDropScriptMySQL.sql", projectService.Project.Result.FullAlterScript);
+            }
+
+            var fullAlterScript = new StringBuilder();
+            fullAlterScript.AppendLine($"USE {targetDatabaseName};");
+            fullAlterScript.Append(projectService.Project.Result.FullAlterScript);
+
+            // Execute the full alter script
+            var pathMySql = Path.GetTempFileName();
+            File.WriteAllText(pathMySql, fullAlterScript.ToString());
+            this.dbFixture.ExecuteMySqlScript(pathMySql);
+
+            this.dbFixture.CompareDatabases(DatabaseType.MySql, targetDatabaseName, sourceDatabaseName);
+        }
+
+        /// <summary>
+        /// Test migration script when target db is empty (a.k.a. re-create whole source)
         /// </summary>
         [Fact]
         [IntegrationTest]

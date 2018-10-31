@@ -102,8 +102,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
             // Tables with PK, FK, Constraints, Indexes
             if (database.Tables.Count > 0)
             {
+                var sortedTables = this.GetSortedTables(database.Tables, false).ToList();
+
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTables));
-                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                foreach (var table in sortedTables)
                 {
                     sb.AppendLine(this.ScriptCreateTable(table));
                 }
@@ -111,10 +113,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
 
                 // Primary Keys
-                if (database.Tables.Any(x => x.PrimaryKeys.Count > 0))
+                if (sortedTables.Any(x => x.PrimaryKeys.Count > 0))
                 {
                     sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
-                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    foreach (var table in sortedTables)
                     {
                         sb.Append(this.ScriptAlterTableAddPrimaryKeys(table));
                     }
@@ -123,10 +125,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 }
 
                 // Foreign Keys
-                if (database.Tables.Any(x => x.ForeignKeys.Count > 0))
+                if (sortedTables.Any(x => x.ForeignKeys.Count > 0))
                 {
                     sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    foreach (var table in sortedTables)
                     {
                         sb.Append(this.ScriptAlterTableAddForeignKeys(table));
                     }
@@ -135,10 +137,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 }
 
                 // Constraints
-                if (database.Tables.Any(x => x.Constraints.Count > 0))
+                if (sortedTables.Any(x => x.Constraints.Count > 0))
                 {
                     sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
-                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    foreach (var table in sortedTables)
                     {
                         sb.Append(this.ScriptAlterTableAddConstraints(table));
                     }
@@ -147,10 +149,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 }
 
                 // Indexes
-                if (database.Tables.Any(x => x.Indexes.Count > 0))
+                if (sortedTables.Any(x => x.Indexes.Count > 0))
                 {
                     sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
-                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    foreach (var table in sortedTables)
                     {
                         sb.Append(this.ScriptCreateIndexes(table, table.Indexes));
                     }
@@ -209,7 +211,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (database.Tables.Any(x => x.Triggers.Count > 0))
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
-                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                foreach (var table in this.GetSortedTables(database.Tables, false))
                 {
                     foreach (var trigger in table.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                     {
@@ -248,7 +250,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             if (database.Tables.Any(x => x.Triggers.Count > 0))
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
-                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                foreach (var table in this.GetSortedTables(database.Tables, true))
                 {
                     foreach (var trigger in table.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                     {
@@ -302,11 +304,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
             if (database.Tables.Count > 0)
             {
+                var sortedTables = this.GetSortedTables(database.Tables, true).ToList();
+
                 // Foreign Keys
-                if (database.Tables.Any(x => x.ForeignKeys.Count > 0))
+                if (sortedTables.Any(x => x.ForeignKeys.Count > 0))
                 {
                     sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    foreach (var table in sortedTables)
                     {
                         sb.Append(this.ScriptAlterTableDropForeignKeys(table));
                     }
@@ -315,10 +319,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 }
 
                 // Indexes
-                if (database.Tables.Any(x => x.Indexes.Count > 0))
+                if (sortedTables.Any(x => x.Indexes.Count > 0))
                 {
                     sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
-                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    foreach (var table in sortedTables)
                     {
                         sb.Append(this.ScriptDropIndexes(table, table.Indexes));
                     }
@@ -327,10 +331,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 }
 
                 // Constraints
-                if (database.Tables.Any(x => x.Constraints.Count > 0))
+                if (sortedTables.Any(x => x.Constraints.Count > 0))
                 {
                     sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
-                    foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    foreach (var table in sortedTables)
                     {
                         sb.Append(this.ScriptAlterTableDropConstraints(table));
                     }
@@ -340,7 +344,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
                 // Tables
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTables));
-                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                foreach (var table in sortedTables)
                 {
                     sb.Append(this.ScriptDropTable(table));
                 }
@@ -956,6 +960,14 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <param name="dataTypes">The list of database data types</param>
         /// <returns>The alter type script</returns>
         protected abstract string ScriptAlterType(ABaseDbDataType sourceType, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> dataTypes);
+
+        /// <summary>
+        /// Gets the tables sorted depending on the options
+        /// </summary>
+        /// <param name="tables">The tables</param>
+        /// <param name="dropOrder">Whether to sort the tables for dropping them</param>
+        /// <returns>The sorted tables</returns>
+        protected abstract IEnumerable<ABaseDbTable> GetSortedTables(List<ABaseDbTable> tables, bool dropOrder);
 
         /// <summary>
         /// Get the table columns sorted depending on options and source table

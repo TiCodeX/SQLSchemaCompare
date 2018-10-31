@@ -57,12 +57,7 @@ namespace SQLCompare.Test
                 this.CreateMySqlSakilaDatabase("sakila");
 
                 // PostgreSQL
-                this.DropAndCreatePostgreSqlDatabase("sakila");
-                using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions("sakila")))
-                {
-                    var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-postgresql.sql");
-                    context.ExecuteNonQuery(File.ReadAllText(path));
-                }
+                this.CreatePostgreSqlSakilaDatabase("sakila");
 
                 initializeSakilaDatabase = false;
             }
@@ -211,6 +206,21 @@ namespace SQLCompare.Test
             var pathMySql = Path.GetTempFileName();
             File.WriteAllText(pathMySql, sakilaScript);
             this.ExecuteMySqlScript(pathMySql);
+        }
+
+        /// <summary>
+        /// Creates the sakila database
+        /// </summary>
+        /// <param name="databaseName">Name of the database</param>
+        internal void CreatePostgreSqlSakilaDatabase(string databaseName)
+        {
+            this.DropAndCreatePostgreSqlDatabase(databaseName);
+
+            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(databaseName)))
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-postgresql.sql");
+                context.ExecuteNonQuery(File.ReadAllText(path));
+            }
         }
 
         /// <summary>

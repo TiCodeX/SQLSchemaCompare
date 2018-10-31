@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -475,6 +476,9 @@ namespace SQLCompare.Services
                     onlySourceDb = new PostgreSqlDb();
                     onlyTargetDb = new PostgreSqlDb();
                     break;
+
+                default:
+                    throw new NotImplementedException("Unknown Database Type");
             }
 
             onlySourceDb.Tables.AddRange(onlySourceTables.Select(x => x.SourceItem));

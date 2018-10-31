@@ -56,11 +56,18 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbTable> GetTables(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT TABLE_NAME as \"Name\",");
-            query.AppendLine("       TABLE_CATALOG as \"Database\",");
-            query.AppendLine("       TABLE_SCHEMA as \"Schema\"");
-            query.AppendLine("FROM INFORMATION_SCHEMA.TABLES");
-            query.AppendLine("WHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = 'public'");
+            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Database\",");
+            query.AppendLine("       nsp.nspname AS \"Schema\",");
+            query.AppendLine("       cls.relname AS \"Name\",");
+            query.AppendLine("       ihnsp.nspname AS \"InheritedTableSchema\",");
+            query.AppendLine("       ihcls.relname AS \"InheritedTableName\"");
+            query.AppendLine("FROM pg_catalog.pg_class cls");
+            query.AppendLine("JOIN pg_catalog.pg_roles rol ON rol.oid = cls.relowner");
+            query.AppendLine("JOIN pg_catalog.pg_namespace nsp ON nsp.oid = cls.relnamespace");
+            query.AppendLine("LEFT JOIN pg_catalog.pg_inherits ih ON ih.inhrelid = cls.oid");
+            query.AppendLine("LEFT JOIN pg_catalog.pg_class ihcls ON ih.inhparent = ihcls.oid");
+            query.AppendLine("LEFT JOIN pg_catalog.pg_namespace ihnsp ON ihnsp.oid = ihcls.relnamespace");
+            query.AppendLine("WHERE cls.relkind IN ('r', 'p') AND nsp.nspname = 'public'");
 
             return context.Query<PostgreSqlTable>(query.ToString());
         }

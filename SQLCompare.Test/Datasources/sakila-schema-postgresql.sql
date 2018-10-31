@@ -1351,60 +1351,60 @@ CREATE UNIQUE INDEX idx_unq_rental_rental_date_inventory_id_customer_id ON renta
 -- Name: payment payment_insert_p2017_01; Type: RULE; Schema: public; Owner: postgres
 --
 
-CREATE RULE payment_insert_p2017_01 AS
-    ON INSERT TO payment
-   WHERE ((new.payment_date >= '2017-01-01 00:00:00'::timestamp without time zone) AND (new.payment_date < '2017-02-01 00:00:00'::timestamp without time zone)) DO INSTEAD  INSERT INTO payment_p2017_01 (payment_id, customer_id, staff_id, rental_id, amount, payment_date)
-  VALUES (DEFAULT, new.customer_id, new.staff_id, new.rental_id, new.amount, new.payment_date);
+--- CREATE RULE payment_insert_p2017_01 AS
+---     ON INSERT TO payment
+---    WHERE ((new.payment_date >= '2017-01-01 00:00:00'::timestamp without time zone) AND (new.payment_date < '2017-02-01 00:00:00'::timestamp without time zone)) DO INSTEAD  INSERT INTO payment_p2017_01 (payment_id, customer_id, staff_id, rental_id, amount, payment_date)
+---   VALUES (DEFAULT, new.customer_id, new.staff_id, new.rental_id, new.amount, new.payment_date);
 
 
 --
 -- Name: payment payment_insert_p2017_02; Type: RULE; Schema: public; Owner: postgres
 --
 
-CREATE RULE payment_insert_p2017_02 AS
-    ON INSERT TO payment
-   WHERE ((new.payment_date >= '2017-02-01 00:00:00'::timestamp without time zone) AND (new.payment_date < '2017-03-01 00:00:00'::timestamp without time zone)) DO INSTEAD  INSERT INTO payment_p2017_02 (payment_id, customer_id, staff_id, rental_id, amount, payment_date)
-  VALUES (DEFAULT, new.customer_id, new.staff_id, new.rental_id, new.amount, new.payment_date);
+--- CREATE RULE payment_insert_p2017_02 AS
+---     ON INSERT TO payment
+---    WHERE ((new.payment_date >= '2017-02-01 00:00:00'::timestamp without time zone) AND (new.payment_date < '2017-03-01 00:00:00'::timestamp without time zone)) DO INSTEAD  INSERT INTO payment_p2017_02 (payment_id, customer_id, staff_id, rental_id, amount, payment_date)
+---   VALUES (DEFAULT, new.customer_id, new.staff_id, new.rental_id, new.amount, new.payment_date);
 
 
 --
 -- Name: payment payment_insert_p2017_03; Type: RULE; Schema: public; Owner: postgres
 --
 
-CREATE RULE payment_insert_p2017_03 AS
-    ON INSERT TO payment
-   WHERE ((new.payment_date >= '2017-03-01 00:00:00'::timestamp without time zone) AND (new.payment_date < '2017-04-01 00:00:00'::timestamp without time zone)) DO INSTEAD  INSERT INTO payment_p2017_03 (payment_id, customer_id, staff_id, rental_id, amount, payment_date)
-  VALUES (DEFAULT, new.customer_id, new.staff_id, new.rental_id, new.amount, new.payment_date);
+--- CREATE RULE payment_insert_p2017_03 AS
+---     ON INSERT TO payment
+---    WHERE ((new.payment_date >= '2017-03-01 00:00:00'::timestamp without time zone) AND (new.payment_date < '2017-04-01 00:00:00'::timestamp without time zone)) DO INSTEAD  INSERT INTO payment_p2017_03 (payment_id, customer_id, staff_id, rental_id, amount, payment_date)
+---   VALUES (DEFAULT, new.customer_id, new.staff_id, new.rental_id, new.amount, new.payment_date);
 
 
 --
 -- Name: payment payment_insert_p2017_04; Type: RULE; Schema: public; Owner: postgres
 --
 
-CREATE RULE payment_insert_p2017_04 AS
-    ON INSERT TO payment
-   WHERE ((new.payment_date >= '2017-04-01 00:00:00'::timestamp without time zone) AND (new.payment_date < '2017-05-01 00:00:00'::timestamp without time zone)) DO INSTEAD  INSERT INTO payment_p2017_04 (payment_id, customer_id, staff_id, rental_id, amount, payment_date)
-  VALUES (DEFAULT, new.customer_id, new.staff_id, new.rental_id, new.amount, new.payment_date);
+--- CREATE RULE payment_insert_p2017_04 AS
+---     ON INSERT TO payment
+---    WHERE ((new.payment_date >= '2017-04-01 00:00:00'::timestamp without time zone) AND (new.payment_date < '2017-05-01 00:00:00'::timestamp without time zone)) DO INSTEAD  INSERT INTO payment_p2017_04 (payment_id, customer_id, staff_id, rental_id, amount, payment_date)
+---   VALUES (DEFAULT, new.customer_id, new.staff_id, new.rental_id, new.amount, new.payment_date);
 
 
 --
 -- Name: payment payment_insert_p2017_05; Type: RULE; Schema: public; Owner: postgres
 --
 
-CREATE RULE payment_insert_p2017_05 AS
-    ON INSERT TO payment
-   WHERE ((new.payment_date >= '2017-05-01 00:00:00'::timestamp without time zone) AND (new.payment_date < '2017-06-01 00:00:00'::timestamp without time zone)) DO INSTEAD  INSERT INTO payment_p2017_05 (payment_id, customer_id, staff_id, rental_id, amount, payment_date)
-  VALUES (DEFAULT, new.customer_id, new.staff_id, new.rental_id, new.amount, new.payment_date);
+--- CREATE RULE payment_insert_p2017_05 AS
+---     ON INSERT TO payment
+---    WHERE ((new.payment_date >= '2017-05-01 00:00:00'::timestamp without time zone) AND (new.payment_date < '2017-06-01 00:00:00'::timestamp without time zone)) DO INSTEAD  INSERT INTO payment_p2017_05 (payment_id, customer_id, staff_id, rental_id, amount, payment_date)
+---   VALUES (DEFAULT, new.customer_id, new.staff_id, new.rental_id, new.amount, new.payment_date);
 
 
 --
 -- Name: payment payment_insert_p2017_06; Type: RULE; Schema: public; Owner: postgres
 --
 
-CREATE RULE payment_insert_p2017_06 AS
-    ON INSERT TO payment
-   WHERE ((new.payment_date >= '2017-06-01 00:00:00'::timestamp without time zone) AND (new.payment_date < '2017-07-01 00:00:00'::timestamp without time zone)) DO INSTEAD  INSERT INTO payment_p2017_06 (payment_id, customer_id, staff_id, rental_id, amount, payment_date)
-  VALUES (DEFAULT, new.customer_id, new.staff_id, new.rental_id, new.amount, new.payment_date);
+--- CREATE RULE payment_insert_p2017_06 AS
+---     ON INSERT TO payment
+---    WHERE ((new.payment_date >= '2017-06-01 00:00:00'::timestamp without time zone) AND (new.payment_date < '2017-07-01 00:00:00'::timestamp without time zone)) DO INSTEAD  INSERT INTO payment_p2017_06 (payment_id, customer_id, staff_id, rental_id, amount, payment_date)
+---   VALUES (DEFAULT, new.customer_id, new.staff_id, new.rental_id, new.amount, new.payment_date);
 
 
 --

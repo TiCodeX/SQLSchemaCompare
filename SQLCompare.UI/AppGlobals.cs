@@ -1,4 +1,9 @@
-﻿namespace SQLCompare.UI
+﻿using System;
+using System.IO;
+using SQLCompare.Core.Interfaces;
+using SQLCompare.Services;
+
+namespace SQLCompare.UI
 {
     /// <summary>
     /// Global configuration of the application

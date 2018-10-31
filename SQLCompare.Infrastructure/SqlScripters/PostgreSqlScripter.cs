@@ -27,6 +27,12 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptCreateTable(ABaseDbTable table, ABaseDbTable referenceTable = null)
         {
+            var tablePostgreSql = table as PostgreSqlTable;
+            if (tablePostgreSql == null)
+            {
+                throw new ArgumentNullException(nameof(table));
+            }
+
             var ncol = table.Columns.Count;
             var columns = this.GetSortedTableColumns(table, referenceTable);
 
@@ -40,14 +46,23 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 sb.AppendLine(++i == ncol ? string.Empty : ",");
             }
 
-            sb.AppendLine(");");
+            sb.Append(")");
+            if (!string.IsNullOrWhiteSpace(tablePostgreSql.InheritedTableName))
+            {
+                sb.AppendLine();
+                sb.Append($"INHERITS ({this.ScriptHelper.ScriptObjectName(tablePostgreSql.InheritedTableSchema, tablePostgreSql.InheritedTableName)})");
+            }
+
+            sb.AppendLine(";");
             return sb.ToString();
         }
 
         /// <inheritdoc/>
         protected override string ScriptDropTable(ABaseDbTable table)
         {
-            throw new NotImplementedException();
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP TABLE {this.ScriptHelper.ScriptObjectName(table)};");
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -58,10 +73,10 @@ namespace SQLCompare.Infrastructure.SqlScripters
             foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = (PostgreSqlIndex)keys.First();
-                var columnList = keys.OrderBy(x => ((PostgreSqlIndex)x).OrdinalPosition).Select(x => $"\"{((PostgreSqlIndex)x).ColumnName}\"");
+                var columnList = keys.OrderBy(x => ((PostgreSqlIndex)x).OrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT \"{key.Name}\" PRIMARY KEY ({string.Join(",", columnList)});");
+                sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} PRIMARY KEY ({string.Join(",", columnList)});");
                 sb.AppendLine();
             }
 
@@ -71,7 +86,16 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterTableDropPrimaryKeys(ABaseDbTable table)
         {
-            throw new NotImplementedException();
+            var sb = new StringBuilder();
+
+            // GroupBy because there might be multiple columns with the same key
+            foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
+            {
+                var key = keys.First();
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)};");
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -79,14 +103,15 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
+            // GroupBy because there might be multiple columns with the same key
             foreach (var keys in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = (PostgreSqlForeignKey)keys.First();
-                var columnList = keys.OrderBy(x => ((PostgreSqlForeignKey)x).OrdinalPosition).Select(x => $"\"{((PostgreSqlForeignKey)x).ColumnName}\"");
-                var referencedColumnList = keys.OrderBy(x => ((PostgreSqlForeignKey)x).OrdinalPosition).Select(x => $"\"{((PostgreSqlForeignKey)x).ReferencedColumnName}\"");
+                var columnList = keys.OrderBy(x => ((PostgreSqlForeignKey)x).OrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}");
+                var referencedColumnList = keys.OrderBy(x => ((PostgreSqlForeignKey)x).OrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ReferencedColumnName)}");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT \"{key.Name}\" FOREIGN KEY ({string.Join(",", columnList)})");
+                sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} FOREIGN KEY ({string.Join(",", columnList)})");
                 sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)}) {PostgreSqlScriptHelper.ScriptForeignKeyMatchOption(key.MatchOption)}");
                 sb.AppendLine($"ON DELETE {key.DeleteRule}");
                 sb.AppendLine($"ON UPDATE {key.UpdateRule}");
@@ -104,13 +129,29 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterTableDropForeignKeys(ABaseDbTable table)
         {
-            throw new NotImplementedException();
+            var sb = new StringBuilder();
+
+            // GroupBy because there might be multiple columns with the same key
+            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)};");
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
         protected override string ScriptAlterTableDropReferencingForeignKeys(ABaseDbTable table)
         {
-            throw new NotImplementedException();
+            var sb = new StringBuilder();
+
+            // GroupBy because there might be multiple columns with the same key
+            foreach (var key in table.ReferencingForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)};");
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -121,7 +162,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             {
                 var key = keys.First();
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT \"{key.Name}\" {key.Definition};");
+                sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} {key.Definition};");
                 sb.AppendLine();
             }
 
@@ -131,7 +172,15 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterTableDropConstraints(ABaseDbTable table)
         {
-            throw new NotImplementedException();
+            var sb = new StringBuilder();
+
+            // GroupBy because there might be multiple columns with the same key
+            foreach (var key in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)};");
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -145,8 +194,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
 
                 // If there is a column with descending order, specify the order on all columns
                 var scriptOrder = indexGroup.Any(x => x.IsDescending);
-                var columnList = indexGroup.OrderBy(x => x.OrdinalPosition).Select(x =>
-                    scriptOrder ? $"\"{x.ColumnName}\" {(x.IsDescending ? "DESC" : "ASC")}" : $"\"{x.ColumnName}\"");
+                var columnList = indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => scriptOrder ?
+                    $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)} {(x.IsDescending ? "DESC" : "ASC")}" :
+                    $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}");
 
                 sb.Append("CREATE ");
                 if (index.IsUnique)
@@ -190,7 +240,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
             {
                 var index = indexGroup.First();
 
-                sb.AppendLine($"DROP INDEX {index.Name};");
+                sb.AppendLine($"DROP INDEX {this.ScriptHelper.ScriptObjectName(index.Name)};");
             }
 
             return sb.ToString();
@@ -331,7 +381,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptDropTrigger(ABaseDbTrigger trigger)
         {
-            return "TODO: Drop Trigger Script";
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP TRIGGER {this.ScriptHelper.ScriptObjectName(trigger.Name)} ON {this.ScriptHelper.ScriptObjectName(trigger.TableSchema, trigger.TableName)};");
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -490,6 +542,60 @@ namespace SQLCompare.Infrastructure.SqlScripters
             sb.AppendLine(this.ScriptDropType(targetType));
             sb.AppendLine(this.ScriptCreateType(sourceType, dataTypes));
             return sb.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<ABaseDbTable> GetSortedTables(List<ABaseDbTable> tables, bool dropOrder)
+        {
+            var tablesPostgreSql = tables.Cast<PostgreSqlTable>().OrderBy(x => x.Schema).ThenBy(x => x.Name).ToList();
+
+            var sortedTables = new List<PostgreSqlTable>();
+            foreach (var table in tablesPostgreSql)
+            {
+                if (string.IsNullOrWhiteSpace(table.InheritedTableName))
+                {
+                    if (!sortedTables.Contains(table))
+                    {
+                        sortedTables.Add(table);
+                    }
+                }
+                else
+                {
+                    List<PostgreSqlTable> GetInheritedTables(PostgreSqlTable t)
+                    {
+                        var inheritedTable = tablesPostgreSql.FirstOrDefault(x => x.Schema == t.InheritedTableSchema && x.Name == t.InheritedTableName);
+                        if (inheritedTable == null)
+                        {
+                            throw new KeyNotFoundException($"Unable to find inherited table {this.ScriptHelper.ScriptObjectName(t.InheritedTableSchema, t.InheritedTableName)}");
+                        }
+
+                        var inheritedTables = new List<PostgreSqlTable>();
+                        if (!sortedTables.Contains(inheritedTable))
+                        {
+                            if (string.IsNullOrWhiteSpace(inheritedTable.InheritedTableName))
+                            {
+                                inheritedTables.Add(inheritedTable);
+                            }
+                            else
+                            {
+                                inheritedTables.AddRange(GetInheritedTables(inheritedTable).FindAll(x => !sortedTables.Contains(x)));
+                            }
+                        }
+
+                        inheritedTables.Add(t);
+                        return inheritedTables;
+                    }
+
+                    sortedTables.AddRange(GetInheritedTables(table).FindAll(x => !sortedTables.Contains(x)));
+                }
+            }
+
+            if (dropOrder)
+            {
+                sortedTables.Reverse();
+            }
+
+            return sortedTables;
         }
 
         /// <inheritdoc/>

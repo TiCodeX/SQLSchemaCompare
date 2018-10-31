@@ -115,10 +115,12 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       tc.TABLE_SCHEMA as 'TableSchema',");
             query.AppendLine("       tc.TABLE_NAME as 'TableName',");
             query.AppendLine("       col.name as 'ColumnName',");
+            query.AppendLine("       fkc.constraint_column_id as 'OrdinalPosition',");
             query.AppendLine("       tc.CONSTRAINT_TYPE as 'ConstraintType',");
             query.AppendLine("       reftb.name as 'ReferencedTableName',");
             query.AppendLine("       refs.name as 'ReferencedTableSchema',");
             query.AppendLine("       refcol.name as 'ReferencedColumnName',");
+            query.AppendLine("       fkc.referenced_column_id as 'ReferencedOrdinalPosition',");
             query.AppendLine("       fk.delete_referential_action as 'DeleteReferentialAction',");
             query.AppendLine("       fk.update_referential_action as 'UpdateReferentialAction',");
             query.AppendLine("       fk.is_disabled as 'Disabled'");

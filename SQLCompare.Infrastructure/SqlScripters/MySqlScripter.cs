@@ -75,13 +75,15 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterTableAddPrimaryKeys(ABaseDbTable table)
         {
             var sb = new StringBuilder();
+
+            // GroupBy because there might be multiple columns with the same key
             foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = (MySqlIndex)keys.First();
                 var columnList = keys.OrderBy(x => ((MySqlIndex)x).OrdinalPosition).ToList();
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT `{key.Name}` PRIMARY KEY ({string.Join(",", columnList.Select(x => $"`{((MySqlIndex)x).ColumnName}`"))});");
+                sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} PRIMARY KEY ({string.Join(",", columnList.Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}"))});");
                 foreach (var colConstraint in columnList)
                 {
                     if (table.Columns.FirstOrDefault(x => x.Name == colConstraint.ColumnName) is MySqlColumn col &&
@@ -111,14 +113,15 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
+            // GroupBy because there might be multiple columns with the same key
             foreach (var keys in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
             {
                 var key = (MySqlForeignKey)keys.First();
-                var columnList = keys.OrderBy(x => ((MySqlForeignKey)x).OrdinalPosition).Select(x => $"`{((MySqlForeignKey)x).ColumnName}`");
-                var referencedColumnList = keys.OrderBy(x => ((MySqlForeignKey)x).OrdinalPosition).Select(x => $"`{((MySqlForeignKey)x).ReferencedColumnName}`");
+                var columnList = keys.OrderBy(x => ((MySqlForeignKey)x).OrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}");
+                var referencedColumnList = keys.OrderBy(x => ((MySqlForeignKey)x).OrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ReferencedColumnName)}");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT `{key.Name}` FOREIGN KEY ({string.Join(",", columnList)})");
+                sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} FOREIGN KEY ({string.Join(",", columnList)})");
                 sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)})");
                 sb.AppendLine($"ON DELETE {key.DeleteRule}");
                 sb.AppendLine($"ON UPDATE {key.UpdateRule};");
@@ -133,7 +136,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+            // GroupBy because there might be multiple columns with the same key
+            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP FOREIGN KEY {this.ScriptHelper.ScriptObjectName(key.Name)};");
             }
@@ -146,7 +150,8 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var key in table.ReferencingForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+            // GroupBy because there might be multiple columns with the same key
+            foreach (var key in table.ReferencingForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableName)} DROP FOREIGN KEY {this.ScriptHelper.ScriptObjectName(key.Name)};");
             }
@@ -171,14 +176,16 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
+            // GroupBy because there might be multiple columns with the same index
             foreach (var indexGroup in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>().GroupBy(x => x.Name))
             {
                 var index = indexGroup.First();
 
                 // If there is a column with descending order, specify the order on all columns
                 var scriptOrder = indexGroup.Any(x => x.IsDescending);
-                var columnList = indexGroup.OrderBy(x => x.OrdinalPosition).Select(x =>
-                    scriptOrder ? $"`{x.ColumnName}` {(x.IsDescending ? "DESC" : "ASC")}" : $"`{x.ColumnName}`");
+                var columnList = indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => scriptOrder ?
+                    $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)} {(x.IsDescending ? "DESC" : "ASC")}" :
+                    $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}");
 
                 sb.Append("CREATE ");
                 if (index.IndexType == "FULLTEXT")
@@ -214,10 +221,9 @@ namespace SQLCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var indexGroup in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>().GroupBy(x => x.Name))
+            // GroupBy because there might be multiple columns with the same index
+            foreach (var index in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>().GroupBy(x => x.Name).Select(x => x.First()))
             {
-                var index = indexGroup.First();
-
                 sb.AppendLine($"DROP INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(dbObject)};");
             }
 
@@ -362,6 +368,13 @@ namespace SQLCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterType(ABaseDbDataType sourceType, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             throw new NotSupportedException("MySQL doesn't support user defined types");
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<ABaseDbTable> GetSortedTables(List<ABaseDbTable> tables, bool dropOrder)
+        {
+            // Parameter dropOrder ignores because we want to drop the tables alphabetically
+            return tables.OrderBy(x => x.Schema).ThenBy(x => x.Name);
         }
 
         /// <inheritdoc/>

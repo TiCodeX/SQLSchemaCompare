@@ -37,7 +37,7 @@ namespace SQLCompare.Infrastructure.DatabaseProviders
                 case PostgreSqlDatabaseProviderOptions postgreSqlOptions:
                     return new PostgreSqlDatabaseProvider(this.loggerFactory, this.cipherService, postgreSqlOptions);
                 default:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("Unknown Database Type");
             }
         }
     }

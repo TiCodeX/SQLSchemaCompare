@@ -37,7 +37,7 @@ namespace SQLCompare.Infrastructure.SqlScripters
                 case PostgreSqlDb _:
                     return new PostgreSqlScripter(this.loggerFactory.CreateLogger(nameof(PostgreSqlScripter)), options);
                 default:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("Unknown Database Type");
             }
         }
     }

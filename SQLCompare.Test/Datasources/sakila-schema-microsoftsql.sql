@@ -246,6 +246,18 @@ GO
 GO
 
 --
+-- Table structure for table film_actor_description
+--
+
+CREATE TABLE film_actor_description (
+  film_actor_description_id INT NOT NULL,
+  actor_id INT NOT NULL,
+  film_id  INT NOT NULL,
+  PRIMARY KEY NONCLUSTERED (film_actor_description_id),
+  CONSTRAINT fk_film_actor_description_film_actor FOREIGN KEY (actor_id,film_id) REFERENCES film_actor (actor_id,film_id) ON DELETE NO ACTION ON UPDATE CASCADE
+)
+
+--
 -- Table structure for table film_category
 --
 

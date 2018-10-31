@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Services;
-
-namespace SQLCompare.UI
+﻿namespace SQLCompare.UI
 {
     /// <summary>
     /// Global configuration of the application
@@ -13,7 +8,7 @@ namespace SQLCompare.UI
 #if DEBUG
         private const string MyAccountBaseEndpoint = "https://localhost:44349";
 #else
-        private const string MyAccountBaseEndpoint = "https://myaccount-ticodex.azurewebsites.net";
+        private const string MyAccountBaseEndpoint = "https://myaccount.ticodex.com";
 #endif
 
         /// <inheritdoc/>

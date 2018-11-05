@@ -285,12 +285,12 @@ __pycache__/
 *.xsd.cs
 
 # Javascript generated files
-SQLCompare/app.js
-SQLCompare/app.js.map
-SQLCompare/app.min.js
-SQLCompare.UI/wwwroot/js/**/*.js
+SQLSchemaCompare/app.js
+SQLSchemaCompare/app.js.map
+SQLSchemaCompare/app.min.js
+SQLSchemaCompare.UI/wwwroot/js/**/*.js
 # Css generated files
-SQLCompare.UI/wwwroot/css/**/*.css
-# Installer
+SQLSchemaCompare.UI/wwwroot/css/**/*.css
+# Installer folders
 .publish
 installer

@@ -5,6 +5,7 @@
     <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
     <NeutralLanguage>en</NeutralLanguage>
+    <AssemblyName>TiCodeX.SQLSchemaCompare.Services</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -29,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SQLCompare.Core\SQLCompare.Core.csproj" />
+    <ProjectReference Include="..\SQLSchemaCompare.Core\SQLSchemaCompare.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

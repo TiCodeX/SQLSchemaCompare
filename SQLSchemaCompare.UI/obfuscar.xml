@@ -11,19 +11,19 @@
     <Var name="RegenerateDebugInfo" value="true" />
     <!--<Var name="KeyFile" value=".\test.snk" />-->
 
-    <Module file="$(InPath)\SQLCompare.UI.dll">
+    <Module file="$(InPath)\TiCodeX.SQLSchemaCompare.UI.dll">
         <SkipNamespace name="SQLCompare.UI.Enums*" />
         <SkipNamespace name="SQLCompare.UI.Models*" />
         <SkipNamespace name="SQLCompare.UI.Pages*" />
     </Module>
-    <Module file="$(InPath)\SQLCompare.UI.Views.dll">
+    <Module file="$(InPath)\TiCodeX.SQLSchemaCompare.UI.Views.dll">
         <SkipNamespace name="SQLCompare.UI.Pages*" />
     </Module>
-    <Module file="$(InPath)\SQLCompare.Services.dll">
+    <Module file="$(InPath)\TiCodeX.SQLSchemaCompare.Services.dll">
         <SkipType name="SQLCompare.Services.Localization" skipFields="true" />
     </Module>
-    <Module file="$(InPath)\SQLCompare.Infrastructure.dll" />
-    <Module file="$(InPath)\SQLCompare.Core.dll">
+    <Module file="$(InPath)\TiCodeX.SQLSchemaCompare.Infrastructure.dll" />
+    <Module file="$(InPath)\TiCodeX.SQLSchemaCompare.Core.dll">
         <SkipNamespace name="SQLCompare.Core.Entities*" />
         <SkipNamespace name="SQLCompare.Core.Enums*" />
     </Module>

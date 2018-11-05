@@ -1,15 +1,14 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLCompare.UI", "SQLCompare.UI\SQLCompare.UI.csproj", "{E204594D-3E7E-4EBA-8441-87560A5C02C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLSchemaCompare.UI", "SQLSchemaCompare.UI\SQLSchemaCompare.UI.csproj", "{E204594D-3E7E-4EBA-8441-87560A5C02C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLCompare.Core", "SQLCompare.Core\SQLCompare.Core.csproj", "{BDC43A74-7059-42A1-8928-B5EFE8350BD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLSchemaCompare.Core", "SQLSchemaCompare.Core\SQLSchemaCompare.Core.csproj", "{BDC43A74-7059-42A1-8928-B5EFE8350BD0}"
 EndProject
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "SQLCompare", "SQLCompare\SQLCompare.njsproj", "{C84DD647-A041-40AA-8198-C57CD25D7A2C}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "SQLSchemaCompare", "SQLSchemaCompare\SQLSchemaCompare.njsproj", "{C84DD647-A041-40AA-8198-C57CD25D7A2C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLCompare.Test", "SQLCompare.Test\SQLCompare.Test.csproj", "{0A716609-3C39-4B71-8B39-2CF59704F9D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLSchemaCompare.Test", "SQLSchemaCompare.Test\SQLSchemaCompare.Test.csproj", "{0A716609-3C39-4B71-8B39-2CF59704F9D8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB87FDBE-CC7F-4AD6-BD06-1425586DEEDD}"
 	ProjectSection(SolutionItems) = preProject
@@ -36,9 +35,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 - UI", "04 - UI", "{C87A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 - Test", "05 - Test", "{052FF94E-0C3E-4984-A4AC-B49F9F96C79B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLCompare.Services", "SQLCompare.Services\SQLCompare.Services.csproj", "{436CFDBA-5470-492A-BF73-CAC81FFB708E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLSchemaCompare.Services", "SQLSchemaCompare.Services\SQLSchemaCompare.Services.csproj", "{436CFDBA-5470-492A-BF73-CAC81FFB708E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLCompare.Infrastructure", "SQLCompare.Infrastructure\SQLCompare.Infrastructure.csproj", "{327DD284-6D4E-4299-9570-13DD7608DE50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLSchemaCompare.Infrastructure", "SQLSchemaCompare.Infrastructure\SQLSchemaCompare.Infrastructure.csproj", "{327DD284-6D4E-4299-9570-13DD7608DE50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

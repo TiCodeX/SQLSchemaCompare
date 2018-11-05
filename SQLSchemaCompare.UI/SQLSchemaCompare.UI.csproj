@@ -18,6 +18,8 @@
     <PublishDir>..\.publish</PublishDir>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
+    <AssemblyName>TiCodeX.SQLSchemaCompare.UI</AssemblyName>
+    <RootNamespace>SQLSchemaCompare.UI</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -103,9 +105,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SQLCompare.Core\SQLCompare.Core.csproj" />
-    <ProjectReference Include="..\SQLCompare.Infrastructure\SQLCompare.Infrastructure.csproj" />
-    <ProjectReference Include="..\SQLCompare.Services\SQLCompare.Services.csproj" />
+    <ProjectReference Include="..\SQLSchemaCompare.Core\SQLSchemaCompare.Core.csproj" />
+    <ProjectReference Include="..\SQLSchemaCompare.Infrastructure\SQLSchemaCompare.Infrastructure.csproj" />
+    <ProjectReference Include="..\SQLSchemaCompare.Services\SQLSchemaCompare.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

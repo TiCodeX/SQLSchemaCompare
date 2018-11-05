@@ -3,13 +3,13 @@ changedFiles=$(git diff --cached --name-only)
 
 for file in $changedFiles; do
     [ ! -f "$file" ] && continue;
-    [ -z "${file##"SQLCompare.UI/wwwroot/lib/"*}" ] && continue;
-    [ -z "${file##"SQLCompare.UI/wwwroot/img/"*}" ] && continue;
-    [ -z "${file##"SQLCompare.UI/wwwroot/font/"*}" ] && continue;
-    [ -z "${file##"SQLCompare/package"*".json"}" ] && continue;
-    [ -z "${file##"SQLCompare/img/"*}" ] && continue;
-    [ -z "${file##"SQLCompare/font/"*}" ] && continue;
-    [ -z "${file##"SQLCompare/build/"*}" ] && continue;
+    [ -z "${file##"SQLSchemaCompare.UI/wwwroot/lib/"*}" ] && continue;
+    [ -z "${file##"SQLSchemaCompare.UI/wwwroot/img/"*}" ] && continue;
+    [ -z "${file##"SQLSchemaCompare.UI/wwwroot/font/"*}" ] && continue;
+    [ -z "${file##"SQLSchemaCompare/package"*".json"}" ] && continue;
+    [ -z "${file##"SQLSchemaCompare/img/"*}" ] && continue;
+    [ -z "${file##"SQLSchemaCompare/font/"*}" ] && continue;
+    [ -z "${file##"SQLSchemaCompare/build/"*}" ] && continue;
     [ -z "${file##*".xlsx"}" ] && continue;
     [ -z "${file##*".pfx"}" ] && continue;
     [ -z "${file##*".p12"}" ] && continue;

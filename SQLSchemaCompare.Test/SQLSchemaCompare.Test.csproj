@@ -5,6 +5,7 @@
     <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
     <IsPackable>false</IsPackable>
+    <AssemblyName>TiCodeX.SQLSchemaCompare.Test</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -39,9 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SQLCompare.Core\SQLCompare.Core.csproj" />
-    <ProjectReference Include="..\SQLCompare.Infrastructure\SQLCompare.Infrastructure.csproj" />
-    <ProjectReference Include="..\SQLCompare.UI\SQLCompare.UI.csproj" />
+    <ProjectReference Include="..\SQLSchemaCompare.Core\SQLSchemaCompare.Core.csproj" />
+    <ProjectReference Include="..\SQLSchemaCompare.Infrastructure\SQLSchemaCompare.Infrastructure.csproj" />
+    <ProjectReference Include="..\SQLSchemaCompare.UI\SQLSchemaCompare.UI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

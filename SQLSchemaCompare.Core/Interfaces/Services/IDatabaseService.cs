@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Entities.Database;
-using SQLCompare.Core.Entities.DatabaseProvider;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 
-namespace SQLCompare.Core.Interfaces.Services
+namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Services
 {
     /// <summary>
     /// Defines a class that provides the mechanisms to read information from a database

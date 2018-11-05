@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Entities.Database.MicrosoftSql
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql
 {
     /// <summary>
     /// Specific MicrosoftSql sequence definition

@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Interfaces
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
 {
     /// <summary>
     /// Defines a class that provides global constants

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using SQLCompare.Core.Entities.Database;
-using SQLCompare.Core.Entities.Database.MicrosoftSql;
-using SQLCompare.Core.Entities.Project;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
 
-namespace SQLCompare.Infrastructure.SqlScripters
+namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
     /// <summary>
     /// Script helper class specific for MicrosoftSql database

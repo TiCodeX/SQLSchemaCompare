@@ -2,10 +2,10 @@
 using System.IO;
 using System.Xml.Serialization;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities.Project;
-using SQLCompare.Core.Interfaces.Repository;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
 
-namespace SQLCompare.Infrastructure.Repository
+namespace TiCodeX.SQLSchemaCompare.Infrastructure.Repository
 {
     /// <summary>
     /// Implementation that provides the mechanism to store and retrieve the project configuration

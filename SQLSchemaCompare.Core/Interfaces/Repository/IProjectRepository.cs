@@ -1,6 +1,6 @@
-﻿using SQLCompare.Core.Entities.Project;
+﻿using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
 
-namespace SQLCompare.Core.Interfaces.Repository
+namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository
 {
     /// <summary>
     /// Defines a class that provides the mechanism to store and retrieve the project configuration

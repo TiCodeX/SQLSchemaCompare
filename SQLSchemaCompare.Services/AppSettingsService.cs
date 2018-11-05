@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Interfaces.Repository;
-using SQLCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
-namespace SQLCompare.Services
+namespace TiCodeX.SQLSchemaCompare.Services
 {
     /// <summary>
     /// Defines the service that handle the application settings

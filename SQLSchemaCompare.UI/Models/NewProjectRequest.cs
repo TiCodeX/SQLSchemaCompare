@@ -1,6 +1,6 @@
-﻿using SQLCompare.Core.Enums;
+﻿using TiCodeX.SQLSchemaCompare.Core.Enums;
 
-namespace SQLCompare.UI.Models
+namespace TiCodeX.SQLSchemaCompare.UI.Models
 {
     /// <summary>
     /// Represent a new project request

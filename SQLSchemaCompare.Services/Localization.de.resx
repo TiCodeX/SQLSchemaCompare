@@ -243,8 +243,8 @@
   <data name="ButtonOpen" xml:space="preserve">
     <value>Öffnen</value>
   </data>
-  <data name="LabelSQLCompareProjectFile" xml:space="preserve">
-    <value>SQL Compare Projekt</value>
+  <data name="LabelSQLSchemaCompareProjectFile" xml:space="preserve">
+    <value>SQL Schema Compare Projekt</value>
   </data>
   <data name="MenuHelp" xml:space="preserve">
     <value>Hilfe</value>

@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SQLCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 
-namespace SQLCompare.UI.Middlewares
+namespace TiCodeX.SQLSchemaCompare.UI.Middlewares
 {
     /// <summary>
     /// Middleware that validate the header of each request

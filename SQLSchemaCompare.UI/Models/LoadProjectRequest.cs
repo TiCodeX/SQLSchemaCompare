@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.UI.Models
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Models
 {
     /// <summary>
     /// Represent a load project request

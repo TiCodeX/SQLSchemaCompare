@@ -1,9 +1,9 @@
 ﻿using System.Xml.Serialization;
-using SQLCompare.Core.Entities.Compare;
-using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Core.Enums;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
+using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
 
-namespace SQLCompare.Core.Entities.Project
+namespace TiCodeX.SQLSchemaCompare.Core.Entities.Project
 {
     /// <summary>
     /// Defines a database comparison project

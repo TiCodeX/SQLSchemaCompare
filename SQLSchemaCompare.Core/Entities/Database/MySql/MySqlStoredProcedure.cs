@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Entities.Database.MySql
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql
 {
     /// <summary>
     /// Specific MySql stored procedure definition

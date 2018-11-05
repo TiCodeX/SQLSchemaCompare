@@ -102,7 +102,7 @@ if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 signtool sign /f %certFile% /p %certPass% /t %timeUrl% /d "%certDesc%" %publishDir%\TiCodeX.SQLSchemaCompare.UI.Views.dll
 signtool sign /as /fd sha256 /f %certFile% /p %certPass% /tr %timeUrl% /d "%certDesc%" %publishDir%\TiCodeX.SQLSchemaCompare.UI.Views.dll
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
-if exist %publishDir%\TiCodeX.SQLCompare.UI.exe (
+if exist %publishDir%\TiCodeX.SQLSchemaCompare.UI.exe (
   signtool sign /f %certFile% /p %certPass% /t %timeUrl% /d "%certDesc%" %publishDir%\TiCodeX.SQLSchemaCompare.UI.exe
   signtool sign /as /fd sha256 /f %certFile% /p %certPass% /tr %timeUrl% /d "%certDesc%" %publishDir%\TiCodeX.SQLSchemaCompare.UI.exe
   if ERRORLEVEL 1 exit /b %ERRORLEVEL%

@@ -1,14 +1,14 @@
 ﻿using System.IO;
 using System.Xml;
 using FluentAssertions;
-using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Core.Entities.Project;
-using SQLCompare.Infrastructure.Repository;
+using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+using TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace SQLCompare.Test.Infrastructure.Repository
+namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
 {
     /// <summary>
     /// Test class for the ProjectRepository

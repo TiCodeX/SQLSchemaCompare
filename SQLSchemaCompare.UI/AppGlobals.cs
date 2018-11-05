@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Services;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Services;
 
-namespace SQLCompare.UI
+namespace TiCodeX.SQLSchemaCompare.UI
 {
     /// <summary>
     /// Global configuration of the application
@@ -20,7 +20,7 @@ namespace SQLCompare.UI
         public string CompanyName => "TiCodeX SA";
 
         /// <inheritdoc/>
-        public string ProductName => "SQL Compare";
+        public string ProductName => "SQL Schema Compare";
 
         /// <inheritdoc/>
         public bool IsDevelopment
@@ -41,8 +41,8 @@ namespace SQLCompare.UI
         /// <inheritdoc/>
         public string AppSettingsFullFilename => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-            ".SQLCompare",
-            "SQLCompare.conf");
+            ".SQLSchemaCompare",
+            "SQLSchemaCompare.conf");
 
         /// <inheritdoc/>
         public string LoggerLayout =>
@@ -51,9 +51,9 @@ namespace SQLCompare.UI
         /// <inheritdoc/>
         public string LoggerFile => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-            ".SQLCompare",
+            ".SQLSchemaCompare",
             "log",
-            @"SQLCompare-${shortdate}-service.log");
+            @"SQLSchemaCompare-${shortdate}-service.log");
 
         /// <inheritdoc/>
         public int LoggerMaxArchiveFiles => 9;

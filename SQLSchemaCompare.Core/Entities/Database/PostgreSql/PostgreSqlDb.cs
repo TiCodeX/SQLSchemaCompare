@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Entities.Database.PostgreSql
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql
 {
     /// <summary>
     /// Defines a PostgreSqlDb database

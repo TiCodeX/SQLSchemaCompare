@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
-namespace SQLCompare.Infrastructure.DatabaseProviders
+namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 {
     /// <summary>
     /// Implementation that creates a database provider

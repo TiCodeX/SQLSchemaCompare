@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Entities.Database;
-using SQLCompare.Core.Entities.Database.PostgreSql;
-using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Core.Interfaces.Services;
-using SQLCompare.Infrastructure.EntityFramework;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
 
-namespace SQLCompare.Infrastructure.DatabaseProviders
+namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 {
     /// <summary>
     /// Retrieves various information from a PostgreSQL Server

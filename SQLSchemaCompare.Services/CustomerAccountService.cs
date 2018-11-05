@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using SQLCompare.Core.Entities.Api;
-using SQLCompare.Core.Entities.Exceptions;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
-namespace SQLCompare.Services
+namespace TiCodeX.SQLSchemaCompare.Services
 {
     /// <summary>
     /// Defines the service that handles customer account requests

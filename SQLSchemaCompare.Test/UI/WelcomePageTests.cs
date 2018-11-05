@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using SQLCompare.UI.WebServer;
+using TiCodeX.SQLSchemaCompare.UI.WebServer;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace SQLCompare.Test.UI
+namespace TiCodeX.SQLSchemaCompare.Test.UI
 {
     /// <summary>
     /// AAAAA
@@ -48,7 +48,7 @@ namespace SQLCompare.Test.UI
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            content.Should().Contain("Welcome to TiCodeX SA SQL Compare");
+            content.Should().Contain("Welcome to TiCodeX SA SQL Schema Compare");
         }
     }
 }

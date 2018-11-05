@@ -1,6 +1,6 @@
 {
-    "name": "sqlcompare",
-    "version": "2018.10.3",
+    "name": "sqlschemacompare",
+    "version": "2018.11.1",
     "description": "The Swiss Army Knife of Database Schema Comparison for Microsoft SQL, mySQL and PostgreSQL which runs on Windows, Linux and macOS systems.",
     "main": "app.min.js",
     "homepage": "https://www.ticodex.com",
@@ -10,13 +10,13 @@
     },
     "private": true,
     "build": {
-        "appId": "ch.ticodex.sqlcompare",
-        "productName": "SQL Compare",
+        "appId": "ch.ticodex.sqlschemacompare",
+        "productName": "SQL Schema Compare",
         "copyright": "Copyright @ 2018 TiCodeX SA",
         "remoteBuild": false,
         "win": {
             "target": "nsis",
-            "artifactName": "SQLCompare-${version}.${ext}",
+            "artifactName": "SQLSchemaCompare-${version}.${ext}",
             "publish": {
                 "provider": "generic",
                 "url": ""
@@ -39,8 +39,8 @@
             ],
             "category": "Utility",
             "synopsis": "The Swiss Army Knife of Database Schema Comparison",
-            "executableName": "SQLCompare",
-            "artifactName": "SQLCompare-${version}.${ext}",
+            "executableName": "SQLSchemaCompare",
+            "artifactName": "SQLSchemaCompare-${version}.${ext}",
             "publish": {
                 "provider": "generic",
                 "url": ""
@@ -49,7 +49,7 @@
         "mac": {
             "target": "default",
             "category": "public.app-category.productivity",
-            "artifactName": "SQLCompare-${version}.${ext}",
+            "artifactName": "SQLSchemaCompare-${version}.${ext}",
             "publish": {
                 "provider": "generic",
                 "url": ""

@@ -2,15 +2,15 @@
 using System.IO;
 using System.Text;
 using FluentAssertions;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Enums;
-using SQLCompare.Infrastructure.SqlScripters;
-using SQLCompare.Services;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
+using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
+using TiCodeX.SQLSchemaCompare.Services;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace SQLCompare.Test.Integration
+namespace TiCodeX.SQLSchemaCompare.Test.Integration
 {
     /// <summary>
     /// Integration tests for MySQL
@@ -46,7 +46,7 @@ namespace SQLCompare.Test.Integration
             var db = mysqldbp.GetDatabase(new TaskInfo("test"));
 
             var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
-            var scripter = scripterFactory.Create(db, new SQLCompare.Core.Entities.Project.ProjectOptions());
+            var scripter = scripterFactory.Create(db, new TiCodeX.SQLSchemaCompare.Core.Entities.Project.ProjectOptions());
             var fullScript = scripter.GenerateFullCreateScript(db);
 
             if (this.exportGeneratedFullScript)

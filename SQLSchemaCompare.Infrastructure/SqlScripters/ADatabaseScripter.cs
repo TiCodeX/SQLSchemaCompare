@@ -4,13 +4,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities.Compare;
-using SQLCompare.Core.Entities.Database;
-using SQLCompare.Core.Entities.Project;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Services;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Services;
 
-namespace SQLCompare.Infrastructure.SqlScripters
+namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
     /// <summary>
     /// Implement base database scripting functionality

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Entities.Api;
-using SQLCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
-namespace SQLCompare.UI.Pages
+namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
     /// <summary>
     /// PageModel of the TaskStatus page

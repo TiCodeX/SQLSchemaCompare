@@ -143,7 +143,7 @@ class Project {
                     buttonLabel: Localization.Get("ButtonSave"),
                     filters: [
                         {
-                            name: Localization.Get("LabelSQLCompareProjectFile"),
+                            name: Localization.Get("LabelSQLSchemaCompareProjectFile"),
                             extensions: [this.projectFileExtension],
                         },
                     ],
@@ -181,7 +181,7 @@ class Project {
                     buttonLabel: Localization.Get("ButtonOpen"),
                     filters: [
                         {
-                            name: Localization.Get("LabelSQLCompareProjectFile"),
+                            name: Localization.Get("LabelSQLSchemaCompareProjectFile"),
                             extensions: [this.projectFileExtension],
                         },
                     ],

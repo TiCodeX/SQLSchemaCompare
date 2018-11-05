@@ -3,13 +3,13 @@ using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using FluentAssertions;
-using SQLCompare.Core.Enums;
-using SQLCompare.Services;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
+using TiCodeX.SQLSchemaCompare.Services;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace SQLCompare.Test.Services
+namespace TiCodeX.SQLSchemaCompare.Test.Services
 {
     /// <summary>
     /// Test class for the LocalizationService
@@ -126,7 +126,7 @@ namespace SQLCompare.Test.Services
 
             // Find the root path of the solution
             var solutionDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            while (!File.Exists(Path.Combine(solutionDir, "SQLCompare.sln")))
+            while (!File.Exists(Path.Combine(solutionDir, "SQLSchemaCompare.sln")))
             {
                 var parentDir = Directory.GetParent(solutionDir);
                 parentDir.Should().NotBeNull();
@@ -134,7 +134,7 @@ namespace SQLCompare.Test.Services
             }
 
             var expr = new Regex("Localization\\.Get\\(\\\"(?<token>\\w+)\\\"\\)");
-            foreach (var file in Directory.EnumerateFiles(Path.Combine(solutionDir, "SQLCompare.UI", "wwwroot", "js"), "*.ts", SearchOption.AllDirectories))
+            foreach (var file in Directory.EnumerateFiles(Path.Combine(solutionDir, "SQLSchemaCompare.UI", "wwwroot", "js"), "*.ts", SearchOption.AllDirectories))
             {
                 var content = File.ReadAllText(file);
                 foreach (Match x in expr.Matches(content))

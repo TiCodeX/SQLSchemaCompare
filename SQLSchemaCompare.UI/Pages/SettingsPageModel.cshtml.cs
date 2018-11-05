@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Entities.Api;
-using SQLCompare.Core.Entities.Project;
-using SQLCompare.Core.Interfaces.Services;
-using SQLCompare.UI.WebServer;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.UI.WebServer;
 
-namespace SQLCompare.UI.Pages
+namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
     /// <summary>
     /// PageModel of the settings page

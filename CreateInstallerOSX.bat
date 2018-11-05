@@ -2,11 +2,11 @@
 
 set "target=osx-x64"
 set "publishDir=%~dp0\.publish"
-set "electronDir=%~dp0\SQLCompare"
+set "electronDir=%~dp0\SQLSchemaCompare"
 set "remoteIp=192.168.247.128"
 set "remoteUser=ticodex"
 set "remotePass=test1234"
-set "remoteDir=/private/tmp/sqlcompare-build"
+set "remoteDir=/private/tmp/sqlschemacompare-build"
 
 call CreateInstallerCommon.bat %target%
 
@@ -49,9 +49,9 @@ echo.
 REM Create installer
 plink -pw %remotePass% %remoteUser%@%remoteIp% (^
    export PATH=/usr/local/bin:$PATH;^
-   cd %remoteDir%/SQLCompare;^
+   cd %remoteDir%/SQLSchemaCompare;^
    chmod -R a+rwx ./node_modules;^
-   chmod +x ../.publish/SQLCompare.UI;^
+   chmod +x ../.publish/TiCodeX.SQLSchemaCompare.UI;^
    export CSC_LINK=%remoteDir%/%certFile%;^
    export CSC_KEY_PASSWORD=%certPass%;^
    npm run dist-%target%;^

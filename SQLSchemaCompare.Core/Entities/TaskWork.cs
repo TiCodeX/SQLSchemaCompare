@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SQLCompare.Core.Entities
+namespace TiCodeX.SQLSchemaCompare.Core.Entities
 {
     /// <summary>
     /// Defines a Task and it's work to do

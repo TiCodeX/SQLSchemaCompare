@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.UI.Middlewares
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Middlewares
 {
     /// <summary>
     /// Configuration options for the RequestValidator middleware

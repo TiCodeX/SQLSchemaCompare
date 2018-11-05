@@ -5,18 +5,18 @@ using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities.Api;
-using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Core.Entities.Project;
-using SQLCompare.Core.Enums;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Core.Interfaces.Services;
-using SQLCompare.Services;
-using SQLCompare.UI.Enums;
-using SQLCompare.UI.Models;
-using SQLCompare.UI.Models.Project;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
+using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Services;
+using TiCodeX.SQLSchemaCompare.UI.Enums;
+using TiCodeX.SQLSchemaCompare.UI.Models;
+using TiCodeX.SQLSchemaCompare.UI.Models.Project;
 
-namespace SQLCompare.UI.Pages.Project
+namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
 {
     /// <summary>
     /// PageModel of the Project page

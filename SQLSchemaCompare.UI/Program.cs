@@ -1,17 +1,17 @@
 ﻿using System;
 using Microsoft.AspNetCore.Hosting;
 using NLog;
-using SQLCompare.UI.WebServer;
+using TiCodeX.SQLSchemaCompare.UI.WebServer;
 
-namespace SQLCompare.UI
+namespace TiCodeX.SQLSchemaCompare.UI
 {
     /// <summary>
-    /// SQLCompare UI application, providing the WebServer
+    /// SQLSchemaCompare UI application, providing the WebServer
     /// </summary>
     public static class Program
     {
         /// <summary>
-        /// Entry point of the SQLCompare UI application
+        /// Entry point of the SQLSchemaCompare UI application
         /// </summary>
         /// <param name="args">The command line arguments</param>
         public static void Main(string[] args)

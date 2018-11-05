@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SQLCompare.Services {
+namespace TiCodeX.SQLSchemaCompare.Services {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace SQLCompare.Services {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SQLCompare.Services.Localization", typeof(Localization).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TiCodeX.SQLSchemaCompare.Services.Localization", typeof(Localization).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -837,11 +837,11 @@ namespace SQLCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SQL Compare Project.
+        ///   Looks up a localized string similar to SQL Schema Compare Project.
         /// </summary>
-        public static string LabelSQLCompareProjectFile {
+        public static string LabelSQLSchemaCompareProjectFile {
             get {
-                return ResourceManager.GetString("LabelSQLCompareProjectFile", resourceCulture);
+                return ResourceManager.GetString("LabelSQLSchemaCompareProjectFile", resourceCulture);
             }
         }
         

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SQLCompare.Core.Entities.Api;
-using SQLCompare.Core.Interfaces.Services;
-using SQLCompare.UI.Enums;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.UI.Enums;
 
-namespace SQLCompare.UI.Pages.Main
+namespace TiCodeX.SQLSchemaCompare.UI.Pages.Main
 {
     /// <summary>
     /// PageModel of the SqlScript page

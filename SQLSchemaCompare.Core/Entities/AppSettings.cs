@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using SQLCompare.Core.Enums;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
 
-namespace SQLCompare.Core.Entities
+namespace TiCodeX.SQLSchemaCompare.Core.Entities
 {
     /// <summary>
     /// User configurable settings of the application

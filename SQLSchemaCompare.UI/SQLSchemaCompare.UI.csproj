@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
+    <AssemblyName>TiCodeX.SQLSchemaCompare.UI</AssemblyName>
+    <RootNamespace>TiCodeX.SQLSchemaCompare.UI</RootNamespace>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
     <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptTarget>ES5</TypeScriptTarget>
@@ -18,8 +19,14 @@
     <PublishDir>..\.publish</PublishDir>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
-    <AssemblyName>TiCodeX.SQLSchemaCompare.UI</AssemblyName>
-    <RootNamespace>SQLSchemaCompare.UI</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

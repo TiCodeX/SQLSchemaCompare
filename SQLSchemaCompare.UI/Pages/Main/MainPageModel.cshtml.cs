@@ -4,11 +4,11 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities.Api;
-using SQLCompare.Core.Entities.Compare;
-using SQLCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
-namespace SQLCompare.UI.Pages.Main
+namespace TiCodeX.SQLSchemaCompare.UI.Pages.Main
 {
     /// <summary>
     /// PageModel of the Main page

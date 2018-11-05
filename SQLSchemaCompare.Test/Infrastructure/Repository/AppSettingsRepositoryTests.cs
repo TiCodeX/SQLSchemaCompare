@@ -1,14 +1,14 @@
 ﻿using System.IO;
 using FluentAssertions;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Enums;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Infrastructure.Repository;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace SQLCompare.Test.Infrastructure.Repository
+namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
 {
     /// <summary>
     /// Test class for the AppSettingsRepository

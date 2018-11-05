@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using SQLCompare.Core.Enums;
-using SQLCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
-namespace SQLCompare.Services
+namespace TiCodeX.SQLSchemaCompare.Services
 {
     /// <summary>
     /// Provides the mechanisms to handle various languages

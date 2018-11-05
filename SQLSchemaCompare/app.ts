@@ -12,28 +12,28 @@ import os = require("os");
 import path = require("path");
 /* tslint:enable:no-require-imports no-implicit-dependencies */
 
-electron.app.setAppUserModelId("ch.ticodex.sqlcompare");
+electron.app.setAppUserModelId("ch.ticodex.sqlschemacompare");
 // Set the productName in the userData path instead of the default application name
-electron.app.setPath("userData", path.join(electron.app.getPath("appData"), "SQL Compare"));
+electron.app.setPath("userData", path.join(electron.app.getPath("appData"), "SQL Schema Compare"));
 
 const isDebug: boolean = process.defaultApp;
 const initialPort: number = 5000;
 const splashUrl: string = `file://${__dirname}/splash.html`;
-const loggerPath: string = path.join(os.homedir(), ".SQLCompare", "log", "SQLCompare");
+const loggerPath: string = path.join(os.homedir(), ".SQLSchemaCompare", "log", "SQLSchemaCompare");
 const loggerPattern: string = "-yyyy-MM-dd-ui.log";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;
-const autoUpdaterUrl: string = "https://download.ticodex.com/sqlcompare";
+const autoUpdaterUrl: string = "https://download.ticodex.com/sqlschemacompare";
 let servicePath: string;
 switch (electronUpdater.getCurrentPlatform()) {
     case "linux":
-        servicePath = path.join(path.dirname(process.execPath), "bin", "SQLCompare.UI");
+        servicePath = path.join(path.dirname(process.execPath), "bin", "TiCodeX.SQLSchemaCompare.UI");
         break;
     case "darwin":
-        servicePath = path.join(path.dirname(path.dirname(process.execPath)), "bin", "SQLCompare.UI");
+        servicePath = path.join(path.dirname(path.dirname(process.execPath)), "bin", "TiCodeX.SQLSchemaCompare.UI");
         break;
     default: // Windows
-        servicePath = path.join(path.dirname(process.execPath), "bin", "SQLCompare.UI.exe");
+        servicePath = path.join(path.dirname(process.execPath), "bin", "TiCodeX.SQLSchemaCompare.UI.exe");
 }
 let serviceUrl: string = "https://127.0.0.1:{port}";
 let loginUrl: string = `https://127.0.0.1:{port}/login?v=${electron.app.getVersion()}`;
@@ -76,7 +76,7 @@ log4js.configure({
 });
 
 const logger: log4js.Logger = log4js.getLogger("electron");
-logger.info(`Starting SQL Compare v${electron.app.getVersion()}`);
+logger.info(`Starting SQL Schema Compare v${electron.app.getVersion()}`);
 
 //#region Check Single Instance
 // If it's not able to get the lock it means that another instance already have it
@@ -298,7 +298,7 @@ function createMainWindow(): void {
         y: mainWindowState.y < workAreaSize.height ? mainWindowState.y : undefined,
         width: mainWindowState.width,
         height: mainWindowState.height,
-        title: "SQL Compare - TiCodeX SA",
+        title: "SQL Schema Compare - TiCodeX SA",
         show: false,
         webPreferences: {
             nodeIntegration: true,
@@ -350,7 +350,7 @@ function createLoginWindow(load: boolean): void {
     loginWindow = new electron.BrowserWindow({
         width: 700,
         height: 650,
-        title: "SQL Compare - TiCodeX SA",
+        title: "SQL Schema Compare - TiCodeX SA",
         show: false,
         center: true,
         resizable: false,
@@ -382,10 +382,10 @@ function createLoginWindow(load: boolean): void {
 }
 
 /**
- * Start the SQL Compare back-end process
+ * Start the SQL Schema Compare back-end process
  * @param webPort The port to start the web server
  */
-function startSqlCompareBackend(webPort: number): void {
+function startService(webPort: number): void {
     if (fs.existsSync(servicePath)) {
         logger.info(`Starting service ${servicePath} (${webPort})`);
         serviceProcess = childProcess.spawn(servicePath, [`${webPort}`]);
@@ -468,7 +468,7 @@ function startup(): void {
         serviceUrl = serviceUrl.replace("{port}", `${webPort}`);
         loginUrl = loginUrl.replace("{port}", `${webPort}`);
 
-        startSqlCompareBackend(webPort);
+        startService(webPort);
 
         // Splash already closed
         if (splashWindow === undefined) {
@@ -501,7 +501,7 @@ function startup(): void {
                         }, 400);
                     }
                 } else {
-                    electron.dialog.showErrorBox("SQL Compare - Error", "An unexpected error has occurred");
+                    electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
                     electron.app.quit();
                 }
             } else {

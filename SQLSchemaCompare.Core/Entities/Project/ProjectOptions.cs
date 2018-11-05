@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Entities.Project
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Project
 {
     /// <summary>
     /// Configurable options of the project

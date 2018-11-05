@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Text;
 using FluentAssertions;
-using SQLCompare.Core.Interfaces.Services;
-using SQLCompare.Services;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Services;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace SQLCompare.Test.Services
+namespace TiCodeX.SQLSchemaCompare.Test.Services
 {
     /// <summary>
     /// Test class for the CipherService

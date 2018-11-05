@@ -30,11 +30,11 @@ if "%build%" == "true" (
     dotnet restore -r win-x64
     if ERRORLEVEL 1 goto:exit
 
-    msbuild %~dp0\SQLCompare.sln /p:Configuration=Release
+    msbuild %~dp0\SQLSchemaCompare.sln /p:Configuration=Release
     if ERRORLEVEL 1 goto:exit
 )
 
-dotnet test --no-build --configuration release %filter% --collect:coverage %~dp0\SQLCompare.Test\SQLCompare.Test.csproj
+dotnet test --no-build --configuration release %filter% --collect:coverage %~dp0\SQLSchemaCompare.Test\SQLSchemaCompare.Test.csproj
 
 :exit
 echo Press any key to close...

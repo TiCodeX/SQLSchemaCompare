@@ -2,8 +2,8 @@
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <Name>SQLCompare</Name>
-    <RootNamespace>SQLCompare</RootNamespace>
+    <Name>SQLSchemaCompare</Name>
+    <RootNamespace>SQLSchemaCompare</RootNamespace>
     <NodeExePath>node_modules\electron\dist\electron.exe</NodeExePath>
     <ToolsVersionPromptShown>2.8</ToolsVersionPromptShown>
     <TSLintConfig>..\tslint.json</TSLintConfig>
@@ -18,7 +18,7 @@ __TEST_UPDATER_PLATFORM=linux</Environment>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>c84dd647-a041-40aa-8198-c57cd25d7a2c</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>..\SQLCompare</StartupFile>
+    <StartupFile>..\SQLSchemaCompare</StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>

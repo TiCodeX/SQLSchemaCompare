@@ -14,9 +14,9 @@ using NLog.Common;
 using NLog.Config;
 using NLog.Targets;
 using NLog.Web;
-using LogLevel = SQLCompare.Core.Enums.LogLevel;
+using LogLevel = TiCodeX.SQLSchemaCompare.Core.Enums.LogLevel;
 
-namespace SQLCompare.UI.WebServer
+namespace TiCodeX.SQLSchemaCompare.UI.WebServer
 {
     /// <summary>
     /// Utility functions
@@ -40,7 +40,7 @@ namespace SQLCompare.UI.WebServer
                 {
                     options.ListenLocalhost(webPort, listenOptions =>
                     {
-                        using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SQLCompare.UI.certificate.pfx"))
+                        using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TiCodeX.SQLSchemaCompare.UI.certificate.pfx"))
                         using (var memoryStream = new MemoryStream())
                         {
                             resourceStream.CopyTo(memoryStream);

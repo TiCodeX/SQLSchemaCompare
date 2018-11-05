@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Entities.Database
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
     /// <summary>
     /// Provides the common properties of a database object

@@ -9,22 +9,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Entities.Database;
-using SQLCompare.Core.Entities.Database.MicrosoftSql;
-using SQLCompare.Core.Entities.Database.MySql;
-using SQLCompare.Core.Entities.Database.PostgreSql;
-using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Core.Enums;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Core.Interfaces.Services;
-using SQLCompare.Infrastructure.DatabaseProviders;
-using SQLCompare.Infrastructure.EntityFramework;
-using SQLCompare.Infrastructure.SqlScripters;
-using SQLCompare.Services;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders;
+using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
+using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
+using TiCodeX.SQLSchemaCompare.Services;
 using Xunit.Sdk;
 
-namespace SQLCompare.Test
+namespace TiCodeX.SQLSchemaCompare.Test
 {
     /// <summary>
     /// Creates the sakila/pagila databases for the tests

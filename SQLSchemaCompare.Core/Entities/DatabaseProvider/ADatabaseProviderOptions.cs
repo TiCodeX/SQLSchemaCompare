@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Entities.DatabaseProvider
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider
 {
     /// <summary>
     /// Provides generic options for Database Provider Class.

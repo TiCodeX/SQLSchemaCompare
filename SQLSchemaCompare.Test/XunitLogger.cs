@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
-namespace SQLCompare.Test
+namespace TiCodeX.SQLSchemaCompare.Test
 {
     /// <summary>
     /// Implementation of the ILogger interface that uses the Xunit log system to write

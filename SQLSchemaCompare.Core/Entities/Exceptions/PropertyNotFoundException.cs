@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SQLCompare.Core.Entities.Exceptions
+namespace TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions
 {
     /// <summary>
     /// The exception that is thrown when a property cannot be mapped during a query

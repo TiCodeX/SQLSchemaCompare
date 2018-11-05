@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Interfaces.Services
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Services
 {
     /// <summary>
     /// Defines a class that provides the mechanisms to encrypt/decrypt strings

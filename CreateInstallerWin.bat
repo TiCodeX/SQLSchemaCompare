@@ -19,7 +19,7 @@ echo.
 REM Cleanup folders
 if exist %~dp0\installer\win-unpacked ( rmdir /S /Q %~dp0\installer\win-unpacked )
 
-call npm --prefix SQLCompare run dist-%target%
+call npm --prefix SQLSchemaCompare run dist-%target%
 
 if ERRORLEVEL 1 goto:error
 

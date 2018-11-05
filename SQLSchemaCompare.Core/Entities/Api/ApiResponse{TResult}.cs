@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Entities.Api
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Api
 {
     /// <summary>
     /// Represents response for the Api requests with a result

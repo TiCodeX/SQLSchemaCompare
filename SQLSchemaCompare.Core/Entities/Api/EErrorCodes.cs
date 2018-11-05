@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Entities.Api
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Api
 {
     /// <summary>
     /// Defines all the possible error codes that can be returned in the account service response
@@ -138,12 +138,12 @@
         ErrorUnexpected = 3005,
 
         /// <summary>
-        /// Cannot load the SQLCompare project
+        /// Cannot load the project
         /// </summary>
         ErrorCannotLoadProject = 3006,
 
         /// <summary>
-        /// Cannot save the SQLCompare project
+        /// Cannot save the project
         /// </summary>
         ErrorCannotSaveProject = 3007,
 

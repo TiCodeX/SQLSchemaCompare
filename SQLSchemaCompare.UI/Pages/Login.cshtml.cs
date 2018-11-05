@@ -5,14 +5,14 @@ using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Entities.Api;
-using SQLCompare.Core.Entities.Exceptions;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Core.Interfaces.Services;
-using SQLCompare.Services;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Services;
 
-namespace SQLCompare.UI.Pages
+namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
     /// <summary>
     /// PageModel for the Login page

@@ -1,7 +1,7 @@
 ﻿using System;
 using Xunit.Abstractions;
 
-namespace SQLCompare.Test
+namespace TiCodeX.SQLSchemaCompare.Test
 {
     /// <summary>
     /// Base class for every test

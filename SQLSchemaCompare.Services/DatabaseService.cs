@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Entities.Database;
-using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
-namespace SQLCompare.Services
+namespace TiCodeX.SQLSchemaCompare.Services
 {
     /// <summary>
     /// Implementation that provides the mechanisms to read information from a database

@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Entities.Compare
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Compare
 {
     /// <summary>
     /// Represent the SQL scripts of a specific item

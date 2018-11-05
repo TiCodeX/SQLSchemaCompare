@@ -4,7 +4,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 
-namespace SQLCompare.UI.WebServer
+namespace TiCodeX.SQLSchemaCompare.UI.WebServer
 {
     /// <summary>
     /// EmbeddedFileProvider wrapper that properly handles the hyphen characters.

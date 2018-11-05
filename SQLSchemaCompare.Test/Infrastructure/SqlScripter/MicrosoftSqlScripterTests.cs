@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
-using SQLCompare.Core.Entities.Database;
-using SQLCompare.Core.Entities.Database.MicrosoftSql;
-using SQLCompare.Core.Entities.Project;
-using SQLCompare.Infrastructure.SqlScripters;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace SQLCompare.Test.Infrastructure.SqlScripter
+namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
 {
     /// <summary>
     /// Test class for the MicrosoftSqlScripter

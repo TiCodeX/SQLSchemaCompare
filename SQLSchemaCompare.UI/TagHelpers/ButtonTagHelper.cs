@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using SQLCompare.UI.Enums;
+using TiCodeX.SQLSchemaCompare.UI.Enums;
 
-namespace SQLCompare.UI.TagHelpers
+namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers
 {
     /// <summary>
     /// TagHelper for button

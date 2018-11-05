@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Core.Interfaces.Repository;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
 
-namespace SQLCompare.Infrastructure.Repository
+namespace TiCodeX.SQLSchemaCompare.Infrastructure.Repository
 {
     /// <summary>
     /// Implementation that provides the mechanism to store and retrieve application settings

@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using SQLCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace SQLCompare.Test.Infrastructure.DatabaseProviders
+namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders
 {
     /// <summary>
     /// Test class for the DatabaseProvider

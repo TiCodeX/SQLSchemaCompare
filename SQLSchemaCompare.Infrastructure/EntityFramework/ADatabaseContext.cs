@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Core.Entities.Exceptions;
+using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions;
 
-namespace SQLCompare.Infrastructure.EntityFramework
+namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
 {
     /// <inheritdoc />
     /// <summary>

@@ -406,5 +406,7 @@
     <Rule Id="SA1200" Action="None" />
     <!--SA1633FileMustHaveHeader-->
     <Rule Id="SA1633" Action="None" />
+    <!--SA1652EnableXmlDocumentationOutput-->
+    <Rule Id="SA1652" Action="None" />
   </Rules>
 </RuleSet>

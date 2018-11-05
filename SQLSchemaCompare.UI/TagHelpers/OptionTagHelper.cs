@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace SQLCompare.UI.TagHelpers
+namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers
 {
     /// <summary>
     /// TagHelper for option

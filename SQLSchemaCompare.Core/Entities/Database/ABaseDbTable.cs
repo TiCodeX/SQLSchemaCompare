@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SQLCompare.Core.Entities.Database
+namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
     /// <summary>
     /// Provides generic information for database table classes

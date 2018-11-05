@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Enums
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Enums
 {
     /// <summary>
     /// List of possible sources for retrieving database data

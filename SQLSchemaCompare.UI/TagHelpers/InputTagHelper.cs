@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace SQLCompare.UI.TagHelpers
+namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers
 {
     /// <summary>
     /// TagHelper for input

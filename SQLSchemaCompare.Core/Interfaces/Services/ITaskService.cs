@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using SQLCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
 
-namespace SQLCompare.Core.Interfaces.Services
+namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Services
 {
     /// <summary>
     /// Defines a class that provides the mechanisms to handle asynchronous Tasks.

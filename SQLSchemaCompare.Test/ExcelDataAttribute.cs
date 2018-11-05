@@ -7,7 +7,7 @@ using System.Reflection;
 using OfficeOpenXml;
 using Xunit.Sdk;
 
-namespace SQLCompare.Test
+namespace TiCodeX.SQLSchemaCompare.Test
 {
     /// <summary>
     /// Provides an excel data source for a data theory

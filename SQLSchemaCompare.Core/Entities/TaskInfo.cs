@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SQLCompare.Core.Entities
+namespace TiCodeX.SQLSchemaCompare.Core.Entities
 {
     /// <summary>
     /// Information about a Task

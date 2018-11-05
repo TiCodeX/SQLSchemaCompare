@@ -4,16 +4,16 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Entities.Compare;
-using SQLCompare.Core.Entities.Database;
-using SQLCompare.Core.Entities.Database.MicrosoftSql;
-using SQLCompare.Core.Entities.Database.MySql;
-using SQLCompare.Core.Entities.Database.PostgreSql;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
-namespace SQLCompare.Services
+namespace TiCodeX.SQLSchemaCompare.Services
 {
     /// <summary>
     /// Implementation that provides the mechanisms to compare two database instances

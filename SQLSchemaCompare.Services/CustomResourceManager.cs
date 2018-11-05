@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Resources;
 
-namespace SQLCompare.Services
+namespace TiCodeX.SQLSchemaCompare.Services
 {
     /// <summary>
     /// Custom wrapper to properly handle the localization

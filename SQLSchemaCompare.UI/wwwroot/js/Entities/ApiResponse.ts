@@ -27,7 +27,7 @@ class ApiResponse<T> {
 
 namespace ApiResponse {
     /**
-     * Defines possible error codes that can be returned by SQLCompare
+     * Defines possible error codes that can be returned by SQLSchemaCompare
      */
     export enum EErrorCodes {
         /**

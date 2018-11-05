@@ -7,17 +7,17 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Core.Interfaces.Repository;
-using SQLCompare.Core.Interfaces.Services;
-using SQLCompare.Infrastructure.DatabaseProviders;
-using SQLCompare.Infrastructure.Repository;
-using SQLCompare.Infrastructure.SqlScripters;
-using SQLCompare.Services;
-using SQLCompare.UI.Extensions;
-using SQLCompare.UI.Middlewares;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders;
+using TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
+using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
+using TiCodeX.SQLSchemaCompare.Services;
+using TiCodeX.SQLSchemaCompare.UI.Extensions;
+using TiCodeX.SQLSchemaCompare.UI.Middlewares;
 
-namespace SQLCompare.UI.WebServer
+namespace TiCodeX.SQLSchemaCompare.UI.WebServer
 {
     /// <summary>
     /// WebServer configuration class used during the startup
@@ -122,7 +122,7 @@ namespace SQLCompare.UI.WebServer
                 app.UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = new HyphenFriendlyEmbeddedFileProvider(
-                        new EmbeddedFileProvider(Assembly.GetExecutingAssembly(), "SQLCompare.UI.wwwroot"),
+                        new EmbeddedFileProvider(Assembly.GetExecutingAssembly(), "TiCodeX.SQLSchemaCompare.UI.wwwroot"),
                         logger)
                 });
                 app.UseRequestValidator();

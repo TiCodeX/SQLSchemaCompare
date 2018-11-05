@@ -1,12 +1,12 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Core.Entities.Project;
-using SQLCompare.Core.Enums;
-using SQLCompare.Core.Interfaces.Repository;
-using SQLCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
-namespace SQLCompare.Services
+namespace TiCodeX.SQLSchemaCompare.Services
 {
     /// <summary>
     /// Implementation that provides the mechanisms to handle the comparison project.

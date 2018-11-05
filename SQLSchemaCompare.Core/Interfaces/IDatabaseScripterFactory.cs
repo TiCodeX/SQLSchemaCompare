@@ -1,7 +1,7 @@
-﻿using SQLCompare.Core.Entities.Database;
-using SQLCompare.Core.Entities.Project;
+﻿using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
 
-namespace SQLCompare.Core.Interfaces
+namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
 {
     /// <summary>
     /// Defines a class that creates a database scripter

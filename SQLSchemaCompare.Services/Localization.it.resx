@@ -324,8 +324,8 @@
   <data name="ButtonOpen" xml:space="preserve">
     <value>Apri</value>
   </data>
-  <data name="LabelSQLCompareProjectFile" xml:space="preserve">
-    <value>Progetto SQL Compare</value>
+  <data name="LabelSQLSchemaCompareProjectFile" xml:space="preserve">
+    <value>Progetto SQL Schema Compare</value>
   </data>
   <data name="ButtonAbort" xml:space="preserve">
     <value>Interrompi</value>

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SQLCompare.Core.Entities.Database.PostgreSql
+namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql
 {
     /// <summary>
     /// Specific PostgreSql Composite data type definition

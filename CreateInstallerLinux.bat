@@ -26,7 +26,7 @@ docker volume create electron-cache
 docker run --rm^
    -v electron-cache:/root/.cache^
    -v %~dp0:/project^
-   -w /project/SQLCompare^
+   -w /project/SQLSchemaCompare^
    --env ELECTRON_CACHE="/root/.cache/electron"^
    --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder"^
    electronuserland/builder^
@@ -41,7 +41,7 @@ if exist %~dp0\installer\linux-unpacked ( rmdir /S /Q %~dp0\installer\linux-unpa
 if ERRORLEVEL 1 goto:error
 
 REM Create latest-linux.yml
-for /f "tokens=1,2" %%a in (%~dp0\SQLCompare\package.json) do (
+for /f "tokens=1,2" %%a in (%~dp0\SQLSchemaCompare\package.json) do (
     if %%a=="version": (
         set version=%%b
         goto:versionfound
@@ -49,7 +49,7 @@ for /f "tokens=1,2" %%a in (%~dp0\SQLCompare\package.json) do (
 )
 :versionfound
 echo version: %version:~1,-2%> %~dp0\installer\latest-linux.yml
-echo path: SQLCompare-%version:~1,-2%.xxx>> %~dp0\installer\latest-linux.yml
+echo path: SQLSchemaCompare-%version:~1,-2%.xxx>> %~dp0\installer\latest-linux.yml
 
 if ERRORLEVEL 1 goto:error
 

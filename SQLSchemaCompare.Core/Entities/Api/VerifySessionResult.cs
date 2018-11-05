@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SQLCompare.Core.Entities.Api
+namespace TiCodeX.SQLSchemaCompare.Core.Entities.Api
 {
     /// <summary>
     /// Represent the VerifySession result

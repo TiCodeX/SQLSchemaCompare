@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities.DatabaseProvider;
-using SQLCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
-namespace SQLCompare.Infrastructure.EntityFramework
+namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
 {
     /// <summary>
     /// Defines the PostgresSql database context

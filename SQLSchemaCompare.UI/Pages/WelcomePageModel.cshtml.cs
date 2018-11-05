@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SQLCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
-namespace SQLCompare.UI.Pages
+namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
     /// <summary>
     /// PageModel of the Welcome page

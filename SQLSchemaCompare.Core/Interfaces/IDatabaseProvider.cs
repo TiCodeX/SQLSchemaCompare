@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using SQLCompare.Core.Entities;
-using SQLCompare.Core.Entities.Database;
+using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
 
-namespace SQLCompare.Core.Interfaces
+namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
 {
     /// <summary>
     /// Defines a class that provides the mechanisms to retrieve various information of a database

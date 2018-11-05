@@ -1,11 +1,11 @@
 ﻿using System;
-using SQLCompare.Core.Entities.Exceptions;
-using SQLCompare.Test.Infrastructure.DatabaseProviders;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions;
+using TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace SQLCompare.Test.Core.Exceptions
+namespace TiCodeX.SQLSchemaCompare.Test.Core.Exceptions
 {
     /// <summary>
     /// Test class for the PropertyNotFoundException class

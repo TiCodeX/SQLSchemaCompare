@@ -1,13 +1,13 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities.Database;
-using SQLCompare.Core.Entities.Database.MicrosoftSql;
-using SQLCompare.Core.Entities.Database.MySql;
-using SQLCompare.Core.Entities.Database.PostgreSql;
-using SQLCompare.Core.Entities.Project;
-using SQLCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 
-namespace SQLCompare.Infrastructure.SqlScripters
+namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
     /// <summary>
     /// Implementation class for the factory that create a Database scripter

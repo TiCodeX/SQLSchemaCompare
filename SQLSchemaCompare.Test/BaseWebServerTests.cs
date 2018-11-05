@@ -1,12 +1,12 @@
 ﻿using System.Net.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
-using SQLCompare.Core.Enums;
-using SQLCompare.Services;
-using SQLCompare.UI.WebServer;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
+using TiCodeX.SQLSchemaCompare.Services;
+using TiCodeX.SQLSchemaCompare.UI.WebServer;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SQLCompare.Test
+namespace TiCodeX.SQLSchemaCompare.Test
 {
     /// <summary>
     /// Base class for WebServer tests

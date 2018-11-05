@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SQLCompare.Core.Entities.Compare
+namespace TiCodeX.SQLSchemaCompare.Core.Entities.Compare
 {
     /// <summary>
     /// Represent the result of a comparison

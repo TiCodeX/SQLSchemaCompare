@@ -1,6 +1,6 @@
-﻿using SQLCompare.Core.Entities.DatabaseProvider;
+﻿using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 
-namespace SQLCompare.Core.Interfaces
+namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
 {
     /// <summary>
     /// Defines a class that creates a database provider

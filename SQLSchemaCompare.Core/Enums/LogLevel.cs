@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.Core.Enums
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Enums
 {
     /// <summary>
     /// Defines logging severity levels

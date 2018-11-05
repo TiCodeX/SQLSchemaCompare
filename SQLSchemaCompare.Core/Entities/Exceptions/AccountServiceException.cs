@@ -1,7 +1,7 @@
 ﻿using System;
-using SQLCompare.Core.Entities.Api;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
 
-namespace SQLCompare.Core.Entities.Exceptions
+namespace TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions
 {
     /// <summary>
     /// The exception that is thrown if the response of the Account Service has error

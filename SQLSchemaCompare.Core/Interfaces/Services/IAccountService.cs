@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using SQLCompare.Core.Entities.Api;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
 
-namespace SQLCompare.Core.Interfaces.Services
+namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Services
 {
     /// <summary>
     /// Defines a class that handles the account information

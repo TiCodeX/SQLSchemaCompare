@@ -1,6 +1,6 @@
-﻿using SQLCompare.Core.Entities.Database;
+﻿using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
 
-namespace SQLCompare.Core.Entities.Compare
+namespace TiCodeX.SQLSchemaCompare.Core.Entities.Compare
 {
     /// <summary>
     /// Represent the result of the comparison of a specific item

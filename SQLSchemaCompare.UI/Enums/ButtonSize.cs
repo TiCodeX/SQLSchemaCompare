@@ -1,4 +1,4 @@
-﻿namespace SQLCompare.UI.Enums
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Enums
 {
     /// <summary>
     /// List of possible button sizes

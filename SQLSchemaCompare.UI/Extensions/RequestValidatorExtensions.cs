@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using SQLCompare.UI.Middlewares;
+using TiCodeX.SQLSchemaCompare.UI.Middlewares;
 
-namespace SQLCompare.UI.Extensions
+namespace TiCodeX.SQLSchemaCompare.UI.Extensions
 {
     /// <summary>
     /// Defines the RequestValidator extension of the IApplicationBuilder

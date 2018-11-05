@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Entities.Database;
-using SQLCompare.Core.Entities.Database.MySql;
-using SQLCompare.Core.Entities.Project;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
 
-namespace SQLCompare.Infrastructure.SqlScripters
+namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
     /// <summary>
     /// Sql scripter class specific for MySql database

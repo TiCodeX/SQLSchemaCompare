@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using SQLCompare.Core.Interfaces;
-using SQLCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
-namespace SQLCompare.UI.Pages
+namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
     /// <summary>
     /// PageModel of the Toolbar

@@ -12,20 +12,20 @@
     <!--<Var name="KeyFile" value=".\test.snk" />-->
 
     <Module file="$(InPath)\TiCodeX.SQLSchemaCompare.UI.dll">
-        <SkipNamespace name="SQLSchemaCompare.UI.Enums*" />
-        <SkipNamespace name="SQLSchemaCompare.UI.Models*" />
-        <SkipNamespace name="SQLSchemaCompare.UI.Pages*" />
+        <SkipNamespace name="TiCodeX.SQLSchemaCompare.UI.Enums*" />
+        <SkipNamespace name="TiCodeX.SQLSchemaCompare.UI.Models*" />
+        <SkipNamespace name="TiCodeX.SQLSchemaCompare.UI.Pages*" />
     </Module>
     <Module file="$(InPath)\TiCodeX.SQLSchemaCompare.UI.Views.dll">
-        <SkipNamespace name="SQLSchemaCompare.UI.Pages*" />
+        <SkipNamespace name="TiCodeX.SQLSchemaCompare.UI.Pages*" />
     </Module>
     <Module file="$(InPath)\TiCodeX.SQLSchemaCompare.Services.dll">
-        <SkipType name="SQLSchemaCompare.Services.Localization" skipFields="true" />
+        <SkipType name="TiCodeX.SQLSchemaCompare.Services.Localization" skipFields="true" />
     </Module>
     <Module file="$(InPath)\TiCodeX.SQLSchemaCompare.Infrastructure.dll" />
     <Module file="$(InPath)\TiCodeX.SQLSchemaCompare.Core.dll">
-        <SkipNamespace name="SQLSchemaCompare.Core.Entities*" />
-        <SkipNamespace name="SQLSchemaCompare.Core.Enums*" />
+        <SkipNamespace name="TiCodeX.SQLSchemaCompare.Core.Entities*" />
+        <SkipNamespace name="TiCodeX.SQLSchemaCompare.Core.Enums*" />
     </Module>
 
 </Obfuscator>

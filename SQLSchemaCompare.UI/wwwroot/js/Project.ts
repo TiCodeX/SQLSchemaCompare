@@ -266,6 +266,9 @@ class Project {
         if (data === undefined) {
             select.removeAttr("disabled");
             button.removeClass("spin").removeAttr("disabled");
+            setTimeout(() => {
+                select.editableSelect("hide");
+            }, 0);
 
             return;
         }
@@ -289,6 +292,7 @@ class Project {
             }
             select.removeAttr("disabled");
             button.removeClass("spin").removeAttr("disabled");
+            select.trigger("focus");
         });
     }
 

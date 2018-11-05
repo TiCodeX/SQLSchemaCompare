@@ -345,7 +345,7 @@ function createMainWindow(): void {
  * Create the login window ensuring to destroy the main window
  * @param show True if the window should be shown
  */
-function createLoginWindow(load: boolean): void {
+function createLoginWindow(show: boolean): void {
     // Create the login window
     loginWindow = new electron.BrowserWindow({
         width: 700,
@@ -374,7 +374,7 @@ function createLoginWindow(load: boolean): void {
         mainWindow = undefined;
     }
 
-    if (load) {
+    if (show) {
         loginWindow.loadURL(loginUrl);
         loginWindow.show();
         loginWindow.focus();
@@ -507,7 +507,17 @@ function startup(): void {
             } else {
                 // Do not close the login window when the splash is closed
                 closeLoginWindow = false;
-                logger.info("Application started successfully");
+                setTimeout(() => {
+                    if ((mainWindow !== undefined && mainWindow.isVisible()) ||
+                        (loginWindow !== undefined && loginWindow.isVisible())) {
+                        logger.info("Application started successfully");
+                    } else {
+                        // Some error has occurred since no window has been opened
+                        closeLoginWindow = true;
+                        electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
+                        electron.app.quit();
+                    }
+                }, 1000);
             }
         });
 

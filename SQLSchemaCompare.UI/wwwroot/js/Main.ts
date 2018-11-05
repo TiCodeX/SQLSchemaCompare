@@ -124,7 +124,7 @@ class Main {
 
         // Display the monaco editor
         $("#sqlDiff").empty();
-        $("#sqlAlterScript").empty();
+        /*$("#sqlAlterScript").empty();*/
         Utility.AjaxCall(this.resultItemScriptsUrl + rowId, Utility.HttpMethod.Get).then((response: ApiResponse<CompareResultItemScripts>): void => {
             const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(document.getElementById("sqlDiff"), this.defaultMonacoOptionsDiff);
             diffEditor.setModel({
@@ -132,8 +132,8 @@ class Main {
                 modified: monaco.editor.createModel(response.Result.TargetCreateScript, "sql"),
             });
 
-            const editor: monaco.editor.IStandaloneCodeEditor = monaco.editor.create(document.getElementById("sqlAlterScript"), this.defaultMonacoOptions);
-            editor.setModel(monaco.editor.createModel(response.Result.AlterScript, "sql"));
+            /*const editor: monaco.editor.IStandaloneCodeEditor = monaco.editor.create(document.getElementById("sqlAlterScript"), this.defaultMonacoOptions);
+            editor.setModel(monaco.editor.createModel(response.Result.AlterScript, "sql"));*/
         });
     }
 

@@ -24,6 +24,8 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
     /// </summary>
     public class WebServerStartup
     {
+        private const string AllowedRequestGuid = "d6e9b4c2-25d3-a625-e9a6-2135f3d2f809";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WebServerStartup"/> class.
         /// </summary>
@@ -51,7 +53,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
             });
             services.Configure<RequestValidatorSettings>(options =>
             {
-                options.AllowedRequestGuid = "prova";
+                options.AllowedRequestGuid = AllowedRequestGuid;
             });
 
             services.AddMvc().AddJsonOptions(options =>
@@ -112,22 +114,20 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
 
             if (appGlobals.IsDevelopment)
             {
-                app.UseBrowserLink();
-                app.UseDeveloperExceptionPage();
                 app.UseStaticFiles();
             }
             else
             {
-                app.UseExceptionHandler("/Error");
                 app.UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = new HyphenFriendlyEmbeddedFileProvider(
                         new EmbeddedFileProvider(Assembly.GetExecutingAssembly(), "TiCodeX.SQLSchemaCompare.UI.wwwroot"),
                         logger)
                 });
-                app.UseRequestValidator();
             }
 
+            app.UseExceptionHandler("/ErrorPage");
+            app.UseRequestValidator();
             app.UseMvc();
         }
     }

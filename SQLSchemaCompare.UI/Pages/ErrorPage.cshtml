@@ -1,0 +1,65 @@
+﻿@page
+@model ErrorPage
+@using Core.Interfaces
+@using Enums
+@using Services
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>@Model.Title</title>
+    @if (AppGlobal.IsDevelopment)
+    {
+    <link href="~/css/Login.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    }
+    else
+    {
+    <link href="~/css/Login.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    }
+</head>
+<body>
+    @Html.AntiForgeryToken()
+
+    <!-- Modal -->
+    <div class="modal show" data-backdrop="static" data-keyboard="false" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Error</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-4">
+                                <p></p>
+                                <p class="text-center">
+                                    <div class="tcx-logo"></div>
+                                </p>
+                            </div>
+                            <div class="col-8 my-auto">
+                                An unexpected error has occurred
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" style="@ButtonStyle.Primary" data-dismiss="modal" onclick="electron.remote.getCurrentWindow().close();">@Localization.ButtonQuit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop show"></div>
+
+    @* In order to make jquery work with both Chrome and Electron *@
+    @* Keep a reference to module and restore it after jquery is loaded *@
+    <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+    <script src="~/lib/jquery/jquery-3.3.1.min.js"></script>
+    <script>if (window.module) module = window.module;</script>
+
+    <script src="~/lib/popperjs/popper.min.js"></script>
+    <script src="~/lib/bootstrap/bootstrap.min.js"></script>
+
+    <script>var electron = require("electron");</script>
+</body>
+</html>

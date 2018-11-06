@@ -80,6 +80,13 @@ class Utility {
     }
 
     /**
+     * Close the electron window
+     */
+    public static QuitWindow(): void {
+        electron.remote.getCurrentWindow().close();
+    }
+
+    /**
      * Indicates whether the specified string is null or an Empty string.
      * @param s The string to test
      */
@@ -209,8 +216,7 @@ class Utility {
                 success: (response: string): void => {
                     resolve(response);
                 },
-                error: (error: JQuery.jqXHR): void => {
-                    this.logger.error(`Error executing AjaxGetPage: ${error.responseText}`);
+                error: (): void => {
                     DialogManager.ShowError("Error", "An unexpected error occured");
                 },
             });

@@ -77,13 +77,6 @@ class Login {
         }
         $("#myModal").modal("show");
     }
-
-    /**
-     * Close the electron window
-     */
-    public static QuitWindow(): void {
-        electron.remote.getCurrentWindow().close();
-    }
 }
 
 $((): void => {

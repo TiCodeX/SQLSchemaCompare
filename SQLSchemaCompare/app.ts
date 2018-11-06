@@ -24,6 +24,8 @@ const loggerPattern: string = "-yyyy-MM-dd-ui.log";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;
 const autoUpdaterUrl: string = "https://download.ticodex.com/sqlschemacompare";
+const authorizationHeaderName: string = "CustomAuthToken";
+const authorizationHeaderValue: string = "d6e9b4c2-25d3-a625-e9a6-2135f3d2f809";
 let servicePath: string;
 switch (electronUpdater.getCurrentPlatform()) {
     case "linux":
@@ -41,6 +43,7 @@ let serviceProcess: childProcess.ChildProcess;
 let autoUpdaterInfo: electronUpdater.UpdateInfo;
 let autoUpdaterReadyToBeInstalled: boolean = false;
 let autoUpdaterAutoDownloadFailed: boolean = false;
+let serviceCommunicationSuccessful: boolean = false;
 
 /**
  * Keep a global reference of the window object, if you don't, the window will
@@ -191,14 +194,17 @@ electron.ipcMain.on("log", (event: Electron.Event, data: { category: string; lev
 });
 // Register the renderer callback for opening the main window
 electron.ipcMain.on("OpenMainWindow", () => {
+    serviceCommunicationSuccessful = true;
     createMainWindow();
 });
 // Register the renderer callback for opening the login window
 electron.ipcMain.on("OpenLoginWindow", () => {
+    serviceCommunicationSuccessful = true;
     createLoginWindow(true);
 });
 // Register the renderer callback for opening the login window
 electron.ipcMain.on("ShowLoginWindow", () => {
+    serviceCommunicationSuccessful = true;
     // Destroy splash window
     if (splashWindow !== undefined) {
         splashWindow.destroy();
@@ -343,9 +349,9 @@ function createMainWindow(): void {
 
 /**
  * Create the login window ensuring to destroy the main window
- * @param show True if the window should be shown
+ * @param showInstantly True if the window should be shown instantly
  */
-function createLoginWindow(show: boolean): void {
+function createLoginWindow(showInstantly: boolean): void {
     // Create the login window
     loginWindow = new electron.BrowserWindow({
         width: 700,
@@ -374,10 +380,54 @@ function createLoginWindow(show: boolean): void {
         mainWindow = undefined;
     }
 
-    if (show) {
+    if (showInstantly) {
         loginWindow.loadURL(loginUrl);
         loginWindow.show();
         loginWindow.focus();
+
+    } else {
+        let loadFailed: boolean = false;
+        let loadFailedError: string;
+        let retries: number = 100;
+        loginWindow.webContents.on("did-fail-load", (event: electron.Event, errorCode: number, errorDescription: string) => {
+            loadFailed = true;
+            loadFailedError = errorDescription;
+            retries--;
+        });
+        loginWindow.webContents.on("did-finish-load", () => {
+            if (loadFailed) {
+                logger.debug(`Unable to contact service (${loadFailedError}), retrying... (${retries})`);
+                if (retries > 0) {
+                    // Reset the flag and trigger a new load
+                    loadFailed = false;
+                    if (electronUpdater.getCurrentPlatform() !== "linux") {
+                        loginWindow.loadURL(loginUrl);
+                    } else {
+                        // Add a small delay on linux because the fail event is triggered very fast
+                        setTimeout(() => {
+                            loginWindow.loadURL(loginUrl);
+                        }, 400);
+                    }
+                } else {
+                    logger.error(`Unable to contact service (${loadFailedError})`);
+                    electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
+                    electron.app.quit();
+                }
+            } else {
+                logger.info("Application started successfully");
+
+                setTimeout(() => {
+                    if (!serviceCommunicationSuccessful) {
+                        logger.error("Service unable to contact main application");
+                        electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
+                        electron.app.quit();
+                    }
+                }, 10000);
+            }
+        });
+
+        // Events registered, now load the URL
+        loginWindow.loadURL(loginUrl);
     }
 }
 
@@ -424,7 +474,7 @@ function startup(): void {
         ],
     };
     electron.session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details: { requestHeaders: object }, callback: Function) => {
-        details.requestHeaders["CustomAuthToken"] = "prova"; // tslint:disable-line:no-string-literal
+        details.requestHeaders[authorizationHeaderName] = authorizationHeaderValue;
         callback({ cancel: false, requestHeaders: details.requestHeaders });
     });
     // Notify the login window about a redirect
@@ -452,13 +502,16 @@ function startup(): void {
         logger.error("Error checking for updates");
     });
 
-    let closeLoginWindow: boolean = true;
     splashWindow.on("closed", () => {
-        if (closeLoginWindow) {
-            // Destroy login window
+        if (!serviceCommunicationSuccessful) {
+            // Destroy login/main window if splash is closed before service contacting electron
             if (loginWindow !== undefined) {
                 loginWindow.destroy();
                 loginWindow = undefined;
+            }
+            if (mainWindow !== undefined) {
+                mainWindow.destroy();
+                mainWindow = undefined;
             }
         }
         splashWindow = undefined;
@@ -476,53 +529,6 @@ function startup(): void {
         }
 
         createLoginWindow(false);
-        logger.debug("Login window started");
-
-        let loadFailed: boolean = false;
-        let loadFailedError: string;
-        let retries: number = 100;
-        loginWindow.webContents.on("did-fail-load", (event: electron.Event, errorCode: number, errorDescription: string) => {
-            loadFailed = true;
-            loadFailedError = errorDescription;
-            retries--;
-        });
-        loginWindow.webContents.on("did-finish-load", () => {
-            if (loadFailed) {
-                logger.debug(`Unable to contact service (${loadFailedError}), retrying... (${retries})`);
-                if (retries > 0) {
-                    // Reset the flag and trigger a new load
-                    loadFailed = false;
-                    if (electronUpdater.getCurrentPlatform() !== "linux") {
-                        loginWindow.loadURL(loginUrl);
-                    } else {
-                        // Add a small delay on linux because the fail event is triggered very fast
-                        setTimeout(() => {
-                            loginWindow.loadURL(loginUrl);
-                        }, 400);
-                    }
-                } else {
-                    electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
-                    electron.app.quit();
-                }
-            } else {
-                // Do not close the login window when the splash is closed
-                closeLoginWindow = false;
-                setTimeout(() => {
-                    if ((mainWindow !== undefined && mainWindow.isVisible()) ||
-                        (loginWindow !== undefined && loginWindow.isVisible())) {
-                        logger.info("Application started successfully");
-                    } else {
-                        // Some error has occurred since no window has been opened
-                        closeLoginWindow = true;
-                        electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
-                        electron.app.quit();
-                    }
-                }, 1000);
-            }
-        });
-
-        // Events registered, now load the URL
-        loginWindow.loadURL(loginUrl);
     });
 }
 

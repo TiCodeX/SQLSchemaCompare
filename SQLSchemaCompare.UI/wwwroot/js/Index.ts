@@ -1,6 +1,4 @@
 
-let mainSplitter: Split.Instance;
-
 $(() => {
     Utility.ApplicationStartup().then(() => {
         // Configure the monaco editor loader

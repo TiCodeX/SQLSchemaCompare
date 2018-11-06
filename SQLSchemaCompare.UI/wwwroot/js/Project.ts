@@ -292,7 +292,11 @@ class Project {
             }
             select.removeAttr("disabled");
             button.removeClass("spin").removeAttr("disabled");
-            select.trigger("focus");
+
+            // If everything is ok, the select should be open, so lets focus it
+            if (response.Success) {
+                select.trigger("focus");
+            }
         });
     }
 

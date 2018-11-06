@@ -14,9 +14,7 @@ class Login {
      * @param redirectUrl The redirect url received
      */
     public static handleRedirect(redirectUrl: string, webviewUrl: string): void {
-
         if (redirectUrl.indexOf(this.baseRedirectUrl) === 0) {
-
             $.ajax("/Login?handler=verify", {
                 type: "POST",
                 beforeSend: (xhr: JQuery.jqXHR): void => {
@@ -41,9 +39,6 @@ class Login {
                     Login.ShowErrorModal(Localization.Get("ErrorGeneric"), ApiResponse.EErrorCodes.ErrorUnexpected, undefined);
                 },
             });
-        }
-        else {
-            return;
         }
     }
 
@@ -131,6 +126,10 @@ $((): void => {
                 resultElement.remove();
 
                 Login.ShowErrorModal(errorMessage, errorCode, result);
+            } else {
+                // Fix electron losing focus on the webview
+                electron.remote.getCurrentWindow().focusOnWebView();
+                webview.trigger("focus");
             }
         });
 

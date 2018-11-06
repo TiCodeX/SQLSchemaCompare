@@ -260,7 +260,7 @@ function setEmptyApplicationMenu(): void {
                 submenu: [
                     {
                         label: "Reload",
-                        accelerator: "CmdOrCtrl+R",
+                        accelerator: "F5",
                         click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
                             if (focusedWindow) {
                                 focusedWindow.reload();

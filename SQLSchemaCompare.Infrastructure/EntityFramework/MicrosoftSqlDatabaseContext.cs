@@ -41,7 +41,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
                 connStr += "Encrypt=true;";
             }
 
-            connStr += "Connection Timeout=30;";
+            connStr += "Connection Timeout=15;";
             connStr += "Persist Security Info=False;";
 
             this.ConnectionString = connStr;

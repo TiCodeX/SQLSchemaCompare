@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -6,6 +7,9 @@ using Microsoft.Extensions.Logging;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
@@ -261,10 +265,10 @@ namespace TiCodeX.SQLSchemaCompare.Services
 
                 resultTable.Equal = resultTable.Scripts.SourceCreateScript == resultTable.Scripts.TargetCreateScript;
 
-                /*if (!resultTable.Equal)
+                if (!resultTable.Equal)
                 {
                     resultTable.Scripts.AlterScript = scripter.GenerateAlterTableScript(resultTable.SourceItem, resultTable.TargetItem);
-                }*/
+                }
 
                 taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
             }
@@ -288,10 +292,10 @@ namespace TiCodeX.SQLSchemaCompare.Services
 
                 resultView.Equal = resultView.Scripts.SourceCreateScript == resultView.Scripts.TargetCreateScript;
 
-                /*if (!resultView.Equal)
+                if (!resultView.Equal)
                 {
                     resultView.Scripts.AlterScript = scripter.GenerateAlterViewScript(resultView.SourceItem, resultView.TargetItem);
-                }*/
+                }
 
                 taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
             }
@@ -315,10 +319,10 @@ namespace TiCodeX.SQLSchemaCompare.Services
 
                 resultFunction.Equal = resultFunction.Scripts.SourceCreateScript == resultFunction.Scripts.TargetCreateScript;
 
-                /*if (!resultFunction.Equal)
+                if (!resultFunction.Equal)
                 {
                     resultFunction.Scripts.AlterScript = scripter.GenerateAlterFunctionScript(resultFunction.SourceItem, this.retrievedSourceDatabase.DataTypes, resultFunction.TargetItem, this.retrievedTargetDatabase.DataTypes);
-                }*/
+                }
 
                 taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
             }
@@ -342,10 +346,10 @@ namespace TiCodeX.SQLSchemaCompare.Services
 
                 resultStoredProcedure.Equal = resultStoredProcedure.Scripts.SourceCreateScript == resultStoredProcedure.Scripts.TargetCreateScript;
 
-                /*if (!resultStoredProcedure.Equal)
+                if (!resultStoredProcedure.Equal)
                 {
                     resultStoredProcedure.Scripts.AlterScript = scripter.GenerateAlterStoredProcedureScript(resultStoredProcedure.SourceItem, resultStoredProcedure.TargetItem);
-                }*/
+                }
 
                 taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
             }
@@ -369,10 +373,10 @@ namespace TiCodeX.SQLSchemaCompare.Services
 
                 resultSequence.Equal = resultSequence.Scripts.SourceCreateScript == resultSequence.Scripts.TargetCreateScript;
 
-                /*if (!resultSequence.Equal)
+                if (!resultSequence.Equal)
                 {
                     resultSequence.Scripts.AlterScript = scripter.GenerateAlterSequenceScript(resultSequence.SourceItem, resultSequence.TargetItem);
-                }*/
+                }
 
                 taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
             }
@@ -396,10 +400,10 @@ namespace TiCodeX.SQLSchemaCompare.Services
 
                 resultType.Equal = resultType.Scripts.SourceCreateScript == resultType.Scripts.TargetCreateScript;
 
-                /*if (!resultType.Equal)
+                if (!resultType.Equal)
                 {
                     resultType.Scripts.AlterScript = scripter.GenerateAlterTypeScript(resultType.SourceItem, this.retrievedSourceDatabase.DataTypes, resultType.TargetItem, this.retrievedTargetDatabase.DataTypes);
-                }*/
+                }
 
                 taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
             }
@@ -454,7 +458,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             result.SameItems.AddRange(this.dataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Same items => {result.SameItems.Count}");
 
-            /*ABaseDb onlySourceDb = null;
+            ABaseDb onlySourceDb = null;
             ABaseDb onlyTargetDb = null;
             switch (this.retrievedSourceDatabase)
             {
@@ -493,7 +497,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             onlyTargetDb.DataTypes.AddRange(onlyTargetDataTypes.Select(x => x.TargetItem));
             onlyTargetDb.Sequences.AddRange(onlyTargetSequences.Select(x => x.TargetItem));
 
-            result.FullAlterScript = scripter.GenerateFullAlterScript(result.DifferentItems, onlySourceDb, onlyTargetDb);*/
+            result.FullAlterScript = scripter.GenerateFullAlterScript(result.DifferentItems, onlySourceDb, onlyTargetDb);
 
             this.projectService.Project.Result = result;
 

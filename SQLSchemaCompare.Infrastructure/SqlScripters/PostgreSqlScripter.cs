@@ -342,7 +342,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterFunction(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
-            return "TODO: Alter Function Script";
+            var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptDropFunction(targetFunction));
+            sb.AppendLine(this.ScriptCreateFunction(sourceFunction, dataTypes));
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -389,7 +392,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterTrigger(ABaseDbTrigger sourceTrigger, ABaseDbTrigger targetTrigger)
         {
-            return "TODO: Alter Trigger Script";
+            var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptDropTrigger(targetTrigger));
+            sb.AppendLine(this.ScriptCreateTrigger(sourceTrigger));
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -426,7 +432,60 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterSequence(ABaseDbSequence sourceSequence, ABaseDbSequence targetSequence)
         {
-            return "TODO: Alter Sequence Script";
+            var sourceSequencePostgreSql = sourceSequence as PostgreSqlSequence;
+            if (sourceSequencePostgreSql == null)
+            {
+                throw new ArgumentNullException(nameof(sourceSequence));
+            }
+
+            var targetSequencePostgreSql = targetSequence as PostgreSqlSequence;
+            if (targetSequencePostgreSql == null)
+            {
+                throw new ArgumentNullException(nameof(targetSequence));
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"ALTER SEQUENCE {this.ScriptHelper.ScriptObjectName(targetSequence)}");
+
+            if (sourceSequence.DataType != targetSequence.DataType)
+            {
+                sb.AppendLine($"{this.Indent}AS {sourceSequence.DataType}");
+            }
+
+            if (sourceSequence.Increment != targetSequence.Increment)
+            {
+                sb.AppendLine($"{this.Indent}INCREMENT BY {sourceSequence.Increment}");
+            }
+
+            if (sourceSequence.MinValue != targetSequence.MinValue)
+            {
+                sb.AppendLine($"{this.Indent}MINVALUE {sourceSequence.MinValue}");
+            }
+
+            if (sourceSequence.MaxValue != targetSequence.MaxValue)
+            {
+                sb.AppendLine($"{this.Indent}MAXVALUE {sourceSequence.MaxValue}");
+            }
+
+            if (sourceSequence.StartValue != targetSequence.StartValue)
+            {
+                sb.AppendLine($"{this.Indent}START WITH {sourceSequence.StartValue}");
+            }
+
+            if (sourceSequencePostgreSql.Cache != targetSequencePostgreSql.Cache)
+            {
+                sb.AppendLine($"{this.Indent}CACHE {sourceSequencePostgreSql.Cache}");
+            }
+
+            if (sourceSequence.IsCycling != targetSequence.IsCycling)
+            {
+                sb.AppendLine(sourceSequence.IsCycling ?
+                    $"{this.Indent}CYCLE" :
+                    $"{this.Indent}NO CYCLE");
+            }
+
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
         }
 
         /// <inheritdoc />

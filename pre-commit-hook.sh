@@ -13,6 +13,7 @@ for file in $changedFiles; do
     [ -z "${file##*".xlsx"}" ] && continue;
     [ -z "${file##*".pfx"}" ] && continue;
     [ -z "${file##*".p12"}" ] && continue;
+    [ -z "${file##*".exe"}" ] && continue;
     
     unix2dos < "$file" | cmp -s - "$file"
     if [ ! $? -eq 0 ]; then

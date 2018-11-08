@@ -66,6 +66,10 @@ __TEST_UPDATER_PLATFORM=linux</Environment>
     </PreBuildEvent>
     <PostBuildEvent>
       node node_modules\uglify-js\bin\uglifyjs app.js --compress --mangle --toplevel --output app.min.js
+      if not exist app.min.js (
+        echo ERROR: app.min.js not generated
+        exit 1
+      )
     </PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />

@@ -17,6 +17,11 @@
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <RuntimeFrameworkVersion>2.1.0</RuntimeFrameworkVersion>
     <PublishDir>..\.publish</PublishDir>
+    <SignTool>..\signtool.exe</SignTool>
+    <CertFile>..\TiCodeXCodeSigningCertificate.p12</CertFile>
+    <CertPass>test1234</CertPass>
+    <CertDesc>TiCodeX SA application</CertDesc>
+    <CertTimeUrl>http://timestamp.comodoca.com</CertTimeUrl>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>
@@ -125,14 +130,66 @@
     <Import Project="..\tslint.targets" />
   </ImportGroup>
 
-  <Target Name="Obfuscate" AfterTargets="Publish">
-    <Exec Command="$(Obfuscar) obfuscar.xml" />
-    <Exec Command="MOVE /Y ..\.publish\.obfuscated\* ..\.publish\" />
-    <Exec Command="RMDIR ..\.publish\.obfuscated" />
+  <Target Name="CustomPreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="del /Q /S wwwroot\js\*.js" />
   </Target>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="del /Q /S wwwroot\js\*.js" />
+  <Target Name="CustomPostBuild" BeforeTargets="PostBuildEvent">
+    <Exec Command="
+      if not exist wwwroot\js\Index.min.js ( ^
+        echo ERROR: Index.min.js not generated ^
+        exit 1 ^
+      )" />
+    <Exec Command="
+      if not exist wwwroot\js\Login.min.js ( ^
+        echo ERROR: Login.min.js not generated ^
+        exit 1 ^
+      )" />
+  </Target>
+
+  <Target Name="RemovePublishFolder" BeforeTargets="PrepareForPublish">
+    <Message Text="==============================================" Importance="high" />
+    <Message Text="Remove $(PublishDir) folder" Importance="high" />
+    <Message Text="==============================================" Importance="high" />
+    <Exec Command="if exist $(PublishDir) ( rmdir /S /Q $(PublishDir) )" />
+  </Target>
+
+  <Target Name="ObfuscateDlls" AfterTargets="AfterPublish">
+    <Message Text="==============================================" Importance="high" />
+    <Message Text="Obfuscate TiCodeX dlls" Importance="high" />
+    <Message Text="==============================================" Importance="high" />
+    <Exec Command="$(Obfuscar) obfuscar.xml" />
+    <Exec Command="MOVE /Y $(PublishDir)\.obfuscated\* $(PublishDir)\" />
+    <Exec Command="RMDIR $(PublishDir)\.obfuscated" />
+  </Target>
+
+  <Target Name="SignDlls" AfterTargets="ObfuscateDlls">
+    <Message Text="==============================================" Importance="high" />
+    <Message Text="Sign TiCodeX dlls" Importance="high" />
+    <Message Text="==============================================" Importance="high" />
+    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.Core.dll' />
+    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.Core.dll' />
+    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.Infrastructure.dll' />
+    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.Infrastructure.dll' />
+    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.Services.dll' />
+    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.Services.dll' />
+    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.dll' />
+    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.dll' />
+    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.Views.dll' />
+    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.Views.dll' />
+    <Exec Command='if exist $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.exe ( $(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.exe )' />
+    <Exec Command='if exist $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.exe ( $(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.exe )' />
+  </Target>
+
+  <Target Name="RemoveUnwantedFiles" AfterTargets="SignDlls">
+    <Message Text="==============================================" Importance="high" />
+    <Message Text="Remove unwanted published files" Importance="high" />
+    <Message Text="==============================================" Importance="high" />
+    <Exec Command="del /Q $(PublishDir)\*.pdb" />
+    <Exec Command="del /Q $(PublishDir)\*.xml" />
+    <Exec Command="del /Q $(PublishDir)\Mapping.txt" />
+    <Exec Command="del /Q $(PublishDir)\web.config" />
+    <!--TODO: remove other unwanted files-->
   </Target>
 
 </Project>

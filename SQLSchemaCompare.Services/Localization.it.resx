@@ -172,7 +172,7 @@
     <value>Chiudi Progetto</value>
   </data>
   <data name="MenuEditProject" xml:space="preserve">
-    <value>Modifica</value>
+    <value>Modifica Progetto</value>
   </data>
   <data name="MenuExit" xml:space="preserve">
     <value>Esci</value>
@@ -601,5 +601,8 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   </data>
   <data name="LabelCopySettingsRight" xml:space="preserve">
     <value>Copia le impostazioni di connessione a destra</value>
+  </data>
+  <data name="MenuEdit" xml:space="preserve">
+    <value>Modifica</value>
   </data>
 </root>

@@ -304,7 +304,7 @@
     <value>Sicht</value>
   </data>
   <data name="MenuEditProject" xml:space="preserve">
-    <value>Ändern</value>
+    <value>Projekt ändern</value>
   </data>
   <data name="MenuSaveProjectAs" xml:space="preserve">
     <value>Projekt speichern unter</value>
@@ -601,5 +601,8 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   </data>
   <data name="LabelCopySettingsExchange" xml:space="preserve">
     <value>Verbindungseinstellungen tauschen</value>
+  </data>
+  <data name="MenuEdit" xml:space="preserve">
+    <value>Ändern</value>
   </data>
 </root>

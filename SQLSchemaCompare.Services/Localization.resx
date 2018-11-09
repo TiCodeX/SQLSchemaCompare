@@ -227,7 +227,7 @@
     <value>Settings</value>
   </data>
   <data name="MenuEditProject" xml:space="preserve">
-    <value>Edit</value>
+    <value>Edit Project</value>
   </data>
   <data name="MenuSaveProjectAs" xml:space="preserve">
     <value>Save Project As</value>
@@ -610,5 +610,8 @@ This option will ignore the matching and use the same order as when it was creat
   </data>
   <data name="LabelCopySettingsRight" xml:space="preserve">
     <value>Copy connection settings right</value>
+  </data>
+  <data name="MenuEdit" xml:space="preserve">
+    <value>Edit</value>
   </data>
 </root>

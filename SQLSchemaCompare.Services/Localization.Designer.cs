@@ -1010,6 +1010,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
+        public static string MenuEdit {
+            get {
+                return ResourceManager.GetString("MenuEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Project.
+        /// </summary>
         public static string MenuEditProject {
             get {
                 return ResourceManager.GetString("MenuEditProject", resourceCulture);

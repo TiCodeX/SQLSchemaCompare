@@ -90,7 +90,7 @@ class MenuManager {
                 submenu: [
                     {
                         id: "menuEditProject",
-                        label: Localization.Get("MenuEditProject"),
+                        label: Localization.Get("MenuEdit"),
                         accelerator: "CmdOrCtrl+E",
                         enabled: false,
                         click(): void {

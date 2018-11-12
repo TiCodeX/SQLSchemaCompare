@@ -252,7 +252,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             const string pattern = @"^\s*CREATE(?:.*)VIEW\s+(`[^`]*`|`[^`]*`\s+\([^\)]*\))\s+AS";
             const string replacement = @"ALTER VIEW $1 AS";
 
-            var alterViewDefinition = Regex.Replace(sourceView.ViewDefinition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            var alterViewDefinition = Regex.Replace(sourceView.ViewDefinition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
             var sb = new StringBuilder();
             sb.AppendLine($"{alterViewDefinition.TrimEnd('\r', '\n', ' ', ';')};");

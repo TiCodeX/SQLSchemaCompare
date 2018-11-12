@@ -121,10 +121,10 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <summary>
-        /// Drops and create the microsoft database
+        /// Drops the microsoft SQL database
         /// </summary>
         /// <param name="databaseName">Name of the database</param>
-        internal void DropAndCreateMicrosoftSqlDatabase(string databaseName)
+        internal void DropMicrosoftSqlDatabase(string databaseName)
         {
             using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetMicrosoftSqlDatabaseProviderOptions(string.Empty)))
             {
@@ -135,7 +135,47 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 dropDbQuery.AppendLine($"  DROP DATABASE {databaseName}");
                 dropDbQuery.AppendLine("END");
                 context.ExecuteNonQuery(dropDbQuery.ToString());
+            }
+        }
 
+        /// <summary>
+        /// Drops my SQL database
+        /// </summary>
+        /// <param name="databaseName">Name of the database</param>
+        internal void DropMySqlDatabase(string databaseName)
+        {
+            var query = new StringBuilder();
+            query.AppendLine($"DROP SCHEMA IF EXISTS `{databaseName}`;");
+            var pathMySql = Path.GetTempFileName();
+            File.WriteAllText(pathMySql, query.ToString());
+            this.ExecuteMySqlScript(pathMySql);
+        }
+
+        /// <summary>
+        /// Drops the postgre SQL database
+        /// </summary>
+        /// <param name="databaseName">Name of the database</param>
+        internal void DropPostgreSqlDatabase(string databaseName)
+        {
+            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(string.Empty)))
+            {
+                var dropDbQuery = new StringBuilder();
+                dropDbQuery.AppendLine($"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{databaseName}';");
+                dropDbQuery.AppendLine($"DROP DATABASE IF EXISTS {databaseName};");
+                context.ExecuteNonQuery(dropDbQuery.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Drops and create the microsoft database
+        /// </summary>
+        /// <param name="databaseName">Name of the database</param>
+        internal void DropAndCreateMicrosoftSqlDatabase(string databaseName)
+        {
+            this.DropMicrosoftSqlDatabase(databaseName);
+
+            using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetMicrosoftSqlDatabaseProviderOptions(string.Empty)))
+            {
                 context.ExecuteNonQuery($"CREATE DATABASE {databaseName}");
             }
         }
@@ -146,10 +186,10 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="databaseName">Name of the database</param>
         internal void DropAndCreateMySqlDatabase(string databaseName)
         {
-            var query = new StringBuilder();
-            query.AppendLine($"DROP SCHEMA IF EXISTS `{databaseName}`;");
-            query.AppendLine($"CREATE SCHEMA `{databaseName}`;");
+            this.DropMySqlDatabase(databaseName);
 
+            var query = new StringBuilder();
+            query.AppendLine($"CREATE SCHEMA `{databaseName}`;");
             var pathMySql = Path.GetTempFileName();
             File.WriteAllText(pathMySql, query.ToString());
             this.ExecuteMySqlScript(pathMySql);
@@ -161,13 +201,13 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="databaseName">Name of the database</param>
         internal void DropAndCreatePostgreSqlDatabase(string databaseName)
         {
+            this.DropPostgreSqlDatabase(databaseName);
+
             using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(string.Empty)))
             {
-                var dropDbQuery = new StringBuilder();
-                dropDbQuery.AppendLine($"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{databaseName}';");
-                dropDbQuery.AppendLine($"DROP DATABASE IF EXISTS {databaseName};");
-                dropDbQuery.AppendLine($"CREATE DATABASE {databaseName};");
-                context.ExecuteNonQuery(dropDbQuery.ToString());
+                var query = new StringBuilder();
+                query.AppendLine($"CREATE DATABASE {databaseName};");
+                context.ExecuteNonQuery(query.ToString());
             }
         }
 

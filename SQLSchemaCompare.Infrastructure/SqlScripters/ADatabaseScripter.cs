@@ -234,8 +234,38 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             // Drop all items only on target
             sb.Append(this.GenerateFullDropScript(onlyTargetItems));
 
-            /*Alter*/
+            // Alter the different items
+            foreach (var table in differentItems.OfType<CompareResultItem<ABaseDbTable>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
+            {
+                sb.Append(this.GenerateAlterTableScript(table.SourceItem, table.TargetItem));
+            }
 
+            foreach (var view in differentItems.OfType<CompareResultItem<ABaseDbView>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
+            {
+                sb.Append(this.GenerateAlterViewScript(view.SourceItem, view.TargetItem));
+            }
+
+            foreach (var function in differentItems.OfType<CompareResultItem<ABaseDbFunction>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
+            {
+                sb.Append(this.GenerateAlterFunctionScript(function.SourceItem, onlySourceItems.DataTypes, function.TargetItem, onlyTargetItems.DataTypes));
+            }
+
+            foreach (var storedProcedure in differentItems.OfType<CompareResultItem<ABaseDbStoredProcedure>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
+            {
+                sb.Append(this.GenerateAlterStoredProcedureScript(storedProcedure.SourceItem, storedProcedure.TargetItem));
+            }
+
+            foreach (var sequence in differentItems.OfType<CompareResultItem<ABaseDbSequence>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
+            {
+                sb.Append(this.GenerateAlterSequenceScript(sequence.SourceItem, sequence.TargetItem));
+            }
+
+            foreach (var type in differentItems.OfType<CompareResultItem<ABaseDbDataType>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
+            {
+                sb.Append(this.GenerateAlterTypeScript(type.SourceItem, onlySourceItems.DataTypes, type.TargetItem, onlyTargetItems.DataTypes));
+            }
+
+            // Create all items only on source
             sb.Append(this.GenerateFullCreateScript(onlySourceItems));
 
             return sb.ToString();
@@ -465,6 +495,63 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        public string GenerateDropTableScript(ABaseDbTable table)
+        {
+            var sb = new StringBuilder();
+
+            if (table.Indexes.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
+                sb.Append(this.ScriptDropIndexes(table, table.Indexes));
+                sb.AppendLine();
+            }
+
+            if (table.ReferencingForeignKeys.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelReferencingForeignKeys));
+                sb.Append(this.ScriptAlterTableDropReferencingForeignKeys(table));
+                sb.AppendLine();
+            }
+
+            if (table.PrimaryKeys.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
+                sb.Append(this.ScriptAlterTableDropPrimaryKeys(table));
+                sb.AppendLine();
+            }
+
+            if (table.ForeignKeys.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
+                sb.Append(this.ScriptAlterTableDropForeignKeys(table));
+                sb.AppendLine();
+            }
+
+            if (table.Constraints.Count > 0 || table.Columns.Any(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName)))
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
+                sb.Append(this.ScriptAlterTableDropConstraints(table));
+                sb.AppendLine();
+            }
+
+            if (table.Triggers.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
+                foreach (var trigger in table.Triggers)
+                {
+                    sb.Append(this.ScriptDropTrigger(trigger));
+                }
+
+                sb.AppendLine();
+            }
+
+            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTable));
+            sb.Append(this.ScriptDropTable(table));
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
         public string GenerateAlterTableScript(ABaseDbTable sourceTable, ABaseDbTable targetTable)
         {
             if (sourceTable == null && targetTable == null)
@@ -477,62 +564,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 return this.GenerateCreateTableScript(sourceTable);
             }
 
-            var sb = new StringBuilder();
-
             if (sourceTable == null)
             {
-                if (targetTable.Indexes.Count > 0)
-                {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
-                    sb.Append(this.ScriptDropIndexes(targetTable, targetTable.Indexes));
-                    sb.AppendLine();
-                }
-
-                if (targetTable.ReferencingForeignKeys.Count > 0)
-                {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelReferencingForeignKeys));
-                    sb.Append(this.ScriptAlterTableDropReferencingForeignKeys(targetTable));
-                    sb.AppendLine();
-                }
-
-                if (targetTable.PrimaryKeys.Count > 0)
-                {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
-                    sb.Append(this.ScriptAlterTableDropPrimaryKeys(targetTable));
-                    sb.AppendLine();
-                }
-
-                if (targetTable.ForeignKeys.Count > 0)
-                {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-                    sb.Append(this.ScriptAlterTableDropForeignKeys(targetTable));
-                    sb.AppendLine();
-                }
-
-                if (targetTable.Constraints.Count > 0 || targetTable.Columns.Any(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName)))
-                {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
-                    sb.Append(this.ScriptAlterTableDropConstraints(targetTable));
-                    sb.AppendLine();
-                }
-
-                if (targetTable.Triggers.Count > 0)
-                {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
-                    foreach (var trigger in targetTable.Triggers)
-                    {
-                        sb.Append(this.ScriptDropTrigger(trigger));
-                    }
-
-                    sb.AppendLine();
-                }
-
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTable));
-                sb.Append(this.ScriptDropTable(targetTable));
-                return sb.ToString();
+                return this.GenerateDropTableScript(targetTable);
             }
 
+            var sb = new StringBuilder();
             sb.AppendLine("TODO: Alter Table Script");
+
             return sb.ToString();
         }
 

@@ -299,11 +299,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterView(ABaseDbView sourceView, ABaseDbView targetView)
         {
-            const string pattern = @"^\s*CREATE\s+VIEW\s+";
-            const string replacement = @"ALTER VIEW ";
+            const string pattern = @"^(\s*)CREATE(\s+)(VIEW)(\s+)";
+            const string replacement = @"$1ALTER$2$3$4";
 
             var sb = new StringBuilder();
-            sb.Append(Regex.Replace(sourceView.ViewDefinition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Singleline));
+            sb.Append(Regex.Replace(sourceView.ViewDefinition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Multiline));
             if (!sourceView.ViewDefinition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
@@ -339,11 +339,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterFunction(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
-            const string pattern = @"^\s*CREATE\s+FUNCTION\s+";
-            const string replacement = @"ALTER FUNCTION ";
+            const string pattern = @"^(\s*)CREATE(\s+)(FUNCTION)(\s+)";
+            const string replacement = @"$1ALTER$2$3$4";
 
             var sb = new StringBuilder();
-            sb.Append(Regex.Replace(sourceFunction.Definition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Singleline));
+            sb.Append(Regex.Replace(sourceFunction.Definition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Multiline));
             if (!sourceFunction.Definition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
@@ -379,11 +379,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterStoredProcedure(ABaseDbStoredProcedure sourceStoredProcedure, ABaseDbStoredProcedure targetStoredProcedure)
         {
-            const string pattern = @"^\s*CREATE\s+(PROC|PROCEDURE)\s+";
-            const string replacement = @"ALTER PROCEDURE ";
+            const string pattern = @"^(\s*)CREATE(\s+)(PROC|PROCEDURE)(\s+)";
+            const string replacement = @"$1ALTER$2$3$4";
 
             var sb = new StringBuilder();
-            sb.Append(Regex.Replace(sourceStoredProcedure.Definition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Singleline));
+            sb.Append(Regex.Replace(sourceStoredProcedure.Definition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Multiline));
             if (!sourceStoredProcedure.Definition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
@@ -419,11 +419,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterTrigger(ABaseDbTrigger sourceTrigger, ABaseDbTrigger targetTrigger)
         {
-            const string pattern = @"^\s*CREATE\s+TRIGGER\s+";
-            const string replacement = @"ALTER TRIGGER ";
+            const string pattern = @"^(\s*)CREATE(\s+)(TRIGGER)(\s+)";
+            const string replacement = @"$1ALTER$2$3$4";
 
             var sb = new StringBuilder();
-            sb.Append(Regex.Replace(sourceTrigger.Definition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Singleline));
+            sb.Append(Regex.Replace(sourceTrigger.Definition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Multiline));
             if (!sourceTrigger.Definition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();

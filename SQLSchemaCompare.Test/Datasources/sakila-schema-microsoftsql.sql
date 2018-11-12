@@ -63,7 +63,7 @@ CREATE TABLE actor (
   first_name VARCHAR(45) NOT NULL,
   last_name VARCHAR(45) NOT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (actor_id)
+  CONSTRAINT PK_actor_actor_id PRIMARY KEY NONCLUSTERED (actor_id)
   )
 GO
  ALTER TABLE actor ADD CONSTRAINT [DF_actor_last_update] DEFAULT (getdate()) FOR last_update
@@ -80,7 +80,7 @@ CREATE TABLE country (
   country_id SMALLINT NOT NULL IDENTITY ,
   country VARCHAR(50) NOT NULL,
   last_update DATETIME,
-  PRIMARY KEY NONCLUSTERED (country_id)
+  CONSTRAINT PK_country_country_id PRIMARY KEY NONCLUSTERED (country_id)
 )
 GO
  ALTER TABLE country ADD CONSTRAINT [DF_country_last_update] DEFAULT (getdate()) FOR last_update
@@ -95,7 +95,7 @@ CREATE TABLE city (
   city VARCHAR(50) NOT NULL,
   country_id SMALLINT NOT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (city_id),
+  CONSTRAINT PK_city_city_id PRIMARY KEY NONCLUSTERED (city_id),
   CONSTRAINT fk_city_country FOREIGN KEY (country_id) REFERENCES country (country_id) ON DELETE NO ACTION ON UPDATE CASCADE
 )
 GO
@@ -117,7 +117,7 @@ CREATE TABLE address (
   postal_code VARCHAR(10) DEFAULT NULL,
   phone phone_number NOT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (address_id)
+  CONSTRAINT PK_address_address_id PRIMARY KEY NONCLUSTERED (address_id)
 )
 GO
 ALTER TABLE address ADD CONSTRAINT [DF_address_last_update] DEFAULT (getdate()) FOR last_update
@@ -137,7 +137,7 @@ CREATE TABLE language (
   language_id TINYINT NOT NULL IDENTITY,
   name CHAR(20) NOT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (language_id)
+  CONSTRAINT PK_language_language_id PRIMARY KEY NONCLUSTERED (language_id)
 )
 GO
  ALTER TABLE language ADD CONSTRAINT [DF_language_last_update] DEFAULT (getdate()) FOR last_update
@@ -151,7 +151,7 @@ CREATE TABLE category (
   category_id TINYINT NOT NULL IDENTITY,
   name VARCHAR(25) NOT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (category_id)
+  CONSTRAINT PK_category_category_id PRIMARY KEY NONCLUSTERED (category_id)
 )
 GO
  ALTER TABLE category ADD CONSTRAINT [DF_category_last_update] DEFAULT (getdate()) FOR last_update
@@ -171,7 +171,7 @@ CREATE TABLE customer (
   active CHAR(1) NOT NULL DEFAULT 'Y',
   create_date DATETIME NOT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (customer_id),
+  CONSTRAINT PK_customer_customer_id PRIMARY KEY NONCLUSTERED (customer_id),
   CONSTRAINT fk_customer_address FOREIGN KEY (address_id) REFERENCES address (address_id) ON DELETE NO ACTION ON UPDATE CASCADE
 )
 GO
@@ -204,7 +204,7 @@ CREATE TABLE film (
   rating VARCHAR(10) DEFAULT 'G',
   special_features VARCHAR(255) DEFAULT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (film_id),
+  CONSTRAINT PK_film_film_id PRIMARY KEY NONCLUSTERED (film_id),
   CONSTRAINT fk_film_language FOREIGN KEY (language_id) REFERENCES language (language_id) ,
   CONSTRAINT fk_film_language_original FOREIGN KEY (original_language_id) REFERENCES language (language_id) 
 )
@@ -233,7 +233,7 @@ CREATE TABLE film_actor (
   actor_id INT NOT NULL,
   film_id  INT NOT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (actor_id,film_id),
+  CONSTRAINT PK_film_actor_actor_id_film_id PRIMARY KEY NONCLUSTERED (actor_id,film_id),
   CONSTRAINT fk_film_actor_actor FOREIGN KEY (actor_id) REFERENCES actor (actor_id) ON DELETE NO ACTION ON UPDATE CASCADE,
   CONSTRAINT fk_film_actor_film FOREIGN KEY (film_id) REFERENCES film (film_id) ON DELETE NO ACTION ON UPDATE CASCADE
 )
@@ -253,7 +253,7 @@ CREATE TABLE film_actor_description (
   film_actor_description_id INT NOT NULL,
   actor_id INT NOT NULL,
   film_id  INT NOT NULL,
-  PRIMARY KEY NONCLUSTERED (film_actor_description_id),
+  CONSTRAINT PK_film_actor_description_film_actor_description_id PRIMARY KEY NONCLUSTERED (film_actor_description_id),
   CONSTRAINT fk_film_actor_description_film_actor FOREIGN KEY (actor_id,film_id) REFERENCES film_actor (actor_id,film_id) ON DELETE NO ACTION ON UPDATE CASCADE
 )
 
@@ -265,7 +265,7 @@ CREATE TABLE film_category (
   film_id INT NOT NULL,
   category_id TINYINT  NOT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (film_id, category_id),
+  CONSTRAINT PK_film_category_film_id_category_id PRIMARY KEY NONCLUSTERED (film_id, category_id),
   CONSTRAINT fk_film_category_film FOREIGN KEY (film_id) REFERENCES film (film_id) ON DELETE NO ACTION ON UPDATE CASCADE,
   CONSTRAINT fk_film_category_category FOREIGN KEY (category_id) REFERENCES category (category_id) ON DELETE NO ACTION ON UPDATE CASCADE
 )
@@ -284,7 +284,7 @@ CREATE TABLE film_text (
   film_id SMALLINT NOT NULL,
   title VARCHAR(255) NOT NULL,
   description TEXT,
-  PRIMARY KEY NONCLUSTERED (film_id),
+  CONSTRAINT PK_film_text_film_id PRIMARY KEY NONCLUSTERED (film_id),
 )
 
 --
@@ -296,7 +296,7 @@ CREATE TABLE inventory (
   film_id INT NOT NULL,
   store_id INT NOT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (inventory_id),
+  CONSTRAINT PK_inventory_inventory_id PRIMARY KEY NONCLUSTERED (inventory_id),
   CONSTRAINT fk_inventory_film FOREIGN KEY (film_id) REFERENCES film (film_id) ON DELETE NO ACTION ON UPDATE CASCADE
 )
 GO
@@ -323,7 +323,7 @@ CREATE TABLE staff (
   username VARCHAR(16) NOT NULL,
   password VARCHAR(40) DEFAULT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (staff_id),
+  CONSTRAINT PK_staff_staff_id PRIMARY KEY NONCLUSTERED (staff_id),
   CONSTRAINT fk_staff_address FOREIGN KEY (address_id) REFERENCES address (address_id) ON DELETE NO ACTION ON UPDATE CASCADE
 )
 GO
@@ -343,7 +343,7 @@ CREATE TABLE store (
   manager_staff_id TINYINT NOT NULL,
   address_id INT NOT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (store_id),
+  CONSTRAINT PK_store_store_id PRIMARY KEY NONCLUSTERED (store_id),
   CONSTRAINT fk_store_staff FOREIGN KEY (manager_staff_id) REFERENCES staff (staff_id) ,
   CONSTRAINT fk_store_address FOREIGN KEY (address_id) REFERENCES address (address_id) 
 )
@@ -369,7 +369,7 @@ CREATE TABLE payment (
   amount DECIMAL(5,2) NOT NULL,
   payment_date DATETIME NOT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (payment_id),
+  CONSTRAINT PK_payment_payment_id PRIMARY KEY NONCLUSTERED (payment_id),
   CONSTRAINT fk_payment_customer FOREIGN KEY (customer_id) REFERENCES customer (customer_id) ,
   CONSTRAINT fk_payment_staff FOREIGN KEY (staff_id) REFERENCES staff (staff_id) 
 )
@@ -393,7 +393,7 @@ CREATE TABLE rental (
   return_date DATETIME DEFAULT NULL,
   staff_id TINYINT  NOT NULL,
   last_update DATETIME NOT NULL,
-  PRIMARY KEY NONCLUSTERED (rental_id),
+  CONSTRAINT PK_rental_rental_id PRIMARY KEY NONCLUSTERED (rental_id),
   CONSTRAINT fk_rental_staff FOREIGN KEY (staff_id) REFERENCES staff (staff_id) ,
   CONSTRAINT fk_rental_inventory FOREIGN KEY (inventory_id) REFERENCES inventory (inventory_id) ,
   CONSTRAINT fk_rental_customer FOREIGN KEY (customer_id) REFERENCES customer (customer_id) 
@@ -567,8 +567,16 @@ GO
 CREATE UNIQUE CLUSTERED INDEX idx_country_city_codes ON dbo.v_country_city_codes(last_update);
 GO
 
--- TO DO PROCEDURES
--- TO DO TRIGGERS
+-- STORED PROCEDURES
+GO
+CREATE PROCEDURE uspGetAddress @City nvarchar(30) = NULL
+AS
+SELECT *
+FROM city
+WHERE city = ISNULL(@City,city)
+GO
+
+-- TRIGGERS
 GO
 
 CREATE TRIGGER reminder1
@@ -577,6 +585,7 @@ AFTER INSERT, UPDATE
 AS RAISERROR ('BLABLABLA', 16, 10)
 GO
 
+-- SEQUENCES
 CREATE SEQUENCE actor_seq
   START WITH 1
   INCREMENT BY 1;

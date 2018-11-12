@@ -43,48 +43,55 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void ClonePostgreSqlDatabase()
         {
             const string databaseName = "sakila";
-            const string clonedDatabaseName = "sakila_clone";
+            var clonedDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
 
-            var postgresqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider(databaseName);
-            var db = postgresqldbp.GetDatabase(new TaskInfo("test"));
-
-            var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
-            var scripter = scripterFactory.Create(db, new TiCodeX.SQLSchemaCompare.Core.Entities.Project.ProjectOptions());
-            var fullScript = scripter.GenerateFullCreateScript(db);
-
-            this.dbFixture.DropAndCreatePostgreSqlDatabase(clonedDatabaseName);
-
-            var postgresqldbpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(clonedDatabaseName);
-            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.cipherService, postgresqldbpo))
+            try
             {
-                var sb = new StringBuilder();
-                sb.AppendLine("SET check_function_bodies = false;");
+                var postgresqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider(databaseName);
+                var db = postgresqldbp.GetDatabase(new TaskInfo("test"));
 
-                var firstViewFound = false;
-                foreach (var line in fullScript.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+                var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
+                var scripter = scripterFactory.Create(db, new TiCodeX.SQLSchemaCompare.Core.Entities.Project.ProjectOptions());
+                var fullScript = scripter.GenerateFullCreateScript(db);
+
+                this.dbFixture.DropAndCreatePostgreSqlDatabase(clonedDatabaseName);
+
+                var postgresqldbpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(clonedDatabaseName);
+                using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.cipherService, postgresqldbpo))
                 {
-                    if (line.Contains("CREATE VIEW", StringComparison.Ordinal) && !firstViewFound)
+                    var sb = new StringBuilder();
+                    sb.AppendLine("SET check_function_bodies = false;");
+
+                    var firstViewFound = false;
+                    foreach (var line in fullScript.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
                     {
-                        // TODO: implement create aggregate in scripter
-                        sb.AppendLine("CREATE AGGREGATE group_concat(text)(");
-                        sb.AppendLine("    SFUNC = _group_concat,");
-                        sb.AppendLine("    STYPE = text");
-                        sb.AppendLine(");");
-                        firstViewFound = true;
+                        if (line.Contains("CREATE VIEW", StringComparison.Ordinal) && !firstViewFound)
+                        {
+                            // TODO: implement create aggregate in scripter
+                            sb.AppendLine("CREATE AGGREGATE group_concat(text)(");
+                            sb.AppendLine("    SFUNC = _group_concat,");
+                            sb.AppendLine("    STYPE = text");
+                            sb.AppendLine(");");
+                            firstViewFound = true;
+                        }
+
+                        sb.AppendLine(line);
                     }
 
-                    sb.AppendLine(line);
+                    if (this.exportGeneratedFullScript)
+                    {
+                        File.WriteAllText("c:\\temp\\FullScriptPostgreSQL.sql", sb.ToString());
+                    }
+
+                    context.ExecuteNonQuery(sb.ToString());
                 }
 
-                if (this.exportGeneratedFullScript)
-                {
-                    File.WriteAllText("c:\\temp\\FullScriptPostgreSQL.sql", sb.ToString());
-                }
-
-                context.ExecuteNonQuery(sb.ToString());
+                this.dbFixture.CompareDatabases(DatabaseType.PostgreSql, clonedDatabaseName, databaseName);
             }
-
-            this.dbFixture.CompareDatabases(DatabaseType.PostgreSql, clonedDatabaseName, databaseName);
+            finally
+            {
+                this.dbFixture.DropPostgreSqlDatabase(clonedDatabaseName);
+            }
         }
 
         /// <summary>
@@ -94,51 +101,59 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [IntegrationTest]
         public void MigratePostgreSqlDatabaseSourceEmpty()
         {
-            const string sourceDatabaseName = "sakila_empty";
-            const string targetDatabaseName = "sakila_migrated_to_empty";
+            var sourceDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
+            var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
 
-            // Create the empty database
-            this.dbFixture.DropAndCreatePostgreSqlDatabase(sourceDatabaseName);
-
-            // Create the database with sakila to be migrated to empty
-            this.dbFixture.CreatePostgreSqlSakilaDatabase(targetDatabaseName);
-
-            // Perform the compare
-            var projectService = new ProjectService(null, this.LoggerFactory);
-            projectService.NewProject(DatabaseType.PostgreSql);
-            projectService.Project.SourceProviderOptions = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(sourceDatabaseName);
-            projectService.Project.TargetProviderOptions = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName);
-            this.dbFixture.PerformCompareAndWaitResult(projectService);
-            projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
-
-            // Execute the full alter script
-            var postgresqldbpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName);
-            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.cipherService, postgresqldbpo))
+            try
             {
-                var sb = new StringBuilder();
+                // Create the empty database
+                this.dbFixture.DropAndCreatePostgreSqlDatabase(sourceDatabaseName);
 
-                var firstFunctionFound = false;
-                foreach (var line in projectService.Project.Result.FullAlterScript.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+                // Create the database with sakila to be migrated to empty
+                this.dbFixture.CreatePostgreSqlSakilaDatabase(targetDatabaseName);
+
+                // Perform the compare
+                var projectService = new ProjectService(null, this.LoggerFactory);
+                projectService.NewProject(DatabaseType.PostgreSql);
+                projectService.Project.SourceProviderOptions = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(sourceDatabaseName);
+                projectService.Project.TargetProviderOptions = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName);
+                this.dbFixture.PerformCompareAndWaitResult(projectService);
+                projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
+
+                // Execute the full alter script
+                var postgresqldbpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName);
+                using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.cipherService, postgresqldbpo))
                 {
-                    if (line.Contains("DROP FUNCTION", StringComparison.Ordinal) && !firstFunctionFound)
+                    var sb = new StringBuilder();
+
+                    var firstFunctionFound = false;
+                    foreach (var line in projectService.Project.Result.FullAlterScript.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
                     {
-                        // TODO: implement drop aggregate in scripter
-                        sb.AppendLine("DROP AGGREGATE group_concat(text);");
-                        firstFunctionFound = true;
+                        if (line.Contains("DROP FUNCTION", StringComparison.Ordinal) && !firstFunctionFound)
+                        {
+                            // TODO: implement drop aggregate in scripter
+                            sb.AppendLine("DROP AGGREGATE group_concat(text);");
+                            firstFunctionFound = true;
+                        }
+
+                        sb.AppendLine(line);
                     }
 
-                    sb.AppendLine(line);
+                    if (this.exportGeneratedFullScript)
+                    {
+                        File.WriteAllText("c:\\temp\\FullDropScriptPostgreSQL.sql", sb.ToString());
+                    }
+
+                    context.ExecuteNonQuery(sb.ToString());
                 }
 
-                if (this.exportGeneratedFullScript)
-                {
-                    File.WriteAllText("c:\\temp\\FullDropScriptPostgreSQL.sql", sb.ToString());
-                }
-
-                context.ExecuteNonQuery(sb.ToString());
+                this.dbFixture.CompareDatabases(DatabaseType.PostgreSql, targetDatabaseName, sourceDatabaseName);
             }
-
-            this.dbFixture.CompareDatabases(DatabaseType.PostgreSql, targetDatabaseName, sourceDatabaseName);
+            finally
+            {
+                this.dbFixture.DropPostgreSqlDatabase(sourceDatabaseName);
+                this.dbFixture.DropPostgreSqlDatabase(targetDatabaseName);
+            }
         }
 
         /// <summary>
@@ -149,45 +164,52 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetEmpty()
         {
             const string sourceDatabaseName = "sakila";
-            const string targetDatabaseName = "sakila_migrated_from_empty";
+            var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
 
-            this.dbFixture.DropAndCreatePostgreSqlDatabase(targetDatabaseName);
-
-            // Perform the compare
-            var projectService = new ProjectService(null, this.LoggerFactory);
-            projectService.NewProject(DatabaseType.PostgreSql);
-            projectService.Project.SourceProviderOptions = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(sourceDatabaseName);
-            projectService.Project.TargetProviderOptions = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName);
-            this.dbFixture.PerformCompareAndWaitResult(projectService);
-            projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
-
-            // Execute the full alter script
-            var postgresqldbpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName);
-            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.cipherService, postgresqldbpo))
+            try
             {
-                var sb = new StringBuilder();
-                sb.AppendLine("SET check_function_bodies = false;");
+                this.dbFixture.DropAndCreatePostgreSqlDatabase(targetDatabaseName);
 
-                var firstViewFound = false;
-                foreach (var line in projectService.Project.Result.FullAlterScript.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+                // Perform the compare
+                var projectService = new ProjectService(null, this.LoggerFactory);
+                projectService.NewProject(DatabaseType.PostgreSql);
+                projectService.Project.SourceProviderOptions = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(sourceDatabaseName);
+                projectService.Project.TargetProviderOptions = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName);
+                this.dbFixture.PerformCompareAndWaitResult(projectService);
+                projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
+
+                // Execute the full alter script
+                var postgresqldbpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName);
+                using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.cipherService, postgresqldbpo))
                 {
-                    if (line.Contains("CREATE VIEW", StringComparison.Ordinal) && !firstViewFound)
+                    var sb = new StringBuilder();
+                    sb.AppendLine("SET check_function_bodies = false;");
+
+                    var firstViewFound = false;
+                    foreach (var line in projectService.Project.Result.FullAlterScript.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
                     {
-                        // TODO: implement create aggregate in scripter
-                        sb.AppendLine("CREATE AGGREGATE group_concat(text)(");
-                        sb.AppendLine("    SFUNC = _group_concat,");
-                        sb.AppendLine("    STYPE = text");
-                        sb.AppendLine(");");
-                        firstViewFound = true;
+                        if (line.Contains("CREATE VIEW", StringComparison.Ordinal) && !firstViewFound)
+                        {
+                            // TODO: implement create aggregate in scripter
+                            sb.AppendLine("CREATE AGGREGATE group_concat(text)(");
+                            sb.AppendLine("    SFUNC = _group_concat,");
+                            sb.AppendLine("    STYPE = text");
+                            sb.AppendLine(");");
+                            firstViewFound = true;
+                        }
+
+                        sb.AppendLine(line);
                     }
 
-                    sb.AppendLine(line);
+                    context.ExecuteNonQuery(sb.ToString());
                 }
 
-                context.ExecuteNonQuery(sb.ToString());
+                this.dbFixture.CompareDatabases(DatabaseType.PostgreSql, targetDatabaseName, sourceDatabaseName);
             }
-
-            this.dbFixture.CompareDatabases(DatabaseType.PostgreSql, targetDatabaseName, sourceDatabaseName);
+            finally
+            {
+                this.dbFixture.DropPostgreSqlDatabase(targetDatabaseName);
+            }
         }
     }
 }

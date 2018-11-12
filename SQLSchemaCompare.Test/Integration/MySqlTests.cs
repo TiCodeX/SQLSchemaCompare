@@ -40,37 +40,44 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void CloneMySqlDatabase()
         {
             const string databaseName = "sakila";
-            const string clonedDatabaseName = "sakila_clone";
+            var clonedDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
 
-            var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider(databaseName);
-            var db = mysqldbp.GetDatabase(new TaskInfo("test"));
-
-            var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
-            var scripter = scripterFactory.Create(db, new TiCodeX.SQLSchemaCompare.Core.Entities.Project.ProjectOptions());
-            var fullScript = scripter.GenerateFullCreateScript(db);
-
-            if (this.exportGeneratedFullScript)
+            try
             {
-                File.WriteAllText("c:\\temp\\FullScriptMySQL.sql", fullScript);
+                var mysqldbp = this.dbFixture.GetMySqlDatabaseProvider(databaseName);
+                var db = mysqldbp.GetDatabase(new TaskInfo("test"));
+
+                var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
+                var scripter = scripterFactory.Create(db, new TiCodeX.SQLSchemaCompare.Core.Entities.Project.ProjectOptions());
+                var fullScript = scripter.GenerateFullCreateScript(db);
+
+                if (this.exportGeneratedFullScript)
+                {
+                    File.WriteAllText("c:\\temp\\FullScriptMySQL.sql", fullScript);
+                }
+
+                this.dbFixture.DropAndCreateMySqlDatabase(clonedDatabaseName);
+
+                var mySqlFullScript = new StringBuilder();
+                mySqlFullScript.AppendLine("SET @OLD_UNIQUE_CHECKS =@@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;");
+                mySqlFullScript.AppendLine("SET @OLD_FOREIGN_KEY_CHECKS =@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;");
+                mySqlFullScript.AppendLine("SET @OLD_SQL_MODE =@@SQL_MODE, SQL_MODE = 'TRADITIONAL';");
+                mySqlFullScript.AppendLine($"USE {clonedDatabaseName};");
+                mySqlFullScript.AppendLine(fullScript.Replace($"`{databaseName}`.`", $"`{clonedDatabaseName}`.`", StringComparison.InvariantCulture));
+                mySqlFullScript.AppendLine("SET SQL_MODE = @OLD_SQL_MODE;");
+                mySqlFullScript.AppendLine("SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;");
+                mySqlFullScript.AppendLine("SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;");
+
+                var pathMySql = Path.GetTempFileName();
+                File.WriteAllText(pathMySql, mySqlFullScript.ToString());
+                this.dbFixture.ExecuteMySqlScript(pathMySql);
+
+                this.dbFixture.CompareDatabases(DatabaseType.MySql, clonedDatabaseName, databaseName);
             }
-
-            this.dbFixture.DropAndCreateMySqlDatabase(clonedDatabaseName);
-
-            var mySqlFullScript = new StringBuilder();
-            mySqlFullScript.AppendLine("SET @OLD_UNIQUE_CHECKS =@@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;");
-            mySqlFullScript.AppendLine("SET @OLD_FOREIGN_KEY_CHECKS =@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;");
-            mySqlFullScript.AppendLine("SET @OLD_SQL_MODE =@@SQL_MODE, SQL_MODE = 'TRADITIONAL';");
-            mySqlFullScript.AppendLine($"USE {clonedDatabaseName};");
-            mySqlFullScript.AppendLine(fullScript.Replace($"`{databaseName}`.`", $"`{clonedDatabaseName}`.`", StringComparison.InvariantCulture));
-            mySqlFullScript.AppendLine("SET SQL_MODE = @OLD_SQL_MODE;");
-            mySqlFullScript.AppendLine("SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;");
-            mySqlFullScript.AppendLine("SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;");
-
-            var pathMySql = Path.GetTempFileName();
-            File.WriteAllText(pathMySql, mySqlFullScript.ToString());
-            this.dbFixture.ExecuteMySqlScript(pathMySql);
-
-            this.dbFixture.CompareDatabases(DatabaseType.MySql, clonedDatabaseName, databaseName);
+            finally
+            {
+                this.dbFixture.DropMySqlDatabase(clonedDatabaseName);
+            }
         }
 
         /// <summary>
@@ -80,38 +87,46 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [IntegrationTest]
         public void MigrateMySqlDatabaseSourceEmpty()
         {
-            const string sourceDatabaseName = "sakila_empty";
-            const string targetDatabaseName = "sakila_migrated_to_empty";
+            var sourceDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
+            var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
 
-            // Create the empty database
-            this.dbFixture.DropAndCreateMySqlDatabase(sourceDatabaseName);
-
-            // Create the database with sakila to be migrated to empty
-            this.dbFixture.CreateMySqlSakilaDatabase(targetDatabaseName);
-
-            // Perform the compare
-            var projectService = new ProjectService(null, this.LoggerFactory);
-            projectService.NewProject(DatabaseType.MySql);
-            projectService.Project.SourceProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(sourceDatabaseName);
-            projectService.Project.TargetProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(targetDatabaseName);
-            this.dbFixture.PerformCompareAndWaitResult(projectService);
-            projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
-
-            if (this.exportGeneratedFullScript)
+            try
             {
-                File.WriteAllText("c:\\temp\\FullDropScriptMySQL.sql", projectService.Project.Result.FullAlterScript);
+                // Create the empty database
+                this.dbFixture.DropAndCreateMySqlDatabase(sourceDatabaseName);
+
+                // Create the database with sakila to be migrated to empty
+                this.dbFixture.CreateMySqlSakilaDatabase(targetDatabaseName);
+
+                // Perform the compare
+                var projectService = new ProjectService(null, this.LoggerFactory);
+                projectService.NewProject(DatabaseType.MySql);
+                projectService.Project.SourceProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(sourceDatabaseName);
+                projectService.Project.TargetProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(targetDatabaseName);
+                this.dbFixture.PerformCompareAndWaitResult(projectService);
+                projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
+
+                if (this.exportGeneratedFullScript)
+                {
+                    File.WriteAllText("c:\\temp\\FullDropScriptMySQL.sql", projectService.Project.Result.FullAlterScript);
+                }
+
+                var fullAlterScript = new StringBuilder();
+                fullAlterScript.AppendLine($"USE {targetDatabaseName};");
+                fullAlterScript.Append(projectService.Project.Result.FullAlterScript);
+
+                // Execute the full alter script
+                var pathMySql = Path.GetTempFileName();
+                File.WriteAllText(pathMySql, fullAlterScript.ToString());
+                this.dbFixture.ExecuteMySqlScript(pathMySql);
+
+                this.dbFixture.CompareDatabases(DatabaseType.MySql, targetDatabaseName, sourceDatabaseName);
             }
-
-            var fullAlterScript = new StringBuilder();
-            fullAlterScript.AppendLine($"USE {targetDatabaseName};");
-            fullAlterScript.Append(projectService.Project.Result.FullAlterScript);
-
-            // Execute the full alter script
-            var pathMySql = Path.GetTempFileName();
-            File.WriteAllText(pathMySql, fullAlterScript.ToString());
-            this.dbFixture.ExecuteMySqlScript(pathMySql);
-
-            this.dbFixture.CompareDatabases(DatabaseType.MySql, targetDatabaseName, sourceDatabaseName);
+            finally
+            {
+                this.dbFixture.DropMySqlDatabase(sourceDatabaseName);
+                this.dbFixture.DropMySqlDatabase(targetDatabaseName);
+            }
         }
 
         /// <summary>
@@ -122,34 +137,41 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMySqlDatabaseTargetEmpty()
         {
             const string sourceDatabaseName = "sakila";
-            const string targetDatabaseName = "sakila_migrated_from_empty";
+            var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
 
-            this.dbFixture.DropAndCreateMySqlDatabase(targetDatabaseName);
+            try
+            {
+                this.dbFixture.DropAndCreateMySqlDatabase(targetDatabaseName);
 
-            // Perform the compare
-            var projectService = new ProjectService(null, this.LoggerFactory);
-            projectService.NewProject(DatabaseType.MySql);
-            projectService.Project.SourceProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(sourceDatabaseName);
-            projectService.Project.TargetProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(targetDatabaseName);
-            this.dbFixture.PerformCompareAndWaitResult(projectService);
-            projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
+                // Perform the compare
+                var projectService = new ProjectService(null, this.LoggerFactory);
+                projectService.NewProject(DatabaseType.MySql);
+                projectService.Project.SourceProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(sourceDatabaseName);
+                projectService.Project.TargetProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(targetDatabaseName);
+                this.dbFixture.PerformCompareAndWaitResult(projectService);
+                projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
 
-            // Execute the full alter script
-            var mySqlFullAlterScript = new StringBuilder();
-            mySqlFullAlterScript.AppendLine("SET @OLD_UNIQUE_CHECKS =@@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;");
-            mySqlFullAlterScript.AppendLine("SET @OLD_FOREIGN_KEY_CHECKS =@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;");
-            mySqlFullAlterScript.AppendLine("SET @OLD_SQL_MODE =@@SQL_MODE, SQL_MODE = 'TRADITIONAL';");
-            mySqlFullAlterScript.AppendLine($"USE {targetDatabaseName};");
-            mySqlFullAlterScript.AppendLine(projectService.Project.Result.FullAlterScript);
-            mySqlFullAlterScript.AppendLine("SET SQL_MODE = @OLD_SQL_MODE;");
-            mySqlFullAlterScript.AppendLine("SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;");
-            mySqlFullAlterScript.AppendLine("SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;");
+                // Execute the full alter script
+                var mySqlFullAlterScript = new StringBuilder();
+                mySqlFullAlterScript.AppendLine("SET @OLD_UNIQUE_CHECKS =@@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;");
+                mySqlFullAlterScript.AppendLine("SET @OLD_FOREIGN_KEY_CHECKS =@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;");
+                mySqlFullAlterScript.AppendLine("SET @OLD_SQL_MODE =@@SQL_MODE, SQL_MODE = 'TRADITIONAL';");
+                mySqlFullAlterScript.AppendLine($"USE {targetDatabaseName};");
+                mySqlFullAlterScript.AppendLine(projectService.Project.Result.FullAlterScript);
+                mySqlFullAlterScript.AppendLine("SET SQL_MODE = @OLD_SQL_MODE;");
+                mySqlFullAlterScript.AppendLine("SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;");
+                mySqlFullAlterScript.AppendLine("SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;");
 
-            var pathMySql = Path.GetTempFileName();
-            File.WriteAllText(pathMySql, mySqlFullAlterScript.ToString());
-            this.dbFixture.ExecuteMySqlScript(pathMySql);
+                var pathMySql = Path.GetTempFileName();
+                File.WriteAllText(pathMySql, mySqlFullAlterScript.ToString());
+                this.dbFixture.ExecuteMySqlScript(pathMySql);
 
-            this.dbFixture.CompareDatabases(DatabaseType.MySql, targetDatabaseName, sourceDatabaseName);
+                this.dbFixture.CompareDatabases(DatabaseType.MySql, targetDatabaseName, sourceDatabaseName);
+            }
+            finally
+            {
+                this.dbFixture.DropMySqlDatabase(targetDatabaseName);
+            }
         }
     }
 }

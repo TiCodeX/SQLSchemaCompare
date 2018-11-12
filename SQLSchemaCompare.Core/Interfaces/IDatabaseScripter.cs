@@ -50,6 +50,13 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
         string GenerateCreateTableScript(ABaseDbTable table, ABaseDbTable referenceTable = null);
 
         /// <summary>
+        /// Generates the drop table script and related keys/indexes
+        /// </summary>
+        /// <param name="table">The table to be scripted</param>
+        /// <returns>The drop script</returns>
+        string GenerateDropTableScript(ABaseDbTable table);
+
+        /// <summary>
         /// Generates the alter table script
         /// </summary>
         /// <param name="sourceTable">The source table</param>

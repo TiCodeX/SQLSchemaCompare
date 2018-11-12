@@ -177,6 +177,10 @@
     <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.dll' />
     <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.Views.dll' />
     <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.Views.dll' />
+    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\de\TiCodeX.SQLSchemaCompare.Services.resources.dll' />
+    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\de\TiCodeX.SQLSchemaCompare.Services.resources.dll' />
+    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\it\TiCodeX.SQLSchemaCompare.Services.resources.dll' />
+    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\it\TiCodeX.SQLSchemaCompare.Services.resources.dll' />
     <Exec Command='if exist $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.exe ( $(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.exe )' />
     <Exec Command='if exist $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.exe ( $(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.exe )' />
   </Target>

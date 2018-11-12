@@ -493,7 +493,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             onlyTargetDb.Views.AddRange(onlyTargetViews.Select(x => x.TargetItem));
             onlyTargetDb.Functions.AddRange(onlyTargetFunctions.Select(x => x.TargetItem));
             onlyTargetDb.StoredProcedures.AddRange(onlyTargetStoredProcedures.Select(x => x.TargetItem));
-            onlySourceDb.DataTypes.AddRange(this.retrievedTargetDatabase.DataTypes.Where(x => x.IsUserDefined == false));
+            onlyTargetDb.DataTypes.AddRange(this.retrievedTargetDatabase.DataTypes.Where(x => x.IsUserDefined == false));
             onlyTargetDb.DataTypes.AddRange(onlyTargetDataTypes.Select(x => x.TargetItem));
             onlyTargetDb.Sequences.AddRange(onlyTargetSequences.Select(x => x.TargetItem));
 

@@ -35,6 +35,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         private static readonly object InitializeSakilaDatabaseLock = new object();
         private static bool initializeSakilaDatabase = true;
         private readonly ICipherService cipherService = new CipherService();
+        private readonly bool exportGeneratedFullScript = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ExportGeneratedFullScript"));
         private ILoggerFactory loggerFactory = new XunitLoggerFactory(null);
 
         /// <summary>
@@ -352,8 +353,8 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="targetDatabaseName">Name of the target database.</param>
         internal void CompareDatabases(DatabaseType type, string sourceDatabaseName, string targetDatabaseName)
         {
-            IDatabaseProvider sourceProvider = null;
-            IDatabaseProvider targetProvider = null;
+            IDatabaseProvider sourceProvider;
+            IDatabaseProvider targetProvider;
             switch (type)
             {
                 case DatabaseType.MicrosoftSql:
@@ -368,6 +369,8 @@ namespace TiCodeX.SQLSchemaCompare.Test
                     sourceProvider = this.GetPostgreSqlDatabaseProvider(sourceDatabaseName);
                     targetProvider = this.GetPostgreSqlDatabaseProvider(targetDatabaseName);
                     break;
+                default:
+                    throw new NotImplementedException();
             }
 
             var sourceDb = sourceProvider.GetDatabase(new TaskInfo("test"));
@@ -581,6 +584,210 @@ namespace TiCodeX.SQLSchemaCompare.Test
             }
 
             projectService.Project.Result.Should().NotBeNull();
+        }
+
+        /// <summary>
+        /// Executes the full alter script and compare
+        /// </summary>
+        /// <param name="databaseType">The database type</param>
+        /// <param name="sourceDatabaseName">Name of the source database</param>
+        /// <param name="targetDatabaseName">Name of the target database</param>
+        /// <param name="exportFile">The export file</param>
+        internal void ExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, string exportFile = "")
+        {
+            ADatabaseProviderOptions sourceProviderOptions;
+            ADatabaseProviderOptions targetProviderOptions;
+            switch (databaseType)
+            {
+                case DatabaseType.MicrosoftSql:
+                    sourceProviderOptions = this.GetMicrosoftSqlDatabaseProviderOptions(sourceDatabaseName);
+                    targetProviderOptions = this.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName);
+                    break;
+                case DatabaseType.MySql:
+                    sourceProviderOptions = this.GetMySqlDatabaseProviderOptions(sourceDatabaseName);
+                    targetProviderOptions = this.GetMySqlDatabaseProviderOptions(targetDatabaseName);
+                    break;
+                case DatabaseType.PostgreSql:
+                    sourceProviderOptions = this.GetPostgreSqlDatabaseProviderOptions(sourceDatabaseName);
+                    targetProviderOptions = this.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName);
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            // Perform the compare
+            var projectService = new ProjectService(null, this.loggerFactory);
+            projectService.NewProject(databaseType);
+            projectService.Project.SourceProviderOptions = sourceProviderOptions;
+            projectService.Project.TargetProviderOptions = targetProviderOptions;
+            this.PerformCompareAndWaitResult(projectService);
+
+            projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
+
+            // Execute the full alter script
+            switch (databaseType)
+            {
+                case DatabaseType.MicrosoftSql:
+
+                    if (this.exportGeneratedFullScript && !string.IsNullOrWhiteSpace(exportFile))
+                    {
+                        File.WriteAllText($"c:\\temp\\{exportFile}", projectService.Project.Result.FullAlterScript);
+                    }
+
+                    var mssqldbpo = this.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName);
+                    using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, mssqldbpo))
+                    {
+                        var queries = projectService.Project.Result.FullAlterScript.Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
+                        foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
+                        {
+                            context.ExecuteNonQuery(query);
+                        }
+                    }
+
+                    break;
+
+                case DatabaseType.MySql:
+                    // Execute the full alter script
+                    var mySqlFullAlterScript = new StringBuilder();
+                    /*mySqlFullAlterScript.AppendLine("SET @OLD_UNIQUE_CHECKS =@@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;");
+                    mySqlFullAlterScript.AppendLine("SET @OLD_FOREIGN_KEY_CHECKS =@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;");
+                    mySqlFullAlterScript.AppendLine("SET @OLD_SQL_MODE =@@SQL_MODE, SQL_MODE = 'TRADITIONAL';");*/
+                    mySqlFullAlterScript.AppendLine($"USE {targetDatabaseName};");
+                    mySqlFullAlterScript.AppendLine(projectService.Project.Result.FullAlterScript);
+                    /*mySqlFullAlterScript.AppendLine("SET SQL_MODE = @OLD_SQL_MODE;");
+                    mySqlFullAlterScript.AppendLine("SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;");
+                    mySqlFullAlterScript.AppendLine("SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;");*/
+
+                    if (this.exportGeneratedFullScript && !string.IsNullOrWhiteSpace(exportFile))
+                    {
+                        File.WriteAllText($"c:\\temp\\{exportFile}", mySqlFullAlterScript.ToString());
+                    }
+
+                    var pathMySql = Path.GetTempFileName();
+                    File.WriteAllText(pathMySql, mySqlFullAlterScript.ToString());
+                    this.ExecuteMySqlScript(pathMySql);
+
+                    break;
+
+                case DatabaseType.PostgreSql:
+
+                    // Execute the full alter script
+                    using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName)))
+                    {
+                        var sb = new StringBuilder();
+                        sb.AppendLine("SET check_function_bodies = false;");
+
+                        if (projectService.Project.Result.FullAlterScript.Contains("group_concat", StringComparison.InvariantCulture))
+                        {
+                            var firstFunctionFound = false;
+                            var firstViewFound = false;
+                            foreach (var line in projectService.Project.Result.FullAlterScript.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+                            {
+                                if (line.Contains("DROP FUNCTION", StringComparison.Ordinal) && !firstFunctionFound)
+                                {
+                                    // TODO: implement drop aggregate in scripter
+                                    sb.AppendLine("DROP AGGREGATE group_concat(text);");
+                                    firstFunctionFound = true;
+                                }
+
+                                if (line.Contains("CREATE VIEW", StringComparison.Ordinal) && !firstViewFound)
+                                {
+                                    // TODO: implement create aggregate in scripter
+                                    sb.AppendLine("CREATE AGGREGATE group_concat(text)(");
+                                    sb.AppendLine("    SFUNC = _group_concat,");
+                                    sb.AppendLine("    STYPE = text");
+                                    sb.AppendLine(");");
+                                    firstViewFound = true;
+                                }
+
+                                sb.AppendLine(line);
+                            }
+                        }
+                        else
+                        {
+                            sb.Append(projectService.Project.Result.FullAlterScript);
+                        }
+
+                        if (this.exportGeneratedFullScript && !string.IsNullOrWhiteSpace(exportFile))
+                        {
+                            File.WriteAllText($"c:\\temp\\{exportFile}", sb.ToString());
+                        }
+
+                        context.ExecuteNonQuery(sb.ToString());
+                    }
+
+                    break;
+            }
+
+            this.CompareDatabases(databaseType, targetDatabaseName, sourceDatabaseName);
+        }
+
+        /// <summary>
+        /// Alters the target database then executes the full alter script and compare
+        /// </summary>
+        /// <param name="databaseType">The database type</param>
+        /// <param name="alterScript">The script to alter the target database before the migration/comparison</param>
+        internal void AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string alterScript)
+        {
+            const string sourceDatabaseName = "sakila";
+            var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
+
+            try
+            {
+                switch (databaseType)
+                {
+                    case DatabaseType.MicrosoftSql:
+                        this.CreateMicrosoftSqlSakilaDatabase(targetDatabaseName);
+
+                        // Do some changes in the target database
+                        using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName)))
+                        {
+                            context.ExecuteNonQuery(alterScript);
+                        }
+
+                        break;
+
+                    case DatabaseType.MySql:
+                        this.CreateMySqlSakilaDatabase(targetDatabaseName);
+
+                        var alterScriptTarget = new StringBuilder();
+                        alterScriptTarget.AppendLine($"USE {targetDatabaseName};");
+                        alterScriptTarget.AppendLine(alterScript);
+
+                        var pathMySql = Path.GetTempFileName();
+                        File.WriteAllText(pathMySql, alterScriptTarget.ToString());
+                        this.ExecuteMySqlScript(pathMySql);
+
+                        break;
+
+                    case DatabaseType.PostgreSql:
+                        this.CreatePostgreSqlSakilaDatabase(targetDatabaseName);
+
+                        using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName)))
+                        {
+                            context.ExecuteNonQuery(alterScript);
+                        }
+
+                        break;
+                }
+
+                this.ExecuteFullAlterScriptAndCompare(databaseType, sourceDatabaseName, targetDatabaseName);
+            }
+            finally
+            {
+                switch (databaseType)
+                {
+                    case DatabaseType.MicrosoftSql:
+                        this.DropMicrosoftSqlDatabase(targetDatabaseName);
+                        break;
+                    case DatabaseType.MySql:
+                        this.DropMySqlDatabase(targetDatabaseName);
+                        break;
+                    case DatabaseType.PostgreSql:
+                        this.DropPostgreSqlDatabase(targetDatabaseName);
+                        break;
+                }
+            }
         }
     }
 }

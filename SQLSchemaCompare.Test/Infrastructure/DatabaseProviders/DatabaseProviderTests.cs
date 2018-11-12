@@ -85,7 +85,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders
             db.Views.Should().ContainSingle(x => x.Name == "film_list");
 
             db.Functions.Count.Should().Be(2);
-            db.StoredProcedures.Should().BeEmpty();
+            db.StoredProcedures.Count.Should().Be(1);
 
             db.DataTypes.Should().NotBeNullOrEmpty();
             db.DataTypes.Count.Should().Be(37);

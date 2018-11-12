@@ -97,7 +97,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
                 // Create the database with sakila to be migrated to empty
                 this.dbFixture.CreateMicrosoftSqlSakilaDatabase(targetDatabaseName);
 
-                this.ExecuteFullAlterScriptAndCompare(sourceDatabaseName, targetDatabaseName, "FullDropScriptMicrosoftSQL.sql");
+                this.dbFixture.ExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sourceDatabaseName, targetDatabaseName, "FullDropScriptMicrosoftSQL.sql");
             }
             finally
             {
@@ -120,7 +120,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             {
                 this.dbFixture.DropAndCreateMicrosoftSqlDatabase(targetDatabaseName);
 
-                this.ExecuteFullAlterScriptAndCompare(sourceDatabaseName, targetDatabaseName);
+                this.dbFixture.ExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sourceDatabaseName, targetDatabaseName);
             }
             finally
             {
@@ -135,10 +135,9 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [IntegrationTest]
         public void MigrateMicrosoftSqlDatabaseTargetMissingColumn()
         {
-            this.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(context =>
-            {
-                context.ExecuteNonQuery("ALTER TABLE staff DROP COLUMN last_name");
-            });
+            var sb = new StringBuilder();
+            sb.Append("ALTER TABLE staff DROP COLUMN last_name");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
         }
 
         /// <summary>
@@ -148,10 +147,9 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [IntegrationTest]
         public void MigrateMicrosoftSqlDatabaseTargetExtraColumn()
         {
-            this.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(context =>
-            {
-                context.ExecuteNonQuery("ALTER TABLE staff ADD middle_name VARCHAR(45) NOT NULL");
-            });
+            var sb = new StringBuilder();
+            sb.Append("ALTER TABLE staff ADD middle_name VARCHAR(45) NOT NULL");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
         }
 
         /// <summary>
@@ -161,10 +159,9 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [IntegrationTest]
         public void MigrateMicrosoftSqlDatabaseTargetColumnDifferentType()
         {
-            this.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(context =>
-            {
-                context.ExecuteNonQuery("ALTER TABLE country ALTER COLUMN country NVARCHAR(80) NOT NULL");
-            });
+            var sb = new StringBuilder();
+            sb.Append("ALTER TABLE country ALTER COLUMN country NVARCHAR(80) NOT NULL");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
         }
 
         /// <summary>
@@ -174,10 +171,9 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [IntegrationTest]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentView()
         {
-            this.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(context =>
-            {
-                context.ExecuteNonQuery("ALTER VIEW customer_list AS SELECT NULL AS 'test'");
-            });
+            var sb = new StringBuilder();
+            sb.Append("ALTER VIEW customer_list AS SELECT NULL AS 'test'");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
         }
 
         /// <summary>
@@ -187,23 +183,20 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [IntegrationTest]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentFunction()
         {
-            this.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(context =>
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("ALTER FUNCTION StripWWWandCom (@input VARCHAR(250))");
-                sb.AppendLine("RETURNS VARCHAR(250)");
-                sb.AppendLine("AS BEGIN");
-                sb.AppendLine("    DECLARE @Work VARCHAR(250)");
-                sb.AppendLine();
-                sb.AppendLine("    SET @Work = @Input");
-                sb.AppendLine();
-                sb.AppendLine("    SET @Work = REPLACE(@Work, 'www.', '')");
-                sb.AppendLine("    SET @Work = REPLACE(@Work, '.net', '')");
-                sb.AppendLine();
-                sb.AppendLine("    RETURN @work");
-                sb.AppendLine("END");
-                context.ExecuteNonQuery(sb.ToString());
-            });
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER FUNCTION StripWWWandCom (@input VARCHAR(250))");
+            sb.AppendLine("RETURNS VARCHAR(250)");
+            sb.AppendLine("AS BEGIN");
+            sb.AppendLine("    DECLARE @Work VARCHAR(250)");
+            sb.AppendLine();
+            sb.AppendLine("    SET @Work = @Input");
+            sb.AppendLine();
+            sb.AppendLine("    SET @Work = REPLACE(@Work, 'www.', '')");
+            sb.AppendLine("    SET @Work = REPLACE(@Work, '.net', '')");
+            sb.AppendLine();
+            sb.AppendLine("    RETURN @work");
+            sb.AppendLine("END");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
         }
 
         /// <summary>
@@ -213,16 +206,13 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [IntegrationTest]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentStoredProcedure()
         {
-            this.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(context =>
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("ALTER PROCEDURE uspGetAddress @City nvarchar(30) = NULL");
-                sb.AppendLine("AS");
-                sb.AppendLine("SELECT *");
-                sb.AppendLine("FROM city");
-                sb.AppendLine("WHERE city = @City");
-                context.ExecuteNonQuery(sb.ToString());
-            });
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER PROCEDURE uspGetAddress @City nvarchar(30) = NULL");
+            sb.AppendLine("AS");
+            sb.AppendLine("SELECT *");
+            sb.AppendLine("FROM city");
+            sb.AppendLine("WHERE city = @City");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
         }
 
         /// <summary>
@@ -232,13 +222,10 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [IntegrationTest]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentSequence()
         {
-            this.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(context =>
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("ALTER SEQUENCE actor_seq");
-                sb.AppendLine("INCREMENT BY 5");
-                context.ExecuteNonQuery(sb.ToString());
-            });
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER SEQUENCE actor_seq");
+            sb.AppendLine("INCREMENT BY 5");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
         }
 
         /// <summary>
@@ -248,63 +235,10 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [IntegrationTest]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentType()
         {
-            this.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(context =>
-            {
-                context.ExecuteNonQuery("DROP TYPE custom_decimal");
-                context.ExecuteNonQuery("CREATE TYPE custom_decimal FROM DECIMAL(21, 6) NULL");
-            });
-        }
-
-        private void AlterTargetDatabaseExecuteFullAlterScriptAndCompare(Action<MicrosoftSqlDatabaseContext> alterFunc)
-        {
-            const string sourceDatabaseName = "sakila";
-            var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
-
-            try
-            {
-                this.dbFixture.CreateMicrosoftSqlSakilaDatabase(targetDatabaseName);
-
-                // Do some changes in the target database
-                using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.cipherService, this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName)))
-                {
-                    alterFunc(context);
-                }
-
-                this.ExecuteFullAlterScriptAndCompare(sourceDatabaseName, targetDatabaseName);
-            }
-            finally
-            {
-                this.dbFixture.DropMicrosoftSqlDatabase(targetDatabaseName);
-            }
-        }
-
-        private void ExecuteFullAlterScriptAndCompare(string sourceDatabaseName, string targetDatabaseName, string exportFile = "")
-        {
-            // Perform the compare
-            var projectService = new ProjectService(null, this.LoggerFactory);
-            projectService.NewProject(DatabaseType.MicrosoftSql);
-            projectService.Project.SourceProviderOptions = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions(sourceDatabaseName);
-            projectService.Project.TargetProviderOptions = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName);
-            this.dbFixture.PerformCompareAndWaitResult(projectService);
-            /*projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();*/
-
-            if (this.exportGeneratedFullScript && !string.IsNullOrWhiteSpace(exportFile))
-            {
-                File.WriteAllText($"c:\\temp\\{exportFile}", projectService.Project.Result.FullAlterScript);
-            }
-
-            // Execute the full alter script
-            var mssqldbpo = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName);
-            using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.cipherService, mssqldbpo))
-            {
-                var queries = projectService.Project.Result.FullAlterScript.Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
-                foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
-                {
-                    context.ExecuteNonQuery(query);
-                }
-            }
-
-            this.dbFixture.CompareDatabases(DatabaseType.MicrosoftSql, targetDatabaseName, sourceDatabaseName);
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP TYPE custom_decimal");
+            sb.AppendLine("CREATE TYPE custom_decimal FROM DECIMAL(21, 6) NULL");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
         }
     }
 }

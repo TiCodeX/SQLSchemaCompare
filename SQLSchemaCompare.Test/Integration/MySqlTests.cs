@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using FluentAssertions;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
-using TiCodeX.SQLSchemaCompare.Services;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -98,29 +96,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
                 // Create the database with sakila to be migrated to empty
                 this.dbFixture.CreateMySqlSakilaDatabase(targetDatabaseName);
 
-                // Perform the compare
-                var projectService = new ProjectService(null, this.LoggerFactory);
-                projectService.NewProject(DatabaseType.MySql);
-                projectService.Project.SourceProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(sourceDatabaseName);
-                projectService.Project.TargetProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(targetDatabaseName);
-                this.dbFixture.PerformCompareAndWaitResult(projectService);
-                projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
-
-                if (this.exportGeneratedFullScript)
-                {
-                    File.WriteAllText("c:\\temp\\FullDropScriptMySQL.sql", projectService.Project.Result.FullAlterScript);
-                }
-
-                var fullAlterScript = new StringBuilder();
-                fullAlterScript.AppendLine($"USE {targetDatabaseName};");
-                fullAlterScript.Append(projectService.Project.Result.FullAlterScript);
-
-                // Execute the full alter script
-                var pathMySql = Path.GetTempFileName();
-                File.WriteAllText(pathMySql, fullAlterScript.ToString());
-                this.dbFixture.ExecuteMySqlScript(pathMySql);
-
-                this.dbFixture.CompareDatabases(DatabaseType.MySql, targetDatabaseName, sourceDatabaseName);
+                this.dbFixture.ExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sourceDatabaseName, targetDatabaseName, "FullDropScriptMySQL.sql");
             }
             finally
             {
@@ -143,35 +119,72 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             {
                 this.dbFixture.DropAndCreateMySqlDatabase(targetDatabaseName);
 
-                // Perform the compare
-                var projectService = new ProjectService(null, this.LoggerFactory);
-                projectService.NewProject(DatabaseType.MySql);
-                projectService.Project.SourceProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(sourceDatabaseName);
-                projectService.Project.TargetProviderOptions = this.dbFixture.GetMySqlDatabaseProviderOptions(targetDatabaseName);
-                this.dbFixture.PerformCompareAndWaitResult(projectService);
-                projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
-
-                // Execute the full alter script
-                var mySqlFullAlterScript = new StringBuilder();
-                mySqlFullAlterScript.AppendLine("SET @OLD_UNIQUE_CHECKS =@@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;");
-                mySqlFullAlterScript.AppendLine("SET @OLD_FOREIGN_KEY_CHECKS =@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;");
-                mySqlFullAlterScript.AppendLine("SET @OLD_SQL_MODE =@@SQL_MODE, SQL_MODE = 'TRADITIONAL';");
-                mySqlFullAlterScript.AppendLine($"USE {targetDatabaseName};");
-                mySqlFullAlterScript.AppendLine(projectService.Project.Result.FullAlterScript);
-                mySqlFullAlterScript.AppendLine("SET SQL_MODE = @OLD_SQL_MODE;");
-                mySqlFullAlterScript.AppendLine("SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;");
-                mySqlFullAlterScript.AppendLine("SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;");
-
-                var pathMySql = Path.GetTempFileName();
-                File.WriteAllText(pathMySql, mySqlFullAlterScript.ToString());
-                this.dbFixture.ExecuteMySqlScript(pathMySql);
-
-                this.dbFixture.CompareDatabases(DatabaseType.MySql, targetDatabaseName, sourceDatabaseName);
+                this.dbFixture.ExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sourceDatabaseName, targetDatabaseName);
             }
             finally
             {
                 this.dbFixture.DropMySqlDatabase(targetDatabaseName);
             }
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a different view
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetDifferentView()
+        {
+            var sb = new StringBuilder();
+            sb.Append("ALTER VIEW customer_list AS SELECT NULL AS 'test'");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a different function
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetDifferentFunction()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP FUNCTION inventory_held_by_customer;");
+            sb.AppendLine("DELIMITER $$$$");
+            sb.AppendLine("CREATE FUNCTION `inventory_held_by_customer`(p_inventory_id INT) RETURNS INT");
+            sb.AppendLine("    READS SQL DATA");
+            sb.AppendLine("BEGIN");
+            sb.AppendLine("  DECLARE v_customer_id INT;");
+            sb.AppendLine("  DECLARE EXIT HANDLER FOR NOT FOUND RETURN NULL;");
+            sb.AppendLine();
+            sb.AppendLine("  SELECT customer_id INTO v_customer_id");
+            sb.AppendLine("  FROM rental");
+            sb.AppendLine("  WHERE return_date IS NOT NULL");
+            sb.AppendLine("  AND inventory_id = p_inventory_id;");
+            sb.AppendLine();
+            sb.AppendLine("  RETURN v_customer_id;");
+            sb.AppendLine("END$$$$");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a different stored procedure
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetDifferentStoredProcedure()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP PROCEDURE film_not_in_stock;");
+            sb.AppendLine("DELIMITER $$$$");
+            sb.AppendLine("CREATE PROCEDURE `film_not_in_stock`(IN p_film_id INT, IN p_store_id INT, OUT p_film_count INT)");
+            sb.AppendLine("    READS SQL DATA");
+            sb.AppendLine("BEGIN");
+            sb.AppendLine("     SELECT inventory_id");
+            sb.AppendLine("     FROM inventory");
+            sb.AppendLine("     WHERE film_id = p_film_id");
+            sb.AppendLine("     AND store_id = p_store_id;");
+            sb.AppendLine("     SELECT FOUND_ROWS() INTO p_film_count;");
+            sb.AppendLine("END$$$$");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
         }
     }
 }

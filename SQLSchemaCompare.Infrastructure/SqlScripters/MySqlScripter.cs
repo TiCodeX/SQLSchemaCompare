@@ -249,7 +249,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterView(ABaseDbView sourceView, ABaseDbView targetView)
         {
-            const string pattern = @"^\s*CREATE(?:.*)VIEW\s+(`[^`]*`|`[^`]*`\s+\([^\)]*\))\s+AS";
+            const string pattern = @"^\s*CREATE.*VIEW\s+(`[^`]*`|`[^`]*`\s+\([^\)]*\))\s+AS";
             const string replacement = @"ALTER VIEW $1 AS";
 
             var alterViewDefinition = Regex.Replace(sourceView.ViewDefinition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Multiline);

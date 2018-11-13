@@ -128,6 +128,42 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         }
 
         /// <summary>
+        /// Test migration script when target db doesn't have a column
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetMissingColumn()
+        {
+            var sb = new StringBuilder();
+            sb.Append("ALTER TABLE staff DROP COLUMN last_name");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an extra column
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetExtraColumn()
+        {
+            var sb = new StringBuilder();
+            sb.Append("ALTER TABLE staff ADD middle_name VARCHAR(45) NOT NULL");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a column with different type
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetColumnDifferentType()
+        {
+            var sb = new StringBuilder();
+            sb.Append("ALTER TABLE country CHANGE COLUMN country country JSON NOT NULL");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
+
+        /// <summary>
         /// Test migration script when target db have a different view
         /// </summary>
         [Fact]
@@ -184,6 +220,57 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("     AND store_id = p_store_id;");
             sb.AppendLine("     SELECT FOUND_ROWS() INTO p_film_count;");
             sb.AppendLine("END$$$$");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a index
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetMissingIndex()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP INDEX idx_last_name ON customer");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional index
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetExtraIndex()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("CREATE UNIQUE INDEX idx_staff_email ON staff (email)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a trigger
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetMissingTrigger()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP TRIGGER upd_film");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional trigger
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetExtraTrigger()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DELIMITER ;;");
+            sb.AppendLine("CREATE TRIGGER ins_film_text AFTER INSERT ON film_text FOR EACH ROW BEGIN");
+            sb.AppendLine("   DELETE FROM film_actor WHERE film_id = new.film_id;");
+            sb.AppendLine("END;;");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
         }
     }

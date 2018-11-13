@@ -593,7 +593,8 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="sourceDatabaseName">Name of the source database</param>
         /// <param name="targetDatabaseName">Name of the target database</param>
         /// <param name="exportFile">The export file</param>
-        internal void ExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, string exportFile = "")
+        /// <param name="expectedDifferentItems">Amount of expected different items</param>
+        internal void ExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, string exportFile = "", int? expectedDifferentItems = null)
         {
             ADatabaseProviderOptions sourceProviderOptions;
             ADatabaseProviderOptions targetProviderOptions;
@@ -621,6 +622,11 @@ namespace TiCodeX.SQLSchemaCompare.Test
             projectService.Project.SourceProviderOptions = sourceProviderOptions;
             projectService.Project.TargetProviderOptions = targetProviderOptions;
             this.PerformCompareAndWaitResult(projectService);
+
+            if (expectedDifferentItems.HasValue)
+            {
+                projectService.Project.Result.DifferentItems.Count.Should().Be(expectedDifferentItems);
+            }
 
             projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
 
@@ -727,7 +733,8 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// </summary>
         /// <param name="databaseType">The database type</param>
         /// <param name="alterScript">The script to alter the target database before the migration/comparison</param>
-        internal void AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string alterScript)
+        /// <param name="expectedDifferentItems">Amount of expected different items</param>
+        internal void AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string alterScript, int expectedDifferentItems = 1)
         {
             const string sourceDatabaseName = "sakila";
             var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
@@ -771,7 +778,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                         break;
                 }
 
-                this.ExecuteFullAlterScriptAndCompare(databaseType, sourceDatabaseName, targetDatabaseName);
+                this.ExecuteFullAlterScriptAndCompare(databaseType, sourceDatabaseName, targetDatabaseName, string.Empty, expectedDifferentItems);
             }
             finally
             {

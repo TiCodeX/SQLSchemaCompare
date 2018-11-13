@@ -240,5 +240,56 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("CREATE TYPE custom_decimal FROM DECIMAL(21, 6) NULL");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
         }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a index
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingIndex()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP INDEX idx_uq ON rental");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional index
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetExtraIndex()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("CREATE INDEX idx_replacement_cost ON film (replacement_cost)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a trigger
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingTrigger()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP TRIGGER reminder1");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional trigger
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetExtraTrigger()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("CREATE TRIGGER reminder2");
+            sb.AppendLine("ON dbo.country");
+            sb.AppendLine("AFTER DELETE");
+            sb.AppendLine("AS RAISERROR ('BLABLABLA', 16, 10)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
     }
 }

@@ -281,7 +281,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterFunction(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
-            return "TODO: Alter Function Script";
+            var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptDropFunction(targetFunction));
+            sb.AppendLine(this.ScriptCreateFunction(sourceFunction, dataTypes));
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
@@ -306,7 +309,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterStoredProcedure(ABaseDbStoredProcedure sourceStoredProcedure, ABaseDbStoredProcedure targetStoredProcedure)
         {
-            return "TODO: Alter Stored Procedure Script";
+            var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptDropStoredProcedure(targetStoredProcedure));
+            sb.AppendLine(this.ScriptCreateStoredProcedure(sourceStoredProcedure));
+            return sb.ToString();
         }
 
         /// <inheritdoc/>

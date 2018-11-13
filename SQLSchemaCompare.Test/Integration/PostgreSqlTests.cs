@@ -143,6 +143,42 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         }
 
         /// <summary>
+        /// Test migration script when target db doesn't have a column
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetMissingColumn()
+        {
+            var sb = new StringBuilder();
+            sb.Append("ALTER TABLE staff DROP COLUMN password");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an extra column
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetExtraColumn()
+        {
+            var sb = new StringBuilder();
+            sb.Append("ALTER TABLE staff ADD middle_name VARCHAR(45) NOT NULL");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a column with different type
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetColumnDifferentType()
+        {
+            var sb = new StringBuilder();
+            sb.Append("ALTER TABLE country ALTER COLUMN last_update TYPE TEXT");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
         /// Test migration script when target db have a different view
         /// </summary>
         [Fact]
@@ -198,6 +234,54 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("DROP TYPE bug_status;");
             sb.AppendLine("CREATE TYPE bug_status AS ENUM ('open', 'closed');");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a index
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetMissingIndex()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP INDEX idx_actor_last_name");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional index
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetExtraIndex()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("CREATE UNIQUE INDEX idx_staff_email ON staff (email)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a trigger
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetMissingTrigger()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP TRIGGER film_fulltext_trigger ON film");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional trigger
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetExtraTrigger()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("CREATE TRIGGER last_updated2 BEFORE DELETE ON store FOR EACH ROW EXECUTE PROCEDURE last_updated();");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
         }
     }

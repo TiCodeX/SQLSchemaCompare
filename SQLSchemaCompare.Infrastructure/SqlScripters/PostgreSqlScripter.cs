@@ -294,48 +294,89 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             var args = function.AllArgTypes != null ? function.AllArgTypes.ToArray() : function.ArgTypes.ToArray();
 
-            sb.Append($"CREATE FUNCTION {this.ScriptHelper.ScriptObjectName(function)}(");
+            sb.Append($"CREATE {(function.IsAggregate ? "AGGREGATE" : "FUNCTION")} {this.ScriptHelper.ScriptObjectName(function)}(");
 
             for (var i = 0; i < args.Length; i++)
             {
                 var argType = args[i];
                 var argMode = function.ArgModes?.ToArray()[i] ?? 'i';
                 var argName = function.ArgNames?.ToArray()[i] ?? string.Empty;
-                sb.AppendLine();
-                sb.Append($"{this.Indent}{PostgreSqlScriptHelper.ScriptFunctionArgument(argType, argMode, argName, dataTypes)}");
+                sb.Append($"{PostgreSqlScriptHelper.ScriptFunctionArgument(argType, argMode, argName, dataTypes)}");
                 if (i != args.Length - 1)
                 {
-                    sb.Append(",");
+                    sb.Append(", ");
                 }
             }
 
             sb.AppendLine(")");
 
-            var setOfString = function.ReturnSet ? "SETOF " : string.Empty;
-
-            sb.AppendLine($"{this.Indent}RETURNS {setOfString}{PostgreSqlScriptHelper.ScriptFunctionArgumentType(function.ReturnType, dataTypes)}");
-            sb.AppendLine($"{this.Indent}LANGUAGE {function.ExternalLanguage}");
-            sb.AppendLine();
-            sb.AppendLine($"{this.Indent}COST {function.Cost}");
-
-            if (function.Rows > 0)
+            if (function.IsAggregate)
             {
-                sb.AppendLine($"{this.Indent}ROWS {function.Rows}");
-            }
+                sb.AppendLine("(");
+                sb.AppendLine($"{this.Indent}SFUNC = {function.AggregateTransitionFunction},");
+                sb.Append($"{this.Indent}STYPE = {PostgreSqlScriptHelper.ScriptFunctionArgumentType(function.AggregateTransitionType, dataTypes)}");
 
-            sb.AppendLine($"{this.Indent}{PostgreSqlScriptHelper.ScriptFunctionAttributes(function)}");
-            sb.Append("AS $BODY$");
-            sb.Append(function.Definition);
-            sb.AppendLine("$BODY$;");
+                if (!string.IsNullOrWhiteSpace(function.AggregateFinalFunction))
+                {
+                    sb.AppendLine(",");
+                    sb.Append($"{this.Indent}FINALFUNC = {function.AggregateFinalFunction}");
+                }
+
+                if (!string.IsNullOrWhiteSpace(function.AggregateInitialValue))
+                {
+                    sb.AppendLine(",");
+                    sb.Append($"{this.Indent}INITCOND = '{function.AggregateInitialValue}'");
+                }
+
+                sb.AppendLine();
+                sb.AppendLine(");");
+            }
+            else
+            {
+                var setOfString = function.ReturnSet ? "SETOF " : string.Empty;
+
+                sb.AppendLine($"{this.Indent}RETURNS {setOfString}{PostgreSqlScriptHelper.ScriptFunctionArgumentType(function.ReturnType, dataTypes)}");
+                sb.AppendLine($"{this.Indent}LANGUAGE {function.ExternalLanguage}");
+                sb.AppendLine();
+                sb.AppendLine($"{this.Indent}COST {function.Cost}");
+
+                if (function.Rows > 0)
+                {
+                    sb.AppendLine($"{this.Indent}ROWS {function.Rows}");
+                }
+
+                sb.AppendLine($"{this.Indent}{PostgreSqlScriptHelper.ScriptFunctionAttributes(function)}");
+                sb.Append("AS $BODY$");
+                sb.Append(function.Definition);
+                sb.AppendLine("$BODY$;");
+            }
 
             return sb.ToString();
         }
 
         /// <inheritdoc/>
-        protected override string ScriptDropFunction(ABaseDbFunction sqlFunction)
+        protected override string ScriptDropFunction(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
+            var function = (PostgreSqlFunction)sqlFunction;
+            var args = function.AllArgTypes != null ? function.AllArgTypes.ToArray() : function.ArgTypes.ToArray();
+
             var sb = new StringBuilder();
-            sb.AppendLine($"DROP FUNCTION {this.ScriptHelper.ScriptObjectName(sqlFunction)};");
+            sb.Append($"DROP {(function.IsAggregate ? "AGGREGATE" : "FUNCTION")} {this.ScriptHelper.ScriptObjectName(sqlFunction)}(");
+
+            for (var i = 0; i < args.Length; i++)
+            {
+                var argType = args[i];
+                var argMode = function.ArgModes?.ToArray()[i] ?? 'i';
+                var argName = function.ArgNames?.ToArray()[i] ?? string.Empty;
+                sb.Append($"{PostgreSqlScriptHelper.ScriptFunctionArgument(argType, argMode, argName, dataTypes)}");
+                if (i != args.Length - 1)
+                {
+                    sb.Append(", ");
+                }
+            }
+
+            sb.AppendLine(");");
+
             return sb.ToString();
         }
 
@@ -343,7 +384,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterFunction(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             var sb = new StringBuilder();
-            sb.AppendLine(this.ScriptDropFunction(targetFunction));
+            sb.AppendLine(this.ScriptDropFunction(targetFunction, dataTypes));
             sb.AppendLine(this.ScriptCreateFunction(sourceFunction, dataTypes));
             return sb.ToString();
         }
@@ -661,6 +702,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override IEnumerable<ABaseDbColumn> OrderColumnsByOrdinalPosition(ABaseDbTable table)
         {
             return table.Columns.OrderBy(x => ((PostgreSqlColumn)x).OrdinalPosition);
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbFunction> GetSortedFunctions(List<ABaseDbFunction> functions, bool dropOrder)
+        {
+            return dropOrder ?
+                functions.Cast<PostgreSqlFunction>().OrderByDescending(x => x.IsAggregate).ThenBy(x => x.Schema).ThenBy(x => x.Name) :
+                functions.Cast<PostgreSqlFunction>().OrderBy(x => x.IsAggregate).ThenBy(x => x.Schema).ThenBy(x => x.Name);
         }
     }
 }

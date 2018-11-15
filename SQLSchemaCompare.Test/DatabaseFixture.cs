@@ -682,37 +682,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                     {
                         var sb = new StringBuilder();
                         sb.AppendLine("SET check_function_bodies = false;");
-
-                        if (projectService.Project.Result.FullAlterScript.Contains("group_concat", StringComparison.InvariantCulture))
-                        {
-                            var firstFunctionFound = false;
-                            var firstViewFound = false;
-                            foreach (var line in projectService.Project.Result.FullAlterScript.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
-                            {
-                                if (line.Contains("DROP FUNCTION", StringComparison.Ordinal) && !firstFunctionFound)
-                                {
-                                    // TODO: implement drop aggregate in scripter
-                                    sb.AppendLine("DROP AGGREGATE group_concat(text);");
-                                    firstFunctionFound = true;
-                                }
-
-                                if (line.Contains("CREATE VIEW", StringComparison.Ordinal) && !firstViewFound)
-                                {
-                                    // TODO: implement create aggregate in scripter
-                                    sb.AppendLine("CREATE AGGREGATE group_concat(text)(");
-                                    sb.AppendLine("    SFUNC = _group_concat,");
-                                    sb.AppendLine("    STYPE = text");
-                                    sb.AppendLine(");");
-                                    firstViewFound = true;
-                                }
-
-                                sb.AppendLine(line);
-                            }
-                        }
-                        else
-                        {
-                            sb.Append(projectService.Project.Result.FullAlterScript);
-                        }
+                        sb.AppendLine(projectService.Project.Result.FullAlterScript);
 
                         if (this.exportGeneratedFullScript && !string.IsNullOrWhiteSpace(exportFile))
                         {

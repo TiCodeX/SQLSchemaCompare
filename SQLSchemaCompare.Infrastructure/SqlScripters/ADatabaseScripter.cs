@@ -165,7 +165,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             if (database.Functions.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelFunctions));
-                foreach (var function in database.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                foreach (var function in this.GetSortedFunctions(database.Functions, false))
                 {
                     sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                     sb.Append(this.ScriptCreateFunction(function, database.DataTypes));
@@ -312,9 +312,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             if (database.Functions.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelFunctions));
-                foreach (var function in database.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                foreach (var function in this.GetSortedFunctions(database.Functions, true))
                 {
-                    sb.Append(this.ScriptDropFunction(function));
+                    sb.Append(this.ScriptDropFunction(function, database.DataTypes));
                 }
 
                 sb.AppendLine();
@@ -664,7 +664,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             }
 
             return sourceFunction == null ?
-                this.ScriptDropFunction(targetFunction) :
+                this.ScriptDropFunction(targetFunction, sourceDataTypes) :
                 this.ScriptAlterFunction(sourceFunction, targetFunction, targetDataTypes);
         }
 
@@ -898,8 +898,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// Generates the drop function script
         /// </summary>
         /// <param name="sqlFunction">The function to script</param>
+        /// <param name="dataTypes">The list of database data types</param>
         /// <returns>The drop function script</returns>
-        protected abstract string ScriptDropFunction(ABaseDbFunction sqlFunction);
+        protected abstract string ScriptDropFunction(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes);
 
         /// <summary>
         /// Generates the alter function script
@@ -1057,5 +1058,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <param name="table">The table with the columns to order</param>
         /// <returns>The list of columns ordered by ordinal position</returns>
         protected abstract IEnumerable<ABaseDbColumn> OrderColumnsByOrdinalPosition(ABaseDbTable table);
+
+        /// <summary>
+        /// Gets the functions sorted depending on the options
+        /// </summary>
+        /// <param name="functions">The functions</param>
+        /// <param name="dropOrder">Whether to sort the functions for dropping them</param>
+        /// <returns>The sorted functions</returns>
+        protected abstract IEnumerable<ABaseDbFunction> GetSortedFunctions(List<ABaseDbFunction> functions, bool dropOrder);
     }
 }

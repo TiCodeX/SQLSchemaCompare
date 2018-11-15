@@ -369,6 +369,27 @@ CREATE AGGREGATE group_concat(text) (
 
 ALTER AGGREGATE public.group_concat(text) OWNER TO postgres;
 
+
+CREATE AGGREGATE avg (float8)
+(
+    sfunc = float8_accum,
+    stype = float8[],
+    finalfunc = float8_avg,
+    initcond = '{0,0,0}'
+);
+
+
+CREATE FUNCTION sum_product_fn(int,int,int) RETURNS int AS $$
+    SELECT $1 + ($2 * $3);
+$$ LANGUAGE SQL;
+
+CREATE AGGREGATE sum_product(int, int) (
+    sfunc = sum_product_fn,
+    stype = int, 
+    initcond = 0
+);
+
+
 --
 -- Name: actor_actor_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --

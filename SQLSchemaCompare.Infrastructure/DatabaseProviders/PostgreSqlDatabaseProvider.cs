@@ -238,11 +238,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       p.proargtypes as \"ArgTypes\",");
             query.AppendLine("       p.proallargtypes as \"AllArgTypes\",");
             query.AppendLine("       p.proargmodes as \"ArgModes\",");
-            query.AppendLine("       p.proargnames as \"ArgNames\"");
+            query.AppendLine("       p.proargnames as \"ArgNames\",");
+            query.AppendLine("       p.proisagg as \"IsAggregate\",");
+            query.AppendLine("       a.aggtransfn::regproc::name as \"AggregateTransitionFunction\",");
+            query.AppendLine("       a.aggtranstype as \"AggregateTransitionType\",");
+            query.AppendLine("       CASE WHEN a.aggfinalfn::regproc::oid = 0 THEN null ELSE a.aggfinalfn::regproc::name END as \"AggregateFinalFunction\",");
+            query.AppendLine("       a.agginitval as \"AggregateInitialValue\"");
             query.AppendLine("FROM pg_catalog.pg_namespace n");
             query.AppendLine("INNER JOIN pg_catalog.pg_proc p ON n.oid = p.pronamespace");
             query.AppendLine("INNER JOIN pg_catalog.pg_language l ON p.prolang = l.oid");
-            query.AppendLine("WHERE n.nspname = 'public' AND p.proisagg = 'false' AND upper(l.lanname) != 'INTERNAL'");
+            query.AppendLine("LEFT JOIN pg_catalog.pg_aggregate a ON p.oid = a.aggfnoid");
+            query.AppendLine("WHERE (n.nspname = 'public' AND p.proisagg = 'false' AND upper(l.lanname) != 'INTERNAL') OR");
+            query.AppendLine("      (n.nspname = 'public' AND p.proisagg = 'true')");
             return context.Query<PostgreSqlFunction>(query.ToString());
         }
 

@@ -60,22 +60,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
                 {
                     var sb = new StringBuilder();
                     sb.AppendLine("SET check_function_bodies = false;");
-
-                    var firstViewFound = false;
-                    foreach (var line in fullScript.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
-                    {
-                        if (line.Contains("CREATE VIEW", StringComparison.Ordinal) && !firstViewFound)
-                        {
-                            // TODO: implement create aggregate in scripter
-                            sb.AppendLine("CREATE AGGREGATE group_concat(text)(");
-                            sb.AppendLine("    SFUNC = _group_concat,");
-                            sb.AppendLine("    STYPE = text");
-                            sb.AppendLine(");");
-                            firstViewFound = true;
-                        }
-
-                        sb.AppendLine(line);
-                    }
+                    sb.AppendLine(fullScript);
 
                     if (this.exportGeneratedFullScript)
                     {

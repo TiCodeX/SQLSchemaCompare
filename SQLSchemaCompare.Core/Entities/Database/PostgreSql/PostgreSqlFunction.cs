@@ -66,5 +66,30 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql
         /// Gets or sets the function argument names
         /// </summary>
         public IEnumerable<string> ArgNames { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is aggregate
+        /// </summary>
+        public bool IsAggregate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the aggregate transition function
+        /// </summary>
+        public string AggregateTransitionFunction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the aggregate transition type
+        /// </summary>
+        public uint AggregateTransitionType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the aggregate final function
+        /// </summary>
+        public string AggregateFinalFunction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the aggregate initial value
+        /// </summary>
+        public string AggregateInitialValue { get; set; }
     }
 }

@@ -170,7 +170,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders
             db.Views.Count.Should().Be(7);
             db.Views.Should().ContainSingle(x => x.Name == "film_list");
 
-            db.Functions.Count.Should().Be(9);
+            db.Functions.Count.Should().Be(13);
             db.Functions.Should().ContainSingle(x => x.Name == "last_day");
 
             db.StoredProcedures.Should().BeEmpty();

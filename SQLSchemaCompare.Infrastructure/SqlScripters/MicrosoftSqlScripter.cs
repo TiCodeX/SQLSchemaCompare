@@ -328,7 +328,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptDropFunction(ABaseDbFunction sqlFunction)
+        protected override string ScriptDropFunction(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             var sb = new StringBuilder();
             sb.AppendLine($"DROP FUNCTION {this.ScriptHelper.ScriptObjectName(sqlFunction)}");
@@ -600,7 +600,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc />
         protected override IEnumerable<ABaseDbTable> GetSortedTables(List<ABaseDbTable> tables, bool dropOrder)
         {
-            // Parameter dropOrder ignores because we want to drop the tables alphabetically
+            // Parameter dropOrder ignored because we want to drop the tables alphabetically
             return tables.OrderBy(x => x.Schema).ThenBy(x => x.Name);
         }
 
@@ -608,6 +608,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override IEnumerable<ABaseDbColumn> OrderColumnsByOrdinalPosition(ABaseDbTable table)
         {
             return table.Columns.OrderBy(x => ((MicrosoftSqlColumn)x).OrdinalPosition);
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbFunction> GetSortedFunctions(List<ABaseDbFunction> functions, bool dropOrder)
+        {
+            // Parameter dropOrder ignored because we want to drop the functions alphabetically
+            return functions.OrderBy(x => x.Schema).ThenBy(x => x.Name);
         }
     }
 }

@@ -2,6 +2,7 @@
 
 REM Bring dev tools into the PATH.
 call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsDevCmd.bat"
+call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\Tools\VsDevCmd.bat"
 
 set "targetdotnet=%1"
 if /i "%1" == "" ( set "targetdotnet=win-x64" )

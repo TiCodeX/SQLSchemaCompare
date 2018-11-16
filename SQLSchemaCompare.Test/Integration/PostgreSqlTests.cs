@@ -164,6 +164,42 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         }
 
         /// <summary>
+        /// Test migration script when target db have a column without the default
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetColumnMissingDefault()
+        {
+            var sb = new StringBuilder();
+            sb.Append("ALTER TABLE customer ALTER COLUMN activebool DROP DEFAULT");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a column with the default
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetColumnExtraDefault()
+        {
+            var sb = new StringBuilder();
+            sb.Append("ALTER TABLE customer ALTER COLUMN last_name SET DEFAULT 'MyLastName'");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a column with a different default
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetColumnDifferentDefault()
+        {
+            var sb = new StringBuilder();
+            sb.Append("ALTER TABLE film ALTER COLUMN replacement_cost SET DEFAULT 11.45");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
         /// Test migration script when target db have a different view
         /// </summary>
         [Fact]
@@ -247,6 +283,19 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         }
 
         /// <summary>
+        /// Test migration script when target db have a different index
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetDifferentIndex()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP INDEX idx_unq_manager_staff_id;");
+            sb.AppendLine("CREATE INDEX idx_unq_manager_staff_id ON store USING btree (address_id);");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
         /// Test migration script when target db doesn't have a trigger
         /// </summary>
         [Fact]
@@ -267,6 +316,56 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("CREATE TRIGGER last_updated2 BEFORE DELETE ON store FOR EACH ROW EXECUTE PROCEDURE last_updated();");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a different trigger
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetDifferentTrigger()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP TRIGGER last_updated ON actor;");
+            sb.AppendLine("CREATE TRIGGER last_updated AFTER INSERT ON actor FOR EACH ROW EXECUTE PROCEDURE last_updated();");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a check constraint
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetMissingCheckConstraint()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE payment_p2017_01 DROP CONSTRAINT payment_p2017_01_payment_date_check");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional check constraint
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetExtraCheckConstraint()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE staff ADD CONSTRAINT staff_check_email CHECK(email LIKE '_%@_%._%')");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a different check constraint
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetDifferentCheckConstraint()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE payment_p2017_01 DROP CONSTRAINT payment_p2017_01_payment_date_check;");
+            sb.AppendLine("ALTER TABLE payment_p2017_01 ADD CONSTRAINT payment_p2017_01_payment_date_check CHECK (((payment_date >= '2017-01-01 00:00:00'::timestamp without time zone) AND (payment_date < '2017-01-31 00:00:00'::timestamp without time zone)));");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
         }
     }

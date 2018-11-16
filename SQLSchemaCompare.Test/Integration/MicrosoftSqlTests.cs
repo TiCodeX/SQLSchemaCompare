@@ -266,6 +266,32 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         }
 
         /// <summary>
+        /// Test migration script when target db have a different filtered index
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentIndexFilter()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP INDEX idx_actor_last_name ON actor");
+            sb.AppendLine("CREATE INDEX idx_actor_last_name ON actor(last_name) WHERE (first_name IS NOT NULL)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a different index type
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentIndexType()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP INDEX idx_fk_address_id ON store");
+            sb.AppendLine("CREATE CLUSTERED INDEX idx_fk_address_id ON store(manager_staff_id)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
         /// Test migration script when target db doesn't have a trigger
         /// </summary>
         [Fact]
@@ -289,6 +315,145 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("ON dbo.country");
             sb.AppendLine("AFTER DELETE");
             sb.AppendLine("AS RAISERROR ('BLABLABLA', 16, 10)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a different trigger
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentTrigger()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TRIGGER reminder1");
+            sb.AppendLine("ON dbo.country");
+            sb.AppendLine("AFTER INSERT, DELETE");
+            sb.AppendLine("AS RAISERROR ('test', 2, 10)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a default constraint
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingDefaultConstraint()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE actor DROP CONSTRAINT DF_actor_last_update");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional default constraint
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetExtraDefaultConstraint()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE actor ADD CONSTRAINT DF_actor_last_name DEFAULT 'test' FOR last_name");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a different default constraint
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentDefaultConstraint()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE actor DROP CONSTRAINT DF_actor_last_update");
+            sb.AppendLine("ALTER TABLE actor ADD CONSTRAINT DF_actor_last_update DEFAULT (GETDATE()-444) FOR last_update");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a check constraint
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingCheckConstraint()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE film DROP CONSTRAINT CHECK_special_features");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional check constraint
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetExtraCheckConstraint()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE customer ADD CONSTRAINT check_email CHECK(email LIKE '_%@_%._%')");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a different check constraint
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentCheckConstraint()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE film DROP CONSTRAINT CHECK_special_features");
+            sb.AppendLine("ALTER TABLE film ADD CONSTRAINT CHECK_special_features CHECK(special_features IS NOT null)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a primary key
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingPrimaryKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE film_actor_description DROP CONSTRAINT PK_film_actor_description_film_actor_description_id");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional primary key
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetExtraPrimaryKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY NONCLUSTERED (film_id)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional primary key with a foreing key that reference it
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY NONCLUSTERED (film_id)");
+            sb.AppendLine("ALTER TABLE film_text_extra ADD CONSTRAINT FK_film_text_extra_film FOREIGN KEY (film_id) REFERENCES film_text (film_id) ON DELETE CASCADE");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), 2);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an primary key on a different colum
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetPrimaryKeyOnDifferentColumn()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE payment DROP CONSTRAINT PK_payment_payment_id");
+            sb.AppendLine("ALTER TABLE payment ADD CONSTRAINT PK_payment_payment_id PRIMARY KEY NONCLUSTERED (payment_id_new)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
         }
     }

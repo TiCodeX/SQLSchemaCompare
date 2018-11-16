@@ -63,7 +63,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
 
-            db.Tables.Count.Should().Be(17);
+            db.Tables.Count.Should().Be(18);
             var table = db.Tables.FirstOrDefault(x => x.Name == "film");
             table.Should().NotBeNull();
             table.Columns.Count.Should().Be(13);

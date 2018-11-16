@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SQLSchemaCompare.UI": {
+      "commandName": "Project",
+      "commandLineArgs": "5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:5000/"
+    }
+  }
+}

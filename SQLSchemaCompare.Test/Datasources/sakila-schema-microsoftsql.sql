@@ -284,7 +284,6 @@ CREATE TABLE film_text (
   film_id SMALLINT NOT NULL,
   title VARCHAR(255) NOT NULL,
   description TEXT,
-  CONSTRAINT PK_film_text_film_id PRIMARY KEY NONCLUSTERED (film_id),
 )
 
 --
@@ -363,6 +362,7 @@ GO
 
 CREATE TABLE payment (
   payment_id int NOT NULL IDENTITY ,
+  payment_id_new INT NOT NULL,
   customer_id INT  NOT NULL,
   staff_id TINYINT NOT NULL,
   rental_id INT DEFAULT NULL,
@@ -418,6 +418,14 @@ GO
 ALTER TABLE staff ADD CONSTRAINT fk_staff_store FOREIGN KEY (store_id) REFERENCES store (store_id) ON DELETE NO ACTION ON UPDATE CASCADE;
 GO
 ALTER TABLE payment ADD CONSTRAINT fk_payment_rental FOREIGN KEY (rental_id) REFERENCES rental (rental_id) ON DELETE SET NULL ON UPDATE CASCADE;
+GO
+
+CREATE TABLE film_text_extra (
+  film_text_extra_id INT NOT NULL IDENTITY,
+  film_id SMALLINT NOT NULL,
+  extra VARCHAR(255) DEFAULT NULL,
+  CONSTRAINT PK_film_text_extra_id PRIMARY KEY NONCLUSTERED (film_text_extra_id),
+)
 GO
 
 --

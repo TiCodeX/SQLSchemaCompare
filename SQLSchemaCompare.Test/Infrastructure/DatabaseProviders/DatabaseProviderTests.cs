@@ -107,7 +107,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders
 
             db.DataTypes.Should().BeEmpty();
 
-            db.Tables.Count.Should().Be(16);
+            db.Tables.Count.Should().Be(17);
             var table = db.Tables.FirstOrDefault(x => x.Name == "film");
             table.Should().NotBeNull();
             table.Columns.Count.Should().Be(13);
@@ -147,9 +147,9 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
 
-            db.DataTypes.Count.Should().Be(459);
+            db.DataTypes.Count.Should().Be(462);
 
-            db.Tables.Count.Should().Be(21);
+            db.Tables.Count.Should().Be(22);
             var table = db.Tables.FirstOrDefault(x => x.Name == "film");
             table.Should().NotBeNull();
             table.Columns.Count.Should().Be(14);

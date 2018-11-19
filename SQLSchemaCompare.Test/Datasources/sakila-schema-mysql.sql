@@ -143,10 +143,21 @@ CREATE TABLE film_actor (
   actor_id SMALLINT UNSIGNED NOT NULL,
   film_id SMALLINT UNSIGNED NOT NULL,
   last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  film_actor_description_id INT NOT NULL,
   PRIMARY KEY  (actor_id,film_id),
   KEY idx_fk_film_id (`film_id`),
   CONSTRAINT fk_film_actor_actor FOREIGN KEY (actor_id) REFERENCES actor (actor_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_film_actor_film FOREIGN KEY (film_id) REFERENCES film (film_id) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `film_actor_description`
+--
+
+CREATE TABLE film_actor_description (
+  film_actor_description_id INT NOT NULL,
+  actor_id INT NOT NULL,
+  film_id  INT NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -240,6 +251,7 @@ CREATE TABLE language (
 
 CREATE TABLE payment (
   payment_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  payment_id_new SMALLINT UNSIGNED NOT NULL,
   customer_id SMALLINT UNSIGNED NOT NULL,
   staff_id TINYINT UNSIGNED NOT NULL,
   rental_id INT DEFAULT NULL,

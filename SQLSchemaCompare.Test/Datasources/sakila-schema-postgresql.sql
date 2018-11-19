@@ -483,6 +483,12 @@ CREATE TABLE film (
 
 ALTER TABLE film OWNER TO postgres;
 
+CREATE TABLE film_text (
+  film_id integer NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT
+);
+
 --
 -- Name: film_actor; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -503,6 +509,7 @@ ALTER TABLE film_actor OWNER TO postgres;
 CREATE TABLE film_category (
     film_id smallint NOT NULL,
     category_id smallint NOT NULL,
+    film_text_id integer NOT NULL,
     last_update timestamp without time zone DEFAULT now() NOT NULL
 );
 
@@ -765,6 +772,7 @@ ALTER TABLE payment_payment_id_seq OWNER TO postgres;
 
 CREATE TABLE payment (
     payment_id integer DEFAULT nextval('payment_payment_id_seq'::regclass) NOT NULL,
+    payment_id_new integer NOT NULL,
     customer_id smallint NOT NULL,
     staff_id smallint NOT NULL,
     rental_id integer NOT NULL,

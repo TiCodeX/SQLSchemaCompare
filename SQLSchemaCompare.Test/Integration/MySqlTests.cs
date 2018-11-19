@@ -345,5 +345,58 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("  END$$$$");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
         }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a primary key
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetMissingPrimaryKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE payment MODIFY payment_id SMALLINT UNSIGNED NOT NULL;");
+            sb.AppendLine("ALTER TABLE payment DROP PRIMARY KEY");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional primary key
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetExtraPrimaryKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE film_actor_description ADD PRIMARY KEY (film_actor_description_id)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional primary key with a foreing key that reference it
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE film_actor_description ADD PRIMARY KEY (film_actor_description_id);");
+            sb.AppendLine("ALTER TABLE film_actor ADD CONSTRAINT FK_film_film_actor_description FOREIGN KEY (film_actor_description_id) REFERENCES film_actor_description (film_actor_description_id) ON DELETE CASCADE");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString(), 2);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an primary key on a different colum
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetPrimaryKeyOnDifferentColumn()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE payment MODIFY payment_id SMALLINT UNSIGNED NOT NULL;");
+            sb.AppendLine("ALTER TABLE payment DROP PRIMARY KEY;");
+            sb.AppendLine("ALTER TABLE payment ADD CONSTRAINT PK_payment_payment_id PRIMARY KEY (payment_id_new);");
+            sb.AppendLine("ALTER TABLE payment MODIFY payment_id_new SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT;");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
     }
 }

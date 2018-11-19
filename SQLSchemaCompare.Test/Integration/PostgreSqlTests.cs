@@ -368,5 +368,55 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("ALTER TABLE payment_p2017_01 ADD CONSTRAINT payment_p2017_01_payment_date_check CHECK (((payment_date >= '2017-01-01 00:00:00'::timestamp without time zone) AND (payment_date < '2017-01-31 00:00:00'::timestamp without time zone)));");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
         }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a primary key
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetMissingPrimaryKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE payment DROP CONSTRAINT payment_pkey");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional primary key
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetExtraPrimaryKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY (film_id)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional primary key with a foreing key that reference it
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY (film_id);");
+            sb.AppendLine("ALTER TABLE film_category ADD CONSTRAINT FK_film_category_extra_film FOREIGN KEY (film_text_id) REFERENCES film_text (film_id) ON DELETE CASCADE");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), 2);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an primary key on a different colum
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetPrimaryKeyOnDifferentColumn()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE payment DROP CONSTRAINT payment_pkey;");
+            sb.AppendLine("ALTER TABLE payment ADD CONSTRAINT payment_pkey PRIMARY KEY (payment_id_new)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
     }
 }

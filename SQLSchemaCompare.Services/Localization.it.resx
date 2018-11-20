@@ -605,4 +605,10 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="MenuEdit" xml:space="preserve">
     <value>Modifica</value>
   </data>
+  <data name="StatusMappingTriggers" xml:space="preserve">
+    <value>Mappatura dei Trigger in corso...</value>
+  </data>
+  <data name="StatusComparingTriggers" xml:space="preserve">
+    <value>Confronto dei Trigger in corso...</value>
+  </data>
 </root>

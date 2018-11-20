@@ -5,5 +5,12 @@
     /// </summary>
     public class MySqlStoredProcedure : ABaseDbStoredProcedure
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MySqlStoredProcedure"/> class
+        /// </summary>
+        public MySqlStoredProcedure()
+        {
+            this.AlterScriptSupported = false;
+        }
     }
 }

@@ -8,6 +8,14 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql
     public class PostgreSqlFunction : ABaseDbFunction
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="PostgreSqlFunction"/> class
+        /// </summary>
+        public PostgreSqlFunction()
+        {
+            this.AlterScriptSupported = false;
+        }
+
+        /// <summary>
         /// Gets or sets the external language
         /// </summary>
         public string ExternalLanguage { get; set; }

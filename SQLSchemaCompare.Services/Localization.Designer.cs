@@ -1287,6 +1287,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Comparing Triggers....
+        /// </summary>
+        public static string StatusComparingTriggers {
+            get {
+                return ResourceManager.GetString("StatusComparingTriggers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comparing Views....
         /// </summary>
         public static string StatusComparingViews {
@@ -1364,6 +1373,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string StatusMappingTables {
             get {
                 return ResourceManager.GetString("StatusMappingTables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping Triggers....
+        /// </summary>
+        public static string StatusMappingTriggers {
+            get {
+                return ResourceManager.GetString("StatusMappingTriggers", resourceCulture);
             }
         }
         

@@ -85,7 +85,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             var foreignKeys = new List<ABaseDbForeignKey>();
             var indexes = new List<ABaseDbIndex>();
             var constraints = new List<ABaseDbConstraint>();
-            var triggers = new List<ABaseDbTrigger>();
 
             var exceptions = new List<Exception>();
 
@@ -195,8 +194,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 56;
                 taskInfo.Message = Localization.StatusRetrievingTriggers;
-                triggers.AddRange(this.GetTriggers(context));
-                triggers.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
+                db.Triggers.AddRange(this.GetTriggers(context));
+                db.Triggers.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
             }
             catch (Exception ex)
             {
@@ -206,7 +205,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-            AssignRetrievedItemsToRelatedTables(taskInfo, db, columns, foreignKeys, indexes, constraints, triggers);
+            AssignRetrievedItemsToRelatedTables(taskInfo, db, columns, foreignKeys, indexes, constraints);
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
@@ -387,8 +386,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             IReadOnlyCollection<ABaseDbColumn> columns,
             IReadOnlyCollection<ABaseDbForeignKey> foreignKeys,
             IReadOnlyCollection<ABaseDbIndex> indexes,
-            IReadOnlyCollection<ABaseDbConstraint> constraints,
-            IReadOnlyCollection<ABaseDbTrigger> triggers)
+            IReadOnlyCollection<ABaseDbConstraint> constraints)
         {
             foreach (var table in db.Tables)
             {
@@ -422,7 +420,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                                            && table.Name == y.TableName));
 
                 table.Triggers.AddRange(
-                    triggers.Where(y => table.Database == y.TableDatabase
+                    db.Triggers.Where(y => table.Database == y.TableDatabase
                                         && table.Schema == y.TableSchema
                                         && table.Name == y.TableName));
             }

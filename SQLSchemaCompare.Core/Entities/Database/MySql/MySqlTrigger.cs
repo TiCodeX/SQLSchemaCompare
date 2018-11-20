@@ -1,14 +1,14 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql
 {
     /// <summary>
-    /// Specific MySql function definition
+    /// Specific MySql trigger definition
     /// </summary>
-    public class MySqlFunction : ABaseDbFunction
+    public class MySqlTrigger : ABaseDbTrigger
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MySqlFunction"/> class
+        /// Initializes a new instance of the <see cref="MySqlTrigger"/> class
         /// </summary>
-        public MySqlFunction()
+        public MySqlTrigger()
         {
             this.AlterScriptSupported = false;
         }

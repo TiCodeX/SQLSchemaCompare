@@ -337,7 +337,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterTrigger(ABaseDbTrigger sourceTrigger, ABaseDbTrigger targetTrigger)
         {
-            return "TODO: Alter Trigger Script";
+            var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptDropTrigger(targetTrigger));
+            sb.AppendLine(this.ScriptCreateTrigger(sourceTrigger));
+            return sb.ToString();
         }
 
         /// <inheritdoc/>

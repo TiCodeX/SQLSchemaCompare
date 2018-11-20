@@ -276,7 +276,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("JOIN pg_catalog.pg_namespace nt ON ct.relnamespace = nt.oid");
             query.AppendLine("WHERE t.tgisinternal = false");
 
-            return context.Query<ABaseDbTrigger>(query.ToString());
+            return context.Query<PostgreSqlTrigger>(query.ToString());
         }
 
         /// <inheritdoc/>

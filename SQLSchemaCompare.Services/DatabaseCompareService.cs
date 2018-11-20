@@ -27,6 +27,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
         private readonly ITaskService taskService;
 
         private readonly List<CompareResultItem<ABaseDbTable>> tables = new List<CompareResultItem<ABaseDbTable>>();
+        private readonly List<CompareResultItem<ABaseDbTrigger>> triggers = new List<CompareResultItem<ABaseDbTrigger>>();
         private readonly List<CompareResultItem<ABaseDbView>> views = new List<CompareResultItem<ABaseDbView>>();
         private readonly List<CompareResultItem<ABaseDbFunction>> functions = new List<CompareResultItem<ABaseDbFunction>>();
         private readonly List<CompareResultItem<ABaseDbStoredProcedure>> storedProcedures = new List<CompareResultItem<ABaseDbStoredProcedure>>();
@@ -92,6 +93,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             });
         }
 
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
         private bool ExecuteMappingDatabaseObjects(TaskInfo taskInfo)
         {
             // TODO: Perform mapping with user config from project
@@ -224,6 +226,30 @@ namespace TiCodeX.SQLSchemaCompare.Services
                 });
             }
 
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+            taskInfo.Percentage = 95;
+
+            taskInfo.Message = Localization.StatusMappingTriggers;
+            foreach (var trigger in this.retrievedSourceDatabase.Triggers)
+            {
+                this.triggers.Add(new CompareResultItem<ABaseDbTrigger>
+                {
+                    SourceItem = trigger,
+                    TargetItem = this.retrievedTargetDatabase.Triggers.FirstOrDefault(x => x.Schema == trigger.Schema && x.Name == trigger.Name &&
+                                                                                           x.TableSchema == trigger.TableSchema && x.TableName == trigger.TableName)
+                });
+            }
+
+            foreach (var trigger in this.retrievedTargetDatabase.Triggers.Where(x =>
+                !this.triggers.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name &&
+                                        y.SourceItem.TableSchema == x.TableSchema && y.SourceItem.TableName == x.TableName)).ToList())
+            {
+                this.triggers.Add(new CompareResultItem<ABaseDbTrigger>
+                {
+                    TargetItem = trigger
+                });
+            }
+
             taskInfo.Message = string.Empty;
             taskInfo.Percentage = 100;
 
@@ -231,9 +257,11 @@ namespace TiCodeX.SQLSchemaCompare.Services
         }
 
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
+        [SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmantainableCode", Justification = "TODO")]
         private bool ExecuteDatabaseComparison(TaskInfo taskInfo)
         {
             var totalItems = this.tables.Count +
+                             this.triggers.Count +
                              this.views.Count +
                              this.functions.Count +
                              this.storedProcedures.Count +
@@ -271,6 +299,26 @@ namespace TiCodeX.SQLSchemaCompare.Services
                 }
 
                 taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
+            }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
+            taskInfo.Message = Localization.StatusComparingTriggers;
+            foreach (var resultTrigger in this.triggers)
+            {
+                if (resultTrigger.SourceItem != null)
+                {
+                    resultTrigger.SourceItemName = scripter.GenerateObjectName(resultTrigger.SourceItem);
+                    resultTrigger.Scripts.SourceCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.SourceItem);
+                }
+
+                if (resultTrigger.TargetItem != null)
+                {
+                    resultTrigger.TargetItemName = scripter.GenerateObjectName(resultTrigger.TargetItem);
+                    resultTrigger.Scripts.TargetCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.TargetItem);
+                }
+
+                resultTrigger.Equal = resultTrigger.Scripts.SourceCreateScript == resultTrigger.Scripts.TargetCreateScript;
             }
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
@@ -458,6 +506,10 @@ namespace TiCodeX.SQLSchemaCompare.Services
             result.SameItems.AddRange(this.dataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Same items => {result.SameItems.Count}");
 
+            // Add items related to tables directly in the different items list only for the alter script generation
+            var differentItemsFullList = result.DifferentItems.ToList();
+            differentItemsFullList.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+
             ABaseDb onlySourceDb = null;
             ABaseDb onlyTargetDb = null;
             switch (this.retrievedSourceDatabase)
@@ -482,6 +534,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             }
 
             onlySourceDb.Tables.AddRange(onlySourceTables.Select(x => x.SourceItem));
+            onlySourceDb.Triggers.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Views.AddRange(onlySourceViews.Select(x => x.SourceItem));
             onlySourceDb.Functions.AddRange(onlySourceFunctions.Select(x => x.SourceItem));
             onlySourceDb.StoredProcedures.AddRange(onlySourceStoredProcedures.Select(x => x.SourceItem));
@@ -490,6 +543,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             onlySourceDb.Sequences.AddRange(onlySourceSequences.Select(x => x.SourceItem));
 
             onlyTargetDb.Tables.AddRange(onlyTargetTables.Select(x => x.TargetItem));
+            onlyTargetDb.Triggers.AddRange(this.triggers.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Views.AddRange(onlyTargetViews.Select(x => x.TargetItem));
             onlyTargetDb.Functions.AddRange(onlyTargetFunctions.Select(x => x.TargetItem));
             onlyTargetDb.StoredProcedures.AddRange(onlyTargetStoredProcedures.Select(x => x.TargetItem));
@@ -497,7 +551,34 @@ namespace TiCodeX.SQLSchemaCompare.Services
             onlyTargetDb.DataTypes.AddRange(onlyTargetDataTypes.Select(x => x.TargetItem));
             onlyTargetDb.Sequences.AddRange(onlyTargetSequences.Select(x => x.TargetItem));
 
-            result.FullAlterScript = scripter.GenerateFullAlterScript(result.DifferentItems, onlySourceDb, onlyTargetDb);
+            // Unsupported alter functionality: remove from different items and add the items to the onlySource/onlyTarget
+            // so that they will be dropped at the beginning of the script and recreated at the end
+
+            // Triggers
+            var t = differentItemsFullList.OfType<CompareResultItem<ABaseDbTrigger>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            onlySourceDb.Triggers.AddRange(t.Select(x => x.SourceItem));
+            onlyTargetDb.Triggers.AddRange(t.Select(x => x.TargetItem));
+            t.ForEach(x => differentItemsFullList.Remove(x));
+
+            // StoredProcedures
+            var s = differentItemsFullList.OfType<CompareResultItem<ABaseDbStoredProcedure>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            onlySourceDb.StoredProcedures.AddRange(s.Select(x => x.SourceItem));
+            onlyTargetDb.StoredProcedures.AddRange(s.Select(x => x.TargetItem));
+            s.ForEach(x => differentItemsFullList.Remove(x));
+
+            // Functions
+            var f = differentItemsFullList.OfType<CompareResultItem<ABaseDbFunction>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            onlySourceDb.Functions.AddRange(f.Select(x => x.SourceItem));
+            onlyTargetDb.Functions.AddRange(f.Select(x => x.TargetItem));
+            f.ForEach(x => differentItemsFullList.Remove(x));
+
+            // Views
+            var v = differentItemsFullList.OfType<CompareResultItem<ABaseDbView>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            onlySourceDb.Views.AddRange(v.Select(x => x.SourceItem));
+            onlyTargetDb.Views.AddRange(v.Select(x => x.TargetItem));
+            v.ForEach(x => differentItemsFullList.Remove(x));
+
+            result.FullAlterScript = scripter.GenerateFullAlterScript(differentItemsFullList, onlySourceDb, onlyTargetDb);
 
             this.projectService.Project.Result = result;
 

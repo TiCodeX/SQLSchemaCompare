@@ -221,7 +221,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("FROM INFORMATION_SCHEMA.TRIGGERS t");
             query.AppendLine($"WHERE t.TRIGGER_SCHEMA = '{context.DatabaseName}'");
 
-            var result = context.Query<ABaseDbTrigger>(query.ToString());
+            var result = context.Query<MySqlTrigger>(query.ToString());
             foreach (var trigger in result)
             {
                 trigger.Definition = context.Query($"SHOW CREATE TRIGGER `{trigger.Database}`.`{trigger.Name}`", 2).FirstOrDefault();

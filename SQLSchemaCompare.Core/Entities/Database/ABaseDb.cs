@@ -13,6 +13,11 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
         public List<ABaseDbTable> Tables { get; } = new List<ABaseDbTable>();
 
         /// <summary>
+        /// Gets the database's triggers
+        /// </summary>
+        public List<ABaseDbTrigger> Triggers { get; } = new List<ABaseDbTrigger>();
+
+        /// <summary>
         /// Gets the database's views
         /// </summary>
         public List<ABaseDbView> Views { get; } = new List<ABaseDbView>();

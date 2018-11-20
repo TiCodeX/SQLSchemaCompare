@@ -614,4 +614,10 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="MenuEdit" xml:space="preserve">
     <value>Edit</value>
   </data>
+  <data name="StatusMappingTriggers" xml:space="preserve">
+    <value>Mapping Triggers...</value>
+  </data>
+  <data name="StatusComparingTriggers" xml:space="preserve">
+    <value>Comparing Triggers...</value>
+  </data>
 </root>

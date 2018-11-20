@@ -208,16 +208,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             }
 
             // Triggers
-            if (database.Tables.Any(x => x.Triggers.Count > 0))
+            if (database.Triggers.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
-                foreach (var table in this.GetSortedTables(database.Tables, false))
+                foreach (var trigger in database.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
-                    foreach (var trigger in table.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-                    {
-                        sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-                        sb.AppendLine(this.ScriptCreateTrigger(trigger));
-                    }
+                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                    sb.AppendLine(this.ScriptCreateTrigger(trigger));
                 }
 
                 sb.AppendLine();
@@ -235,9 +232,21 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             sb.Append(this.GenerateFullDropScript(onlyTargetItems));
 
             // Alter the different items
+            foreach (var trigger in differentItems.OfType<CompareResultItem<ABaseDbTrigger>>().OrderBy(x => x.SourceItem.TableSchema)
+                .ThenBy(x => x.SourceItem.TableName).ThenBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
+            {
+                sb.Append(this.GenerateAlterTriggerScript(trigger.SourceItem, trigger.TargetItem));
+            }
+
             foreach (var table in differentItems.OfType<CompareResultItem<ABaseDbTable>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
             {
-                sb.Append(this.GenerateAlterTableScript(table.SourceItem, table.TargetItem));
+                // sb.Append(this.GenerateAlterTableScript(table.SourceItem, table.TargetItem));
+                // Columns
+                // ForeignKeys
+                // ReferencingForeignKeys
+                // PrimaryKeys
+                // Indexes
+                // Constraints
             }
 
             foreach (var view in differentItems.OfType<CompareResultItem<ABaseDbView>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
@@ -277,15 +286,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
 
             // Triggers
-            if (database.Tables.Any(x => x.Triggers.Count > 0))
+            if (database.Triggers.Any())
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
-                foreach (var table in this.GetSortedTables(database.Tables, true))
+                foreach (var trigger in database.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
-                    foreach (var trigger in table.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-                    {
-                        sb.Append(this.ScriptDropTrigger(trigger));
-                    }
+                    sb.Append(this.ScriptDropTrigger(trigger));
                 }
 
                 sb.AppendLine();

@@ -605,4 +605,10 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="MenuEdit" xml:space="preserve">
     <value>Ändern</value>
   </data>
+  <data name="StatusMappingTriggers" xml:space="preserve">
+    <value>Trigger zuordnen...</value>
+  </data>
+  <data name="StatusComparingTriggers" xml:space="preserve">
+    <value>Vergleiche Trigger...</value>
+  </data>
 </root>

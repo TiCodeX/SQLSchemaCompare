@@ -104,7 +104,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       kcu.TABLE_NAME as TableName,");
             query.AppendLine("       kcu.COLUMN_NAME as ColumnName,");
             query.AppendLine("       tc.constraint_type as ConstraintType,");
-            query.AppendLine("       kcu.ORDINAL_POSITION as OrdinalPosition,");
+            query.AppendLine("       CAST(kcu.ORDINAL_POSITION AS SIGNED) as OrdinalPosition,");
             query.AppendLine("       null as ReferencedTableSchema,");
             query.AppendLine("       kcu.REFERENCED_TABLE_NAME as ReferencedTableName,");
             query.AppendLine("       kcu.REFERENCED_COLUMN_NAME as ReferencedColumnName,");
@@ -139,7 +139,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       s.TABLE_NAME AS 'TableName',");
             query.AppendLine("       s.COLUMN_NAME AS 'ColumnName',");
             query.AppendLine("       CASE WHEN tc.CONSTRAINT_TYPE = 'PRIMARY KEY' THEN TRUE ELSE FALSE END AS 'IsPrimaryKey',");
-            query.AppendLine("       s.SEQ_IN_INDEX AS 'OrdinalPosition',");
+            query.AppendLine("       CAST(s.SEQ_IN_INDEX AS SIGNED) AS 'OrdinalPosition',");
             query.AppendLine("       CASE WHEN s.COLLATION = 'D' THEN TRUE ELSE FALSE END as 'IsDescending',");
             query.AppendLine("       s.INDEX_TYPE AS 'IndexType',");
             query.AppendLine("       COALESCE(tc.CONSTRAINT_TYPE, 'INDEX') AS 'ConstraintType'");

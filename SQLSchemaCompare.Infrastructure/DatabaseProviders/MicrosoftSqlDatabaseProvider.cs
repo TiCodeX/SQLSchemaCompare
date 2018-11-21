@@ -115,7 +115,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       tc.TABLE_SCHEMA as 'TableSchema',");
             query.AppendLine("       tc.TABLE_NAME as 'TableName',");
             query.AppendLine("       col.name as 'ColumnName',");
-            query.AppendLine("       fkc.constraint_column_id as 'OrdinalPosition',");
+            query.AppendLine("       CAST(fkc.constraint_column_id AS bigint) as 'OrdinalPosition',");
             query.AppendLine("       tc.CONSTRAINT_TYPE as 'ConstraintType',");
             query.AppendLine("       reftb.name as 'ReferencedTableName',");
             query.AppendLine("       refs.name as 'ReferencedTableSchema',");
@@ -176,7 +176,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       END AS 'ConstraintType',");
             query.AppendLine("       i.is_primary_key AS 'IsPrimaryKey',");
             query.AppendLine("       ic.is_descending_key as 'IsDescending',");
-            query.AppendLine("       ic.key_ordinal AS 'OrdinalPosition',");
+            query.AppendLine("       CAST(ic.key_ordinal AS bigint) AS 'OrdinalPosition',");
             query.AppendLine("       i.type AS Type,");
             query.AppendLine("       i.type_desc AS 'TypeDescription',");
             query.AppendLine("       i.is_unique AS 'IsUnique',");

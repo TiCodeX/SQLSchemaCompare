@@ -291,8 +291,6 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     resultTable.Scripts.TargetCreateScript = scripter.GenerateCreateTableScript(resultTable.TargetItem, resultTable.SourceItem);
                 }
 
-                resultTable.Equal = resultTable.Scripts.SourceCreateScript == resultTable.Scripts.TargetCreateScript;
-
                 if (!resultTable.Equal)
                 {
                     resultTable.Scripts.AlterScript = scripter.GenerateAlterTableScript(resultTable.SourceItem, resultTable.TargetItem);
@@ -318,7 +316,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     resultTrigger.Scripts.TargetCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.TargetItem);
                 }
 
-                resultTrigger.Equal = resultTrigger.Scripts.SourceCreateScript == resultTrigger.Scripts.TargetCreateScript;
+                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
             }
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
@@ -337,8 +335,6 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     resultView.TargetItemName = scripter.GenerateObjectName(resultView.TargetItem);
                     resultView.Scripts.TargetCreateScript = scripter.GenerateCreateViewScript(resultView.TargetItem);
                 }
-
-                resultView.Equal = resultView.Scripts.SourceCreateScript == resultView.Scripts.TargetCreateScript;
 
                 if (!resultView.Equal)
                 {
@@ -365,8 +361,6 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     resultFunction.Scripts.TargetCreateScript = scripter.GenerateCreateFunctionScript(resultFunction.TargetItem, this.retrievedTargetDatabase.DataTypes);
                 }
 
-                resultFunction.Equal = resultFunction.Scripts.SourceCreateScript == resultFunction.Scripts.TargetCreateScript;
-
                 if (!resultFunction.Equal)
                 {
                     resultFunction.Scripts.AlterScript = scripter.GenerateAlterFunctionScript(resultFunction.SourceItem, this.retrievedSourceDatabase.DataTypes, resultFunction.TargetItem, this.retrievedTargetDatabase.DataTypes);
@@ -391,8 +385,6 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     resultStoredProcedure.TargetItemName = scripter.GenerateObjectName(resultStoredProcedure.TargetItem);
                     resultStoredProcedure.Scripts.TargetCreateScript = scripter.GenerateCreateStoredProcedureScript(resultStoredProcedure.TargetItem);
                 }
-
-                resultStoredProcedure.Equal = resultStoredProcedure.Scripts.SourceCreateScript == resultStoredProcedure.Scripts.TargetCreateScript;
 
                 if (!resultStoredProcedure.Equal)
                 {
@@ -419,8 +411,6 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     resultSequence.Scripts.TargetCreateScript = scripter.GenerateCreateSequenceScript(resultSequence.TargetItem);
                 }
 
-                resultSequence.Equal = resultSequence.Scripts.SourceCreateScript == resultSequence.Scripts.TargetCreateScript;
-
                 if (!resultSequence.Equal)
                 {
                     resultSequence.Scripts.AlterScript = scripter.GenerateAlterSequenceScript(resultSequence.SourceItem, resultSequence.TargetItem);
@@ -445,8 +435,6 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     resultType.TargetItemName = scripter.GenerateObjectName(resultType.TargetItem);
                     resultType.Scripts.TargetCreateScript = scripter.GenerateCreateTypeScript(resultType.TargetItem, this.retrievedTargetDatabase.DataTypes);
                 }
-
-                resultType.Equal = resultType.Scripts.SourceCreateScript == resultType.Scripts.TargetCreateScript;
 
                 if (!resultType.Equal)
                 {

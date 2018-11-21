@@ -26,6 +26,11 @@
         public string ColumnName { get; set; }
 
         /// <summary>
+        /// Gets or sets ordinal position
+        /// </summary>
+        public long OrdinalPosition { get; set; }
+
+        /// <summary>
         /// Gets or sets the constraint type
         /// </summary>
         public string ConstraintType { get; set; }

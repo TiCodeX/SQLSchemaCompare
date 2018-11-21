@@ -6,11 +6,6 @@
     public class PostgreSqlForeignKey : ABaseDbForeignKey
     {
         /// <summary>
-        /// Gets or sets ordinal position
-        /// </summary>
-        public int OrdinalPosition { get; set; }
-
-        /// <summary>
         /// Gets or sets the match option
         /// </summary>
         public string MatchOption { get; set; }

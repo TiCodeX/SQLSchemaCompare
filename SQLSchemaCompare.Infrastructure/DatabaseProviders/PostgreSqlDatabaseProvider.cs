@@ -115,7 +115,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       kcu.table_name AS \"TableName\",");
             query.AppendLine("       kcu.column_name AS \"ColumnName\",");
             query.AppendLine("       tu.constraint_type AS \"ConstraintType\",");
-            query.AppendLine("       kcu.ordinal_position AS \"OrdinalPosition\",");
+            query.AppendLine("       CAST(kcu.ordinal_position AS bigint) AS \"OrdinalPosition\",");
             query.AppendLine("       rc.match_option AS \"MatchOption\",");
             query.AppendLine("       rc.update_rule AS \"UpdateRule\",");
             query.AppendLine("       rc.delete_rule AS \"DeleteRule\",");
@@ -185,7 +185,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("           ELSE 'INDEX'");
             query.AppendLine("       END AS \"ConstraintType\",");
             query.AppendLine("       i.indisprimary AS \"IsPrimaryKey\",");
-            query.AppendLine("       a.attnum AS \"OrdinalPosition\",");
+            query.AppendLine("       CAST(a.attnum AS bigint) AS \"OrdinalPosition\",");
             query.AppendLine("       CASE");
             query.AppendLine("           WHEN i.indoption[a.attnum-1] & 1 = 1 THEN TRUE");
             query.AppendLine("           ELSE FALSE");

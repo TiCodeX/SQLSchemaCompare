@@ -55,11 +55,6 @@
         }
 
         /// <summary>
-        /// Gets or sets ordinal position
-        /// </summary>
-        public int OrdinalPosition { get; set; }
-
-        /// <summary>
         /// Gets or sets the index type
         /// </summary>
         public IndexType Type { get; set; }

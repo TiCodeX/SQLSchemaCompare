@@ -28,13 +28,13 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Compare
         public Type ItemType { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the items are equal
-        /// </summary>
-        public bool Equal { get; set; }
-
-        /// <summary>
         /// Gets or sets the scripts
         /// </summary>
         public CompareResultItemScripts Scripts { get; set; } = new CompareResultItemScripts();
+
+        /// <summary>
+        /// Gets a value indicating whether the items are equal
+        /// </summary>
+        public bool Equal => this.Scripts.SourceCreateScript == this.Scripts.TargetCreateScript;
     }
 }

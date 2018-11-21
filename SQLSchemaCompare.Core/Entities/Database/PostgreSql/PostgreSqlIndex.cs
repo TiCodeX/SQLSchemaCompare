@@ -6,11 +6,6 @@
     public class PostgreSqlIndex : ABaseDbIndex
     {
         /// <summary>
-        /// Gets or sets ordinal position
-        /// </summary>
-        public int OrdinalPosition { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the index is unique
         /// </summary>
         public bool IsUnique { get; set; }

@@ -99,7 +99,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
-            // Tables with PK, FK, Constraints, Indexes
+            // Tables with PK, FK, Constraints
             if (database.Tables.Count > 0)
             {
                 var sortedTables = this.GetSortedTables(database.Tables, false).ToList();
@@ -147,18 +147,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
                     sb.AppendLine();
                 }
-
-                // Indexes
-                if (sortedTables.Any(x => x.Indexes.Count > 0))
-                {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
-                    foreach (var table in sortedTables)
-                    {
-                        sb.Append(this.ScriptCreateIndexes(table, table.Indexes));
-                    }
-
-                    sb.AppendLine();
-                }
             }
 
             // Functions
@@ -189,7 +177,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
-            // Views and related Indexes
+            // Views
             if (database.Views.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelViews));
@@ -197,11 +185,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 {
                     sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                     sb.AppendLine(this.ScriptCreateView(view));
+                }
 
-                    if (view.Indexes.Count > 0)
-                    {
-                        sb.Append(this.ScriptCreateIndexes(view, view.Indexes));
-                    }
+                sb.AppendLine();
+            }
+
+            // Indexes
+            if (database.Indexes.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
+                foreach (var index in this.GetSortedIndexes(database.Indexes))
+                {
+                    sb.Append(this.ScriptCreateIndex(index));
                 }
 
                 sb.AppendLine();
@@ -297,17 +292,22 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
-            // Views and related Indexes
+            // Indexes
+            if (database.Indexes.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
+                foreach (var index in database.Indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptDropIndex(index));
+                }
+            }
+
+            // Views
             if (database.Views.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelViews));
                 foreach (var view in database.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
-                    if (view.Indexes.Count > 0)
-                    {
-                        sb.Append(this.ScriptDropIndexes(view, view.Indexes));
-                    }
-
                     sb.Append(this.ScriptDropView(view));
                 }
 
@@ -349,18 +349,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     foreach (var table in sortedTables)
                     {
                         sb.Append(this.ScriptAlterTableDropForeignKeys(table));
-                    }
-
-                    sb.AppendLine();
-                }
-
-                // Indexes
-                if (sortedTables.Any(x => x.Indexes.Count > 0))
-                {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
-                    foreach (var table in sortedTables)
-                    {
-                        sb.Append(this.ScriptDropIndexes(table, table.Indexes));
                     }
 
                     sb.AppendLine();
@@ -494,7 +482,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 }
 
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
-                sb.Append(this.ScriptCreateIndexes(table, table.Indexes));
+                foreach (var index in this.GetSortedIndexes(table.Indexes))
+                {
+                    sb.Append(this.ScriptCreateIndex(index));
+                }
             }
 
             return sb.ToString();
@@ -508,7 +499,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             if (table.Indexes.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
-                sb.Append(this.ScriptDropIndexes(table, table.Indexes));
+                foreach (var index in table.Indexes)
+                {
+                    sb.Append(this.ScriptDropIndex(index));
+                }
+
                 sb.AppendLine();
             }
 
@@ -582,6 +577,19 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        public string GenerateCreateIndexScript(ABaseDbIndex index)
+        {
+            if (index == null)
+            {
+                throw new ArgumentNullException(nameof(index));
+            }
+
+            var sb = new StringBuilder();
+            sb.Append(this.ScriptCreateIndex(index));
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
         public string GenerateCreateViewScript(ABaseDbView view)
         {
             if (view == null)
@@ -596,7 +604,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             {
                 sb.AppendLine();
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
-                sb.Append(this.ScriptCreateIndexes(view, view.Indexes));
+                foreach (var index in this.GetSortedIndexes(view.Indexes))
+                {
+                    sb.Append(this.ScriptCreateIndex(index));
+                }
             }
 
             return sb.ToString();
@@ -612,9 +623,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             var sb = new StringBuilder();
 
-            if (view.Indexes.Count > 0)
+            foreach (var index in view.Indexes)
             {
-                sb.Append(this.ScriptDropIndexes(view, view.Indexes));
+                sb.Append(this.ScriptDropIndex(index));
             }
 
             sb.Append(this.ScriptDropView(view));
@@ -855,20 +866,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected abstract string ScriptAlterTableDropConstraints(ABaseDbTable table);
 
         /// <summary>
-        /// Generates the create index scripts for adding the indexes to the object
+        /// Generates the create index script
         /// </summary>
-        /// <param name="dbObject">The database object related to the indexes</param>
-        /// <param name="indexes">The list of indexes</param>
-        /// <returns>The create index scripts</returns>
-        protected abstract string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes);
+        /// <param name="index">The index to script</param>
+        /// <returns>The create index script</returns>
+        protected abstract string ScriptCreateIndex(ABaseDbIndex index);
 
         /// <summary>
-        /// Generates the drop index scripts
+        /// Generates the drop index script
         /// </summary>
-        /// <param name="dbObject">The database object related to the indexes</param>
-        /// <param name="indexes">The list of indexes</param>
+        /// <param name="index">The index to script</param>
         /// <returns>The drop index scripts</returns>
-        protected abstract string ScriptDropIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes);
+        protected abstract string ScriptDropIndex(ABaseDbIndex index);
 
         /// <summary>
         /// Generates the create view script
@@ -1072,5 +1081,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <param name="dropOrder">Whether to sort the functions for dropping them</param>
         /// <returns>The sorted functions</returns>
         protected abstract IEnumerable<ABaseDbFunction> GetSortedFunctions(List<ABaseDbFunction> functions, bool dropOrder);
+
+        /// <summary>
+        /// Gets the indexes sorted depending on the options
+        /// </summary>
+        /// <param name="indexes">The indexes</param>
+        /// <returns>The sorted indexes</returns>
+        protected abstract IEnumerable<ABaseDbIndex> GetSortedIndexes(List<ABaseDbIndex> indexes);
     }
 }

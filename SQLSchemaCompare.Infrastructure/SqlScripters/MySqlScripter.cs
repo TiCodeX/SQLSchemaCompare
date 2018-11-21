@@ -166,57 +166,51 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes)
+        protected override string ScriptCreateIndex(ABaseDbIndex index)
         {
+            var indexMySql = (MySqlIndex)index;
+
             var sb = new StringBuilder();
 
-            foreach (var index in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>())
+            // If there is a column with descending order, specify the order on all columns
+            var scriptOrder = index.ColumnDescending.Any(x => x);
+            var columnList = index.ColumnNames.Select((x, i) => (scriptOrder ?
+                $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}" :
+                $"{this.ScriptHelper.ScriptObjectName(x)}"));
+
+            sb.Append("CREATE ");
+            if (indexMySql.IndexType == "FULLTEXT")
             {
-                // If there is a column with descending order, specify the order on all columns
-                var scriptOrder = index.ColumnDescending.Any(x => x);
-                var columnList = index.ColumnNames.Select((x, i) => (scriptOrder ?
-                    $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}" :
-                    $"{this.ScriptHelper.ScriptObjectName(x)}"));
-
-                sb.Append("CREATE ");
-                if (index.IndexType == "FULLTEXT")
-                {
-                    sb.Append("FULLTEXT ");
-                }
-                else if (index.IndexType == "SPATIAL")
-                {
-                    sb.Append("SPATIAL ");
-                }
-                else if (index.ConstraintType == "UNIQUE")
-                {
-                    sb.Append("UNIQUE ");
-                }
-
-                sb.Append($"INDEX {index.Name} ");
-
-                // If not specified it will use the BTREE
-                if (index.IndexType == "HASH")
-                {
-                    sb.Append("USING HASH ");
-                }
-
-                sb.AppendLine($"ON {this.ScriptHelper.ScriptObjectName(dbObject)}({string.Join(",", columnList)});");
-                sb.AppendLine();
+                sb.Append("FULLTEXT ");
             }
+            else if (indexMySql.IndexType == "SPATIAL")
+            {
+                sb.Append("SPATIAL ");
+            }
+            else if (index.ConstraintType == "UNIQUE")
+            {
+                sb.Append("UNIQUE ");
+            }
+
+            sb.Append($"INDEX {index.Name} ");
+
+            // If not specified it will use the BTREE
+            if (indexMySql.IndexType == "HASH")
+            {
+                sb.Append("USING HASH ");
+            }
+
+            sb.AppendLine($"ON {this.ScriptHelper.ScriptObjectName(index.TableSchema, index.TableName)}({string.Join(",", columnList)});");
+            sb.AppendLine();
 
             return sb.ToString();
         }
 
         /// <inheritdoc/>
-        protected override string ScriptDropIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes)
+        protected override string ScriptDropIndex(ABaseDbIndex index)
         {
             var sb = new StringBuilder();
-
-            foreach (var index in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>())
-            {
-                sb.AppendLine($"DROP INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(dbObject)};");
-            }
-
+            sb.AppendLine($"DROP INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(index.TableSchema, index.TableName)};");
             return sb.ToString();
         }
 
@@ -387,6 +381,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             // Parameter dropOrder ignored because we want to drop the functions alphabetically
             return functions.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbIndex> GetSortedIndexes(List<ABaseDbIndex> indexes)
+        {
+            return indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name);
         }
     }
 }

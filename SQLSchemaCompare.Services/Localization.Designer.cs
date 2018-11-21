@@ -1260,6 +1260,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Comparing Indexes....
+        /// </summary>
+        public static string StatusComparingIndexes {
+            get {
+                return ResourceManager.GetString("StatusComparingIndexes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comparing Sequences....
         /// </summary>
         public static string StatusComparingSequences {
@@ -1346,6 +1355,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string StatusMappingFunctions {
             get {
                 return ResourceManager.GetString("StatusMappingFunctions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping Indexes....
+        /// </summary>
+        public static string StatusMappingIndexes {
+            get {
+                return ResourceManager.GetString("StatusMappingIndexes", resourceCulture);
             }
         }
         

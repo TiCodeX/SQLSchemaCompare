@@ -620,4 +620,10 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="StatusComparingTriggers" xml:space="preserve">
     <value>Comparing Triggers...</value>
   </data>
+  <data name="StatusMappingIndexes" xml:space="preserve">
+    <value>Mapping Indexes...</value>
+  </data>
+  <data name="StatusComparingIndexes" xml:space="preserve">
+    <value>Comparing Indexes...</value>
+  </data>
 </root>

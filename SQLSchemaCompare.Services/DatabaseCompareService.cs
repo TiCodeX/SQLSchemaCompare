@@ -27,6 +27,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
         private readonly ITaskService taskService;
 
         private readonly List<CompareResultItem<ABaseDbTable>> tables = new List<CompareResultItem<ABaseDbTable>>();
+        private readonly List<CompareResultItem<ABaseDbIndex>> indexes = new List<CompareResultItem<ABaseDbIndex>>();
         private readonly List<CompareResultItem<ABaseDbTrigger>> triggers = new List<CompareResultItem<ABaseDbTrigger>>();
         private readonly List<CompareResultItem<ABaseDbView>> views = new List<CompareResultItem<ABaseDbView>>();
         private readonly List<CompareResultItem<ABaseDbFunction>> functions = new List<CompareResultItem<ABaseDbFunction>>();
@@ -118,6 +119,30 @@ namespace TiCodeX.SQLSchemaCompare.Services
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
             taskInfo.Percentage = 20;
+
+            taskInfo.Message = "Localization.StatusMappingIndexes";
+            foreach (var index in this.retrievedSourceDatabase.Indexes)
+            {
+                this.indexes.Add(new CompareResultItem<ABaseDbIndex>
+                {
+                    SourceItem = index,
+                    TargetItem = this.retrievedTargetDatabase.Indexes.FirstOrDefault(x => x.TableSchema == index.TableSchema && x.TableName == index.TableName &&
+                                                                                          x.Schema == index.Schema && x.Name == index.Name)
+                });
+            }
+
+            foreach (var index in this.retrievedTargetDatabase.Indexes.Where(x =>
+                !this.indexes.Any(y => y.SourceItem.TableSchema == x.TableSchema && y.SourceItem.TableName == x.TableName &&
+                                       y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
+            {
+                this.indexes.Add(new CompareResultItem<ABaseDbIndex>
+                {
+                    TargetItem = index
+                });
+            }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+            taskInfo.Percentage = 30;
 
             taskInfo.Message = Localization.StatusMappingViews;
             foreach (var view in this.retrievedSourceDatabase.Views)
@@ -235,14 +260,14 @@ namespace TiCodeX.SQLSchemaCompare.Services
                 this.triggers.Add(new CompareResultItem<ABaseDbTrigger>
                 {
                     SourceItem = trigger,
-                    TargetItem = this.retrievedTargetDatabase.Triggers.FirstOrDefault(x => x.Schema == trigger.Schema && x.Name == trigger.Name &&
-                                                                                           x.TableSchema == trigger.TableSchema && x.TableName == trigger.TableName)
+                    TargetItem = this.retrievedTargetDatabase.Triggers.FirstOrDefault(x => x.TableSchema == trigger.TableSchema && x.TableName == trigger.TableName &&
+                                                                                           x.Schema == trigger.Schema && x.Name == trigger.Name)
                 });
             }
 
             foreach (var trigger in this.retrievedTargetDatabase.Triggers.Where(x =>
-                !this.triggers.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name &&
-                                        y.SourceItem.TableSchema == x.TableSchema && y.SourceItem.TableName == x.TableName)).ToList())
+                !this.triggers.Any(y => y.SourceItem.TableSchema == x.TableSchema && y.SourceItem.TableName == x.TableName &&
+                                        y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
             {
                 this.triggers.Add(new CompareResultItem<ABaseDbTrigger>
                 {
@@ -261,6 +286,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
         private bool ExecuteDatabaseComparison(TaskInfo taskInfo)
         {
             var totalItems = this.tables.Count +
+                             this.indexes.Count +
                              this.triggers.Count +
                              this.views.Count +
                              this.functions.Count +
@@ -294,6 +320,26 @@ namespace TiCodeX.SQLSchemaCompare.Services
                 if (!resultTable.Equal)
                 {
                     resultTable.Scripts.AlterScript = scripter.GenerateAlterTableScript(resultTable.SourceItem, resultTable.TargetItem);
+                }
+
+                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
+            }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
+            taskInfo.Message = Localization.StatusComparingIndexes;
+            foreach (var resultIndex in this.indexes)
+            {
+                if (resultIndex.SourceItem != null)
+                {
+                    resultIndex.SourceItemName = scripter.GenerateObjectName(resultIndex.SourceItem);
+                    resultIndex.Scripts.SourceCreateScript = scripter.GenerateCreateIndexScript(resultIndex.SourceItem);
+                }
+
+                if (resultIndex.TargetItem != null)
+                {
+                    resultIndex.TargetItemName = scripter.GenerateObjectName(resultIndex.TargetItem);
+                    resultIndex.Scripts.TargetCreateScript = scripter.GenerateCreateIndexScript(resultIndex.TargetItem);
                 }
 
                 taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
@@ -496,6 +542,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
 
             // Add items related to tables directly in the different items list only for the alter script generation
             var differentItemsFullList = result.DifferentItems.ToList();
+            differentItemsFullList.AddRange(this.indexes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
             differentItemsFullList.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
 
             ABaseDb onlySourceDb = null;
@@ -522,6 +569,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             }
 
             onlySourceDb.Tables.AddRange(onlySourceTables.Select(x => x.SourceItem));
+            onlySourceDb.Indexes.AddRange(this.indexes.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Triggers.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Views.AddRange(onlySourceViews.Select(x => x.SourceItem));
             onlySourceDb.Functions.AddRange(onlySourceFunctions.Select(x => x.SourceItem));
@@ -531,6 +579,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             onlySourceDb.Sequences.AddRange(onlySourceSequences.Select(x => x.SourceItem));
 
             onlyTargetDb.Tables.AddRange(onlyTargetTables.Select(x => x.TargetItem));
+            onlyTargetDb.Indexes.AddRange(this.indexes.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Triggers.AddRange(this.triggers.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Views.AddRange(onlyTargetViews.Select(x => x.TargetItem));
             onlyTargetDb.Functions.AddRange(onlyTargetFunctions.Select(x => x.TargetItem));
@@ -541,6 +590,12 @@ namespace TiCodeX.SQLSchemaCompare.Services
 
             // Unsupported alter functionality: remove from different items and add the items to the onlySource/onlyTarget
             // so that they will be dropped at the beginning of the script and recreated at the end
+
+            // Indexes
+            var i = differentItemsFullList.OfType<CompareResultItem<ABaseDbIndex>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            onlySourceDb.Indexes.AddRange(i.Select(x => x.SourceItem));
+            onlyTargetDb.Indexes.AddRange(i.Select(x => x.TargetItem));
+            i.ForEach(x => differentItemsFullList.Remove(x));
 
             // Triggers
             var t = differentItemsFullList.OfType<CompareResultItem<ABaseDbTrigger>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();

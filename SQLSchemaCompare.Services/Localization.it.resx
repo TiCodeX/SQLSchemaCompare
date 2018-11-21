@@ -611,4 +611,10 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="StatusComparingTriggers" xml:space="preserve">
     <value>Confronto dei Trigger in corso...</value>
   </data>
+  <data name="StatusMappingIndexes" xml:space="preserve">
+    <value>Mappatura degli Indici in corso...</value>
+  </data>
+  <data name="StatusComparingIndexes" xml:space="preserve">
+    <value>Confronto degli Indici in corso...</value>
+  </data>
 </root>

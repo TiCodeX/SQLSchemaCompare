@@ -65,6 +65,13 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
         string GenerateAlterTableScript(ABaseDbTable sourceTable, ABaseDbTable targetTable);
 
         /// <summary>
+        /// Generates the create index script
+        /// </summary>
+        /// <param name="index">The index to be scripted</param>
+        /// <returns>The create script</returns>
+        string GenerateCreateIndexScript(ABaseDbIndex index);
+
+        /// <summary>
         /// Generates the create view script and related indexes
         /// </summary>
         /// <param name="view">The view to be scripted</param>

@@ -188,75 +188,64 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes)
+        protected override string ScriptCreateIndex(ABaseDbIndex index)
         {
+            var indexMicrosoft = (MicrosoftSqlIndex)index;
+
             var sb = new StringBuilder();
 
-            // Reorder: Clustered indexes must be created before Nonclustered
-            var orderedIndexes = new List<MicrosoftSqlIndex>();
-            orderedIndexes.AddRange(indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type == MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
-            orderedIndexes.AddRange(indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type != MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
+            // If there is a column with descending order, specify the order on all columns
+            var scriptOrder = index.ColumnDescending.Any(x => x);
+            var columnList = index.ColumnNames.Select((x, i) => (scriptOrder ?
+                $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}" :
+                $"{this.ScriptHelper.ScriptObjectName(x)}"));
 
-            foreach (var index in orderedIndexes)
+            sb.Append("CREATE ");
+            switch (indexMicrosoft.Type)
             {
-                // If there is a column with descending order, specify the order on all columns
-                var scriptOrder = index.ColumnDescending.Any(x => x);
-                var columnList = index.ColumnNames.Select((x, i) => (scriptOrder ?
-                    $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}" :
-                    $"{this.ScriptHelper.ScriptObjectName(x)}"));
+                case MicrosoftSqlIndex.IndexType.Clustered:
+                case MicrosoftSqlIndex.IndexType.Nonclustered:
 
-                sb.Append("CREATE ");
-                switch (index.Type)
-                {
-                    case MicrosoftSqlIndex.IndexType.Clustered:
-                    case MicrosoftSqlIndex.IndexType.Nonclustered:
+                    if (indexMicrosoft.IsUnique.HasValue && indexMicrosoft.IsUnique == true)
+                    {
+                        sb.Append("UNIQUE ");
+                    }
 
-                        if (index.IsUnique.HasValue && index.IsUnique == true)
-                        {
-                            sb.Append("UNIQUE ");
-                        }
+                    // If CLUSTERED is not specified, a NONCLUSTERED index is created
+                    sb.Append(indexMicrosoft.Type == MicrosoftSqlIndex.IndexType.Clustered ? "CLUSTERED " : "NONCLUSTERED ");
 
-                        // If CLUSTERED is not specified, a NONCLUSTERED index is created
-                        sb.Append(index.Type == MicrosoftSqlIndex.IndexType.Clustered ? "CLUSTERED " : "NONCLUSTERED ");
+                    break;
 
-                        break;
+                case MicrosoftSqlIndex.IndexType.XML:
+                    sb.Append("XML ");
+                    break;
 
-                    case MicrosoftSqlIndex.IndexType.XML:
-                        sb.Append("XML ");
-                        break;
+                case MicrosoftSqlIndex.IndexType.Spatial:
+                    sb.Append("SPATIAL ");
+                    break;
 
-                    case MicrosoftSqlIndex.IndexType.Spatial:
-                        sb.Append("SPATIAL ");
-                        break;
-
-                    default:
-                        throw new NotSupportedException($"Index of type '{index.Type.ToString()}' is not supported");
-                }
-
-                sb.AppendLine($"INDEX {this.ScriptHelper.ScriptObjectName(index.Name)} ON {this.ScriptHelper.ScriptObjectName(dbObject)}({string.Join(",", columnList)})");
-                if (!string.IsNullOrWhiteSpace(index.FilterDefinition))
-                {
-                    sb.AppendLine($"{this.Indent}WHERE {index.FilterDefinition}");
-                }
-
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-                sb.AppendLine();
+                default:
+                    throw new NotSupportedException($"Index of type '{indexMicrosoft.Type.ToString()}' is not supported");
             }
+
+            sb.AppendLine($"INDEX {this.ScriptHelper.ScriptObjectName(index.Name)} ON {this.ScriptHelper.ScriptObjectName(index.TableSchema, index.TableName)}({string.Join(",", columnList)})");
+            if (!string.IsNullOrWhiteSpace(indexMicrosoft.FilterDefinition))
+            {
+                sb.AppendLine($"{this.Indent}WHERE {indexMicrosoft.FilterDefinition}");
+            }
+
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            sb.AppendLine();
 
             return sb.ToString();
         }
 
         /// <inheritdoc/>
-        protected override string ScriptDropIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes)
+        protected override string ScriptDropIndex(ABaseDbIndex index)
         {
             var sb = new StringBuilder();
-
-            foreach (var index in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-            {
-                sb.AppendLine($"DROP INDEX {this.ScriptHelper.ScriptObjectName(index.Name)} ON {this.ScriptHelper.ScriptObjectName(dbObject)}");
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-            }
-
+            sb.AppendLine($"DROP INDEX {this.ScriptHelper.ScriptObjectName(index.Name)} ON {this.ScriptHelper.ScriptObjectName(index.TableSchema, index.TableName)}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
 
@@ -602,6 +591,16 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             // Parameter dropOrder ignored because we want to drop the functions alphabetically
             return functions.OrderBy(x => x.Schema).ThenBy(x => x.Name);
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbIndex> GetSortedIndexes(List<ABaseDbIndex> indexes)
+        {
+            // Clustered indexes must be created before Nonclustered
+            var orderedIndexes = new List<MicrosoftSqlIndex>();
+            orderedIndexes.AddRange(indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type == MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
+            orderedIndexes.AddRange(indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type != MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
+            return orderedIndexes;
         }
     }
 }

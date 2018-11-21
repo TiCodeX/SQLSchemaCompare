@@ -83,7 +83,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             var columns = new List<ABaseDbColumn>();
             var foreignKeys = new List<ABaseDbForeignKey>();
-            var indexes = new List<ABaseDbIndex>();
             var constraints = new List<ABaseDbConstraint>();
 
             var exceptions = new List<Exception>();
@@ -179,7 +178,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                     var index = indexGroup.First();
                     index.ColumnNames.AddRange(indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
                     index.ColumnDescending.AddRange(indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.IsDescending));
-                    indexes.Add(index);
+                    db.Indexes.Add(index);
                 }
             }
             catch (Exception ex)
@@ -224,7 +223,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-            AssignRetrievedItemsToRelatedTables(taskInfo, db, columns, foreignKeys, indexes, constraints);
+            AssignRetrievedItemsToRelatedTables(taskInfo, db, columns, foreignKeys, constraints);
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
@@ -243,7 +242,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-            AssignRetrievedItemsToRelatedViews(taskInfo, db, indexes);
+            AssignRetrievedItemsToRelatedViews(taskInfo, db);
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
@@ -404,7 +403,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             TDatabase db,
             IReadOnlyCollection<ABaseDbColumn> columns,
             IReadOnlyCollection<ABaseDbForeignKey> foreignKeys,
-            IReadOnlyCollection<ABaseDbIndex> indexes,
             IReadOnlyCollection<ABaseDbConstraint> constraints)
         {
             foreach (var table in db.Tables)
@@ -424,12 +422,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                                            && table.Schema == y.ReferencedTableSchema
                                            && table.Name == y.ReferencedTableName));
                 table.PrimaryKeys.AddRange(
-                    indexes.Where(y => y.IsPrimaryKey
+                    db.Indexes.Where(y => y.IsPrimaryKey
                                        && table.Database == y.TableDatabase
                                        && table.Schema == y.TableSchema
                                        && table.Name == y.TableName));
                 table.Indexes.AddRange(
-                    indexes.Where(y => y.IsPrimaryKey == false
+                    db.Indexes.Where(y => y.IsPrimaryKey == false
                                        && table.Database == y.TableDatabase
                                        && table.Schema == y.TableSchema
                                        && table.Name == y.TableName));
@@ -443,16 +441,19 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                                         && table.Schema == y.TableSchema
                                         && table.Name == y.TableName));
             }
+
+            // Remove primary keys from the indexes list since are now linked to tables
+            db.Indexes.RemoveAll(x => x.IsPrimaryKey);
         }
 
-        private static void AssignRetrievedItemsToRelatedViews(TaskInfo taskInfo, TDatabase db, IReadOnlyCollection<ABaseDbIndex> indexes)
+        private static void AssignRetrievedItemsToRelatedViews(TaskInfo taskInfo, TDatabase db)
         {
             foreach (var view in db.Views)
             {
                 taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
                 view.Indexes.AddRange(
-                    indexes.Where(y => y.IsPrimaryKey == false
+                    db.Indexes.Where(y => y.IsPrimaryKey == false
                                        && view.Database == y.TableDatabase
                                        && view.Schema == y.TableSchema
                                        && view.Name == y.TableName));

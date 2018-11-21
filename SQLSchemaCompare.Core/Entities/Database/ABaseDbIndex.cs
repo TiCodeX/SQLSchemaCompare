@@ -8,6 +8,14 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
     public class ABaseDbIndex : ABaseDbConstraint
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="ABaseDbIndex"/> class
+        /// </summary>
+        public ABaseDbIndex()
+        {
+            this.AlterScriptSupported = false;
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the index is primary key
         /// </summary>
         public bool IsPrimaryKey { get; set; }

@@ -175,61 +175,55 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes)
+        protected override string ScriptCreateIndex(ABaseDbIndex index)
         {
+            var indexPostgreSql = (PostgreSqlIndex)index;
+
             var sb = new StringBuilder();
 
-            foreach (var index in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<PostgreSqlIndex>())
+            // If there is a column with descending order, specify the order on all columns
+            var scriptOrder = index.ColumnDescending.Any(x => x);
+            var columnList = index.ColumnNames.Select((x, i) => (scriptOrder ?
+                $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}" :
+                $"{this.ScriptHelper.ScriptObjectName(x)}"));
+
+            sb.Append("CREATE ");
+            if (indexPostgreSql.IsUnique)
             {
-                // If there is a column with descending order, specify the order on all columns
-                var scriptOrder = index.ColumnDescending.Any(x => x);
-                var columnList = index.ColumnNames.Select((x, i) => (scriptOrder ?
-                    $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}" :
-                    $"{this.ScriptHelper.ScriptObjectName(x)}"));
-
-                sb.Append("CREATE ");
-                if (index.IsUnique)
-                {
-                    sb.Append("UNIQUE ");
-                }
-
-                sb.Append($"INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(dbObject)} ");
-
-                switch (index.Type)
-                {
-                    case "btree":
-                        // If not specified it will use the BTREE
-                        break;
-
-                    case "gist":
-                        sb.Append("USING gist ");
-                        break;
-
-                    case "hash":
-                        sb.Append("USING hash ");
-                        break;
-
-                    default:
-                        throw new NotSupportedException($"Index of type '{index.Type}' is not supported");
-                }
-
-                sb.AppendLine($"({string.Join(",", columnList)});");
-                sb.AppendLine();
+                sb.Append("UNIQUE ");
             }
+
+            sb.Append($"INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(index.TableSchema, index.TableName)} ");
+
+            switch (indexPostgreSql.Type)
+            {
+                case "btree":
+                    // If not specified it will use the BTREE
+                    break;
+
+                case "gist":
+                    sb.Append("USING gist ");
+                    break;
+
+                case "hash":
+                    sb.Append("USING hash ");
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Index of type '{indexPostgreSql.Type}' is not supported");
+            }
+
+            sb.AppendLine($"({string.Join(",", columnList)});");
+            sb.AppendLine();
 
             return sb.ToString();
         }
 
         /// <inheritdoc/>
-        protected override string ScriptDropIndexes(ABaseDbObject dbObject, List<ABaseDbIndex> indexes)
+        protected override string ScriptDropIndex(ABaseDbIndex index)
         {
             var sb = new StringBuilder();
-
-            foreach (var index in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<PostgreSqlIndex>())
-            {
-                sb.AppendLine($"DROP INDEX {this.ScriptHelper.ScriptObjectName(index.Name)};");
-            }
-
+            sb.AppendLine($"DROP INDEX {this.ScriptHelper.ScriptObjectName(index.Name)};");
             return sb.ToString();
         }
 
@@ -697,6 +691,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             return dropOrder ?
                 functions.Cast<PostgreSqlFunction>().OrderByDescending(x => x.IsAggregate).ThenBy(x => x.Schema).ThenBy(x => x.Name) :
                 functions.Cast<PostgreSqlFunction>().OrderBy(x => x.IsAggregate).ThenBy(x => x.Schema).ThenBy(x => x.Name);
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbIndex> GetSortedIndexes(List<ABaseDbIndex> indexes)
+        {
+            return indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name);
         }
     }
 }

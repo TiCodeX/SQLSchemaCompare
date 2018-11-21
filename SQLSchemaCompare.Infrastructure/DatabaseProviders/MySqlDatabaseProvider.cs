@@ -60,7 +60,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       t.TABLE_SCHEMA as 'Database',");
             query.AppendLine("       null as 'Schema',");
             query.AppendLine("       t.ENGINE as Engine,");
-            query.AppendLine("       t.VERSION as Version,");
             query.AppendLine("       t.UPDATE_TIME as ModifyDate,");
             query.AppendLine("       c.CHARACTER_SET_NAME as TableCharacterSet");
             query.AppendLine("FROM INFORMATION_SCHEMA.TABLES t");

@@ -71,9 +71,9 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders
 
             table = db.Tables.FirstOrDefault(x => x.Name == "film_category");
             table.Should().NotBeNull();
-            table.PrimaryKeys.Count.Should().Be(2);
-            table.PrimaryKeys.Should().Contain(x => x.ColumnName == "film_id");
-            table.PrimaryKeys.Should().Contain(x => x.ColumnName == "category_id");
+            table.PrimaryKeys.Count.Should().Be(1);
+            table.PrimaryKeys.First().ColumnNames.Should().Contain("film_id");
+            table.PrimaryKeys.First().ColumnNames.Should().Contain("category_id");
 
             table = db.Tables.FirstOrDefault(x => x.Name == "rental");
             table.ForeignKeys.Count.Should().Be(3);
@@ -115,9 +115,9 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders
 
             table = db.Tables.FirstOrDefault(x => x.Name == "film_actor");
             table.Should().NotBeNull();
-            table.PrimaryKeys.Count.Should().Be(2);
-            table.PrimaryKeys.Should().Contain(x => x.ColumnName == "actor_id");
-            table.PrimaryKeys.Should().Contain(x => x.ColumnName == "film_id");
+            table.PrimaryKeys.Count.Should().Be(1);
+            table.PrimaryKeys.First().ColumnNames.Should().Contain("actor_id");
+            table.PrimaryKeys.First().ColumnNames.Should().Contain("film_id");
 
             table = db.Tables.FirstOrDefault(x => x.Name == "payment");
             table.ForeignKeys.Count.Should().Be(3);
@@ -157,9 +157,9 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders
 
             table = db.Tables.FirstOrDefault(x => x.Name == "film_category");
             table.Should().NotBeNull();
-            table.PrimaryKeys.Count.Should().Be(2);
-            table.PrimaryKeys.Should().Contain(x => x.ColumnName == "film_id");
-            table.PrimaryKeys.Should().Contain(x => x.ColumnName == "category_id");
+            table.PrimaryKeys.Count.Should().Be(1);
+            table.PrimaryKeys.First().ColumnNames.Should().Contain("film_id");
+            table.PrimaryKeys.First().ColumnNames.Should().Contain("category_id");
 
             table = db.Tables.FirstOrDefault(x => x.Name == "rental");
             table.ForeignKeys.Count.Should().Be(3);

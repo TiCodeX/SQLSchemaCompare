@@ -62,11 +62,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
+            foreach (var key in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MicrosoftSqlIndex>())
             {
-                var key = (MicrosoftSqlIndex)keys.First();
-                var columnList = keys.OrderBy(x => ((MicrosoftSqlIndex)x).OrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(((MicrosoftSqlIndex)x).ColumnName)}");
+                var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
                 sb.AppendLine($"PRIMARY KEY {key.TypeDescription} ({string.Join(",", columnList)})");
@@ -82,8 +80,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var key in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            foreach (var key in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
@@ -97,12 +94,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var keys in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
+            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MicrosoftSqlForeignKey>())
             {
-                var key = (MicrosoftSqlForeignKey)keys.First();
-                var columnList = keys.OrderBy(x => ((MicrosoftSqlForeignKey)x).OrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}");
-                var referencedColumnList = keys.OrderBy(x => ((MicrosoftSqlForeignKey)x).ReferencedOrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ReferencedColumnName)}");
+                var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
+                var referencedColumnList = key.ReferencedColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
 
                 sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} WITH ");
                 sb.Append(key.Disabled ? "NOCHECK" : "CHECK");
@@ -131,8 +126,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
@@ -146,8 +140,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var key in table.ReferencingForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            foreach (var key in table.ReferencingForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
@@ -161,8 +154,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var constraint in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            foreach (var constraint in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(constraint.Name)}");
                 sb.AppendLine($"CHECK {constraint.Definition}");
@@ -178,8 +170,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var constraint in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            foreach (var constraint in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(constraint.Name)}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());
@@ -206,16 +197,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             orderedIndexes.AddRange(indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type == MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
             orderedIndexes.AddRange(indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type != MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
 
-            // GroupBy because there might be multiple columns with the same index
-            foreach (var indexGroup in orderedIndexes.GroupBy(x => x.Name))
+            foreach (var index in orderedIndexes)
             {
-                var index = indexGroup.First();
-
                 // If there is a column with descending order, specify the order on all columns
-                var scriptOrder = indexGroup.Any(x => x.IsDescending);
-                var columnList = indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => scriptOrder ?
-                        $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)} {(x.IsDescending ? "DESC" : "ASC")}" :
-                        $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}");
+                var scriptOrder = index.ColumnDescending.Any(x => x);
+                var columnList = index.ColumnNames.Select((x, i) => (scriptOrder ?
+                    $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}" :
+                    $"{this.ScriptHelper.ScriptObjectName(x)}"));
 
                 sb.Append("CREATE ");
                 switch (index.Type)
@@ -263,8 +251,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same index
-            foreach (var index in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            foreach (var index in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
                 sb.AppendLine($"DROP INDEX {this.ScriptHelper.ScriptObjectName(index.Name)} ON {this.ScriptHelper.ScriptObjectName(dbObject)}");
                 sb.Append(this.ScriptHelper.ScriptCommitTransaction());

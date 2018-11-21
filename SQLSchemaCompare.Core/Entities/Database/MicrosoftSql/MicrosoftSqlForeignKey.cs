@@ -45,10 +45,5 @@
         /// Gets or sets a value indicating whether the foreign key is disabled
         /// </summary>
         public bool Disabled { get; set; }
-
-        /// <summary>
-        /// Gets or sets the ordinal position on the referenced column
-        /// </summary>
-        public int ReferencedOrdinalPosition { get; set; }
     }
 }

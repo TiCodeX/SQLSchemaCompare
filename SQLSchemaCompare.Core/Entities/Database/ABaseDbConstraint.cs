@@ -1,4 +1,6 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
+﻿using System.Collections.Generic;
+
+namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
     /// <summary>
     /// Provides generic information for database constraint classes
@@ -23,12 +25,19 @@
         /// <summary>
         /// Gets or sets the column name
         /// </summary>
+        /// <remarks>Used only by the DatabaseProvider to group the constraints and fill the ColumnNames list</remarks>
         public string ColumnName { get; set; }
 
         /// <summary>
         /// Gets or sets ordinal position
         /// </summary>
+        /// <remarks>Used only by the DatabaseProvider to group the constraints and fill the ColumnNames list</remarks>
         public long OrdinalPosition { get; set; }
+
+        /// <summary>
+        /// Gets the column names already ordered
+        /// </summary>
+        public List<string> ColumnNames { get; } = new List<string>();
 
         /// <summary>
         /// Gets or sets the constraint type

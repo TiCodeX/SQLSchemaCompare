@@ -76,17 +76,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
+            foreach (var key in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>())
             {
-                var key = (MySqlIndex)keys.First();
-                var columnList = keys.OrderBy(x => ((MySqlIndex)x).OrdinalPosition).ToList();
+                var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} PRIMARY KEY ({string.Join(",", columnList.Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}"))});");
-                foreach (var colConstraint in columnList)
+                sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} PRIMARY KEY ({string.Join(",", columnList)});");
+                foreach (var columnName in key.ColumnNames)
                 {
-                    if (table.Columns.FirstOrDefault(x => x.Name == colConstraint.ColumnName) is MySqlColumn col &&
+                    if (table.Columns.FirstOrDefault(x => x.Name == columnName) is MySqlColumn col &&
                         col.Extra.ToUpperInvariant() == "AUTO_INCREMENT")
                     {
                         sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
@@ -113,12 +111,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var keys in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
+            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlForeignKey>())
             {
-                var key = (MySqlForeignKey)keys.First();
-                var columnList = keys.OrderBy(x => ((MySqlForeignKey)x).OrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}");
-                var referencedColumnList = keys.OrderBy(x => ((MySqlForeignKey)x).OrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ReferencedColumnName)}");
+                var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
+                var referencedColumnList = key.ReferencedColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} FOREIGN KEY ({string.Join(",", columnList)})");
@@ -136,8 +132,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP FOREIGN KEY {this.ScriptHelper.ScriptObjectName(key.Name)};");
             }
@@ -150,8 +145,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var key in table.ReferencingForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            foreach (var key in table.ReferencingForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableName)} DROP FOREIGN KEY {this.ScriptHelper.ScriptObjectName(key.Name)};");
             }
@@ -176,16 +170,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same index
-            foreach (var indexGroup in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>().GroupBy(x => x.Name))
+            foreach (var index in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>())
             {
-                var index = indexGroup.First();
-
                 // If there is a column with descending order, specify the order on all columns
-                var scriptOrder = indexGroup.Any(x => x.IsDescending);
-                var columnList = indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => scriptOrder ?
-                    $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)} {(x.IsDescending ? "DESC" : "ASC")}" :
-                    $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}");
+                var scriptOrder = index.ColumnDescending.Any(x => x);
+                var columnList = index.ColumnNames.Select((x, i) => (scriptOrder ?
+                    $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}" :
+                    $"{this.ScriptHelper.ScriptObjectName(x)}"));
 
                 sb.Append("CREATE ");
                 if (index.IndexType == "FULLTEXT")
@@ -221,8 +212,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same index
-            foreach (var index in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>().GroupBy(x => x.Name).Select(x => x.First()))
+            foreach (var index in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>())
             {
                 sb.AppendLine($"DROP INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(dbObject)};");
             }

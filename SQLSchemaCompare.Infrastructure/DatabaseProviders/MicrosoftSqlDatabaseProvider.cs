@@ -120,7 +120,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       reftb.name as 'ReferencedTableName',");
             query.AppendLine("       refs.name as 'ReferencedTableSchema',");
             query.AppendLine("       refcol.name as 'ReferencedColumnName',");
-            query.AppendLine("       fkc.referenced_column_id as 'ReferencedOrdinalPosition',");
             query.AppendLine("       fk.delete_referential_action as 'DeleteReferentialAction',");
             query.AppendLine("       fk.update_referential_action as 'UpdateReferentialAction',");
             query.AppendLine("       fk.is_disabled as 'Disabled'");

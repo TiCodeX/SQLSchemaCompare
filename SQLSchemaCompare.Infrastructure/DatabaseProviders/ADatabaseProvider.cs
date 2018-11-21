@@ -152,7 +152,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 32;
                 taskInfo.Message = Localization.StatusRetrievingForeignKeys;
-                foreignKeys.AddRange(this.GetForeignKeys(context));
+
+                foreach (var foreignKeyGroup in this.GetForeignKeys(context).GroupBy(x => new { x.TableSchema, x.TableName, x.Name }))
+                {
+                    var foreignKey = foreignKeyGroup.First();
+                    foreignKey.ColumnNames.AddRange(foreignKeyGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
+                    foreignKey.ReferencedColumnNames.AddRange(foreignKeyGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ReferencedColumnName));
+                    foreignKeys.Add(foreignKey);
+                }
             }
             catch (Exception ex)
             {
@@ -166,7 +173,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 40;
                 taskInfo.Message = Localization.StatusRetrievingIndexes;
-                indexes.AddRange(this.GetIndexes(context));
+
+                foreach (var indexGroup in this.GetIndexes(context).GroupBy(x => new { x.TableSchema, x.TableName, x.Name }))
+                {
+                    var index = indexGroup.First();
+                    index.ColumnNames.AddRange(indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
+                    index.ColumnDescending.AddRange(indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.IsDescending));
+                    indexes.Add(index);
+                }
             }
             catch (Exception ex)
             {
@@ -180,7 +194,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 48;
                 taskInfo.Message = Localization.StatusRetrievingConstraints;
-                constraints.AddRange(this.GetConstraints(context));
+                foreach (var constraintGroup in this.GetConstraints(context).GroupBy(x => new { x.TableSchema, x.TableName, x.Name }))
+                {
+                    var constraint = constraintGroup.First();
+                    constraint.ColumnNames.AddRange(constraintGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
+                    constraints.Add(constraint);
+                }
             }
             catch (Exception ex)
             {

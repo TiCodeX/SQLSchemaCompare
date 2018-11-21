@@ -70,10 +70,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
+            foreach (var key in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<PostgreSqlIndex>())
             {
-                var key = (PostgreSqlIndex)keys.First();
-                var columnList = keys.OrderBy(x => ((PostgreSqlIndex)x).OrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}");
+                var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} PRIMARY KEY ({string.Join(",", columnList)});");
@@ -88,10 +87,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var keys in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
+            foreach (var key in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
-                var key = keys.First();
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)};");
             }
 
@@ -103,12 +100,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var keys in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
+            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<PostgreSqlForeignKey>())
             {
-                var key = (PostgreSqlForeignKey)keys.First();
-                var columnList = keys.OrderBy(x => ((PostgreSqlForeignKey)x).OrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}");
-                var referencedColumnList = keys.OrderBy(x => ((PostgreSqlForeignKey)x).OrdinalPosition).Select(x => $"{this.ScriptHelper.ScriptObjectName(x.ReferencedColumnName)}");
+                var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
+                var referencedColumnList = key.ReferencedColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} FOREIGN KEY ({string.Join(",", columnList)})");
@@ -131,8 +126,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)};");
             }
@@ -145,8 +139,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var key in table.ReferencingForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            foreach (var key in table.ReferencingForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)};");
             }
@@ -158,9 +151,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterTableAddConstraints(ABaseDbTable table)
         {
             var sb = new StringBuilder();
-            foreach (var keys in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name))
+            foreach (var key in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
-                var key = keys.First();
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
                 sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} {key.Definition};");
                 sb.AppendLine();
@@ -174,8 +166,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            // GroupBy because there might be multiple columns with the same key
-            foreach (var key in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).GroupBy(x => x.Name).Select(x => x.First()))
+            foreach (var key in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)};");
             }
@@ -188,15 +179,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var indexGroup in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<PostgreSqlIndex>().GroupBy(x => x.Name))
+            foreach (var index in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<PostgreSqlIndex>())
             {
-                var index = indexGroup.First();
-
                 // If there is a column with descending order, specify the order on all columns
-                var scriptOrder = indexGroup.Any(x => x.IsDescending);
-                var columnList = indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => scriptOrder ?
-                    $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)} {(x.IsDescending ? "DESC" : "ASC")}" :
-                    $"{this.ScriptHelper.ScriptObjectName(x.ColumnName)}");
+                var scriptOrder = index.ColumnDescending.Any(x => x);
+                var columnList = index.ColumnNames.Select((x, i) => (scriptOrder ?
+                    $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}" :
+                    $"{this.ScriptHelper.ScriptObjectName(x)}"));
 
                 sb.Append("CREATE ");
                 if (index.IsUnique)
@@ -236,10 +225,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            foreach (var indexGroup in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<PostgreSqlIndex>().GroupBy(x => x.Name))
+            foreach (var index in indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<PostgreSqlIndex>())
             {
-                var index = indexGroup.First();
-
                 sb.AppendLine($"DROP INDEX {this.ScriptHelper.ScriptObjectName(index.Name)};");
             }
 

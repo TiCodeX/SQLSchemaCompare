@@ -16,11 +16,6 @@
         public string Schema { get; set; }
 
         /// <summary>
-        /// Gets or sets the object database
-        /// </summary>
-        public string Database { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the alter script is supported
         /// </summary>
         public bool AlterScriptSupported { get; protected set; } = true;

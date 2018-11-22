@@ -56,8 +56,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbTable> GetTables(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Database\",");
-            query.AppendLine("       nsp.nspname AS \"Schema\",");
+            query.AppendLine("SELECT nsp.nspname AS \"Schema\",");
             query.AppendLine("       cls.relname AS \"Name\",");
             query.AppendLine("       ihnsp.nspname AS \"InheritedTableSchema\",");
             query.AppendLine("       ihcls.relname AS \"InheritedTableName\"");
@@ -77,8 +76,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
 
-            query.AppendLine("SELECT table_catalog as \"Database\",");
-            query.AppendLine("       table_schema as \"Schema\",");
+            query.AppendLine("SELECT table_schema as \"Schema\",");
             query.AppendLine("       table_name as \"TableName\",");
             query.AppendLine("       column_name as \"Name\",");
             query.AppendLine("       ordinal_position as \"OrdinalPosition\",");
@@ -107,10 +105,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
 
-            query.AppendLine("SELECT kcu.constraint_catalog AS \"Database\",");
-            query.AppendLine("       kcu.constraint_schema AS \"Schema\",");
+            query.AppendLine("SELECT kcu.constraint_schema AS \"Schema\",");
             query.AppendLine("       kcu.constraint_name AS \"Name\",");
-            query.AppendLine("       kcu.table_catalog AS \"TableDatabase\",");
             query.AppendLine("       kcu.table_schema AS \"TableSchema\",");
             query.AppendLine("       kcu.table_name AS \"TableName\",");
             query.AppendLine("       kcu.column_name AS \"ColumnName\",");
@@ -145,10 +141,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbConstraint> GetConstraints(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Database\",");
-            query.AppendLine("       nc.nspname AS \"Schema\",");
+            query.AppendLine("SELECT nc.nspname AS \"Schema\",");
             query.AppendLine("       c.conname AS \"Name\",");
-            query.AppendLine("       (current_database())::information_schema.sql_identifier AS \"TableDatabase\",");
             query.AppendLine("       nt.nspname AS \"TableSchema\",");
             query.AppendLine("       ct.relname AS \"TableName\",");
             query.AppendLine("       ccu.COLUMN_NAME as \"ColumnName\",");
@@ -172,10 +166,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbIndex> GetIndexes(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Database\",");
-            query.AppendLine("       ni.nspname AS \"Schema\",");
+            query.AppendLine("SELECT ni.nspname AS \"Schema\",");
             query.AppendLine("       ci.relname AS \"Name\",");
-            query.AppendLine("       (current_database())::information_schema.sql_identifier AS \"TableDatabase\",");
             query.AppendLine("       nt.nspname AS \"TableSchema\",");
             query.AppendLine("       ct.relname AS \"TableName\",");
             query.AppendLine("       a.attname AS \"ColumnName\",");
@@ -209,7 +201,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as \"Name\",");
-            query.AppendLine("       TABLE_CATALOG as \"Database\",");
             query.AppendLine("       TABLE_SCHEMA as \"Schema\",");
             query.AppendLine("       VIEW_DEFINITION as \"ViewDefinition\",");
             query.AppendLine("       CHECK_OPTION as \"CheckOption\"");
@@ -223,8 +214,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbFunction> GetFunctions(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier as \"Database\",");
-            query.AppendLine("       n.nspname as \"Schema\",");
+            query.AppendLine("SELECT n.nspname as \"Schema\",");
             query.AppendLine("       p.proname as \"Name\",");
             query.AppendLine("       p.prosrc as \"Definition\",");
             query.AppendLine("       upper(l.lanname) as \"ExternalLanguage\",");
@@ -264,10 +254,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbTrigger> GetTriggers(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT (current_database())::information_schema.sql_identifier AS \"Database\",");
-            query.AppendLine("       nt.nspname AS \"Schema\",");
+            query.AppendLine("SELECT nt.nspname AS \"Schema\",");
             query.AppendLine("       t.tgname AS \"Name\",");
-            query.AppendLine("       (current_database())::information_schema.sql_identifier AS \"TableDatabase\",");
             query.AppendLine("       nt.nspname AS \"TableSchema\",");
             query.AppendLine("       ct.relname AS \"TableName\",");
             query.AppendLine("       pg_catalog.pg_get_triggerdef(t.oid) AS \"Definition\"");
@@ -283,8 +271,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbDataType> GetDataTypes(PostgreSqlDatabaseContext context)
         {
             var commonSelect = new StringBuilder();
-            commonSelect.AppendLine("SELECT current_database()::information_schema.sql_identifier AS \"Database\",");
-            commonSelect.AppendLine("       n.nspname AS \"Schema\",");
+            commonSelect.AppendLine("SELECT n.nspname AS \"Schema\",");
             commonSelect.AppendLine("       t.typname AS \"Name\",");
             commonSelect.AppendLine("       t.oid AS \"TypeId\", ");
             commonSelect.AppendLine("       t.typarray AS \"ArrayTypeId\",");
@@ -392,8 +379,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbSequence> GetSequences(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT s.sequence_catalog AS \"Database\",");
-            query.AppendLine("       s.sequence_schema AS \"Schema\",");
+            query.AppendLine("SELECT s.sequence_schema AS \"Schema\",");
             query.AppendLine("       s.sequence_name AS \"Name\",");
             query.AppendLine("       s.data_type AS \"DataType\",");
             query.AppendLine("       s.start_value AS \"StartValue\",");

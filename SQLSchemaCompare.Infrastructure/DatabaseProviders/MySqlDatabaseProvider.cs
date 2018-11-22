@@ -57,8 +57,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT t.TABLE_NAME as Name,");
-            query.AppendLine("       t.TABLE_SCHEMA as 'Database',");
-            query.AppendLine("       null as 'Schema',");
             query.AppendLine("       t.ENGINE as Engine,");
             query.AppendLine("       t.UPDATE_TIME as ModifyDate,");
             query.AppendLine("       c.CHARACTER_SET_NAME as TableCharacterSet");
@@ -73,9 +71,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbColumn> GetColumns(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT a.TABLE_SCHEMA as 'Database',");
-            query.AppendLine("       null as 'Schema',");
-            query.AppendLine("       a.TABLE_NAME as TableName,");
+            query.AppendLine("SELECT a.TABLE_NAME as TableName,");
             query.AppendLine("       a.COLUMN_NAME as Name,");
             query.AppendLine("       a.ORDINAL_POSITION as OrdinalPosition,");
             query.AppendLine("       a.COLUMN_DEFAULT as ColumnDefault,");
@@ -95,11 +91,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbForeignKey> GetForeignKeys(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT kcu.CONSTRAINT_SCHEMA as 'Database',");
-            query.AppendLine("       null as 'Schema',");
-            query.AppendLine("       kcu.CONSTRAINT_NAME as Name,");
-            query.AppendLine("       kcu.TABLE_SCHEMA as TableDatabase,");
-            query.AppendLine("       null as TableSchema,");
+            query.AppendLine("SELECT kcu.CONSTRAINT_NAME as Name,");
             query.AppendLine("       kcu.TABLE_NAME as TableName,");
             query.AppendLine("       kcu.COLUMN_NAME as ColumnName,");
             query.AppendLine("       tc.constraint_type as ConstraintType,");
@@ -130,11 +122,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbIndex> GetIndexes(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT s.TABLE_SCHEMA AS 'Database',");
-            query.AppendLine("       null AS 'Schema',");
-            query.AppendLine("       s.index_name AS Name,");
-            query.AppendLine("       s.TABLE_SCHEMA AS 'TableDatabase',");
-            query.AppendLine("       null AS 'TableSchema',");
+            query.AppendLine("SELECT s.index_name AS Name,");
             query.AppendLine("       s.TABLE_NAME AS 'TableName',");
             query.AppendLine("       s.COLUMN_NAME AS 'ColumnName',");
             query.AppendLine("       CASE WHEN tc.CONSTRAINT_TYPE = 'PRIMARY KEY' THEN TRUE ELSE FALSE END AS 'IsPrimaryKey',");
@@ -154,16 +142,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbView> GetViews(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT TABLE_NAME as Name,");
-            query.AppendLine("       TABLE_SCHEMA as 'Database',");
-            query.AppendLine("       null as 'Schema'");
+            query.AppendLine("SELECT TABLE_NAME as Name");
             query.AppendLine("FROM INFORMATION_SCHEMA.VIEWS");
             query.AppendLine($"WHERE TABLE_SCHEMA = '{context.DatabaseName}'");
 
             var result = context.Query<MySqlView>(query.ToString());
             foreach (var view in result)
             {
-                view.ViewDefinition = context.Query($"SHOW CREATE VIEW `{view.Database}`.`{view.Name}`", 1).FirstOrDefault();
+                view.ViewDefinition = context.Query($"SHOW CREATE VIEW `{context.DatabaseName}`.`{view.Name}`", 1).FirstOrDefault();
             }
 
             return result;
@@ -173,16 +159,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbFunction> GetFunctions(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT ROUTINE_NAME as Name,");
-            query.AppendLine("       ROUTINE_SCHEMA as 'Database',");
-            query.AppendLine("       null as 'Schema'");
+            query.AppendLine("SELECT ROUTINE_NAME as Name");
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
             query.AppendLine($"WHERE routine_type = 'FUNCTION' and ROUTINE_SCHEMA = '{context.DatabaseName}'");
 
             var result = context.Query<MySqlFunction>(query.ToString());
             foreach (var function in result)
             {
-                function.Definition = context.Query($"SHOW CREATE FUNCTION `{function.Database}`.`{function.Name}`", 2).FirstOrDefault();
+                function.Definition = context.Query($"SHOW CREATE FUNCTION `{context.DatabaseName}`.`{function.Name}`", 2).FirstOrDefault();
             }
 
             return result;
@@ -192,16 +176,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT ROUTINE_NAME as Name,");
-            query.AppendLine("       ROUTINE_SCHEMA as 'Database',");
-            query.AppendLine("       null as 'Schema'");
+            query.AppendLine("SELECT ROUTINE_NAME as Name");
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
             query.AppendLine($"WHERE routine_type = 'PROCEDURE' and ROUTINE_SCHEMA = '{context.DatabaseName}'");
 
             var result = context.Query<MySqlStoredProcedure>(query.ToString());
             foreach (var procedure in result)
             {
-                procedure.Definition = context.Query($"SHOW CREATE PROCEDURE `{procedure.Database}`.`{procedure.Name}`", 2).FirstOrDefault();
+                procedure.Definition = context.Query($"SHOW CREATE PROCEDURE `{context.DatabaseName}`.`{procedure.Name}`", 2).FirstOrDefault();
             }
 
             return result;
@@ -211,11 +193,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbTrigger> GetTriggers(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT t.TRIGGER_SCHEMA AS 'Database',");
-            query.AppendLine("       null AS 'Schema',");
-            query.AppendLine("       t.TRIGGER_NAME AS 'Name',");
-            query.AppendLine("       t.EVENT_OBJECT_SCHEMA AS 'TableDatabase',");
-            query.AppendLine("       null AS 'TableSchema',");
+            query.AppendLine("SELECT t.TRIGGER_NAME AS 'Name',");
             query.AppendLine("       t.EVENT_OBJECT_TABLE AS 'TableName'");
             query.AppendLine("FROM INFORMATION_SCHEMA.TRIGGERS t");
             query.AppendLine($"WHERE t.TRIGGER_SCHEMA = '{context.DatabaseName}'");
@@ -223,7 +201,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             var result = context.Query<MySqlTrigger>(query.ToString());
             foreach (var trigger in result)
             {
-                trigger.Definition = context.Query($"SHOW CREATE TRIGGER `{trigger.Database}`.`{trigger.Name}`", 2).FirstOrDefault();
+                trigger.Definition = context.Query($"SHOW CREATE TRIGGER `{context.DatabaseName}`.`{trigger.Name}`", 2).FirstOrDefault();
             }
 
             return result;

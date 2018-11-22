@@ -409,37 +409,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-                table.Columns.AddRange(
-                    columns.Where(y => table.Database == y.Database
-                                       && table.Schema == y.Schema
-                                       && table.Name == y.TableName));
-                table.ForeignKeys.AddRange(
-                    foreignKeys.Where(y => table.Database == y.TableDatabase
-                                           && table.Schema == y.TableSchema
-                                           && table.Name == y.TableName));
-                table.ReferencingForeignKeys.AddRange(
-                    foreignKeys.Where(y => table.Database == y.Database
-                                           && table.Schema == y.ReferencedTableSchema
-                                           && table.Name == y.ReferencedTableName));
-                table.PrimaryKeys.AddRange(
-                    db.Indexes.Where(y => y.IsPrimaryKey
-                                       && table.Database == y.TableDatabase
-                                       && table.Schema == y.TableSchema
-                                       && table.Name == y.TableName));
-                table.Indexes.AddRange(
-                    db.Indexes.Where(y => y.IsPrimaryKey == false
-                                       && table.Database == y.TableDatabase
-                                       && table.Schema == y.TableSchema
-                                       && table.Name == y.TableName));
-                table.Constraints.AddRange(
-                    constraints.Where(y => table.Database == y.TableDatabase
-                                           && table.Schema == y.TableSchema
-                                           && table.Name == y.TableName));
-
-                table.Triggers.AddRange(
-                    db.Triggers.Where(y => table.Database == y.TableDatabase
-                                        && table.Schema == y.TableSchema
-                                        && table.Name == y.TableName));
+                table.Columns.AddRange(columns.Where(y => table.Schema == y.Schema && table.Name == y.TableName));
+                table.ForeignKeys.AddRange(foreignKeys.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));
+                table.ReferencingForeignKeys.AddRange(foreignKeys.Where(y => table.Schema == y.ReferencedTableSchema && table.Name == y.ReferencedTableName));
+                table.PrimaryKeys.AddRange(db.Indexes.Where(y => y.IsPrimaryKey && table.Schema == y.TableSchema && table.Name == y.TableName));
+                table.Indexes.AddRange(db.Indexes.Where(y => !y.IsPrimaryKey && table.Schema == y.TableSchema && table.Name == y.TableName));
+                table.Constraints.AddRange(constraints.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));
+                table.Triggers.AddRange(db.Triggers.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));
             }
 
             // Remove primary keys from the indexes list since are now linked to tables
@@ -452,11 +428,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-                view.Indexes.AddRange(
-                    db.Indexes.Where(y => y.IsPrimaryKey == false
-                                       && view.Database == y.TableDatabase
-                                       && view.Schema == y.TableSchema
-                                       && view.Name == y.TableName));
+                view.Indexes.AddRange(db.Indexes.Where(y => !y.IsPrimaryKey && view.Schema == y.TableSchema && view.Name == y.TableName));
             }
         }
     }

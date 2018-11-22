@@ -57,7 +57,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT a.TABLE_NAME as Name,");
-            query.AppendLine("       a.TABLE_CATALOG as 'Database',");
             query.AppendLine("       a.TABLE_SCHEMA as 'Schema',");
             query.AppendLine("       b.modify_date as 'ModifyDate'");
             query.AppendLine("FROM INFORMATION_SCHEMA.TABLES a");
@@ -71,8 +70,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbColumn> GetColumns(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT isc.TABLE_CATALOG as 'Database',");
-            query.AppendLine("       isc.TABLE_SCHEMA as 'Schema',");
+            query.AppendLine("SELECT isc.TABLE_SCHEMA as 'Schema',");
             query.AppendLine("       isc.TABLE_NAME as 'TableName',");
             query.AppendLine("       isc.COLUMN_NAME as 'Name',");
             query.AppendLine("       isc.ORDINAL_POSITION as 'OrdinalPosition',");
@@ -108,10 +106,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbForeignKey> GetForeignKeys(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT tc.CONSTRAINT_CATALOG as 'Database',");
-            query.AppendLine("       tc.CONSTRAINT_SCHEMA as 'Schema',");
+            query.AppendLine("SELECT tc.CONSTRAINT_SCHEMA as 'Schema',");
             query.AppendLine("       tc.CONSTRAINT_NAME as 'Name',");
-            query.AppendLine("       tc.TABLE_CATALOG as 'TableDatabase',");
             query.AppendLine("       tc.TABLE_SCHEMA as 'TableSchema',");
             query.AppendLine("       tc.TABLE_NAME as 'TableName',");
             query.AppendLine("       col.name as 'ColumnName',");
@@ -139,10 +135,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbConstraint> GetConstraints(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT tc.TABLE_CATALOG AS 'TableDatabase',");
-            query.AppendLine("       tc.TABLE_SCHEMA AS 'TableSchema',");
+            query.AppendLine("SELECT tc.TABLE_SCHEMA AS 'TableSchema',");
             query.AppendLine("       tc.TABLE_NAME AS 'TableName',");
-            query.AppendLine("       tc.CONSTRAINT_CATALOG AS 'Database',");
             query.AppendLine("       tc.CONSTRAINT_SCHEMA AS 'Schema',");
             query.AppendLine("       tc.CONSTRAINT_NAME AS 'Name',");
             query.AppendLine("       ccu.COLUMN_NAME AS 'ColumnName',");
@@ -161,10 +155,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbIndex> GetIndexes(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT DB_NAME() AS 'Database',");
-            query.AppendLine("       object_schema_name(i.object_id) AS 'Schema',");
+            query.AppendLine("SELECT object_schema_name(i.object_id) AS 'Schema',");
             query.AppendLine("       i.name AS 'Name',");
-            query.AppendLine("       DB_NAME() AS 'TableDatabase',");
             query.AppendLine("       object_schema_name(i.object_id) AS 'TableSchema',");
             query.AppendLine("       object_name(i.object_id) AS 'TableName',");
             query.AppendLine("       c.name AS 'ColumnName',");
@@ -193,7 +185,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT TABLE_NAME as 'Name',");
-            query.AppendLine("       TABLE_CATALOG as 'Database',");
             query.AppendLine("       TABLE_SCHEMA as 'Schema',");
             query.AppendLine("       VIEW_DEFINITION as 'ViewDefinition'");
             query.AppendLine("FROM INFORMATION_SCHEMA.VIEWS");
@@ -208,7 +199,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT ROUTINE_NAME as 'Name',");
-            query.AppendLine("       ROUTINE_CATALOG as 'Database',");
             query.AppendLine("       ROUTINE_SCHEMA as 'Schema',");
             query.AppendLine("       ROUTINE_DEFINITION as 'Definition'");
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
@@ -224,7 +214,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT ROUTINE_NAME as 'Name',");
-            query.AppendLine("       ROUTINE_CATALOG as 'Database',");
             query.AppendLine("       ROUTINE_SCHEMA as 'Schema',");
             query.AppendLine("       ROUTINE_DEFINITION as 'Definition'");
             query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
@@ -239,10 +228,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbTrigger> GetTriggers(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT DB_NAME() AS 'Database',");
-            query.AppendLine("       object_schema_name(o.id) AS 'Schema',");
+            query.AppendLine("SELECT object_schema_name(o.id) AS 'Schema',");
             query.AppendLine("       o.name AS 'Name',");
-            query.AppendLine("       DB_NAME() AS 'TableDatabase',");
             query.AppendLine("       object_schema_name(o.parent_obj) AS 'TableSchema',");
             query.AppendLine("       object_name(o.parent_obj) AS 'TableName',");
             query.AppendLine("       c.text AS 'Definition'");
@@ -259,8 +246,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbDataType> GetDataTypes(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT DB_NAME() AS 'Database',");
-            query.AppendLine("       sc.name AS 'Schema',");
+            query.AppendLine("SELECT sc.name AS 'Schema',");
             query.AppendLine("       t.name AS 'Name',");
             query.AppendLine("       t.user_type_id AS 'TypeId',");
             query.AppendLine("       t.system_type_id AS 'SystemTypeId',");
@@ -293,8 +279,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             }
 
             var query = new StringBuilder();
-            query.AppendLine("SELECT DB_NAME() AS 'Database',");
-            query.AppendLine("       object_schema_name(s.object_id) AS 'Schema',");
+            query.AppendLine("SELECT object_schema_name(s.object_id) AS 'Schema',");
             query.AppendLine("       s.name AS 'Name',");
             query.AppendLine("       type_name(s.system_type_id) AS 'DataType',");
             query.AppendLine("       CONVERT(VARCHAR, s.start_value) AS 'StartValue',");

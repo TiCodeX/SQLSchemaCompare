@@ -6,11 +6,6 @@
     public class ABaseDbTrigger : ABaseDbObject
     {
         /// <summary>
-        /// Gets or sets the table database
-        /// </summary>
-        public string TableDatabase { get; set; }
-
-        /// <summary>
         /// Gets or sets the table schema
         /// </summary>
         public string TableSchema { get; set; }

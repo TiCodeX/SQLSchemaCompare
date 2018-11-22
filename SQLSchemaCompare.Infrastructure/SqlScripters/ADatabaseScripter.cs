@@ -280,6 +280,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
+            var sortedTables = this.GetSortedTables(database.Tables, true).ToList();
+
             // Triggers
             if (database.Triggers.Any())
             {
@@ -287,6 +289,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 foreach (var trigger in database.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
                     sb.Append(this.ScriptDropTrigger(trigger));
+                }
+
+                sb.AppendLine();
+            }
+
+            // ForeignKeys (must be before indexes because in MySQL you can not drop a index required by the foreign key)
+            if (sortedTables.Any(x => x.ForeignKeys.Count > 0))
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
+                foreach (var table in sortedTables)
+                {
+                    sb.Append(this.ScriptAlterTableDropForeignKeys(table));
                 }
 
                 sb.AppendLine();
@@ -340,20 +354,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             if (database.Tables.Count > 0)
             {
-                var sortedTables = this.GetSortedTables(database.Tables, true).ToList();
-
-                // Foreign Keys
-                if (sortedTables.Any(x => x.ForeignKeys.Count > 0))
-                {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-                    foreach (var table in sortedTables)
-                    {
-                        sb.Append(this.ScriptAlterTableDropForeignKeys(table));
-                    }
-
-                    sb.AppendLine();
-                }
-
                 // Constraints
                 if (sortedTables.Any(x => x.Constraints.Count > 0))
                 {

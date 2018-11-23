@@ -28,6 +28,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
 
         private readonly List<CompareResultItem<ABaseDbTable>> tables = new List<CompareResultItem<ABaseDbTable>>();
         private readonly List<CompareResultItem<ABaseDbIndex>> indexes = new List<CompareResultItem<ABaseDbIndex>>();
+        private readonly List<CompareResultItem<ABaseDbConstraint>> constraints = new List<CompareResultItem<ABaseDbConstraint>>();
         private readonly List<CompareResultItem<ABaseDbTrigger>> triggers = new List<CompareResultItem<ABaseDbTrigger>>();
         private readonly List<CompareResultItem<ABaseDbView>> views = new List<CompareResultItem<ABaseDbView>>();
         private readonly List<CompareResultItem<ABaseDbFunction>> functions = new List<CompareResultItem<ABaseDbFunction>>();
@@ -118,9 +119,9 @@ namespace TiCodeX.SQLSchemaCompare.Services
             }
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 20;
+            taskInfo.Percentage = 10;
 
-            taskInfo.Message = "Localization.StatusMappingIndexes";
+            taskInfo.Message = Localization.StatusMappingIndexes;
             foreach (var index in this.retrievedSourceDatabase.Indexes)
             {
                 this.indexes.Add(new CompareResultItem<ABaseDbIndex>
@@ -138,6 +139,30 @@ namespace TiCodeX.SQLSchemaCompare.Services
                 this.indexes.Add(new CompareResultItem<ABaseDbIndex>
                 {
                     TargetItem = index
+                });
+            }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+            taskInfo.Percentage = 20;
+
+            taskInfo.Message = Localization.StatusMappingConstraints;
+            foreach (var constraint in this.retrievedSourceDatabase.Constraints)
+            {
+                this.constraints.Add(new CompareResultItem<ABaseDbConstraint>
+                {
+                    SourceItem = constraint,
+                    TargetItem = this.retrievedTargetDatabase.Constraints.FirstOrDefault(x => x.TableSchema == constraint.TableSchema && x.TableName == constraint.TableName &&
+                                                                                              x.Schema == constraint.Schema && x.Name == constraint.Name)
+                });
+            }
+
+            foreach (var constraint in this.retrievedTargetDatabase.Constraints.Where(x =>
+                !this.constraints.Any(y => y.SourceItem.TableSchema == x.TableSchema && y.SourceItem.TableName == x.TableName &&
+                                           y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
+            {
+                this.constraints.Add(new CompareResultItem<ABaseDbConstraint>
+                {
+                    TargetItem = constraint
                 });
             }
 
@@ -287,6 +312,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
         {
             var totalItems = this.tables.Count +
                              this.indexes.Count +
+                             this.constraints.Count +
                              this.triggers.Count +
                              this.views.Count +
                              this.functions.Count +
@@ -340,6 +366,26 @@ namespace TiCodeX.SQLSchemaCompare.Services
                 {
                     resultIndex.TargetItemName = scripter.GenerateObjectName(resultIndex.TargetItem);
                     resultIndex.Scripts.TargetCreateScript = scripter.GenerateCreateIndexScript(resultIndex.TargetItem);
+                }
+
+                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
+            }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
+            taskInfo.Message = Localization.StatusComparingConstraints;
+            foreach (var resultConstraint in this.constraints)
+            {
+                if (resultConstraint.SourceItem != null)
+                {
+                    resultConstraint.SourceItemName = scripter.GenerateObjectName(resultConstraint.SourceItem);
+                    resultConstraint.Scripts.SourceCreateScript = scripter.GenerateCreateConstraintScript(resultConstraint.SourceItem);
+                }
+
+                if (resultConstraint.TargetItem != null)
+                {
+                    resultConstraint.TargetItemName = scripter.GenerateObjectName(resultConstraint.TargetItem);
+                    resultConstraint.Scripts.TargetCreateScript = scripter.GenerateCreateConstraintScript(resultConstraint.TargetItem);
                 }
 
                 taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
@@ -543,6 +589,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             // Add items related to tables directly in the different items list only for the alter script generation
             var differentItemsFullList = result.DifferentItems.ToList();
             differentItemsFullList.AddRange(this.indexes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            differentItemsFullList.AddRange(this.constraints.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
             differentItemsFullList.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
 
             ABaseDb onlySourceDb = null;
@@ -570,6 +617,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
 
             onlySourceDb.Tables.AddRange(onlySourceTables.Select(x => x.SourceItem));
             onlySourceDb.Indexes.AddRange(this.indexes.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
+            onlySourceDb.Constraints.AddRange(this.constraints.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Triggers.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Views.AddRange(onlySourceViews.Select(x => x.SourceItem));
             onlySourceDb.Functions.AddRange(onlySourceFunctions.Select(x => x.SourceItem));
@@ -580,6 +628,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
 
             onlyTargetDb.Tables.AddRange(onlyTargetTables.Select(x => x.TargetItem));
             onlyTargetDb.Indexes.AddRange(this.indexes.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
+            onlyTargetDb.Constraints.AddRange(this.constraints.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Triggers.AddRange(this.triggers.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Views.AddRange(onlyTargetViews.Select(x => x.TargetItem));
             onlyTargetDb.Functions.AddRange(onlyTargetFunctions.Select(x => x.TargetItem));
@@ -596,6 +645,12 @@ namespace TiCodeX.SQLSchemaCompare.Services
             onlySourceDb.Indexes.AddRange(i.Select(x => x.SourceItem));
             onlyTargetDb.Indexes.AddRange(i.Select(x => x.TargetItem));
             i.ForEach(x => differentItemsFullList.Remove(x));
+
+            // Constraints
+            var c = differentItemsFullList.OfType<CompareResultItem<ABaseDbConstraint>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            onlySourceDb.Constraints.AddRange(c.Select(x => x.SourceItem));
+            onlyTargetDb.Constraints.AddRange(c.Select(x => x.TargetItem));
+            c.ForEach(x => differentItemsFullList.Remove(x));
 
             // Triggers
             var t = differentItemsFullList.OfType<CompareResultItem<ABaseDbTrigger>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();

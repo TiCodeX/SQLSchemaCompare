@@ -72,6 +72,13 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
         string GenerateCreateIndexScript(ABaseDbIndex index);
 
         /// <summary>
+        /// Generates the create constraint script
+        /// </summary>
+        /// <param name="constraint">The constraint to be scripted</param>
+        /// <returns>The create script</returns>
+        string GenerateCreateConstraintScript(ABaseDbConstraint constraint);
+
+        /// <summary>
         /// Generates the create view script and related indexes
         /// </summary>
         /// <param name="view">The view to be scripted</param>

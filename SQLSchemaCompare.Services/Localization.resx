@@ -626,4 +626,10 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="StatusComparingIndexes" xml:space="preserve">
     <value>Comparing Indexes...</value>
   </data>
+  <data name="StatusMappingConstraints" xml:space="preserve">
+    <value>Mapping Constraints...</value>
+  </data>
+  <data name="StatusComparingConstraints" xml:space="preserve">
+    <value>Comparing Constraints...</value>
+  </data>
 </root>

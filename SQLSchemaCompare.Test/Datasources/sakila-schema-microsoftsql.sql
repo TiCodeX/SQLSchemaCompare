@@ -284,8 +284,12 @@ CREATE TABLE film_text (
   film_id SMALLINT NOT NULL,
   title VARCHAR(255) NOT NULL,
   description TEXT,
+  last_update DATETIME NOT NULL,
+  rating SMALLINT NOT NULL,
 )
-
+GO
+ALTER TABLE film_text ADD CONSTRAINT CHECK_film_text CHECK(last_update IS NOT NULL AND rating > 0)
+GO
 --
 -- Table structure for table inventory
 --

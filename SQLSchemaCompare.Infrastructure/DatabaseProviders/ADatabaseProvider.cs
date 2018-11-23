@@ -83,7 +83,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             var columns = new List<ABaseDbColumn>();
             var foreignKeys = new List<ABaseDbForeignKey>();
-            var constraints = new List<ABaseDbConstraint>();
 
             var exceptions = new List<Exception>();
 
@@ -197,7 +196,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 {
                     var constraint = constraintGroup.First();
                     constraint.ColumnNames.AddRange(constraintGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
-                    constraints.Add(constraint);
+                    db.Constraints.Add(constraint);
                 }
             }
             catch (Exception ex)
@@ -223,7 +222,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-            AssignRetrievedItemsToRelatedTables(taskInfo, db, columns, foreignKeys, constraints);
+            AssignRetrievedItemsToRelatedTables(taskInfo, db, columns, foreignKeys);
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
@@ -402,8 +401,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             TaskInfo taskInfo,
             TDatabase db,
             IReadOnlyCollection<ABaseDbColumn> columns,
-            IReadOnlyCollection<ABaseDbForeignKey> foreignKeys,
-            IReadOnlyCollection<ABaseDbConstraint> constraints)
+            IReadOnlyCollection<ABaseDbForeignKey> foreignKeys)
         {
             foreach (var table in db.Tables)
             {
@@ -414,7 +412,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 table.ReferencingForeignKeys.AddRange(foreignKeys.Where(y => table.Schema == y.ReferencedTableSchema && table.Name == y.ReferencedTableName));
                 table.PrimaryKeys.AddRange(db.Indexes.Where(y => y.IsPrimaryKey && table.Schema == y.TableSchema && table.Name == y.TableName));
                 table.Indexes.AddRange(db.Indexes.Where(y => !y.IsPrimaryKey && table.Schema == y.TableSchema && table.Name == y.TableName));
-                table.Constraints.AddRange(constraints.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));
+                table.Constraints.AddRange(db.Constraints.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));
                 table.Triggers.AddRange(db.Triggers.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));
             }
 

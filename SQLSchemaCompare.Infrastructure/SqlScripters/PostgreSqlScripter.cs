@@ -148,29 +148,20 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableAddConstraints(ABaseDbTable table)
+        protected override string ScriptAlterTableAddConstraint(ABaseDbConstraint constraint)
         {
             var sb = new StringBuilder();
-            foreach (var key in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-            {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} {key.Definition};");
-                sb.AppendLine();
-            }
-
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(constraint.TableSchema, constraint.TableName)}");
+            sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(constraint.Name)} {constraint.Definition};");
+            sb.AppendLine();
             return sb.ToString();
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableDropConstraints(ABaseDbTable table)
+        protected override string ScriptAlterTableDropConstraint(ABaseDbConstraint constraint)
         {
             var sb = new StringBuilder();
-
-            foreach (var key in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-            {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)};");
-            }
-
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(constraint.TableSchema, constraint.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(constraint.Name)};");
             return sb.ToString();
         }
 

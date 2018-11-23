@@ -150,40 +150,22 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableAddConstraints(ABaseDbTable table)
+        protected override string ScriptAlterTableAddConstraint(ABaseDbConstraint constraint)
         {
             var sb = new StringBuilder();
-
-            foreach (var constraint in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-            {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(constraint.Name)}");
-                sb.AppendLine($"CHECK {constraint.Definition}");
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-                sb.AppendLine();
-            }
-
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(constraint.TableSchema, constraint.TableName)} ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(constraint.Name)}");
+            sb.AppendLine($"CHECK {constraint.Definition}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            sb.AppendLine();
             return sb.ToString();
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableDropConstraints(ABaseDbTable table)
+        protected override string ScriptAlterTableDropConstraint(ABaseDbConstraint constraint)
         {
             var sb = new StringBuilder();
-
-            foreach (var constraint in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-            {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(constraint.Name)}");
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-            }
-
-            foreach (var column in table.Columns.Cast<MicrosoftSqlColumn>()
-                .Where(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName))
-                .OrderBy(x => x.DefaultConstraintName))
-            {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(column.DefaultConstraintName)}");
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-            }
-
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(constraint.TableSchema, constraint.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(constraint.Name)}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
 

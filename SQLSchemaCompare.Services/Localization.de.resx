@@ -617,4 +617,10 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="StatusComparingIndexes" xml:space="preserve">
     <value>Vergleiche Indizes...</value>
   </data>
+  <data name="StatusMappingConstraints" xml:space="preserve">
+    <value>Einschränkungen zuordnen...</value>
+  </data>
+  <data name="StatusComparingConstraints" xml:space="preserve">
+    <value>Vergleiche Einschränkungen...</value>
+  </data>
 </root>

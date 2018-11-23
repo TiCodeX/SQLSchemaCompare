@@ -8,6 +8,14 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
     public class ABaseDbConstraint : ABaseDbObject
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="ABaseDbConstraint"/> class
+        /// </summary>
+        public ABaseDbConstraint()
+        {
+            this.AlterScriptSupported = false;
+        }
+
+        /// <summary>
         /// Gets or sets the table schema
         /// </summary>
         public string TableSchema { get; set; }

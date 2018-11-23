@@ -135,18 +135,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
                     sb.AppendLine();
                 }
+            }
 
-                // Constraints
-                if (sortedTables.Any(x => x.Constraints.Count > 0))
+            // Constraints
+            if (database.Constraints.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
+                foreach (var constraint in database.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
-                    foreach (var table in sortedTables)
-                    {
-                        sb.Append(this.ScriptAlterTableAddConstraints(table));
-                    }
-
-                    sb.AppendLine();
+                    sb.Append(this.ScriptAlterTableAddConstraint(constraint));
                 }
+
+                sb.AppendLine();
             }
 
             // Functions
@@ -352,20 +352,35 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
-            if (database.Tables.Count > 0)
+            // Constraints
+            if (database.Constraints.Count > 0 || database.Tables.Any(y => y.Columns.Any(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName))))
             {
-                // Constraints
-                if (sortedTables.Any(x => x.Constraints.Count > 0))
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
+                foreach (var constraint in database.Constraints)
                 {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
-                    foreach (var table in sortedTables)
-                    {
-                        sb.Append(this.ScriptAlterTableDropConstraints(table));
-                    }
-
-                    sb.AppendLine();
+                    sb.Append(this.ScriptAlterTableDropConstraint(constraint));
                 }
 
+                foreach (var table in database.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    foreach (var column in table.Columns.Where(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName)).OrderBy(x => x.DefaultConstraintName))
+                    {
+                        var constraint = new ABaseDbConstraint
+                        {
+                            TableSchema = table.Schema,
+                            TableName = table.Name,
+                            Name = column.DefaultConstraintName,
+                        };
+
+                        sb.Append(this.ScriptAlterTableDropConstraint(constraint));
+                    }
+                }
+
+                sb.AppendLine();
+            }
+
+            if (database.Tables.Count > 0)
+            {
                 // Tables
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTables));
                 foreach (var table in sortedTables)
@@ -453,7 +468,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 }
 
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
-                sb.Append(this.ScriptAlterTableAddConstraints(table));
+                foreach (var constraint in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptAlterTableAddConstraint(constraint));
+                }
             }
 
             if (table.Triggers.Count > 0)
@@ -531,7 +549,23 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             if (table.Constraints.Count > 0 || table.Columns.Any(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName)))
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
-                sb.Append(this.ScriptAlterTableDropConstraints(table));
+                foreach (var constraint in table.Constraints)
+                {
+                    sb.Append(this.ScriptAlterTableDropConstraint(constraint));
+                }
+
+                foreach (var column in table.Columns.Where(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName)).OrderBy(x => x.DefaultConstraintName))
+                {
+                    var constraint = new ABaseDbConstraint
+                    {
+                        TableSchema = table.Schema,
+                        TableName = table.Name,
+                        Name = column.DefaultConstraintName,
+                    };
+
+                    sb.Append(this.ScriptAlterTableDropConstraint(constraint));
+                }
+
                 sb.AppendLine();
             }
 
@@ -584,9 +618,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 throw new ArgumentNullException(nameof(index));
             }
 
-            var sb = new StringBuilder();
-            sb.Append(this.ScriptCreateIndex(index));
-            return sb.ToString();
+            return this.ScriptCreateIndex(index);
+        }
+
+        /// <inheritdoc/>
+        public string GenerateCreateConstraintScript(ABaseDbConstraint constraint)
+        {
+            if (constraint == null)
+            {
+                throw new ArgumentNullException(nameof(constraint));
+            }
+
+            return this.ScriptAlterTableAddConstraint(constraint);
         }
 
         /// <inheritdoc/>
@@ -852,18 +895,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected abstract string ScriptAlterTableDropReferencingForeignKeys(ABaseDbTable table);
 
         /// <summary>
-        /// Generates the alter table for adding the constraints to the table
+        /// Generates the alter table for adding the constraint to the table
         /// </summary>
-        /// <param name="table">The table to alter</param>
+        /// <param name="constraint">The constraint to script</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptAlterTableAddConstraints(ABaseDbTable table);
+        protected abstract string ScriptAlterTableAddConstraint(ABaseDbConstraint constraint);
 
         /// <summary>
-        /// Generates the alter table for dropping the constraints from the table
+        /// Generates the alter table for dropping the constraint from the table
         /// </summary>
-        /// <param name="table">The table to alter</param>
+        /// <param name="constraint">The constraint to drop</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptAlterTableDropConstraints(ABaseDbTable table);
+        protected abstract string ScriptAlterTableDropConstraint(ABaseDbConstraint constraint);
 
         /// <summary>
         /// Generates the create index script

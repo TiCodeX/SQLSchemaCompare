@@ -617,4 +617,10 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="StatusComparingIndexes" xml:space="preserve">
     <value>Confronto degli Indici in corso...</value>
   </data>
+  <data name="StatusMappingConstraints" xml:space="preserve">
+    <value>Mappatura dei Vincoli in corso...</value>
+  </data>
+  <data name="StatusComparingConstraints" xml:space="preserve">
+    <value>Confronto dei Vincoli in corso...</value>
+  </data>
 </root>

@@ -18,6 +18,11 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
         public List<ABaseDbIndex> Indexes { get; } = new List<ABaseDbIndex>();
 
         /// <summary>
+        /// Gets the database's constraints
+        /// </summary>
+        public List<ABaseDbConstraint> Constraints { get; } = new List<ABaseDbConstraint>();
+
+        /// <summary>
         /// Gets the database's triggers
         /// </summary>
         public List<ABaseDbTrigger> Triggers { get; } = new List<ABaseDbTrigger>();

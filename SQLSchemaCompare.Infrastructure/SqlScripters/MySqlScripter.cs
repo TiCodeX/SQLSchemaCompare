@@ -154,13 +154,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableAddConstraints(ABaseDbTable table)
+        protected override string ScriptAlterTableAddConstraint(ABaseDbConstraint constraint)
         {
             throw new NotSupportedException("MySQL doesn't have CHECK constraints");
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableDropConstraints(ABaseDbTable table)
+        protected override string ScriptAlterTableDropConstraint(ABaseDbConstraint constraint)
         {
             throw new NotSupportedException("MySQL doesn't have CHECK constraints");
         }

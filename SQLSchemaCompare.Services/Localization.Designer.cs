@@ -1242,6 +1242,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Comparing Constraints....
+        /// </summary>
+        public static string StatusComparingConstraints {
+            get {
+                return ResourceManager.GetString("StatusComparingConstraints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comparing User-Defined Data Types....
         /// </summary>
         public static string StatusComparingDataTypes {
@@ -1337,6 +1346,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string StatusError {
             get {
                 return ResourceManager.GetString("StatusError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping Constraints....
+        /// </summary>
+        public static string StatusMappingConstraints {
+            get {
+                return ResourceManager.GetString("StatusMappingConstraints", resourceCulture);
             }
         }
         

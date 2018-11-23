@@ -632,4 +632,10 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="StatusComparingConstraints" xml:space="preserve">
     <value>Comparing Constraints...</value>
   </data>
+  <data name="StatusMappingForeignKeys" xml:space="preserve">
+    <value>Mapping Foreign Keys...</value>
+  </data>
+  <data name="StatusComparingForeignKeys" xml:space="preserve">
+    <value>Comparing Foreign Keys...</value>
+  </data>
 </root>

@@ -418,5 +418,29 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("ALTER TABLE payment ADD CONSTRAINT payment_pkey PRIMARY KEY (payment_id_new)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
         }
+
+        /// <summary>
+        /// Test migration script when target db have an additional foreign key
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetExtraForeignKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE category ADD CONSTRAINT FK_category_language FOREIGN KEY (language_id) REFERENCES language (language_id)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a foreign key
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetMissingForeignKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE film_actor DROP CONSTRAINT film_actor_film_id_fkey");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
     }
 }

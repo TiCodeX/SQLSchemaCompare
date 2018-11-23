@@ -123,18 +123,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
                     sb.AppendLine();
                 }
+            }
 
-                // Foreign Keys
-                if (sortedTables.Any(x => x.ForeignKeys.Count > 0))
+            // Foreign Keys
+            if (database.ForeignKeys.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
+                foreach (var foreignKey in database.ForeignKeys.OrderBy(x => x.TableSchema).ThenBy(x => x.TableName).ThenBy(x => x.Schema).ThenBy(x => x.Name))
                 {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-                    foreach (var table in sortedTables)
-                    {
-                        sb.Append(this.ScriptAlterTableAddForeignKeys(table));
-                    }
-
-                    sb.AppendLine();
+                    sb.Append(this.ScriptAlterTableAddForeignKey(foreignKey));
                 }
+
+                sb.AppendLine();
             }
 
             // Constraints
@@ -237,11 +237,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             {
                 // sb.Append(this.GenerateAlterTableScript(table.SourceItem, table.TargetItem));
                 // Columns
-                // ForeignKeys
-                // ReferencingForeignKeys
+                // Default Constraints
                 // PrimaryKeys
-                // Indexes
-                // Constraints
             }
 
             foreach (var view in differentItems.OfType<CompareResultItem<ABaseDbView>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
@@ -280,8 +277,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
 
-            var sortedTables = this.GetSortedTables(database.Tables, true).ToList();
-
             // Triggers
             if (database.Triggers.Any())
             {
@@ -295,12 +290,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             }
 
             // ForeignKeys (must be before indexes because in MySQL you can not drop a index required by the foreign key)
-            if (sortedTables.Any(x => x.ForeignKeys.Count > 0))
+            if (database.ForeignKeys.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-                foreach (var table in sortedTables)
+                foreach (var foreignKey in database.ForeignKeys.OrderBy(x => x.TableSchema).ThenBy(x => x.TableName).ThenBy(x => x.Schema).ThenBy(x => x.Name))
                 {
-                    sb.Append(this.ScriptAlterTableDropForeignKeys(table));
+                    sb.Append(this.ScriptAlterTableDropForeignKey(foreignKey));
                 }
 
                 sb.AppendLine();
@@ -381,6 +376,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             if (database.Tables.Count > 0)
             {
+                var sortedTables = this.GetSortedTables(database.Tables, true).ToList();
+
                 // Tables
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTables));
                 foreach (var table in sortedTables)
@@ -455,7 +452,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 }
 
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-                sb.Append(this.ScriptAlterTableAddForeignKeys(table));
+                foreach (var foreignKey in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptAlterTableAddForeignKey(foreignKey));
+                }
             }
 
             if (table.Constraints.Count > 0)
@@ -542,7 +542,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             if (table.ForeignKeys.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-                sb.Append(this.ScriptAlterTableDropForeignKeys(table));
+                foreach (var foreignKey in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptAlterTableDropForeignKey(foreignKey));
+                }
+
                 sb.AppendLine();
             }
 
@@ -630,6 +634,17 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             }
 
             return this.ScriptAlterTableAddConstraint(constraint);
+        }
+
+        /// <inheritdoc/>
+        public string GenerateCreateForeignKeyScript(ABaseDbForeignKey foreignKey)
+        {
+            if (foreignKey == null)
+            {
+                throw new ArgumentNullException(nameof(foreignKey));
+            }
+
+            return this.ScriptAlterTableAddForeignKey(foreignKey);
         }
 
         /// <inheritdoc/>
@@ -874,18 +889,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected abstract string ScriptAlterTableDropPrimaryKeys(ABaseDbTable table);
 
         /// <summary>
-        /// Generates the alter table for adding foreign keys to the table
+        /// Generates the alter table for adding the foreign key to the table
         /// </summary>
-        /// <param name="table">The table to alter</param>
+        /// <param name="foreignKey">The foreign key to script</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptAlterTableAddForeignKeys(ABaseDbTable table);
+        protected abstract string ScriptAlterTableAddForeignKey(ABaseDbForeignKey foreignKey);
 
         /// <summary>
-        /// Generates the alter table for dropping the foreign keys from the table
+        /// Generates the alter table for dropping the foreign key from the table
         /// </summary>
-        /// <param name="table">The table to alter</param>
+        /// <param name="foreignKey">The foreign key to drop</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptAlterTableDropForeignKeys(ABaseDbTable table);
+        protected abstract string ScriptAlterTableDropForeignKey(ABaseDbForeignKey foreignKey);
 
         /// <summary>
         /// Generates the alter table for dropping the foreign keys referencing the table

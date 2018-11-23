@@ -1260,6 +1260,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Comparing Foreign Keys....
+        /// </summary>
+        public static string StatusComparingForeignKeys {
+            get {
+                return ResourceManager.GetString("StatusComparingForeignKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comparing Functions....
         /// </summary>
         public static string StatusComparingFunctions {
@@ -1364,6 +1373,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string StatusMappingDataTypes {
             get {
                 return ResourceManager.GetString("StatusMappingDataTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping Foreign Keys....
+        /// </summary>
+        public static string StatusMappingForeignKeys {
+            get {
+                return ResourceManager.GetString("StatusMappingForeignKeys", resourceCulture);
             }
         }
         

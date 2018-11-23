@@ -623,4 +623,10 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="StatusComparingConstraints" xml:space="preserve">
     <value>Confronto dei Vincoli in corso...</value>
   </data>
+  <data name="StatusMappingForeignKeys" xml:space="preserve">
+    <value>Mappatura delle Chiavi Esterne in corso...</value>
+  </data>
+  <data name="StatusComparingForeignKeys" xml:space="preserve">
+    <value>Confronto delle Chiavi Esterne in corso...</value>
+  </data>
 </root>

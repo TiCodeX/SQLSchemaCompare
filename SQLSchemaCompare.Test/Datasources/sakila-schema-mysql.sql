@@ -184,6 +184,7 @@ CREATE TABLE film_category (
 CREATE TABLE film_text (
   film_id SMALLINT NOT NULL,
   title VARCHAR(255) NOT NULL,
+  category_id TINYINT UNSIGNED,
   description TEXT,
   PRIMARY KEY  (film_id),
   FULLTEXT KEY idx_title_description (title,description)

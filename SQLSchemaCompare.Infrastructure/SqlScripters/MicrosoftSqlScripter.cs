@@ -90,48 +90,42 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableAddForeignKeys(ABaseDbTable table)
+        protected override string ScriptAlterTableAddForeignKey(ABaseDbForeignKey foreignKey)
         {
+            var key = (MicrosoftSqlForeignKey)foreignKey;
+
             var sb = new StringBuilder();
 
-            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MicrosoftSqlForeignKey>())
-            {
-                var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
-                var referencedColumnList = key.ReferencedColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
+            var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
+            var referencedColumnList = key.ReferencedColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
 
-                sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} WITH ");
-                sb.Append(key.Disabled ? "NOCHECK" : "CHECK");
-                sb.AppendLine($" ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
+            sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} WITH ");
+            sb.Append(key.Disabled ? "NOCHECK" : "CHECK");
+            sb.AppendLine($" ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
 
-                sb.Append($"FOREIGN KEY ({string.Join(",", columnList)}) ");
-                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)})");
+            sb.Append($"FOREIGN KEY ({string.Join(",", columnList)}) ");
+            sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)})");
 
-                sb.AppendLine($"ON DELETE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.DeleteReferentialAction)}");
-                sb.AppendLine($"ON UPDATE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.UpdateReferentialAction)}");
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            sb.AppendLine($"ON DELETE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.DeleteReferentialAction)}");
+            sb.AppendLine($"ON UPDATE {MicrosoftSqlScriptHelper.ScriptForeignKeyAction(key.UpdateReferentialAction)}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
 
-                sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ");
-                sb.Append(key.Disabled ? "NOCHECK" : "CHECK");
-                sb.AppendLine($" CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
+            sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} ");
+            sb.Append(key.Disabled ? "NOCHECK" : "CHECK");
+            sb.AppendLine($" CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
 
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-                sb.AppendLine();
-            }
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            sb.AppendLine();
 
             return sb.ToString();
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableDropForeignKeys(ABaseDbTable table)
+        protected override string ScriptAlterTableDropForeignKey(ABaseDbForeignKey foreignKey)
         {
             var sb = new StringBuilder();
-
-            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-            {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-            }
-
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(foreignKey.TableSchema, foreignKey.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(foreignKey.Name)}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
 

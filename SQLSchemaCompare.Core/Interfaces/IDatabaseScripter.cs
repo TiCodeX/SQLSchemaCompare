@@ -79,6 +79,13 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
         string GenerateCreateConstraintScript(ABaseDbConstraint constraint);
 
         /// <summary>
+        /// Generates the create foreign key script
+        /// </summary>
+        /// <param name="foreignKey">The foreign key to be scripted</param>
+        /// <returns>The create script</returns>
+        string GenerateCreateForeignKeyScript(ABaseDbForeignKey foreignKey);
+
+        /// <summary>
         /// Generates the create view script and related indexes
         /// </summary>
         /// <param name="view">The view to be scripted</param>

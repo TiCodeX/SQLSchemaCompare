@@ -398,5 +398,29 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("ALTER TABLE payment MODIFY payment_id_new SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT;");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
         }
+
+        /// <summary>
+        /// Test migration script when target db have an additional foreign key
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetExtraForeignKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT FK_film_text_category FOREIGN KEY (category_id) REFERENCES category (category_id);");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a foreign key
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetMissingForeignKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE film_actor DROP FOREIGN KEY fk_film_actor_film;");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString());
+        }
     }
 }

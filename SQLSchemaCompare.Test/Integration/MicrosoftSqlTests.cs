@@ -456,5 +456,29 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("ALTER TABLE payment ADD CONSTRAINT PK_payment_payment_id PRIMARY KEY NONCLUSTERED (payment_id_new)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
         }
+
+        /// <summary>
+        /// Test migration script when target db have an additional foreign key
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetExtraForeignKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE category ADD CONSTRAINT FK_category_language FOREIGN KEY (language_id) REFERENCES language (language_id)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a foreign key
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingForeignKey()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE film_actor DROP CONSTRAINT fk_film_actor_film");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
     }
 }

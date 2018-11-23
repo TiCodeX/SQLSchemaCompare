@@ -29,6 +29,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
         private readonly List<CompareResultItem<ABaseDbTable>> tables = new List<CompareResultItem<ABaseDbTable>>();
         private readonly List<CompareResultItem<ABaseDbIndex>> indexes = new List<CompareResultItem<ABaseDbIndex>>();
         private readonly List<CompareResultItem<ABaseDbConstraint>> constraints = new List<CompareResultItem<ABaseDbConstraint>>();
+        private readonly List<CompareResultItem<ABaseDbForeignKey>> foreignKeys = new List<CompareResultItem<ABaseDbForeignKey>>();
         private readonly List<CompareResultItem<ABaseDbTrigger>> triggers = new List<CompareResultItem<ABaseDbTrigger>>();
         private readonly List<CompareResultItem<ABaseDbView>> views = new List<CompareResultItem<ABaseDbView>>();
         private readonly List<CompareResultItem<ABaseDbFunction>> functions = new List<CompareResultItem<ABaseDbFunction>>();
@@ -169,6 +170,30 @@ namespace TiCodeX.SQLSchemaCompare.Services
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
             taskInfo.Percentage = 30;
 
+            taskInfo.Message = Localization.StatusMappingForeignKeys;
+            foreach (var foreignKey in this.retrievedSourceDatabase.ForeignKeys)
+            {
+                this.foreignKeys.Add(new CompareResultItem<ABaseDbForeignKey>
+                {
+                    SourceItem = foreignKey,
+                    TargetItem = this.retrievedTargetDatabase.ForeignKeys.FirstOrDefault(x => x.TableSchema == foreignKey.TableSchema && x.TableName == foreignKey.TableName &&
+                                                                                              x.Schema == foreignKey.Schema && x.Name == foreignKey.Name)
+                });
+            }
+
+            foreach (var foreignKey in this.retrievedTargetDatabase.ForeignKeys.Where(x =>
+                !this.foreignKeys.Any(y => y.SourceItem.TableSchema == x.TableSchema && y.SourceItem.TableName == x.TableName &&
+                                           y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
+            {
+                this.foreignKeys.Add(new CompareResultItem<ABaseDbForeignKey>
+                {
+                    TargetItem = foreignKey
+                });
+            }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+            taskInfo.Percentage = 40;
+
             taskInfo.Message = Localization.StatusMappingViews;
             foreach (var view in this.retrievedSourceDatabase.Views)
             {
@@ -189,7 +214,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             }
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 40;
+            taskInfo.Percentage = 50;
 
             taskInfo.Message = Localization.StatusMappingFunctions;
             foreach (var function in this.retrievedSourceDatabase.Functions)
@@ -233,7 +258,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             }
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 80;
+            taskInfo.Percentage = 70;
 
             taskInfo.Message = Localization.StatusMappingSequences;
             foreach (var sequence in this.retrievedSourceDatabase.Sequences)
@@ -255,7 +280,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             }
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 90;
+            taskInfo.Percentage = 80;
 
             taskInfo.Message = Localization.StatusMappingDataTypes;
             foreach (var type in this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined))
@@ -277,7 +302,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             }
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 95;
+            taskInfo.Percentage = 90;
 
             taskInfo.Message = Localization.StatusMappingTriggers;
             foreach (var trigger in this.retrievedSourceDatabase.Triggers)
@@ -313,6 +338,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             var totalItems = this.tables.Count +
                              this.indexes.Count +
                              this.constraints.Count +
+                             this.foreignKeys.Count +
                              this.triggers.Count +
                              this.views.Count +
                              this.functions.Count +
@@ -386,6 +412,26 @@ namespace TiCodeX.SQLSchemaCompare.Services
                 {
                     resultConstraint.TargetItemName = scripter.GenerateObjectName(resultConstraint.TargetItem);
                     resultConstraint.Scripts.TargetCreateScript = scripter.GenerateCreateConstraintScript(resultConstraint.TargetItem);
+                }
+
+                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
+            }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
+            taskInfo.Message = Localization.StatusComparingForeignKeys;
+            foreach (var resultForeignKey in this.foreignKeys)
+            {
+                if (resultForeignKey.SourceItem != null)
+                {
+                    resultForeignKey.SourceItemName = scripter.GenerateObjectName(resultForeignKey.SourceItem);
+                    resultForeignKey.Scripts.SourceCreateScript = scripter.GenerateCreateForeignKeyScript(resultForeignKey.SourceItem);
+                }
+
+                if (resultForeignKey.TargetItem != null)
+                {
+                    resultForeignKey.TargetItemName = scripter.GenerateObjectName(resultForeignKey.TargetItem);
+                    resultForeignKey.Scripts.TargetCreateScript = scripter.GenerateCreateForeignKeyScript(resultForeignKey.TargetItem);
                 }
 
                 taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
@@ -590,6 +636,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             var differentItemsFullList = result.DifferentItems.ToList();
             differentItemsFullList.AddRange(this.indexes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
             differentItemsFullList.AddRange(this.constraints.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            differentItemsFullList.AddRange(this.foreignKeys.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
             differentItemsFullList.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
 
             ABaseDb onlySourceDb = null;
@@ -618,6 +665,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             onlySourceDb.Tables.AddRange(onlySourceTables.Select(x => x.SourceItem));
             onlySourceDb.Indexes.AddRange(this.indexes.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Constraints.AddRange(this.constraints.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
+            onlySourceDb.ForeignKeys.AddRange(this.foreignKeys.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Triggers.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Views.AddRange(onlySourceViews.Select(x => x.SourceItem));
             onlySourceDb.Functions.AddRange(onlySourceFunctions.Select(x => x.SourceItem));
@@ -629,6 +677,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             onlyTargetDb.Tables.AddRange(onlyTargetTables.Select(x => x.TargetItem));
             onlyTargetDb.Indexes.AddRange(this.indexes.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Constraints.AddRange(this.constraints.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
+            onlyTargetDb.ForeignKeys.AddRange(this.foreignKeys.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Triggers.AddRange(this.triggers.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Views.AddRange(onlyTargetViews.Select(x => x.TargetItem));
             onlyTargetDb.Functions.AddRange(onlyTargetFunctions.Select(x => x.TargetItem));
@@ -651,6 +700,12 @@ namespace TiCodeX.SQLSchemaCompare.Services
             onlySourceDb.Constraints.AddRange(c.Select(x => x.SourceItem));
             onlyTargetDb.Constraints.AddRange(c.Select(x => x.TargetItem));
             c.ForEach(x => differentItemsFullList.Remove(x));
+
+            // Foreign Keys
+            var fk = differentItemsFullList.OfType<CompareResultItem<ABaseDbForeignKey>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            onlySourceDb.ForeignKeys.AddRange(fk.Select(x => x.SourceItem));
+            onlyTargetDb.ForeignKeys.AddRange(fk.Select(x => x.TargetItem));
+            fk.ForEach(x => differentItemsFullList.Remove(x));
 
             // Triggers
             var t = differentItemsFullList.OfType<CompareResultItem<ABaseDbTrigger>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();

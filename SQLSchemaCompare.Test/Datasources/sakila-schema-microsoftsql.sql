@@ -151,6 +151,7 @@ CREATE TABLE category (
   category_id TINYINT NOT NULL IDENTITY,
   name VARCHAR(25) NOT NULL,
   last_update DATETIME NOT NULL,
+  language_id TINYINT,
   CONSTRAINT PK_category_category_id PRIMARY KEY NONCLUSTERED (category_id)
 )
 GO

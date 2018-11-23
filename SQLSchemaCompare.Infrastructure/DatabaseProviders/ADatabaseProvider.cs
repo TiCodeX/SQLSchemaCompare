@@ -82,7 +82,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             var db = new TDatabase { Name = context.DatabaseName };
 
             var columns = new List<ABaseDbColumn>();
-            var foreignKeys = new List<ABaseDbForeignKey>();
 
             var exceptions = new List<Exception>();
 
@@ -156,7 +155,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                     var foreignKey = foreignKeyGroup.First();
                     foreignKey.ColumnNames.AddRange(foreignKeyGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
                     foreignKey.ReferencedColumnNames.AddRange(foreignKeyGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ReferencedColumnName));
-                    foreignKeys.Add(foreignKey);
+                    db.ForeignKeys.Add(foreignKey);
                 }
             }
             catch (Exception ex)
@@ -222,7 +221,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-            AssignRetrievedItemsToRelatedTables(taskInfo, db, columns, foreignKeys);
+            AssignRetrievedItemsToRelatedTables(taskInfo, db, columns);
 
             taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
@@ -397,19 +396,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         /// <returns>The list of sequences</returns>
         protected abstract IEnumerable<ABaseDbSequence> GetSequences(TDatabaseContext context);
 
-        private static void AssignRetrievedItemsToRelatedTables(
-            TaskInfo taskInfo,
-            TDatabase db,
-            IReadOnlyCollection<ABaseDbColumn> columns,
-            IReadOnlyCollection<ABaseDbForeignKey> foreignKeys)
+        private static void AssignRetrievedItemsToRelatedTables(TaskInfo taskInfo, TDatabase db, IReadOnlyCollection<ABaseDbColumn> columns)
         {
             foreach (var table in db.Tables)
             {
                 taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
                 table.Columns.AddRange(columns.Where(y => table.Schema == y.Schema && table.Name == y.TableName));
-                table.ForeignKeys.AddRange(foreignKeys.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));
-                table.ReferencingForeignKeys.AddRange(foreignKeys.Where(y => table.Schema == y.ReferencedTableSchema && table.Name == y.ReferencedTableName));
+                table.ForeignKeys.AddRange(db.ForeignKeys.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));
+                table.ReferencingForeignKeys.AddRange(db.ForeignKeys.Where(y => table.Schema == y.ReferencedTableSchema && table.Name == y.ReferencedTableName));
                 table.PrimaryKeys.AddRange(db.Indexes.Where(y => y.IsPrimaryKey && table.Schema == y.TableSchema && table.Name == y.TableName));
                 table.Indexes.AddRange(db.Indexes.Where(y => !y.IsPrimaryKey && table.Schema == y.TableSchema && table.Name == y.TableName));
                 table.Constraints.AddRange(db.Constraints.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));

@@ -107,36 +107,30 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableAddForeignKeys(ABaseDbTable table)
+        protected override string ScriptAlterTableAddForeignKey(ABaseDbForeignKey foreignKey)
         {
+            var key = (MySqlForeignKey)foreignKey;
+
             var sb = new StringBuilder();
 
-            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlForeignKey>())
-            {
-                var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
-                var referencedColumnList = key.ReferencedColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
+            var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
+            var referencedColumnList = key.ReferencedColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
 
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} FOREIGN KEY ({string.Join(",", columnList)})");
-                sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)})");
-                sb.AppendLine($"ON DELETE {key.DeleteRule}");
-                sb.AppendLine($"ON UPDATE {key.UpdateRule};");
-                sb.AppendLine();
-            }
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)}");
+            sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} FOREIGN KEY ({string.Join(",", columnList)})");
+            sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)})");
+            sb.AppendLine($"ON DELETE {key.DeleteRule}");
+            sb.AppendLine($"ON UPDATE {key.UpdateRule};");
+            sb.AppendLine();
 
             return sb.ToString();
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableDropForeignKeys(ABaseDbTable table)
+        protected override string ScriptAlterTableDropForeignKey(ABaseDbForeignKey foreignKey)
         {
             var sb = new StringBuilder();
-
-            foreach (var key in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-            {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP FOREIGN KEY {this.ScriptHelper.ScriptObjectName(key.Name)};");
-            }
-
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(foreignKey.TableSchema, foreignKey.TableName)} DROP FOREIGN KEY {this.ScriptHelper.ScriptObjectName(foreignKey.Name)};");
             return sb.ToString();
         }
 

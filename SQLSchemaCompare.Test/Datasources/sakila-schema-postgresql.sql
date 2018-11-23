@@ -439,6 +439,7 @@ ALTER TABLE category_category_id_seq OWNER TO postgres;
 CREATE TABLE category (
     category_id integer DEFAULT nextval('category_category_id_seq'::regclass) NOT NULL,
     name character varying(25) NOT NULL,
+    language_id smallint NOT NULL,
     last_update timestamp without time zone DEFAULT now() NOT NULL
 );
 

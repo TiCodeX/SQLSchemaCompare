@@ -332,7 +332,6 @@ namespace TiCodeX.SQLSchemaCompare.Services
         }
 
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
-        [SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmantainableCode", Justification = "TODO")]
         private bool ExecuteDatabaseComparison(TaskInfo taskInfo)
         {
             var totalItems = this.tables.Count +
@@ -582,12 +581,22 @@ namespace TiCodeX.SQLSchemaCompare.Services
                 taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
             }
 
-            var result = new CompareResult
-            {
-                SourceFullScript = scripter.GenerateFullCreateScript(this.retrievedSourceDatabase),
-                TargetFullScript = scripter.GenerateFullCreateScript(this.retrievedTargetDatabase)
-            };
+            var result = new CompareResult();
 
+            this.FillCompareResultItems(result);
+
+            result.SourceFullScript = scripter.GenerateFullCreateScript(this.retrievedSourceDatabase);
+            result.TargetFullScript = scripter.GenerateFullCreateScript(this.retrievedTargetDatabase);
+            result.FullAlterScript = this.GenerateFullAlterScript(scripter);
+
+            this.projectService.Project.Result = result;
+
+            return true;
+        }
+
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
+        private void FillCompareResultItems(CompareResult result)
+        {
             result.DifferentItems.AddRange(this.tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
             result.DifferentItems.AddRange(this.views.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
             result.DifferentItems.AddRange(this.functions.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
@@ -596,32 +605,20 @@ namespace TiCodeX.SQLSchemaCompare.Services
             result.DifferentItems.AddRange(this.dataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Different items => {result.DifferentItems.Count}");
 
-            var onlySourceTables = this.tables.Where(x => x.SourceItem != null && x.TargetItem == null).ToList();
-            result.OnlySourceItems.AddRange(onlySourceTables.OrderBy(x => x.SourceItemName));
-            var onlySourceViews = this.views.Where(x => x.SourceItem != null && x.TargetItem == null).ToList();
-            result.OnlySourceItems.AddRange(onlySourceViews.OrderBy(x => x.SourceItemName));
-            var onlySourceFunctions = this.functions.Where(x => x.SourceItem != null && x.TargetItem == null).ToList();
-            result.OnlySourceItems.AddRange(onlySourceFunctions.OrderBy(x => x.SourceItemName));
-            var onlySourceStoredProcedures = this.storedProcedures.Where(x => x.SourceItem != null && x.TargetItem == null).ToList();
-            result.OnlySourceItems.AddRange(onlySourceStoredProcedures.OrderBy(x => x.SourceItemName));
-            var onlySourceSequences = this.sequences.Where(x => x.SourceItem != null && x.TargetItem == null).ToList();
-            result.OnlySourceItems.AddRange(onlySourceSequences.OrderBy(x => x.SourceItemName));
-            var onlySourceDataTypes = this.dataTypes.Where(x => x.SourceItem != null && x.TargetItem == null).ToList();
-            result.OnlySourceItems.AddRange(onlySourceDataTypes.OrderBy(x => x.SourceItemName));
+            result.OnlySourceItems.AddRange(this.tables.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
+            result.OnlySourceItems.AddRange(this.views.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
+            result.OnlySourceItems.AddRange(this.functions.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
+            result.OnlySourceItems.AddRange(this.storedProcedures.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
+            result.OnlySourceItems.AddRange(this.sequences.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
+            result.OnlySourceItems.AddRange(this.dataTypes.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Only Source items => {result.OnlySourceItems.Count}");
 
-            var onlyTargetTables = this.tables.Where(x => x.TargetItem != null && x.SourceItem == null).ToList();
-            result.OnlyTargetItems.AddRange(onlyTargetTables.OrderBy(x => x.TargetItemName));
-            var onlyTargetViews = this.views.Where(x => x.TargetItem != null && x.SourceItem == null).ToList();
-            result.OnlyTargetItems.AddRange(onlyTargetViews.OrderBy(x => x.TargetItemName));
-            var onlyTargetFunctions = this.functions.Where(x => x.TargetItem != null && x.SourceItem == null).ToList();
-            result.OnlyTargetItems.AddRange(onlyTargetFunctions.OrderBy(x => x.TargetItemName));
-            var onlyTargetStoredProcedures = this.storedProcedures.Where(x => x.TargetItem != null && x.SourceItem == null).ToList();
-            result.OnlyTargetItems.AddRange(onlyTargetStoredProcedures.OrderBy(x => x.TargetItemName));
-            var onlyTargetSequences = this.sequences.Where(x => x.TargetItem != null && x.SourceItem == null).ToList();
-            result.OnlyTargetItems.AddRange(onlyTargetSequences.OrderBy(x => x.TargetItemName));
-            var onlyTargetDataTypes = this.dataTypes.Where(x => x.TargetItem != null && x.SourceItem == null).ToList();
-            result.OnlyTargetItems.AddRange(onlyTargetDataTypes.OrderBy(x => x.TargetItemName));
+            result.OnlyTargetItems.AddRange(this.tables.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
+            result.OnlyTargetItems.AddRange(this.views.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
+            result.OnlyTargetItems.AddRange(this.functions.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
+            result.OnlyTargetItems.AddRange(this.storedProcedures.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
+            result.OnlyTargetItems.AddRange(this.sequences.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
+            result.OnlyTargetItems.AddRange(this.dataTypes.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
             this.logger.LogDebug($"Only Target items => {result.OnlyTargetItems.Count}");
 
             result.SameItems.AddRange(this.tables.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
@@ -631,13 +628,23 @@ namespace TiCodeX.SQLSchemaCompare.Services
             result.SameItems.AddRange(this.sequences.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
             result.SameItems.AddRange(this.dataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Same items => {result.SameItems.Count}");
+        }
 
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
+        private string GenerateFullAlterScript(IDatabaseScripter scripter)
+        {
             // Add items related to tables directly in the different items list only for the alter script generation
-            var differentItemsFullList = result.DifferentItems.ToList();
-            differentItemsFullList.AddRange(this.indexes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItemsFullList.AddRange(this.constraints.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItemsFullList.AddRange(this.foreignKeys.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItemsFullList.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            var differentItems = new List<ABaseCompareResultItem>();
+            differentItems.AddRange(this.tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            differentItems.AddRange(this.views.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            differentItems.AddRange(this.functions.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            differentItems.AddRange(this.storedProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            differentItems.AddRange(this.sequences.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            differentItems.AddRange(this.dataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            differentItems.AddRange(this.indexes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            differentItems.AddRange(this.constraints.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            differentItems.AddRange(this.foreignKeys.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            differentItems.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
 
             ABaseDb onlySourceDb = null;
             ABaseDb onlyTargetDb = null;
@@ -662,80 +669,76 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     throw new NotImplementedException("Unknown Database Type");
             }
 
-            onlySourceDb.Tables.AddRange(onlySourceTables.Select(x => x.SourceItem));
+            onlySourceDb.Tables.AddRange(this.tables.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Indexes.AddRange(this.indexes.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Constraints.AddRange(this.constraints.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.ForeignKeys.AddRange(this.foreignKeys.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Triggers.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
-            onlySourceDb.Views.AddRange(onlySourceViews.Select(x => x.SourceItem));
-            onlySourceDb.Functions.AddRange(onlySourceFunctions.Select(x => x.SourceItem));
-            onlySourceDb.StoredProcedures.AddRange(onlySourceStoredProcedures.Select(x => x.SourceItem));
+            onlySourceDb.Views.AddRange(this.views.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
+            onlySourceDb.Functions.AddRange(this.functions.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
+            onlySourceDb.StoredProcedures.AddRange(this.storedProcedures.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.DataTypes.AddRange(this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined == false));
-            onlySourceDb.DataTypes.AddRange(onlySourceDataTypes.Select(x => x.SourceItem));
-            onlySourceDb.Sequences.AddRange(onlySourceSequences.Select(x => x.SourceItem));
+            onlySourceDb.DataTypes.AddRange(this.dataTypes.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
+            onlySourceDb.Sequences.AddRange(this.sequences.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
 
-            onlyTargetDb.Tables.AddRange(onlyTargetTables.Select(x => x.TargetItem));
+            onlyTargetDb.Tables.AddRange(this.tables.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Indexes.AddRange(this.indexes.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Constraints.AddRange(this.constraints.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.ForeignKeys.AddRange(this.foreignKeys.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Triggers.AddRange(this.triggers.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
-            onlyTargetDb.Views.AddRange(onlyTargetViews.Select(x => x.TargetItem));
-            onlyTargetDb.Functions.AddRange(onlyTargetFunctions.Select(x => x.TargetItem));
-            onlyTargetDb.StoredProcedures.AddRange(onlyTargetStoredProcedures.Select(x => x.TargetItem));
+            onlyTargetDb.Views.AddRange(this.views.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
+            onlyTargetDb.Functions.AddRange(this.functions.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
+            onlyTargetDb.StoredProcedures.AddRange(this.storedProcedures.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.DataTypes.AddRange(this.retrievedTargetDatabase.DataTypes.Where(x => x.IsUserDefined == false));
-            onlyTargetDb.DataTypes.AddRange(onlyTargetDataTypes.Select(x => x.TargetItem));
-            onlyTargetDb.Sequences.AddRange(onlyTargetSequences.Select(x => x.TargetItem));
+            onlyTargetDb.DataTypes.AddRange(this.dataTypes.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
+            onlyTargetDb.Sequences.AddRange(this.sequences.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
 
             // Unsupported alter functionality: remove from different items and add the items to the onlySource/onlyTarget
             // so that they will be dropped at the beginning of the script and recreated at the end
 
             // Indexes
-            var i = differentItemsFullList.OfType<CompareResultItem<ABaseDbIndex>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            var i = differentItems.OfType<CompareResultItem<ABaseDbIndex>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
             onlySourceDb.Indexes.AddRange(i.Select(x => x.SourceItem));
             onlyTargetDb.Indexes.AddRange(i.Select(x => x.TargetItem));
-            i.ForEach(x => differentItemsFullList.Remove(x));
+            i.ForEach(x => differentItems.Remove(x));
 
             // Constraints
-            var c = differentItemsFullList.OfType<CompareResultItem<ABaseDbConstraint>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            var c = differentItems.OfType<CompareResultItem<ABaseDbConstraint>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
             onlySourceDb.Constraints.AddRange(c.Select(x => x.SourceItem));
             onlyTargetDb.Constraints.AddRange(c.Select(x => x.TargetItem));
-            c.ForEach(x => differentItemsFullList.Remove(x));
+            c.ForEach(x => differentItems.Remove(x));
 
             // Foreign Keys
-            var fk = differentItemsFullList.OfType<CompareResultItem<ABaseDbForeignKey>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            var fk = differentItems.OfType<CompareResultItem<ABaseDbForeignKey>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
             onlySourceDb.ForeignKeys.AddRange(fk.Select(x => x.SourceItem));
             onlyTargetDb.ForeignKeys.AddRange(fk.Select(x => x.TargetItem));
-            fk.ForEach(x => differentItemsFullList.Remove(x));
+            fk.ForEach(x => differentItems.Remove(x));
 
             // Triggers
-            var t = differentItemsFullList.OfType<CompareResultItem<ABaseDbTrigger>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            var t = differentItems.OfType<CompareResultItem<ABaseDbTrigger>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
             onlySourceDb.Triggers.AddRange(t.Select(x => x.SourceItem));
             onlyTargetDb.Triggers.AddRange(t.Select(x => x.TargetItem));
-            t.ForEach(x => differentItemsFullList.Remove(x));
+            t.ForEach(x => differentItems.Remove(x));
 
             // StoredProcedures
-            var s = differentItemsFullList.OfType<CompareResultItem<ABaseDbStoredProcedure>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            var s = differentItems.OfType<CompareResultItem<ABaseDbStoredProcedure>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
             onlySourceDb.StoredProcedures.AddRange(s.Select(x => x.SourceItem));
             onlyTargetDb.StoredProcedures.AddRange(s.Select(x => x.TargetItem));
-            s.ForEach(x => differentItemsFullList.Remove(x));
+            s.ForEach(x => differentItems.Remove(x));
 
             // Functions
-            var f = differentItemsFullList.OfType<CompareResultItem<ABaseDbFunction>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            var f = differentItems.OfType<CompareResultItem<ABaseDbFunction>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
             onlySourceDb.Functions.AddRange(f.Select(x => x.SourceItem));
             onlyTargetDb.Functions.AddRange(f.Select(x => x.TargetItem));
-            f.ForEach(x => differentItemsFullList.Remove(x));
+            f.ForEach(x => differentItems.Remove(x));
 
             // Views
-            var v = differentItemsFullList.OfType<CompareResultItem<ABaseDbView>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            var v = differentItems.OfType<CompareResultItem<ABaseDbView>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
             onlySourceDb.Views.AddRange(v.Select(x => x.SourceItem));
             onlyTargetDb.Views.AddRange(v.Select(x => x.TargetItem));
-            v.ForEach(x => differentItemsFullList.Remove(x));
+            v.ForEach(x => differentItems.Remove(x));
 
-            result.FullAlterScript = scripter.GenerateFullAlterScript(differentItemsFullList, onlySourceDb, onlyTargetDb);
-
-            this.projectService.Project.Result = result;
-
-            return true;
+            return scripter.GenerateFullAlterScript(differentItems, onlySourceDb, onlyTargetDb);
         }
     }
 }

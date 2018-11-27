@@ -480,5 +480,31 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("ALTER TABLE film_actor DROP CONSTRAINT fk_film_actor_film");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
         }
+
+        /// <summary>
+        /// Test migration script when target db have a foreign key that references a different column
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetForeignKeyReferencesDifferentColumn()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE address DROP CONSTRAINT fk_address_city");
+            sb.AppendLine("ALTER TABLE address ADD CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES actor (actor_id) ON DELETE NO ACTION ON UPDATE CASCADE");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a foreign key with different options
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetForeignKeyDifferentOptions()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE address DROP CONSTRAINT fk_address_city");
+            sb.AppendLine("ALTER TABLE address ADD CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES city (city_id) ON DELETE CASCADE ON UPDATE NO ACTION");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+        }
     }
 }

@@ -442,5 +442,31 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("ALTER TABLE film_actor DROP CONSTRAINT film_actor_film_id_fkey");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
         }
+
+        /// <summary>
+        /// Test migration script when target db have a foreign key that references a different column
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetForeignKeyReferencesDifferentColumn()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE address DROP CONSTRAINT address_city_id_fkey;");
+            sb.AppendLine("ALTER TABLE address ADD CONSTRAINT address_city_id_fkey FOREIGN KEY (city_id) REFERENCES category (category_id) ON UPDATE CASCADE ON DELETE RESTRICT");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a foreign key with different options
+        /// </summary>
+        [Fact]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetForeignKeyDifferentOptions()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE address DROP CONSTRAINT address_city_id_fkey;");
+            sb.AppendLine("ALTER TABLE address ADD CONSTRAINT address_city_id_fkey FOREIGN KEY (city_id) REFERENCES city (city_id) ON UPDATE RESTRICT ON DELETE NO ACTION");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString());
+        }
     }
 }

@@ -73,13 +73,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             var query = new StringBuilder();
             query.AppendLine("SELECT a.TABLE_NAME as TableName,");
             query.AppendLine("       a.COLUMN_NAME as Name,");
-            query.AppendLine("       a.ORDINAL_POSITION as OrdinalPosition,");
+            query.AppendLine("       CAST(a.ORDINAL_POSITION AS SIGNED) as OrdinalPosition,");
             query.AppendLine("       a.COLUMN_DEFAULT as ColumnDefault,");
             query.AppendLine("       a.IS_NULLABLE as IsNullable,");
             query.AppendLine("       a.DATA_TYPE as DataType,");
             query.AppendLine("       a.CHARACTER_SET_NAME as CharacterSetName,");
             query.AppendLine("       a.COLLATION_NAME as CollationName,");
-            query.AppendLine("       a.GENERATION_EXPRESSION as GenerationExpression,");
+
+            if (this.CurrentServerVersion.Major >= 5 && this.CurrentServerVersion.Minor >= 7)
+            {
+                query.AppendLine("       a.GENERATION_EXPRESSION as GenerationExpression,");
+            }
+
             query.AppendLine("       a.EXTRA as Extra,");
             query.AppendLine("       a.COLUMN_TYPE as ColumnType");
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");

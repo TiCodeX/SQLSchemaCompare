@@ -128,7 +128,7 @@ CREATE TABLE film (
   special_features SET('Trailers','Commentaries','Deleted Scenes','Behind the Scenes') DEFAULT NULL,
   last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY  (film_id),
-  KEY idx_title (title),
+  KEY idx_title (title(50)),
   KEY idx_fk_language_id (language_id),
   KEY idx_fk_original_language_id (original_language_id),
   CONSTRAINT fk_film_language FOREIGN KEY (language_id) REFERENCES language (language_id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -188,7 +188,7 @@ CREATE TABLE film_text (
   description TEXT,
   PRIMARY KEY  (film_id),
   FULLTEXT KEY idx_title_description (title,description)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+)ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Triggers for loading film_text from film

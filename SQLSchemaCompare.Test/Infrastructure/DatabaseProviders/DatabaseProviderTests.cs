@@ -183,10 +183,12 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders
         [IntegrationTest]
         public void GetPostgreSqlDatabaseAllVersions()
         {
-            var databaseName = "sakila";
+            const string databaseName = "sakila";
+            const short startPort = 26001;
+            const short endPort = 26006;
 
             // Create the databases
-            for (var port = (short)26001; port <= 26006; port++)
+            for (var port = startPort; port <= endPort; port++)
             {
                 var dpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(string.Empty);
                 dpo.Port = port;
@@ -194,11 +196,38 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders
             }
 
             // Retrieve the databases
-            for (var port = (short)26001; port <= 26006; port++)
+            for (var port = startPort; port <= endPort; port++)
             {
                 var dpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(databaseName);
                 dpo.Port = port;
                 var pgsqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider(databaseName, dpo);
+                pgsqldbp.GetDatabase(new TaskInfo("test"));
+            }
+        }
+
+        /// <summary>
+        /// Test various MySQL versions (5.5, 5.6, 5.7. 8.0)
+        /// </summary>
+        [Fact(Skip = "Requires docker")]
+        [IntegrationTest]
+        public void GetMySqlDatabaseAllVersions()
+        {
+            const string databaseName = "sakila";
+            const short startPort = 27001;
+            const short endPort = 27004;
+
+            // Create the databases
+            for (var port = startPort; port <= endPort; port++)
+            {
+                this.dbFixture.CreateMySqlSakilaDatabase(databaseName, port);
+            }
+
+            // Retrieve the databases
+            for (var port = startPort; port <= endPort; port++)
+            {
+                var dpo = this.dbFixture.GetMySqlDatabaseProviderOptions(databaseName);
+                dpo.Port = port;
+                var pgsqldbp = this.dbFixture.GetMySqlDatabaseProvider(databaseName, dpo);
                 pgsqldbp.GetDatabase(new TaskInfo("test"));
             }
         }

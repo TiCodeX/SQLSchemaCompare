@@ -82,7 +82,8 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// Executes my SQL script
         /// </summary>
         /// <param name="path">The path</param>
-        internal void ExecuteMySqlScript(string path)
+        /// <param name="port">The port to connect to the database</param>
+        internal void ExecuteMySqlScript(string path, short port = 3306)
         {
             var standardOutput = new StringBuilder();
             var standardError = new StringBuilder();
@@ -91,7 +92,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe",
-                    Arguments = $"--user root -ptest1234 -e \"SOURCE {path}\"",
+                    Arguments = $"--user=root --password=test1234 --port={port} -e \"SOURCE {path}\"",
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardError = true,
@@ -142,13 +143,14 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// Drops my SQL database
         /// </summary>
         /// <param name="databaseName">Name of the database</param>
-        internal void DropMySqlDatabase(string databaseName)
+        /// <param name="port">The port to connect to the database</param>
+        internal void DropMySqlDatabase(string databaseName, short port = 3306)
         {
             var query = new StringBuilder();
             query.AppendLine($"DROP SCHEMA IF EXISTS `{databaseName}`;");
             var pathMySql = Path.GetTempFileName();
             File.WriteAllText(pathMySql, query.ToString());
-            this.ExecuteMySqlScript(pathMySql);
+            this.ExecuteMySqlScript(pathMySql, port);
         }
 
         /// <summary>
@@ -190,15 +192,16 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// Drops and create the mysql database
         /// </summary>
         /// <param name="databaseName">Name of the database</param>
-        internal void DropAndCreateMySqlDatabase(string databaseName)
+        /// <param name="port">The port to connect to the database</param>
+        internal void DropAndCreateMySqlDatabase(string databaseName, short port = 3306)
         {
-            this.DropMySqlDatabase(databaseName);
+            this.DropMySqlDatabase(databaseName, port);
 
             var query = new StringBuilder();
             query.AppendLine($"CREATE SCHEMA `{databaseName}`;");
             var pathMySql = Path.GetTempFileName();
             File.WriteAllText(pathMySql, query.ToString());
-            this.ExecuteMySqlScript(pathMySql);
+            this.ExecuteMySqlScript(pathMySql, port);
         }
 
         /// <summary>
@@ -246,9 +249,10 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// Creates the sakila database
         /// </summary>
         /// <param name="databaseName">Name of the database</param>
-        internal void CreateMySqlSakilaDatabase(string databaseName)
+        /// <param name="port">The port to connect to the database</param>
+        internal void CreateMySqlSakilaDatabase(string databaseName, short port = 3306)
         {
-            this.DropAndCreateMySqlDatabase(databaseName);
+            this.DropAndCreateMySqlDatabase(databaseName, port);
 
             var sakilaScript = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-mysql.sql"));
 
@@ -257,7 +261,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
             var pathMySql = Path.GetTempFileName();
             File.WriteAllText(pathMySql, sakilaScript);
-            this.ExecuteMySqlScript(pathMySql);
+            this.ExecuteMySqlScript(pathMySql, port);
         }
 
         /// <summary>
@@ -298,11 +302,17 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// Gets the MySQL database provider
         /// </summary>
         /// <param name="databaseName">The database name to connect</param>
+        /// <param name="dpo">Database provider options</param>
         /// <returns>The MySQL SQL database provider</returns>
-        internal MySqlDatabaseProvider GetMySqlDatabaseProvider(string databaseName = "")
+        internal MySqlDatabaseProvider GetMySqlDatabaseProvider(string databaseName = "", MySqlDatabaseProviderOptions dpo = null)
         {
+            if (dpo == null)
+            {
+                dpo = this.GetMySqlDatabaseProviderOptions(databaseName);
+            }
+
             var dpf = new DatabaseProviderFactory(this.loggerFactory, this.cipherService);
-            return (MySqlDatabaseProvider)dpf.Create(this.GetMySqlDatabaseProviderOptions(databaseName));
+            return (MySqlDatabaseProvider)dpf.Create(dpo);
         }
 
         /// <summary>

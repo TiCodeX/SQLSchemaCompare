@@ -8,7 +8,7 @@
         /// <summary>
         /// Gets or sets the column ordinal position
         /// </summary>
-        public uint OrdinalPosition { get; set; }
+        public long OrdinalPosition { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the column is nullable

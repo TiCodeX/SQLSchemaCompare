@@ -7,12 +7,12 @@
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
+--SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET row_security = off;
+--SET row_security = off;
 
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
@@ -264,6 +264,7 @@ CREATE SEQUENCE customer_customer_id_seq
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
+    CYCLE
     CACHE 1;
 
 
@@ -455,7 +456,8 @@ CREATE SEQUENCE film_film_id_seq
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
-    CACHE 1;
+    CYCLE
+    CACHE 5;
 
 
 ALTER TABLE film_film_id_seq OWNER TO postgres;
@@ -581,7 +583,7 @@ CREATE SEQUENCE city_city_id_seq
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
-    CACHE 1;
+    CACHE 25;
 
 
 ALTER TABLE city_city_id_seq OWNER TO postgres;

@@ -155,9 +155,15 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// Drops the postgre SQL database
         /// </summary>
         /// <param name="databaseName">Name of the database</param>
-        internal void DropPostgreSqlDatabase(string databaseName)
+        /// <param name="dpo">Database provider options</param>
+        internal void DropPostgreSqlDatabase(string databaseName, PostgreSqlDatabaseProviderOptions dpo = null)
         {
-            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(string.Empty)))
+            if (dpo == null)
+            {
+                dpo = this.GetPostgreSqlDatabaseProviderOptions(string.Empty);
+            }
+
+            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, dpo))
             {
                 var dropDbQuery = new StringBuilder();
                 dropDbQuery.AppendLine($"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{databaseName}';");
@@ -199,11 +205,17 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// Drops and create the postgresql database
         /// </summary>
         /// <param name="databaseName">Name of the database</param>
-        internal void DropAndCreatePostgreSqlDatabase(string databaseName)
+        /// <param name="dpo">Database provider options</param>
+        internal void DropAndCreatePostgreSqlDatabase(string databaseName, PostgreSqlDatabaseProviderOptions dpo = null)
         {
-            this.DropPostgreSqlDatabase(databaseName);
+            if (dpo == null)
+            {
+                dpo = this.GetPostgreSqlDatabaseProviderOptions(string.Empty);
+            }
 
-            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(string.Empty)))
+            this.DropPostgreSqlDatabase(databaseName, dpo);
+
+            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, dpo))
             {
                 var query = new StringBuilder();
                 query.AppendLine($"CREATE DATABASE {databaseName};");
@@ -252,11 +264,19 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// Creates the sakila database
         /// </summary>
         /// <param name="databaseName">Name of the database</param>
-        internal void CreatePostgreSqlSakilaDatabase(string databaseName)
+        /// <param name="dpo">Database provider options</param>
+        internal void CreatePostgreSqlSakilaDatabase(string databaseName, PostgreSqlDatabaseProviderOptions dpo = null)
         {
-            this.DropAndCreatePostgreSqlDatabase(databaseName);
+            if (dpo == null)
+            {
+                dpo = this.GetPostgreSqlDatabaseProviderOptions(string.Empty);
+            }
 
-            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(databaseName)))
+            this.DropAndCreatePostgreSqlDatabase(databaseName, dpo);
+
+            dpo.Database = databaseName;
+
+            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, dpo))
             {
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-postgresql.sql");
                 context.ExecuteNonQuery(File.ReadAllText(path));
@@ -289,11 +309,17 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// Gets the PostgreSQL database provider
         /// </summary>
         /// <param name="databaseName">The database name to connect</param>
+        /// <param name="dpo">Database provider options</param>
         /// <returns>The PostgreSQL SQL database provider</returns>
-        internal PostgreSqlDatabaseProvider GetPostgreSqlDatabaseProvider(string databaseName = "")
+        internal PostgreSqlDatabaseProvider GetPostgreSqlDatabaseProvider(string databaseName = "", PostgreSqlDatabaseProviderOptions dpo = null)
         {
+            if (dpo == null)
+            {
+                dpo = this.GetPostgreSqlDatabaseProviderOptions(databaseName);
+            }
+
             var dpf = new DatabaseProviderFactory(this.loggerFactory, this.cipherService);
-            return (PostgreSqlDatabaseProvider)dpf.Create(this.GetPostgreSqlDatabaseProviderOptions(databaseName));
+            return (PostgreSqlDatabaseProvider)dpf.Create(dpo);
         }
 
         /// <summary>

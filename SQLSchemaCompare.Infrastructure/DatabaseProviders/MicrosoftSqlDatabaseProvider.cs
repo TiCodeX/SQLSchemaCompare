@@ -42,14 +42,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         {
             using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options))
             {
-                return context.Query("SELECT name FROM sysdatabases");
+                return context.QuerySingleColumn<string>("SELECT name FROM sysdatabases");
             }
         }
 
         /// <inheritdoc/>
         protected override string GetServerVersion(MicrosoftSqlDatabaseContext context)
         {
-            return context.Query("SELECT SERVERPROPERTY('ProductVersion')").FirstOrDefault() ?? string.Empty;
+            return context.QuerySingleColumn<string>("SELECT SERVERPROPERTY('ProductVersion')").FirstOrDefault() ?? string.Empty;
         }
 
         /// <inheritdoc/>

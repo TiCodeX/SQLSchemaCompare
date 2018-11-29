@@ -105,13 +105,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
         /// <summary>
         /// Performs a query
         /// </summary>
+        /// <typeparam name="T">The type of the result</typeparam>
         /// <param name="query">The SQL query</param>
         /// <param name="columnIndex">The desired column</param>
         /// <returns>The list of the requested column</returns>
-        public List<string> Query(string query, int columnIndex = 0)
+        public List<T> QuerySingleColumn<T>(string query, int columnIndex = 0)
         {
             /*this.logger.LogDebug($"ExecuteQuery:{Environment.NewLine}{query}");*/
-            var result = new List<string>();
+            var result = new List<T>();
             this.Database.OpenConnection();
             using (var command = this.Database.GetDbConnection().CreateCommand())
             {
@@ -120,7 +121,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
                 {
                     while (reader.Read())
                     {
-                        result.Add(reader.GetString(columnIndex));
+                        result.Add((T)reader.GetValue(columnIndex));
                     }
                 }
             }

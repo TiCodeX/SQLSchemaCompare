@@ -175,5 +175,32 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders
 
             db.StoredProcedures.Should().BeEmpty();
         }
+
+        /// <summary>
+        /// Test various PostgreSQL versions (9.3, 9.4, 9.5, 9.6, 10, 11)
+        /// </summary>
+        [Fact(Skip = "Requires docker")]
+        [IntegrationTest]
+        public void GetPostgreSqlDatabaseAllVersions()
+        {
+            var databaseName = "sakila";
+
+            // Create the databases
+            for (var port = (short)26001; port <= 26006; port++)
+            {
+                var dpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(string.Empty);
+                dpo.Port = port;
+                this.dbFixture.CreatePostgreSqlSakilaDatabase(databaseName, dpo);
+            }
+
+            // Retrieve the databases
+            for (var port = (short)26001; port <= 26006; port++)
+            {
+                var dpo = this.dbFixture.GetPostgreSqlDatabaseProviderOptions(databaseName);
+                dpo.Port = port;
+                var pgsqldbp = this.dbFixture.GetPostgreSqlDatabaseProvider(databaseName, dpo);
+                pgsqldbp.GetDatabase(new TaskInfo("test"));
+            }
+        }
     }
 }

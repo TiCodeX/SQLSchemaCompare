@@ -6,8 +6,10 @@ using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
 using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
+using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
 
 namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 {
@@ -42,14 +44,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         {
             using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options))
             {
-                return context.Query("SELECT datname FROM pg_catalog.pg_database WHERE datistemplate = FALSE");
+                return context.QuerySingleColumn<string>("SELECT datname FROM pg_catalog.pg_database WHERE datistemplate = FALSE");
             }
         }
 
         /// <inheritdoc/>
         protected override string GetServerVersion(PostgreSqlDatabaseContext context)
         {
-            return context.Query("SHOW server_version").FirstOrDefault() ?? string.Empty;
+            return context.QuerySingleColumn<string>("SHOW server_version").FirstOrDefault() ?? string.Empty;
         }
 
         /// <inheritdoc />
@@ -229,7 +231,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       p.proallargtypes as \"AllArgTypes\",");
             query.AppendLine("       p.proargmodes as \"ArgModes\",");
             query.AppendLine("       p.proargnames as \"ArgNames\",");
-            query.AppendLine("       p.proisagg as \"IsAggregate\",");
+
+            query.AppendLine(this.CurrentServerVersion.Major >= 11
+                ? "       CASE WHEN p.prokind = 'a' THEN true ELSE false END as \"IsAggregate\","
+                : "       p.proisagg as \"IsAggregate\",");
+
             query.AppendLine("       a.aggtransfn::regproc::name as \"AggregateTransitionFunction\",");
             query.AppendLine("       a.aggtranstype as \"AggregateTransitionType\",");
             query.AppendLine("       CASE WHEN a.aggfinalfn::regproc::oid = 0 THEN null ELSE a.aggfinalfn::regproc::name END as \"AggregateFinalFunction\",");
@@ -238,8 +244,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("INNER JOIN pg_catalog.pg_proc p ON n.oid = p.pronamespace");
             query.AppendLine("INNER JOIN pg_catalog.pg_language l ON p.prolang = l.oid");
             query.AppendLine("LEFT JOIN pg_catalog.pg_aggregate a ON p.oid = a.aggfnoid");
-            query.AppendLine("WHERE (n.nspname = 'public' AND p.proisagg = 'false' AND upper(l.lanname) != 'INTERNAL') OR");
-            query.AppendLine("      (n.nspname = 'public' AND p.proisagg = 'true')");
+
+            if (this.CurrentServerVersion.Major >= 11)
+            {
+                query.AppendLine("WHERE (n.nspname = 'public' AND p.prokind != 'a' AND upper(l.lanname) != 'INTERNAL') OR");
+                query.AppendLine("      (n.nspname = 'public' AND p.prokind = 'a')");
+            }
+            else
+            {
+                query.AppendLine("WHERE (n.nspname = 'public' AND p.proisagg = 'false' AND upper(l.lanname) != 'INTERNAL') OR");
+                query.AppendLine("      (n.nspname = 'public' AND p.proisagg = 'true')");
+            }
+
             return context.Query<PostgreSqlFunction>(query.ToString());
         }
 
@@ -386,11 +402,32 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       s.increment AS \"Increment\",");
             query.AppendLine("       s.minimum_value AS \"MinValue\",");
             query.AppendLine("       s.maximum_value AS \"MaxValue\",");
-            query.AppendLine("       ps.seqcycle AS \"IsCycling\",");
-            query.AppendLine("       ps.seqcache AS \"Cache\"");
+            query.AppendLine("       CASE WHEN s.cycle_option = 'YES' THEN true ELSE false END AS \"IsCycling\"");
+
+            if (this.CurrentServerVersion.Major >= 10)
+            {
+                query.AppendLine("       ,ps.seqcache AS \"Cache\"");
+            }
+
             query.AppendLine("FROM information_schema.sequences s");
-            query.AppendLine("JOIN pg_catalog.pg_sequence ps ON s.sequence_name::REGCLASS::OID = ps.seqrelid");
-            return context.Query<PostgreSqlSequence>(query.ToString());
+
+            if (this.CurrentServerVersion.Major >= 10)
+            {
+                query.AppendLine("JOIN pg_catalog.pg_sequence ps ON s.sequence_name::REGCLASS::OID = ps.seqrelid");
+            }
+
+            var sequences = context.Query<PostgreSqlSequence>(query.ToString());
+
+            if (this.CurrentServerVersion.Major < 10)
+            {
+                var scriptHelper = new PostgreSqlScriptHelper(new ProjectOptions());
+                foreach (var sequence in sequences)
+                {
+                    sequence.Cache = context.QuerySingleColumn<long>($"SELECT cache_value FROM {scriptHelper.ScriptObjectName(sequence)}").First();
+                }
+            }
+
+            return sequences;
         }
     }
 }

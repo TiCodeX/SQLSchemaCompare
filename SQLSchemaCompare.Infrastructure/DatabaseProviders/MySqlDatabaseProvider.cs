@@ -42,14 +42,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         {
             using (var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options))
             {
-                return context.Query("SHOW DATABASES");
+                return context.QuerySingleColumn<string>("SHOW DATABASES");
             }
         }
 
         /// <inheritdoc/>
         protected override string GetServerVersion(MySqlDatabaseContext context)
         {
-            return context.Query("SELECT VERSION()").FirstOrDefault() ?? string.Empty;
+            return context.QuerySingleColumn<string>("SELECT VERSION()").FirstOrDefault() ?? string.Empty;
         }
 
         /// <inheritdoc />
@@ -149,7 +149,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             var result = context.Query<MySqlView>(query.ToString());
             foreach (var view in result)
             {
-                view.ViewDefinition = context.Query($"SHOW CREATE VIEW `{context.DatabaseName}`.`{view.Name}`", 1).FirstOrDefault();
+                view.ViewDefinition = context.QuerySingleColumn<string>($"SHOW CREATE VIEW `{context.DatabaseName}`.`{view.Name}`", 1).FirstOrDefault();
             }
 
             return result;
@@ -166,7 +166,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             var result = context.Query<MySqlFunction>(query.ToString());
             foreach (var function in result)
             {
-                function.Definition = context.Query($"SHOW CREATE FUNCTION `{context.DatabaseName}`.`{function.Name}`", 2).FirstOrDefault();
+                function.Definition = context.QuerySingleColumn<string>($"SHOW CREATE FUNCTION `{context.DatabaseName}`.`{function.Name}`", 2).FirstOrDefault();
             }
 
             return result;
@@ -183,7 +183,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             var result = context.Query<MySqlStoredProcedure>(query.ToString());
             foreach (var procedure in result)
             {
-                procedure.Definition = context.Query($"SHOW CREATE PROCEDURE `{context.DatabaseName}`.`{procedure.Name}`", 2).FirstOrDefault();
+                procedure.Definition = context.QuerySingleColumn<string>($"SHOW CREATE PROCEDURE `{context.DatabaseName}`.`{procedure.Name}`", 2).FirstOrDefault();
             }
 
             return result;
@@ -201,7 +201,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             var result = context.Query<MySqlTrigger>(query.ToString());
             foreach (var trigger in result)
             {
-                trigger.Definition = context.Query($"SHOW CREATE TRIGGER `{context.DatabaseName}`.`{trigger.Name}`", 2).FirstOrDefault();
+                trigger.Definition = context.QuerySingleColumn<string>($"SHOW CREATE TRIGGER `{context.DatabaseName}`.`{trigger.Name}`", 2).FirstOrDefault();
             }
 
             return result;

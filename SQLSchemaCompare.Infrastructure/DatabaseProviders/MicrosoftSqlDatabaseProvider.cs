@@ -60,7 +60,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       a.TABLE_SCHEMA as 'Schema',");
             query.AppendLine("       b.modify_date as 'ModifyDate'");
             query.AppendLine("FROM INFORMATION_SCHEMA.TABLES a");
-            query.AppendLine("JOIN SYS.objects b ON b.object_id = object_id(QUOTENAME(a.TABLE_SCHEMA) + '.' + QUOTENAME(a.TABLE_NAME))");
+            query.AppendLine("JOIN sys.objects b ON b.object_id = object_id(QUOTENAME(a.TABLE_SCHEMA) + '.' + QUOTENAME(a.TABLE_NAME))");
             query.AppendLine("WHERE b.type = 'U' AND a.TABLE_SCHEMA <> 'sys'");
 
             return context.Query<MicrosoftSqlTable>(query.ToString());

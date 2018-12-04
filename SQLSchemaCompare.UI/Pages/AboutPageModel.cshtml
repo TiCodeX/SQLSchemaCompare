@@ -1,0 +1,62 @@
+﻿@page
+@using Core.Interfaces
+@using Enums
+@using Services
+@using TiCodeX.SQLSchemaCompare.Core.Entities.Api
+@model AboutPageModel
+
+<div class="container tcx-about">
+    <div class="row">
+        <div class="col-8 p-2">
+            <img src="img/ticodex.png" width="200" />
+            <br />
+            <label class="tcx-about-brand">@Model.ProductName</label>
+        </div>
+        <div class="col-4 text-right p-3">
+            <h5>v@(Model.AppVersion)</h5>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 tcx-about-license-info">
+            <b>@Localization.LabelLicensedTo:</b> @Model.CustomerInformation.Email
+            <br />
+            @if (Model.CustomerInformation.IsTrial.HasValue && Model.CustomerInformation.IsTrial.Value)
+            {
+                <b>@Localization.LabelSubscription:</b> @Localization.LabelSubscriptionTrial
+                <br />
+                <b>@Localization.LabelExpirationDate:</b> @Model.CustomerInformation.ExpirationDate.Value.ToShortDateString()
+                <br />
+                <b>@Localization.LabelRemainingDays:</b> @Model.CustomerInformation.RemainingDays
+                <br />
+                <a href="#" onclick="Utility.OpenExternalBrowser('@Model.SubscribeEndpoint');">@Localization.MessageGetASubscription</a>
+            }
+            else
+            {
+                <b>@Localization.LabelSubscription:</b> @Localization.LabelSubscriptionPro
+                <br />
+                <b>@Localization.LabelSubscriptionPlan:</b> @(Model.CustomerInformation.BillingType == BillingType.Month ? Localization.LabelMonthlyPayment : Localization.LabelYearlyPayment)
+                <br />
+                <b>@Localization.LabelAutoRenewal:</b> @(Model.CustomerInformation.CancelAtPeriodEnd.HasValue && Model.CustomerInformation.CancelAtPeriodEnd.Value ? Localization.LabelEnabled : Localization.LabelDisabled)
+                <br />
+                if (Model.CustomerInformation.CancelAtPeriodEnd.HasValue && Model.CustomerInformation.CancelAtPeriodEnd.Value)
+                {
+                    <b>@Localization.LabelRenewalDate:</b> @Model.CustomerInformation.ExpirationDate.Value.ToShortDateString()
+                }
+                else
+                {
+                    <b>@Localization.LabelExpirationDate:</b> @Model.CustomerInformation.ExpirationDate.Value.ToShortDateString()
+                    <br />
+                    <b>@Localization.LabelRemainingDays:</b> @Model.CustomerInformation.RemainingDays
+                }
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <label class="float-right text-right">
+                &copy; 2018 TiCodeX SA, Switzerland.<br />All rights protected.
+            </label>
+        </div>
+    </div>
+</div>

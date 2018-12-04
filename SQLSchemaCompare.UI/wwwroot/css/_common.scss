@@ -149,6 +149,15 @@ label {
     color: $gray-700;
     background-color: $gray-400;
 }
+
+.close {
+    color: $white;
+
+    &:not(:disabled):not(.disabled):hover,
+    &:not(:disabled):not(.disabled):focus {
+        color: $gray-200 !important;
+    }
+}
 /*#endregion*/
 
 *[onclick]:not(:disabled):not(.disabled) {

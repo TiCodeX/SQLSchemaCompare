@@ -124,6 +124,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ok.
+        /// </summary>
+        public static string ButtonOk {
+            get {
+                return ResourceManager.GetString("ButtonOk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
         public static string ButtonOpen {
@@ -421,6 +430,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Automatic renewal.
+        /// </summary>
+        public static string LabelAutoRenewal {
+            get {
+                return ResourceManager.GetString("LabelAutoRenewal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Constraints.
         /// </summary>
         public static string LabelConstraints {
@@ -493,11 +511,38 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disabled.
+        /// </summary>
+        public static string LabelDisabled {
+            get {
+                return ResourceManager.GetString("LabelDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Does not exist.
         /// </summary>
         public static string LabelDoesNotExist {
             get {
                 return ResourceManager.GetString("LabelDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled.
+        /// </summary>
+        public static string LabelEnabled {
+            get {
+                return ResourceManager.GetString("LabelEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expiration date.
+        /// </summary>
+        public static string LabelExpirationDate {
+            get {
+                return ResourceManager.GetString("LabelExpirationDate", resourceCulture);
             }
         }
         
@@ -612,6 +657,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Licensed to.
+        /// </summary>
+        public static string LabelLicensedTo {
+            get {
+                return ResourceManager.GetString("LabelLicensedTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Logging level.
         /// </summary>
         public static string LabelLogLevel {
@@ -635,6 +689,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelMigrationScript {
             get {
                 return ResourceManager.GetString("LabelMigrationScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monthly payment.
+        /// </summary>
+        public static string LabelMonthlyPayment {
+            get {
+                return ResourceManager.GetString("LabelMonthlyPayment", resourceCulture);
             }
         }
         
@@ -783,6 +846,24 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remaining days.
+        /// </summary>
+        public static string LabelRemainingDays {
+            get {
+                return ResourceManager.GetString("LabelRemainingDays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Renewal date.
+        /// </summary>
+        public static string LabelRenewalDate {
+            get {
+                return ResourceManager.GetString("LabelRenewalDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Retrieve the Source Database.
         /// </summary>
         public static string LabelRetrieveSourceDatabase {
@@ -869,6 +950,42 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelStoredProcedures {
             get {
                 return ResourceManager.GetString("LabelStoredProcedures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subscription.
+        /// </summary>
+        public static string LabelSubscription {
+            get {
+                return ResourceManager.GetString("LabelSubscription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Plan.
+        /// </summary>
+        public static string LabelSubscriptionPlan {
+            get {
+                return ResourceManager.GetString("LabelSubscriptionPlan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Professional.
+        /// </summary>
+        public static string LabelSubscriptionPro {
+            get {
+                return ResourceManager.GetString("LabelSubscriptionPro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trial.
+        /// </summary>
+        public static string LabelSubscriptionTrial {
+            get {
+                return ResourceManager.GetString("LabelSubscriptionTrial", resourceCulture);
             }
         }
         
@@ -977,6 +1094,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelViews {
             get {
                 return ResourceManager.GetString("LabelViews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yearly payment.
+        /// </summary>
+        public static string LabelYearlyPayment {
+            get {
+                return ResourceManager.GetString("LabelYearlyPayment", resourceCulture);
             }
         }
         

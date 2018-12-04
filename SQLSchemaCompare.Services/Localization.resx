@@ -653,4 +653,46 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="MenuShowLineNumbers" xml:space="preserve">
     <value>Show line numbers</value>
   </data>
+  <data name="ButtonOk" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="LabelLicensedTo" xml:space="preserve">
+    <value>Licensed to</value>
+  </data>
+  <data name="LabelSubscription" xml:space="preserve">
+    <value>Subscription</value>
+  </data>
+  <data name="LabelSubscriptionTrial" xml:space="preserve">
+    <value>Trial</value>
+  </data>
+  <data name="LabelSubscriptionPro" xml:space="preserve">
+    <value>Professional</value>
+  </data>
+  <data name="LabelSubscriptionPlan" xml:space="preserve">
+    <value>Plan</value>
+  </data>
+  <data name="LabelMonthlyPayment" xml:space="preserve">
+    <value>Monthly payment</value>
+  </data>
+  <data name="LabelYearlyPayment" xml:space="preserve">
+    <value>Yearly payment</value>
+  </data>
+  <data name="LabelAutoRenewal" xml:space="preserve">
+    <value>Automatic renewal</value>
+  </data>
+  <data name="LabelEnabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="LabelDisabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="LabelRenewalDate" xml:space="preserve">
+    <value>Renewal date</value>
+  </data>
+  <data name="LabelExpirationDate" xml:space="preserve">
+    <value>Expiration date</value>
+  </data>
+  <data name="LabelRemainingDays" xml:space="preserve">
+    <value>Remaining days</value>
+  </data>
 </root>

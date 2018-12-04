@@ -3,6 +3,27 @@
 namespace TiCodeX.SQLSchemaCompare.Core.Entities.Api
 {
     /// <summary>
+    /// BIlling type
+    /// </summary>
+    public enum BillingType
+    {
+        /// <summary>
+        /// Free subscription
+        /// </summary>
+        Free,
+
+        /// <summary>
+        /// per month
+        /// </summary>
+        Month,
+
+        /// <summary>
+        /// Per year
+        /// </summary>
+        Year
+    }
+
+    /// <summary>
     /// Represent the VerifySession result
     /// </summary>
     public class VerifySessionResult
@@ -41,5 +62,20 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Api
         /// Gets or sets the latest product version number
         /// </summary>
         public string LatestProductVersion { get; set; }
+
+        /// <summary>
+        /// Gets or sets the billing type of the product
+        /// </summary>
+        public BillingType? BillingType { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the subscription will be cancelled at the end of the billing period
+        /// </summary>
+        public bool? CancelAtPeriodEnd { get; set; }
+
+        /// <summary>
+        /// Gets or sets the subscription remaining days
+        /// </summary>
+        public int? RemainingDays { get; set; }
     }
 }

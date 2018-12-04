@@ -91,13 +91,20 @@ class DialogManager {
      * @param title The title of the dialog
      * @param url The URL of the ajax call
      * @param maxWidth CSS value for the dialog max-width
+     * @param showCloseButton Whether to show the close button
      */
-    public static async OpenModalDialog(title: string, url: string, maxWidth?: string): Promise<void> {
+    public static async OpenModalDialog(title: string, url: string, maxWidth?: string, showCloseButton?: boolean): Promise<void> {
         return Utility.AjaxGetPage(url).then((result: string): void => {
             $("#myModal .modal-title").html(title);
             $("#myModal .modal-body").html(result);
             $("#myModal .modal-dialog").css("max-width", maxWidth !== undefined ? maxWidth : "");
-            $("#myModal").modal("show");
+            $("#myModal .modal-header > button").css("display", showCloseButton !== undefined && showCloseButton ? "block" : "none");
+            $("#myModal").attr("tabindex", showCloseButton !== undefined && showCloseButton ? "-1" : "");
+            $("#myModal").modal({
+                keyboard: showCloseButton !== undefined && showCloseButton,
+                backdrop: "static",
+                show: true,
+            });
             // Fix tabs height
             $("#myModal .tab-pane").matchHeight({
                 byRow: false,

@@ -1,15 +1,16 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
 namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
     /// <summary>
-    /// PageModel of the Toolbar
+    /// PageModel of the about page
     /// </summary>
-    public class ToolbarPageModel : PageModel
+    public class AboutPageModel : PageModel
     {
         private readonly ILogger logger;
         private readonly IAppGlobals appGlobals;
@@ -17,36 +18,48 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
         private readonly IAppSettingsService appSettingsService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ToolbarPageModel"/> class.
+        /// Initializes a new instance of the <see cref="AboutPageModel"/> class
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory</param>
-        /// <param name="appGlobals">The injected app globals</param>
+        /// <param name="appGlobals">The injected application globals</param>
         /// <param name="accountService">The injected account service</param>
         /// <param name="appSettingsService">The injected app settings service</param>
-        public ToolbarPageModel(ILoggerFactory loggerFactory, IAppGlobals appGlobals, IAccountService accountService, IAppSettingsService appSettingsService)
+        public AboutPageModel(ILoggerFactory loggerFactory, IAppGlobals appGlobals, IAccountService accountService, IAppSettingsService appSettingsService)
         {
-            this.logger = loggerFactory.CreateLogger(nameof(ToolbarPageModel));
+            this.logger = loggerFactory.CreateLogger(nameof(AboutPageModel));
             this.appGlobals = appGlobals;
             this.accountService = accountService;
             this.appSettingsService = appSettingsService;
         }
 
         /// <summary>
-        /// Gets or sets the account email
+        /// Gets or sets the name of the product
         /// </summary>
-        public string AccountEmail { get; set; }
+        public string ProductName { get; set; }
 
         /// <summary>
-        /// Gets or sets the account URL
+        /// Gets or sets the application version
         /// </summary>
-        public string MyAccountEndpoint { get; set; }
+        public string AppVersion { get; set; }
 
         /// <summary>
-        /// Get the welcome page
+        /// Gets or sets the customer information
+        /// </summary>
+        public VerifySessionResult CustomerInformation { get; set; }
+
+        /// <summary>
+        /// Gets or sets the subscribe URL
+        /// </summary>
+        public string SubscribeEndpoint { get; set; }
+
+        /// <summary>
+        /// Get the about page
         /// </summary>
         public void OnGet()
         {
-            this.AccountEmail = this.accountService.CustomerInformation.Email;
+            this.ProductName = this.appGlobals.ProductName;
+            this.AppVersion = this.appGlobals.AppVersion;
+            this.CustomerInformation = this.accountService.CustomerInformation;
 
             var session = string.Empty;
             try
@@ -58,7 +71,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
                 this.logger.LogError(ex, "Unable to get app settings");
             }
 
-            this.MyAccountEndpoint = $"{this.appGlobals.MyAccountEndpoint}&s={Uri.EscapeDataString(session)}";
+            this.SubscribeEndpoint = $"{this.appGlobals.SubscribeEndpoint}&s={Uri.EscapeDataString(session)}";
         }
     }
 }

@@ -176,6 +176,27 @@ $fa-font-size-base: $font-size-base;
     border-bottom: 1px solid $gray-400;
 }
 
+.tcx-about {
+    height: 340px;
+    background-image: url('../img/background.jpg');
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    background-position-x: -90px;
+    background-position-y: 100px;
+
+    .tcx-about-brand {
+        font-size: 25px;
+        font-weight: bold;
+        padding: 5px 0 0 45px;
+    }
+
+    .tcx-about-license-info {
+        height: 190px;
+        padding: 30px 0 0 20px;
+        line-height: 2.2;
+    }
+}
+
 /*#region checkbox switch */
 .tcx-switch {
     position: relative;

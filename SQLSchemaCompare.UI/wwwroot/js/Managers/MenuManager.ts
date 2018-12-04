@@ -125,7 +125,7 @@ class MenuManager {
                         label: Localization.Get("MenuAbout"),
                         accelerator: "F1",
                         click(): void {
-                            electron.shell.openExternal("https://www.ticodex.com/");
+                            DialogManager.OpenModalDialog(Localization.Get("MenuAbout"), "/AboutPageModel", "500px", true);
                         },
                     },
                 ],

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Text.RegularExpressions;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
@@ -71,7 +72,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             // to be defined when the primary key is added
             if (col.Extra.ToUpperInvariant() != "AUTO_INCREMENT")
             {
-                sb.Append($" {col.Extra}");
+                var extra = col.Extra;
+                if (extra.ToUpperInvariant().Contains("DEFAULT_GENERATED"))
+                {
+                    extra = Regex.Replace(extra, "DEFAULT_GENERATED\\s", string.Empty, RegexOptions.IgnoreCase);
+                }
+
+                sb.Append($" {extra}");
             }
 
             return sb.ToString();

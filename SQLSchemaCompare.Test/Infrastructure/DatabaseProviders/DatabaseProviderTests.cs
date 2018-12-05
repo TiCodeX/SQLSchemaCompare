@@ -147,7 +147,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
 
-            db.DataTypes.Count.Should().Be(462);
+            db.DataTypes.Count(x => x.IsUserDefined).Should().Be(8);
 
             db.Tables.Count.Should().Be(22);
             var table = db.Tables.FirstOrDefault(x => x.Name == "film");

@@ -184,7 +184,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetDifferentFunction()
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER FUNCTION StripWWWandCom (@input VARCHAR(250))");
+            sb.AppendLine("ALTER FUNCTION StripWWWandCom (@Input VARCHAR(250))");
             sb.AppendLine("RETURNS VARCHAR(250)");
             sb.AppendLine("AS BEGIN");
             sb.AppendLine("    DECLARE @Work VARCHAR(250)");
@@ -194,7 +194,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("    SET @Work = REPLACE(@Work, 'www.', '')");
             sb.AppendLine("    SET @Work = REPLACE(@Work, '.net', '')");
             sb.AppendLine();
-            sb.AppendLine("    RETURN @work");
+            sb.AppendLine("    RETURN @Work");
             sb.AppendLine("END");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
         }

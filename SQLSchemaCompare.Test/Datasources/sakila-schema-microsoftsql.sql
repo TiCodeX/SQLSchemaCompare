@@ -31,7 +31,7 @@ GO
 --
 
 GO
-CREATE FUNCTION StripWWWandCom (@input VARCHAR(250))
+CREATE FUNCTION StripWWWandCom (@Input VARCHAR(250))
 RETURNS VARCHAR(250)
 AS BEGIN
     DECLARE @Work VARCHAR(250)
@@ -41,7 +41,7 @@ AS BEGIN
     SET @Work = REPLACE(@Work, 'www.', '')
     SET @Work = REPLACE(@Work, '.com', '')
 
-    RETURN @work
+    RETURN @Work
 END
 GO
 

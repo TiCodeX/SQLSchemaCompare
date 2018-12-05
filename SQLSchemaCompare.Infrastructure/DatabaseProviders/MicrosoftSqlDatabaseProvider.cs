@@ -76,7 +76,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       isc.ORDINAL_POSITION as 'OrdinalPosition',");
             query.AppendLine("       isc.COLUMN_DEFAULT as 'ColumnDefault',");
             query.AppendLine("       dc.name as 'DefaultConstraintName',");
-            query.AppendLine("       CASE isc.IS_NULLABLE WHEN 'no' THEN 0 ELSE 1 END as 'IsNullable',");
+            query.AppendLine("       CASE UPPER(isc.IS_NULLABLE) WHEN 'NO' THEN 0 ELSE 1 END as 'IsNullable',");
             query.AppendLine("       isc.DATA_TYPE as 'DataType',");
             query.AppendLine("       isc.CHARACTER_MAXIMUM_LENGTH as 'CharacterMaxLength',");
             query.AppendLine("       isc.NUMERIC_PRECISION as 'NumericPrecision',");

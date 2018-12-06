@@ -32,7 +32,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
         /// <param name="expectedResult">The expected sql result</param>
         [Theory]
         [UnitTest]
-        [ExcelData(@"Datasources\ScriptMicrosoftSqlColumnTest.xlsx")]
+        [ExcelData(@"Datasources/ScriptMicrosoftSqlColumnTest.xlsx")]
         public void ScriptColumn(ProjectOptions options, MicrosoftSqlColumn column, string expectedResult)
         {
             var helper = new MicrosoftSqlScriptHelper(options);
@@ -47,7 +47,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
         /// <param name="expectedResult">The expected sql result</param>
         [Theory]
         [UnitTest]
-        [ExcelData(@"Datasources\ScriptMicrosoftSqlDataTypeTest.xlsx")]
+        [ExcelData(@"Datasources/ScriptMicrosoftSqlDataTypeTest.xlsx")]
         public void ScriptDataType(ProjectOptions options, MicrosoftSqlDataType dataType, string expectedResult)
         {
             var scripter = new MicrosoftSqlScripter(this.Logger, options);

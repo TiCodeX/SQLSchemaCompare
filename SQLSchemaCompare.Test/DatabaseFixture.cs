@@ -34,8 +34,8 @@ namespace TiCodeX.SQLSchemaCompare.Test
         private static readonly object InitializeSakilaDatabaseLock = new object();
         private static bool initializeSakilaDatabase = true;
         private readonly ICipherService cipherService = new CipherService();
-        private readonly bool exportGeneratedFullScript = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ExportGeneratedFullScript"));
         private ILoggerFactory loggerFactory = new XunitLoggerFactory(null);
+        private ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseFixture"/> class
@@ -70,6 +70,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         public void SetLoggerFactory(ILoggerFactory logFactory)
         {
             this.loggerFactory = logFactory;
+            this.logger = logFactory.CreateLogger(nameof(DatabaseFixture));
         }
 
         /// <inheritdoc />
@@ -81,44 +82,61 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <summary>
         /// Executes my SQL script
         /// </summary>
-        /// <param name="path">The path</param>
+        /// <param name="script">The script to execute</param>
         /// <param name="port">The port to connect to the database</param>
-        internal void ExecuteMySqlScript(string path, short port = 3306)
+        internal void ExecuteMySqlScript(string script, short port = 3306)
         {
-            var standardOutput = new StringBuilder();
-            var standardError = new StringBuilder();
-            var process = new Process
+            var path = Path.GetTempFileName();
+            try
             {
-                StartInfo = new ProcessStartInfo
+                File.WriteAllText(path, script);
+
+                var standardOutput = new StringBuilder();
+                var standardError = new StringBuilder();
+                var process = new Process
                 {
-                    FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe",
-                    Arguments = $"--user=root --password=test1234 --port={port} -e \"SOURCE {path}\"",
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe",
+                        Arguments = $"--user=root --password=test1234 --port={port} -e \"SOURCE {path}\"",
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardError = true,
+                        RedirectStandardOutput = true,
+                    }
+                };
+                process.OutputDataReceived += (sender, data) => standardOutput.AppendLine(data.Data);
+                process.ErrorDataReceived += (sender, data) => standardError.AppendLine(data.Data);
+                process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+
+                process.WaitForExit((int)TimeSpan.FromMinutes(5).TotalMilliseconds);
+
+                if (process.ExitCode == 0)
+                {
+                    return;
                 }
-            };
-            process.OutputDataReceived += (sender, data) => standardOutput.AppendLine(data.Data);
-            process.ErrorDataReceived += (sender, data) => standardError.AppendLine(data.Data);
-            process.Start();
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
 
-            process.WaitForExit((int)TimeSpan.FromMinutes(5).TotalMilliseconds);
-
-            if (process.ExitCode == 0)
-            {
-                return;
+                var exceptionMessage = new StringBuilder();
+                exceptionMessage.AppendLine($"Failed executing script '{path}'");
+                exceptionMessage.AppendLine("Standard Output:");
+                exceptionMessage.AppendLine(standardOutput.ToString());
+                exceptionMessage.AppendLine("Standard Error:");
+                exceptionMessage.AppendLine(standardError.ToString());
+                throw new XunitException(exceptionMessage.ToString());
             }
-
-            var exceptionMessage = new StringBuilder();
-            exceptionMessage.AppendLine($"Failed executing script '{path}'");
-            exceptionMessage.AppendLine("Standard Output:");
-            exceptionMessage.AppendLine(standardOutput.ToString());
-            exceptionMessage.AppendLine("Standard Error:");
-            exceptionMessage.AppendLine(standardError.ToString());
-            throw new XunitException(exceptionMessage.ToString());
+            finally
+            {
+                try
+                {
+                    File.Delete(path);
+                }
+                catch
+                {
+                    // Do nothing
+                }
+            }
         }
 
         /// <summary>
@@ -146,11 +164,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="port">The port to connect to the database</param>
         internal void DropMySqlDatabase(string databaseName, short port = 3306)
         {
-            var query = new StringBuilder();
-            query.AppendLine($"DROP SCHEMA IF EXISTS `{databaseName}`;");
-            var pathMySql = Path.GetTempFileName();
-            File.WriteAllText(pathMySql, query.ToString());
-            this.ExecuteMySqlScript(pathMySql, port);
+            this.ExecuteMySqlScript($"DROP SCHEMA IF EXISTS `{databaseName}`;", port);
         }
 
         /// <summary>
@@ -197,11 +211,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         {
             this.DropMySqlDatabase(databaseName, port);
 
-            var query = new StringBuilder();
-            query.AppendLine($"CREATE SCHEMA `{databaseName}`;");
-            var pathMySql = Path.GetTempFileName();
-            File.WriteAllText(pathMySql, query.ToString());
-            this.ExecuteMySqlScript(pathMySql, port);
+            this.ExecuteMySqlScript($"CREATE SCHEMA `{databaseName}`;", port);
         }
 
         /// <summary>
@@ -236,7 +246,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
             using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetMicrosoftSqlDatabaseProviderOptions(databaseName)))
             {
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-microsoftsql.sql");
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-microsoftsql.sql");
                 var queries = File.ReadAllText(path).Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
                 foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
                 {
@@ -254,14 +264,12 @@ namespace TiCodeX.SQLSchemaCompare.Test
         {
             this.DropAndCreateMySqlDatabase(databaseName, port);
 
-            var sakilaScript = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-mysql.sql"));
+            var sakilaScript = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-mysql.sql"));
 
             sakilaScript = sakilaScript.Replace("USE sakila;", $"USE {databaseName};", StringComparison.InvariantCulture);
             sakilaScript = sakilaScript.Replace("sakila.", $"{databaseName}.", StringComparison.InvariantCulture);
 
-            var pathMySql = Path.GetTempFileName();
-            File.WriteAllText(pathMySql, sakilaScript);
-            this.ExecuteMySqlScript(pathMySql, port);
+            this.ExecuteMySqlScript(sakilaScript, port);
         }
 
         /// <summary>
@@ -282,7 +290,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
             using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, dpo))
             {
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources\\sakila-schema-postgresql.sql");
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-postgresql.sql");
                 context.ExecuteNonQuery(File.ReadAllText(path));
             }
         }
@@ -590,9 +598,8 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="databaseType">The database type</param>
         /// <param name="sourceDatabaseName">Name of the source database</param>
         /// <param name="targetDatabaseName">Name of the target database</param>
-        /// <param name="exportFile">The export file</param>
         /// <param name="expectedDifferentItems">Amount of expected different items</param>
-        internal void ExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, string exportFile = "", int? expectedDifferentItems = null)
+        internal void ExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, int? expectedDifferentItems = null)
         {
             ADatabaseProviderOptions sourceProviderOptions;
             ADatabaseProviderOptions targetProviderOptions;
@@ -629,14 +636,13 @@ namespace TiCodeX.SQLSchemaCompare.Test
             projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
 
             // Execute the full alter script
+            var exportFile = $"{Path.Combine(Path.GetTempPath(), $"SQLCMP-TEST-{Guid.NewGuid()}")}.sql";
+            this.logger.LogInformation($"Script saved to {exportFile}");
             switch (databaseType)
             {
                 case DatabaseType.MicrosoftSql:
 
-                    if (this.exportGeneratedFullScript && !string.IsNullOrWhiteSpace(exportFile))
-                    {
-                        File.WriteAllText($"c:\\temp\\{exportFile}", projectService.Project.Result.FullAlterScript);
-                    }
+                    File.WriteAllText(exportFile, projectService.Project.Result.FullAlterScript);
 
                     var mssqldbpo = this.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName);
                     using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, mssqldbpo))
@@ -662,14 +668,9 @@ namespace TiCodeX.SQLSchemaCompare.Test
                     mySqlFullAlterScript.AppendLine("SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;");
                     mySqlFullAlterScript.AppendLine("SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;");*/
 
-                    if (this.exportGeneratedFullScript && !string.IsNullOrWhiteSpace(exportFile))
-                    {
-                        File.WriteAllText($"c:\\temp\\{exportFile}", mySqlFullAlterScript.ToString());
-                    }
+                    File.WriteAllText(exportFile, mySqlFullAlterScript.ToString());
 
-                    var pathMySql = Path.GetTempFileName();
-                    File.WriteAllText(pathMySql, mySqlFullAlterScript.ToString());
-                    this.ExecuteMySqlScript(pathMySql);
+                    this.ExecuteMySqlScript(mySqlFullAlterScript.ToString());
 
                     break;
 
@@ -678,16 +679,13 @@ namespace TiCodeX.SQLSchemaCompare.Test
                     // Execute the full alter script
                     using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName)))
                     {
-                        var sb = new StringBuilder();
-                        sb.AppendLine("SET check_function_bodies = false;");
-                        sb.AppendLine(projectService.Project.Result.FullAlterScript);
+                        var postgreSqlFullAlterScript = new StringBuilder();
+                        postgreSqlFullAlterScript.AppendLine("SET check_function_bodies = false;");
+                        postgreSqlFullAlterScript.AppendLine(projectService.Project.Result.FullAlterScript);
 
-                        if (this.exportGeneratedFullScript && !string.IsNullOrWhiteSpace(exportFile))
-                        {
-                            File.WriteAllText($"c:\\temp\\{exportFile}", sb.ToString());
-                        }
+                        File.WriteAllText(exportFile, postgreSqlFullAlterScript.ToString());
 
-                        context.ExecuteNonQuery(sb.ToString());
+                        context.ExecuteNonQuery(postgreSqlFullAlterScript.ToString());
                     }
 
                     break;
@@ -729,9 +727,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                         alterScriptTarget.AppendLine($"USE {targetDatabaseName};");
                         alterScriptTarget.AppendLine(alterScript);
 
-                        var pathMySql = Path.GetTempFileName();
-                        File.WriteAllText(pathMySql, alterScriptTarget.ToString());
-                        this.ExecuteMySqlScript(pathMySql);
+                        this.ExecuteMySqlScript(alterScriptTarget.ToString());
 
                         break;
 
@@ -746,7 +742,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                         break;
                 }
 
-                this.ExecuteFullAlterScriptAndCompare(databaseType, sourceDatabaseName, targetDatabaseName, string.Empty, expectedDifferentItems);
+                this.ExecuteFullAlterScriptAndCompare(databaseType, sourceDatabaseName, targetDatabaseName, expectedDifferentItems);
             }
             finally
             {

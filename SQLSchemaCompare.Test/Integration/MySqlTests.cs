@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
@@ -15,7 +16,6 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
     /// </summary>
     public class MySqlTests : BaseTests<MySqlTests>, IClassFixture<DatabaseFixture>
     {
-        private readonly bool exportGeneratedFullScript = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ExportGeneratedFullScript"));
         private readonly DatabaseFixture dbFixture;
 
         /// <summary>
@@ -49,11 +49,6 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
                 var scripter = scripterFactory.Create(db, new TiCodeX.SQLSchemaCompare.Core.Entities.Project.ProjectOptions());
                 var fullScript = scripter.GenerateFullCreateScript(db);
 
-                if (this.exportGeneratedFullScript)
-                {
-                    File.WriteAllText("c:\\temp\\FullScriptMySQL.sql", fullScript);
-                }
-
                 this.dbFixture.DropAndCreateMySqlDatabase(clonedDatabaseName);
 
                 var mySqlFullScript = new StringBuilder();
@@ -66,9 +61,11 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
                 mySqlFullScript.AppendLine("SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;");
                 mySqlFullScript.AppendLine("SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;");
 
-                var pathMySql = Path.GetTempFileName();
-                File.WriteAllText(pathMySql, mySqlFullScript.ToString());
-                this.dbFixture.ExecuteMySqlScript(pathMySql);
+                var exportFile = $"{Path.Combine(Path.GetTempPath(), $"SQLCMP-TEST-{Guid.NewGuid()}")}.sql";
+                this.Logger.LogInformation($"Script saved to {exportFile}");
+                File.WriteAllText(exportFile, mySqlFullScript.ToString());
+
+                this.dbFixture.ExecuteMySqlScript(mySqlFullScript.ToString());
 
                 this.dbFixture.CompareDatabases(DatabaseType.MySql, clonedDatabaseName, databaseName);
             }
@@ -96,7 +93,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
                 // Create the database with sakila to be migrated to empty
                 this.dbFixture.CreateMySqlSakilaDatabase(targetDatabaseName);
 
-                this.dbFixture.ExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sourceDatabaseName, targetDatabaseName, "FullDropScriptMySQL.sql");
+                this.dbFixture.ExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sourceDatabaseName, targetDatabaseName);
             }
             finally
             {

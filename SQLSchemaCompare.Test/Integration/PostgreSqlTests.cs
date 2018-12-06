@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
@@ -18,7 +19,6 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
     /// </summary>
     public class PostgreSqlTests : BaseTests<PostgreSqlTests>, IClassFixture<DatabaseFixture>
     {
-        private readonly bool exportGeneratedFullScript = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ExportGeneratedFullScript"));
         private readonly ICipherService cipherService = new CipherService();
         private readonly DatabaseFixture dbFixture;
 
@@ -62,10 +62,9 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
                     sb.AppendLine("SET check_function_bodies = false;");
                     sb.AppendLine(fullScript);
 
-                    if (this.exportGeneratedFullScript)
-                    {
-                        File.WriteAllText("c:\\temp\\FullScriptPostgreSQL.sql", sb.ToString());
-                    }
+                    var exportFile = $"{Path.Combine(Path.GetTempPath(), $"SQLCMP-TEST-{Guid.NewGuid()}")}.sql";
+                    this.Logger.LogInformation($"Script saved to {exportFile}");
+                    File.WriteAllText(exportFile, sb.ToString());
 
                     context.ExecuteNonQuery(sb.ToString());
                 }
@@ -96,7 +95,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
                 // Create the database with sakila to be migrated to empty
                 this.dbFixture.CreatePostgreSqlSakilaDatabase(targetDatabaseName);
 
-                this.dbFixture.ExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sourceDatabaseName, targetDatabaseName, "FullDropScriptPostgreSQL.sql");
+                this.dbFixture.ExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sourceDatabaseName, targetDatabaseName);
             }
             finally
             {

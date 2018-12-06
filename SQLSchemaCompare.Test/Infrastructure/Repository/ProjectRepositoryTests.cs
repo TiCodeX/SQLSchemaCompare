@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text.RegularExpressions;
 using System.Xml;
 using FluentAssertions;
 using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
@@ -61,23 +62,37 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
 ";
 
             var filename = Path.GetTempFileName();
-            File.WriteAllText(filename, xmlFile);
+            try
+            {
+                File.WriteAllText(filename, xmlFile);
 
-            var project = projectRepository.Read(filename);
+                var project = projectRepository.Read(filename);
 
-            project.Should().NotBeNull();
+                project.Should().NotBeNull();
 
-            project.SourceProviderOptions.Should().BeOfType<MicrosoftSqlDatabaseProviderOptions>();
-            project.SourceProviderOptions.Hostname.Should().Be(sourceHostname);
-            project.SourceProviderOptions.Username.Should().Be(sourceUsername);
-            project.SourceProviderOptions.Password.Should().Be(sourcePassword);
-            project.SourceProviderOptions.Database.Should().Be(sourceDatabase);
+                project.SourceProviderOptions.Should().BeOfType<MicrosoftSqlDatabaseProviderOptions>();
+                project.SourceProviderOptions.Hostname.Should().Be(sourceHostname);
+                project.SourceProviderOptions.Username.Should().Be(sourceUsername);
+                project.SourceProviderOptions.Password.Should().Be(sourcePassword);
+                project.SourceProviderOptions.Database.Should().Be(sourceDatabase);
 
-            project.TargetProviderOptions.Should().BeOfType<PostgreSqlDatabaseProviderOptions>();
-            project.TargetProviderOptions.Hostname.Should().Be(targetHostname);
-            project.TargetProviderOptions.Username.Should().Be(targetUsername);
-            project.TargetProviderOptions.Password.Should().Be(targetPassword);
-            project.TargetProviderOptions.Database.Should().Be(targetDatabase);
+                project.TargetProviderOptions.Should().BeOfType<PostgreSqlDatabaseProviderOptions>();
+                project.TargetProviderOptions.Hostname.Should().Be(targetHostname);
+                project.TargetProviderOptions.Username.Should().Be(targetUsername);
+                project.TargetProviderOptions.Password.Should().Be(targetPassword);
+                project.TargetProviderOptions.Database.Should().Be(targetDatabase);
+            }
+            finally
+            {
+                try
+                {
+                    File.Delete(filename);
+                }
+                catch
+                {
+                    // Do nothing
+                }
+            }
         }
 
         /// <summary>
@@ -133,11 +148,13 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
             };
 
             var filename = Path.GetTempFileName();
-            new ProjectRepository(this.LoggerFactory).Write(compareProject, filename);
+            try
+            {
+                new ProjectRepository(this.LoggerFactory).Write(compareProject, filename);
 
-            var xmlFile = File.ReadAllText(filename);
+                var xmlFile = File.ReadAllText(filename);
 
-            var xmlFileExpected = $@"<?xml version=""1.0""?>
+                var xmlFileExpected = $@"<?xml version=""1.0""?>
 <CompareProject xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <SourceProviderOptions xsi:type=""MicrosoftSqlDatabaseProviderOptions"">
     <Hostname>{sourceHostname}</Hostname>
@@ -166,7 +183,23 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
   </Options>
 </CompareProject>";
 
-            xmlFile.Should().Be(xmlFileExpected);
+                // Remove line-endings for comparison
+                xmlFile = Regex.Replace(xmlFile, "\\r|\\n", string.Empty);
+                xmlFileExpected = Regex.Replace(xmlFileExpected, "\\r|\\n", string.Empty);
+
+                xmlFile.Should().Be(xmlFileExpected);
+            }
+            finally
+            {
+                try
+                {
+                    File.Delete(filename);
+                }
+                catch
+                {
+                    // Do nothing
+                }
+            }
         }
     }
 }

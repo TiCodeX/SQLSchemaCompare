@@ -41,7 +41,6 @@
   <ItemGroup>
     <ProjectReference Include="..\SQLSchemaCompare.Core\SQLSchemaCompare.Core.csproj" />
     <ProjectReference Include="..\SQLSchemaCompare.Infrastructure\SQLSchemaCompare.Infrastructure.csproj" />
-    <ProjectReference Include="..\SQLSchemaCompare.UI\SQLSchemaCompare.UI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

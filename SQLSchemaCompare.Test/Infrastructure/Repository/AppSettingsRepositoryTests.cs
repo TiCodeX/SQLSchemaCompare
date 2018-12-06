@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text.RegularExpressions;
 using FluentAssertions;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
@@ -83,7 +84,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
 
             var xmlFile = File.ReadAllText(appGlobals.AppSettingsFullFilename);
 
-            const string xmlFileExpected = @"<?xml version=""1.0""?>
+            var xmlFileExpected = @"<?xml version=""1.0""?>
 <AppSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <Language>English</Language>
   <LogLevel>Debug</LogLevel>
@@ -94,6 +95,10 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
   </RecentProjects>
   <Session>TestSession</Session>
 </AppSettings>";
+
+            // Remove line-endings for comparison
+            xmlFile = Regex.Replace(xmlFile, "\\r|\\n", string.Empty);
+            xmlFileExpected = Regex.Replace(xmlFileExpected, "\\r|\\n", string.Empty);
 
             xmlFile.Should().Be(xmlFileExpected);
         }

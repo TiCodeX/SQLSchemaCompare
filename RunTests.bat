@@ -1,40 +1,16 @@
 @echo off
 
-Choice /M "Perform build"
-
-If %ERRORLEVEL% == 1 ( set "build=true" )
-
 Choice /M "Run integration tests"
 
 If %ERRORLEVEL% == 2 ( set "filter=--filter Category!=IntegrationTest" )
 
-Choice /M "Export Generated Full Script to C:\temp"
+REM dotnet restore -r win-x64
+REM if ERRORLEVEL 1 goto:exit
 
-If %ERRORLEVEL% == 1 ( set ExportGeneratedFullScript=1 )
+dotnet build SQLSchemaCompare.Test --configuration release
+if ERRORLEVEL 1 goto:exit
 
-if "%build%" == "true" (
-    REM Bring dev tools into the PATH.
-    call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsDevCmd.bat"
-    REM Disable node reuse. Don't leave MSBuild.exe processes hanging around locking files after the build completes
-    set MSBUILDDISABLENODEREUSE=1
-
-    echo.
-    echo     _____________________
-    echo    /\                    \  
-    echo    \_^|     Building      ^|  
-    echo      ^|    SqlCompare     ^|  
-    echo      ^|  _________________^|_ 
-    echo       \_/___________________/
-    echo.
-
-    dotnet restore -r win-x64
-    if ERRORLEVEL 1 goto:exit
-
-    msbuild %~dp0\SQLSchemaCompare.sln /p:Configuration=Release
-    if ERRORLEVEL 1 goto:exit
-)
-
-dotnet test --no-build --configuration release %filter% --collect:coverage %~dp0\SQLSchemaCompare.Test\SQLSchemaCompare.Test.csproj
+dotnet test SQLSchemaCompare.Test --no-build --configuration release %filter%
 
 :exit
 echo Press any key to close...

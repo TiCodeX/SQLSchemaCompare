@@ -647,4 +647,43 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="ButtonOk" xml:space="preserve">
     <value>Ok</value>
   </data>
+  <data name="LabelEnabled" xml:space="preserve">
+    <value>Aktiviert</value>
+  </data>
+  <data name="LabelAutoRenewal" xml:space="preserve">
+    <value>Automatische Erneuerung</value>
+  </data>
+  <data name="LabelDisabled" xml:space="preserve">
+    <value>Deaktiviert</value>
+  </data>
+  <data name="LabelExpirationDate" xml:space="preserve">
+    <value>Verfallsdatum</value>
+  </data>
+  <data name="LabelLicensedTo" xml:space="preserve">
+    <value>Lizenziert an</value>
+  </data>
+  <data name="LabelMonthlyPayment" xml:space="preserve">
+    <value>Monatliche Zahlung</value>
+  </data>
+  <data name="LabelRemainingDays" xml:space="preserve">
+    <value>Verbleibende Tage</value>
+  </data>
+  <data name="LabelRenewalDate" xml:space="preserve">
+    <value>Erneuerungsdatum</value>
+  </data>
+  <data name="LabelSubscription" xml:space="preserve">
+    <value>Abonnement</value>
+  </data>
+  <data name="LabelSubscriptionPlan" xml:space="preserve">
+    <value>Plan</value>
+  </data>
+  <data name="LabelSubscriptionPro" xml:space="preserve">
+    <value>Professional</value>
+  </data>
+  <data name="LabelSubscriptionTrial" xml:space="preserve">
+    <value>Trial</value>
+  </data>
+  <data name="LabelYearlyPayment" xml:space="preserve">
+    <value>Jährliche Zahlung</value>
+  </data>
 </root>

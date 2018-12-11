@@ -1,0 +1,47 @@
+pool:
+  vmImage: 'ubuntu-16.04'
+
+trigger: none
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- script: |
+    docker pull microsoft/mssql-server-linux:2017-latest
+    docker pull mysql:5.6
+    docker pull mysql:5.7
+    docker pull mysql:8.0
+    docker pull postgres:9.4-alpine
+    docker pull postgres:9.5-alpine
+    docker pull postgres:9.6-alpine
+    docker pull postgres:10-alpine
+    docker pull postgres:11-alpine
+  displayName: docker pull images
+
+- script: |
+    docker run --rm --name mssql-linux-2017 -p 28001:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d microsoft/mssql-server-linux:2017-latest
+    docker run --rm --name mysql-5.6 -p 27002:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:5.6
+    docker run --rm --name mysql-5.7 -p 27003:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:5.7
+    docker run --rm --name mysql-8.0 -p 27004:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.0
+    docker run --rm --name postgres-9.4 -p 26002:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:9.4-alpine
+    docker run --rm --name postgres-9.5 -p 26003:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:9.5-alpine
+    docker run --rm --name postgres-9.6 -p 26004:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:9.6-alpine
+    docker run --rm --name postgres-10 -p 26005:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:10-alpine
+    docker run --rm --name postgres-11 -p 26006:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:11-alpine
+  displayName: docker start containers
+
+- script: dotnet build SQLSchemaCompare.Test --configuration $(buildConfiguration)
+  displayName: dotnet build
+
+- script: dotnet test SQLSchemaCompare.Test --no-build --configuration $(buildConfiguration) --logger trx
+  displayName: dotnet test
+  continueOnError: true
+  env:
+    RunDockerTests: true
+
+- task: PublishTestResults@2
+  displayName: publish test results
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'

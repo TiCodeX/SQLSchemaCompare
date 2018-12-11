@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
 
 namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
@@ -12,6 +13,11 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
         /// Gets or sets the database name
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the server version
+        /// </summary>
+        public Version ServerVersion { get; set; } = new Version(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
 
         /// <summary>
         /// Gets or sets the database compare direction (source or target database)

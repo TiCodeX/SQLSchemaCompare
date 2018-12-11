@@ -2,13 +2,12 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using SQLSchemaCompare.Test;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
-using TiCodeX.SQLSchemaCompare.Services;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -18,17 +17,16 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
     /// <summary>
     /// Integration tests for Microsoft SQL
     /// </summary>
-    public class MicrosoftSqlTests : BaseTests<MicrosoftSqlTests>, IClassFixture<DatabaseFixture>
+    public class MicrosoftSqlTests : BaseTests<MicrosoftSqlTests>, IClassFixture<DatabaseFixtureMicrosoftSql>
     {
-        private readonly ICipherService cipherService = new CipherService();
-        private readonly DatabaseFixture dbFixture;
+        private readonly DatabaseFixtureMicrosoftSql dbFixture;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicrosoftSqlTests"/> class.
         /// </summary>
         /// <param name="output">The test output helper</param>
         /// <param name="dbFixture">The database fixture</param>
-        public MicrosoftSqlTests(ITestOutputHelper output, DatabaseFixture dbFixture)
+        public MicrosoftSqlTests(ITestOutputHelper output, DatabaseFixtureMicrosoftSql dbFixture)
             : base(output)
         {
             this.dbFixture = dbFixture;
@@ -36,18 +34,80 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         }
 
         /// <summary>
+        /// Test the retrieval of database list
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        public void GetMicrosoftSqlDatabaseList(short port)
+        {
+            var mssqldbp = this.dbFixture.GetDatabaseProvider(string.Empty, port);
+            var dbList = mssqldbp.GetDatabaseList();
+            dbList.Should().Contain("msdb");
+            dbList.Should().Contain("master");
+            dbList.Should().Contain("sakila");
+        }
+
+        /// <summary>
+        /// Test the retrieval of the sakila database
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        public void GetMicrosoftSqlSakilaDatabase(short port)
+        {
+            var mssqldbp = this.dbFixture.GetDatabaseProvider("sakila", port);
+            var db = mssqldbp.GetDatabase(new TaskInfo("test"));
+            db.Should().NotBeNull();
+            db.Name.Should().Be("sakila");
+
+            db.Tables.Count.Should().Be(18);
+            var table = db.Tables.FirstOrDefault(x => x.Name == "film");
+            table.Should().NotBeNull();
+            table.Columns.Count.Should().Be(13);
+            table.Columns.Select(x => x.Name).Should().Contain("language_id");
+
+            table = db.Tables.FirstOrDefault(x => x.Name == "film_category");
+            table.Should().NotBeNull();
+            table.PrimaryKeys.Count.Should().Be(1);
+            table.PrimaryKeys.First().ColumnNames.Should().Contain("film_id");
+            table.PrimaryKeys.First().ColumnNames.Should().Contain("category_id");
+
+            table = db.Tables.FirstOrDefault(x => x.Name == "rental");
+            table.ForeignKeys.Count.Should().Be(3);
+            table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_customer");
+            table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_inventory");
+            table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_staff");
+
+            db.Views.Count.Should().Be(6);
+            db.Views.Should().ContainSingle(x => x.Name == "film_list");
+
+            db.Functions.Count.Should().Be(2);
+            db.StoredProcedures.Count.Should().Be(1);
+
+            db.DataTypes.Should().NotBeNullOrEmpty();
+            db.DataTypes.Count.Should().Be(37);
+
+            db.Sequences.Should().NotBeNullOrEmpty();
+        }
+
+        /// <summary>
         /// Test cloning MicrosoftSQL 'sakila' database
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void CloneMicrosoftSqlDatabase()
+        public void CloneMicrosoftSqlDatabase(short port)
         {
             const string databaseName = "sakila";
             var clonedDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
 
             try
             {
-                var mssqldbp = this.dbFixture.GetMicrosoftSqlDatabaseProvider(databaseName);
+                var mssqldbp = this.dbFixture.GetDatabaseProvider(databaseName, port);
                 var db = mssqldbp.GetDatabase(new TaskInfo("test"));
 
                 var scripterFactory = new DatabaseScripterFactory(this.LoggerFactory);
@@ -58,32 +118,26 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
                 this.Logger.LogInformation($"Script saved to {exportFile}");
                 File.WriteAllText(exportFile, fullScript);
 
-                this.dbFixture.DropAndCreateMicrosoftSqlDatabase(clonedDatabaseName);
+                this.dbFixture.DropAndCreateDatabase(clonedDatabaseName, port);
 
-                var mssqldbpo = this.dbFixture.GetMicrosoftSqlDatabaseProviderOptions(clonedDatabaseName);
-                using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.cipherService, mssqldbpo))
-                {
-                    var queries = fullScript.Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
-                    foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
-                    {
-                        context.ExecuteNonQuery(query);
-                    }
-                }
+                this.dbFixture.ExecuteScript(fullScript, clonedDatabaseName, port);
 
-                this.dbFixture.CompareDatabases(DatabaseType.MicrosoftSql, clonedDatabaseName, databaseName);
+                this.dbFixture.CompareDatabases(DatabaseType.MicrosoftSql, clonedDatabaseName, databaseName, port);
             }
             finally
             {
-                this.dbFixture.DropMicrosoftSqlDatabase(clonedDatabaseName);
+                this.dbFixture.DropDatabase(clonedDatabaseName, port);
             }
         }
 
         /// <summary>
         /// Test migration script when source db is empty (a.k.a. drop whole target)
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseSourceEmpty()
+        public void MigrateMicrosoftSqlDatabaseSourceEmpty(short port)
         {
             var sourceDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
             var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
@@ -91,96 +145,108 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             try
             {
                 // Create the empty database
-                this.dbFixture.DropAndCreateMicrosoftSqlDatabase(sourceDatabaseName);
+                this.dbFixture.DropAndCreateDatabase(sourceDatabaseName, port);
 
                 // Create the database with sakila to be migrated to empty
-                this.dbFixture.CreateMicrosoftSqlSakilaDatabase(targetDatabaseName);
+                this.dbFixture.CreateSakilaDatabase(targetDatabaseName, port);
 
-                this.dbFixture.ExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sourceDatabaseName, targetDatabaseName);
+                this.dbFixture.ExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sourceDatabaseName, targetDatabaseName, port);
             }
             finally
             {
-                this.dbFixture.DropMicrosoftSqlDatabase(sourceDatabaseName);
-                this.dbFixture.DropMicrosoftSqlDatabase(targetDatabaseName);
+                this.dbFixture.DropDatabase(sourceDatabaseName, port);
+                this.dbFixture.DropDatabase(targetDatabaseName, port);
             }
         }
 
         /// <summary>
         /// Test migration script when target db is empty (a.k.a. re-create whole source)
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetEmpty()
+        public void MigrateMicrosoftSqlDatabaseTargetEmpty(short port)
         {
             const string sourceDatabaseName = "sakila";
             var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
 
             try
             {
-                this.dbFixture.DropAndCreateMicrosoftSqlDatabase(targetDatabaseName);
+                this.dbFixture.DropAndCreateDatabase(targetDatabaseName, port);
 
-                this.dbFixture.ExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sourceDatabaseName, targetDatabaseName);
+                this.dbFixture.ExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sourceDatabaseName, targetDatabaseName, port);
             }
             finally
             {
-                this.dbFixture.DropMicrosoftSqlDatabase(targetDatabaseName);
+                this.dbFixture.DropDatabase(targetDatabaseName, port);
             }
         }
 
         /// <summary>
         /// Test migration script when target db doesn't have a column
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetMissingColumn()
+        public void MigrateMicrosoftSqlDatabaseTargetMissingColumn(short port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE staff DROP COLUMN last_name");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have an extra column
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetExtraColumn()
+        public void MigrateMicrosoftSqlDatabaseTargetExtraColumn(short port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE staff ADD middle_name VARCHAR(45) NOT NULL");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have a column with different type
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetColumnDifferentType()
+        public void MigrateMicrosoftSqlDatabaseTargetColumnDifferentType(short port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE country ALTER COLUMN country NVARCHAR(80) NOT NULL");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have a different view
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetDifferentView()
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentView(short port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER VIEW customer_list AS SELECT NULL AS 'test'");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have a different function
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetDifferentFunction()
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentFunction(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER FUNCTION StripWWWandCom (@Input VARCHAR(250))");
@@ -195,15 +261,17 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine();
             sb.AppendLine("    RETURN @Work");
             sb.AppendLine("END");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have a different stored procedure
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetDifferentStoredProcedure()
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentStoredProcedure(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER PROCEDURE uspGetAddress @City nvarchar(30) = NULL");
@@ -211,299 +279,345 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("SELECT *");
             sb.AppendLine("FROM city");
             sb.AppendLine("WHERE city = @City");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have a different sequence
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetDifferentSequence()
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentSequence(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER SEQUENCE actor_seq");
             sb.AppendLine("INCREMENT BY 5");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have a different type
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetDifferentType()
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentType(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP TYPE custom_decimal");
             sb.AppendLine("CREATE TYPE custom_decimal FROM DECIMAL(21, 6) NULL");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db doesn't have a index
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetMissingIndex()
+        public void MigrateMicrosoftSqlDatabaseTargetMissingIndex(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP INDEX idx_uq ON rental");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have an additional index
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetExtraIndex()
+        public void MigrateMicrosoftSqlDatabaseTargetExtraIndex(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("CREATE INDEX idx_replacement_cost ON film (replacement_cost)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have a different filtered index
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetDifferentIndexFilter()
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentIndexFilter(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP INDEX idx_actor_last_name ON actor");
             sb.AppendLine("CREATE INDEX idx_actor_last_name ON actor(last_name) WHERE (first_name IS NOT NULL)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have a different index type
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetDifferentIndexType()
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentIndexType(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP INDEX idx_fk_address_id ON store");
             sb.AppendLine("CREATE CLUSTERED INDEX idx_fk_address_id ON store(manager_staff_id)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db doesn't have a trigger
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetMissingTrigger()
+        public void MigrateMicrosoftSqlDatabaseTargetMissingTrigger(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP TRIGGER reminder1");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have an additional trigger
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetExtraTrigger()
+        public void MigrateMicrosoftSqlDatabaseTargetExtraTrigger(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("CREATE TRIGGER reminder2");
             sb.AppendLine("ON dbo.country");
             sb.AppendLine("AFTER DELETE");
             sb.AppendLine("AS RAISERROR ('BLABLABLA', 16, 10)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have a different trigger
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetDifferentTrigger()
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentTrigger(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TRIGGER reminder1");
             sb.AppendLine("ON dbo.country");
             sb.AppendLine("AFTER INSERT, DELETE");
             sb.AppendLine("AS RAISERROR ('test', 2, 10)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db doesn't have a default constraint
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetMissingDefaultConstraint()
+        public void MigrateMicrosoftSqlDatabaseTargetMissingDefaultConstraint(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE actor DROP CONSTRAINT DF_actor_last_update");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have an additional default constraint
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetExtraDefaultConstraint()
+        public void MigrateMicrosoftSqlDatabaseTargetExtraDefaultConstraint(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE actor ADD CONSTRAINT DF_actor_last_name DEFAULT 'test' FOR last_name");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have a different default constraint
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetDifferentDefaultConstraint()
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentDefaultConstraint(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE actor DROP CONSTRAINT DF_actor_last_update");
             sb.AppendLine("ALTER TABLE actor ADD CONSTRAINT DF_actor_last_update DEFAULT (GETDATE()-444) FOR last_update");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db doesn't have a check constraint
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetMissingCheckConstraint()
+        public void MigrateMicrosoftSqlDatabaseTargetMissingCheckConstraint(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film DROP CONSTRAINT CHECK_special_features");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have an additional check constraint
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetExtraCheckConstraint()
+        public void MigrateMicrosoftSqlDatabaseTargetExtraCheckConstraint(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE customer ADD CONSTRAINT check_email CHECK(email LIKE '_%@_%._%')");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have a different check constraint
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetDifferentCheckConstraint()
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentCheckConstraint(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film DROP CONSTRAINT CHECK_special_features");
             sb.AppendLine("ALTER TABLE film ADD CONSTRAINT CHECK_special_features CHECK(special_features IS NOT null)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db doesn't have a primary key
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetMissingPrimaryKey()
+        public void MigrateMicrosoftSqlDatabaseTargetMissingPrimaryKey(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_actor_description DROP CONSTRAINT PK_film_actor_description_film_actor_description_id");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have an additional primary key
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetExtraPrimaryKey()
+        public void MigrateMicrosoftSqlDatabaseTargetExtraPrimaryKey(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY NONCLUSTERED (film_id)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have an additional primary key with a foreing key that reference it
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey()
+        public void MigrateMicrosoftSqlDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY NONCLUSTERED (film_id)");
             sb.AppendLine("ALTER TABLE film_text_extra ADD CONSTRAINT FK_film_text_extra_film FOREIGN KEY (film_id) REFERENCES film_text (film_id) ON DELETE CASCADE");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), 2);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port, 2);
         }
 
         /// <summary>
         /// Test migration script when target db have an primary key on a different colum
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetPrimaryKeyOnDifferentColumn()
+        public void MigrateMicrosoftSqlDatabaseTargetPrimaryKeyOnDifferentColumn(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE payment DROP CONSTRAINT PK_payment_payment_id");
             sb.AppendLine("ALTER TABLE payment ADD CONSTRAINT PK_payment_payment_id PRIMARY KEY NONCLUSTERED (payment_id_new)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have an additional foreign key
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetExtraForeignKey()
+        public void MigrateMicrosoftSqlDatabaseTargetExtraForeignKey(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE category ADD CONSTRAINT FK_category_language FOREIGN KEY (language_id) REFERENCES language (language_id)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db doesn't have a foreign key
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetMissingForeignKey()
+        public void MigrateMicrosoftSqlDatabaseTargetMissingForeignKey(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_actor DROP CONSTRAINT fk_film_actor_film");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have a foreign key that references a different column
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetForeignKeyReferencesDifferentColumn()
+        public void MigrateMicrosoftSqlDatabaseTargetForeignKeyReferencesDifferentColumn(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE address DROP CONSTRAINT fk_address_city");
             sb.AppendLine("ALTER TABLE address ADD CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES actor (actor_id) ON DELETE NO ACTION ON UPDATE CASCADE");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
         /// <summary>
         /// Test migration script when target db have a foreign key with different options
         /// </summary>
-        [Fact]
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
-        public void MigrateMicrosoftSqlDatabaseTargetForeignKeyDifferentOptions()
+        public void MigrateMicrosoftSqlDatabaseTargetForeignKeyDifferentOptions(short port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE address DROP CONSTRAINT fk_address_city");
             sb.AppendLine("ALTER TABLE address ADD CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES city (city_id) ON DELETE CASCADE ON UPDATE NO ACTION");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString());
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
     }
 }

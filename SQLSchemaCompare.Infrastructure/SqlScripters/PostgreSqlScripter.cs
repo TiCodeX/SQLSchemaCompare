@@ -416,7 +416,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE SEQUENCE {this.ScriptHelper.ScriptObjectName(sequence)}");
-            sb.AppendLine($"{this.Indent}AS {sequence.DataType}");
+
+            if (sequence.Database.ServerVersion.Major >= 10)
+            {
+                sb.AppendLine($"{this.Indent}AS {sequence.DataType}");
+            }
+
             sb.AppendLine($"{this.Indent}START WITH {sequence.StartValue}");
             sb.AppendLine($"{this.Indent}INCREMENT BY {sequence.Increment}");
             sb.AppendLine($"{this.Indent}MINVALUE {sequence.MinValue}");

@@ -27,7 +27,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
             }
             else
             {
-                connStr += "SslMode=None;";
+                connStr += "SslMode=None;AllowPublicKeyRetrieval=true;";
             }
 
             this.ConnectionString = connStr;

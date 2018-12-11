@@ -81,7 +81,16 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
 
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} PRIMARY KEY ({string.Join(",", columnList)});");
+                sb.Append("ADD ");
+
+                // Add the constraint name only if it's not the default
+                if (key.Name.ToUpperInvariant() != "PRIMARY")
+                {
+                    sb.Append($"CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} ");
+                }
+
+                sb.AppendLine($"PRIMARY KEY ({string.Join(",", columnList)});");
+
                 foreach (var columnName in key.ColumnNames)
                 {
                     if (table.Columns.FirstOrDefault(x => x.Name == columnName) is MySqlColumn col &&

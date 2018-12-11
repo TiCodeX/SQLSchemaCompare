@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -20,7 +20,6 @@ using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers;
 using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders;
-using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
 using TiCodeX.SQLSchemaCompare.Services;
 using Xunit.Sdk;
@@ -31,39 +30,36 @@ namespace TiCodeX.SQLSchemaCompare.Test
     /// Creates the sakila/pagila databases for the tests
     /// </summary>
     /// <seealso cref="System.IDisposable" />
-    public sealed class DatabaseFixture : IDisposable
+    public abstract class DatabaseFixture : IDisposable
     {
-        private static readonly object InitializeSakilaDatabaseLock = new object();
-        private static bool initializeSakilaDatabase = true;
-        private readonly ICipherService cipherService = new CipherService();
-        private ILoggerFactory loggerFactory = new XunitLoggerFactory(null);
-        private ILogger logger;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseFixture"/> class
         /// </summary>
-        public DatabaseFixture()
+        /// <param name="serverPorts">The server ports</param>
+        protected DatabaseFixture(IEnumerable<object[]> serverPorts)
         {
-            // TODO: Use ICollectionFixture<> instead of IClassFixture<> in order to remove this lock to prevent multiple executions
-            lock (InitializeSakilaDatabaseLock)
+            foreach (var serverPort in serverPorts)
             {
-                if (!initializeSakilaDatabase)
-                {
-                    return;
-                }
-
-                // MicrosoftSQL
-                this.CreateMicrosoftSqlSakilaDatabase("sakila");
-
-                // MySQL
-                this.CreateMySqlSakilaDatabase("sakila");
-
-                // PostgreSQL
-                this.CreatePostgreSqlSakilaDatabase("sakila");
-
-                initializeSakilaDatabase = false;
+#pragma warning disable CA2214 // Do not call overridable methods in constructors
+                this.CreateSakilaDatabase("sakila", (short)serverPort[0]);
+#pragma warning restore CA2214 // Do not call overridable methods in constructors
             }
         }
+
+        /// <summary>
+        /// Gets the cipher service
+        /// </summary>
+        protected ICipherService CipherService { get; } = new CipherService();
+
+        /// <summary>
+        /// Gets the logger factory
+        /// </summary>
+        protected ILoggerFactory LoggerFactory { get; private set; } = new XunitLoggerFactory(null);
+
+        /// <summary>
+        /// Gets the logger
+        /// </summary>
+        protected ILogger Logger { get; private set; }
 
         /// <summary>
         /// Sets the test output helper
@@ -71,324 +67,65 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="logFactory">The test output helper</param>
         public void SetLoggerFactory(ILoggerFactory logFactory)
         {
-            this.loggerFactory = logFactory;
-            this.logger = logFactory.CreateLogger(nameof(DatabaseFixture));
+            this.LoggerFactory = logFactory;
+            this.Logger = logFactory.CreateLogger(nameof(DatabaseFixture));
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            this.loggerFactory.Dispose();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
-        /// Executes my SQL script
+        /// Gets the database provider
+        /// </summary>
+        /// <param name="databaseName">Name of the database</param>
+        /// <param name="port">The port to connect to the database</param>
+        /// <returns>The provider</returns>
+        public IDatabaseProvider GetDatabaseProvider(string databaseName, short port)
+        {
+            var dpf = new DatabaseProviderFactory(this.LoggerFactory, this.CipherService);
+            return dpf.Create(this.GetDatabaseProviderOptions(databaseName, port));
+        }
+
+        /// <summary>
+        /// Executes the SQL script
         /// </summary>
         /// <param name="script">The script to execute</param>
-        /// <param name="port">The port to connect to the database</param>
-        internal void ExecuteMySqlScript(string script, short port = 3306)
-        {
-            var path = Path.GetTempFileName();
-            try
-            {
-                File.WriteAllText(path, script);
-
-                var standardOutput = new StringBuilder();
-                var standardError = new StringBuilder();
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe",
-                        Arguments = $"--user=root --password=test1234 --port={port} -e \"SOURCE {path}\"",
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                        RedirectStandardError = true,
-                        RedirectStandardOutput = true,
-                    }
-                };
-                process.OutputDataReceived += (sender, data) => standardOutput.AppendLine(data.Data);
-                process.ErrorDataReceived += (sender, data) => standardError.AppendLine(data.Data);
-                process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-
-                process.WaitForExit((int)TimeSpan.FromMinutes(5).TotalMilliseconds);
-
-                if (process.ExitCode == 0)
-                {
-                    return;
-                }
-
-                var exceptionMessage = new StringBuilder();
-                exceptionMessage.AppendLine($"Failed executing script '{path}'");
-                exceptionMessage.AppendLine("Standard Output:");
-                exceptionMessage.AppendLine(standardOutput.ToString());
-                exceptionMessage.AppendLine("Standard Error:");
-                exceptionMessage.AppendLine(standardError.ToString());
-                throw new XunitException(exceptionMessage.ToString());
-            }
-            finally
-            {
-                try
-                {
-                    File.Delete(path);
-                }
-                catch
-                {
-                    // Do nothing
-                }
-            }
-        }
-
-        /// <summary>
-        /// Drops the microsoft SQL database
-        /// </summary>
         /// <param name="databaseName">Name of the database</param>
-        internal void DropMicrosoftSqlDatabase(string databaseName)
-        {
-            using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetMicrosoftSqlDatabaseProviderOptions(string.Empty)))
-            {
-                var dropDbQuery = new StringBuilder();
-                dropDbQuery.AppendLine($"IF EXISTS(select * from sys.databases where name= '{databaseName}')");
-                dropDbQuery.AppendLine("BEGIN");
-                dropDbQuery.AppendLine($"  ALTER DATABASE {databaseName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE"); // Close existing connections
-                dropDbQuery.AppendLine($"  DROP DATABASE {databaseName}");
-                dropDbQuery.AppendLine("END");
-                context.ExecuteNonQuery(dropDbQuery.ToString());
-            }
-        }
+        /// <param name="port">The port to connect to the database</param>
+        public abstract void ExecuteScript(string script, string databaseName, short port);
 
         /// <summary>
-        /// Drops my SQL database
+        /// Gets the database provider options
         /// </summary>
         /// <param name="databaseName">Name of the database</param>
         /// <param name="port">The port to connect to the database</param>
-        internal void DropMySqlDatabase(string databaseName, short port = 3306)
-        {
-            this.ExecuteMySqlScript($"DROP SCHEMA IF EXISTS `{databaseName}`;", port);
-        }
-
-        /// <summary>
-        /// Drops the postgre SQL database
-        /// </summary>
-        /// <param name="databaseName">Name of the database</param>
-        /// <param name="dpo">Database provider options</param>
-        internal void DropPostgreSqlDatabase(string databaseName, PostgreSqlDatabaseProviderOptions dpo = null)
-        {
-            if (dpo == null)
-            {
-                dpo = this.GetPostgreSqlDatabaseProviderOptions(string.Empty);
-            }
-
-            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, dpo))
-            {
-                var dropDbQuery = new StringBuilder();
-                dropDbQuery.AppendLine($"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{databaseName}';");
-                dropDbQuery.AppendLine($"DROP DATABASE IF EXISTS {databaseName};");
-                context.ExecuteNonQuery(dropDbQuery.ToString());
-            }
-        }
-
-        /// <summary>
-        /// Drops and create the microsoft database
-        /// </summary>
-        /// <param name="databaseName">Name of the database</param>
-        internal void DropAndCreateMicrosoftSqlDatabase(string databaseName)
-        {
-            this.DropMicrosoftSqlDatabase(databaseName);
-
-            using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetMicrosoftSqlDatabaseProviderOptions(string.Empty)))
-            {
-                context.ExecuteNonQuery($"CREATE DATABASE {databaseName}");
-            }
-        }
-
-        /// <summary>
-        /// Drops and create the mysql database
-        /// </summary>
-        /// <param name="databaseName">Name of the database</param>
-        /// <param name="port">The port to connect to the database</param>
-        internal void DropAndCreateMySqlDatabase(string databaseName, short port = 3306)
-        {
-            this.DropMySqlDatabase(databaseName, port);
-
-            this.ExecuteMySqlScript($"CREATE SCHEMA `{databaseName}`;", port);
-        }
-
-        /// <summary>
-        /// Drops and create the postgresql database
-        /// </summary>
-        /// <param name="databaseName">Name of the database</param>
-        /// <param name="dpo">Database provider options</param>
-        internal void DropAndCreatePostgreSqlDatabase(string databaseName, PostgreSqlDatabaseProviderOptions dpo = null)
-        {
-            if (dpo == null)
-            {
-                dpo = this.GetPostgreSqlDatabaseProviderOptions(string.Empty);
-            }
-
-            this.DropPostgreSqlDatabase(databaseName, dpo);
-
-            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, dpo))
-            {
-                var query = new StringBuilder();
-                query.AppendLine($"CREATE DATABASE {databaseName};");
-                context.ExecuteNonQuery(query.ToString());
-            }
-        }
-
-        /// <summary>
-        /// Creates the sakila database
-        /// </summary>
-        /// <param name="databaseName">Name of the database</param>
-        internal void CreateMicrosoftSqlSakilaDatabase(string databaseName)
-        {
-            this.DropAndCreateMicrosoftSqlDatabase(databaseName);
-
-            using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetMicrosoftSqlDatabaseProviderOptions(databaseName)))
-            {
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-microsoftsql.sql");
-                var queries = File.ReadAllText(path).Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
-                foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
-                {
-                    context.ExecuteNonQuery(query);
-                }
-            }
-        }
+        /// <returns>The provider options</returns>
+        public abstract ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, short port);
 
         /// <summary>
         /// Creates the sakila database
         /// </summary>
         /// <param name="databaseName">Name of the database</param>
         /// <param name="port">The port to connect to the database</param>
-        internal void CreateMySqlSakilaDatabase(string databaseName, short port = 3306)
-        {
-            this.DropAndCreateMySqlDatabase(databaseName, port);
-
-            var sakilaScript = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-mysql.sql"));
-
-            sakilaScript = sakilaScript.Replace("USE sakila;", $"USE {databaseName};", StringComparison.InvariantCulture);
-            sakilaScript = sakilaScript.Replace("sakila.", $"{databaseName}.", StringComparison.InvariantCulture);
-
-            this.ExecuteMySqlScript(sakilaScript, port);
-        }
+        public abstract void CreateSakilaDatabase(string databaseName, short port);
 
         /// <summary>
-        /// Creates the sakila database
+        /// Drops the database
         /// </summary>
         /// <param name="databaseName">Name of the database</param>
-        /// <param name="dpo">Database provider options</param>
-        internal void CreatePostgreSqlSakilaDatabase(string databaseName, PostgreSqlDatabaseProviderOptions dpo = null)
-        {
-            if (dpo == null)
-            {
-                dpo = this.GetPostgreSqlDatabaseProviderOptions(string.Empty);
-            }
-
-            this.DropAndCreatePostgreSqlDatabase(databaseName, dpo);
-
-            dpo.Database = databaseName;
-
-            using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, dpo))
-            {
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-postgresql.sql");
-                context.ExecuteNonQuery(File.ReadAllText(path));
-            }
-        }
+        /// <param name="port">The port to connect to the database</param>
+        public abstract void DropDatabase(string databaseName, short port);
 
         /// <summary>
-        /// Gets the Microsoft SQL database provider
+        /// Drops the and create database
         /// </summary>
-        /// <param name="databaseName">The database name to connect</param>
-        /// <returns>The Microsoft SQL database provider</returns>
-        internal MicrosoftSqlDatabaseProvider GetMicrosoftSqlDatabaseProvider(string databaseName = "")
-        {
-            var dpf = new DatabaseProviderFactory(this.loggerFactory, this.cipherService);
-            return (MicrosoftSqlDatabaseProvider)dpf.Create(this.GetMicrosoftSqlDatabaseProviderOptions(databaseName));
-        }
-
-        /// <summary>
-        /// Gets the MySQL database provider
-        /// </summary>
-        /// <param name="databaseName">The database name to connect</param>
-        /// <param name="dpo">Database provider options</param>
-        /// <returns>The MySQL SQL database provider</returns>
-        internal MySqlDatabaseProvider GetMySqlDatabaseProvider(string databaseName = "", MySqlDatabaseProviderOptions dpo = null)
-        {
-            if (dpo == null)
-            {
-                dpo = this.GetMySqlDatabaseProviderOptions(databaseName);
-            }
-
-            var dpf = new DatabaseProviderFactory(this.loggerFactory, this.cipherService);
-            return (MySqlDatabaseProvider)dpf.Create(dpo);
-        }
-
-        /// <summary>
-        /// Gets the PostgreSQL database provider
-        /// </summary>
-        /// <param name="databaseName">The database name to connect</param>
-        /// <param name="dpo">Database provider options</param>
-        /// <returns>The PostgreSQL SQL database provider</returns>
-        internal PostgreSqlDatabaseProvider GetPostgreSqlDatabaseProvider(string databaseName = "", PostgreSqlDatabaseProviderOptions dpo = null)
-        {
-            if (dpo == null)
-            {
-                dpo = this.GetPostgreSqlDatabaseProviderOptions(databaseName);
-            }
-
-            var dpf = new DatabaseProviderFactory(this.loggerFactory, this.cipherService);
-            return (PostgreSqlDatabaseProvider)dpf.Create(dpo);
-        }
-
-        /// <summary>
-        /// Gets the Microsoft SQL database provider options
-        /// </summary>
-        /// <param name="databaseName">The database name to connect</param>
-        /// <returns>The Microsoft SQL database provider options</returns>
-        internal MicrosoftSqlDatabaseProviderOptions GetMicrosoftSqlDatabaseProviderOptions(string databaseName)
-        {
-            return new MicrosoftSqlDatabaseProviderOptions
-            {
-                Hostname = "localhost\\SQLEXPRESS",
-                Database = databaseName,
-                UseWindowsAuthentication = true,
-            };
-        }
-
-        /// <summary>
-        /// Gets the MySQL database provider options
-        /// </summary>
-        /// <param name="databaseName">The database name to connect</param>
-        /// <returns>The MySQL database provider options</returns>
-        internal MySqlDatabaseProviderOptions GetMySqlDatabaseProviderOptions(string databaseName)
-        {
-            return new MySqlDatabaseProviderOptions
-            {
-                Hostname = "localhost",
-                Database = databaseName,
-                Username = "root",
-                Password = this.cipherService.EncryptString("test1234"),
-                UseSSL = Environment.MachineName != "DESKTOP-VH0A18B", // debe's MySql Server doesn't support SSL
-            };
-        }
-
-        /// <summary>
-        /// Gets the PostgreSQL database provider options
-        /// </summary>
-        /// <param name="databaseName">The database name to connect</param>
-        /// <returns>The PostgreSQL database provider options</returns>
-        internal PostgreSqlDatabaseProviderOptions GetPostgreSqlDatabaseProviderOptions(string databaseName)
-        {
-            return new PostgreSqlDatabaseProviderOptions
-            {
-                Hostname = "localhost",
-                Database = databaseName,
-                Username = "postgres",
-                Password = this.cipherService.EncryptString("test1234"),
-            };
-        }
+        /// <param name="databaseName">Name of the database</param>
+        /// <param name="port">The port to connect to the database</param>
+        public abstract void DropAndCreateDatabase(string databaseName, short port);
 
         /// <summary>
         /// Compares the databases
@@ -396,27 +133,11 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="type">The type</param>
         /// <param name="sourceDatabaseName">Name of the source database.</param>
         /// <param name="targetDatabaseName">Name of the target database.</param>
-        internal void CompareDatabases(DatabaseType type, string sourceDatabaseName, string targetDatabaseName)
+        /// <param name="port">The port to connect to the database</param>
+        internal void CompareDatabases(DatabaseType type, string sourceDatabaseName, string targetDatabaseName, short port)
         {
-            IDatabaseProvider sourceProvider;
-            IDatabaseProvider targetProvider;
-            switch (type)
-            {
-                case DatabaseType.MicrosoftSql:
-                    sourceProvider = this.GetMicrosoftSqlDatabaseProvider(sourceDatabaseName);
-                    targetProvider = this.GetMicrosoftSqlDatabaseProvider(targetDatabaseName);
-                    break;
-                case DatabaseType.MySql:
-                    sourceProvider = this.GetMySqlDatabaseProvider(sourceDatabaseName);
-                    targetProvider = this.GetMySqlDatabaseProvider(targetDatabaseName);
-                    break;
-                case DatabaseType.PostgreSql:
-                    sourceProvider = this.GetPostgreSqlDatabaseProvider(sourceDatabaseName);
-                    targetProvider = this.GetPostgreSqlDatabaseProvider(targetDatabaseName);
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
+            var sourceProvider = this.GetDatabaseProvider(sourceDatabaseName, port);
+            var targetProvider = this.GetDatabaseProvider(targetDatabaseName, port);
 
             var sourceDb = sourceProvider.GetDatabase(new TaskInfo("test"));
             var targetDb = targetProvider.GetDatabase(new TaskInfo("test"));
@@ -611,10 +332,10 @@ namespace TiCodeX.SQLSchemaCompare.Test
         {
             var taskService = new TaskService();
             var dbCompareService = new DatabaseCompareService(
-                this.loggerFactory,
+                this.LoggerFactory,
                 projectService,
-                new DatabaseService(new DatabaseProviderFactory(this.loggerFactory, new CipherService())),
-                new DatabaseScripterFactory(this.loggerFactory),
+                new DatabaseService(new DatabaseProviderFactory(this.LoggerFactory, new CipherService())),
+                new DatabaseScripterFactory(this.LoggerFactory),
                 new DatabaseMapper(),
                 taskService);
             dbCompareService.StartCompare();
@@ -648,34 +369,15 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="databaseType">The database type</param>
         /// <param name="sourceDatabaseName">Name of the source database</param>
         /// <param name="targetDatabaseName">Name of the target database</param>
+        /// <param name="port">The port to connect to the database</param>
         /// <param name="expectedDifferentItems">Amount of expected different items</param>
-        internal void ExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, int? expectedDifferentItems = null)
+        internal void ExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, short port, int? expectedDifferentItems = null)
         {
-            ADatabaseProviderOptions sourceProviderOptions;
-            ADatabaseProviderOptions targetProviderOptions;
-            switch (databaseType)
-            {
-                case DatabaseType.MicrosoftSql:
-                    sourceProviderOptions = this.GetMicrosoftSqlDatabaseProviderOptions(sourceDatabaseName);
-                    targetProviderOptions = this.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName);
-                    break;
-                case DatabaseType.MySql:
-                    sourceProviderOptions = this.GetMySqlDatabaseProviderOptions(sourceDatabaseName);
-                    targetProviderOptions = this.GetMySqlDatabaseProviderOptions(targetDatabaseName);
-                    break;
-                case DatabaseType.PostgreSql:
-                    sourceProviderOptions = this.GetPostgreSqlDatabaseProviderOptions(sourceDatabaseName);
-                    targetProviderOptions = this.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName);
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-
             // Perform the compare
-            var projectService = new ProjectService(null, this.loggerFactory);
+            var projectService = new ProjectService(null, this.LoggerFactory);
             projectService.NewProject(databaseType);
-            projectService.Project.SourceProviderOptions = sourceProviderOptions;
-            projectService.Project.TargetProviderOptions = targetProviderOptions;
+            projectService.Project.SourceProviderOptions = this.GetDatabaseProviderOptions(sourceDatabaseName, port);
+            projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(targetDatabaseName, port);
             this.PerformCompareAndWaitResult(projectService);
 
             if (expectedDifferentItems.HasValue)
@@ -687,61 +389,32 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
             // Execute the full alter script
             var exportFile = $"{Path.Combine(Path.GetTempPath(), $"SQLCMP-TEST-{Guid.NewGuid()}")}.sql";
-            this.logger.LogInformation($"Script saved to {exportFile}");
+            this.Logger.LogInformation($"Script saved to {exportFile}");
             switch (databaseType)
             {
                 case DatabaseType.MicrosoftSql:
-
                     File.WriteAllText(exportFile, projectService.Project.Result.FullAlterScript);
-
-                    var mssqldbpo = this.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName);
-                    using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, mssqldbpo))
-                    {
-                        var queries = projectService.Project.Result.FullAlterScript.Split(new[] { "GO" + Environment.NewLine }, StringSplitOptions.None);
-                        foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
-                        {
-                            context.ExecuteNonQuery(query);
-                        }
-                    }
-
+                    this.ExecuteScript(projectService.Project.Result.FullAlterScript, targetDatabaseName, port);
                     break;
 
                 case DatabaseType.MySql:
-                    // Execute the full alter script
                     var mySqlFullAlterScript = new StringBuilder();
-                    /*mySqlFullAlterScript.AppendLine("SET @OLD_UNIQUE_CHECKS =@@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;");
-                    mySqlFullAlterScript.AppendLine("SET @OLD_FOREIGN_KEY_CHECKS =@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;");
-                    mySqlFullAlterScript.AppendLine("SET @OLD_SQL_MODE =@@SQL_MODE, SQL_MODE = 'TRADITIONAL';");*/
                     mySqlFullAlterScript.AppendLine($"USE {targetDatabaseName};");
                     mySqlFullAlterScript.AppendLine(projectService.Project.Result.FullAlterScript);
-                    /*mySqlFullAlterScript.AppendLine("SET SQL_MODE = @OLD_SQL_MODE;");
-                    mySqlFullAlterScript.AppendLine("SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;");
-                    mySqlFullAlterScript.AppendLine("SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;");*/
-
                     File.WriteAllText(exportFile, mySqlFullAlterScript.ToString());
-
-                    this.ExecuteMySqlScript(mySqlFullAlterScript.ToString());
-
+                    this.ExecuteScript(mySqlFullAlterScript.ToString(), string.Empty, port);
                     break;
 
                 case DatabaseType.PostgreSql:
-
-                    // Execute the full alter script
-                    using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName)))
-                    {
-                        var postgreSqlFullAlterScript = new StringBuilder();
-                        postgreSqlFullAlterScript.AppendLine("SET check_function_bodies = false;");
-                        postgreSqlFullAlterScript.AppendLine(projectService.Project.Result.FullAlterScript);
-
-                        File.WriteAllText(exportFile, postgreSqlFullAlterScript.ToString());
-
-                        context.ExecuteNonQuery(postgreSqlFullAlterScript.ToString());
-                    }
-
+                    var postgreSqlFullAlterScript = new StringBuilder();
+                    postgreSqlFullAlterScript.AppendLine("SET check_function_bodies = false;");
+                    postgreSqlFullAlterScript.AppendLine(projectService.Project.Result.FullAlterScript);
+                    File.WriteAllText(exportFile, postgreSqlFullAlterScript.ToString());
+                    this.ExecuteScript(postgreSqlFullAlterScript.ToString(), targetDatabaseName, port);
                     break;
             }
 
-            this.CompareDatabases(databaseType, targetDatabaseName, sourceDatabaseName);
+            this.CompareDatabases(databaseType, targetDatabaseName, sourceDatabaseName, port);
         }
 
         /// <summary>
@@ -749,65 +422,49 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// </summary>
         /// <param name="databaseType">The database type</param>
         /// <param name="alterScript">The script to alter the target database before the migration/comparison</param>
+        /// <param name="port">The port to connect to the database</param>
         /// <param name="expectedDifferentItems">Amount of expected different items</param>
-        internal void AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string alterScript, int expectedDifferentItems = 1)
+        internal void AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string alterScript, short port, int expectedDifferentItems = 1)
         {
             const string sourceDatabaseName = "sakila";
             var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
 
             try
             {
+                this.CreateSakilaDatabase(targetDatabaseName, port);
+
                 switch (databaseType)
                 {
                     case DatabaseType.MicrosoftSql:
-                        this.CreateMicrosoftSqlSakilaDatabase(targetDatabaseName);
-
-                        // Do some changes in the target database
-                        using (var context = new MicrosoftSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetMicrosoftSqlDatabaseProviderOptions(targetDatabaseName)))
-                        {
-                            context.ExecuteNonQuery(alterScript);
-                        }
-
+                    case DatabaseType.PostgreSql:
+                        this.ExecuteScript(alterScript, targetDatabaseName, port);
                         break;
 
                     case DatabaseType.MySql:
-                        this.CreateMySqlSakilaDatabase(targetDatabaseName);
-
                         var alterScriptTarget = new StringBuilder();
                         alterScriptTarget.AppendLine($"USE {targetDatabaseName};");
                         alterScriptTarget.AppendLine(alterScript);
-
-                        this.ExecuteMySqlScript(alterScriptTarget.ToString());
-
-                        break;
-
-                    case DatabaseType.PostgreSql:
-                        this.CreatePostgreSqlSakilaDatabase(targetDatabaseName);
-
-                        using (var context = new PostgreSqlDatabaseContext(this.loggerFactory, this.cipherService, this.GetPostgreSqlDatabaseProviderOptions(targetDatabaseName)))
-                        {
-                            context.ExecuteNonQuery(alterScript);
-                        }
-
+                        this.ExecuteScript(alterScriptTarget.ToString(), string.Empty, port);
                         break;
                 }
 
-                this.ExecuteFullAlterScriptAndCompare(databaseType, sourceDatabaseName, targetDatabaseName, expectedDifferentItems);
+                this.ExecuteFullAlterScriptAndCompare(databaseType, sourceDatabaseName, targetDatabaseName, port, expectedDifferentItems);
             }
             finally
             {
-                switch (databaseType)
-                {
-                    case DatabaseType.MicrosoftSql:
-                        this.DropMicrosoftSqlDatabase(targetDatabaseName);
-                        break;
-                    case DatabaseType.MySql:
-                        this.DropMySqlDatabase(targetDatabaseName);
-                        break;
-                    case DatabaseType.PostgreSql:
-                        this.DropPostgreSqlDatabase(targetDatabaseName);
-                        break;
-                }
+                this.DropDatabase(targetDatabaseName, port);
+            }
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.LoggerFactory?.Dispose();
             }
         }
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions;
-using TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseProviders;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -10,7 +9,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Core.Exceptions
     /// <summary>
     /// Test class for the PropertyNotFoundException class
     /// </summary>
-    public class PropertyNotFoundExceptionTest : BaseTests<DatabaseProviderTests>
+    public class PropertyNotFoundExceptionTest : BaseTests<PropertyNotFoundExceptionTest>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyNotFoundExceptionTest"/> class.

@@ -108,7 +108,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 this.Logger.LogInformation($"Server '{context.Hostname}' version: {version}");
                 if (Version.TryParse(version, out var result))
                 {
-                    this.CurrentServerVersion = result;
+                    this.CurrentServerVersion = db.ServerVersion = result;
                 }
             }
             catch (Exception ex)

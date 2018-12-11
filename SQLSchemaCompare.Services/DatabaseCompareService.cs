@@ -10,6 +10,7 @@ using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
@@ -24,6 +25,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
         private readonly IProjectService projectService;
         private readonly IDatabaseService databaseService;
         private readonly IDatabaseScripterFactory databaseScripterFactory;
+        private readonly IDatabaseMapper databaseMapper;
         private readonly ITaskService taskService;
 
         private readonly List<CompareResultItem<ABaseDbTable>> tables = new List<CompareResultItem<ABaseDbTable>>();
@@ -47,18 +49,21 @@ namespace TiCodeX.SQLSchemaCompare.Services
         /// <param name="projectService">The injected project service</param>
         /// <param name="databaseService">The injected database service</param>
         /// <param name="databaseScripterFactory">The injected database scripter factory</param>
+        /// <param name="databaseMapper">The injected database mapper</param>
         /// <param name="taskService">The injected task service</param>
         public DatabaseCompareService(
             ILoggerFactory loggerFactory,
             IProjectService projectService,
             IDatabaseService databaseService,
             IDatabaseScripterFactory databaseScripterFactory,
+            IDatabaseMapper databaseMapper,
             ITaskService taskService)
         {
             this.logger = loggerFactory.CreateLogger(nameof(DatabaseCompareService));
             this.projectService = projectService;
             this.databaseService = databaseService;
             this.databaseScripterFactory = databaseScripterFactory;
+            this.databaseMapper = databaseMapper;
             this.taskService = taskService;
         }
 
@@ -74,6 +79,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     {
                         this.retrievedSourceDatabase = this.databaseService.GetDatabase(
                             this.projectService.Project.SourceProviderOptions, taskInfo);
+                        this.retrievedSourceDatabase.Direction = CompareDirection.Source;
                         return true;
                     }),
                 new TaskWork(
@@ -83,12 +89,17 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     {
                         this.retrievedTargetDatabase = this.databaseService.GetDatabase(
                             this.projectService.Project.TargetProviderOptions, taskInfo);
+                        this.retrievedTargetDatabase.Direction = CompareDirection.Target;
                         return true;
                     }),
                 new TaskWork(
                     new TaskInfo(Localization.LabelMappingDatabaseObjects),
                     false,
-                    this.ExecuteMappingDatabaseObjects),
+                    taskInfo =>
+                    {
+                        this.databaseMapper.PerformMapping(this.retrievedSourceDatabase, this.retrievedTargetDatabase, null, taskInfo);
+                        return true;
+                    }),
                 new TaskWork(
                     new TaskInfo(Localization.LabelDatabaseComparison),
                     false,
@@ -97,489 +108,72 @@ namespace TiCodeX.SQLSchemaCompare.Services
         }
 
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
-        private bool ExecuteMappingDatabaseObjects(TaskInfo taskInfo)
-        {
-            // TODO: Perform mapping with user config from project
-            taskInfo.Message = Localization.StatusMappingTables;
-            foreach (var table in this.retrievedSourceDatabase.Tables)
-            {
-                this.tables.Add(new CompareResultItem<ABaseDbTable>
-                {
-                    SourceItem = table,
-                    TargetItem = this.retrievedTargetDatabase.Tables.FirstOrDefault(x => x.Schema == table.Schema && x.Name == table.Name)
-                });
-            }
-
-            foreach (var table in this.retrievedTargetDatabase.Tables.Where(x =>
-                !this.tables.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
-            {
-                this.tables.Add(new CompareResultItem<ABaseDbTable>
-                {
-                    TargetItem = table
-                });
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 10;
-
-            taskInfo.Message = Localization.StatusMappingIndexes;
-            foreach (var index in this.retrievedSourceDatabase.Indexes)
-            {
-                this.indexes.Add(new CompareResultItem<ABaseDbIndex>
-                {
-                    SourceItem = index,
-                    TargetItem = this.retrievedTargetDatabase.Indexes.FirstOrDefault(x => x.TableSchema == index.TableSchema && x.TableName == index.TableName &&
-                                                                                          x.Schema == index.Schema && x.Name == index.Name)
-                });
-            }
-
-            foreach (var index in this.retrievedTargetDatabase.Indexes.Where(x =>
-                !this.indexes.Any(y => y.SourceItem.TableSchema == x.TableSchema && y.SourceItem.TableName == x.TableName &&
-                                       y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
-            {
-                this.indexes.Add(new CompareResultItem<ABaseDbIndex>
-                {
-                    TargetItem = index
-                });
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 20;
-
-            taskInfo.Message = Localization.StatusMappingConstraints;
-            foreach (var constraint in this.retrievedSourceDatabase.Constraints)
-            {
-                this.constraints.Add(new CompareResultItem<ABaseDbConstraint>
-                {
-                    SourceItem = constraint,
-                    TargetItem = this.retrievedTargetDatabase.Constraints.FirstOrDefault(x => x.TableSchema == constraint.TableSchema && x.TableName == constraint.TableName &&
-                                                                                              x.Schema == constraint.Schema && x.Name == constraint.Name)
-                });
-            }
-
-            foreach (var constraint in this.retrievedTargetDatabase.Constraints.Where(x =>
-                !this.constraints.Any(y => y.SourceItem.TableSchema == x.TableSchema && y.SourceItem.TableName == x.TableName &&
-                                           y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
-            {
-                this.constraints.Add(new CompareResultItem<ABaseDbConstraint>
-                {
-                    TargetItem = constraint
-                });
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 30;
-
-            taskInfo.Message = Localization.StatusMappingForeignKeys;
-            foreach (var foreignKey in this.retrievedSourceDatabase.ForeignKeys)
-            {
-                this.foreignKeys.Add(new CompareResultItem<ABaseDbForeignKey>
-                {
-                    SourceItem = foreignKey,
-                    TargetItem = this.retrievedTargetDatabase.ForeignKeys.FirstOrDefault(x => x.TableSchema == foreignKey.TableSchema && x.TableName == foreignKey.TableName &&
-                                                                                              x.Schema == foreignKey.Schema && x.Name == foreignKey.Name)
-                });
-            }
-
-            foreach (var foreignKey in this.retrievedTargetDatabase.ForeignKeys.Where(x =>
-                !this.foreignKeys.Any(y => y.SourceItem.TableSchema == x.TableSchema && y.SourceItem.TableName == x.TableName &&
-                                           y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
-            {
-                this.foreignKeys.Add(new CompareResultItem<ABaseDbForeignKey>
-                {
-                    TargetItem = foreignKey
-                });
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 40;
-
-            taskInfo.Message = Localization.StatusMappingViews;
-            foreach (var view in this.retrievedSourceDatabase.Views)
-            {
-                this.views.Add(new CompareResultItem<ABaseDbView>
-                {
-                    SourceItem = view,
-                    TargetItem = this.retrievedTargetDatabase.Views.FirstOrDefault(x => x.Schema == view.Schema && x.Name == view.Name)
-                });
-            }
-
-            foreach (var view in this.retrievedTargetDatabase.Views.Where(x =>
-                !this.views.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
-            {
-                this.views.Add(new CompareResultItem<ABaseDbView>
-                {
-                    TargetItem = view
-                });
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 50;
-
-            taskInfo.Message = Localization.StatusMappingFunctions;
-            foreach (var function in this.retrievedSourceDatabase.Functions)
-            {
-                this.functions.Add(new CompareResultItem<ABaseDbFunction>
-                {
-                    SourceItem = function,
-                    TargetItem = this.retrievedTargetDatabase.Functions.FirstOrDefault(x => x.Schema == function.Schema && x.Name == function.Name)
-                });
-            }
-
-            foreach (var function in this.retrievedTargetDatabase.Functions.Where(x =>
-                !this.functions.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
-            {
-                this.functions.Add(new CompareResultItem<ABaseDbFunction>
-                {
-                    TargetItem = function
-                });
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 60;
-
-            taskInfo.Message = Localization.StatusMappingStoredProcedures;
-            foreach (var storedProcedure in this.retrievedSourceDatabase.StoredProcedures)
-            {
-                this.storedProcedures.Add(new CompareResultItem<ABaseDbStoredProcedure>
-                {
-                    SourceItem = storedProcedure,
-                    TargetItem = this.retrievedTargetDatabase.StoredProcedures.FirstOrDefault(x => x.Schema == storedProcedure.Schema && x.Name == storedProcedure.Name)
-                });
-            }
-
-            foreach (var storedProcedure in this.retrievedTargetDatabase.StoredProcedures.Where(x =>
-                !this.storedProcedures.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
-            {
-                this.storedProcedures.Add(new CompareResultItem<ABaseDbStoredProcedure>
-                {
-                    TargetItem = storedProcedure
-                });
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 70;
-
-            taskInfo.Message = Localization.StatusMappingSequences;
-            foreach (var sequence in this.retrievedSourceDatabase.Sequences)
-            {
-                this.sequences.Add(new CompareResultItem<ABaseDbSequence>
-                {
-                    SourceItem = sequence,
-                    TargetItem = this.retrievedTargetDatabase.Sequences.FirstOrDefault(x => x.Schema == sequence.Schema && x.Name == sequence.Name)
-                });
-            }
-
-            foreach (var sequence in this.retrievedTargetDatabase.Sequences.Where(x =>
-                !this.sequences.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
-            {
-                this.sequences.Add(new CompareResultItem<ABaseDbSequence>
-                {
-                    TargetItem = sequence
-                });
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 80;
-
-            taskInfo.Message = Localization.StatusMappingDataTypes;
-            foreach (var type in this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined))
-            {
-                this.dataTypes.Add(new CompareResultItem<ABaseDbDataType>
-                {
-                    SourceItem = type,
-                    TargetItem = this.retrievedTargetDatabase.DataTypes.FirstOrDefault(x => x.Schema == type.Schema && x.Name == type.Name)
-                });
-            }
-
-            foreach (var type in this.retrievedTargetDatabase.DataTypes.Where(x => x.IsUserDefined &&
-                !this.dataTypes.Any(y => y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
-            {
-                this.dataTypes.Add(new CompareResultItem<ABaseDbDataType>
-                {
-                    TargetItem = type
-                });
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-            taskInfo.Percentage = 90;
-
-            taskInfo.Message = Localization.StatusMappingTriggers;
-            foreach (var trigger in this.retrievedSourceDatabase.Triggers)
-            {
-                this.triggers.Add(new CompareResultItem<ABaseDbTrigger>
-                {
-                    SourceItem = trigger,
-                    TargetItem = this.retrievedTargetDatabase.Triggers.FirstOrDefault(x => x.TableSchema == trigger.TableSchema && x.TableName == trigger.TableName &&
-                                                                                           x.Schema == trigger.Schema && x.Name == trigger.Name)
-                });
-            }
-
-            foreach (var trigger in this.retrievedTargetDatabase.Triggers.Where(x =>
-                !this.triggers.Any(y => y.SourceItem.TableSchema == x.TableSchema && y.SourceItem.TableName == x.TableName &&
-                                        y.SourceItem.Schema == x.Schema && y.SourceItem.Name == x.Name)).ToList())
-            {
-                this.triggers.Add(new CompareResultItem<ABaseDbTrigger>
-                {
-                    TargetItem = trigger
-                });
-            }
-
-            taskInfo.Message = string.Empty;
-            taskInfo.Percentage = 100;
-
-            return true;
-        }
-
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
         private bool ExecuteDatabaseComparison(TaskInfo taskInfo)
         {
-            var totalItems = this.tables.Count +
-                             this.indexes.Count +
-                             this.constraints.Count +
-                             this.foreignKeys.Count +
-                             this.triggers.Count +
-                             this.views.Count +
-                             this.functions.Count +
-                             this.storedProcedures.Count +
-                             this.dataTypes.Count;
-            if (totalItems == 0)
-            {
-                throw new DataException(Localization.ErrorEmptyDatabases);
-            }
-
             var processedItems = 1;
             var scripter = this.databaseScripterFactory.Create(
                 this.retrievedSourceDatabase,
                 this.projectService.Project.Options);
 
-            taskInfo.Message = Localization.StatusComparingTables;
-            foreach (var resultTable in this.tables)
+            // Linearize the 2 databases for mapping
+            var maps = new List<ObjectMap>
             {
-                if (resultTable.SourceItem != null)
-                {
-                    resultTable.SourceItemName = scripter.GenerateObjectName(resultTable.SourceItem);
-                    resultTable.Scripts.SourceCreateScript = scripter.GenerateCreateTableScript(resultTable.SourceItem);
-                }
+                new ObjectMap { StatusMessage = Localization.StatusComparingTables, DbObjects = this.retrievedSourceDatabase.Tables.Concat(this.retrievedTargetDatabase.Tables.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { StatusMessage = Localization.StatusComparingViews, DbObjects = this.retrievedSourceDatabase.Views.Concat(this.retrievedTargetDatabase.Views.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { StatusMessage = Localization.StatusComparingFunctions, DbObjects = this.retrievedSourceDatabase.Functions.Concat(this.retrievedTargetDatabase.Functions.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { StatusMessage = Localization.StatusComparingStoredProcedures, DbObjects = this.retrievedSourceDatabase.StoredProcedures.Concat(this.retrievedTargetDatabase.StoredProcedures.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { StatusMessage = Localization.StatusComparingDataTypes, DbObjects = this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined).Concat(this.retrievedTargetDatabase.DataTypes.Where(x => x.MappedDbObject == null && x.IsUserDefined)) },
+                new ObjectMap { StatusMessage = Localization.StatusComparingSequences, DbObjects = this.retrievedSourceDatabase.Sequences.Concat(this.retrievedTargetDatabase.Sequences.Where(x => x.MappedDbObject == null)) },
+            };
 
-                if (resultTable.TargetItem != null)
-                {
-                    resultTable.TargetItemName = scripter.GenerateObjectName(resultTable.TargetItem);
-                    resultTable.Scripts.TargetCreateScript = scripter.GenerateCreateTableScript(resultTable.TargetItem, resultTable.SourceItem);
-                }
-
-                if (!resultTable.Equal)
-                {
-                    resultTable.Scripts.AlterScript = scripter.GenerateAlterTableScript(resultTable.SourceItem, resultTable.TargetItem);
-                }
-
-                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
+            var totalItems = maps.SelectMany(x => x.DbObjects).Count();
+            if (totalItems == 0)
+            {
+                throw new DataException(Localization.ErrorEmptyDatabases);
             }
 
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-
-            taskInfo.Message = Localization.StatusComparingIndexes;
-            foreach (var resultIndex in this.indexes)
+            foreach (var m in maps)
             {
-                if (resultIndex.SourceItem != null)
+                taskInfo.Message = m.StatusMessage;
+                foreach (var item in m.DbObjects)
                 {
-                    resultIndex.SourceItemName = scripter.GenerateObjectName(resultIndex.SourceItem);
-                    resultIndex.Scripts.SourceCreateScript = scripter.GenerateCreateIndexScript(resultIndex.SourceItem);
-                }
+                    item.CreateScript = scripter.GenerateCreateScript(item);
+                    if (item.MappedDbObject != null)
+                    {
+                        item.MappedDbObject.CreateScript = scripter.GenerateCreateScript(item.MappedDbObject);
+                    }
 
-                if (resultIndex.TargetItem != null)
-                {
-                    resultIndex.TargetItemName = scripter.GenerateObjectName(resultIndex.TargetItem);
-                    resultIndex.Scripts.TargetCreateScript = scripter.GenerateCreateIndexScript(resultIndex.TargetItem);
-                }
+                    // TODO: for the moment skip alter script if create scripts are equals
+                    if (item.CreateScript != item.MappedDbObject?.CreateScript)
+                    {
+                        item.AlterScript = scripter.GenerateAlterScript(item);
+                    }
 
-                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
+                    if (item is ABaseDbTable table)
+                    {
+                        this.CompareTable(table, scripter);
+                    }
+
+                    taskInfo.Percentage = (short)(100 * processedItems++ / totalItems);
+                }
             }
 
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+            this.SetCompareResultList(this.tables, this.retrievedSourceDatabase.Tables, this.retrievedTargetDatabase.Tables, scripter);
+            this.SetCompareResultList(this.indexes, this.retrievedSourceDatabase.Indexes, this.retrievedTargetDatabase.Indexes, scripter);
+            this.SetCompareResultList(this.constraints, this.retrievedSourceDatabase.Constraints, this.retrievedTargetDatabase.Constraints, scripter);
 
-            taskInfo.Message = Localization.StatusComparingConstraints;
-            foreach (var resultConstraint in this.constraints)
-            {
-                if (resultConstraint.SourceItem != null)
-                {
-                    resultConstraint.SourceItemName = scripter.GenerateObjectName(resultConstraint.SourceItem);
-                    resultConstraint.Scripts.SourceCreateScript = scripter.GenerateCreateConstraintScript(resultConstraint.SourceItem);
-                }
+            this.SetCompareResultList(this.foreignKeys, this.retrievedSourceDatabase.ForeignKeys, this.retrievedTargetDatabase.ForeignKeys, scripter);
 
-                if (resultConstraint.TargetItem != null)
-                {
-                    resultConstraint.TargetItemName = scripter.GenerateObjectName(resultConstraint.TargetItem);
-                    resultConstraint.Scripts.TargetCreateScript = scripter.GenerateCreateConstraintScript(resultConstraint.TargetItem);
-                }
+            this.SetCompareResultList(this.views, this.retrievedSourceDatabase.Views, this.retrievedTargetDatabase.Views, scripter);
 
-                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
-            }
+            this.SetCompareResultList(this.functions, this.retrievedSourceDatabase.Functions, this.retrievedTargetDatabase.Functions, scripter);
 
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+            this.SetCompareResultList(this.storedProcedures, this.retrievedSourceDatabase.StoredProcedures, this.retrievedTargetDatabase.StoredProcedures, scripter);
+            this.SetCompareResultList(this.sequences, this.retrievedSourceDatabase.Sequences, this.retrievedTargetDatabase.Sequences, scripter);
 
-            taskInfo.Message = Localization.StatusComparingForeignKeys;
-            foreach (var resultForeignKey in this.foreignKeys)
-            {
-                if (resultForeignKey.SourceItem != null)
-                {
-                    resultForeignKey.SourceItemName = scripter.GenerateObjectName(resultForeignKey.SourceItem);
-                    resultForeignKey.Scripts.SourceCreateScript = scripter.GenerateCreateForeignKeyScript(resultForeignKey.SourceItem);
-                }
+            this.SetCompareResultList(this.dataTypes, this.retrievedSourceDatabase.DataTypes, this.retrievedTargetDatabase.DataTypes, scripter);
 
-                if (resultForeignKey.TargetItem != null)
-                {
-                    resultForeignKey.TargetItemName = scripter.GenerateObjectName(resultForeignKey.TargetItem);
-                    resultForeignKey.Scripts.TargetCreateScript = scripter.GenerateCreateForeignKeyScript(resultForeignKey.TargetItem);
-                }
-
-                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-
-            taskInfo.Message = Localization.StatusComparingTriggers;
-            foreach (var resultTrigger in this.triggers)
-            {
-                if (resultTrigger.SourceItem != null)
-                {
-                    resultTrigger.SourceItemName = scripter.GenerateObjectName(resultTrigger.SourceItem);
-                    resultTrigger.Scripts.SourceCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.SourceItem);
-                }
-
-                if (resultTrigger.TargetItem != null)
-                {
-                    resultTrigger.TargetItemName = scripter.GenerateObjectName(resultTrigger.TargetItem);
-                    resultTrigger.Scripts.TargetCreateScript = scripter.GenerateCreateTriggerScript(resultTrigger.TargetItem);
-                }
-
-                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-
-            taskInfo.Message = Localization.StatusComparingViews;
-            foreach (var resultView in this.views)
-            {
-                if (resultView.SourceItem != null)
-                {
-                    resultView.SourceItemName = scripter.GenerateObjectName(resultView.SourceItem);
-                    resultView.Scripts.SourceCreateScript = scripter.GenerateCreateViewScript(resultView.SourceItem);
-                }
-
-                if (resultView.TargetItem != null)
-                {
-                    resultView.TargetItemName = scripter.GenerateObjectName(resultView.TargetItem);
-                    resultView.Scripts.TargetCreateScript = scripter.GenerateCreateViewScript(resultView.TargetItem);
-                }
-
-                if (!resultView.Equal)
-                {
-                    resultView.Scripts.AlterScript = scripter.GenerateAlterViewScript(resultView.SourceItem, resultView.TargetItem);
-                }
-
-                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-
-            taskInfo.Message = Localization.StatusComparingFunctions;
-            foreach (var resultFunction in this.functions)
-            {
-                if (resultFunction.SourceItem != null)
-                {
-                    resultFunction.SourceItemName = scripter.GenerateObjectName(resultFunction.SourceItem);
-                    resultFunction.Scripts.SourceCreateScript = scripter.GenerateCreateFunctionScript(resultFunction.SourceItem, this.retrievedSourceDatabase.DataTypes);
-                }
-
-                if (resultFunction.TargetItem != null)
-                {
-                    resultFunction.TargetItemName = scripter.GenerateObjectName(resultFunction.TargetItem);
-                    resultFunction.Scripts.TargetCreateScript = scripter.GenerateCreateFunctionScript(resultFunction.TargetItem, this.retrievedTargetDatabase.DataTypes);
-                }
-
-                if (!resultFunction.Equal)
-                {
-                    resultFunction.Scripts.AlterScript = scripter.GenerateAlterFunctionScript(resultFunction.SourceItem, this.retrievedSourceDatabase.DataTypes, resultFunction.TargetItem, this.retrievedTargetDatabase.DataTypes);
-                }
-
-                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-
-            taskInfo.Message = Localization.StatusComparingStoredProcedures;
-            foreach (var resultStoredProcedure in this.storedProcedures)
-            {
-                if (resultStoredProcedure.SourceItem != null)
-                {
-                    resultStoredProcedure.SourceItemName = scripter.GenerateObjectName(resultStoredProcedure.SourceItem);
-                    resultStoredProcedure.Scripts.SourceCreateScript = scripter.GenerateCreateStoredProcedureScript(resultStoredProcedure.SourceItem);
-                }
-
-                if (resultStoredProcedure.TargetItem != null)
-                {
-                    resultStoredProcedure.TargetItemName = scripter.GenerateObjectName(resultStoredProcedure.TargetItem);
-                    resultStoredProcedure.Scripts.TargetCreateScript = scripter.GenerateCreateStoredProcedureScript(resultStoredProcedure.TargetItem);
-                }
-
-                if (!resultStoredProcedure.Equal)
-                {
-                    resultStoredProcedure.Scripts.AlterScript = scripter.GenerateAlterStoredProcedureScript(resultStoredProcedure.SourceItem, resultStoredProcedure.TargetItem);
-                }
-
-                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-
-            taskInfo.Message = Localization.StatusComparingSequences;
-            foreach (var resultSequence in this.sequences)
-            {
-                if (resultSequence.SourceItem != null)
-                {
-                    resultSequence.SourceItemName = scripter.GenerateObjectName(resultSequence.SourceItem);
-                    resultSequence.Scripts.SourceCreateScript = scripter.GenerateCreateSequenceScript(resultSequence.SourceItem);
-                }
-
-                if (resultSequence.TargetItem != null)
-                {
-                    resultSequence.TargetItemName = scripter.GenerateObjectName(resultSequence.TargetItem);
-                    resultSequence.Scripts.TargetCreateScript = scripter.GenerateCreateSequenceScript(resultSequence.TargetItem);
-                }
-
-                if (!resultSequence.Equal)
-                {
-                    resultSequence.Scripts.AlterScript = scripter.GenerateAlterSequenceScript(resultSequence.SourceItem, resultSequence.TargetItem);
-                }
-
-                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
-            }
-
-            taskInfo.CancellationToken.ThrowIfCancellationRequested();
-
-            taskInfo.Message = Localization.StatusComparingDataTypes;
-            foreach (var resultType in this.dataTypes)
-            {
-                if (resultType.SourceItem != null)
-                {
-                    resultType.SourceItemName = scripter.GenerateObjectName(resultType.SourceItem);
-                    resultType.Scripts.SourceCreateScript = scripter.GenerateCreateTypeScript(resultType.SourceItem, this.retrievedSourceDatabase.DataTypes);
-                }
-
-                if (resultType.TargetItem != null)
-                {
-                    resultType.TargetItemName = scripter.GenerateObjectName(resultType.TargetItem);
-                    resultType.Scripts.TargetCreateScript = scripter.GenerateCreateTypeScript(resultType.TargetItem, this.retrievedTargetDatabase.DataTypes);
-                }
-
-                if (!resultType.Equal)
-                {
-                    resultType.Scripts.AlterScript = scripter.GenerateAlterTypeScript(resultType.SourceItem, this.retrievedSourceDatabase.DataTypes, resultType.TargetItem, this.retrievedTargetDatabase.DataTypes);
-                }
-
-                taskInfo.Percentage = (short)((double)processedItems++ / totalItems * 100);
-            }
+            this.SetCompareResultList(this.triggers, this.retrievedSourceDatabase.Triggers, this.retrievedTargetDatabase.Triggers, scripter);
 
             var result = new CompareResult();
 
@@ -592,6 +186,65 @@ namespace TiCodeX.SQLSchemaCompare.Services
             this.projectService.Project.Result = result;
 
             return true;
+        }
+
+        private void SetCompareResultList<T>(List<CompareResultItem<T>> resultList, List<T> source, List<T> target, IDatabaseScripter scripter)
+            where T : ABaseDbObject
+        {
+            foreach (var item in source)
+            {
+                resultList.Add(new CompareResultItem<T>
+                {
+                    SourceItem = item,
+                    TargetItem = item.MappedDbObject as T,
+                    SourceItemName = scripter.GenerateObjectName(item),
+                    TargetItemName = item.MappedDbObject != null ? scripter.GenerateObjectName(item.MappedDbObject) : string.Empty,
+                    Scripts = new CompareResultItemScripts
+                    {
+                        SourceCreateScript = item.CreateScript,
+                        TargetCreateScript = item.MappedDbObject != null ? item.MappedDbObject.CreateScript : string.Empty,
+                        AlterScript = item.AlterScript
+                    }
+                });
+            }
+
+            foreach (var item in target.Where(x => x.MappedDbObject == null).ToList())
+            {
+                resultList.Add(new CompareResultItem<T>
+                {
+                    TargetItem = item,
+                    TargetItemName = scripter.GenerateObjectName(item),
+                    Scripts = new CompareResultItemScripts
+                    {
+                        TargetCreateScript = item.CreateScript,
+                        AlterScript = item.AlterScript
+                    }
+                });
+            }
+        }
+
+        private void CompareTable(ABaseDbTable table, IDatabaseScripter scripter)
+        {
+            // Linearize the 2 databases for mapping
+            var maps = new List<ObjectMap>
+            {
+                new ObjectMap { DbObjects = table.Indexes },
+                new ObjectMap { DbObjects = table.Constraints },
+                new ObjectMap { DbObjects = table.ForeignKeys },
+                new ObjectMap { DbObjects = table.Triggers },
+            };
+
+            foreach (var m in maps)
+            {
+                foreach (var item in m.DbObjects)
+                {
+                    item.CreateScript = scripter.GenerateCreateScript(item);
+                    if (item.MappedDbObject != null)
+                    {
+                        item.MappedDbObject.CreateScript = scripter.GenerateCreateScript(item.MappedDbObject);
+                    }
+                }
+            }
         }
 
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
@@ -739,6 +392,13 @@ namespace TiCodeX.SQLSchemaCompare.Services
             v.ForEach(x => differentItems.Remove(x));
 
             return scripter.GenerateFullAlterScript(differentItems, onlySourceDb, onlyTargetDb);
+        }
+
+        private class ObjectMap
+        {
+            public string StatusMessage { get; internal set; }
+
+            public IEnumerable<ABaseDbObject> DbObjects { get; internal set; }
         }
     }
 }

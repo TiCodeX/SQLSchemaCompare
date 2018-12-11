@@ -12,7 +12,6 @@ using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 using TiCodeX.SQLSchemaCompare.Services;
-using TiCodeX.SQLSchemaCompare.UI.Enums;
 using TiCodeX.SQLSchemaCompare.UI.Models;
 using TiCodeX.SQLSchemaCompare.UI.Models.Project;
 

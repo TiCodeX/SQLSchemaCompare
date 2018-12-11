@@ -19,5 +19,25 @@
         /// Gets or sets a value indicating whether the alter script is supported
         /// </summary>
         public bool AlterScriptSupported { get; protected set; } = true;
+
+        /// <summary>
+        /// Gets or sets the mapped object
+        /// </summary>
+        public ABaseDbObject MappedDbObject { get; set; }
+
+        /// <summary>
+        /// Gets or sets the database
+        /// </summary>
+        public ABaseDb Database { get; set; }
+
+        /// <summary>
+        /// Gets or sets the create script
+        /// </summary>
+        public string CreateScript { get; set; }
+
+        /// <summary>
+        /// Gets or sets the alter script
+        /// </summary>
+        public string AlterScript { get; set; }
     }
 }

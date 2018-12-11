@@ -1,12 +1,23 @@
 ﻿using System.Collections.Generic;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
 
 namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
     /// <summary>
     /// Provides generic information of database classes
     /// </summary>
-    public abstract class ABaseDb : ABaseDbObject
+    public abstract class ABaseDb
     {
+        /// <summary>
+        /// Gets or sets the database name
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the database compare direction (source or target database)
+        /// </summary>
+        public CompareDirection Direction { get; set; }
+
         /// <summary>
         /// Gets the database tables
         /// </summary>

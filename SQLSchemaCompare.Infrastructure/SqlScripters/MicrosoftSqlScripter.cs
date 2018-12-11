@@ -27,11 +27,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptCreateTable(ABaseDbTable table, ABaseDbTable referenceTable = null)
+        protected override string ScriptCreateTable(ABaseDbTable table)
         {
             var ncol = table.Columns.Count;
 
-            var columns = this.GetSortedTableColumns(table, referenceTable);
+            var columns = this.GetSortedTableColumns(table);
 
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE TABLE {this.ScriptHelper.ScriptObjectName(table)}(");

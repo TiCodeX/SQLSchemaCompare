@@ -45,9 +45,8 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
         /// Generates the create table script and related keys/indexes
         /// </summary>
         /// <param name="table">The table to be scripted</param>
-        /// <param name="referenceTable">The reference table for comparison, used for column order</param>
         /// <returns>The create script</returns>
-        string GenerateCreateTableScript(ABaseDbTable table, ABaseDbTable referenceTable = null);
+        string GenerateCreateTableScript(ABaseDbTable table);
 
         /// <summary>
         /// Generates the drop table script and related keys/indexes
@@ -63,27 +62,6 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
         /// <param name="targetTable">The target table</param>
         /// <returns>The alter script</returns>
         string GenerateAlterTableScript(ABaseDbTable sourceTable, ABaseDbTable targetTable);
-
-        /// <summary>
-        /// Generates the create index script
-        /// </summary>
-        /// <param name="index">The index to be scripted</param>
-        /// <returns>The create script</returns>
-        string GenerateCreateIndexScript(ABaseDbIndex index);
-
-        /// <summary>
-        /// Generates the create constraint script
-        /// </summary>
-        /// <param name="constraint">The constraint to be scripted</param>
-        /// <returns>The create script</returns>
-        string GenerateCreateConstraintScript(ABaseDbConstraint constraint);
-
-        /// <summary>
-        /// Generates the create foreign key script
-        /// </summary>
-        /// <param name="foreignKey">The foreign key to be scripted</param>
-        /// <returns>The create script</returns>
-        string GenerateCreateForeignKeyScript(ABaseDbForeignKey foreignKey);
 
         /// <summary>
         /// Generates the create view script and related indexes
@@ -108,14 +86,6 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
         string GenerateAlterViewScript(ABaseDbView sourceView, ABaseDbView targetView);
 
         /// <summary>
-        /// Generates the create function script
-        /// </summary>
-        /// <param name="sqlFunction">The function to be scripted</param>
-        /// <param name="dataTypes">The list of database data types</param>
-        /// <returns>The create script</returns>
-        string GenerateCreateFunctionScript(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes);
-
-        /// <summary>
         /// Generates the alter function script
         /// </summary>
         /// <param name="sourceFunction">The source function</param>
@@ -126,26 +96,12 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
         string GenerateAlterFunctionScript(ABaseDbFunction sourceFunction, IReadOnlyList<ABaseDbDataType> sourceDataTypes, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> targetDataTypes);
 
         /// <summary>
-        /// Generates the create stored procedure script
-        /// </summary>
-        /// <param name="storedProcedure">The stored procedure to be scripted</param>
-        /// <returns>The create script</returns>
-        string GenerateCreateStoredProcedureScript(ABaseDbStoredProcedure storedProcedure);
-
-        /// <summary>
         /// Generates the alter stored procedure script
         /// </summary>
         /// <param name="sourceStoredProcedure">The source stored procedure</param>
         /// <param name="targetStoredProcedure">The target stored procedure</param>
         /// <returns>The alter script</returns>
         string GenerateAlterStoredProcedureScript(ABaseDbStoredProcedure sourceStoredProcedure, ABaseDbStoredProcedure targetStoredProcedure);
-
-        /// <summary>
-        /// Generates the create trigger script
-        /// </summary>
-        /// <param name="trigger">The trigger to be scripted</param>
-        /// <returns>The create script</returns>
-        string GenerateCreateTriggerScript(ABaseDbTrigger trigger);
 
         /// <summary>
         /// Generates the alter trigger script
@@ -156,27 +112,12 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
         string GenerateAlterTriggerScript(ABaseDbTrigger sourceTrigger, ABaseDbTrigger targetTrigger);
 
         /// <summary>
-        /// Generates the create sequence script
-        /// </summary>
-        /// <param name="sequence">The sequence to be scripted</param>
-        /// <returns>The create script</returns>
-        string GenerateCreateSequenceScript(ABaseDbSequence sequence);
-
-        /// <summary>
         /// Generates the alter sequence script
         /// </summary>
         /// <param name="sourceSequence">The source sequence</param>
         /// <param name="targetSequence">The target sequence</param>
         /// <returns>The alter script</returns>
         string GenerateAlterSequenceScript(ABaseDbSequence sourceSequence, ABaseDbSequence targetSequence);
-
-        /// <summary>
-        /// Generates the create type script
-        /// </summary>
-        /// <param name="type">The type to be scripted</param>
-        /// <param name="dataTypes">The list of database data types</param>
-        /// <returns>The create script</returns>
-        string GenerateCreateTypeScript(ABaseDbDataType type, IReadOnlyList<ABaseDbDataType> dataTypes);
 
         /// <summary>
         /// Generates the alter type script
@@ -187,5 +128,19 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
         /// <param name="targetDataTypes">The list of target database data types</param>
         /// <returns>The alter script</returns>
         string GenerateAlterTypeScript(ABaseDbDataType sourceType, IReadOnlyList<ABaseDbDataType> sourceDataTypes, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> targetDataTypes);
+
+        /// <summary>
+        /// Generates the create script for the given database object
+        /// </summary>
+        /// <param name="dbObject">The database object</param>
+        /// <returns>The create script</returns>
+        string GenerateCreateScript(ABaseDbObject dbObject);
+
+        /// <summary>
+        /// Generates the alter script for the given database object
+        /// </summary>
+        /// <param name="dbObject">The database object</param>
+        /// <returns>The alter script</returns>
+        string GenerateAlterScript(ABaseDbObject dbObject);
     }
 }

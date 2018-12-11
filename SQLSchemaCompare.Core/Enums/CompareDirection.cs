@@ -1,18 +1,22 @@
-﻿namespace TiCodeX.SQLSchemaCompare.UI.Enums
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace TiCodeX.SQLSchemaCompare.Core.Enums
 {
     /// <summary>
-    /// List of database comparison directions
+    /// Represent the database comparison direction
     /// </summary>
     public enum CompareDirection
     {
         /// <summary>
         /// Represent the source database
         /// </summary>
-        Source,
+        Source = 0,
 
         /// <summary>
         /// Represent the target database
         /// </summary>
-        Target,
+        Target = 1,
     }
 }

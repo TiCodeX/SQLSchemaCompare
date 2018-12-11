@@ -123,6 +123,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 taskInfo.Percentage = 16;
                 taskInfo.Message = Localization.StatusRetrievingTables;
                 db.Tables.AddRange(this.GetTables(context));
+                db.Tables.ForEach(x => x.Database = db);
             }
             catch (Exception ex)
             {
@@ -136,6 +137,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 24;
                 columns.AddRange(this.GetColumns(context));
+                columns.ForEach(x => x.Database = db);
             }
             catch (Exception ex)
             {
@@ -153,6 +155,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 foreach (var foreignKeyGroup in this.GetForeignKeys(context).GroupBy(x => new { x.TableSchema, x.TableName, x.Name }))
                 {
                     var foreignKey = foreignKeyGroup.First();
+                    foreignKey.Database = db;
                     foreignKey.ColumnNames.AddRange(foreignKeyGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
                     foreignKey.ReferencedColumnNames.AddRange(foreignKeyGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ReferencedColumnName));
                     db.ForeignKeys.Add(foreignKey);
@@ -174,6 +177,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 foreach (var indexGroup in this.GetIndexes(context).GroupBy(x => new { x.TableSchema, x.TableName, x.Name }))
                 {
                     var index = indexGroup.First();
+                    index.Database = db;
                     index.ColumnNames.AddRange(indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
                     index.ColumnDescending.AddRange(indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.IsDescending));
                     db.Indexes.Add(index);
@@ -194,6 +198,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 foreach (var constraintGroup in this.GetConstraints(context).GroupBy(x => new { x.TableSchema, x.TableName, x.Name }))
                 {
                     var constraint = constraintGroup.First();
+                    constraint.Database = db;
                     constraint.ColumnNames.AddRange(constraintGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
                     db.Constraints.Add(constraint);
                 }
@@ -211,7 +216,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 taskInfo.Percentage = 56;
                 taskInfo.Message = Localization.StatusRetrievingTriggers;
                 db.Triggers.AddRange(this.GetTriggers(context));
-                db.Triggers.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
+                db.Triggers.ForEach(x =>
+                {
+                    x.Definition = x.Definition.TrimStart('\r', '\n');
+                    x.Database = db;
+                });
             }
             catch (Exception ex)
             {
@@ -230,7 +239,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 taskInfo.Percentage = 64;
                 taskInfo.Message = Localization.StatusRetrievingViews;
                 db.Views.AddRange(this.GetViews(context));
-                db.Views.ForEach(x => { x.ViewDefinition = x.ViewDefinition.TrimStart('\r', '\n'); });
+                db.Views.ForEach(x =>
+                {
+                    x.ViewDefinition = x.ViewDefinition.TrimStart('\r', '\n');
+                    x.Database = db;
+                });
             }
             catch (Exception ex)
             {
@@ -249,7 +262,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 taskInfo.Percentage = 72;
                 taskInfo.Message = Localization.StatusRetrievingFunctions;
                 db.Functions.AddRange(this.GetFunctions(context));
-                db.Functions.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
+                db.Functions.ForEach(x =>
+                {
+                    x.Definition = x.Definition.TrimStart('\r', '\n');
+                    x.Database = db;
+                });
             }
             catch (Exception ex)
             {
@@ -264,7 +281,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 taskInfo.Percentage = 80;
                 taskInfo.Message = Localization.StatusRetrievingStoredProcedures;
                 db.StoredProcedures.AddRange(this.GetStoredProcedures(context));
-                db.StoredProcedures.ForEach(x => { x.Definition = x.Definition.TrimStart('\r', '\n'); });
+                db.StoredProcedures.ForEach(x =>
+                {
+                    x.Definition = x.Definition.TrimStart('\r', '\n');
+                    x.Database = db;
+                });
             }
             catch (Exception ex)
             {
@@ -279,6 +300,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 taskInfo.Percentage = 88;
                 taskInfo.Message = Localization.StatusRetrievingDataTypes;
                 db.DataTypes.AddRange(this.GetDataTypes(context));
+                db.DataTypes.ForEach(x => x.Database = db);
             }
             catch (Exception ex)
             {
@@ -293,6 +315,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 taskInfo.Percentage = 96;
                 taskInfo.Message = Localization.StatusRetrievingSequences;
                 db.Sequences.AddRange(this.GetSequences(context));
+                db.Sequences.ForEach(x => x.Database = db);
             }
             catch (Exception ex)
             {

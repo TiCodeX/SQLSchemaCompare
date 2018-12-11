@@ -51,7 +51,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
         public void ScriptDataType(ProjectOptions options, MicrosoftSqlDataType dataType, string expectedResult)
         {
             var scripter = new MicrosoftSqlScripter(this.Logger, options);
-            scripter.GenerateCreateTypeScript(dataType, new List<ABaseDbDataType>()).Should().Be(expectedResult);
+            dataType.Database = new MicrosoftSqlDb();
+            scripter.GenerateCreateScript(dataType).Should().Be(expectedResult);
         }
     }
 }

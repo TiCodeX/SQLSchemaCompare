@@ -417,7 +417,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateCreateTableScript(ABaseDbTable table, ABaseDbTable referenceTable = null)
+        public string GenerateCreateTableScript(ABaseDbTable table)
         {
             if (table == null)
             {
@@ -426,7 +426,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             var sb = new StringBuilder();
 
-            sb.Append(this.ScriptCreateTable(table, referenceTable));
+            sb.Append(this.ScriptCreateTable(table));
 
             var additionalEmptyLine = true;
             if (table.PrimaryKeys.Count > 0)
@@ -615,39 +615,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateCreateIndexScript(ABaseDbIndex index)
-        {
-            if (index == null)
-            {
-                throw new ArgumentNullException(nameof(index));
-            }
-
-            return this.ScriptCreateIndex(index);
-        }
-
-        /// <inheritdoc/>
-        public string GenerateCreateConstraintScript(ABaseDbConstraint constraint)
-        {
-            if (constraint == null)
-            {
-                throw new ArgumentNullException(nameof(constraint));
-            }
-
-            return this.ScriptAlterTableAddConstraint(constraint);
-        }
-
-        /// <inheritdoc/>
-        public string GenerateCreateForeignKeyScript(ABaseDbForeignKey foreignKey)
-        {
-            if (foreignKey == null)
-            {
-                throw new ArgumentNullException(nameof(foreignKey));
-            }
-
-            return this.ScriptAlterTableAddForeignKey(foreignKey);
-        }
-
-        /// <inheritdoc/>
         public string GenerateCreateViewScript(ABaseDbView view)
         {
             if (view == null)
@@ -710,22 +677,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateCreateFunctionScript(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
-        {
-            if (sqlFunction == null)
-            {
-                throw new ArgumentNullException(nameof(sqlFunction));
-            }
-
-            if (dataTypes == null)
-            {
-                throw new ArgumentNullException(nameof(dataTypes));
-            }
-
-            return this.ScriptCreateFunction(sqlFunction, dataTypes);
-        }
-
-        /// <inheritdoc/>
         public string GenerateAlterFunctionScript(ABaseDbFunction sourceFunction, IReadOnlyList<ABaseDbDataType> sourceDataTypes, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> targetDataTypes)
         {
             if (sourceFunction == null && targetFunction == null)
@@ -735,23 +686,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             if (targetFunction == null)
             {
-                return this.GenerateCreateFunctionScript(sourceFunction, sourceDataTypes);
+                return this.ScriptCreateFunction(sourceFunction, sourceDataTypes);
             }
 
             return sourceFunction == null ?
-                this.ScriptDropFunction(targetFunction, sourceDataTypes) :
+                this.ScriptDropFunction(targetFunction, targetDataTypes) :
                 this.ScriptAlterFunction(sourceFunction, targetFunction, targetDataTypes);
-        }
-
-        /// <inheritdoc/>
-        public string GenerateCreateStoredProcedureScript(ABaseDbStoredProcedure storedProcedure)
-        {
-            if (storedProcedure == null)
-            {
-                throw new ArgumentNullException(nameof(storedProcedure));
-            }
-
-            return this.ScriptCreateStoredProcedure(storedProcedure);
         }
 
         /// <inheritdoc/>
@@ -764,23 +704,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             if (targetStoredProcedure == null)
             {
-                return this.GenerateCreateStoredProcedureScript(sourceStoredProcedure);
+                return this.ScriptCreateStoredProcedure(sourceStoredProcedure);
             }
 
             return sourceStoredProcedure == null ?
                 this.ScriptDropStoredProcedure(targetStoredProcedure) :
                 this.ScriptAlterStoredProcedure(sourceStoredProcedure, targetStoredProcedure);
-        }
-
-        /// <inheritdoc/>
-        public string GenerateCreateTriggerScript(ABaseDbTrigger trigger)
-        {
-            if (trigger == null)
-            {
-                throw new ArgumentNullException(nameof(trigger));
-            }
-
-            return this.ScriptCreateTrigger(trigger);
         }
 
         /// <inheritdoc/>
@@ -793,23 +722,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             if (targetTrigger == null)
             {
-                return this.GenerateCreateTriggerScript(sourceTrigger);
+                return this.ScriptCreateTrigger(sourceTrigger);
             }
 
             return sourceTrigger == null ?
                 this.ScriptDropTrigger(targetTrigger) :
                 this.ScriptAlterTrigger(sourceTrigger, targetTrigger);
-        }
-
-        /// <inheritdoc/>
-        public string GenerateCreateSequenceScript(ABaseDbSequence sequence)
-        {
-            if (sequence == null)
-            {
-                throw new ArgumentNullException(nameof(sequence));
-            }
-
-            return this.ScriptCreateSequence(sequence);
         }
 
         /// <inheritdoc/>
@@ -822,23 +740,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             if (targetSequence == null)
             {
-                return this.GenerateCreateSequenceScript(sourceSequence);
+                return this.ScriptCreateSequence(sourceSequence);
             }
 
             return sourceSequence == null ?
                 this.ScriptDropSequence(targetSequence) :
                 this.ScriptAlterSequence(sourceSequence, targetSequence);
-        }
-
-        /// <inheritdoc/>
-        public string GenerateCreateTypeScript(ABaseDbDataType type, IReadOnlyList<ABaseDbDataType> dataTypes)
-        {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            return this.ScriptCreateType(type, dataTypes);
         }
 
         /// <inheritdoc/>
@@ -851,7 +758,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             if (targetType == null)
             {
-                return this.GenerateCreateTypeScript(sourceType, sourceDataTypes);
+                return this.ScriptCreateType(sourceType, sourceDataTypes);
             }
 
             return sourceType == null ?
@@ -859,13 +766,76 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 this.ScriptAlterType(sourceType, targetType, sourceDataTypes);
         }
 
+        /// <inheritdoc/>
+        public string GenerateCreateScript(ABaseDbObject dbObject)
+        {
+            switch (dbObject)
+            {
+                case ABaseDbTable t:
+                    return this.GenerateCreateTableScript(t);
+                case ABaseDbView v:
+                    return this.GenerateCreateViewScript(v);
+                case ABaseDbIndex i:
+                    return this.ScriptCreateIndex(i);
+                case ABaseDbForeignKey fk:
+                    return this.ScriptAlterTableAddForeignKey(fk);
+                case ABaseDbConstraint c:
+                    return this.ScriptAlterTableAddConstraint(c);
+                case ABaseDbFunction f:
+                    return this.ScriptCreateFunction(f, f.Database.DataTypes);
+                case ABaseDbSequence s:
+                    return this.ScriptCreateSequence(s);
+                case ABaseDbStoredProcedure st:
+                    return this.ScriptCreateStoredProcedure(st);
+                case ABaseDbTrigger tr:
+                    return this.ScriptCreateTrigger(tr);
+                case ABaseDbDataType dt:
+                    return this.ScriptCreateType(dt, dt.Database.DataTypes);
+                case ABaseDbColumn c:
+                    throw new NotImplementedException();
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        /// <inheritdoc/>
+        public string GenerateAlterScript(ABaseDbObject dbObject)
+        {
+            switch (dbObject)
+            {
+                case ABaseDbTable t:
+                    return this.GenerateAlterTableScript(t, t.MappedDbObject as ABaseDbTable);
+                case ABaseDbView v:
+                    return this.GenerateAlterViewScript(v, v.MappedDbObject as ABaseDbView);
+                /*                case ABaseDbIndex i:
+                                    return this.GenerateAlterIndexScript(i);
+                                case ABaseDbForeignKey fk:
+                                    return this.GenerateAlterForeignKeyScript(fk);
+                                case ABaseDbConstraint c:
+                                    return this.GenerateAlterConstraintScript(c);*/
+                case ABaseDbFunction f:
+                    return this.GenerateAlterFunctionScript(f, f.Database.DataTypes, f.MappedDbObject as ABaseDbFunction, f.MappedDbObject?.Database.DataTypes);
+                case ABaseDbSequence s:
+                    return this.GenerateAlterSequenceScript(s, s.MappedDbObject as ABaseDbSequence);
+                case ABaseDbStoredProcedure st:
+                    return this.GenerateAlterStoredProcedureScript(st, st.MappedDbObject as ABaseDbStoredProcedure);
+                case ABaseDbTrigger tr:
+                    return this.GenerateAlterTriggerScript(tr, tr.MappedDbObject as ABaseDbTrigger);
+                case ABaseDbDataType dt:
+                    return this.GenerateAlterTypeScript(dt, dt.Database.DataTypes, dt.MappedDbObject as ABaseDbDataType, dt.MappedDbObject?.Database.DataTypes);
+                case ABaseDbColumn c:
+                    throw new NotImplementedException();
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
         /// <summary>
         /// Generates the create table script
         /// </summary>
         /// <param name="table">The table to script</param>
-        /// <param name="referenceTable">The reference table for comparison, used for column order</param>
         /// <returns>The create table script</returns>
-        protected abstract string ScriptCreateTable(ABaseDbTable table, ABaseDbTable referenceTable = null);
+        protected abstract string ScriptCreateTable(ABaseDbTable table);
 
         /// <summary>
         /// Generates the drop table script
@@ -1086,12 +1056,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// Get the table columns sorted depending on options and source table
         /// </summary>
         /// <param name="table">The table with columns to script</param>
-        /// <param name="referenceTable">The reference table for comparison</param>
         /// <returns>The sorted columns</returns>
-        protected IEnumerable<ABaseDbColumn> GetSortedTableColumns(ABaseDbTable table, ABaseDbTable referenceTable)
+        protected IEnumerable<ABaseDbColumn> GetSortedTableColumns(ABaseDbTable table)
         {
             // Order table columns alphabetically or by ordinal position
             var columns = this.Options.Scripting.OrderColumnAlphabetically ? table.Columns.OrderBy(x => x.Name).ToList() : this.OrderColumnsByOrdinalPosition(table).ToList();
+
+            var referenceTable = table.MappedDbObject as ABaseDbTable;
 
             // If there is no source table or ignore source table column order, returns the columns
             if (referenceTable == null || this.Options.Scripting.IgnoreReferenceTableColumnOrder)

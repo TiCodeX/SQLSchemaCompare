@@ -45,7 +45,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table, (ABaseDbTable)null);
+            var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
             columns.Select(x => x.Name).Should().ContainInOrder("a", "b", "c", "d", "e");
         }
 
@@ -66,7 +66,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table, (ABaseDbTable)null);
+            var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
             columns.Select(x => x.Name).Should().ContainInOrder("b", "e", "a", "d", "c");
         }
 
@@ -94,7 +94,9 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table, refTable);
+            table.MappedDbObject = refTable;
+
+            var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
             columns.Select(x => x.Name).Should().ContainInOrder("c", "d", "e", "a", "b");
         }
 
@@ -122,7 +124,9 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table, refTable);
+            table.MappedDbObject = refTable;
+
+            var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
             columns.Select(x => x.Name).Should().ContainInOrder("c", "e", "d", "b", "a");
         }
 
@@ -150,7 +154,9 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table, refTable);
+            table.MappedDbObject = refTable;
+
+            var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
             columns.Select(x => x.Name).Should().ContainInOrder("b", "e", "a", "d", "c");
         }
 
@@ -178,7 +184,9 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table, refTable);
+            table.MappedDbObject = refTable;
+
+            var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
             columns.Select(x => x.Name).Should().ContainInOrder("a", "b", "c", "d", "e");
         }
 

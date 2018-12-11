@@ -10,6 +10,7 @@ using Newtonsoft.Json.Serialization;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers;
 using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders;
 using TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
@@ -84,6 +85,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
             // Factory
             services.AddTransient<IDatabaseProviderFactory, DatabaseProviderFactory>();
             services.AddTransient<IDatabaseScripterFactory, DatabaseScripterFactory>();
+            services.AddTransient<IDatabaseMapper, DatabaseMapper>();
         }
 
         /// <summary>

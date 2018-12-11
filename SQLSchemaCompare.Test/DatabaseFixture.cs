@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -17,6 +18,7 @@ using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers;
 using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders;
 using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
@@ -478,6 +480,10 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 options.Excluding(x => ((ABaseDbTable)x).ForeignKeys);
                 options.Excluding(x => ((ABaseDbTable)x).ReferencingForeignKeys);
                 options.Excluding(x => ((ABaseDbTable)x).Indexes);
+                options.Excluding(x => ((ABaseDbObject)x).Database);
+                options.Excluding(x => new Regex("^Triggers\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^Constraints\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
+                options.Excluding(x => new Regex("^PrimaryKeys\\[.+\\]\\.Database$").IsMatch(x.SelectedMemberPath));
                 return options;
             });
             for (var i = 0; i < tables.Count; i++)
@@ -487,19 +493,39 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
                 var tableColumns = table.Columns.OrderBy(x => x.Name).Select(x => Convert.ChangeType(x, columnType, CultureInfo.InvariantCulture));
                 var clonedTableColumns = clonedTable.Columns.OrderBy(x => x.Name).Select(x => Convert.ChangeType(x, columnType, CultureInfo.InvariantCulture));
-                tableColumns.Should().BeEquivalentTo(clonedTableColumns);
+                tableColumns.Should().BeEquivalentTo(clonedTableColumns, options =>
+                {
+                    options.Excluding(x => ((ABaseDbObject)x).Database);
+
+                    return options;
+                });
 
                 var tableForeignKeys = table.ForeignKeys.OrderBy(x => x.ColumnName).Select(x => Convert.ChangeType(x, foreignKeyType, CultureInfo.InvariantCulture));
                 var clonedTableForeignKeys = clonedTable.ForeignKeys.OrderBy(x => x.ColumnName).Select(x => Convert.ChangeType(x, foreignKeyType, CultureInfo.InvariantCulture));
-                tableForeignKeys.Should().BeEquivalentTo(clonedTableForeignKeys);
+                tableForeignKeys.Should().BeEquivalentTo(clonedTableForeignKeys, options =>
+                {
+                    options.Excluding(x => ((ABaseDbObject)x).Database);
+
+                    return options;
+                });
 
                 var tableReferencingForeignKeys = table.ReferencingForeignKeys.OrderBy(x => x.ColumnName).Select(x => Convert.ChangeType(x, foreignKeyType, CultureInfo.InvariantCulture));
                 var clonedTableReferencingForeignKeys = clonedTable.ReferencingForeignKeys.OrderBy(x => x.ColumnName).Select(x => Convert.ChangeType(x, foreignKeyType, CultureInfo.InvariantCulture));
-                tableReferencingForeignKeys.Should().BeEquivalentTo(clonedTableReferencingForeignKeys);
+                tableReferencingForeignKeys.Should().BeEquivalentTo(clonedTableReferencingForeignKeys, options =>
+                {
+                    options.Excluding(x => ((ABaseDbObject)x).Database);
+
+                    return options;
+                });
 
                 var tableIndexes = table.Indexes.OrderBy(x => x.ColumnName).Select(x => Convert.ChangeType(x, indexType, CultureInfo.InvariantCulture));
                 var clonedTableIndexes = clonedTable.Indexes.OrderBy(x => x.ColumnName).Select(x => Convert.ChangeType(x, indexType, CultureInfo.InvariantCulture));
-                tableIndexes.Should().BeEquivalentTo(clonedTableIndexes);
+                tableIndexes.Should().BeEquivalentTo(clonedTableIndexes, options =>
+                {
+                    options.Excluding(x => ((ABaseDbObject)x).Database);
+
+                    return options;
+                });
             }
 
             var views = sourceDb.Views.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, viewType, CultureInfo.InvariantCulture)).ToList();
@@ -507,13 +533,19 @@ namespace TiCodeX.SQLSchemaCompare.Test
             views.Should().BeEquivalentTo(clonedViews, options =>
             {
                 options.Excluding(x => ((ABaseDbView)x).Indexes);
+                options.Excluding(x => ((ABaseDbObject)x).Database);
                 return options;
             });
             for (var i = 0; i < views.Count; i++)
             {
                 var viewIndexes = ((ABaseDbView)views[i]).Indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, indexType, CultureInfo.InvariantCulture));
                 var clonedViewIndexes = ((ABaseDbView)clonedViews[i]).Indexes.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, indexType, CultureInfo.InvariantCulture));
-                viewIndexes.Should().BeEquivalentTo(clonedViewIndexes);
+                viewIndexes.Should().BeEquivalentTo(clonedViewIndexes, options =>
+                {
+                    options.Excluding(x => ((ABaseDbObject)x).Database);
+
+                    return options;
+                });
             }
 
             var functions = sourceDb.Functions.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, functionType, CultureInfo.InvariantCulture));
@@ -524,13 +556,18 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 {
                     options.Excluding(x => ((PostgreSqlFunction)x).ReturnType);
                 }
-
+                options.Excluding(x => ((ABaseDbObject)x).Database);
                 return options;
             });
 
             var storedProcedures = sourceDb.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, storedProcedureType, CultureInfo.InvariantCulture));
             var clonedStoredProcedures = targetDb.StoredProcedures.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, storedProcedureType, CultureInfo.InvariantCulture));
-            storedProcedures.Should().BeEquivalentTo(clonedStoredProcedures);
+            storedProcedures.Should().BeEquivalentTo(clonedStoredProcedures, options =>
+            {
+                options.Excluding(x => ((ABaseDbObject)x).Database);
+
+                return options;
+            });
 
             var dataTypes = dataType == typeof(ABaseDbDataType) ?
                 sourceDb.DataTypes.Where(x => x.IsUserDefined).OrderBy(x => x.Schema).ThenBy(x => x.Name) :
@@ -544,14 +581,26 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 {
                     options.Excluding(x => ((PostgreSqlDataType)x).TypeId);
                     options.Excluding(x => ((PostgreSqlDataType)x).ArrayTypeId);
+                    options.Excluding(x => ((PostgreSqlDataType)x).ArrayType.Database);
                 }
+                else if (sourceDb is MicrosoftSqlDb)
+                {
+                    options.Excluding(x => ((MicrosoftSqlDataType)x).SystemType.Database);
+                }
+
+                options.Excluding(x => ((ABaseDbObject)x).Database);
 
                 return options;
             });
 
             var sequences = sourceDb.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, sequenceType, CultureInfo.InvariantCulture));
             var clonedSequences = targetDb.Sequences.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, sequenceType, CultureInfo.InvariantCulture));
-            sequences.Should().BeEquivalentTo(clonedSequences);
+            sequences.Should().BeEquivalentTo(clonedSequences, options =>
+            {
+                options.Excluding(x => ((ABaseDbObject)x).Database);
+
+                return options;
+            });
         }
 
         /// <summary>
@@ -566,6 +615,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 projectService,
                 new DatabaseService(new DatabaseProviderFactory(this.loggerFactory, new CipherService())),
                 new DatabaseScripterFactory(this.loggerFactory),
+                new DatabaseMapper(),
                 taskService);
             dbCompareService.StartCompare();
 

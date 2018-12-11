@@ -10,7 +10,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Models.Project
     public class CompareProjectOptions
     {
         /// <summary>
-        /// Gets or sets the compare diraction
+        /// Gets or sets the compare direction
         /// </summary>
         public CompareDirection Direction { get; set; }
 

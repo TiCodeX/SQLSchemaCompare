@@ -137,6 +137,11 @@ namespace TiCodeX.SQLSchemaCompare.Services
                 taskInfo.Message = m.StatusMessage;
                 foreach (var item in m.DbObjects)
                 {
+                    if (item is ABaseDbTable table)
+                    {
+                        this.CompareTable(table, scripter);
+                    }
+
                     item.CreateScript = scripter.GenerateCreateScript(item);
                     if (item.MappedDbObject != null)
                     {
@@ -147,11 +152,6 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     if (item.CreateScript != item.MappedDbObject?.CreateScript)
                     {
                         item.AlterScript = scripter.GenerateAlterScript(item);
-                    }
-
-                    if (item is ABaseDbTable table)
-                    {
-                        this.CompareTable(table, scripter);
                     }
 
                     taskInfo.Percentage = (short)(100 * processedItems++ / totalItems);
@@ -228,6 +228,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             // Linearize the 2 databases for mapping
             var maps = new List<ObjectMap>
             {
+                new ObjectMap { DbObjects = table.Columns },
                 new ObjectMap { DbObjects = table.Indexes },
                 new ObjectMap { DbObjects = table.Constraints },
                 new ObjectMap { DbObjects = table.ForeignKeys },

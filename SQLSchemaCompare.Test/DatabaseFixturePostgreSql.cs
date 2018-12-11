@@ -30,7 +30,7 @@ namespace SQLSchemaCompare.Test
             {
                 var serverPorts = new List<object[]>();
 
-                if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE")
+                if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || DatabaseFixture.ForceDockerTests)
                 {
                     /*serverPorts.Add(new object[] { (short)26001 });*/ // Version 9.3 (EOL November 2018)
                     serverPorts.Add(new object[] { (short)26002 }); // Version 9.4 (EOL February 2020)

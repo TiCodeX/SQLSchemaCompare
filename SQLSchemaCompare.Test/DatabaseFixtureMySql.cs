@@ -34,7 +34,7 @@ namespace SQLSchemaCompare.Test
             {
                 var serverPorts = new List<object[]>();
 
-                if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE")
+                if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || DatabaseFixture.ForceDockerTests)
                 {
                     /*serverPorts.Add(new object[] { (short)27001 });*/ // Version 5.5 (EOL December 2018)
                     serverPorts.Add(new object[] { (short)27002 }); // Version 5.6 (EOL February 2021)
@@ -83,10 +83,7 @@ namespace SQLSchemaCompare.Test
 
             var sakilaScript = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-mysql.sql"));
 
-            sakilaScript = sakilaScript.Replace("USE sakila;", $"USE {databaseName};", StringComparison.InvariantCulture);
-            sakilaScript = sakilaScript.Replace("sakila.", $"{databaseName}.", StringComparison.InvariantCulture);
-
-            this.ExecuteScript(sakilaScript, string.Empty, port);
+            this.ExecuteScript(sakilaScript, databaseName, port);
         }
 
         /// <inheritdoc />

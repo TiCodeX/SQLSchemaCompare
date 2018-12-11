@@ -294,7 +294,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetDifferentFunction(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("DROP FUNCTION film_in_stock;");
+            sb.AppendLine("DROP FUNCTION film_in_stock(p_film_id integer, p_store_id integer, OUT p_film_count integer);");
             sb.AppendLine("CREATE FUNCTION film_in_stock(p_film_id integer, p_store_id integer, OUT p_film_count integer) RETURNS SETOF integer");
             sb.AppendLine("    LANGUAGE sql");
             sb.AppendLine("AS $BODY$");

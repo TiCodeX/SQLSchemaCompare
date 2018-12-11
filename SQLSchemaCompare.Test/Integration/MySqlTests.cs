@@ -115,21 +115,11 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
 
                 this.dbFixture.DropAndCreateDatabase(clonedDatabaseName, port);
 
-                var mySqlFullScript = new StringBuilder();
-                mySqlFullScript.AppendLine("SET @OLD_UNIQUE_CHECKS =@@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;");
-                mySqlFullScript.AppendLine("SET @OLD_FOREIGN_KEY_CHECKS =@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;");
-                mySqlFullScript.AppendLine("SET @OLD_SQL_MODE =@@SQL_MODE, SQL_MODE = 'TRADITIONAL';");
-                mySqlFullScript.AppendLine($"USE {clonedDatabaseName};");
-                mySqlFullScript.AppendLine(fullScript.Replace($"`{databaseName}`.`", $"`{clonedDatabaseName}`.`", StringComparison.InvariantCulture));
-                mySqlFullScript.AppendLine("SET SQL_MODE = @OLD_SQL_MODE;");
-                mySqlFullScript.AppendLine("SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;");
-                mySqlFullScript.AppendLine("SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;");
-
                 var exportFile = $"{Path.Combine(Path.GetTempPath(), $"SQLCMP-TEST-{Guid.NewGuid()}")}.sql";
                 this.Logger.LogInformation($"Script saved to {exportFile}");
-                File.WriteAllText(exportFile, mySqlFullScript.ToString());
+                File.WriteAllText(exportFile, fullScript);
 
-                this.dbFixture.ExecuteScript(mySqlFullScript.ToString(), string.Empty, port);
+                this.dbFixture.ExecuteScript(fullScript, clonedDatabaseName, port);
 
                 this.dbFixture.CompareDatabases(DatabaseType.MySql, clonedDatabaseName, databaseName, port);
             }

@@ -33,6 +33,11 @@ namespace TiCodeX.SQLSchemaCompare.Test
     public abstract class DatabaseFixture : IDisposable
     {
         /// <summary>
+        /// Force executing the docker tests without having to set the environment variable
+        /// </summary>
+        public const bool ForceDockerTests = false;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseFixture"/> class
         /// </summary>
         /// <param name="serverPorts">The server ports</param>
@@ -393,16 +398,9 @@ namespace TiCodeX.SQLSchemaCompare.Test
             switch (databaseType)
             {
                 case DatabaseType.MicrosoftSql:
+                case DatabaseType.MySql:
                     File.WriteAllText(exportFile, projectService.Project.Result.FullAlterScript);
                     this.ExecuteScript(projectService.Project.Result.FullAlterScript, targetDatabaseName, port);
-                    break;
-
-                case DatabaseType.MySql:
-                    var mySqlFullAlterScript = new StringBuilder();
-                    mySqlFullAlterScript.AppendLine($"USE {targetDatabaseName};");
-                    mySqlFullAlterScript.AppendLine(projectService.Project.Result.FullAlterScript);
-                    File.WriteAllText(exportFile, mySqlFullAlterScript.ToString());
-                    this.ExecuteScript(mySqlFullAlterScript.ToString(), string.Empty, port);
                     break;
 
                 case DatabaseType.PostgreSql:
@@ -433,20 +431,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
             {
                 this.CreateSakilaDatabase(targetDatabaseName, port);
 
-                switch (databaseType)
-                {
-                    case DatabaseType.MicrosoftSql:
-                    case DatabaseType.PostgreSql:
-                        this.ExecuteScript(alterScript, targetDatabaseName, port);
-                        break;
-
-                    case DatabaseType.MySql:
-                        var alterScriptTarget = new StringBuilder();
-                        alterScriptTarget.AppendLine($"USE {targetDatabaseName};");
-                        alterScriptTarget.AppendLine(alterScript);
-                        this.ExecuteScript(alterScriptTarget.ToString(), string.Empty, port);
-                        break;
-                }
+                this.ExecuteScript(alterScript, targetDatabaseName, port);
 
                 this.ExecuteFullAlterScriptAndCompare(databaseType, sourceDatabaseName, targetDatabaseName, port, expectedDifferentItems);
             }

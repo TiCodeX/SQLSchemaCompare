@@ -12,12 +12,7 @@
 
 -- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
-
-USE sakila;
-
+SET FOREIGN_KEY_CHECKS=0;
 --
 -- Table structure for table `actor`
 --
@@ -433,10 +428,10 @@ a.first_name,
 a.last_name,
 GROUP_CONCAT(DISTINCT CONCAT(c.name, ': ',
 		(SELECT GROUP_CONCAT(f.title ORDER BY f.title SEPARATOR ', ')
-                    FROM sakila.film f
-                    INNER JOIN sakila.film_category fc
+                    FROM film f
+                    INNER JOIN film_category fc
                       ON f.film_id = fc.film_id
-                    INNER JOIN sakila.film_actor fa
+                    INNER JOIN film_actor fa
                       ON f.film_id = fa.film_id
                     WHERE fc.category_id = c.category_id
                     AND fa.actor_id = a.actor_id
@@ -444,12 +439,12 @@ GROUP_CONCAT(DISTINCT CONCAT(c.name, ': ',
              )
              ORDER BY c.name SEPARATOR '; ')
 AS film_info
-FROM sakila.actor a
-LEFT JOIN sakila.film_actor fa
+FROM actor a
+LEFT JOIN film_actor fa
   ON a.actor_id = fa.actor_id
-LEFT JOIN sakila.film_category fc
+LEFT JOIN film_category fc
   ON fa.film_id = fc.film_id
-LEFT JOIN sakila.category c
+LEFT JOIN category c
   ON fc.category_id = c.category_id
 GROUP BY a.actor_id, a.first_name, a.last_name;
 
@@ -652,8 +647,4 @@ END $$
 
 DELIMITER ;
 
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
-
+SET FOREIGN_KEY_CHECKS=1;

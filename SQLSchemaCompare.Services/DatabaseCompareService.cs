@@ -148,11 +148,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                         item.MappedDbObject.CreateScript = scripter.GenerateCreateScript(item.MappedDbObject);
                     }
 
-                    // TODO: for the moment skip alter script if create scripts are equals
-                    if (item.CreateScript != item.MappedDbObject?.CreateScript)
-                    {
-                        item.AlterScript = scripter.GenerateAlterScript(item);
-                    }
+                    item.AlterScript = scripter.GenerateAlterScript(item);
 
                     taskInfo.Percentage = (short)(100 * processedItems++ / totalItems);
                 }

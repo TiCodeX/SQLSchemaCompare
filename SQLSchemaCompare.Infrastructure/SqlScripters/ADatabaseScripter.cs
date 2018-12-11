@@ -757,6 +757,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 return this.GenerateCreateScript(dbObject);
             }
 
+            if (dbObject.CreateScript == dbObject.MappedDbObject.CreateScript)
+            {
+                return string.Empty;
+            }
+
             switch (dbObject)
             {
                 case ABaseDbTable t:

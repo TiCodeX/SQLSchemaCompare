@@ -31,6 +31,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
         private readonly List<CompareResultItem<ABaseDbTable>> tables = new List<CompareResultItem<ABaseDbTable>>();
         private readonly List<CompareResultItem<ABaseDbIndex>> indexes = new List<CompareResultItem<ABaseDbIndex>>();
         private readonly List<CompareResultItem<ABaseDbConstraint>> constraints = new List<CompareResultItem<ABaseDbConstraint>>();
+        private readonly List<CompareResultItem<ABaseDbPrimaryKey>> primaryKeys = new List<CompareResultItem<ABaseDbPrimaryKey>>();
         private readonly List<CompareResultItem<ABaseDbForeignKey>> foreignKeys = new List<CompareResultItem<ABaseDbForeignKey>>();
         private readonly List<CompareResultItem<ABaseDbTrigger>> triggers = new List<CompareResultItem<ABaseDbTrigger>>();
         private readonly List<CompareResultItem<ABaseDbView>> views = new List<CompareResultItem<ABaseDbView>>();
@@ -146,6 +147,11 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     if (item.MappedDbObject != null)
                     {
                         item.MappedDbObject.CreateScript = scripter.GenerateCreateScript(item.MappedDbObject);
+
+                        if (item.MappedDbObject is ABaseDbTable mappedTable)
+                        {
+                            this.CompareTable(mappedTable, scripter);
+                        }
                     }
 
                     item.AlterScript = scripter.GenerateAlterScript(item);
@@ -158,6 +164,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             this.SetCompareResultList(this.indexes, this.retrievedSourceDatabase.Indexes, this.retrievedTargetDatabase.Indexes, scripter);
             this.SetCompareResultList(this.constraints, this.retrievedSourceDatabase.Constraints, this.retrievedTargetDatabase.Constraints, scripter);
 
+            this.SetCompareResultList(this.primaryKeys, this.retrievedSourceDatabase.PrimaryKeys, this.retrievedTargetDatabase.PrimaryKeys, scripter);
             this.SetCompareResultList(this.foreignKeys, this.retrievedSourceDatabase.ForeignKeys, this.retrievedTargetDatabase.ForeignKeys, scripter);
 
             this.SetCompareResultList(this.views, this.retrievedSourceDatabase.Views, this.retrievedTargetDatabase.Views, scripter);
@@ -227,6 +234,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                 new ObjectMap { DbObjects = table.Columns },
                 new ObjectMap { DbObjects = table.Indexes },
                 new ObjectMap { DbObjects = table.Constraints },
+                new ObjectMap { DbObjects = table.PrimaryKeys },
                 new ObjectMap { DbObjects = table.ForeignKeys },
                 new ObjectMap { DbObjects = table.Triggers },
             };
@@ -293,6 +301,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             differentItems.AddRange(this.dataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
             differentItems.AddRange(this.indexes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
             differentItems.AddRange(this.constraints.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            differentItems.AddRange(this.primaryKeys.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
             differentItems.AddRange(this.foreignKeys.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
             differentItems.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
 
@@ -322,6 +331,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             onlySourceDb.Tables.AddRange(this.tables.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Indexes.AddRange(this.indexes.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Constraints.AddRange(this.constraints.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
+            onlySourceDb.PrimaryKeys.AddRange(this.primaryKeys.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.ForeignKeys.AddRange(this.foreignKeys.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Triggers.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Views.AddRange(this.views.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
@@ -334,6 +344,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             onlyTargetDb.Tables.AddRange(this.tables.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Indexes.AddRange(this.indexes.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Constraints.AddRange(this.constraints.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
+            onlyTargetDb.PrimaryKeys.AddRange(this.primaryKeys.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.ForeignKeys.AddRange(this.foreignKeys.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Triggers.AddRange(this.triggers.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Views.AddRange(this.views.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
@@ -357,6 +368,12 @@ namespace TiCodeX.SQLSchemaCompare.Services
             onlySourceDb.Constraints.AddRange(c.Select(x => x.SourceItem));
             onlyTargetDb.Constraints.AddRange(c.Select(x => x.TargetItem));
             c.ForEach(x => differentItems.Remove(x));
+
+            // Primary Keys
+            var pk = differentItems.OfType<CompareResultItem<ABaseDbPrimaryKey>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();
+            onlySourceDb.PrimaryKeys.AddRange(pk.Select(x => x.SourceItem));
+            onlyTargetDb.PrimaryKeys.AddRange(pk.Select(x => x.TargetItem));
+            pk.ForEach(x => differentItems.Remove(x));
 
             // Foreign Keys
             var fk = differentItems.OfType<CompareResultItem<ABaseDbForeignKey>>().Where(x => !x.SourceItem.AlterScriptSupported).ToList();

@@ -118,26 +118,27 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableAddPrimaryKeys(ABaseDbTable table)
+        protected override string ScriptAlterTableAddPrimaryKey(ABaseDbPrimaryKey primaryKey)
         {
             var sb = new StringBuilder();
 
-            foreach (var key in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MySqlIndex>())
+            var columnList = primaryKey.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
+
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(primaryKey.TableSchema, primaryKey.TableName)}");
+            sb.Append("ADD ");
+
+            // Add the constraint name only if it's not the default
+            if (primaryKey.Name.ToUpperInvariant() != "PRIMARY")
             {
-                var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
+                sb.Append($"CONSTRAINT {this.ScriptHelper.ScriptObjectName(primaryKey.Name)} ");
+            }
 
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.Append("ADD ");
+            sb.AppendLine($"PRIMARY KEY ({string.Join(",", columnList)});");
 
-                // Add the constraint name only if it's not the default
-                if (key.Name.ToUpperInvariant() != "PRIMARY")
-                {
-                    sb.Append($"CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} ");
-                }
-
-                sb.AppendLine($"PRIMARY KEY ({string.Join(",", columnList)});");
-
-                foreach (var columnName in key.ColumnNames)
+            var table = primaryKey.Database.Tables.FirstOrDefault(x => x.Schema == primaryKey.TableSchema && x.Name == primaryKey.TableName);
+            if (table != null)
+            {
+                foreach (var columnName in primaryKey.ColumnNames)
                 {
                     if (table.Columns.FirstOrDefault(x => x.Name == columnName) is MySqlColumn col &&
                         col.Extra.ToUpperInvariant() == "AUTO_INCREMENT")
@@ -146,18 +147,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                         sb.AppendLine($"MODIFY {this.ScriptHelper.ScriptColumn(col)} AUTO_INCREMENT;");
                     }
                 }
-
-                sb.AppendLine();
             }
+
+            sb.AppendLine();
 
             return sb.ToString();
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableDropPrimaryKeys(ABaseDbTable table)
+        protected override string ScriptAlterTableDropPrimaryKey(ABaseDbPrimaryKey primaryKey)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP PRIMARY KEY;");
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(primaryKey.TableSchema, primaryKey.TableName)} DROP PRIMARY KEY;");
             return sb.ToString();
         }
 

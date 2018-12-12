@@ -1665,6 +1665,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Retrieving Primary Keys....
+        /// </summary>
+        public static string StatusRetrievingPrimaryKeys {
+            get {
+                return ResourceManager.GetString("StatusRetrievingPrimaryKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Retrieving Sequences....
         /// </summary>
         public static string StatusRetrievingSequences {

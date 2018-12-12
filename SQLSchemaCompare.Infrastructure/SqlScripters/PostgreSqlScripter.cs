@@ -72,32 +72,24 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableAddPrimaryKeys(ABaseDbTable table)
+        protected override string ScriptAlterTableAddPrimaryKey(ABaseDbPrimaryKey primaryKey)
         {
             var sb = new StringBuilder();
 
-            foreach (var key in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<PostgreSqlIndex>())
-            {
-                var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
+            var columnList = primaryKey.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
 
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)}");
-                sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)} PRIMARY KEY ({string.Join(",", columnList)});");
-                sb.AppendLine();
-            }
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(primaryKey.TableSchema, primaryKey.TableName)}");
+            sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(primaryKey.Name)} PRIMARY KEY ({string.Join(",", columnList)});");
+            sb.AppendLine();
 
             return sb.ToString();
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableDropPrimaryKeys(ABaseDbTable table)
+        protected override string ScriptAlterTableDropPrimaryKey(ABaseDbPrimaryKey primaryKey)
         {
             var sb = new StringBuilder();
-
-            foreach (var key in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-            {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)};");
-            }
-
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(primaryKey.TableSchema, primaryKey.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(primaryKey.Name)};");
             return sb.ToString();
         }
 

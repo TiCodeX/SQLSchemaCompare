@@ -118,7 +118,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
                     foreach (var table in sortedTables)
                     {
-                        sb.Append(this.ScriptAlterTableAddPrimaryKeys(table));
+                        foreach (var primaryKey in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                        {
+                            sb.Append(this.ScriptAlterTableAddPrimaryKey(primaryKey));
+                        }
                     }
 
                     sb.AppendLine();
@@ -360,6 +363,20 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 {
                     sb.Append(this.ScriptDropIndex(index));
                 }
+
+                sb.AppendLine();
+            }
+
+            // PrimaryKeys
+            if (database.PrimaryKeys.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
+                foreach (var primaryKey in database.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptAlterTableDropPrimaryKey(primaryKey));
+                }
+
+                sb.AppendLine();
             }
 
             // Views
@@ -490,7 +507,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 }
 
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
-                sb.Append(this.ScriptAlterTableAddPrimaryKeys(table));
+                foreach (var primaryKey in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptAlterTableAddPrimaryKey(primaryKey));
+                }
             }
 
             if (table.ForeignKeys.Count > 0)
@@ -586,7 +606,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             if (table.PrimaryKeys.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
-                sb.Append(this.ScriptAlterTableDropPrimaryKeys(table));
+                foreach (var primaryKey in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptAlterTableDropPrimaryKey(primaryKey));
+                }
+
                 sb.AppendLine();
             }
 
@@ -694,6 +718,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     return this.GenerateCreateTableScript(t);
                 case ABaseDbView v:
                     return this.GenerateCreateViewScript(v);
+                case ABaseDbPrimaryKey pk:
+                    return this.ScriptAlterTableAddPrimaryKey(pk);
                 case ABaseDbIndex i:
                     return this.ScriptCreateIndex(i);
                 case ABaseDbForeignKey fk:
@@ -820,18 +846,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected abstract string ScriptAlterTable(ABaseDbTable t);
 
         /// <summary>
-        /// Generates the alter table for adding the primary keys to the table
+        /// Generates the alter table for adding the primary key to the table
         /// </summary>
-        /// <param name="table">The table to alter</param>
+        /// <param name="primaryKey">The primary key to script</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptAlterTableAddPrimaryKeys(ABaseDbTable table);
+        protected abstract string ScriptAlterTableAddPrimaryKey(ABaseDbPrimaryKey primaryKey);
 
         /// <summary>
-        /// Generates the alter table for dropping the primary keys from the table
+        /// Generates the alter table for dropping the primary key from the table
         /// </summary>
-        /// <param name="table">The table to alter</param>
+        /// <param name="primaryKey">The primary key to drop</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptAlterTableDropPrimaryKeys(ABaseDbTable table);
+        protected abstract string ScriptAlterTableDropPrimaryKey(ABaseDbPrimaryKey primaryKey);
 
         /// <summary>
         /// Generates the alter table for adding the foreign key to the table

@@ -93,6 +93,24 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbPrimaryKey> GetPrimaryKeys(MySqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT s.index_name AS Name,");
+            query.AppendLine("       s.TABLE_NAME AS 'TableName',");
+            query.AppendLine("       s.COLUMN_NAME AS 'ColumnName',");
+            query.AppendLine("       CAST(s.SEQ_IN_INDEX AS SIGNED) AS 'OrdinalPosition',");
+            query.AppendLine("       CASE WHEN s.COLLATION = 'D' THEN TRUE ELSE FALSE END as 'IsDescending',");
+            query.AppendLine("       COALESCE(tc.CONSTRAINT_TYPE, 'INDEX') AS 'ConstraintType'");
+            query.AppendLine("FROM INFORMATION_SCHEMA.STATISTICS s");
+            query.AppendLine("LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc");
+            query.AppendLine("  ON tc.table_name = s.table_name AND tc.table_schema = s.table_schema AND tc.constraint_name = s.index_name");
+            query.AppendLine($"WHERE s.table_schema = '{context.DatabaseName}' AND COALESCE(tc.CONSTRAINT_TYPE, 'INDEX') = 'PRIMARY KEY'");
+
+            return context.Query<ABaseDbPrimaryKey>(query.ToString());
+        }
+
+        /// <inheritdoc/>
         protected override IEnumerable<ABaseDbForeignKey> GetForeignKeys(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();
@@ -130,7 +148,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("SELECT s.index_name AS Name,");
             query.AppendLine("       s.TABLE_NAME AS 'TableName',");
             query.AppendLine("       s.COLUMN_NAME AS 'ColumnName',");
-            query.AppendLine("       CASE WHEN tc.CONSTRAINT_TYPE = 'PRIMARY KEY' THEN TRUE ELSE FALSE END AS 'IsPrimaryKey',");
             query.AppendLine("       CAST(s.SEQ_IN_INDEX AS SIGNED) AS 'OrdinalPosition',");
             query.AppendLine("       CASE WHEN s.COLLATION = 'D' THEN TRUE ELSE FALSE END as 'IsDescending',");
             query.AppendLine("       s.INDEX_TYPE AS 'IndexType',");
@@ -138,7 +155,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("FROM INFORMATION_SCHEMA.STATISTICS s");
             query.AppendLine("LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc");
             query.AppendLine("  ON tc.table_name = s.table_name AND tc.table_schema = s.table_schema AND tc.constraint_name = s.index_name");
-            query.AppendLine($"WHERE s.table_schema = '{context.DatabaseName}'");
+            query.AppendLine($"WHERE s.table_schema = '{context.DatabaseName}' AND COALESCE(tc.CONSTRAINT_TYPE, 'INDEX') != 'PRIMARY KEY'");
 
             return context.Query<MySqlIndex>(query.ToString());
         }

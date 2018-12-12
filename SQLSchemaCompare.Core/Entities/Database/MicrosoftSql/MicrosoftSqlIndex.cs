@@ -60,11 +60,6 @@
         public IndexType Type { get; set; }
 
         /// <summary>
-        /// Gets or sets the type description
-        /// </summary>
-        public string TypeDescription { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the index is unique
         /// </summary>
         public bool? IsUnique { get; set; }

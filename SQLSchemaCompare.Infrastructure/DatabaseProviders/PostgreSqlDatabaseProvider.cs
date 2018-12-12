@@ -103,6 +103,33 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbPrimaryKey> GetPrimaryKeys(PostgreSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT ni.nspname AS \"Schema\",");
+            query.AppendLine("       ci.relname AS \"Name\",");
+            query.AppendLine("       nt.nspname AS \"TableSchema\",");
+            query.AppendLine("       ct.relname AS \"TableName\",");
+            query.AppendLine("       a.attname AS \"ColumnName\",");
+            query.AppendLine("       'PRIMARY KEY' AS \"ConstraintType\",");
+            query.AppendLine("       CAST(a.attnum AS bigint) AS \"OrdinalPosition\",");
+            query.AppendLine("       CASE");
+            query.AppendLine("           WHEN i.indoption[a.attnum-1] & 1 = 1 THEN TRUE");
+            query.AppendLine("           ELSE FALSE");
+            query.AppendLine("       END AS \"IsDescending\"");
+            query.AppendLine("FROM pg_catalog.pg_index i");
+            query.AppendLine("JOIN pg_catalog.pg_class ct ON i.indrelid = ct.oid");
+            query.AppendLine("JOIN pg_catalog.pg_class ci ON i.indexrelid = ci.oid");
+            query.AppendLine("JOIN pg_catalog.pg_namespace nt ON ct.relnamespace = nt.oid");
+            query.AppendLine("JOIN pg_catalog.pg_namespace ni ON ci.relnamespace = ni.oid");
+            query.AppendLine("JOIN pg_catalog.pg_attribute a ON i.indexrelid = a.attrelid");
+            query.AppendLine("JOIN pg_catalog.pg_am am ON ci.relam = am.oid");
+            query.AppendLine("WHERE nt.nspname = 'public' AND i.indisprimary IS TRUE");
+
+            return context.Query<ABaseDbPrimaryKey>(query.ToString());
+        }
+
+        /// <inheritdoc/>
         protected override IEnumerable<ABaseDbForeignKey> GetForeignKeys(PostgreSqlDatabaseContext context)
         {
             var query = new StringBuilder();
@@ -174,11 +201,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       ct.relname AS \"TableName\",");
             query.AppendLine("       a.attname AS \"ColumnName\",");
             query.AppendLine("       CASE");
-            query.AppendLine("           WHEN i.indisprimary IS TRUE THEN 'PRIMARY KEY'");
             query.AppendLine("           WHEN i.indisunique IS TRUE THEN 'UNIQUE'");
             query.AppendLine("           ELSE 'INDEX'");
             query.AppendLine("       END AS \"ConstraintType\",");
-            query.AppendLine("       i.indisprimary AS \"IsPrimaryKey\",");
             query.AppendLine("       CAST(a.attnum AS bigint) AS \"OrdinalPosition\",");
             query.AppendLine("       CASE");
             query.AppendLine("           WHEN i.indoption[a.attnum-1] & 1 = 1 THEN TRUE");
@@ -193,7 +218,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("JOIN pg_catalog.pg_namespace ni ON ci.relnamespace = ni.oid");
             query.AppendLine("JOIN pg_catalog.pg_attribute a ON i.indexrelid = a.attrelid");
             query.AppendLine("JOIN pg_catalog.pg_am am ON ci.relam = am.oid");
-            query.AppendLine("WHERE nt.nspname = 'public'");
+            query.AppendLine("WHERE nt.nspname = 'public' AND i.indisprimary IS FALSE");
 
             return context.Query<PostgreSqlIndex>(query.ToString());
         }

@@ -103,6 +103,31 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbPrimaryKey> GetPrimaryKeys(MicrosoftSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT object_schema_name(i.object_id) AS 'Schema',");
+            query.AppendLine("       i.name AS 'Name',");
+            query.AppendLine("       object_schema_name(i.object_id) AS 'TableSchema',");
+            query.AppendLine("       object_name(i.object_id) AS 'TableName',");
+            query.AppendLine("       c.name AS 'ColumnName',");
+            query.AppendLine("       CASE");
+            query.AppendLine("           WHEN i.is_primary_key = 1 THEN 'PRIMARY KEY'");
+            query.AppendLine("           WHEN i.is_unique = 1 THEN 'UNIQUE'");
+            query.AppendLine("           ELSE 'INDEX'");
+            query.AppendLine("       END AS 'ConstraintType',");
+            query.AppendLine("       ic.is_descending_key as 'IsDescending',");
+            query.AppendLine("       CAST(ic.key_ordinal AS bigint) AS 'OrdinalPosition',");
+            query.AppendLine("       i.type_desc AS 'TypeDescription'");
+            query.AppendLine("FROM sys.indexes i");
+            query.AppendLine("JOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id");
+            query.AppendLine("JOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id");
+            query.AppendLine("WHERE object_schema_name(i.object_id) <> 'sys' AND i.is_primary_key = 1");
+
+            return context.Query<MicrosoftSqlPrimaryKey>(query.ToString());
+        }
+
+        /// <inheritdoc/>
         protected override IEnumerable<ABaseDbForeignKey> GetForeignKeys(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
@@ -165,17 +190,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("           WHEN i.is_unique = 1 THEN 'UNIQUE'");
             query.AppendLine("           ELSE 'INDEX'");
             query.AppendLine("       END AS 'ConstraintType',");
-            query.AppendLine("       i.is_primary_key AS 'IsPrimaryKey',");
             query.AppendLine("       ic.is_descending_key as 'IsDescending',");
             query.AppendLine("       CAST(ic.key_ordinal AS bigint) AS 'OrdinalPosition',");
             query.AppendLine("       i.type AS Type,");
-            query.AppendLine("       i.type_desc AS 'TypeDescription',");
             query.AppendLine("       i.is_unique AS 'IsUnique',");
             query.AppendLine("       i.filter_definition AS 'FilterDefinition'");
             query.AppendLine("FROM sys.indexes i");
             query.AppendLine("JOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id");
             query.AppendLine("JOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id");
-            query.AppendLine("WHERE object_schema_name(i.object_id) <> 'sys'");
+            query.AppendLine("WHERE object_schema_name(i.object_id) <> 'sys' AND i.is_primary_key = 0");
 
             return context.Query<MicrosoftSqlIndex>(query.ToString());
         }

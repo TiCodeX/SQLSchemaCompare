@@ -104,34 +104,28 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableAddPrimaryKeys(ABaseDbTable table)
+        protected override string ScriptAlterTableAddPrimaryKey(ABaseDbPrimaryKey primaryKey)
         {
+            var key = (MicrosoftSqlPrimaryKey)primaryKey;
+
             var sb = new StringBuilder();
 
-            foreach (var key in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name).Cast<MicrosoftSqlIndex>())
-            {
-                var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
+            var columnList = key.ColumnNames.Select(x => $"{this.ScriptHelper.ScriptObjectName(x)}");
 
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
-                sb.AppendLine($"PRIMARY KEY {key.TypeDescription} ({string.Join(",", columnList)})");
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-                sb.AppendLine();
-            }
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
+            sb.AppendLine($"PRIMARY KEY {key.TypeDescription} ({string.Join(",", columnList)})");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            sb.AppendLine();
 
             return sb.ToString();
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableDropPrimaryKeys(ABaseDbTable table)
+        protected override string ScriptAlterTableDropPrimaryKey(ABaseDbPrimaryKey primaryKey)
         {
             var sb = new StringBuilder();
-
-            foreach (var key in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-            {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-            }
-
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(primaryKey.TableSchema, primaryKey.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(primaryKey.Name)}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
 

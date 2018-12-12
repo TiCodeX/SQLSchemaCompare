@@ -149,6 +149,28 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 28;
+                taskInfo.Message = Localization.StatusRetrievingPrimaryKeys;
+
+                foreach (var primaryKeyGroup in this.GetPrimaryKeys(context).GroupBy(x => new { x.TableSchema, x.TableName, x.Name }))
+                {
+                    var primaryKey = primaryKeyGroup.First();
+                    primaryKey.Database = db;
+                    primaryKey.ColumnNames.AddRange(primaryKeyGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
+                    primaryKey.ColumnDescending.AddRange(primaryKeyGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.IsDescending));
+                    db.PrimaryKeys.Add(primaryKey);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving foreign keys");
+                exceptions.Add(ex);
+            }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
+            try
+            {
                 taskInfo.Percentage = 32;
                 taskInfo.Message = Localization.StatusRetrievingForeignKeys;
 
@@ -357,6 +379,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected abstract IEnumerable<ABaseDbColumn> GetColumns(TDatabaseContext context);
 
         /// <summary>
+        /// Get the table primary keys
+        /// </summary>
+        /// <param name="context">The database context</param>
+        /// <returns>The list of primary keys</returns>
+        protected abstract IEnumerable<ABaseDbPrimaryKey> GetPrimaryKeys(TDatabaseContext context);
+
+        /// <summary>
         /// Get the table foreign keys
         /// </summary>
         /// <param name="context">The database context</param>
@@ -428,14 +457,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 table.Columns.AddRange(columns.Where(y => table.Schema == y.Schema && table.Name == y.TableName));
                 table.ForeignKeys.AddRange(db.ForeignKeys.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));
                 table.ReferencingForeignKeys.AddRange(db.ForeignKeys.Where(y => table.Schema == y.ReferencedTableSchema && table.Name == y.ReferencedTableName));
-                table.PrimaryKeys.AddRange(db.Indexes.Where(y => y.IsPrimaryKey && table.Schema == y.TableSchema && table.Name == y.TableName));
-                table.Indexes.AddRange(db.Indexes.Where(y => !y.IsPrimaryKey && table.Schema == y.TableSchema && table.Name == y.TableName));
+                table.PrimaryKeys.AddRange(db.PrimaryKeys.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));
+                table.Indexes.AddRange(db.Indexes.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));
                 table.Constraints.AddRange(db.Constraints.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));
                 table.Triggers.AddRange(db.Triggers.Where(y => table.Schema == y.TableSchema && table.Name == y.TableName));
             }
-
-            // Remove primary keys from the indexes list since are now linked to tables
-            db.Indexes.RemoveAll(x => x.IsPrimaryKey);
         }
 
         private static void AssignRetrievedItemsToRelatedViews(TaskInfo taskInfo, TDatabase db)
@@ -444,7 +470,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.CancellationToken.ThrowIfCancellationRequested();
 
-                view.Indexes.AddRange(db.Indexes.Where(y => !y.IsPrimaryKey && view.Schema == y.TableSchema && view.Name == y.TableName));
+                view.Indexes.AddRange(db.Indexes.Where(y => view.Schema == y.TableSchema && view.Name == y.TableName));
             }
         }
     }

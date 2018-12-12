@@ -40,6 +40,11 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
         public List<ABaseDbConstraint> Constraints { get; } = new List<ABaseDbConstraint>();
 
         /// <summary>
+        /// Gets the database constraints
+        /// </summary>
+        public List<ABaseDbPrimaryKey> PrimaryKeys { get; } = new List<ABaseDbPrimaryKey>();
+
+        /// <summary>
         /// Gets the database foreign keys
         /// </summary>
         public List<ABaseDbForeignKey> ForeignKeys { get; } = new List<ABaseDbForeignKey>();

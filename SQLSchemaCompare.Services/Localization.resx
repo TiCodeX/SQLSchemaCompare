@@ -695,4 +695,7 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelRemainingDays" xml:space="preserve">
     <value>Remaining days</value>
   </data>
+  <data name="StatusRetrievingPrimaryKeys" xml:space="preserve">
+    <value>Retrieving Primary Keys...</value>
+  </data>
 </root>

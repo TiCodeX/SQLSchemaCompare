@@ -1,9 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Text;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using SQLSchemaCompare.Test;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
@@ -301,6 +299,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine();
             sb.AppendLine("  RETURN v_customer_id;");
             sb.AppendLine("END$$$$");
+            sb.AppendLine("DELIMITER ;");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString(), port);
         }
 
@@ -325,6 +324,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("     AND store_id = p_store_id;");
             sb.AppendLine("     SELECT FOUND_ROWS() INTO p_film_count;");
             sb.AppendLine("END$$$$");
+            sb.AppendLine("DELIMITER ;");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString(), port);
         }
 
@@ -399,6 +399,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("CREATE TRIGGER ins_film_text AFTER INSERT ON film_text FOR EACH ROW BEGIN");
             sb.AppendLine("   DELETE FROM film_actor WHERE film_id = new.film_id;");
             sb.AppendLine("END;;");
+            sb.AppendLine("DELIMITER ;");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString(), port);
         }
 
@@ -424,6 +425,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("        WHERE film_id=old.film_id;");
             sb.AppendLine("    END IF;");
             sb.AppendLine("  END$$$$");
+            sb.AppendLine("DELIMITER ;");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString(), port);
         }
 

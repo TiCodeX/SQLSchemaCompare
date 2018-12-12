@@ -31,7 +31,7 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
         /// <summary>
         /// Gets the database table's primary keys
         /// </summary>
-        public List<ABaseDbConstraint> PrimaryKeys { get; } = new List<ABaseDbConstraint>();
+        public List<ABaseDbPrimaryKey> PrimaryKeys { get; } = new List<ABaseDbPrimaryKey>();
 
         /// <summary>
         /// Gets the database table's indexes

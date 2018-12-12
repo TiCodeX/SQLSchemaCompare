@@ -686,4 +686,7 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="LabelYearlyPayment" xml:space="preserve">
     <value>Jährliche Zahlung</value>
   </data>
+  <data name="StatusRetrievingPrimaryKeys" xml:space="preserve">
+    <value>Lese Primärschlüssel...</value>
+  </data>
 </root>

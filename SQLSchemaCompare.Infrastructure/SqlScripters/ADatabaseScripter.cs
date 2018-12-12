@@ -111,21 +111,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 }
 
                 sb.AppendLine();
+            }
 
-                // Primary Keys
-                if (sortedTables.Any(x => x.PrimaryKeys.Count > 0))
+            // Primary Keys
+            if (database.PrimaryKeys.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
+                foreach (var primaryKey in database.PrimaryKeys.OrderBy(x => x.TableSchema).ThenBy(x => x.TableName).ThenBy(x => x.Schema).ThenBy(x => x.Name))
                 {
-                    sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
-                    foreach (var table in sortedTables)
-                    {
-                        foreach (var primaryKey in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-                        {
-                            sb.Append(this.ScriptAlterTableAddPrimaryKey(primaryKey));
-                        }
-                    }
-
-                    sb.AppendLine();
+                    sb.Append(this.ScriptAlterTableAddPrimaryKey(primaryKey));
                 }
+
+                sb.AppendLine();
             }
 
             // Foreign Keys
@@ -371,7 +368,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             if (database.PrimaryKeys.Count > 0)
             {
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
-                foreach (var primaryKey in database.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                foreach (var primaryKey in database.PrimaryKeys.OrderBy(x => x.TableSchema).ThenBy(x => x.TableName).ThenBy(x => x.Schema).ThenBy(x => x.Name))
                 {
                     sb.Append(this.ScriptAlterTableDropPrimaryKey(primaryKey));
                 }

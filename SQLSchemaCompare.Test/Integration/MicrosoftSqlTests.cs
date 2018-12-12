@@ -114,10 +114,6 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
                 var scripter = scripterFactory.Create(db, new TiCodeX.SQLSchemaCompare.Core.Entities.Project.ProjectOptions());
                 var fullScript = scripter.GenerateFullCreateScript(db);
 
-                var exportFile = $"{Path.Combine(Path.GetTempPath(), $"SQLCMP-TEST-{Guid.NewGuid()}")}.sql";
-                this.Logger.LogInformation($"Script saved to {exportFile}");
-                File.WriteAllText(exportFile, fullScript);
-
                 this.dbFixture.DropAndCreateDatabase(clonedDatabaseName, port);
 
                 this.dbFixture.ExecuteScript(fullScript, clonedDatabaseName, port);

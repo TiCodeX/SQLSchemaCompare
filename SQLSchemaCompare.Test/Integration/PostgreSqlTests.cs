@@ -118,10 +118,6 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
                 sb.AppendLine("SET check_function_bodies = false;");
                 sb.AppendLine(fullScript);
 
-                var exportFile = $"{Path.Combine(Path.GetTempPath(), $"SQLCMP-TEST-{Guid.NewGuid()}")}.sql";
-                this.Logger.LogInformation($"Script saved to {exportFile}");
-                File.WriteAllText(exportFile, sb.ToString());
-
                 this.dbFixture.ExecuteScript(sb.ToString(), clonedDatabaseName, port);
 
                 this.dbFixture.CompareDatabases(DatabaseType.PostgreSql, clonedDatabaseName, databaseName, port);

@@ -65,7 +65,7 @@ namespace SQLSchemaCompare.Test
         }
 
         /// <inheritdoc/>
-        public override void ExecuteScript(string script, string databaseName, short port)
+        public override void ExecuteScriptCore(string script, string databaseName, short port)
         {
             using (var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, (MySqlDatabaseProviderOptions)this.GetDatabaseProviderOptions(databaseName, port)))
             {

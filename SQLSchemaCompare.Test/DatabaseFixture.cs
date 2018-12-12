@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -101,7 +100,31 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="script">The script to execute</param>
         /// <param name="databaseName">Name of the database</param>
         /// <param name="port">The port to connect to the database</param>
-        public abstract void ExecuteScript(string script, string databaseName, short port);
+        public void ExecuteScript(string script, string databaseName, short port)
+        {
+            try
+            {
+                this.ExecuteScriptCore(script, databaseName, port);
+            }
+            catch
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine($"Failed executing script on database '{databaseName}' (port: {port}):");
+                sb.AppendLine("######################################################################################################");
+                sb.AppendLine(script);
+                sb.AppendLine("######################################################################################################");
+                this.Logger.LogError(sb.ToString());
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Executes the SQL script
+        /// </summary>
+        /// <param name="script">The script to execute</param>
+        /// <param name="databaseName">Name of the database</param>
+        /// <param name="port">The port to connect to the database</param>
+        public abstract void ExecuteScriptCore(string script, string databaseName, short port);
 
         /// <summary>
         /// Gets the database provider options
@@ -392,14 +415,10 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
             projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
 
-            // Execute the full alter script
-            var exportFile = $"{Path.Combine(Path.GetTempPath(), $"SQLCMP-TEST-{Guid.NewGuid()}")}.sql";
-            this.Logger.LogInformation($"Script saved to {exportFile}");
             switch (databaseType)
             {
                 case DatabaseType.MicrosoftSql:
                 case DatabaseType.MySql:
-                    File.WriteAllText(exportFile, projectService.Project.Result.FullAlterScript);
                     this.ExecuteScript(projectService.Project.Result.FullAlterScript, targetDatabaseName, port);
                     break;
 
@@ -407,7 +426,6 @@ namespace TiCodeX.SQLSchemaCompare.Test
                     var postgreSqlFullAlterScript = new StringBuilder();
                     postgreSqlFullAlterScript.AppendLine("SET check_function_bodies = false;");
                     postgreSqlFullAlterScript.AppendLine(projectService.Project.Result.FullAlterScript);
-                    File.WriteAllText(exportFile, postgreSqlFullAlterScript.ToString());
                     this.ExecuteScript(postgreSqlFullAlterScript.ToString(), targetDatabaseName, port);
                     break;
             }

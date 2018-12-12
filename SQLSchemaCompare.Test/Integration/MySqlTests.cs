@@ -115,10 +115,6 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
 
                 this.dbFixture.DropAndCreateDatabase(clonedDatabaseName, port);
 
-                var exportFile = $"{Path.Combine(Path.GetTempPath(), $"SQLCMP-TEST-{Guid.NewGuid()}")}.sql";
-                this.Logger.LogInformation($"Script saved to {exportFile}");
-                File.WriteAllText(exportFile, fullScript);
-
                 this.dbFixture.ExecuteScript(fullScript, clonedDatabaseName, port);
 
                 this.dbFixture.CompareDatabases(DatabaseType.MySql, clonedDatabaseName, databaseName, port);

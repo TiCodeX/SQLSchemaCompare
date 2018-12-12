@@ -36,7 +36,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
         public void ScriptColumn(ProjectOptions options, MicrosoftSqlColumn column, string expectedResult)
         {
             var helper = new MicrosoftSqlScriptHelper(options);
-            helper.ScriptColumn(column).Should().Be(expectedResult);
+            helper.ScriptColumn(column, true).Should().Be(expectedResult);
         }
 
         /// <summary>

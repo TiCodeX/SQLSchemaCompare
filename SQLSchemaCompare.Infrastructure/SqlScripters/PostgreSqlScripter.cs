@@ -66,6 +66,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        protected override string ScriptAlterTable(ABaseDbTable t)
+        {
+            return string.Empty;
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptAlterTableAddPrimaryKeys(ABaseDbTable table)
         {
             var sb = new StringBuilder();

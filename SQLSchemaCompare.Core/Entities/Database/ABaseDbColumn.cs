@@ -6,6 +6,11 @@
     public abstract class ABaseDbColumn : ABaseDbObject
     {
         /// <summary>
+        /// Gets or sets the column ordinal position
+        /// </summary>
+        public long? OrdinalPosition { get; set; }
+
+        /// <summary>
         /// Gets or sets the database table name
         /// </summary>
         public string TableName { get; set; }

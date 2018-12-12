@@ -242,6 +242,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             foreach (var table in differentItems.OfType<CompareResultItem<ABaseDbTable>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
             {
+                if (table.SourceItem != null)
+                {
+                    sb.Append(this.GenerateAlterScript(table.SourceItem));
+                }
+                else
+                {
+                    sb.Append(this.GenerateAlterScript(table.TargetItem));
+                }
+
                 // sb.Append(this.GenerateAlterTableScript(table.SourceItem, table.TargetItem));
                 // Columns
                 // Default Constraints
@@ -702,7 +711,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 case ABaseDbDataType dt:
                     return this.ScriptCreateType(dt, dt.Database.DataTypes);
                 case ABaseDbColumn c:
-                    return this.ScriptHelper.ScriptColumn(c);
+                    return this.ScriptHelper.ScriptColumn(c, false);
                 default:
                     throw new NotSupportedException();
             }
@@ -765,10 +774,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             switch (dbObject)
             {
                 case ABaseDbTable t:
-                    var sb = new StringBuilder();
-                    sb.AppendLine("TODO: Alter Table Script");
-
-                    return sb.ToString();
+                    return this.ScriptAlterTable(t);
                 case ABaseDbView v:
                     return this.ScriptAlterView(v, v.MappedDbObject as ABaseDbView);
                 /*                case ABaseDbIndex i:
@@ -805,6 +811,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <param name="table">The table to drop</param>
         /// <returns>The drop table script</returns>
         protected abstract string ScriptDropTable(ABaseDbTable table);
+
+        /// <summary>
+        /// Generates the alter table script
+        /// </summary>
+        /// <param name="t">the table to alter</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterTable(ABaseDbTable t);
 
         /// <summary>
         /// Generates the alter table for adding the primary keys to the table

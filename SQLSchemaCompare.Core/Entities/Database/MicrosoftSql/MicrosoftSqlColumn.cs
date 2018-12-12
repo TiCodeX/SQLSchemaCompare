@@ -6,11 +6,6 @@
     public class MicrosoftSqlColumn : ABaseDbColumn
     {
         /// <summary>
-        /// Gets or sets the column ordinal position
-        /// </summary>
-        public int? OrdinalPosition { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the column is nullable
         /// </summary>
         public bool IsNullable { get; set; }

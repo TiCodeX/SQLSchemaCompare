@@ -64,8 +64,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// Script the given table column
         /// </summary>
         /// <param name="column">The table column</param>
+        /// <param name="scriptDefaultConstraint">True is the default constraint should be scripted in the column</param>
         /// <returns>The column script</returns>
-        public abstract string ScriptColumn(ABaseDbColumn column);
+        public abstract string ScriptColumn(ABaseDbColumn column, bool scriptDefaultConstraint = true);
 
         /// <summary>
         /// Scripts the command to commit a transaction

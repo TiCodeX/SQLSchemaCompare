@@ -29,7 +29,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public override string ScriptColumn(ABaseDbColumn column)
+        public override string ScriptColumn(ABaseDbColumn column, bool scriptDefaultConstraint = true)
         {
             if (column == null)
             {
@@ -48,7 +48,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             sb.Append(col.IsNullable == "YES" ? " NULL" : " NOT NULL");
 
-            if (!string.IsNullOrEmpty(col.ColumnDefault))
+            if (!string.IsNullOrEmpty(col.ColumnDefault) && scriptDefaultConstraint)
             {
                 switch (col.DataType)
                 {

@@ -144,7 +144,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public override string ScriptColumn(ABaseDbColumn column)
+        public override string ScriptColumn(ABaseDbColumn column, bool scriptDefaultConstraint = true)
         {
             var col = column as PostgreSqlColumn;
             if (col == null)
@@ -158,7 +158,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             sb.Append(col.IsNullable ? " NULL" : " NOT NULL");
 
-            if (col.ColumnDefault != null)
+            if (col.ColumnDefault != null && scriptDefaultConstraint)
             {
                 sb.Append($" DEFAULT {col.ColumnDefault}");
             }

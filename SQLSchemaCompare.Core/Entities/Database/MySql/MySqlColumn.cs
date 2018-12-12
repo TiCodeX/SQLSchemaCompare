@@ -6,11 +6,6 @@
     public class MySqlColumn : ABaseDbColumn
     {
         /// <summary>
-        /// Gets or sets the column ordinal position
-        /// </summary>
-        public long OrdinalPosition { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the column is nullable
         /// </summary>
         public string IsNullable { get; set; }

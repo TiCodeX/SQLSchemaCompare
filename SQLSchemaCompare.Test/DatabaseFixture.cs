@@ -244,6 +244,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 var clonedTableColumns = clonedTable.Columns.OrderBy(x => x.Name).Select(x => Convert.ChangeType(x, columnType, CultureInfo.InvariantCulture));
                 tableColumns.Should().BeEquivalentTo(clonedTableColumns, options =>
                 {
+                    options.Excluding(x => ((ABaseDbColumn)x).OrdinalPosition);
                     options.Excluding(x => ((ABaseDbObject)x).Database);
 
                     return options;

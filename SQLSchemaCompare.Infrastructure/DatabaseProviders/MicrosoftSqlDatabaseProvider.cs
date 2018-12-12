@@ -73,7 +73,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("SELECT isc.TABLE_SCHEMA as 'Schema',");
             query.AppendLine("       isc.TABLE_NAME as 'TableName',");
             query.AppendLine("       isc.COLUMN_NAME as 'Name',");
-            query.AppendLine("       isc.ORDINAL_POSITION as 'OrdinalPosition',");
+            query.AppendLine("       CAST(isc.ORDINAL_POSITION AS bigint) as 'OrdinalPosition',");
             query.AppendLine("       isc.COLUMN_DEFAULT as 'ColumnDefault',");
             query.AppendLine("       dc.name as 'DefaultConstraintName',");
             query.AppendLine("       CASE UPPER(isc.IS_NULLABLE) WHEN 'NO' THEN 0 ELSE 1 END as 'IsNullable',");

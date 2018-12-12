@@ -48,7 +48,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public override string ScriptColumn(ABaseDbColumn column)
+        public override string ScriptColumn(ABaseDbColumn column, bool scriptDefaultConstraint = true)
         {
             if (column == null)
             {
@@ -75,7 +75,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     sb.Append(" ROWGUIDCOL");
                 }
 
-                if (col.ColumnDefault != null)
+                if (col.ColumnDefault != null && scriptDefaultConstraint)
                 {
                     if (!string.IsNullOrWhiteSpace(col.DefaultConstraintName))
                     {

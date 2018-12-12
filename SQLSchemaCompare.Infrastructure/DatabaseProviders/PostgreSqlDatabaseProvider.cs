@@ -81,7 +81,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("SELECT table_schema as \"Schema\",");
             query.AppendLine("       table_name as \"TableName\",");
             query.AppendLine("       column_name as \"Name\",");
-            query.AppendLine("       ordinal_position as \"OrdinalPosition\",");
+            query.AppendLine("       CAST(ordinal_position as bigint) as \"OrdinalPosition\",");
             query.AppendLine("       column_default as \"ColumnDefault\",");
             query.AppendLine("       CASE ");
             query.AppendLine("            WHEN is_nullable = 'YES' THEN true");

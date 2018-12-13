@@ -34,6 +34,7 @@ namespace SQLSchemaCompare.Test
                 if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || DatabaseFixture.ForceDockerTests)
                 {
                     serverPorts.Add(new object[] { (short)28001 }); // Version 2017 Linux
+                    /*serverPorts.Add(new object[] { (short)28002 }); // Version 2019 Linux*/
                 }
                 else
                 {

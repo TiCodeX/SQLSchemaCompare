@@ -48,7 +48,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             sb.Append(col.IsNullable == "YES" ? " NULL" : " NOT NULL");
 
-            if (!string.IsNullOrEmpty(col.ColumnDefault) && scriptDefaultConstraint)
+            if (!string.IsNullOrEmpty(col.ColumnDefault))
             {
                 switch (col.DataType)
                 {

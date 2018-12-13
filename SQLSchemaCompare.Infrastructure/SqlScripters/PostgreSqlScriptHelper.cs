@@ -158,7 +158,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             sb.Append(col.IsNullable ? " NULL" : " NOT NULL");
 
-            if (col.ColumnDefault != null && scriptDefaultConstraint)
+            if (col.ColumnDefault != null)
             {
                 sb.Append($" DEFAULT {col.ColumnDefault}");
             }
@@ -172,35 +172,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             return string.Empty;
         }
 
-        private static string ScriptDataTypeName(string dataTypeName)
-        {
-            switch (dataTypeName)
-            {
-                case "int8": return "bigint";
-                case "serial8": return "bigserial";
-                case "varbit": return "bit varying";
-                case "bool": return "boolean";
-                case "char": return "character";
-                case "varchar": return "character varying";
-                case "float8": return "double precision";
-                case "int":
-                case "int4": return "integer";
-                case "decimal": return "numeric";
-                case "float4": return "real";
-                case "int2": return "smallint";
-                case "serial2": return "smallserial";
-                case "serial4": return "serial";
-                case "time": return "time without time zone";
-                case "timetz": return "time with time zone";
-                case "timestamp": return "timestamp without time zone";
-                case "timestamptz": return "timestamp with time zone";
-                default:
-                    return dataTypeName;
-            }
-        }
-
+        /// <summary>
+        /// Script the column data type
+        /// </summary>
+        /// <param name="column">The column</param>
+        /// <returns>The scripted data type</returns>
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Switch with lot of cases")]
-        private string ScriptDataType(PostgreSqlColumn column)
+        public string ScriptDataType(PostgreSqlColumn column)
         {
             switch (column.DataType)
             {
@@ -330,6 +308,33 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     return $"{column.UdtName.Replace("_", string.Empty)}[]";
 
                 default: throw new ArgumentException($"Unknown column data type: {column.DataType}");
+            }
+        }
+
+        private static string ScriptDataTypeName(string dataTypeName)
+        {
+            switch (dataTypeName)
+            {
+                case "int8": return "bigint";
+                case "serial8": return "bigserial";
+                case "varbit": return "bit varying";
+                case "bool": return "boolean";
+                case "char": return "character";
+                case "varchar": return "character varying";
+                case "float8": return "double precision";
+                case "int":
+                case "int4": return "integer";
+                case "decimal": return "numeric";
+                case "float4": return "real";
+                case "int2": return "smallint";
+                case "serial2": return "smallserial";
+                case "serial4": return "serial";
+                case "time": return "time without time zone";
+                case "timetz": return "time with time zone";
+                case "timestamp": return "timestamp without time zone";
+                case "timestamptz": return "timestamp with time zone";
+                default:
+                    return dataTypeName;
             }
         }
     }

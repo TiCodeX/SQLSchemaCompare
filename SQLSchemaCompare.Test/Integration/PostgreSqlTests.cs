@@ -247,7 +247,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetColumnDifferentType(short port)
         {
             var sb = new StringBuilder();
-            sb.Append("ALTER TABLE country ALTER COLUMN last_update TYPE TEXT");
+            sb.Append("ALTER TABLE language ALTER COLUMN name TYPE character varying(100)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 

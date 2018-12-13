@@ -93,9 +93,37 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             // Alter columns
             foreach (var c in t.Columns.Where(x => x.MappedDbObject != null && x.CreateScript != x.MappedDbObject.CreateScript))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
-                sb.AppendLine($"{this.Indent}{this.ScriptHelper.ScriptColumn(c, false)}");
-                sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+                var col = c as PostgreSqlColumn;
+                var mappedCol = c.MappedDbObject as PostgreSqlColumn;
+                if (col.DataType != mappedCol.DataType)
+                {
+                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
+                    sb.AppendLine($"{this.Indent}\"{col.Name}\" TYPE {this.ScriptHelper.ScriptDataType(col)}");
+                    sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+                }
+
+                if (col.IsNullable != mappedCol.IsNullable)
+                {
+                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
+                    sb.AppendLine($"{this.Indent}\"{col.Name}\" {(mappedCol.IsNullable ? "DROP" : "SET")} IS NULLABLE");
+                    sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+                }
+
+                if (col.ColumnDefault != mappedCol.ColumnDefault)
+                {
+                    if (col.ColumnDefault == null)
+                    {
+                        sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
+                        sb.AppendLine($"{this.Indent}\"{col.Name}\" DROP DEFAULT");
+                        sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+                    }
+                    else
+                    {
+                        sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
+                        sb.AppendLine($"{this.Indent}\"{col.Name}\" SET DEFAULT {col.ColumnDefault}");
+                        sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+                    }
+                }
             }
 
             // Add columns

@@ -72,7 +72,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 for (int i = 0; i < columnsToDrop.Count; i++)
                 {
                     sb.Append($"{this.Indent}{columnsToDrop[i].Name}");
-                    sb.AppendLine(++i == columnsToDrop.Count ? string.Empty : ",");
+                    sb.AppendLine(i == columnsToDrop.Count - 1 ? string.Empty : ",");
                 }
 
                 sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
@@ -94,7 +94,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 for (int i = 0; i < columnsToAdd.Count; i++)
                 {
                     sb.Append($"{this.Indent}{this.ScriptHelper.ScriptColumn(columnsToAdd[i])}");
-                    sb.AppendLine(++i == columnsToAdd.Count ? string.Empty : ",");
+                    sb.AppendLine(i == columnsToAdd.Count - 1 ? string.Empty : ",");
                 }
 
                 sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());

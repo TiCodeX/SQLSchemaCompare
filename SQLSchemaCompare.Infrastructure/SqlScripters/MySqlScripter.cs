@@ -82,11 +82,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             var columnsToDrop = targetTable.Columns.Where(x => x.MappedDbObject == null).ToList();
             if (columnsToDrop.Count > 0)
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} DROP COLUMN ");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)}");
                 for (int i = 0; i < columnsToDrop.Count; i++)
                 {
-                    sb.Append($"{this.Indent}{columnsToDrop[i].Name}");
-                    sb.AppendLine(++i == columnsToDrop.Count ? string.Empty : ",");
+                    sb.Append($"{this.Indent}DROP COLUMN {columnsToDrop[i].Name}");
+                    sb.AppendLine(i == columnsToDrop.Count - 1 ? string.Empty : ",");
                 }
 
                 sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
@@ -104,11 +104,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             var columnsToAdd = t.Columns.Where(x => x.MappedDbObject == null).ToList();
             if (columnsToAdd.Count > 0)
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)}");
                 for (int i = 0; i < columnsToAdd.Count; i++)
                 {
-                    sb.Append($"{this.Indent}{this.ScriptHelper.ScriptColumn(columnsToAdd[i])}");
-                    sb.AppendLine(++i == columnsToAdd.Count ? string.Empty : ",");
+                    sb.Append($"{this.Indent}ADD COLUMN {this.ScriptHelper.ScriptColumn(columnsToAdd[i])}");
+                    sb.AppendLine(i == columnsToAdd.Count - 1 ? string.Empty : ",");
                 }
 
                 sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());

@@ -191,6 +191,21 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         }
 
         /// <summary>
+        /// Test migration script when target db doesn't have a column
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetMissingColumns(short port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE staff DROP COLUMN last_name,");
+            sb.Append("DROP COLUMN picture");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString(), port);
+        }
+
+        /// <summary>
         /// Test migration script when target db have an extra column
         /// </summary>
         /// <param name="port">The port of the server</param>
@@ -200,7 +215,22 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMySqlDatabaseTargetExtraColumn(short port)
         {
             var sb = new StringBuilder();
-            sb.Append("ALTER TABLE staff ADD middle_name VARCHAR(45) NOT NULL");
+            sb.Append("ALTER TABLE staff ADD COLUMN middle_name VARCHAR(45) NOT NULL");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an extra column
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
+        [IntegrationTest]
+        public void MigrateMySqlDatabaseTargetExtraColumns(short port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE staff ADD COLUMN middle_name VARCHAR(45) NOT NULL,");
+            sb.Append("ADD COLUMN middle_name2 VARCHAR(45) NOT NULL");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString(), port);
         }
 
@@ -214,7 +244,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMySqlDatabaseTargetColumnDifferentType(short port)
         {
             var sb = new StringBuilder();
-            sb.Append("ALTER TABLE country CHANGE COLUMN country country JSON NOT NULL");
+            sb.Append("ALTER TABLE country CHANGE COLUMN country country char NOT NULL");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString(), port);
         }
 

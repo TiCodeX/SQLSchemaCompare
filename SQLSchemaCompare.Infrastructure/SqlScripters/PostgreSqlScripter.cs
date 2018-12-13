@@ -68,7 +68,47 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptAlterTable(ABaseDbTable t)
         {
-            return string.Empty;
+            var sb = new StringBuilder();
+
+            var targetTable = t.MappedDbObject as ABaseDbTable;
+
+            // Remove columns
+            var columnsToDrop = targetTable.Columns.Where(x => x.MappedDbObject == null).ToList();
+            if (columnsToDrop.Count > 0)
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ");
+                for (int i = 0; i < columnsToDrop.Count; i++)
+                {
+                    sb.Append($"{this.Indent}DROP COLUMN {columnsToDrop[i].Name}");
+                    sb.AppendLine(i == columnsToDrop.Count - 1 ? string.Empty : ",");
+                }
+
+                sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+            }
+
+            // Alter columns
+            foreach (var c in t.Columns.Where(x => x.MappedDbObject != null && x.CreateScript != x.MappedDbObject.CreateScript))
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
+                sb.AppendLine($"{this.Indent}{this.ScriptHelper.ScriptColumn(c, false)}");
+                sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+            }
+
+            // Add columns
+            var columnsToAdd = t.Columns.Where(x => x.MappedDbObject == null).ToList();
+            if (columnsToAdd.Count > 0)
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)}");
+                for (int i = 0; i < columnsToAdd.Count; i++)
+                {
+                    sb.Append($"{this.Indent}ADD {this.ScriptHelper.ScriptColumn(columnsToAdd[i])}");
+                    sb.AppendLine(i == columnsToAdd.Count - 1 ? string.Empty : ",");
+                }
+
+                sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc/>

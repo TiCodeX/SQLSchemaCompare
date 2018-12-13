@@ -1,9 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Text;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using SQLSchemaCompare.Test;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
@@ -194,6 +192,20 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         }
 
         /// <summary>
+        /// Test migration script when target db doesn't have a column
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingColumns(short port)
+        {
+            var sb = new StringBuilder();
+            sb.Append("ALTER TABLE staff DROP COLUMN last_name, username");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
         /// Test migration script when target db have an extra column
         /// </summary>
         /// <param name="port">The port of the server</param>
@@ -204,6 +216,21 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE staff ADD middle_name VARCHAR(45) NOT NULL");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an extra column
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetExtraColumns(short port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE staff ADD middle_name VARCHAR(45) NOT NULL");
+            sb.AppendLine("ALTER TABLE staff ADD middle_name2 VARCHAR(45) NOT NULL");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 

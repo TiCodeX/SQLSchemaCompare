@@ -42,52 +42,27 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
         string GenerateFullDropScript(ABaseDb database);
 
         /// <summary>
-        /// Generates the create table script and related keys/indexes
-        /// </summary>
-        /// <param name="table">The table to be scripted</param>
-        /// <returns>The create script</returns>
-        string GenerateCreateTableScript(ABaseDbTable table);
-
-        /// <summary>
-        /// Generates the drop table script and related keys/indexes
-        /// </summary>
-        /// <param name="table">The table to be scripted</param>
-        /// <returns>The drop script</returns>
-        string GenerateDropTableScript(ABaseDbTable table);
-
-        /// <summary>
-        /// Generates the create view script and related indexes
-        /// </summary>
-        /// <param name="view">The view to be scripted</param>
-        /// <returns>The create script</returns>
-        string GenerateCreateViewScript(ABaseDbView view);
-
-        /// <summary>
-        /// Generates the drop view script and related drop indexes
-        /// </summary>
-        /// <param name="view">The view</param>
-        /// <returns>The drop script</returns>
-        string GenerateDropViewScript(ABaseDbView view);
-
-        /// <summary>
         /// Generates the create script for the given database object
         /// </summary>
         /// <param name="dbObject">The database object</param>
+        /// <param name="includeChildDbObjects">Whether to script also the child database objects</param>
         /// <returns>The create script</returns>
-        string GenerateCreateScript(ABaseDbObject dbObject);
+        string GenerateCreateScript(ABaseDbObject dbObject, bool includeChildDbObjects);
 
         /// <summary>
         /// Generates the drop script for the given database object
         /// </summary>
         /// <param name="dbObject">The database object</param>
+        /// <param name="includeChildDbObjects">Whether to script also the child database objects</param>
         /// <returns>The drop script</returns>
-        string GenerateDropScript(ABaseDbObject dbObject);
+        string GenerateDropScript(ABaseDbObject dbObject, bool includeChildDbObjects);
 
         /// <summary>
         /// Generates the alter script for the given database object
         /// </summary>
         /// <param name="dbObject">The database object</param>
+        /// <param name="includeChildDbObjects">Whether to script also the child database objects</param>
         /// <returns>The alter script</returns>
-        string GenerateAlterScript(ABaseDbObject dbObject);
+        string GenerateAlterScript(ABaseDbObject dbObject, bool includeChildDbObjects);
     }
 }

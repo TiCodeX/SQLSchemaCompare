@@ -50,7 +50,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
         {
             var scripter = new MicrosoftSqlScripter(this.Logger, options);
             dataType.Database = new MicrosoftSqlDb();
-            scripter.GenerateCreateScript(dataType).Should().Be(expectedResult);
+            scripter.GenerateCreateScript(dataType, false).Should().Be(expectedResult);
         }
     }
 }

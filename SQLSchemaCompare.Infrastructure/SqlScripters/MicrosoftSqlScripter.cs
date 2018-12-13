@@ -174,20 +174,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        protected override string ScriptAlterTableDropReferencingForeignKeys(ABaseDbTable table)
-        {
-            var sb = new StringBuilder();
-
-            foreach (var key in table.ReferencingForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-            {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(key.TableSchema, key.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(key.Name)}");
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-            }
-
-            return sb.ToString();
-        }
-
-        /// <inheritdoc/>
         protected override string ScriptAlterTableAddConstraint(ABaseDbConstraint constraint)
         {
             var sb = new StringBuilder();

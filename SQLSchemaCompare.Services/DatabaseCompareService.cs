@@ -146,25 +146,20 @@ namespace TiCodeX.SQLSchemaCompare.Services
         private static void CompareTable(ABaseDbTable table, IDatabaseScripter scripter)
         {
             // Linearize the 2 databases for mapping
-            var maps = new List<ObjectMap>
-            {
-                new ObjectMap { DbObjects = table.Columns },
-                new ObjectMap { DbObjects = table.Indexes },
-                new ObjectMap { DbObjects = table.Constraints },
-                new ObjectMap { DbObjects = table.PrimaryKeys },
-                new ObjectMap { DbObjects = table.ForeignKeys },
-                new ObjectMap { DbObjects = table.Triggers },
-            };
+            var dbObjects = new List<ABaseDbObject>();
+            dbObjects.AddRange(table.Columns);
+            dbObjects.AddRange(table.Indexes);
+            dbObjects.AddRange(table.Constraints);
+            dbObjects.AddRange(table.PrimaryKeys);
+            dbObjects.AddRange(table.ForeignKeys);
+            dbObjects.AddRange(table.Triggers);
 
-            foreach (var m in maps)
+            foreach (var item in dbObjects)
             {
-                foreach (var item in m.DbObjects)
+                item.CreateScript = scripter.GenerateCreateScript(item, true);
+                if (item.MappedDbObject != null)
                 {
-                    item.CreateScript = scripter.GenerateCreateScript(item);
-                    if (item.MappedDbObject != null)
-                    {
-                        item.MappedDbObject.CreateScript = scripter.GenerateCreateScript(item.MappedDbObject);
-                    }
+                    item.MappedDbObject.CreateScript = scripter.GenerateCreateScript(item.MappedDbObject, true);
                 }
             }
         }
@@ -180,12 +175,12 @@ namespace TiCodeX.SQLSchemaCompare.Services
             // Linearize the 2 databases for mapping
             var maps = new List<ObjectMap>
             {
-                new ObjectMap { StatusMessage = Localization.StatusComparingTables, DbObjects = this.retrievedSourceDatabase.Tables.Concat(this.retrievedTargetDatabase.Tables.Where(x => x.MappedDbObject == null)) },
-                new ObjectMap { StatusMessage = Localization.StatusComparingViews, DbObjects = this.retrievedSourceDatabase.Views.Concat(this.retrievedTargetDatabase.Views.Where(x => x.MappedDbObject == null)) },
-                new ObjectMap { StatusMessage = Localization.StatusComparingFunctions, DbObjects = this.retrievedSourceDatabase.Functions.Concat(this.retrievedTargetDatabase.Functions.Where(x => x.MappedDbObject == null)) },
-                new ObjectMap { StatusMessage = Localization.StatusComparingStoredProcedures, DbObjects = this.retrievedSourceDatabase.StoredProcedures.Concat(this.retrievedTargetDatabase.StoredProcedures.Where(x => x.MappedDbObject == null)) },
-                new ObjectMap { StatusMessage = Localization.StatusComparingDataTypes, DbObjects = this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined).Concat(this.retrievedTargetDatabase.DataTypes.Where(x => x.MappedDbObject == null && x.IsUserDefined)) },
-                new ObjectMap { StatusMessage = Localization.StatusComparingSequences, DbObjects = this.retrievedSourceDatabase.Sequences.Concat(this.retrievedTargetDatabase.Sequences.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { ObjectTitle = Localization.StatusComparingTables, DbObjects = this.retrievedSourceDatabase.Tables.Concat(this.retrievedTargetDatabase.Tables.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { ObjectTitle = Localization.StatusComparingViews, DbObjects = this.retrievedSourceDatabase.Views.Concat(this.retrievedTargetDatabase.Views.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { ObjectTitle = Localization.StatusComparingFunctions, DbObjects = this.retrievedSourceDatabase.Functions.Concat(this.retrievedTargetDatabase.Functions.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { ObjectTitle = Localization.StatusComparingStoredProcedures, DbObjects = this.retrievedSourceDatabase.StoredProcedures.Concat(this.retrievedTargetDatabase.StoredProcedures.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { ObjectTitle = Localization.StatusComparingDataTypes, DbObjects = this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined).Concat(this.retrievedTargetDatabase.DataTypes.Where(x => x.MappedDbObject == null && x.IsUserDefined)) },
+                new ObjectMap { ObjectTitle = Localization.StatusComparingSequences, DbObjects = this.retrievedSourceDatabase.Sequences.Concat(this.retrievedTargetDatabase.Sequences.Where(x => x.MappedDbObject == null)) },
             };
 
             var totalItems = maps.SelectMany(x => x.DbObjects).Count();
@@ -196,7 +191,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
 
             foreach (var m in maps)
             {
-                taskInfo.Message = m.StatusMessage;
+                taskInfo.Message = m.ObjectTitle;
                 foreach (var item in m.DbObjects)
                 {
                     if (item is ABaseDbTable table)
@@ -204,10 +199,10 @@ namespace TiCodeX.SQLSchemaCompare.Services
                         CompareTable(table, scripter);
                     }
 
-                    item.CreateScript = scripter.GenerateCreateScript(item);
+                    item.CreateScript = scripter.GenerateCreateScript(item, true);
                     if (item.MappedDbObject != null)
                     {
-                        item.MappedDbObject.CreateScript = scripter.GenerateCreateScript(item.MappedDbObject);
+                        item.MappedDbObject.CreateScript = scripter.GenerateCreateScript(item.MappedDbObject, true);
 
                         if (item.MappedDbObject is ABaseDbTable mappedTable)
                         {
@@ -215,7 +210,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                         }
                     }
 
-                    item.AlterScript = scripter.GenerateAlterScript(item);
+                    item.AlterScript = scripter.GenerateAlterScript(item, true);
 
                     taskInfo.Percentage = (short)(100 * processedItems++ / totalItems);
                 }
@@ -406,13 +401,6 @@ namespace TiCodeX.SQLSchemaCompare.Services
             v.ForEach(x => differentItems.Remove(x));
 
             return scripter.GenerateFullAlterScript(differentItems, onlySourceDb, onlyTargetDb);
-        }
-
-        private class ObjectMap
-        {
-            public string StatusMessage { get; internal set; }
-
-            public IEnumerable<ABaseDbObject> DbObjects { get; internal set; }
         }
     }
 }

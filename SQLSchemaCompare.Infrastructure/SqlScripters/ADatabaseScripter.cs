@@ -226,95 +226,17 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             // Drop all items only on target
             sb.Append(this.GenerateFullDropScript(onlyTargetItems));
 
-            // Alter the different items
-            foreach (var trigger in differentItems.OfType<CompareResultItem<ABaseDbTrigger>>().OrderBy(x => x.SourceItem.TableSchema)
-                .ThenBy(x => x.SourceItem.TableName).ThenBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
+            var items = new List<ABaseDbObject>();
+            items.AddRange(differentItems.OfType<CompareResultItem<ABaseDbTrigger>>().OrderBy(x => x.SourceItem.TableSchema).ThenBy(x => x.SourceItem.TableName).ThenBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name).Select(x => x.SourceItem ?? x.TargetItem));
+            items.AddRange(differentItems.OfType<CompareResultItem<ABaseDbTable>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name).Select(x => x.SourceItem ?? x.TargetItem));
+            items.AddRange(differentItems.OfType<CompareResultItem<ABaseDbView>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name).Select(x => x.SourceItem ?? x.TargetItem));
+            items.AddRange(differentItems.OfType<CompareResultItem<ABaseDbFunction>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name).Select(x => x.SourceItem ?? x.TargetItem));
+            items.AddRange(differentItems.OfType<CompareResultItem<ABaseDbStoredProcedure>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name).Select(x => x.SourceItem ?? x.TargetItem));
+            items.AddRange(differentItems.OfType<CompareResultItem<ABaseDbSequence>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name).Select(x => x.SourceItem ?? x.TargetItem));
+            items.AddRange(differentItems.OfType<CompareResultItem<ABaseDbDataType>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name).Select(x => x.SourceItem ?? x.TargetItem));
+            foreach (var item in items)
             {
-                if (trigger.SourceItem != null)
-                {
-                    sb.Append(this.GenerateAlterScript(trigger.SourceItem));
-                }
-                else
-                {
-                    sb.Append(this.GenerateAlterScript(trigger.TargetItem));
-                }
-            }
-
-            foreach (var table in differentItems.OfType<CompareResultItem<ABaseDbTable>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
-            {
-                if (table.SourceItem != null)
-                {
-                    sb.Append(this.GenerateAlterScript(table.SourceItem));
-                }
-                else
-                {
-                    sb.Append(this.GenerateAlterScript(table.TargetItem));
-                }
-
-                // sb.Append(this.GenerateAlterTableScript(table.SourceItem, table.TargetItem));
-                // Columns
-                // Default Constraints
-                // PrimaryKeys
-            }
-
-            foreach (var view in differentItems.OfType<CompareResultItem<ABaseDbView>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
-            {
-                if (view.SourceItem != null)
-                {
-                    sb.Append(this.GenerateAlterScript(view.SourceItem));
-                }
-                else
-                {
-                    sb.Append(this.GenerateAlterScript(view.TargetItem));
-                }
-            }
-
-            foreach (var function in differentItems.OfType<CompareResultItem<ABaseDbFunction>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
-            {
-                if (function.SourceItem != null)
-                {
-                    sb.Append(this.GenerateAlterScript(function.SourceItem));
-                }
-                else
-                {
-                    sb.Append(this.GenerateAlterScript(function.TargetItem));
-                }
-            }
-
-            foreach (var storedProcedure in differentItems.OfType<CompareResultItem<ABaseDbStoredProcedure>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
-            {
-                if (storedProcedure.SourceItem != null)
-                {
-                    sb.Append(this.GenerateAlterScript(storedProcedure.SourceItem));
-                }
-                else
-                {
-                    sb.Append(this.GenerateAlterScript(storedProcedure.TargetItem));
-                }
-            }
-
-            foreach (var sequence in differentItems.OfType<CompareResultItem<ABaseDbSequence>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
-            {
-                if (sequence.SourceItem != null)
-                {
-                    sb.Append(this.GenerateAlterScript(sequence.SourceItem));
-                }
-                else
-                {
-                    sb.Append(this.GenerateAlterScript(sequence.TargetItem));
-                }
-            }
-
-            foreach (var type in differentItems.OfType<CompareResultItem<ABaseDbDataType>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name))
-            {
-                if (type.SourceItem != null)
-                {
-                    sb.Append(this.GenerateAlterScript(type.SourceItem));
-                }
-                else
-                {
-                    sb.Append(this.GenerateAlterScript(type.TargetItem));
-                }
+                sb.Append(this.GenerateAlterScript(item, false));
             }
 
             // Create all items only on source
@@ -482,239 +404,37 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateCreateTableScript(ABaseDbTable table)
+        public string GenerateCreateScript(ABaseDbObject dbObject, bool includeChildDbObjects)
         {
-            if (table == null)
-            {
-                throw new ArgumentNullException(nameof(table));
-            }
-
-            var sb = new StringBuilder();
-
-            sb.Append(this.ScriptCreateTable(table));
-
-            var additionalEmptyLine = true;
-            if (table.PrimaryKeys.Count > 0)
-            {
-                sb.AppendLine();
-                if (additionalEmptyLine)
-                {
-                    sb.AppendLine();
-                    additionalEmptyLine = false;
-                }
-
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
-                foreach (var primaryKey in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-                {
-                    sb.Append(this.ScriptAlterTableAddPrimaryKey(primaryKey));
-                }
-            }
-
-            if (table.ForeignKeys.Count > 0)
-            {
-                sb.AppendLine();
-                if (additionalEmptyLine)
-                {
-                    sb.AppendLine();
-                    additionalEmptyLine = false;
-                }
-
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-                foreach (var foreignKey in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-                {
-                    sb.Append(this.ScriptAlterTableAddForeignKey(foreignKey));
-                }
-            }
-
-            if (table.Constraints.Count > 0)
-            {
-                sb.AppendLine();
-                if (additionalEmptyLine)
-                {
-                    sb.AppendLine();
-                    additionalEmptyLine = false;
-                }
-
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
-                foreach (var constraint in table.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-                {
-                    sb.Append(this.ScriptAlterTableAddConstraint(constraint));
-                }
-            }
-
-            if (table.Triggers.Count > 0)
-            {
-                sb.AppendLine();
-                if (additionalEmptyLine)
-                {
-                    sb.AppendLine();
-                    additionalEmptyLine = false;
-                }
-
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
-                foreach (var trigger in table.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-                {
-                    sb.AppendLine(this.ScriptCreateTrigger(trigger));
-                }
-            }
-
-            if (table.Indexes.Count > 0)
-            {
-                sb.AppendLine();
-                if (additionalEmptyLine)
-                {
-                    sb.AppendLine();
-                    additionalEmptyLine = false;
-                }
-
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
-                foreach (var index in this.GetSortedIndexes(table.Indexes))
-                {
-                    sb.Append(this.ScriptCreateIndex(index));
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        /// <inheritdoc/>
-        public string GenerateDropTableScript(ABaseDbTable table)
-        {
-            var sb = new StringBuilder();
-
-            if (table.Indexes.Count > 0)
-            {
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
-                foreach (var index in table.Indexes)
-                {
-                    sb.Append(this.ScriptDropIndex(index));
-                }
-
-                sb.AppendLine();
-            }
-
-            if (table.ReferencingForeignKeys.Count > 0)
-            {
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelReferencingForeignKeys));
-                sb.Append(this.ScriptAlterTableDropReferencingForeignKeys(table));
-                sb.AppendLine();
-            }
-
-            if (table.PrimaryKeys.Count > 0)
-            {
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPrimaryKeys));
-                foreach (var primaryKey in table.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-                {
-                    sb.Append(this.ScriptAlterTableDropPrimaryKey(primaryKey));
-                }
-
-                sb.AppendLine();
-            }
-
-            if (table.ForeignKeys.Count > 0)
-            {
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelForeignKeys));
-                foreach (var foreignKey in table.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name))
-                {
-                    sb.Append(this.ScriptAlterTableDropForeignKey(foreignKey));
-                }
-
-                sb.AppendLine();
-            }
-
-            if (table.Constraints.Count > 0 || table.Columns.Any(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName)))
-            {
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelConstraints));
-                foreach (var constraint in table.Constraints)
-                {
-                    sb.Append(this.ScriptAlterTableDropConstraint(constraint));
-                }
-
-                foreach (var column in table.Columns.Where(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName)).OrderBy(x => x.DefaultConstraintName))
-                {
-                    var constraint = new ABaseDbConstraint
-                    {
-                        TableSchema = table.Schema,
-                        TableName = table.Name,
-                        Name = column.DefaultConstraintName,
-                    };
-
-                    sb.Append(this.ScriptAlterTableDropConstraint(constraint));
-                }
-
-                sb.AppendLine();
-            }
-
-            if (table.Triggers.Count > 0)
-            {
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
-                foreach (var trigger in table.Triggers)
-                {
-                    sb.Append(this.ScriptDropTrigger(trigger));
-                }
-
-                sb.AppendLine();
-            }
-
-            sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTable));
-            sb.Append(this.ScriptDropTable(table));
-
-            return sb.ToString();
-        }
-
-        /// <inheritdoc/>
-        public string GenerateCreateViewScript(ABaseDbView view)
-        {
-            if (view == null)
-            {
-                throw new ArgumentNullException(nameof(view));
-            }
-
-            var sb = new StringBuilder();
-            sb.Append(this.ScriptCreateView(view));
-
-            if (view.Indexes.Count > 0)
-            {
-                sb.AppendLine();
-                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelIndexes));
-                foreach (var index in this.GetSortedIndexes(view.Indexes))
-                {
-                    sb.Append(this.ScriptCreateIndex(index));
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        /// <inheritdoc/>
-        public string GenerateDropViewScript(ABaseDbView view)
-        {
-            if (view == null)
-            {
-                throw new ArgumentNullException(nameof(view));
-            }
-
-            var sb = new StringBuilder();
-
-            foreach (var index in view.Indexes)
-            {
-                sb.Append(this.ScriptDropIndex(index));
-            }
-
-            sb.Append(this.ScriptDropView(view));
-
-            return sb.ToString();
-        }
-
-        /// <inheritdoc/>
-        public string GenerateCreateScript(ABaseDbObject dbObject)
-        {
+            var scriptableObjects = new List<ObjectMap>();
             switch (dbObject)
             {
                 case ABaseDbTable t:
-                    return this.GenerateCreateTableScript(t);
+                    if (!includeChildDbObjects)
+                    {
+                        return this.ScriptCreateTable(t);
+                    }
+
+                    scriptableObjects.Add(new ObjectMap { DbObjects = new[] { t } });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = t.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelForeignKeys, DbObjects = t.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelConstraints, DbObjects = t.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = t.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(t.Indexes) });
+
+                    return GenerateObjectMapScript(scriptableObjects, this.GenerateCreateScript);
+
                 case ABaseDbView v:
-                    return this.GenerateCreateViewScript(v);
+                    if (!includeChildDbObjects)
+                    {
+                        return this.ScriptCreateView(v);
+                    }
+
+                    scriptableObjects.Add(new ObjectMap { DbObjects = new[] { v } });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(v.Indexes) });
+
+                    return GenerateObjectMapScript(scriptableObjects, this.GenerateCreateScript);
+
                 case ABaseDbPrimaryKey pk:
                     return this.ScriptAlterTableAddPrimaryKey(pk);
                 case ABaseDbIndex i:
@@ -741,14 +461,57 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateDropScript(ABaseDbObject dbObject)
+        public string GenerateDropScript(ABaseDbObject dbObject, bool includeChildDbObjects)
         {
+            var scriptableObjects = new List<ObjectMap>();
             switch (dbObject)
             {
                 case ABaseDbTable t:
-                    return this.GenerateDropTableScript(t);
+                    if (!includeChildDbObjects)
+                    {
+                        return this.ScriptDropTable(t);
+                    }
+
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(t.Indexes) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelReferencingForeignKeys, DbObjects = t.ReferencingForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = t.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelForeignKeys, DbObjects = t.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+
+                    var defaultConstraints = new List<ABaseDbConstraint>();
+                    if (t.Columns.Any(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName)))
+                    {
+                        foreach (var column in t.Columns.Where(x => !string.IsNullOrWhiteSpace(x.DefaultConstraintName)).OrderBy(x => x.DefaultConstraintName))
+                        {
+                            defaultConstraints.Add(new ABaseDbConstraint
+                            {
+                                TableSchema = t.Schema,
+                                TableName = t.Name,
+                                Name = column.DefaultConstraintName,
+                            });
+                        }
+                    }
+
+                    scriptableObjects.Add(new ObjectMap
+                    {
+                        ObjectTitle = Localization.LabelConstraints,
+                        DbObjects = t.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).Concat(defaultConstraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                    });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = t.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { DbObjects = new[] { t } });
+
+                    return GenerateObjectMapScript(scriptableObjects, this.GenerateDropScript);
+
                 case ABaseDbView v:
-                    return this.GenerateDropViewScript(v);
+                    if (!includeChildDbObjects)
+                    {
+                        return this.ScriptDropView(v);
+                    }
+
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(v.Indexes) });
+                    scriptableObjects.Add(new ObjectMap { DbObjects = new[] { v } });
+
+                    return GenerateObjectMapScript(scriptableObjects, this.GenerateDropScript);
+
                 case ABaseDbIndex i:
                     return this.ScriptDropIndex(i);
                 case ABaseDbForeignKey fk:
@@ -773,7 +536,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
-        public string GenerateAlterScript(ABaseDbObject dbObject)
+        public string GenerateAlterScript(ABaseDbObject dbObject, bool includeChildDbObjects)
         {
             if (dbObject == null)
             {
@@ -782,12 +545,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             if (dbObject.Database.Direction == Core.Enums.CompareDirection.Target)
             {
-                return this.GenerateDropScript(dbObject);
+                return this.GenerateDropScript(dbObject, includeChildDbObjects);
             }
 
             if (dbObject.MappedDbObject == null)
             {
-                return this.GenerateCreateScript(dbObject);
+                return this.GenerateCreateScript(dbObject, includeChildDbObjects);
             }
 
             if (dbObject.CreateScript == dbObject.MappedDbObject.CreateScript)
@@ -870,13 +633,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <param name="foreignKey">The foreign key to drop</param>
         /// <returns>The alter table script</returns>
         protected abstract string ScriptAlterTableDropForeignKey(ABaseDbForeignKey foreignKey);
-
-        /// <summary>
-        /// Generates the alter table for dropping the foreign keys referencing the table
-        /// </summary>
-        /// <param name="table">The table to alter</param>
-        /// <returns>The alter table script</returns>
-        protected abstract string ScriptAlterTableDropReferencingForeignKeys(ABaseDbTable table);
 
         /// <summary>
         /// Generates the alter table for adding the constraint to the table
@@ -1116,5 +872,36 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <param name="indexes">The indexes</param>
         /// <returns>The sorted indexes</returns>
         protected abstract IEnumerable<ABaseDbIndex> GetSortedIndexes(List<ABaseDbIndex> indexes);
+
+        private static string GenerateObjectMapScript(IEnumerable<ObjectMap> scriptableObjects, Func<ABaseDbObject, bool, string> scriptFunc)
+        {
+            var sb = new StringBuilder();
+            var additionalEmptyLine = true;
+            foreach (var objectMap in scriptableObjects)
+            {
+                if (!objectMap.DbObjects.Any())
+                {
+                    continue;
+                }
+
+                if (additionalEmptyLine)
+                {
+                    sb.AppendLine();
+                    additionalEmptyLine = false;
+                }
+
+                if (!string.IsNullOrWhiteSpace(objectMap.ObjectTitle))
+                {
+                    sb.AppendLine(AScriptHelper.ScriptComment(objectMap.ObjectTitle));
+                }
+
+                foreach (var item in objectMap.DbObjects)
+                {
+                    sb.Append(scriptFunc(item, false));
+                }
+            }
+
+            return sb.ToString();
+        }
     }
 }

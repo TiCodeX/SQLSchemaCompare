@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 using TiCodeX.SQLSchemaCompare.Services;
@@ -19,12 +20,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers
             // Linearize the 2 databases for mapping
             var maps = new List<ObjectMap>
             {
-                new ObjectMap { StatusMessage = Localization.StatusMappingTables, Source = source.Tables, Target = target.Tables },
-                new ObjectMap { StatusMessage = Localization.StatusMappingViews, Source = source.Views, Target = target.Views },
-                new ObjectMap { StatusMessage = Localization.StatusMappingFunctions, Source = source.Functions, Target = target.Functions },
-                new ObjectMap { StatusMessage = Localization.StatusMappingStoredProcedures, Source = source.StoredProcedures, Target = target.StoredProcedures },
-                new ObjectMap { StatusMessage = Localization.StatusMappingDataTypes, Source = source.DataTypes, Target = target.DataTypes },
-                new ObjectMap { StatusMessage = Localization.StatusMappingSequences, Source = source.Sequences, Target = target.Sequences },
+                new ObjectMap { ObjectTitle = Localization.StatusMappingTables, DbObjects = source.Tables, MappableDbObjects = target.Tables },
+                new ObjectMap { ObjectTitle = Localization.StatusMappingViews, DbObjects = source.Views, MappableDbObjects = target.Views },
+                new ObjectMap { ObjectTitle = Localization.StatusMappingFunctions, DbObjects = source.Functions, MappableDbObjects = target.Functions },
+                new ObjectMap { ObjectTitle = Localization.StatusMappingStoredProcedures, DbObjects = source.StoredProcedures, MappableDbObjects = target.StoredProcedures },
+                new ObjectMap { ObjectTitle = Localization.StatusMappingDataTypes, DbObjects = source.DataTypes, MappableDbObjects = target.DataTypes },
+                new ObjectMap { ObjectTitle = Localization.StatusMappingSequences, DbObjects = source.Sequences, MappableDbObjects = target.Sequences },
             };
 
             this.PerformMapping(maps, taskInfo);
@@ -42,10 +43,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers
             {
                 if (taskInfo != null)
                 {
-                    taskInfo.Message = m.StatusMessage;
+                    taskInfo.Message = m.ObjectTitle;
                 }
 
-                foreach (var sourceObject in m.Source)
+                foreach (var sourceObject in m.DbObjects)
                 {
                     // For the moment we much schema and name.
                     /*var foundTargets = m.Target.Where(x => x.Name == sourceObject.Name);
@@ -69,7 +70,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers
                             this.PerformTableMapping(sourceObject as ABaseDbTable);
                         }
                     }*/
-                    var targetObject = m.Target.FirstOrDefault(x => x.Schema == sourceObject.Schema && x.Name == sourceObject.Name);
+                    var targetObject = m.MappableDbObjects.FirstOrDefault(x => x.Schema == sourceObject.Schema && x.Name == sourceObject.Name);
                     if (targetObject != null)
                     {
                         sourceObject.Schema = targetObject.Schema;
@@ -104,24 +105,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers
             // Linearize the 2 tables for mapping
             var maps = new List<ObjectMap>
             {
-                new ObjectMap { Source = sourceTable.Columns, Target = targetTable.Columns },
-                new ObjectMap { Source = sourceTable.Indexes, Target = targetTable.Indexes },
-                new ObjectMap { Source = sourceTable.ForeignKeys, Target = targetTable.ForeignKeys },
-                new ObjectMap { Source = sourceTable.Constraints, Target = targetTable.Constraints },
-                new ObjectMap { Source = sourceTable.Triggers, Target = targetTable.Triggers },
-                new ObjectMap { Source = sourceTable.PrimaryKeys, Target = targetTable.PrimaryKeys },
+                new ObjectMap { DbObjects = sourceTable.Columns, MappableDbObjects = targetTable.Columns },
+                new ObjectMap { DbObjects = sourceTable.Indexes, MappableDbObjects = targetTable.Indexes },
+                new ObjectMap { DbObjects = sourceTable.ForeignKeys, MappableDbObjects = targetTable.ForeignKeys },
+                new ObjectMap { DbObjects = sourceTable.Constraints, MappableDbObjects = targetTable.Constraints },
+                new ObjectMap { DbObjects = sourceTable.Triggers, MappableDbObjects = targetTable.Triggers },
+                new ObjectMap { DbObjects = sourceTable.PrimaryKeys, MappableDbObjects = targetTable.PrimaryKeys },
             };
 
             this.PerformMapping(maps);
-        }
-
-        private class ObjectMap
-        {
-            public string StatusMessage { get; internal set; }
-
-            public IEnumerable<ABaseDbObject> Source { get; internal set; }
-
-            public IEnumerable<ABaseDbObject> Target { get; internal set; }
         }
     }
 }

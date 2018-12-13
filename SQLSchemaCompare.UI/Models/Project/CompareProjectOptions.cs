@@ -1,6 +1,5 @@
 ﻿using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
-using TiCodeX.SQLSchemaCompare.UI.Enums;
 
 namespace TiCodeX.SQLSchemaCompare.UI.Models.Project
 {

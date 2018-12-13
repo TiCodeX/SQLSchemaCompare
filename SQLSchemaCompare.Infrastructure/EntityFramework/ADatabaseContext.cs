@@ -15,18 +15,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
         where TDatabaseProviderOptions : ADatabaseProviderOptions
     {
         private readonly ILoggerFactory loggerFactory;
-        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ADatabaseContext{TDatabaseProviderOptions}"/> class.
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory</param>
-        /// <param name="logger">The logger</param>
         /// <param name="dbpo">The database provider options</param>
-        protected ADatabaseContext(ILoggerFactory loggerFactory, ILogger logger, TDatabaseProviderOptions dbpo)
+        protected ADatabaseContext(ILoggerFactory loggerFactory, TDatabaseProviderOptions dbpo)
         {
             this.loggerFactory = loggerFactory;
-            this.logger = logger;
             this.Hostname = dbpo.Hostname;
             this.DatabaseName = dbpo.Database;
         }

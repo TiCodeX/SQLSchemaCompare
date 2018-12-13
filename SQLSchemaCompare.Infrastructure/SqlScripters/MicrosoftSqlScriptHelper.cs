@@ -35,7 +35,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 case MicrosoftSqlForeignKey.ReferentialAction.SETDEFAULT: return "SET DEFAULT";
                 case MicrosoftSqlForeignKey.ReferentialAction.SETNULL: return "SET NULL";
                 default:
-                    throw new ArgumentException("Invalid referential action: " + action, nameof(action));
+                    throw new ArgumentException($"Invalid referential action: {action}", nameof(action));
             }
         }
 

@@ -17,7 +17,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
         /// <param name="cipherService">The injected cipher service</param>
         /// <param name="dbpo">The MySql database provider options</param>
         public MySqlDatabaseContext(ILoggerFactory loggerFactory, ICipherService cipherService, MySqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MySqlDatabaseContext)), dbpo)
+            : base(loggerFactory, dbpo)
         {
             var connStr = $"Server={dbpo.Hostname};Port={dbpo.Port};Database={dbpo.Database};User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
 

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+﻿using FluentAssertions;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
@@ -36,7 +34,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
         public void ScriptColumn(ProjectOptions options, MicrosoftSqlColumn column, string expectedResult)
         {
             var helper = new MicrosoftSqlScriptHelper(options);
-            helper.ScriptColumn(column, true).Should().Be(expectedResult);
+            helper.ScriptColumn(column).Should().Be(expectedResult);
         }
 
         /// <summary>

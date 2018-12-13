@@ -108,90 +108,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             });
         }
 
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
-        private bool ExecuteDatabaseComparison(TaskInfo taskInfo)
-        {
-            var processedItems = 1;
-            var scripter = this.databaseScripterFactory.Create(
-                this.retrievedSourceDatabase,
-                this.projectService.Project.Options);
-
-            // Linearize the 2 databases for mapping
-            var maps = new List<ObjectMap>
-            {
-                new ObjectMap { StatusMessage = Localization.StatusComparingTables, DbObjects = this.retrievedSourceDatabase.Tables.Concat(this.retrievedTargetDatabase.Tables.Where(x => x.MappedDbObject == null)) },
-                new ObjectMap { StatusMessage = Localization.StatusComparingViews, DbObjects = this.retrievedSourceDatabase.Views.Concat(this.retrievedTargetDatabase.Views.Where(x => x.MappedDbObject == null)) },
-                new ObjectMap { StatusMessage = Localization.StatusComparingFunctions, DbObjects = this.retrievedSourceDatabase.Functions.Concat(this.retrievedTargetDatabase.Functions.Where(x => x.MappedDbObject == null)) },
-                new ObjectMap { StatusMessage = Localization.StatusComparingStoredProcedures, DbObjects = this.retrievedSourceDatabase.StoredProcedures.Concat(this.retrievedTargetDatabase.StoredProcedures.Where(x => x.MappedDbObject == null)) },
-                new ObjectMap { StatusMessage = Localization.StatusComparingDataTypes, DbObjects = this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined).Concat(this.retrievedTargetDatabase.DataTypes.Where(x => x.MappedDbObject == null && x.IsUserDefined)) },
-                new ObjectMap { StatusMessage = Localization.StatusComparingSequences, DbObjects = this.retrievedSourceDatabase.Sequences.Concat(this.retrievedTargetDatabase.Sequences.Where(x => x.MappedDbObject == null)) },
-            };
-
-            var totalItems = maps.SelectMany(x => x.DbObjects).Count();
-            if (totalItems == 0)
-            {
-                throw new DataException(Localization.ErrorEmptyDatabases);
-            }
-
-            foreach (var m in maps)
-            {
-                taskInfo.Message = m.StatusMessage;
-                foreach (var item in m.DbObjects)
-                {
-                    if (item is ABaseDbTable table)
-                    {
-                        this.CompareTable(table, scripter);
-                    }
-
-                    item.CreateScript = scripter.GenerateCreateScript(item);
-                    if (item.MappedDbObject != null)
-                    {
-                        item.MappedDbObject.CreateScript = scripter.GenerateCreateScript(item.MappedDbObject);
-
-                        if (item.MappedDbObject is ABaseDbTable mappedTable)
-                        {
-                            this.CompareTable(mappedTable, scripter);
-                        }
-                    }
-
-                    item.AlterScript = scripter.GenerateAlterScript(item);
-
-                    taskInfo.Percentage = (short)(100 * processedItems++ / totalItems);
-                }
-            }
-
-            this.SetCompareResultList(this.tables, this.retrievedSourceDatabase.Tables, this.retrievedTargetDatabase.Tables, scripter);
-            this.SetCompareResultList(this.indexes, this.retrievedSourceDatabase.Indexes, this.retrievedTargetDatabase.Indexes, scripter);
-            this.SetCompareResultList(this.constraints, this.retrievedSourceDatabase.Constraints, this.retrievedTargetDatabase.Constraints, scripter);
-
-            this.SetCompareResultList(this.primaryKeys, this.retrievedSourceDatabase.PrimaryKeys, this.retrievedTargetDatabase.PrimaryKeys, scripter);
-            this.SetCompareResultList(this.foreignKeys, this.retrievedSourceDatabase.ForeignKeys, this.retrievedTargetDatabase.ForeignKeys, scripter);
-
-            this.SetCompareResultList(this.views, this.retrievedSourceDatabase.Views, this.retrievedTargetDatabase.Views, scripter);
-
-            this.SetCompareResultList(this.functions, this.retrievedSourceDatabase.Functions, this.retrievedTargetDatabase.Functions, scripter);
-
-            this.SetCompareResultList(this.storedProcedures, this.retrievedSourceDatabase.StoredProcedures, this.retrievedTargetDatabase.StoredProcedures, scripter);
-            this.SetCompareResultList(this.sequences, this.retrievedSourceDatabase.Sequences, this.retrievedTargetDatabase.Sequences, scripter);
-
-            this.SetCompareResultList(this.dataTypes, this.retrievedSourceDatabase.DataTypes, this.retrievedTargetDatabase.DataTypes, scripter);
-
-            this.SetCompareResultList(this.triggers, this.retrievedSourceDatabase.Triggers, this.retrievedTargetDatabase.Triggers, scripter);
-
-            var result = new CompareResult();
-
-            this.FillCompareResultItems(result);
-
-            result.SourceFullScript = scripter.GenerateFullCreateScript(this.retrievedSourceDatabase);
-            result.TargetFullScript = scripter.GenerateFullCreateScript(this.retrievedTargetDatabase);
-            result.FullAlterScript = this.GenerateFullAlterScript(scripter);
-
-            this.projectService.Project.Result = result;
-
-            return true;
-        }
-
-        private void SetCompareResultList<T>(List<CompareResultItem<T>> resultList, List<T> source, List<T> target, IDatabaseScripter scripter)
+        private static void SetCompareResultList<T>(ICollection<CompareResultItem<T>> resultList, IEnumerable<T> source, IEnumerable<T> target, IDatabaseScripter scripter)
             where T : ABaseDbObject
         {
             foreach (var item in source)
@@ -226,7 +143,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             }
         }
 
-        private void CompareTable(ABaseDbTable table, IDatabaseScripter scripter)
+        private static void CompareTable(ABaseDbTable table, IDatabaseScripter scripter)
         {
             // Linearize the 2 databases for mapping
             var maps = new List<ObjectMap>
@@ -250,6 +167,89 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     }
                 }
             }
+        }
+
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
+        private bool ExecuteDatabaseComparison(TaskInfo taskInfo)
+        {
+            var processedItems = 1;
+            var scripter = this.databaseScripterFactory.Create(
+                this.retrievedSourceDatabase,
+                this.projectService.Project.Options);
+
+            // Linearize the 2 databases for mapping
+            var maps = new List<ObjectMap>
+            {
+                new ObjectMap { StatusMessage = Localization.StatusComparingTables, DbObjects = this.retrievedSourceDatabase.Tables.Concat(this.retrievedTargetDatabase.Tables.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { StatusMessage = Localization.StatusComparingViews, DbObjects = this.retrievedSourceDatabase.Views.Concat(this.retrievedTargetDatabase.Views.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { StatusMessage = Localization.StatusComparingFunctions, DbObjects = this.retrievedSourceDatabase.Functions.Concat(this.retrievedTargetDatabase.Functions.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { StatusMessage = Localization.StatusComparingStoredProcedures, DbObjects = this.retrievedSourceDatabase.StoredProcedures.Concat(this.retrievedTargetDatabase.StoredProcedures.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { StatusMessage = Localization.StatusComparingDataTypes, DbObjects = this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined).Concat(this.retrievedTargetDatabase.DataTypes.Where(x => x.MappedDbObject == null && x.IsUserDefined)) },
+                new ObjectMap { StatusMessage = Localization.StatusComparingSequences, DbObjects = this.retrievedSourceDatabase.Sequences.Concat(this.retrievedTargetDatabase.Sequences.Where(x => x.MappedDbObject == null)) },
+            };
+
+            var totalItems = maps.SelectMany(x => x.DbObjects).Count();
+            if (totalItems == 0)
+            {
+                throw new DataException(Localization.ErrorEmptyDatabases);
+            }
+
+            foreach (var m in maps)
+            {
+                taskInfo.Message = m.StatusMessage;
+                foreach (var item in m.DbObjects)
+                {
+                    if (item is ABaseDbTable table)
+                    {
+                        CompareTable(table, scripter);
+                    }
+
+                    item.CreateScript = scripter.GenerateCreateScript(item);
+                    if (item.MappedDbObject != null)
+                    {
+                        item.MappedDbObject.CreateScript = scripter.GenerateCreateScript(item.MappedDbObject);
+
+                        if (item.MappedDbObject is ABaseDbTable mappedTable)
+                        {
+                            CompareTable(mappedTable, scripter);
+                        }
+                    }
+
+                    item.AlterScript = scripter.GenerateAlterScript(item);
+
+                    taskInfo.Percentage = (short)(100 * processedItems++ / totalItems);
+                }
+            }
+
+            SetCompareResultList(this.tables, this.retrievedSourceDatabase.Tables, this.retrievedTargetDatabase.Tables, scripter);
+            SetCompareResultList(this.indexes, this.retrievedSourceDatabase.Indexes, this.retrievedTargetDatabase.Indexes, scripter);
+            SetCompareResultList(this.constraints, this.retrievedSourceDatabase.Constraints, this.retrievedTargetDatabase.Constraints, scripter);
+
+            SetCompareResultList(this.primaryKeys, this.retrievedSourceDatabase.PrimaryKeys, this.retrievedTargetDatabase.PrimaryKeys, scripter);
+            SetCompareResultList(this.foreignKeys, this.retrievedSourceDatabase.ForeignKeys, this.retrievedTargetDatabase.ForeignKeys, scripter);
+
+            SetCompareResultList(this.views, this.retrievedSourceDatabase.Views, this.retrievedTargetDatabase.Views, scripter);
+
+            SetCompareResultList(this.functions, this.retrievedSourceDatabase.Functions, this.retrievedTargetDatabase.Functions, scripter);
+
+            SetCompareResultList(this.storedProcedures, this.retrievedSourceDatabase.StoredProcedures, this.retrievedTargetDatabase.StoredProcedures, scripter);
+            SetCompareResultList(this.sequences, this.retrievedSourceDatabase.Sequences, this.retrievedTargetDatabase.Sequences, scripter);
+
+            SetCompareResultList(this.dataTypes, this.retrievedSourceDatabase.DataTypes, this.retrievedTargetDatabase.DataTypes, scripter);
+
+            SetCompareResultList(this.triggers, this.retrievedSourceDatabase.Triggers, this.retrievedTargetDatabase.Triggers, scripter);
+
+            var result = new CompareResult();
+
+            this.FillCompareResultItems(result);
+
+            result.SourceFullScript = scripter.GenerateFullCreateScript(this.retrievedSourceDatabase);
+            result.TargetFullScript = scripter.GenerateFullCreateScript(this.retrievedTargetDatabase);
+            result.FullAlterScript = this.GenerateFullAlterScript(scripter);
+
+            this.projectService.Project.Result = result;
+
+            return true;
         }
 
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
@@ -305,8 +305,8 @@ namespace TiCodeX.SQLSchemaCompare.Services
             differentItems.AddRange(this.foreignKeys.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
             differentItems.AddRange(this.triggers.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
 
-            ABaseDb onlySourceDb = null;
-            ABaseDb onlyTargetDb = null;
+            ABaseDb onlySourceDb;
+            ABaseDb onlyTargetDb;
             switch (this.retrievedSourceDatabase)
             {
                 case MicrosoftSqlDb _:

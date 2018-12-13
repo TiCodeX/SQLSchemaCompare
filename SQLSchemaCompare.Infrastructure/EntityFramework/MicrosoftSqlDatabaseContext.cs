@@ -17,7 +17,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
         /// <param name="cipherService">The injected cipher service</param>
         /// <param name="dbpo">The MicrosoftSql database provider options</param>
         public MicrosoftSqlDatabaseContext(ILoggerFactory loggerFactory, ICipherService cipherService, MicrosoftSqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MicrosoftSqlDatabaseContext)), dbpo)
+            : base(loggerFactory, dbpo)
         {
             var server = dbpo.Hostname;
             if (!server.Contains("\\"))

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-using TiCodeX.SQLSchemaCompare.UI.Enums;
 
 namespace TiCodeX.SQLSchemaCompare.UI.Pages.Main
 {

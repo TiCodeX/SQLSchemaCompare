@@ -1,6 +1,5 @@
 ﻿@page
 @using Core.Interfaces
-@using Enums
 @using Services
 @using TiCodeX.SQLSchemaCompare.Core.Entities.Api
 @model AboutPageModel
@@ -25,7 +24,7 @@
             {
                 <b>@Localization.LabelSubscription:</b> @Localization.LabelSubscriptionTrial
                 <br />
-                <b>@Localization.LabelExpirationDate:</b> @Model.CustomerInformation.ExpirationDate.Value.ToShortDateString()
+                <b>@Localization.LabelExpirationDate:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
                 <br />
                 <b>@Localization.LabelRemainingDays:</b> @Model.CustomerInformation.RemainingDays
                 <br />
@@ -41,11 +40,11 @@
                 <br />
                 if (Model.CustomerInformation.CancelAtPeriodEnd.HasValue && Model.CustomerInformation.CancelAtPeriodEnd.Value)
                 {
-                    <b>@Localization.LabelRenewalDate:</b> @Model.CustomerInformation.ExpirationDate.Value.ToShortDateString()
+                    <b>@Localization.LabelRenewalDate:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
                 }
                 else
                 {
-                    <b>@Localization.LabelExpirationDate:</b> @Model.CustomerInformation.ExpirationDate.Value.ToShortDateString()
+                    <b>@Localization.LabelExpirationDate:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
                     <br />
                     <b>@Localization.LabelRemainingDays:</b> @Model.CustomerInformation.RemainingDays
                 }

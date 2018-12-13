@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
@@ -31,7 +32,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers
             return null;
         }
 
-        private void PerformMapping(List<ObjectMap> maps, TaskInfo taskInfo = null)
+        private void PerformMapping(IReadOnlyCollection<ObjectMap> maps, TaskInfo taskInfo = null)
         {
             var i = 1;
             var count = maps.Count;
@@ -95,6 +96,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers
         private void PerformTableMapping(ABaseDbTable sourceTable)
         {
             var targetTable = sourceTable.MappedDbObject as ABaseDbTable;
+            if (targetTable == null)
+            {
+                throw new ArgumentException($"{nameof(sourceTable.MappedDbObject)} is null");
+            }
 
             // Linearize the 2 tables for mapping
             var maps = new List<ObjectMap>

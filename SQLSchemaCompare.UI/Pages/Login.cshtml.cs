@@ -99,7 +99,8 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
                 // Session verified successfully
                 return this.Page();
             }
-            else if (this.VerifySessionResult.ErrorCode != EErrorCode.ErrorUnexpected)
+
+            if (this.VerifySessionResult.ErrorCode != EErrorCode.ErrorUnexpected)
             {
                 // Remove session from settings
                 appSettings.Session = null;
@@ -114,11 +115,9 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
 
                 return this.Page();
             }
-            else
-            {
-                this.logger.LogError($"An unexpected error occurred while verifying the saved session token: {this.VerifySessionResult.ErrorMessage}");
-                return this.Page();
-            }
+
+            this.logger.LogError($"An unexpected error occurred while verifying the saved session token: {this.VerifySessionResult.ErrorMessage}");
+            return this.Page();
         }
 
         /// <summary>

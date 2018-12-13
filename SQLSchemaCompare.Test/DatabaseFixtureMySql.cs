@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
 using TiCodeX.SQLSchemaCompare.Test;
-using Xunit.Sdk;
 
 namespace SQLSchemaCompare.Test
 {

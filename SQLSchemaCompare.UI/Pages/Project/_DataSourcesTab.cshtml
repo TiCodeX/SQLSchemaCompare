@@ -2,7 +2,6 @@
 @using Core.Interfaces
 @using Core.Enums
 @using Core.Entities.DatabaseProvider
-@using Enums
 @using Services
 @model CompareProject
 
@@ -32,20 +31,22 @@
             }
             else
             {
-                if (Model.SourceProviderOptions is MicrosoftSqlDatabaseProviderOptions)
+                switch (Model.SourceProviderOptions)
                 {
-                    <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.MicrosoftSql)" />
-                    <input type="text" disabled="@true" value="Microsoft SQL Server" />
-                }
-                else if (Model.SourceProviderOptions is MySqlDatabaseProviderOptions)
-                {
-                    <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.MySql)" />
-                    <input type="text" disabled="@true" value="MySQL Server" />
-                }
-                else if (Model.SourceProviderOptions is PostgreSqlDatabaseProviderOptions)
-                {
-                    <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.PostgreSql)" />
-                    <input type="text" disabled="@true" value="PostgreSQL Server" />
+                    case MicrosoftSqlDatabaseProviderOptions _:
+                        <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.MicrosoftSql)" />
+                        <input type="text" disabled="@true" value="Microsoft SQL Server" />
+                        break;
+
+                    case MySqlDatabaseProviderOptions _:
+                        <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.MySql)" />
+                        <input type="text" disabled="@true" value="MySQL Server" />
+                        break;
+
+                    case PostgreSqlDatabaseProviderOptions _:
+                        <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.PostgreSql)" />
+                        <input type="text" disabled="@true" value="PostgreSQL Server" />
+                        break;
                 }
             }
         </div>

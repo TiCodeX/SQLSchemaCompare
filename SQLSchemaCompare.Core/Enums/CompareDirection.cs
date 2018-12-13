@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Enums
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Enums
 {
     /// <summary>
     /// Represent the database comparison direction

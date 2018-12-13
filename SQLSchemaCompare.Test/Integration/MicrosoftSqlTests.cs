@@ -64,20 +64,20 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             db.Tables.Count.Should().Be(18);
             var table = db.Tables.FirstOrDefault(x => x.Name == "film");
             table.Should().NotBeNull();
-            table.Columns.Count.Should().Be(13);
-            table.Columns.Select(x => x.Name).Should().Contain("language_id");
+            table?.Columns.Count.Should().Be(13);
+            table?.Columns.Select(x => x.Name).Should().Contain("language_id");
 
             table = db.Tables.FirstOrDefault(x => x.Name == "film_category");
             table.Should().NotBeNull();
-            table.PrimaryKeys.Count.Should().Be(1);
-            table.PrimaryKeys.First().ColumnNames.Should().Contain("film_id");
-            table.PrimaryKeys.First().ColumnNames.Should().Contain("category_id");
+            table?.PrimaryKeys.Count.Should().Be(1);
+            table?.PrimaryKeys.First().ColumnNames.Should().Contain("film_id");
+            table?.PrimaryKeys.First().ColumnNames.Should().Contain("category_id");
 
             table = db.Tables.FirstOrDefault(x => x.Name == "rental");
-            table.ForeignKeys.Count.Should().Be(3);
-            table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_customer");
-            table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_inventory");
-            table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_staff");
+            table?.ForeignKeys.Count.Should().Be(3);
+            table?.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_customer");
+            table?.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_inventory");
+            table?.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_staff");
 
             db.Views.Count.Should().Be(6);
             db.Views.Should().ContainSingle(x => x.Name == "film_list");

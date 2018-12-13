@@ -784,7 +784,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             {
                 return this.GenerateDropScript(dbObject);
             }
-            else if (dbObject.MappedDbObject == null)
+
+            if (dbObject.MappedDbObject == null)
             {
                 return this.GenerateCreateScript(dbObject);
             }

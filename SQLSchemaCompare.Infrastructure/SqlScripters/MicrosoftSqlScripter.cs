@@ -63,13 +63,17 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
 
             var targetTable = t.MappedDbObject as ABaseDbTable;
+            if (targetTable == null)
+            {
+                throw new ArgumentException($"{nameof(t.MappedDbObject)} is null");
+            }
 
             // Remove columns
             var columnsToDrop = targetTable.Columns.Where(x => x.MappedDbObject == null).ToList();
             if (columnsToDrop.Count > 0)
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} DROP COLUMN ");
-                for (int i = 0; i < columnsToDrop.Count; i++)
+                for (var i = 0; i < columnsToDrop.Count; i++)
                 {
                     sb.Append($"{this.Indent}{columnsToDrop[i].Name}");
                     sb.AppendLine(i == columnsToDrop.Count - 1 ? string.Empty : ",");
@@ -91,7 +95,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             if (columnsToAdd.Count > 0)
             {
                 sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD");
-                for (int i = 0; i < columnsToAdd.Count; i++)
+                for (var i = 0; i < columnsToAdd.Count; i++)
                 {
                     sb.Append($"{this.Indent}{this.ScriptHelper.ScriptColumn(columnsToAdd[i])}");
                     sb.AppendLine(i == columnsToAdd.Count - 1 ? string.Empty : ",");
@@ -212,9 +216,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             // If there is a column with descending order, specify the order on all columns
             var scriptOrder = index.ColumnDescending.Any(x => x);
-            var columnList = index.ColumnNames.Select((x, i) => (scriptOrder ?
+            var columnList = index.ColumnNames.Select((x, i) => scriptOrder ?
                 $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}" :
-                $"{this.ScriptHelper.ScriptObjectName(x)}"));
+                $"{this.ScriptHelper.ScriptObjectName(x)}");
 
             sb.Append("CREATE ");
             switch (indexMicrosoft.Type)

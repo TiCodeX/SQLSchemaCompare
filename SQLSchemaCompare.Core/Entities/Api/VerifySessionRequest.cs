@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Entities.Api
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Api
 {
     /// <summary>
     /// Represent the VerifySession request

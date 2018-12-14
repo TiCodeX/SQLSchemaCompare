@@ -162,6 +162,20 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterTableDropPrimaryKey(ABaseDbPrimaryKey primaryKey)
         {
             var sb = new StringBuilder();
+
+            var table = primaryKey.Database.Tables.FirstOrDefault(x => x.Schema == primaryKey.TableSchema && x.Name == primaryKey.TableName);
+            if (table != null)
+            {
+                foreach (var columnName in primaryKey.ColumnNames)
+                {
+                    if (table.Columns.FirstOrDefault(x => x.Name == columnName) is MySqlColumn col &&
+                        col.Extra.ToUpperInvariant() == "AUTO_INCREMENT")
+                    {
+                        sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} MODIFY {this.ScriptHelper.ScriptColumn(col)};");
+                    }
+                }
+            }
+
             sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(primaryKey.TableSchema, primaryKey.TableName)} DROP PRIMARY KEY;");
             return sb.ToString();
         }

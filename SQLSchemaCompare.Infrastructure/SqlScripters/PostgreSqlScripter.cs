@@ -77,17 +77,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             }
 
             // Remove columns
-            var columnsToDrop = targetTable.Columns.Where(x => x.MappedDbObject == null).ToList();
-            if (columnsToDrop.Count > 0)
+            foreach (var c in targetTable.Columns.Where(x => x.MappedDbObject == null))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ");
-                for (var i = 0; i < columnsToDrop.Count; i++)
-                {
-                    sb.Append($"{this.Indent}DROP COLUMN {columnsToDrop[i].Name}");
-                    sb.AppendLine(i == columnsToDrop.Count - 1 ? string.Empty : ",");
-                }
-
-                sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} DROP COLUMN {this.ScriptHelper.ScriptObjectName(c.Name)};");
             }
 
             // Alter columns
@@ -95,49 +87,42 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             {
                 var col = c as PostgreSqlColumn;
                 var mappedCol = c.MappedDbObject as PostgreSqlColumn;
+                if (col == null || mappedCol == null)
+                {
+                    throw new ArgumentException("Wrong column type");
+                }
+
                 if (col.DataType != mappedCol.DataType)
                 {
-                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
-                    sb.AppendLine($"{this.Indent}\"{col.Name}\" TYPE {this.ScriptHelper.ScriptDataType(col)}");
-                    sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+                    sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
+                    sb.AppendLine($"{this.ScriptHelper.ScriptObjectName(col.Name)} TYPE {this.ScriptHelper.ScriptDataType(col)};");
                 }
 
                 if (col.IsNullable != mappedCol.IsNullable)
                 {
-                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
-                    sb.AppendLine($"{this.Indent}\"{col.Name}\" {(mappedCol.IsNullable ? "DROP" : "SET")} IS NULLABLE");
-                    sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+                    sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
+                    sb.AppendLine($"{this.ScriptHelper.ScriptObjectName(col.Name)} {(mappedCol.IsNullable ? "DROP" : "SET")} IS NULLABLE;");
                 }
 
                 if (col.ColumnDefault != mappedCol.ColumnDefault)
                 {
                     if (col.ColumnDefault == null)
                     {
-                        sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
-                        sb.AppendLine($"{this.Indent}\"{col.Name}\" DROP DEFAULT");
-                        sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+                        sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
+                        sb.AppendLine($"{this.ScriptHelper.ScriptObjectName(col.Name)} DROP DEFAULT;");
                     }
                     else
                     {
-                        sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
-                        sb.AppendLine($"{this.Indent}\"{col.Name}\" SET DEFAULT {col.ColumnDefault}");
-                        sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+                        sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
+                        sb.AppendLine($"{this.ScriptHelper.ScriptObjectName(col.Name)} SET DEFAULT {col.ColumnDefault};");
                     }
                 }
             }
 
             // Add columns
-            var columnsToAdd = t.Columns.Where(x => x.MappedDbObject == null).ToList();
-            if (columnsToAdd.Count > 0)
+            foreach (var c in t.Columns.Where(x => x.MappedDbObject == null))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)}");
-                for (var i = 0; i < columnsToAdd.Count; i++)
-                {
-                    sb.Append($"{this.Indent}ADD {this.ScriptHelper.ScriptColumn(columnsToAdd[i])}");
-                    sb.AppendLine(i == columnsToAdd.Count - 1 ? string.Empty : ",");
-                }
-
-                sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD {this.ScriptHelper.ScriptColumn(c)};");
             }
 
             return sb.ToString();

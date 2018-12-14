@@ -69,38 +69,23 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             }
 
             // Remove columns
-            var columnsToDrop = targetTable.Columns.Where(x => x.MappedDbObject == null).ToList();
-            if (columnsToDrop.Count > 0)
+            foreach (var c in targetTable.Columns.Where(x => x.MappedDbObject == null))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} DROP COLUMN ");
-                for (var i = 0; i < columnsToDrop.Count; i++)
-                {
-                    sb.Append($"{this.Indent}{columnsToDrop[i].Name}");
-                    sb.AppendLine(i == columnsToDrop.Count - 1 ? string.Empty : ",");
-                }
-
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} DROP COLUMN {this.ScriptHelper.ScriptObjectName(c.Name)}");
                 sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
             }
 
             // Alter columns
             foreach (var c in t.Columns.Where(x => x.MappedDbObject != null && x.CreateScript != x.MappedDbObject.CreateScript))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
-                sb.AppendLine($"{this.Indent}{this.ScriptHelper.ScriptColumn(c, false)}");
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN {this.ScriptHelper.ScriptColumn(c, false)}");
                 sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
             }
 
             // Add columns
-            var columnsToAdd = t.Columns.Where(x => x.MappedDbObject == null).ToList();
-            if (columnsToAdd.Count > 0)
+            foreach (var c in t.Columns.Where(x => x.MappedDbObject == null))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD");
-                for (var i = 0; i < columnsToAdd.Count; i++)
-                {
-                    sb.Append($"{this.Indent}{this.ScriptHelper.ScriptColumn(columnsToAdd[i])}");
-                    sb.AppendLine(i == columnsToAdd.Count - 1 ? string.Empty : ",");
-                }
-
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD {this.ScriptHelper.ScriptColumn(c)}");
                 sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
             }
 

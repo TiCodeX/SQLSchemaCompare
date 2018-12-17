@@ -45,13 +45,13 @@ class Utility {
                 version: string;
             }) => {
                 if (info !== null && info.version !== "") {
-                    let genericMessage: string = "<a href=\"#\" class=\"close\" data-dismiss=\"alert\">&times;</a>";
-                    genericMessage += `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
+                    let genericMessage: string = `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
                     genericMessage += "<br/>";
                     genericMessage += `${Localization.Get("NotificationNewVersionAvailableMessage").replace("{0}", info.version)}`;
                     if (info.platform === "linux") {
-                        $("#myNotification").html(genericMessage).show();
-                    } else {
+                        $("#myNotificationMessage").html(genericMessage);
+                        $("#myNotification").show();
+                   } else {
                         // Windows & MacOS
                         if (info.readyToBeInstalled) {
                             let message: string = "<button type=\"button\" class=\"btn btn-primary float-right\" onclick=\"electron.ipcRenderer.send('QuitAndInstall');\">";
@@ -60,9 +60,11 @@ class Utility {
                             message += `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
                             message += "<br/>";
                             message += `${Localization.Get("NotificationUpdateReadyToBeInstalled").replace("{0}", info.version)}`;
-                            $("#myNotification").html(message).show();
-                        } else if (info.autoDownloadFailed) {
-                            $("#myNotification").html(genericMessage).show();
+                            $("#myNotificationMessage").html(message);
+                            $("#myNotification").show();
+                       } else if (info.autoDownloadFailed) {
+                            $("#myNotificationMessage").html(genericMessage);
+                            $("#myNotification").show();
                         }
                     }
                 }

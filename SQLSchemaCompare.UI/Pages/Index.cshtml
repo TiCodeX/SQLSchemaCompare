@@ -31,6 +31,8 @@
     @await Html.PartialAsync("_ModalDialog")
 
     <div id="myNotification" class="alert alert-warning">
+        <a href="#" class="close  ml-3" data-dismiss="alert">&times;</a>
+        <span id="myNotificationMessage"></span>
     </div>
 
     <div id="myModal" class="modal">
@@ -38,7 +40,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title"></h5>
-                    <button type="button" class="close" data-dismiss="modal">
+                    <button type="button" class="close white" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>

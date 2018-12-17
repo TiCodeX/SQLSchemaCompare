@@ -150,7 +150,7 @@ label {
     background-color: $gray-400;
 }
 
-.close {
+.close.white {
     color: $white;
 
     &:not(:disabled):not(.disabled):hover,

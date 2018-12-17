@@ -150,6 +150,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             return sb.ToString();
         }
 
+        /// <inheritdoc />
+        protected override string ScriptAlterPrimaryKey(ABaseDbPrimaryKey sourcePrimaryKey, ABaseDbPrimaryKey targetPrimaryKey)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptAlterTableDropPrimaryKey(targetPrimaryKey));
+            sb.AppendLine(this.ScriptAlterTableAddPrimaryKey(sourcePrimaryKey));
+            return sb.ToString();
+        }
+
         /// <inheritdoc/>
         protected override string ScriptAlterTableAddForeignKey(ABaseDbForeignKey foreignKey)
         {
@@ -183,6 +192,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             return sb.ToString();
         }
 
+        /// <inheritdoc />
+        protected override string ScriptAlterForeignKey(ABaseDbForeignKey sourceForeignKey, ABaseDbForeignKey targetForeignKey)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptAlterTableDropForeignKey(targetForeignKey));
+            sb.AppendLine(this.ScriptAlterTableAddForeignKey(sourceForeignKey));
+            return sb.ToString();
+        }
+
         /// <inheritdoc/>
         protected override string ScriptAlterTableAddConstraint(ABaseDbConstraint constraint)
         {
@@ -198,6 +216,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
             sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(constraint.TableSchema, constraint.TableName)} DROP CONSTRAINT {this.ScriptHelper.ScriptObjectName(constraint.Name)};");
+            return sb.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterConstraint(ABaseDbConstraint sourceConstraint, ABaseDbConstraint targetConstraint)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptAlterTableDropConstraint(targetConstraint));
+            sb.AppendLine(this.ScriptAlterTableAddConstraint(sourceConstraint));
             return sb.ToString();
         }
 
@@ -251,6 +278,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var sb = new StringBuilder();
             sb.AppendLine($"DROP INDEX {this.ScriptHelper.ScriptObjectName(index.Name)};");
+            return sb.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterIndex(ABaseDbIndex sourceIndex, ABaseDbIndex targetIndex)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptDropIndex(targetIndex));
+            sb.AppendLine(this.ScriptCreateIndex(sourceIndex));
             return sb.ToString();
         }
 

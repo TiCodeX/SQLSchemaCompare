@@ -558,18 +558,34 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 return string.Empty;
             }
 
+            var scriptableObjects = new List<ObjectMap>();
             switch (dbObject)
             {
                 case ABaseDbTable t:
-                    return this.ScriptAlterTable(t);
+                    if (!includeChildDbObjects)
+                    {
+                        return this.ScriptAlterTable(t);
+                    }
+
+                    var targetTable = t.MappedDbObject as ABaseDbTable;
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = targetTable.PrimaryKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name).Concat(t.PrimaryKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name)) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelForeignKeys, DbObjects = targetTable.ForeignKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name).Concat(t.ForeignKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name)) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelConstraints, DbObjects = targetTable.Constraints.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name).Concat(t.Constraints.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name)) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = targetTable.Triggers.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name).Concat(t.Triggers.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name)) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(targetTable.Indexes).Where(x => x.MappedDbObject == null).Concat(this.GetSortedIndexes(t.Indexes).Where(x => x.CreateScript != x.MappedDbObject?.CreateScript)) });
+                    scriptableObjects.Add(new ObjectMap { DbObjects = new[] { t } });
+
+                    return GenerateObjectMapScript(scriptableObjects, this.GenerateAlterScript);
                 case ABaseDbView v:
                     return this.ScriptAlterView(v, v.MappedDbObject as ABaseDbView);
-                /*                case ABaseDbIndex i:
-                                    return this.GenerateAlterIndexScript(i);
-                                case ABaseDbForeignKey fk:
-                                    return this.GenerateAlterForeignKeyScript(fk);
-                                case ABaseDbConstraint c:
-                                    return this.GenerateAlterConstraintScript(c);*/
+                case ABaseDbPrimaryKey pk:
+                    return this.ScriptAlterPrimaryKey(pk, pk.MappedDbObject as ABaseDbPrimaryKey);
+                case ABaseDbIndex i:
+                    return this.ScriptAlterIndex(i, i.MappedDbObject as ABaseDbIndex);
+                case ABaseDbForeignKey fk:
+                    return this.ScriptAlterForeignKey(fk, fk.MappedDbObject as ABaseDbForeignKey);
+                case ABaseDbConstraint c:
+                    return this.ScriptAlterConstraint(c, c.MappedDbObject as ABaseDbConstraint);
                 case ABaseDbFunction f:
                     return this.ScriptAlterFunction(f, f.MappedDbObject as ABaseDbFunction, f.MappedDbObject?.Database.DataTypes);
                 case ABaseDbSequence s:
@@ -621,6 +637,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected abstract string ScriptAlterTableDropPrimaryKey(ABaseDbPrimaryKey primaryKey);
 
         /// <summary>
+        /// Generates the alter table for altering the primary key from the table
+        /// </summary>
+        /// <param name="soucePrimaryKey">The source primary key to add</param>
+        /// <param name="targetPrimaryKey">The target primary key to drop</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterPrimaryKey(ABaseDbPrimaryKey soucePrimaryKey, ABaseDbPrimaryKey targetPrimaryKey);
+
+        /// <summary>
         /// Generates the alter table for adding the foreign key to the table
         /// </summary>
         /// <param name="foreignKey">The foreign key to script</param>
@@ -633,6 +657,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <param name="foreignKey">The foreign key to drop</param>
         /// <returns>The alter table script</returns>
         protected abstract string ScriptAlterTableDropForeignKey(ABaseDbForeignKey foreignKey);
+
+        /// <summary>
+        /// Generates the alter table for altering the foreign key from the table
+        /// </summary>
+        /// <param name="souceForeignKey">The source foreign key to add</param>
+        /// <param name="targetForeignKey">The target foreign key to drop</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterForeignKey(ABaseDbForeignKey souceForeignKey, ABaseDbForeignKey targetForeignKey);
 
         /// <summary>
         /// Generates the alter table for adding the constraint to the table
@@ -649,6 +681,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected abstract string ScriptAlterTableDropConstraint(ABaseDbConstraint constraint);
 
         /// <summary>
+        /// Generates the alter table for altering the constraint from the table
+        /// </summary>
+        /// <param name="souceConstraint">The source constraint to add</param>
+        /// <param name="targetConstraint">The target constraint to drop</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterConstraint(ABaseDbConstraint souceConstraint, ABaseDbConstraint targetConstraint);
+
+        /// <summary>
         /// Generates the create index script
         /// </summary>
         /// <param name="index">The index to script</param>
@@ -661,6 +701,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <param name="index">The index to script</param>
         /// <returns>The drop index scripts</returns>
         protected abstract string ScriptDropIndex(ABaseDbIndex index);
+
+        /// <summary>
+        /// Generates the alter table for altering the index from the table
+        /// </summary>
+        /// <param name="souceIndex">The source index to add</param>
+        /// <param name="targetIndex">The target index to drop</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterIndex(ABaseDbIndex souceIndex, ABaseDbIndex targetIndex);
 
         /// <summary>
         /// Generates the create view script

@@ -137,7 +137,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(primaryKey.TableSchema, primaryKey.TableName)}");
             sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(primaryKey.Name)} PRIMARY KEY ({string.Join(",", columnList)});");
-            sb.AppendLine();
 
             return sb.ToString();
         }
@@ -154,8 +153,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterPrimaryKey(ABaseDbPrimaryKey sourcePrimaryKey, ABaseDbPrimaryKey targetPrimaryKey)
         {
             var sb = new StringBuilder();
-            sb.AppendLine(this.ScriptAlterTableDropPrimaryKey(targetPrimaryKey));
-            sb.AppendLine(this.ScriptAlterTableAddPrimaryKey(sourcePrimaryKey));
+            sb.Append(this.ScriptAlterTableDropPrimaryKey(targetPrimaryKey));
+            sb.Append(this.ScriptAlterTableAddPrimaryKey(sourcePrimaryKey));
             return sb.ToString();
         }
 
@@ -174,12 +173,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             sb.AppendLine($"REFERENCES {this.ScriptHelper.ScriptObjectName(key.ReferencedTableSchema, key.ReferencedTableName)} ({string.Join(",", referencedColumnList)}) {PostgreSqlScriptHelper.ScriptForeignKeyMatchOption(key.MatchOption)}");
             sb.AppendLine($"ON DELETE {key.DeleteRule}");
             sb.AppendLine($"ON UPDATE {key.UpdateRule}");
-
             sb.AppendLine(key.IsDeferrable ? "DEFERRABLE" : "NOT DEFERRABLE");
-
             sb.AppendLine(key.IsInitiallyDeferred ? "INITIALLY DEFERRED;" : "INITIALLY IMMEDIATE;");
-
-            sb.AppendLine();
 
             return sb.ToString();
         }
@@ -196,8 +191,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterForeignKey(ABaseDbForeignKey sourceForeignKey, ABaseDbForeignKey targetForeignKey)
         {
             var sb = new StringBuilder();
-            sb.AppendLine(this.ScriptAlterTableDropForeignKey(targetForeignKey));
-            sb.AppendLine(this.ScriptAlterTableAddForeignKey(sourceForeignKey));
+            sb.Append(this.ScriptAlterTableDropForeignKey(targetForeignKey));
+            sb.Append(this.ScriptAlterTableAddForeignKey(sourceForeignKey));
             return sb.ToString();
         }
 
@@ -207,7 +202,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
             sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(constraint.TableSchema, constraint.TableName)}");
             sb.AppendLine($"ADD CONSTRAINT {this.ScriptHelper.ScriptObjectName(constraint.Name)} {constraint.Definition};");
-            sb.AppendLine();
             return sb.ToString();
         }
 
@@ -223,8 +217,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterConstraint(ABaseDbConstraint sourceConstraint, ABaseDbConstraint targetConstraint)
         {
             var sb = new StringBuilder();
-            sb.AppendLine(this.ScriptAlterTableDropConstraint(targetConstraint));
-            sb.AppendLine(this.ScriptAlterTableAddConstraint(sourceConstraint));
+            sb.Append(this.ScriptAlterTableDropConstraint(targetConstraint));
+            sb.Append(this.ScriptAlterTableAddConstraint(sourceConstraint));
             return sb.ToString();
         }
 
@@ -268,7 +262,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             }
 
             sb.AppendLine($"({string.Join(",", columnList)});");
-            sb.AppendLine();
 
             return sb.ToString();
         }
@@ -285,8 +278,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterIndex(ABaseDbIndex sourceIndex, ABaseDbIndex targetIndex)
         {
             var sb = new StringBuilder();
-            sb.AppendLine(this.ScriptDropIndex(targetIndex));
-            sb.AppendLine(this.ScriptCreateIndex(sourceIndex));
+            sb.Append(this.ScriptDropIndex(targetIndex));
+            sb.Append(this.ScriptCreateIndex(sourceIndex));
             return sb.ToString();
         }
 
@@ -324,8 +317,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterView(ABaseDbView sourceView, ABaseDbView targetView)
         {
             var sb = new StringBuilder();
-            sb.AppendLine(this.ScriptDropView(targetView));
-            sb.AppendLine(this.ScriptCreateView(sourceView));
+            sb.Append(this.ScriptDropView(targetView));
+            sb.Append(this.ScriptCreateView(sourceView));
             return sb.ToString();
         }
 
@@ -428,8 +421,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterFunction(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             var sb = new StringBuilder();
-            sb.AppendLine(this.ScriptDropFunction(targetFunction, dataTypes));
-            sb.AppendLine(this.ScriptCreateFunction(sourceFunction, dataTypes));
+            sb.Append(this.ScriptDropFunction(targetFunction, dataTypes));
+            sb.Append(this.ScriptCreateFunction(sourceFunction, dataTypes));
             return sb.ToString();
         }
 
@@ -478,8 +471,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterTrigger(ABaseDbTrigger sourceTrigger, ABaseDbTrigger targetTrigger)
         {
             var sb = new StringBuilder();
-            sb.AppendLine(this.ScriptDropTrigger(targetTrigger));
-            sb.AppendLine(this.ScriptCreateTrigger(sourceTrigger));
+            sb.Append(this.ScriptDropTrigger(targetTrigger));
+            sb.Append(this.ScriptCreateTrigger(sourceTrigger));
             return sb.ToString();
         }
 
@@ -537,44 +530,81 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
             sb.AppendLine($"ALTER SEQUENCE {this.ScriptHelper.ScriptObjectName(targetSequence)}");
 
+            var appendNewLine = false;
             if (sourceSequence.DataType != targetSequence.DataType)
             {
-                sb.AppendLine($"{this.Indent}AS {sourceSequence.DataType}");
+                sb.Append($"{this.Indent}AS {sourceSequence.DataType}");
+                appendNewLine = true;
             }
 
             if (sourceSequence.Increment != targetSequence.Increment)
             {
-                sb.AppendLine($"{this.Indent}INCREMENT BY {sourceSequence.Increment}");
+                if (appendNewLine)
+                {
+                    sb.AppendLine();
+                }
+
+                sb.Append($"{this.Indent}INCREMENT BY {sourceSequence.Increment}");
+                appendNewLine = true;
             }
 
             if (sourceSequence.MinValue != targetSequence.MinValue)
             {
-                sb.AppendLine($"{this.Indent}MINVALUE {sourceSequence.MinValue}");
+                if (appendNewLine)
+                {
+                    sb.AppendLine();
+                }
+
+                sb.Append($"{this.Indent}MINVALUE {sourceSequence.MinValue}");
+                appendNewLine = true;
             }
 
             if (sourceSequence.MaxValue != targetSequence.MaxValue)
             {
-                sb.AppendLine($"{this.Indent}MAXVALUE {sourceSequence.MaxValue}");
+                if (appendNewLine)
+                {
+                    sb.AppendLine();
+                }
+
+                sb.Append($"{this.Indent}MAXVALUE {sourceSequence.MaxValue}");
+                appendNewLine = true;
             }
 
             if (sourceSequence.StartValue != targetSequence.StartValue)
             {
-                sb.AppendLine($"{this.Indent}START WITH {sourceSequence.StartValue}");
+                if (appendNewLine)
+                {
+                    sb.AppendLine();
+                }
+
+                sb.Append($"{this.Indent}START WITH {sourceSequence.StartValue}");
+                appendNewLine = true;
             }
 
             if (sourceSequencePostgreSql.Cache != targetSequencePostgreSql.Cache)
             {
-                sb.AppendLine($"{this.Indent}CACHE {sourceSequencePostgreSql.Cache}");
+                if (appendNewLine)
+                {
+                    sb.AppendLine();
+                }
+
+                sb.Append($"{this.Indent}CACHE {sourceSequencePostgreSql.Cache}");
+                appendNewLine = true;
             }
 
             if (sourceSequence.IsCycling != targetSequence.IsCycling)
             {
-                sb.AppendLine(sourceSequence.IsCycling ?
+                if (appendNewLine)
+                {
+                    sb.AppendLine();
+                }
+
+                sb.Append(sourceSequence.IsCycling ?
                     $"{this.Indent}CYCLE" :
                     $"{this.Indent}NO CYCLE");
             }
 
-            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            sb.AppendLine(";");
             return sb.ToString();
         }
 
@@ -688,8 +718,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptAlterType(ABaseDbDataType sourceType, ABaseDbDataType targetType, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             var sb = new StringBuilder();
-            sb.AppendLine(this.ScriptDropType(targetType));
-            sb.AppendLine(this.ScriptCreateType(sourceType, dataTypes));
+            sb.Append(this.ScriptDropType(targetType));
+            sb.Append(this.ScriptCreateType(sourceType, dataTypes));
             return sb.ToString();
         }
 

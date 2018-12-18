@@ -928,7 +928,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         private static string GenerateObjectMapScript(IEnumerable<ObjectMap> scriptableObjects, Func<ABaseDbObject, bool, string> scriptFunc)
         {
             var sb = new StringBuilder();
-            var additionalEmptyLine = true;
+            var additionalEmptyLine = false;
             foreach (var objectMap in scriptableObjects)
             {
                 if (!objectMap.DbObjects.Any())
@@ -939,7 +939,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 if (additionalEmptyLine)
                 {
                     sb.AppendLine();
-                    additionalEmptyLine = false;
                 }
 
                 if (!string.IsNullOrWhiteSpace(objectMap.ObjectTitle))
@@ -951,6 +950,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 {
                     sb.Append(scriptFunc(item, false));
                 }
+
+                additionalEmptyLine = true;
             }
 
             return sb.ToString();

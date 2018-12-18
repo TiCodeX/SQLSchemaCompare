@@ -172,7 +172,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                 this.retrievedSourceDatabase,
                 this.projectService.Project.Options);
 
-            // Linearize the 2 databases for mapping
+            // Linearize the 2 databases into a single list of of all source items and the target items not present in source
             var maps = new List<ObjectMap>
             {
                 new ObjectMap { ObjectTitle = Localization.StatusComparingTables, DbObjects = this.retrievedSourceDatabase.Tables.Concat(this.retrievedTargetDatabase.Tables.Where(x => x.MappedDbObject == null)) },
@@ -219,19 +219,13 @@ namespace TiCodeX.SQLSchemaCompare.Services
             SetCompareResultList(this.tables, this.retrievedSourceDatabase.Tables, this.retrievedTargetDatabase.Tables, scripter);
             SetCompareResultList(this.indexes, this.retrievedSourceDatabase.Indexes, this.retrievedTargetDatabase.Indexes, scripter);
             SetCompareResultList(this.constraints, this.retrievedSourceDatabase.Constraints, this.retrievedTargetDatabase.Constraints, scripter);
-
             SetCompareResultList(this.primaryKeys, this.retrievedSourceDatabase.PrimaryKeys, this.retrievedTargetDatabase.PrimaryKeys, scripter);
             SetCompareResultList(this.foreignKeys, this.retrievedSourceDatabase.ForeignKeys, this.retrievedTargetDatabase.ForeignKeys, scripter);
-
             SetCompareResultList(this.views, this.retrievedSourceDatabase.Views, this.retrievedTargetDatabase.Views, scripter);
-
             SetCompareResultList(this.functions, this.retrievedSourceDatabase.Functions, this.retrievedTargetDatabase.Functions, scripter);
-
             SetCompareResultList(this.storedProcedures, this.retrievedSourceDatabase.StoredProcedures, this.retrievedTargetDatabase.StoredProcedures, scripter);
             SetCompareResultList(this.sequences, this.retrievedSourceDatabase.Sequences, this.retrievedTargetDatabase.Sequences, scripter);
-
-            SetCompareResultList(this.dataTypes, this.retrievedSourceDatabase.DataTypes, this.retrievedTargetDatabase.DataTypes, scripter);
-
+            SetCompareResultList(this.dataTypes, this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined), this.retrievedTargetDatabase.DataTypes.Where(x => x.IsUserDefined), scripter);
             SetCompareResultList(this.triggers, this.retrievedSourceDatabase.Triggers, this.retrievedTargetDatabase.Triggers, scripter);
 
             var result = new CompareResult();

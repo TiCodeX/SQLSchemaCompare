@@ -106,7 +106,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
                 if (col.ColumnDefault != mappedCol.ColumnDefault)
                 {
-                    if (col.ColumnDefault == null)
+                    if (string.IsNullOrWhiteSpace(col.ColumnDefault))
                     {
                         sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
                         sb.AppendLine($"{this.ScriptHelper.ScriptObjectName(col.Name)} DROP DEFAULT;");

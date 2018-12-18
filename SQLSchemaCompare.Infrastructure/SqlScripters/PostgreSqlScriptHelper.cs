@@ -158,7 +158,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             sb.Append(col.IsNullable ? " NULL" : " NOT NULL");
 
-            if (col.ColumnDefault != null)
+            // Always script the default if present
+            if (!string.IsNullOrWhiteSpace(col.ColumnDefault))
             {
                 sb.Append($" DEFAULT {col.ColumnDefault}");
             }

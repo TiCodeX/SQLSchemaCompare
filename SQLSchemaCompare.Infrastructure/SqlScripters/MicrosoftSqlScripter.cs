@@ -78,8 +78,46 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             // Alter columns
             foreach (var c in t.Columns.Where(x => x.MappedDbObject != null && x.CreateScript != x.MappedDbObject.CreateScript))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN {this.ScriptHelper.ScriptColumn(c, false)}");
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                var targetColumn = (MicrosoftSqlColumn)c.MappedDbObject;
+                var defaultIsMissingInSource = string.IsNullOrWhiteSpace(c.ColumnDefault) &&
+                                             !string.IsNullOrWhiteSpace(targetColumn.ColumnDefault) &&
+                                             !string.IsNullOrWhiteSpace(targetColumn.DefaultConstraintName);
+                var defaultIsMissingInTarget = !string.IsNullOrWhiteSpace(c.ColumnDefault) &&
+                                             string.IsNullOrWhiteSpace(targetColumn.ColumnDefault);
+                var defaultIsDifferent = !string.IsNullOrWhiteSpace(c.ColumnDefault) && !string.IsNullOrWhiteSpace(targetColumn.ColumnDefault) && c.ColumnDefault != targetColumn.ColumnDefault;
+
+                if (defaultIsMissingInSource || defaultIsDifferent)
+                {
+                    var constraint = new ABaseDbConstraint
+                    {
+                        TableSchema = targetTable.Schema,
+                        TableName = targetTable.Name,
+                        Name = ((MicrosoftSqlColumn)c.MappedDbObject).DefaultConstraintName,
+                    };
+
+                    sb.Append(this.ScriptAlterTableDropConstraint(constraint));
+                }
+
+                // Compare again the columns without the default constraint
+                var columnScriptSource = this.ScriptHelper.ScriptColumn(c, false);
+                var columnScriptTarget = this.ScriptHelper.ScriptColumn(targetColumn, false);
+                if (columnScriptSource != columnScriptTarget)
+                {
+                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN {columnScriptSource}");
+                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                }
+
+                if (defaultIsMissingInTarget || defaultIsDifferent)
+                {
+                    sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD");
+                    if (!string.IsNullOrWhiteSpace(c.DefaultConstraintName))
+                    {
+                        sb.Append($" CONSTRAINT {this.ScriptHelper.ScriptObjectName(c.DefaultConstraintName)}");
+                    }
+
+                    sb.AppendLine($" DEFAULT {c.ColumnDefault} FOR {this.ScriptHelper.ScriptObjectName(c.Name)}");
+                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                }
             }
 
             // Add columns

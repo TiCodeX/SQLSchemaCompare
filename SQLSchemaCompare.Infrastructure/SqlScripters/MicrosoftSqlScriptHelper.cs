@@ -59,7 +59,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             var sb = new StringBuilder();
 
-            sb.Append($"[{col.Name}] {this.ScriptDataType(col)} ");
+            sb.Append($"{this.ScriptObjectName(col.Name)} {this.ScriptDataType(col)} ");
 
             if (!col.IsComputed)
             {
@@ -75,11 +75,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     sb.Append(" ROWGUIDCOL");
                 }
 
-                if (col.ColumnDefault != null && scriptDefaultConstraint)
+                if (!string.IsNullOrWhiteSpace(col.ColumnDefault) && scriptDefaultConstraint)
                 {
                     if (!string.IsNullOrWhiteSpace(col.DefaultConstraintName))
                     {
-                        sb.Append($" CONSTRAINT [{col.DefaultConstraintName}]");
+                        sb.Append($" CONSTRAINT {this.ScriptObjectName(col.DefaultConstraintName)}");
                     }
 
                     sb.Append($" DEFAULT {col.ColumnDefault}");
@@ -109,8 +109,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             if (!string.IsNullOrWhiteSpace(column.UserDefinedDataType))
             {
                 return !string.IsNullOrWhiteSpace(column.UserDefinedDataTypeSchema) ?
-                    $"[{column.UserDefinedDataTypeSchema}].[{column.UserDefinedDataType}]" :
-                    $"[{column.UserDefinedDataType}]";
+                    $"{this.ScriptObjectName(column.UserDefinedDataTypeSchema, column.UserDefinedDataType)}" :
+                    $"{this.ScriptObjectName(column.UserDefinedDataType)}";
             }
 
             switch (column.DataType)
@@ -123,26 +123,26 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 case "bit":
                 case "smallmoney":
                 case "money":
-                    return $"[{column.DataType}]";
+                    return this.ScriptObjectName(column.DataType);
                 case "numeric":
                 case "decimal":
-                    return $"[{column.DataType}]({column.NumericPrecision}, {column.NumericScale})";
+                    return $"{this.ScriptObjectName(column.DataType)}({column.NumericPrecision}, {column.NumericScale})";
 
                 // Approximate numerics
                 case "float":
-                    return column.NumericPrecision == 53 ? $"[{column.DataType}]" : $"[{column.DataType}]({column.NumericPrecision})";
+                    return column.NumericPrecision == 53 ? $"{this.ScriptObjectName(column.DataType)}" : $"{this.ScriptObjectName(column.DataType)}({column.NumericPrecision})";
                 case "real":
-                    return $"[{column.DataType}]";
+                    return this.ScriptObjectName(column.DataType);
 
                 // Date and time
                 case "date":
                 case "datetime":
                 case "smalldatetime":
-                    return $"[{column.DataType}]";
+                    return this.ScriptObjectName(column.DataType);
                 case "datetimeoffset":
                 case "datetime2":
                 case "time":
-                    return $"[{column.DataType}]({column.DateTimePrecision})";
+                    return $"{this.ScriptObjectName(column.DataType)}({column.DateTimePrecision})";
 
                 // Character strings
                 // Unicode character strings
@@ -150,7 +150,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 case "nchar":
                     {
                         var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
-                        return $"[{column.DataType}]({column.CharacterMaxLength}){collate}";
+                        return $"{this.ScriptObjectName(column.DataType)}({column.CharacterMaxLength}){collate}";
                     }
 
                 case "varchar":
@@ -159,27 +159,27 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                         var length = column.CharacterMaxLength == -1 ? "max" : $"{column.CharacterMaxLength}";
                         var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
 
-                        return $"[{column.DataType}]({length}){collate}";
+                        return $"{this.ScriptObjectName(column.DataType)}({length}){collate}";
                     }
 
                 case "text":
                 case "ntext":
                     {
                         var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
-                        return $"[{column.DataType}]{collate}";
+                        return $"{this.ScriptObjectName(column.DataType)}{collate}";
                     }
 
                 // Binary strings
                 case "binary":
-                    return $"[{column.DataType}]({column.CharacterMaxLength})";
+                    return $"{this.ScriptObjectName(column.DataType)}({column.CharacterMaxLength})";
                 case "varbinary":
                     {
                         var length = column.CharacterMaxLength == -1 ? "max" : $"{column.CharacterMaxLength}";
-                        return $"[{column.DataType}]({length})";
+                        return $"{this.ScriptObjectName(column.DataType)}({length})";
                     }
 
                 case "image":
-                    return $"[{column.DataType}]";
+                    return this.ScriptObjectName(column.DataType);
 
                 // Other data types
                 case "cursor":
@@ -190,7 +190,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 case "xml":
                 case "geography":
                 case "geometry":
-                    return $"[{column.DataType}]";
+                    return this.ScriptObjectName(column.DataType);
                 default: throw new ArgumentException($"Unknown column data type: {column.DataType}");
             }
         }

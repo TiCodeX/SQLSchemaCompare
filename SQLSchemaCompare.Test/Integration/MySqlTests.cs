@@ -186,7 +186,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMySqlDatabaseTargetMissingColumn(short port)
         {
             var sb = new StringBuilder();
-            sb.Append("ALTER TABLE staff DROP COLUMN last_name");
+            sb.Append("ALTER TABLE staff DROP COLUMN email");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString(), port);
         }
 
@@ -200,7 +200,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMySqlDatabaseTargetMissingColumns(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE staff DROP COLUMN last_name,");
+            sb.AppendLine("ALTER TABLE staff DROP COLUMN email,");
             sb.Append("DROP COLUMN picture");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MySql, sb.ToString(), port);
         }

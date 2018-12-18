@@ -454,7 +454,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 case ABaseDbDataType dt:
                     return this.ScriptCreateType(dt, dt.Database.DataTypes);
                 case ABaseDbColumn c:
-                    return this.ScriptHelper.ScriptColumn(c, false);
+                    return this.ScriptHelper.ScriptColumn(c);
                 default:
                     throw new NotSupportedException();
             }

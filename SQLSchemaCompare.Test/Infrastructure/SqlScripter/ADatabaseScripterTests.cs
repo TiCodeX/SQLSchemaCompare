@@ -45,6 +45,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
+            table.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Source };
+
             var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
             columns.Select(x => x.Name).Should().ContainInOrder("a", "b", "c", "d", "e");
         }
@@ -65,6 +67,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             table.Columns.Add(new MicrosoftSqlColumn { Name = "b", OrdinalPosition = 0 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
+
+            table.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Source };
 
             var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
             columns.Select(x => x.Name).Should().ContainInOrder("b", "e", "a", "d", "c");
@@ -87,6 +91,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 0 });
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 4 });
 
+            refTable.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Source };
+
             var table = new MicrosoftSqlTable();
             table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "a", OrdinalPosition = 2 });
@@ -94,6 +100,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
+            table.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Target };
             table.MappedDbObject = refTable;
 
             var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
@@ -117,6 +124,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 0 });
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 4 });
 
+            refTable.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Source };
+
             var table = new MicrosoftSqlTable();
             table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "a", OrdinalPosition = 2 });
@@ -124,6 +133,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
+            table.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Target };
             table.MappedDbObject = refTable;
 
             var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
@@ -147,6 +157,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 0 });
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 4 });
 
+            refTable.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Source };
+
             var table = new MicrosoftSqlTable();
             table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "a", OrdinalPosition = 2 });
@@ -154,6 +166,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
+            table.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Target };
             table.MappedDbObject = refTable;
 
             var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
@@ -177,6 +190,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 0 });
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 4 });
 
+            refTable.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Source };
+
             var table = new MicrosoftSqlTable();
             table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "a", OrdinalPosition = 2 });
@@ -184,6 +199,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
+            table.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Target };
             table.MappedDbObject = refTable;
 
             var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);

@@ -865,7 +865,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             // Order table columns alphabetically or by ordinal position
             var columns = this.Options.Scripting.OrderColumnAlphabetically ? table.Columns.OrderBy(x => x.Name).ToList() : this.OrderColumnsByOrdinalPosition(table).ToList();
 
-            var referenceTable = table.MappedDbObject as ABaseDbTable;
+            ABaseDbTable referenceTable = null;
+            if (table.Database.Direction != Core.Enums.CompareDirection.Source)
+            {
+                referenceTable = table.MappedDbObject as ABaseDbTable;
+            }
 
             // If there is no source table or ignore source table column order, returns the columns
             if (referenceTable == null || this.Options.Scripting.IgnoreReferenceTableColumnOrder)

@@ -689,4 +689,7 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="StatusRetrievingPrimaryKeys" xml:space="preserve">
     <value>Lettura delle Chiavi Primarie in corso...</value>
   </data>
+  <data name="MenuContactSupport" xml:space="preserve">
+    <value>Contatta il supporto (support@ticodex.com)</value>
+  </data>
 </root>

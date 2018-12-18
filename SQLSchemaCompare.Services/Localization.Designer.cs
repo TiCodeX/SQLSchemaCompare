@@ -1134,6 +1134,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contact support (support@ticodex.com).
+        /// </summary>
+        public static string MenuContactSupport {
+            get {
+                return ResourceManager.GetString("MenuContactSupport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string MenuCopy {

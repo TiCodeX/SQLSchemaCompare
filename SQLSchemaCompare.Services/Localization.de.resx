@@ -689,4 +689,7 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="StatusRetrievingPrimaryKeys" xml:space="preserve">
     <value>Lese Primärschlüssel...</value>
   </data>
+  <data name="MenuContactSupport" xml:space="preserve">
+    <value>Support kontaktieren (support@ticodex.com)</value>
+  </data>
 </root>

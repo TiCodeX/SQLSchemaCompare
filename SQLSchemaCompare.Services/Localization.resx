@@ -698,4 +698,7 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="StatusRetrievingPrimaryKeys" xml:space="preserve">
     <value>Retrieving Primary Keys...</value>
   </data>
+  <data name="MenuContactSupport" xml:space="preserve">
+    <value>Contact support (support@ticodex.com)</value>
+  </data>
 </root>

@@ -119,6 +119,14 @@ class MenuManager {
                         },
                     },
                     {
+                        id: "menuContactSupport",
+                        label: `${Localization.Get("MenuContactSupport")}`,
+                        click(): void {
+                            electron.shell.openExternal("mailto:support@ticodex.com");
+                        },
+                    },
+
+                    {
                         type: "separator",
                     },
                     {

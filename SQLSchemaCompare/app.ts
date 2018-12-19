@@ -45,6 +45,8 @@ let autoUpdaterReadyToBeInstalled: boolean = false;
 let autoUpdaterAutoDownloadFailed: boolean = false;
 let serviceCommunicationSuccessful: boolean = false;
 
+let projectToOpen: string = (!isDebug && process.argv.length > 1) ? process.argv[1] : undefined;
+
 /**
  * Keep a global reference of the window object, if you don't, the window will
  * be closed automatically when the JavaScript object is garbage collected.
@@ -84,7 +86,7 @@ logger.info(`Starting SQL Schema Compare v${electron.app.getVersion()}`);
 //#region Check Single Instance
 // If it's not able to get the lock it means that another instance already have it
 const isSecondInstance: boolean = !electron.app.requestSingleInstanceLock();
-electron.app.on("second-instance", () => {
+electron.app.on("second-instance", (event: Event, argv: Array<string>) => {
     // Someone tried to run a second instance, we should focus our current window
     const currentWindow: Electron.BrowserWindow = loginWindow !== undefined ? loginWindow : mainWindow;
     if (currentWindow !== undefined && currentWindow !== null) {
@@ -93,6 +95,9 @@ electron.app.on("second-instance", () => {
         }
         currentWindow.show();
         currentWindow.focus();
+        if (!isDebug && argv.length > 1) {
+            currentWindow.webContents.send("LoadProject", argv[1]);
+        }
     }
 });
 //#endregion
@@ -219,6 +224,13 @@ electron.ipcMain.on("ShowLoginWindow", () => {
 // Register the renderer callback to retrieve the updates
 electron.ipcMain.on("CheckUpdateAvailable", () => {
     NotifyUpdateAvailable();
+});
+// Register the renderer callback to check if need to load a project
+electron.ipcMain.on("CheckLoadProject", () => {
+    if (projectToOpen !== undefined && mainWindow !== undefined) {
+        mainWindow.webContents.send("LoadProject", projectToOpen);
+        projectToOpen = undefined;
+    }
 });
 // Register the renderer callback to quit and install the update
 electron.ipcMain.on("QuitAndInstall", () => {

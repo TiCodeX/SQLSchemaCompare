@@ -20,7 +20,13 @@
             "publish": {
                 "provider": "generic",
                 "url": ""
-            }
+            },
+            "fileAssociations": [
+                {
+                    "ext": "tcxsc",
+                    "name": "TCXSC"
+                }
+            ]
         },
         "nsis": {
             "oneClick": false,

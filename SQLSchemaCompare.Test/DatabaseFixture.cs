@@ -37,18 +37,9 @@ namespace TiCodeX.SQLSchemaCompare.Test
         public const bool ForceDockerTests = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DatabaseFixture"/> class
+        /// Whether the servers are already initialized
         /// </summary>
-        /// <param name="serverPorts">The server ports</param>
-        protected DatabaseFixture(IEnumerable<object[]> serverPorts)
-        {
-            foreach (var serverPort in serverPorts)
-            {
-#pragma warning disable CA2214 // Do not call overridable methods in constructors
-                this.CreateSakilaDatabase("sakila", (short)serverPort[0]);
-#pragma warning restore CA2214 // Do not call overridable methods in constructors
-            }
-        }
+        private bool serversInitialized = false;
 
         /// <summary>
         /// Gets the cipher service
@@ -73,6 +64,25 @@ namespace TiCodeX.SQLSchemaCompare.Test
         {
             this.LoggerFactory = logFactory;
             this.Logger = logFactory.CreateLogger(nameof(DatabaseFixture));
+        }
+
+        /// <summary>
+        /// Initializes the servers
+        /// </summary>
+        /// <param name="serverPorts">The server ports</param>
+        public void InitServers(IEnumerable<object[]> serverPorts)
+        {
+            if (this.serversInitialized)
+            {
+                return;
+            }
+
+            foreach (var serverPort in serverPorts)
+            {
+                this.CreateSakilaDatabase("sakila", (short)serverPort[0]);
+            }
+
+            this.serversInitialized = true;
         }
 
         /// <inheritdoc />

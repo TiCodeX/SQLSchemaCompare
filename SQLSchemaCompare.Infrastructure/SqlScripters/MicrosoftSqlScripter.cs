@@ -328,7 +328,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptDropView(ABaseDbView view)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"DROP VIEW {this.ScriptHelper.ScriptObjectName(view)};");
+            sb.AppendLine($"DROP VIEW {this.ScriptHelper.ScriptObjectName(view)}");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }

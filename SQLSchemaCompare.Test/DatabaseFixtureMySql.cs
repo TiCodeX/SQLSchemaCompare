@@ -15,14 +15,6 @@ namespace SQLSchemaCompare.Test
     public class DatabaseFixtureMySql : DatabaseFixture
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DatabaseFixtureMySql"/> class
-        /// </summary>
-        public DatabaseFixtureMySql()
-            : base(ServerPorts)
-        {
-        }
-
-        /// <summary>
         /// Gets the list of MySQL server ports
         /// </summary>
         public static IEnumerable<object[]> ServerPorts

@@ -29,6 +29,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             this.dbFixture = dbFixture;
             this.dbFixture.SetLoggerFactory(this.LoggerFactory);
+            this.dbFixture.InitServers(DatabaseFixturePostgreSql.ServerPorts);
         }
 
         /// <summary>

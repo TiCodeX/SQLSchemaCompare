@@ -14,14 +14,6 @@ namespace SQLSchemaCompare.Test
     public class DatabaseFixturePostgreSql : DatabaseFixture
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DatabaseFixturePostgreSql"/> class
-        /// </summary>
-        public DatabaseFixturePostgreSql()
-            : base(ServerPorts)
-        {
-        }
-
-        /// <summary>
         /// Gets the list of MicrosoftSQL server ports
         /// </summary>
         public static IEnumerable<object[]> ServerPorts

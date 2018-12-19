@@ -29,6 +29,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             this.dbFixture = dbFixture;
             this.dbFixture.SetLoggerFactory(this.LoggerFactory);
+            this.dbFixture.InitServers(DatabaseFixtureMicrosoftSql.ServerPorts);
         }
 
         /// <summary>
@@ -88,7 +89,14 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             db.DataTypes.Should().NotBeNullOrEmpty();
             db.DataTypes.Count.Should().Be(37);
 
-            db.Sequences.Should().NotBeNullOrEmpty();
+            if (db.ServerVersion.Major < 11)
+            {
+                db.Sequences.Should().BeNullOrEmpty();
+            }
+            else
+            {
+                db.Sequences.Count.Should().Be(1);
+            }
         }
 
         /// <summary>

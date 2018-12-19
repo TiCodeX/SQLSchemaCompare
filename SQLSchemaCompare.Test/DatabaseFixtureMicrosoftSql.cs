@@ -15,14 +15,6 @@ namespace SQLSchemaCompare.Test
     public class DatabaseFixtureMicrosoftSql : DatabaseFixture
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DatabaseFixtureMicrosoftSql"/> class
-        /// </summary>
-        public DatabaseFixtureMicrosoftSql()
-            : base(ServerPorts)
-        {
-        }
-
-        /// <summary>
         /// Gets the list of MicrosoftSQL server ports
         /// </summary>
         public static IEnumerable<object[]> ServerPorts

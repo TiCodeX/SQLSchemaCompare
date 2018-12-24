@@ -45,7 +45,13 @@ let autoUpdaterReadyToBeInstalled: boolean = false;
 let autoUpdaterAutoDownloadFailed: boolean = false;
 let serviceCommunicationSuccessful: boolean = false;
 
-let projectToOpen: string = (!isDebug && process.argv.length > 1) ? process.argv[1] : undefined;
+// Read the first argument to get the project file
+// In debug multiple arguments are passed, so we ignore it.
+// After an update the application is started with the --update argument
+let projectToOpen: string;
+if (!isDebug && process.argv.length > 1 && process.argv[1] !== "--update") {
+    projectToOpen = process.argv[1];
+}
 
 /**
  * Keep a global reference of the window object, if you don't, the window will
@@ -95,7 +101,7 @@ electron.app.on("second-instance", (event: Event, argv: Array<string>) => {
         }
         currentWindow.show();
         currentWindow.focus();
-        if (!isDebug && argv.length > 1) {
+        if (!isDebug && argv.length > 1 && argv[1] !== "--update") {
             currentWindow.webContents.send("LoadProject", argv[1]);
         }
     }

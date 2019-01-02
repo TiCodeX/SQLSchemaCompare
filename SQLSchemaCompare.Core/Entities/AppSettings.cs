@@ -27,5 +27,10 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities
         /// Gets or sets the saved login session
         /// </summary>
         public string Session { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version of the application when the feedback has been sent
+        /// </summary>
+        public string FeedbackSent { get; set; }
     }
 }

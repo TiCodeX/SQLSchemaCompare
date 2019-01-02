@@ -90,6 +90,9 @@ namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers
                 case ButtonStyle.Link:
                     className.Add($"btn-{outline}link");
                     break;
+                case ButtonStyle.TcxHighlight:
+                    className.Add($"btn-{outline}tcx-highlight");
+                    break;
             }
 
             switch (this.Size)

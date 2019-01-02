@@ -701,4 +701,31 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="MenuContactSupport" xml:space="preserve">
     <value>Contact support (support@ticodex.com)</value>
   </data>
+  <data name="TitleFeedbackSent" xml:space="preserve">
+    <value>Feedback sent</value>
+  </data>
+  <data name="MessageThanksForFeedback" xml:space="preserve">
+    <value>Thank you for your feedback!</value>
+  </data>
+  <data name="ErrorCannotSendFeedback" xml:space="preserve">
+    <value>Unable to send the feedback</value>
+  </data>
+  <data name="ErrorInvalidFeedback" xml:space="preserve">
+    <value>The feedback is invalid</value>
+  </data>
+  <data name="ErrorNoFeedbackSpecified" xml:space="preserve">
+    <value>Neither a rating or a comment has been specified</value>
+  </data>
+  <data name="LabelRating" xml:space="preserve">
+    <value>Rating:</value>
+  </data>
+  <data name="LabelComment" xml:space="preserve">
+    <value>Comment:</value>
+  </data>
+  <data name="ButtonSendFeedback" xml:space="preserve">
+    <value>Send feedback</value>
+  </data>
+  <data name="ErrorCommentMustBe2500Max" xml:space="preserve">
+    <value>Comment cannot exceed 2500 characters</value>
+  </data>
 </root>

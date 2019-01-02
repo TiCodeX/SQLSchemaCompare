@@ -692,4 +692,31 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="MenuContactSupport" xml:space="preserve">
     <value>Contatta il supporto (support@ticodex.com)</value>
   </data>
+  <data name="TitleFeedbackSent" xml:space="preserve">
+    <value>Commento spedito</value>
+  </data>
+  <data name="MessageThanksForFeedback" xml:space="preserve">
+    <value>Grazie per il tuo commento!</value>
+  </data>
+  <data name="ErrorCannotSendFeedback" xml:space="preserve">
+    <value>Impossibile mandare il commento</value>
+  </data>
+  <data name="ErrorInvalidFeedback" xml:space="preserve">
+    <value>Il commento non è valido</value>
+  </data>
+  <data name="ErrorNoFeedbackSpecified" xml:space="preserve">
+    <value>Non è stato specificato né una valutazione né un commento</value>
+  </data>
+  <data name="LabelRating" xml:space="preserve">
+    <value>Valutazione:</value>
+  </data>
+  <data name="LabelComment" xml:space="preserve">
+    <value>Commento:</value>
+  </data>
+  <data name="ButtonSendFeedback" xml:space="preserve">
+    <value>Spedisci commento</value>
+  </data>
+  <data name="ErrorCommentMustBe2500Max" xml:space="preserve">
+    <value>Il commento non può essere più lungo di 2500 caratteri</value>
+  </data>
 </root>

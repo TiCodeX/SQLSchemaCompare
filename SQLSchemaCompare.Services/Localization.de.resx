@@ -692,4 +692,31 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="MenuContactSupport" xml:space="preserve">
     <value>Support kontaktieren (support@ticodex.com)</value>
   </data>
+  <data name="TitleFeedbackSent" xml:space="preserve">
+    <value>Rückmeldung versendet</value>
+  </data>
+  <data name="MessageThanksForFeedback" xml:space="preserve">
+    <value>Besten Dank für deine Rückmeldung!</value>
+  </data>
+  <data name="ErrorCannotSendFeedback" xml:space="preserve">
+    <value>Rückmeldung kann nicht versendet werden!</value>
+  </data>
+  <data name="ErrorInvalidFeedback" xml:space="preserve">
+    <value>Der Kommentar ist nicht gültig</value>
+  </data>
+  <data name="ErrorNoFeedbackSpecified" xml:space="preserve">
+    <value>Es wurde weder ein Bewertung noch ein Kommentar erfasst</value>
+  </data>
+  <data name="LabelRating" xml:space="preserve">
+    <value>Bewertung:</value>
+  </data>
+  <data name="LabelComment" xml:space="preserve">
+    <value>Kommentar:</value>
+  </data>
+  <data name="ButtonSendFeedback" xml:space="preserve">
+    <value>Rückmeldung versenden</value>
+  </data>
+  <data name="ErrorCommentMustBe2500Max" xml:space="preserve">
+    <value>Der Kommentar darf nicht mehr als 2500 Zeichen beinhalten</value>
+  </data>
 </root>

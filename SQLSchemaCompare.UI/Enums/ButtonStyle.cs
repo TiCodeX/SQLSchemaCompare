@@ -53,6 +53,11 @@
         /// <summary>
         /// Makes a button look like a link (will still have button behavior)
         /// </summary>
-        Link
+        Link,
+
+        /// <summary>
+        /// Custom highlight theme color
+        /// </summary>
+        TcxHighlight
     }
 }

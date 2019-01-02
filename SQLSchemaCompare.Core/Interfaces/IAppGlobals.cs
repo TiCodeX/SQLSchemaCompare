@@ -78,6 +78,11 @@
         string VerifySessionEndpoint { get; }
 
         /// <summary>
+        /// Gets the save feedback endpoint
+        /// </summary>
+        string SaveFeedbackEndpoint { get; }
+
+        /// <summary>
         /// Gets or sets the application version
         /// </summary>
         string AppVersion { get; set; }

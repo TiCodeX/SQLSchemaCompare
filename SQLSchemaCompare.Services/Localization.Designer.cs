@@ -178,6 +178,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Send feedback.
+        /// </summary>
+        public static string ButtonSendFeedback {
+            get {
+                return ResourceManager.GetString("ButtonSendFeedback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update and restart.
         /// </summary>
         public static string ButtonUpdateAndRestart {
@@ -250,6 +259,24 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to send the feedback.
+        /// </summary>
+        public static string ErrorCannotSendFeedback {
+            get {
+                return ResourceManager.GetString("ErrorCannotSendFeedback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comment cannot exceed 2500 characters.
+        /// </summary>
+        public static string ErrorCommentMustBe2500Max {
+            get {
+                return ResourceManager.GetString("ErrorCommentMustBe2500Max", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to E-mail not specified.
         /// </summary>
         public static string ErrorEmailNotSpecified {
@@ -282,6 +309,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string ErrorGeneric {
             get {
                 return ResourceManager.GetString("ErrorGeneric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The feedback is invalid.
+        /// </summary>
+        public static string ErrorInvalidFeedback {
+            get {
+                return ResourceManager.GetString("ErrorInvalidFeedback", resourceCulture);
             }
         }
         
@@ -345,6 +381,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string ErrorLoginVerificationFailed {
             get {
                 return ResourceManager.GetString("ErrorLoginVerificationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Neither a rating or a comment has been specified.
+        /// </summary>
+        public static string ErrorNoFeedbackSpecified {
+            get {
+                return ResourceManager.GetString("ErrorNoFeedbackSpecified", resourceCulture);
             }
         }
         
@@ -435,6 +480,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelAutoRenewal {
             get {
                 return ResourceManager.GetString("LabelAutoRenewal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comment:.
+        /// </summary>
+        public static string LabelComment {
+            get {
+                return ResourceManager.GetString("LabelComment", resourceCulture);
             }
         }
         
@@ -824,6 +878,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelPrimaryKeys {
             get {
                 return ResourceManager.GetString("LabelPrimaryKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rating:.
+        /// </summary>
+        public static string LabelRating {
+            get {
+                return ResourceManager.GetString("LabelRating", resourceCulture);
             }
         }
         
@@ -1395,6 +1458,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Thank you for your feedback!.
+        /// </summary>
+        public static string MessageThanksForFeedback {
+            get {
+                return ResourceManager.GetString("MessageThanksForFeedback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New version available!.
         /// </summary>
         public static string NotificationNewVersionAvailable {
@@ -1742,6 +1814,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string TitleError {
             get {
                 return ResourceManager.GetString("TitleError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feedback sent.
+        /// </summary>
+        public static string TitleFeedbackSent {
+            get {
+                return ResourceManager.GetString("TitleFeedbackSent", resourceCulture);
             }
         }
         

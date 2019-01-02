@@ -78,5 +78,8 @@ namespace TiCodeX.SQLSchemaCompare.UI
 
         /// <inheritdoc/>
         public string VerifySessionEndpoint => $"{MyAccountBaseEndpoint}/api/VerifySession";
+
+        /// <inheritdoc/>
+        public string SaveFeedbackEndpoint => $"{MyAccountBaseEndpoint}/api/SaveFeedback";
     }
 }

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
@@ -64,9 +64,31 @@ namespace TiCodeX.SQLSchemaCompare.Services
         }
 
         /// <inheritdoc/>
-        public void SendFeedback(int evalutation, string comment)
+        public async Task SendFeedback(string sessionToken, int? rating, string comment)
         {
-            throw new NotImplementedException();
+            using (var httpClientHandler = new HttpClientHandler())
+            {
+                httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+                using (var client = new HttpClient(httpClientHandler))
+                {
+                    var request = new SendFeedbackRequest
+                    {
+                        SessionToken = HttpUtility.UrlDecode(sessionToken),
+                        Rating = rating,
+                        Comment = comment,
+                    };
+
+                    using (var response = await client.PostAsJsonAsync(this.appGlobals.SaveFeedbackEndpoint, request).ConfigureAwait(false))
+                    {
+                        response.EnsureSuccessStatusCode();
+                        var results = await response.Content.ReadAsAsync<ApiResponse>().ConfigureAwait(false);
+                        if (!results.Success)
+                        {
+                            throw new AccountServiceException(results.ErrorMessage) { ErrorCode = results.ErrorCode };
+                        }
+                    }
+                }
+            }
         }
 
         /// <inheritdoc/>

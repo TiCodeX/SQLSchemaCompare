@@ -152,6 +152,16 @@
         /// </summary>
         ErrorProjectNeedToBeSaved = 3008,
 
+        /// <summary>
+        /// Invalid feedback
+        /// </summary>
+        EInvalidFeedback = 3009,
+
+        /// <summary>
+        /// No feedback has been given (rating and feedback are null)
+        /// </summary>
+        ENoFeedbackSpecified = 3010,
+
         /**********************************************
         *** SqlCompare Warnings (from 4000 to 4999) ***
         **********************************************/

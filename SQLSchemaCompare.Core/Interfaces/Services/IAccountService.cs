@@ -23,9 +23,11 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Services
         /// <summary>
         /// Send the customer feedback
         /// </summary>
-        /// <param name="evalutation">The customer evaluation value, a number between 1 and 5</param>
+        /// <param name="sessionToken">The customer session token</param>
+        /// <param name="rating">The customer rating value, a number between 1 and 5</param>
         /// <param name="comment">The customer comment</param>
-        void SendFeedback(int evalutation, string comment);
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task SendFeedback(string sessionToken, int? rating, string comment);
 
         /// <summary>
         /// Logout the user and reset customer information

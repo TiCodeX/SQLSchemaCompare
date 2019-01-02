@@ -236,6 +236,53 @@ class MenuManager {
     }
 
     /**
+     * Handle the onClick event of the rating stars
+     * @param star The star that fired the event
+     */
+    public static HandleRatingStarClick(star: JQuery): void {
+        const value: number = parseInt(star.attr("rating"), 10);
+        $("#rating-value").val(value);
+        star.removeClass("far").addClass("fa");
+        star.siblings(".fa-star").each((index: number, element: HTMLElement): void => {
+            if (parseInt($(element).attr("rating"), 10) >= value) {
+                $(element).removeClass("fa").addClass("far");
+            } else {
+                $(element).removeClass("far").addClass("fa");
+            }
+        });
+    }
+
+    /**
+     * Send the feedback
+     */
+    public static SendFeedback(): void {
+
+        // Close the menu
+        $("#feedback-button").dropdown("toggle");
+
+        // Send the feedback to back-end
+        Utility.AjaxCall("/ToolbarPageModel?handler=SendFeedback", Utility.HttpMethod.Post, { Rating: $("#rating-value").val(), Comment: $("#feedback-message").val() })
+            .then((response: ApiResponse<object>): void => {
+                if (response.Success) {
+
+                    // Reset fields
+                    $("#rating-value").val("");
+                    $("#feedback-message").val("");
+
+                    // Remove highlight from button
+                    $("#feedback-button").removeClass("btn-tcx-highlight").addClass("btn-secondary");
+
+                    // Reset the 5 rating stars
+                    $("#rating-stars .fa.fa-star").removeClass("fa").addClass("far");
+
+                    DialogManager.ShowInformation(Localization.Get("TitleFeedbackSent"), Localization.Get("MessageThanksForFeedback"));
+                } else {
+                    DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
+                }
+            });
+    }
+
+    /**
      * Enable/Disable the items specified in the array
      * @param items The list of items
      * @param enable Whether to enable or disable the menu items

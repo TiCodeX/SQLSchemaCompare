@@ -135,6 +135,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
 
             public string VerifySessionEndpoint => throw new System.NotImplementedException();
 
+            public string SaveFeedbackEndpoint => throw new System.NotImplementedException();
+
             public string AppVersion { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
         }
     }

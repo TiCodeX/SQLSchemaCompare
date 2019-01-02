@@ -1,6 +1,6 @@
 {
     "name": "sqlschemacompare",
-    "version": "2018.12.3",
+    "version": "2019.1.1",
     "description": "The Swiss Army Knife of Database Schema Comparison for Microsoft SQL, mySQL and PostgreSQL which runs on Windows, Linux and macOS systems.",
     "main": "app.min.js",
     "homepage": "https://www.ticodex.com",
@@ -12,7 +12,7 @@
     "build": {
         "appId": "ch.ticodex.sqlschemacompare",
         "productName": "SQL Schema Compare",
-        "copyright": "Copyright @ 2018 TiCodeX SA",
+        "copyright": "Copyright @ 2019 TiCodeX SA",
         "remoteBuild": false,
         "win": {
             "target": "nsis",

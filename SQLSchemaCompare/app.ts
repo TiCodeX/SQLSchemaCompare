@@ -47,9 +47,9 @@ let serviceCommunicationSuccessful: boolean = false;
 
 // Read the first argument to get the project file
 // In debug multiple arguments are passed, so we ignore it.
-// After an update the application is started with the --update argument
+// After an update the application is started with the --updated argument
 let projectToOpen: string;
-if (!isDebug && process.argv.length > 1 && process.argv[1] !== "--update") {
+if (!isDebug && process.argv.length > 1 && process.argv[1] !== "--updated") {
     projectToOpen = process.argv[1];
 }
 
@@ -101,7 +101,7 @@ electron.app.on("second-instance", (event: Event, argv: Array<string>) => {
         }
         currentWindow.show();
         currentWindow.focus();
-        if (!isDebug && argv.length > 1 && argv[1] !== "--update") {
+        if (!isDebug && argv.length > 1 && argv[1] !== "--updated") {
             currentWindow.webContents.send("LoadProject", argv[1]);
         }
     }

@@ -80,6 +80,7 @@ CREATE TABLE country (
   country_id SMALLINT NOT NULL IDENTITY ,
   country VARCHAR(50) NOT NULL,
   last_update DATETIME,
+  last_update2 timestamp,
   CONSTRAINT PK_country_country_id PRIMARY KEY NONCLUSTERED (country_id)
 )
 GO

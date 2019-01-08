@@ -187,10 +187,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 case "smallint":
                 case "integer":
                 case "bigint":
-                case "decimal":
+                case "smallserial":
+                case "serial":
+                case "bigserial":
                     return $"{column.DataType}";
 
                 case "numeric":
+                case "decimal":
                     return $"{column.DataType}({column.NumericPrecision},{column.NumericScale})"; // TODO: check if it's possible to only specify numeric without params
 
                 // Approximate numerics
@@ -208,6 +211,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 // Character strings
                 case "character":
                 case "character varying":
+                case "char":
+                case "varchar":
                     {
                         var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
                         return $"{column.DataType}({column.CharacterMaxLenght}){collate}";
@@ -221,25 +226,33 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
                 // Date and time
                 case "date":
+                case "abstime":
+                case "reltime":
+                case "tinterval":
                     return $"{column.DataType}";
+
+                case "timetz":
                 case "time with time zone":
                     {
                         var precision = column.DateTimePrecision != 6 ? $"({column.DateTimePrecision})" : string.Empty;
                         return $"time{precision} with time zone";
                     }
 
+                case "time":
                 case "time without time zone":
                     {
                         var precision = column.DateTimePrecision != 6 ? $"({column.DateTimePrecision})" : string.Empty;
                         return $"time{precision} without time zone";
                     }
 
+                case "timestamptz":
                 case "timestamp with time zone":
                     {
                         var precision = column.DateTimePrecision != 6 ? $"({column.DateTimePrecision})" : string.Empty;
                         return $"timestamp{precision} with time zone";
                     }
 
+                case "timestamp":
                 case "timestamp without time zone":
                     {
                         var precision = column.DateTimePrecision != 6 ? $"({column.DateTimePrecision})" : string.Empty;
@@ -275,11 +288,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 case "boolean":
                     return $"{column.DataType}";
 
-                // User defined types
-                case "USER-DEFINED":
-                    return $"{column.UdtName}";
+                // Network Address
+                case "cidr":
+                case "inet":
+                case "macaddr":
+                case "macaddr8":
+                    return $"{column.DataType}";
 
-                // Other data types
+                // Geometric
                 case "point":
                 case "line":
                 case "lseg":
@@ -287,26 +303,64 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 case "path":
                 case "polygon":
                 case "circle":
-                case "inet":
-                case "cidr":
-                case "macaddr":
-                case "macaddr8":
-                case "tsvector":
-                case "tsquery":
+                    return $"{column.DataType}";
 
-                case "uuid":
-                case "xml":
+                // Range
+                case "int4range":
+                case "int8range":
+                case "numrange":
+                case "tsrange":
+                case "tstzrange":
+                case "daterange":
+                    return $"{column.DataType}";
+
+                // User defined types
+                case "USER-DEFINED":
+                    return $"{column.UdtName}";
+
+                // Other data types
+                case "aclitem":
+                case "cid":
+                case "gtsvector":
                 case "json":
                 case "jsonb":
+                case "name":
+                case "oid":
+                case "pg_dependencies":
+                case "pg_ndistinct":
+                case "pg_node_tree":
                 case "pg_lsn":
+                case "refcursor":
+                case "regclass":
+                case "regconfig":
+                case "regdictionary":
+                case "regnamespace":
+                case "regoper":
+                case "regoperator":
+                case "regproc":
+                case "regprocedure":
+                case "regrole":
+                case "regtype":
+                case "smgr":
+                case "tid":
+                case "tsquery":
+                case "tsvector":
                 case "txid_snapshot":
-
+                case "uuid":
+                case "xid":
+                case "xml":
                     return $"{column.DataType}";
+
                 case "ARRAY":
                     // TODO: Array type initialization does not consider parameters and no collation considered for string types
                     // E.g.: "myColumnName character varying(55)[4][4]"
                     // ==> currently will result in "myColumnName varchar[]"
-                    return $"{column.UdtName.Replace("_", string.Empty)}[]";
+                    if (column.UdtName.StartsWith("_", StringComparison.Ordinal))
+                    {
+                        return $"{column.UdtName.Substring(1)}[]";
+                    }
+
+                    return $"{column.UdtName}";
 
                 default: throw new ArgumentException($"Unknown column data type: {column.DataType}");
             }
@@ -316,26 +370,31 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             switch (dataTypeName)
             {
-                case "int8": return "bigint";
-                case "serial8": return "bigserial";
-                case "varbit": return "bit varying";
-                case "bool": return "boolean";
-                case "char": return "character";
-                case "varchar": return "character varying";
-                case "float8": return "double precision";
+                case "int2": return "smallint";
                 case "int":
                 case "int4": return "integer";
-                case "decimal": return "numeric";
-                case "float4": return "real";
-                case "int2": return "smallint";
+                case "int8": return "bigint";
+
                 case "serial2": return "smallserial";
                 case "serial4": return "serial";
+                case "serial8": return "bigserial";
+
+                case "float4": return "real";
+                case "float8": return "double precision";
+
+                case "varbit": return "bit varying";
+                case "bool": return "boolean";
+                case "decimal": return "numeric";
+
+                case "char": return "character";
+                case "varchar": return "character varying";
+
                 case "time": return "time without time zone";
                 case "timetz": return "time with time zone";
                 case "timestamp": return "timestamp without time zone";
                 case "timestamptz": return "timestamp with time zone";
-                default:
-                    return dataTypeName;
+
+                default: return dataTypeName;
             }
         }
     }

@@ -123,6 +123,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 case "bit":
                 case "smallmoney":
                 case "money":
+                case "timestamp":
                     return this.ScriptObjectName(column.DataType);
                 case "numeric":
                 case "decimal":

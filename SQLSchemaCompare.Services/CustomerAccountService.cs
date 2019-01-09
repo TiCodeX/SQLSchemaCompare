@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Web;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
@@ -46,6 +47,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                         SessionToken = sessionToken,
                         AppVersion = this.appGlobals.AppVersion,
                         ProductCode = this.appGlobals.ProductCode,
+                        OS = GetOSString(),
                     };
 
                     using (var response = await client.PostAsJsonAsync(this.appGlobals.VerifySessionEndpoint, request).ConfigureAwait(false))
@@ -76,6 +78,9 @@ namespace TiCodeX.SQLSchemaCompare.Services
                         SessionToken = HttpUtility.UrlDecode(sessionToken),
                         Rating = rating,
                         Comment = comment,
+                        AppVersion = this.appGlobals.AppVersion,
+                        ProductCode = this.appGlobals.ProductCode,
+                        OS = GetOSString(),
                     };
 
                     using (var response = await client.PostAsJsonAsync(this.appGlobals.SaveFeedbackEndpoint, request).ConfigureAwait(false))
@@ -100,6 +105,26 @@ namespace TiCodeX.SQLSchemaCompare.Services
             this.appSettingsService.SaveAppSettings();
 
             this.CustomerInformation = null;
+        }
+
+        private static string GetOSString()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return "Windows";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                return "OSX";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                return "Linux";
+            }
+            else
+            {
+                return "Other";
+            }
         }
     }
 }

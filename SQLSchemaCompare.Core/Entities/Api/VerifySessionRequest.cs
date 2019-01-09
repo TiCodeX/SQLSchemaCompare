@@ -19,5 +19,10 @@
         /// Gets or sets the product code
         /// </summary>
         public string ProductCode { get; set; }
+
+        /// <summary>
+        /// Gets or sets the OS
+        /// </summary>
+        public string OS { get; set; }
     }
 }

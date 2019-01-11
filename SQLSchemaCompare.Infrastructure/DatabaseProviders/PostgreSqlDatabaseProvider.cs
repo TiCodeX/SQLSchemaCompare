@@ -459,5 +459,23 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             return sequences;
         }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbUser> GetUsers(PostgreSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT r.rolname AS \"Name\",");
+            query.AppendLine("       r.rolsuper AS \"SuperUser\",");
+            query.AppendLine("       r.rolcreatedb AS \"CreateDB\",");
+            query.AppendLine("       r.rolcreaterole AS \"CreateRole\",");
+            query.AppendLine("       r.rolinherit AS \"Inherit\",");
+            query.AppendLine("       r.rolreplication AS \"Replication\",");
+            query.AppendLine("       r.rolbypassrls AS \"BypassRLS\",");
+            query.AppendLine("       r.rolconnlimit AS \"ConnectionLimit\",");
+            query.AppendLine("       r.rolvaliduntil AS \"ValidUntil\"");
+            query.AppendLine("FROM pg_catalog.pg_roles r");
+            query.AppendLine("WHERE rolcanlogin = true");
+            return context.Query<PostgreSqlUser>(query.ToString());
+        }
     }
 }

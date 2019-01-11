@@ -26,6 +26,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
                 connStr += "SSL Mode=Require;";
             }
 
+            // Use DateTime.Min and DateTime.Max for timestamp columns with Infinite and -Infinite values
+            connStr += "Convert Infinity DateTime=true;";
+
             this.ConnectionString = connStr;
         }
 

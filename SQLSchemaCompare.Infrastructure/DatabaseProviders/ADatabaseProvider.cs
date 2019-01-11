@@ -334,7 +334,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             try
             {
-                taskInfo.Percentage = 96;
+                taskInfo.Percentage = 90;
                 taskInfo.Message = Localization.StatusRetrievingSequences;
                 db.Sequences.AddRange(this.GetSequences(context));
                 db.Sequences.ForEach(x => x.Database = db);
@@ -342,6 +342,21 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             catch (Exception ex)
             {
                 this.Logger.LogError(ex, "Error retrieving sequences");
+                exceptions.Add(ex);
+            }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
+            try
+            {
+                taskInfo.Percentage = 95;
+                taskInfo.Message = Localization.StatusRetrievingUsers;
+                db.Users.AddRange(this.GetUsers(context));
+                db.Users.ForEach(x => x.Database = db);
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving users");
                 exceptions.Add(ex);
             }
 
@@ -447,6 +462,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         /// <param name="context">The database context</param>
         /// <returns>The list of sequences</returns>
         protected abstract IEnumerable<ABaseDbSequence> GetSequences(TDatabaseContext context);
+
+        /// <summary>
+        /// Get the database users
+        /// </summary>
+        /// <param name="context">The database context</param>
+        /// <returns>The list of users</returns>
+        protected abstract IEnumerable<ABaseDbUser> GetUsers(TDatabaseContext context);
 
         private static void AssignRetrievedItemsToRelatedTables(TaskInfo taskInfo, TDatabase db, IReadOnlyCollection<ABaseDbColumn> columns)
         {

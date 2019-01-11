@@ -89,6 +89,10 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
 
             db.StoredProcedures.Count.Should().Be(3);
             db.StoredProcedures.Should().ContainSingle(x => x.Name == "film_in_stock");
+
+            db.Users.Should().Contain(x => x.Name == "sakila_user_one");
+            db.Users.Should().Contain(x => x.Name == "sakila_user_two");
+            db.Users.Should().Contain(x => x.Name == "sakila_user_three");
         }
 
         /// <summary>

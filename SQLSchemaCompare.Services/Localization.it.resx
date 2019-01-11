@@ -719,4 +719,7 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="ErrorCommentMustBe2500Max" xml:space="preserve">
     <value>Il commento non può essere più lungo di 2500 caratteri</value>
   </data>
+  <data name="StatusRetrievingUsers" xml:space="preserve">
+    <value>Lettura degli Utenti in corso...</value>
+  </data>
 </root>

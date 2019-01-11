@@ -17,6 +17,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
     internal class MySqlDatabaseProvider
         : ADatabaseProvider<MySqlDatabaseProviderOptions, MySqlDatabaseContext, MySqlDb>
     {
+        /* Indeed ROLES are locked accounts, without passwords and expired.
+         * It’s also possible to list a user in it, but this means that you removed the password of a user
+         * that you have locked and that the password expired…. a bit too much isn’t it ?
+         * Ref: https://lefred.be/content/mysql-8-0-listing-roles/
+         */
+        private const string IsRoleClause = "(account_locked='Y' AND password_expired='Y' AND authentication_string='')";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlDatabaseProvider"/> class.
         /// </summary>
@@ -241,6 +248,28 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         {
             // An empty list is returned because MySQL doesn't have sequences
             return Enumerable.Empty<ABaseDbSequence>();
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbUser> GetUsers(MySqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT u.User AS 'Name',");
+            query.AppendLine("       u.Host AS 'Host',");
+            query.AppendLine("       u.plugin AS 'AuthPlugin',");
+            query.AppendLine("       u.max_questions AS 'MaxQueriesPerHour',");
+            query.AppendLine("       u.max_updates AS 'MaxUpdatesPerHour',");
+            query.AppendLine("       u.max_connections AS 'MaxConnectionsPerHour',");
+            query.AppendLine("       u.max_user_connections AS 'MaxUserConnections',");
+            query.AppendLine("       CASE WHEN u.password_expired = 'Y' THEN TRUE ELSE FALSE END as 'PasswordExpired',");
+            query.AppendLine("       u.password_lifetime AS 'PasswordLifetime',");
+            query.AppendLine("       u.Password_reuse_history AS 'PasswordReuse',");
+            query.AppendLine("       u.Password_reuse_time AS 'PasswordRequire',");
+            query.AppendLine("       CASE WHEN u.account_locked = 'Y' THEN TRUE ELSE FALSE END as 'AccountLocked'");
+            query.AppendLine("FROM mysql.user u");
+            query.AppendLine($"WHERE NOT {IsRoleClause}");
+            query.AppendLine("      AND u.User NOT IN ('mysql.infoschema', 'mysql.session', 'mysql.sys')");
+            return context.Query<MySqlUser>(query.ToString());
         }
     }
 }

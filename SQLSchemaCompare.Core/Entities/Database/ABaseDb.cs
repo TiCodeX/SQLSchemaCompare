@@ -78,5 +78,10 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
         /// Gets the database sequences
         /// </summary>
         public List<ABaseDbSequence> Sequences { get; } = new List<ABaseDbSequence>();
+
+        /// <summary>
+        /// Gets the users
+        /// </summary>
+        public List<ABaseDbUser> Users { get; } = new List<ABaseDbUser>();
     }
 }

@@ -54,7 +54,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
-        public void GetPostgreSqlDatabase(short port)
+        public void GetPostgreSqlSakilaDatabase(short port)
         {
             var pgsqldbp = this.dbFixture.GetDatabaseProvider("sakila", port);
             var db = pgsqldbp.GetDatabase(new TaskInfo("test"));
@@ -88,6 +88,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             db.Functions.Should().ContainSingle(x => x.Name == "last_day");
 
             db.StoredProcedures.Should().BeEmpty();
+
+            db.Users.Count.Should().Be(5);
         }
 
         /// <summary>

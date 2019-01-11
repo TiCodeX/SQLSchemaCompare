@@ -315,5 +315,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("WHERE object_schema_name(s.object_id) <> 'sys'");
             return context.Query<MicrosoftSqlSequence>(query.ToString());
         }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbUser> GetUsers(MicrosoftSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT object_schema_name(p.principal_id) AS 'Schema',");
+            query.AppendLine("       p.name AS 'Name',");
+            query.AppendLine("       p.type AS 'Type',");
+            query.AppendLine("       p.default_schema_name AS 'DefaultSchemaName'");
+            query.AppendLine("FROM sys.database_principals p");
+            query.AppendLine("WHERE type IN('C', 'E', 'G', 'K', 'S', 'U', 'X') AND principal_id > 4");
+            return context.Query<MicrosoftSqlUser>(query.ToString());
+        }
     }
 }

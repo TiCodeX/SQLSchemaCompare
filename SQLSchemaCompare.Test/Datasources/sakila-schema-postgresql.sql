@@ -1913,6 +1913,34 @@ ALTER TABLE ONLY store
 
 
 --
+-- Users
+--
+DROP USER IF EXISTS sakila_user_one;
+DROP USER IF EXISTS sakila_user_two;
+DROP USER IF EXISTS sakila_user_three;
+DROP USER IF EXISTS sakila_user_four;
+
+CREATE USER sakila_user_one WITH ENCRYPTED PASSWORD 'test1234';
+
+CREATE USER sakila_user_two WITH
+	PASSWORD 'test1234'
+	NOSUPERUSER
+	NOCREATEDB
+	NOCREATEROLE
+	NOINHERIT
+	NOREPLICATION
+	NOBYPASSRLS
+	CONNECTION LIMIT 5;
+
+CREATE USER sakila_user_three WITH
+	PASSWORD 'test1234'
+	VALID UNTIL 'Jan 1, 2025';
+
+CREATE USER sakila_user_four WITH
+	PASSWORD 'test1234'
+	VALID UNTIL 'infinity';
+
+--
 -- PostgreSQL database dump complete
 --
 

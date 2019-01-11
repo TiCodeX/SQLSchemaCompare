@@ -97,6 +97,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             {
                 db.Sequences.Count.Should().Be(1);
             }
+
+            db.Users.Count.Should().Be(3);
         }
 
         /// <summary>

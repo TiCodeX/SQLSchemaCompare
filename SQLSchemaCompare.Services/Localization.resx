@@ -728,4 +728,7 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="ErrorCommentMustBe2500Max" xml:space="preserve">
     <value>Comment cannot exceed 2500 characters</value>
   </data>
+  <data name="StatusRetrievingUsers" xml:space="preserve">
+    <value>Retrieving Users...</value>
+  </data>
 </root>

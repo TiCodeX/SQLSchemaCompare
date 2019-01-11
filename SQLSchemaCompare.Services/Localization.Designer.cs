@@ -1791,6 +1791,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Retrieving Users....
+        /// </summary>
+        public static string StatusRetrievingUsers {
+            get {
+                return ResourceManager.GetString("StatusRetrievingUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Retrieving Views....
         /// </summary>
         public static string StatusRetrievingViews {

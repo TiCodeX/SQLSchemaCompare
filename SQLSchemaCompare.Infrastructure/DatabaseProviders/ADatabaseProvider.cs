@@ -120,6 +120,21 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             try
             {
+                taskInfo.Percentage = 12;
+                taskInfo.Message = Localization.StatusRetrievingSchemas;
+                db.Schemas.AddRange(this.GetSchemas(context));
+                db.Schemas.ForEach(x => x.Database = db);
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error retrieving schemas");
+                exceptions.Add(ex);
+            }
+
+            taskInfo.CancellationToken.ThrowIfCancellationRequested();
+
+            try
+            {
                 taskInfo.Percentage = 16;
                 taskInfo.Message = Localization.StatusRetrievingTables;
                 db.Tables.AddRange(this.GetTables(context));
@@ -363,6 +378,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         /// <param name="context">The database context</param>
         /// <returns>The version string</returns>
         protected abstract string GetServerVersion(TDatabaseContext context);
+
+        /// <summary>
+        /// Get the database schemas
+        /// </summary>
+        /// <param name="context">The database context</param>
+        /// <returns>The list of schemas</returns>
+        protected abstract IEnumerable<ABaseDbSchema> GetSchemas(TDatabaseContext context);
 
         /// <summary>
         /// Get the database tables

@@ -25,6 +25,30 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        protected override string ScriptCreateSchema(ABaseDbSchema schema)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"CREATE SCHEMA {this.ScriptHelper.ScriptObjectName(schema.Name)} AUTHORIZATION {this.ScriptHelper.ScriptObjectName(schema.Owner)};");
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptDropSchema(ABaseDbSchema schema)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP SCHEMA {this.ScriptHelper.ScriptObjectName(schema.Name)};");
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterSchema(ABaseDbSchema schema)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"ALTER SCHEMA {this.ScriptHelper.ScriptObjectName(schema.Name)} OWNER TO {this.ScriptHelper.ScriptObjectName(schema.Owner)};");
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptCreateTable(ABaseDbTable table)
         {
             var tablePostgreSql = table as PostgreSqlTable;
@@ -270,7 +294,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptDropIndex(ABaseDbIndex index)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"DROP INDEX {this.ScriptHelper.ScriptObjectName(index.Name)};");
+            sb.AppendLine($"DROP INDEX {this.ScriptHelper.ScriptObjectName(index)};");
             return sb.ToString();
         }
 

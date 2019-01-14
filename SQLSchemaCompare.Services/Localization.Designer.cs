@@ -954,6 +954,24 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Schema.
+        /// </summary>
+        public static string LabelSchema {
+            get {
+                return ResourceManager.GetString("LabelSchema", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Schemas.
+        /// </summary>
+        public static string LabelSchemas {
+            get {
+                return ResourceManager.GetString("LabelSchemas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sequence.
         /// </summary>
         public static string LabelSequence {
@@ -1539,6 +1557,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Comparing Schemas....
+        /// </summary>
+        public static string StatusComparingSchemas {
+            get {
+                return ResourceManager.GetString("StatusComparingSchemas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comparing Sequences....
         /// </summary>
         public static string StatusComparingSequences {
@@ -1656,6 +1683,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mapping Schemas....
+        /// </summary>
+        public static string StatusMappingSchemas {
+            get {
+                return ResourceManager.GetString("StatusMappingSchemas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mapping Sequences....
         /// </summary>
         public static string StatusMappingSequences {
@@ -1751,6 +1787,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string StatusRetrievingPrimaryKeys {
             get {
                 return ResourceManager.GetString("StatusRetrievingPrimaryKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving Schemas....
+        /// </summary>
+        public static string StatusRetrievingSchemas {
+            get {
+                return ResourceManager.GetString("StatusRetrievingSchemas", resourceCulture);
             }
         }
         

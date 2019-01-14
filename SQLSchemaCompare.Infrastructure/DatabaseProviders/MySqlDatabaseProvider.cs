@@ -52,6 +52,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             return context.QuerySingleColumn<string>("SELECT VERSION()").FirstOrDefault() ?? string.Empty;
         }
 
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbSchema> GetSchemas(MySqlDatabaseContext context)
+        {
+            // An empty list is returned because MySQL doesn't have schemas
+            return Enumerable.Empty<ABaseDbSchema>();
+        }
+
         /// <inheritdoc />
         protected override IEnumerable<ABaseDbTable> GetTables(MySqlDatabaseContext context)
         {

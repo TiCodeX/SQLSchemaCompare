@@ -27,6 +27,33 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        protected override string ScriptCreateSchema(ABaseDbSchema schema)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"CREATE SCHEMA {this.ScriptHelper.ScriptObjectName(schema.Name)} AUTHORIZATION {this.ScriptHelper.ScriptObjectName(schema.Owner)}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptDropSchema(ABaseDbSchema schema)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"DROP SCHEMA {this.ScriptHelper.ScriptObjectName(schema.Name)}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterSchema(ABaseDbSchema schema)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"ALTER AUTHORIZATION ON SCHEMA::{this.ScriptHelper.ScriptObjectName(schema.Name)} TO {this.ScriptHelper.ScriptObjectName(schema.Owner)}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptCreateTable(ABaseDbTable table)
         {
             var ncol = table.Columns.Count;

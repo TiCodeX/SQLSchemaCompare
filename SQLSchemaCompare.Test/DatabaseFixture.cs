@@ -230,6 +230,14 @@ namespace TiCodeX.SQLSchemaCompare.Test
                     break;
             }
 
+            var schemas = sourceDb.Schemas.OrderBy(x => x.Name);
+            var clonedSchemas = targetDb.Schemas.OrderBy(x => x.Name);
+            schemas.Should().BeEquivalentTo(clonedSchemas, options =>
+            {
+                options.Excluding(x => x.Database);
+                return options;
+            });
+
             var tables = sourceDb.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, tableType, CultureInfo.InvariantCulture)).ToList();
             var clonedTables = targetDb.Tables.OrderBy(x => x.Schema).ThenBy(x => x.Name).Select(x => Convert.ChangeType(x, tableType, CultureInfo.InvariantCulture)).ToList();
             tables.Should().BeEquivalentTo(clonedTables, options =>

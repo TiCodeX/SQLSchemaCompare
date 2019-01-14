@@ -719,4 +719,19 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="ErrorCommentMustBe2500Max" xml:space="preserve">
     <value>Il commento non può essere più lungo di 2500 caratteri</value>
   </data>
+  <data name="StatusRetrievingSchemas" xml:space="preserve">
+    <value>Lettura degli Schemi in corso...</value>
+  </data>
+  <data name="StatusMappingSchemas" xml:space="preserve">
+    <value>Mappatura degli Schemi in corso...</value>
+  </data>
+  <data name="StatusComparingSchemas" xml:space="preserve">
+    <value>Confronto degli Schemi in corso...</value>
+  </data>
+  <data name="LabelSchemas" xml:space="preserve">
+    <value>Schemi</value>
+  </data>
+  <data name="LabelSchema" xml:space="preserve">
+    <value>Schema</value>
+  </data>
 </root>

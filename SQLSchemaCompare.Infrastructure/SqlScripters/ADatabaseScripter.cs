@@ -74,6 +74,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             var sb = new StringBuilder();
 
+            // Schemas
+            if (database.Schemas.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelSchemas));
+                foreach (var schema in database.Schemas.OrderBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptCreateSchema(schema));
+                }
+
+                sb.AppendLine();
+            }
+
             // User-Defined Types
             var userDefinedDataTypes = database.DataTypes.Where(x => x.IsUserDefined).ToList();
             if (userDefinedDataTypes.Count > 0)
@@ -227,6 +239,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             sb.Append(this.GenerateFullDropScript(onlyTargetItems));
 
             var items = new List<ABaseDbObject>();
+            items.AddRange(differentItems.OfType<CompareResultItem<ABaseDbSchema>>().OrderBy(x => x.SourceItem.Name).Select(x => x.SourceItem ?? x.TargetItem));
             items.AddRange(differentItems.OfType<CompareResultItem<ABaseDbTrigger>>().OrderBy(x => x.SourceItem.TableSchema).ThenBy(x => x.SourceItem.TableName).ThenBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name).Select(x => x.SourceItem ?? x.TargetItem));
             items.AddRange(differentItems.OfType<CompareResultItem<ABaseDbTable>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name).Select(x => x.SourceItem ?? x.TargetItem));
             items.AddRange(differentItems.OfType<CompareResultItem<ABaseDbView>>().OrderBy(x => x.SourceItem.Schema).ThenBy(x => x.SourceItem.Name).Select(x => x.SourceItem ?? x.TargetItem));
@@ -246,6 +259,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc/>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
         public string GenerateFullDropScript(ABaseDb database)
         {
             var sb = new StringBuilder();
@@ -400,6 +414,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
+            // Schemas
+            if (database.Schemas.Count > 0)
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelSchemas));
+                foreach (var schema in database.Schemas.OrderBy(x => x.Name))
+                {
+                    sb.Append(this.ScriptDropSchema(schema));
+                }
+
+                sb.AppendLine();
+            }
+
             return sb.ToString();
         }
 
@@ -409,6 +435,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             var scriptableObjects = new List<ObjectMap>();
             switch (dbObject)
             {
+                case ABaseDbSchema s:
+                    return this.ScriptCreateSchema(s);
+
                 case ABaseDbTable t:
                     if (!includeChildDbObjects)
                     {
@@ -466,6 +495,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             var scriptableObjects = new List<ObjectMap>();
             switch (dbObject)
             {
+                case ABaseDbSchema s:
+                    return this.ScriptDropSchema(s);
+
                 case ABaseDbTable t:
                     if (!includeChildDbObjects)
                     {
@@ -561,6 +593,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             var scriptableObjects = new List<ObjectMap>();
             switch (dbObject)
             {
+                case ABaseDbSchema s:
+                    return this.ScriptAlterSchema(s);
+
                 case ABaseDbTable t:
                     if (!includeChildDbObjects)
                     {
@@ -600,6 +635,27 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     throw new NotSupportedException();
             }
         }
+
+        /// <summary>
+        /// Generates the create schema script
+        /// </summary>
+        /// <param name="schema">The schema to script</param>
+        /// <returns>The create schema script</returns>
+        protected abstract string ScriptCreateSchema(ABaseDbSchema schema);
+
+        /// <summary>
+        /// Generates the drop schema script
+        /// </summary>
+        /// <param name="schema">The schema to drop</param>
+        /// <returns>The drop schema script</returns>
+        protected abstract string ScriptDropSchema(ABaseDbSchema schema);
+
+        /// <summary>
+        /// Generates the alter schema script
+        /// </summary>
+        /// <param name="schema">the schema to alter</param>
+        /// <returns>The alter schema script</returns>
+        protected abstract string ScriptAlterSchema(ABaseDbSchema schema);
 
         /// <summary>
         /// Generates the create table script

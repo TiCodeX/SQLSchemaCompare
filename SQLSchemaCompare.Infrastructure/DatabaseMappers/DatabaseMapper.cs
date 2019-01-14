@@ -20,6 +20,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers
             // Linearize the 2 databases for mapping
             var maps = new List<ObjectMap>
             {
+                new ObjectMap { ObjectTitle = Localization.StatusMappingSchemas, DbObjects = source.Schemas, MappableDbObjects = target.Schemas },
                 new ObjectMap { ObjectTitle = Localization.StatusMappingTables, DbObjects = source.Tables, MappableDbObjects = target.Tables },
                 new ObjectMap { ObjectTitle = Localization.StatusMappingViews, DbObjects = source.Views, MappableDbObjects = target.Views },
                 new ObjectMap { ObjectTitle = Localization.StatusMappingFunctions, DbObjects = source.Functions, MappableDbObjects = target.Functions },

@@ -31,6 +31,24 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         private static string Delimiter => "$$$$";
 
         /// <inheritdoc/>
+        protected override string ScriptCreateSchema(ABaseDbSchema schema)
+        {
+            throw new NotSupportedException("MySQL doesn't support schemas");
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptDropSchema(ABaseDbSchema schema)
+        {
+            throw new NotSupportedException("MySQL doesn't support schemas");
+        }
+
+        /// <inheritdoc/>
+        protected override string ScriptAlterSchema(ABaseDbSchema schema)
+        {
+            throw new NotSupportedException("MySQL doesn't support schemas");
+        }
+
+        /// <inheritdoc/>
         protected override string ScriptCreateTable(ABaseDbTable table)
         {
             var mySqlTable = (MySqlTable)table;

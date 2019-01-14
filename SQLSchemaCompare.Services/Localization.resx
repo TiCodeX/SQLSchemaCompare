@@ -728,4 +728,19 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="ErrorCommentMustBe2500Max" xml:space="preserve">
     <value>Comment cannot exceed 2500 characters</value>
   </data>
+  <data name="StatusRetrievingSchemas" xml:space="preserve">
+    <value>Retrieving Schemas...</value>
+  </data>
+  <data name="StatusMappingSchemas" xml:space="preserve">
+    <value>Mapping Schemas...</value>
+  </data>
+  <data name="StatusComparingSchemas" xml:space="preserve">
+    <value>Comparing Schemas...</value>
+  </data>
+  <data name="LabelSchemas" xml:space="preserve">
+    <value>Schemas</value>
+  </data>
+  <data name="LabelSchema" xml:space="preserve">
+    <value>Schema</value>
+  </data>
 </root>

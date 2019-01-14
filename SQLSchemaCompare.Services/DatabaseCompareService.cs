@@ -40,6 +40,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
         private readonly List<CompareResultItem<ABaseDbStoredProcedure>> storedProcedures = new List<CompareResultItem<ABaseDbStoredProcedure>>();
         private readonly List<CompareResultItem<ABaseDbSequence>> sequences = new List<CompareResultItem<ABaseDbSequence>>();
         private readonly List<CompareResultItem<ABaseDbDataType>> dataTypes = new List<CompareResultItem<ABaseDbDataType>>();
+        private readonly List<CompareResultItem<ABaseDbUser>> users = new List<CompareResultItem<ABaseDbUser>>();
 
         private ABaseDb retrievedSourceDatabase;
         private ABaseDb retrievedTargetDatabase;
@@ -183,6 +184,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                 new ObjectMap { ObjectTitle = Localization.StatusComparingStoredProcedures, DbObjects = this.retrievedSourceDatabase.StoredProcedures.Concat(this.retrievedTargetDatabase.StoredProcedures.Where(x => x.MappedDbObject == null)) },
                 new ObjectMap { ObjectTitle = Localization.StatusComparingDataTypes, DbObjects = this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined).Concat(this.retrievedTargetDatabase.DataTypes.Where(x => x.MappedDbObject == null && x.IsUserDefined)) },
                 new ObjectMap { ObjectTitle = Localization.StatusComparingSequences, DbObjects = this.retrievedSourceDatabase.Sequences.Concat(this.retrievedTargetDatabase.Sequences.Where(x => x.MappedDbObject == null)) },
+                new ObjectMap { ObjectTitle = Localization.StatusComparingUsers, DbObjects = this.retrievedSourceDatabase.Users.Concat(this.retrievedTargetDatabase.Users.Where(x => x.MappedDbObject == null)) },
             };
 
             var totalItems = maps.SelectMany(x => x.DbObjects).Count();
@@ -230,6 +232,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             SetCompareResultList(this.sequences, this.retrievedSourceDatabase.Sequences, this.retrievedTargetDatabase.Sequences, scripter);
             SetCompareResultList(this.dataTypes, this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined), this.retrievedTargetDatabase.DataTypes.Where(x => x.IsUserDefined), scripter);
             SetCompareResultList(this.triggers, this.retrievedSourceDatabase.Triggers, this.retrievedTargetDatabase.Triggers, scripter);
+            SetCompareResultList(this.users, this.retrievedSourceDatabase.Users, this.retrievedTargetDatabase.Users, scripter);
 
             var result = new CompareResult();
 
@@ -244,9 +247,15 @@ namespace TiCodeX.SQLSchemaCompare.Services
             return true;
         }
 
+        /// <summary>
+        /// Fills the CompareResult class which contains the different/only source/only target/same lists used by the UI
+        /// </summary>
+        /// <remarks>The order of the items in the list is the order in which they will appear in the UI</remarks>
+        /// <param name="result">The result</param>
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
         private void FillCompareResultItems(CompareResult result)
         {
+            result.DifferentItems.AddRange(this.users.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
             result.DifferentItems.AddRange(this.schemas.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
             result.DifferentItems.AddRange(this.tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
             result.DifferentItems.AddRange(this.views.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
@@ -256,6 +265,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             result.DifferentItems.AddRange(this.dataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Different items => {result.DifferentItems.Count}");
 
+            result.OnlySourceItems.AddRange(this.users.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
             result.OnlySourceItems.AddRange(this.schemas.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
             result.OnlySourceItems.AddRange(this.tables.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
             result.OnlySourceItems.AddRange(this.views.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
@@ -265,6 +275,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             result.OnlySourceItems.AddRange(this.dataTypes.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Only Source items => {result.OnlySourceItems.Count}");
 
+            result.OnlyTargetItems.AddRange(this.users.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
             result.OnlyTargetItems.AddRange(this.schemas.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
             result.OnlyTargetItems.AddRange(this.tables.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
             result.OnlyTargetItems.AddRange(this.views.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
@@ -274,6 +285,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             result.OnlyTargetItems.AddRange(this.dataTypes.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
             this.logger.LogDebug($"Only Target items => {result.OnlyTargetItems.Count}");
 
+            result.SameItems.AddRange(this.users.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
             result.SameItems.AddRange(this.schemas.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
             result.SameItems.AddRange(this.tables.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
             result.SameItems.AddRange(this.views.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
@@ -289,6 +301,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
         {
             // Add items related to tables directly in the different items list only for the alter script generation
             var differentItems = new List<ABaseCompareResultItem>();
+            differentItems.AddRange(this.users.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
             differentItems.AddRange(this.schemas.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
             differentItems.AddRange(this.tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
             differentItems.AddRange(this.views.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
@@ -325,6 +338,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     throw new NotImplementedException("Unknown Database Type");
             }
 
+            onlySourceDb.Users.AddRange(this.users.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Schemas.AddRange(this.schemas.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Tables.AddRange(this.tables.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Indexes.AddRange(this.indexes.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
@@ -339,6 +353,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             onlySourceDb.DataTypes.AddRange(this.dataTypes.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
             onlySourceDb.Sequences.AddRange(this.sequences.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));
 
+            onlyTargetDb.Users.AddRange(this.users.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Schemas.AddRange(this.schemas.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Tables.AddRange(this.tables.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));
             onlyTargetDb.Indexes.AddRange(this.indexes.Where(x => x.SourceItem == null && x.TargetItem != null).Select(x => x.TargetItem));

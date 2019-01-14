@@ -27,6 +27,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers
                 new ObjectMap { ObjectTitle = Localization.StatusMappingStoredProcedures, DbObjects = source.StoredProcedures, MappableDbObjects = target.StoredProcedures },
                 new ObjectMap { ObjectTitle = Localization.StatusMappingDataTypes, DbObjects = source.DataTypes, MappableDbObjects = target.DataTypes },
                 new ObjectMap { ObjectTitle = Localization.StatusMappingSequences, DbObjects = source.Sequences, MappableDbObjects = target.Sequences },
+                new ObjectMap { ObjectTitle = Localization.StatusMappingUsers, DbObjects = source.Users, MappableDbObjects = target.Users },
             };
 
             this.PerformMapping(maps, taskInfo);

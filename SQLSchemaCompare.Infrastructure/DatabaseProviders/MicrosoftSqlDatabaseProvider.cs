@@ -336,9 +336,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("SELECT object_schema_name(p.principal_id) AS 'Schema',");
             query.AppendLine("       p.name AS 'Name',");
             query.AppendLine("       p.type AS 'Type',");
-            query.AppendLine("       p.default_schema_name AS 'DefaultSchemaName'");
+            query.AppendLine("       p.default_schema_name AS 'DefaultSchemaName',");
+            query.AppendLine("       l.name AS 'Login'");
             query.AppendLine("FROM sys.database_principals p");
-            query.AppendLine("WHERE type IN('C', 'E', 'G', 'K', 'S', 'U', 'X') AND principal_id > 4");
+            query.AppendLine("LEFT JOIN sys.sql_logins l ON l.sid = p.sid");
+            query.AppendLine("WHERE p.type IN ('C', 'E', 'G', 'K', 'S', 'U', 'X')");
+            query.AppendLine("      AND lower(p.name) NOT IN ('guest', 'sys', 'dbo', 'information_schema')");
             return context.Query<MicrosoftSqlUser>(query.ToString());
         }
     }

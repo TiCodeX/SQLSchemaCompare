@@ -746,4 +746,13 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="StatusRetrievingUsers" xml:space="preserve">
     <value>Retrieving Users...</value>
   </data>
+  <data name="StatusMappingUsers" xml:space="preserve">
+    <value>Mapping Users...</value>
+  </data>
+  <data name="StatusComparingUsers" xml:space="preserve">
+    <value>Comparing Users...</value>
+  </data>
+  <data name="LabelUser" xml:space="preserve">
+    <value>User</value>
+  </data>
 </root>

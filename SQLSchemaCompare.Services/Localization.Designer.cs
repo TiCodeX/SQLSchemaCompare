@@ -1116,6 +1116,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User.
+        /// </summary>
+        public static string LabelUser {
+            get {
+                return ResourceManager.GetString("LabelUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User-Defined Data Type.
         /// </summary>
         public static string LabelUserDefinedType {
@@ -1602,6 +1611,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Comparing Users....
+        /// </summary>
+        public static string StatusComparingUsers {
+            get {
+                return ResourceManager.GetString("StatusComparingUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comparing Views....
         /// </summary>
         public static string StatusComparingViews {
@@ -1724,6 +1742,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string StatusMappingTriggers {
             get {
                 return ResourceManager.GetString("StatusMappingTriggers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping Users....
+        /// </summary>
+        public static string StatusMappingUsers {
+            get {
+                return ResourceManager.GetString("StatusMappingUsers", resourceCulture);
             }
         }
         

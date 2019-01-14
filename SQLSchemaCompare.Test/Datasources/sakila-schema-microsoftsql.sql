@@ -617,15 +617,21 @@ IF CAST(SERVERPROPERTY('ProductMajorVersion') AS INT) > 10
 BEGIN
   EXECUTE('CREATE SEQUENCE actor_seq START WITH 1 INCREMENT BY 1')
 END
+GO
 
 -- USERS
 DECLARE @DB varchar(50)
 SELECT @DB = DB_NAME()
 EXECUTE('ALTER DATABASE [' + @DB + '] SET CONTAINMENT = PARTIAL')
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = 'sakila_user_ten')
+BEGIN
+  CREATE LOGIN sakila_user_login WITH PASSWORD = 'test1234'
+END
+GO
 
 CREATE USER sakila_user_one WITH PASSWORD = 'test1234'
-GO
-CREATE LOGIN sakila_user_login WITH PASSWORD = 'test1234'
 GO
 CREATE USER sakila_user_two FOR LOGIN sakila_user_login
 GO

@@ -14,5 +14,10 @@
         /// Gets or sets the default schema name
         /// </summary>
         public string DefaultSchemaName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the related login
+        /// </summary>
+        public string Login { get; set; }
     }
 }

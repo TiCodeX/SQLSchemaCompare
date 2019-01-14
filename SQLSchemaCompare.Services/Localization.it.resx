@@ -737,4 +737,13 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="StatusRetrievingUsers" xml:space="preserve">
     <value>Lettura degli Utenti in corso...</value>
   </data>
+  <data name="StatusMappingUsers" xml:space="preserve">
+    <value>Mappatura degli Utenti in corso...</value>
+  </data>
+  <data name="StatusComparingUsers" xml:space="preserve">
+    <value>Confronto degli Utenti in corso...</value>
+  </data>
+  <data name="LabelUser" xml:space="preserve">
+    <value>Utente</value>
+  </data>
 </root>

@@ -24,7 +24,11 @@
                 {
                     <tr id="@item.Id" onclick="Main.SelectRow($(event.target).closest('tr'))">
                         <td>
-                            @if (item.ItemType == typeof(ABaseDbSchema))
+                            @if (item.ItemType == typeof(ABaseDbUser))
+                            {
+                                <i class="fa fa-fw fa-user"></i> @Localization.LabelUser
+                            }
+                            else if (item.ItemType == typeof(ABaseDbSchema))
                             {
                                 <i class="fa fa-fw fa-sitemap"></i> @Localization.LabelSchema
                             }

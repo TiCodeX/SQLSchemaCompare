@@ -39,10 +39,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             if (type.IsArray && type.ArrayType != null)
             {
-                return $"{ScriptDataTypeName(type.ArrayType.Name)}[]";
+                return $"{ScriptDataTypeName(type.ArrayType.Schema.ToUpperInvariant() != "PUBLIC" ? type.ArrayType.Schema + "." + type.ArrayType.Name : type.ArrayType.Name)}[]";
             }
 
-            return ScriptDataTypeName(type.Name);
+            return ScriptDataTypeName(type.Schema.ToUpperInvariant() != "PUBLIC" ? type.Schema + "." + type.Name : type.Name);
         }
 
         /// <summary>

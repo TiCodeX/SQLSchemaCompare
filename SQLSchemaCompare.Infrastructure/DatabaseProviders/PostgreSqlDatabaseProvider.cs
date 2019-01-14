@@ -54,6 +54,19 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             return context.QuerySingleColumn<string>("SHOW server_version").FirstOrDefault() ?? string.Empty;
         }
 
+        /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbSchema> GetSchemas(PostgreSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT n.nspname AS \"Name\",");
+            query.AppendLine("       u.rolname AS \"Owner\"");
+            query.AppendLine("FROM pg_catalog.pg_namespace n");
+            query.AppendLine("JOIN pg_catalog.pg_authid u ON n.nspowner = u.oid");
+            query.AppendLine("WHERE lower(n.nspname) NOT LIKE 'pg_%'");
+            query.AppendLine("      AND lower(n.nspname) NOT IN ('public', 'information_schema')");
+            return context.Query<ABaseDbSchema>(query.ToString());
+        }
+
         /// <inheritdoc />
         protected override IEnumerable<ABaseDbTable> GetTables(PostgreSqlDatabaseContext context)
         {
@@ -68,7 +81,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("LEFT JOIN pg_catalog.pg_inherits ih ON ih.inhrelid = cls.oid");
             query.AppendLine("LEFT JOIN pg_catalog.pg_class ihcls ON ih.inhparent = ihcls.oid");
             query.AppendLine("LEFT JOIN pg_catalog.pg_namespace ihnsp ON ihnsp.oid = ihcls.relnamespace");
-            query.AppendLine("WHERE cls.relkind IN ('r', 'p') AND nsp.nspname = 'public'");
+            query.AppendLine("WHERE cls.relkind IN ('r', 'p') AND lower(nsp.nspname) NOT LIKE 'pg_%' AND lower(nsp.nspname) != 'information_schema'");
 
             return context.Query<PostgreSqlTable>(query.ToString());
         }
@@ -97,7 +110,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       collation_name as \"CollationName\",");
             query.AppendLine("       udt_name as \"UdtName\"");
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-            query.AppendLine($"WHERE TABLE_CATALOG = '{context.DatabaseName}'");
+            query.AppendLine($"WHERE table_catalog = '{context.DatabaseName}'");
+            query.AppendLine("      AND lower(table_schema) NOT LIKE 'pg_%' AND lower(table_schema) != 'information_schema'");
 
             return context.Query<PostgreSqlColumn>(query.ToString());
         }
@@ -124,7 +138,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("JOIN pg_catalog.pg_namespace ni ON ci.relnamespace = ni.oid");
             query.AppendLine("JOIN pg_catalog.pg_attribute a ON i.indexrelid = a.attrelid");
             query.AppendLine("JOIN pg_catalog.pg_am am ON ci.relam = am.oid");
-            query.AppendLine("WHERE nt.nspname = 'public' AND i.indisprimary IS TRUE");
+            query.AppendLine("WHERE i.indisprimary IS TRUE");
+            query.AppendLine("      AND lower(nt.nspname) NOT LIKE 'pg_%' AND lower(nt.nspname) != 'information_schema'");
+            query.AppendLine("      AND lower(ni.nspname) NOT LIKE 'pg_%' AND lower(ni.nspname) != 'information_schema'");
 
             return context.Query<ABaseDbPrimaryKey>(query.ToString());
         }
@@ -163,6 +179,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("INNER JOIN information_schema.constraint_column_usage ccu");
             query.AppendLine("    ON kcu.constraint_name = ccu.constraint_name AND kcu.constraint_schema = ccu.constraint_schema AND kcu.constraint_catalog = ccu.constraint_catalog");
             query.AppendLine($"WHERE kcu.constraint_catalog = '{context.DatabaseName}' AND tu.constraint_type = 'FOREIGN KEY'");
+            query.AppendLine("      AND lower(kcu.constraint_schema) NOT LIKE 'pg_%' AND lower(kcu.constraint_schema) != 'information_schema'");
+            query.AppendLine("      AND lower(kcu.table_schema) NOT LIKE 'pg_%' AND lower(kcu.table_schema) != 'information_schema'");
             return context.Query<PostgreSqlForeignKey>(query.ToString());
         }
 
@@ -188,6 +206,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("JOIN pg_catalog.pg_namespace nt ON ct.relnamespace = nt.oid");
             query.AppendLine("LEFT JOIN information_schema.constraint_column_usage ccu ON c.conname = ccu.constraint_name");
             query.AppendLine("WHERE c.contype IN ('c', 'u', 'x') AND contypid = 0");
+            query.AppendLine("      AND lower(nc.nspname) NOT LIKE 'pg_%' AND lower(nc.nspname) != 'information_schema'");
+            query.AppendLine("      AND lower(nt.nspname) NOT LIKE 'pg_%' AND lower(nt.nspname) != 'information_schema'");
             return context.Query<ABaseDbConstraint>(query.ToString());
         }
 
@@ -218,7 +238,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("JOIN pg_catalog.pg_namespace ni ON ci.relnamespace = ni.oid");
             query.AppendLine("JOIN pg_catalog.pg_attribute a ON i.indexrelid = a.attrelid");
             query.AppendLine("JOIN pg_catalog.pg_am am ON ci.relam = am.oid");
-            query.AppendLine("WHERE nt.nspname = 'public' AND i.indisprimary IS FALSE");
+            query.AppendLine("WHERE i.indisprimary IS FALSE");
+            query.AppendLine("      AND lower(nt.nspname) NOT LIKE 'pg_%' AND lower(nt.nspname) != 'information_schema'");
+            query.AppendLine("      AND lower(ni.nspname) NOT LIKE 'pg_%' AND lower(ni.nspname) != 'information_schema'");
 
             return context.Query<PostgreSqlIndex>(query.ToString());
         }
@@ -232,7 +254,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       VIEW_DEFINITION as \"ViewDefinition\",");
             query.AppendLine("       CHECK_OPTION as \"CheckOption\"");
             query.AppendLine("FROM INFORMATION_SCHEMA.VIEWS");
-            query.AppendLine($"WHERE TABLE_CATALOG = '{context.DatabaseName}' AND TABLE_SCHEMA = 'public'");
+            query.AppendLine($"WHERE TABLE_CATALOG = '{context.DatabaseName}'");
+            query.AppendLine("      AND lower(TABLE_SCHEMA) NOT LIKE 'pg_%' AND LOWER(TABLE_SCHEMA) != 'information_schema'");
 
             return context.Query<PostgreSqlView>(query.ToString());
         }
@@ -272,13 +295,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             if (this.CurrentServerVersion.Major >= 11)
             {
-                query.AppendLine("WHERE (n.nspname = 'public' AND p.prokind != 'a' AND upper(l.lanname) != 'INTERNAL') OR");
-                query.AppendLine("      (n.nspname = 'public' AND p.prokind = 'a')");
+                query.AppendLine("WHERE (lower(n.nspname) NOT LIKE 'pg_%' AND lower(n.nspname) != 'information_schema' AND p.prokind != 'a' AND upper(l.lanname) != 'INTERNAL') OR");
+                query.AppendLine("      (lower(n.nspname) NOT LIKE 'pg_%' AND lower(n.nspname) != 'information_schema' AND p.prokind = 'a')");
             }
             else
             {
-                query.AppendLine("WHERE (n.nspname = 'public' AND p.proisagg = 'false' AND upper(l.lanname) != 'INTERNAL') OR");
-                query.AppendLine("      (n.nspname = 'public' AND p.proisagg = 'true')");
+                query.AppendLine("WHERE (lower(n.nspname) NOT LIKE 'pg_%' AND lower(n.nspname) != 'information_schema' AND p.proisagg = 'false' AND upper(l.lanname) != 'INTERNAL') OR");
+                query.AppendLine("      (lower(n.nspname) NOT LIKE 'pg_%' AND lower(n.nspname) != 'information_schema' AND p.proisagg = 'true')");
             }
 
             return context.Query<PostgreSqlFunction>(query.ToString());
@@ -304,6 +327,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("JOIN pg_catalog.pg_class ct ON t.tgrelid = ct.oid");
             query.AppendLine("JOIN pg_catalog.pg_namespace nt ON ct.relnamespace = nt.oid");
             query.AppendLine("WHERE t.tgisinternal = false");
+            query.AppendLine("      AND lower(nt.nspname) NOT LIKE 'pg_%' AND lower(nt.nspname) != 'information_schema'");
 
             return context.Query<PostgreSqlTrigger>(query.ToString());
         }
@@ -327,8 +351,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             commonWhereIsUserDefined.AppendLine("          AND NOT EXISTS (SELECT 1");
             commonWhereIsUserDefined.AppendLine("                          FROM pg_catalog.pg_type el");
             commonWhereIsUserDefined.AppendLine("                          WHERE el.oid = t.typelem AND el.typarray = t.oid)");
-            commonWhereIsUserDefined.AppendLine("          AND n.nspname <> 'pg_catalog'");
-            commonWhereIsUserDefined.AppendLine("          AND n.nspname <> 'information_schema'");
+            commonWhereIsUserDefined.AppendLine("          AND lower(n.nspname) NOT LIKE 'pg_%' AND lower(n.nspname) != 'information_schema'");
             commonWhereIsUserDefined.AppendLine("          AND pg_catalog.pg_type_is_visible(t.oid)");
             commonWhereIsUserDefined.Append("      ) = ");
 
@@ -443,8 +466,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             if (this.CurrentServerVersion.Major >= 10)
             {
-                query.AppendLine("JOIN pg_catalog.pg_sequence ps ON s.sequence_name::REGCLASS::OID = ps.seqrelid");
+                query.AppendLine("JOIN pg_catalog.pg_sequence ps ON (s.sequence_schema || '.' || s.sequence_name)::REGCLASS::OID = ps.seqrelid");
             }
+
+            query.AppendLine("WHERE lower(s.sequence_schema) NOT LIKE 'pg_%' AND lower(s.sequence_schema) != 'information_schema'");
 
             var sequences = context.Query<PostgreSqlSequence>(query.ToString());
 

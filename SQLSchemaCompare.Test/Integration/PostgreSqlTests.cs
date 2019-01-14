@@ -61,6 +61,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
 
+            db.Schemas.Count.Should().Be(3);
+
             db.DataTypes.Count(x => x.IsUserDefined).Should().Be(8);
 
             db.Tables.Count.Should().Be(22);
@@ -192,7 +194,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetMissingColumn(short port)
         {
             var sb = new StringBuilder();
-            sb.Append("ALTER TABLE staff DROP COLUMN password");
+            sb.Append("ALTER TABLE business.staff DROP COLUMN password");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -206,7 +208,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetMissingColumns(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE staff DROP COLUMN password,");
+            sb.AppendLine("ALTER TABLE business.staff DROP COLUMN password,");
             sb.Append("DROP COLUMN picture");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
@@ -221,7 +223,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetExtraColumn(short port)
         {
             var sb = new StringBuilder();
-            sb.Append("ALTER TABLE staff ADD middle_name VARCHAR(45) NOT NULL");
+            sb.Append("ALTER TABLE business.staff ADD middle_name VARCHAR(45) NOT NULL");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -235,7 +237,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetExtraColumns(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE staff ADD middle_name VARCHAR(45) NOT NULL,");
+            sb.AppendLine("ALTER TABLE business.staff ADD middle_name VARCHAR(45) NOT NULL,");
             sb.AppendLine("ADD middle_name2 VARCHAR(45) NULL");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
@@ -264,7 +266,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetColumnMissingDefault(short port)
         {
             var sb = new StringBuilder();
-            sb.Append("ALTER TABLE customer ALTER COLUMN activebool DROP DEFAULT");
+            sb.Append("ALTER TABLE customer_data.customer ALTER COLUMN activebool DROP DEFAULT");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -278,7 +280,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetColumnExtraDefault(short port)
         {
             var sb = new StringBuilder();
-            sb.Append("ALTER TABLE customer ALTER COLUMN last_name SET DEFAULT 'MyLastName'");
+            sb.Append("ALTER TABLE customer_data.customer ALTER COLUMN last_name SET DEFAULT 'MyLastName'");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -292,7 +294,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetColumnDifferentDefault(short port)
         {
             var sb = new StringBuilder();
-            sb.Append("ALTER TABLE film ALTER COLUMN replacement_cost SET DEFAULT 11.45");
+            sb.Append("ALTER TABLE inventory.film ALTER COLUMN replacement_cost SET DEFAULT 11.45");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -373,7 +375,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetMissingIndex(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("DROP INDEX idx_actor_last_name");
+            sb.AppendLine("DROP INDEX inventory.idx_actor_last_name");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -387,7 +389,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetExtraIndex(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("CREATE UNIQUE INDEX idx_staff_email ON staff (email)");
+            sb.AppendLine("CREATE UNIQUE INDEX idx_staff_email ON business.staff (email)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -401,8 +403,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetDifferentIndex(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("DROP INDEX idx_unq_manager_staff_id;");
-            sb.AppendLine("CREATE INDEX idx_unq_manager_staff_id ON store USING btree (address_id);");
+            sb.AppendLine("DROP INDEX business.idx_unq_manager_staff_id;");
+            sb.AppendLine("CREATE INDEX idx_unq_manager_staff_id ON business.store USING btree (address_id);");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -416,7 +418,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetMissingTrigger(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("DROP TRIGGER film_fulltext_trigger ON film");
+            sb.AppendLine("DROP TRIGGER film_fulltext_trigger ON inventory.film");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -430,7 +432,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetExtraTrigger(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("CREATE TRIGGER last_updated2 BEFORE DELETE ON store FOR EACH ROW EXECUTE PROCEDURE last_updated();");
+            sb.AppendLine("CREATE TRIGGER last_updated2 BEFORE DELETE ON business.store FOR EACH ROW EXECUTE PROCEDURE last_updated();");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -444,8 +446,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetDifferentTrigger(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("DROP TRIGGER last_updated ON actor;");
-            sb.AppendLine("CREATE TRIGGER last_updated AFTER INSERT ON actor FOR EACH ROW EXECUTE PROCEDURE last_updated();");
+            sb.AppendLine("DROP TRIGGER last_updated ON inventory.actor;");
+            sb.AppendLine("CREATE TRIGGER last_updated AFTER INSERT ON inventory.actor FOR EACH ROW EXECUTE PROCEDURE last_updated();");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -473,7 +475,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetExtraCheckConstraint(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE staff ADD CONSTRAINT staff_check_email CHECK(email LIKE '_%@_%._%')");
+            sb.AppendLine("ALTER TABLE business.staff ADD CONSTRAINT staff_check_email CHECK(email LIKE '_%@_%._%')");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -502,7 +504,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetMissingPrimaryKey(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE payment DROP CONSTRAINT payment_pkey");
+            sb.AppendLine("ALTER TABLE business.payment DROP CONSTRAINT payment_pkey");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -516,7 +518,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetExtraPrimaryKey(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY (film_id)");
+            sb.AppendLine("ALTER TABLE inventory.film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY (film_id)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -530,8 +532,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY (film_id);");
-            sb.AppendLine("ALTER TABLE film_category ADD CONSTRAINT FK_film_category_extra_film FOREIGN KEY (film_text_id) REFERENCES film_text (film_id) ON DELETE CASCADE");
+            sb.AppendLine("ALTER TABLE inventory.film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY (film_id);");
+            sb.AppendLine("ALTER TABLE inventory.film_category ADD CONSTRAINT FK_film_category_extra_film FOREIGN KEY (film_text_id) REFERENCES inventory.film_text (film_id) ON DELETE CASCADE");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port, 2);
         }
 
@@ -545,8 +547,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetPrimaryKeyOnDifferentColumn(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE payment DROP CONSTRAINT payment_pkey;");
-            sb.AppendLine("ALTER TABLE payment ADD CONSTRAINT payment_pkey PRIMARY KEY (payment_id_new)");
+            sb.AppendLine("ALTER TABLE business.payment DROP CONSTRAINT payment_pkey;");
+            sb.AppendLine("ALTER TABLE business.payment ADD CONSTRAINT payment_pkey PRIMARY KEY (payment_id_new)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -574,7 +576,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetMissingForeignKey(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE film_actor DROP CONSTRAINT film_actor_film_id_fkey");
+            sb.AppendLine("ALTER TABLE inventory.film_actor DROP CONSTRAINT film_actor_film_id_fkey");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -588,8 +590,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetForeignKeyReferencesDifferentColumn(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE address DROP CONSTRAINT address_city_id_fkey;");
-            sb.AppendLine("ALTER TABLE address ADD CONSTRAINT address_city_id_fkey FOREIGN KEY (city_id) REFERENCES category (category_id) ON UPDATE CASCADE ON DELETE RESTRICT");
+            sb.AppendLine("ALTER TABLE customer_data.address DROP CONSTRAINT address_city_id_fkey;");
+            sb.AppendLine("ALTER TABLE customer_data.address ADD CONSTRAINT address_city_id_fkey FOREIGN KEY (city_id) REFERENCES category (category_id) ON UPDATE CASCADE ON DELETE RESTRICT");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
@@ -603,8 +605,29 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigratePostgreSqlDatabaseTargetForeignKeyDifferentOptions(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE address DROP CONSTRAINT address_city_id_fkey;");
-            sb.AppendLine("ALTER TABLE address ADD CONSTRAINT address_city_id_fkey FOREIGN KEY (city_id) REFERENCES city (city_id) ON UPDATE RESTRICT ON DELETE NO ACTION");
+            sb.AppendLine("ALTER TABLE customer_data.address DROP CONSTRAINT address_city_id_fkey;");
+            sb.AppendLine("ALTER TABLE customer_data.address ADD CONSTRAINT address_city_id_fkey FOREIGN KEY (city_id) REFERENCES customer_data.city (city_id) ON UPDATE RESTRICT ON DELETE NO ACTION");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a schema with different owner
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
+        [IntegrationTest]
+        public void MigratePostgreSqlDatabaseTargetSchemaDifferentOwner(short port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DO $do$");
+            sb.AppendLine("BEGIN");
+            sb.AppendLine("   IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'sakila_user_test') THEN");
+            sb.AppendLine("      CREATE ROLE sakila_user_test LOGIN PASSWORD 'test1234';");
+            sb.AppendLine("   END IF;");
+            sb.AppendLine("END");
+            sb.AppendLine("$do$;");
+            sb.AppendLine("ALTER SCHEMA business OWNER TO sakila_user_test;");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
     }

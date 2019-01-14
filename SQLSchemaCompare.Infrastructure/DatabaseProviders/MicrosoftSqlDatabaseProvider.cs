@@ -53,6 +53,19 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         }
 
         /// <inheritdoc/>
+        protected override IEnumerable<ABaseDbSchema> GetSchemas(MicrosoftSqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT s.name as 'Name',");
+            query.AppendLine("       u.name as 'Owner'");
+            query.AppendLine("FROM sys.schemas s");
+            query.AppendLine("INNER JOIN sys.sysusers u ON u.uid = s.principal_id");
+            query.AppendLine("WHERE LOWER(s.name) NOT IN ('dbo', 'guest', 'sys', 'information_schema')");
+            query.AppendLine("      AND s.schema_id < 16000");
+            return context.Query<ABaseDbSchema>(query.ToString());
+        }
+
+        /// <inheritdoc/>
         protected override IEnumerable<ABaseDbTable> GetTables(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();

@@ -62,6 +62,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             db.Should().NotBeNull();
             db.Name.Should().Be("sakila");
 
+            db.Schemas.Count.Should().Be(3);
+
             db.Tables.Count.Should().Be(18);
             var table = db.Tables.FirstOrDefault(x => x.Name == "film");
             table.Should().NotBeNull();
@@ -197,7 +199,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetMissingColumn(short port)
         {
             var sb = new StringBuilder();
-            sb.Append("ALTER TABLE staff DROP COLUMN last_name");
+            sb.Append("ALTER TABLE business.staff DROP COLUMN last_name");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -211,7 +213,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetMissingColumns(short port)
         {
             var sb = new StringBuilder();
-            sb.Append("ALTER TABLE staff DROP COLUMN last_name, username");
+            sb.Append("ALTER TABLE business.staff DROP COLUMN last_name, username");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -225,7 +227,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetExtraColumn(short port)
         {
             var sb = new StringBuilder();
-            sb.Append("ALTER TABLE staff ADD middle_name VARCHAR(45) NOT NULL");
+            sb.Append("ALTER TABLE business.staff ADD middle_name VARCHAR(45) NOT NULL");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -239,8 +241,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetExtraColumns(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE staff ADD middle_name VARCHAR(45) NOT NULL");
-            sb.AppendLine("ALTER TABLE staff ADD middle_name2 VARCHAR(45) NOT NULL");
+            sb.AppendLine("ALTER TABLE business.staff ADD middle_name VARCHAR(45) NOT NULL");
+            sb.AppendLine("ALTER TABLE business.staff ADD middle_name2 VARCHAR(45) NOT NULL");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -254,7 +256,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetColumnDifferentType(short port)
         {
             var sb = new StringBuilder();
-            sb.Append("ALTER TABLE country ALTER COLUMN country NVARCHAR(80) NOT NULL");
+            sb.Append("ALTER TABLE customer_data.country ALTER COLUMN country NVARCHAR(80) NOT NULL");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -355,7 +357,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetMissingIndex(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("DROP INDEX idx_uq ON rental");
+            sb.AppendLine("DROP INDEX idx_uq ON business.rental");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -369,7 +371,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetExtraIndex(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("CREATE INDEX idx_replacement_cost ON film (replacement_cost)");
+            sb.AppendLine("CREATE INDEX idx_replacement_cost ON inventory.film (replacement_cost)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -383,8 +385,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetDifferentIndexFilter(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("DROP INDEX idx_actor_last_name ON actor");
-            sb.AppendLine("CREATE INDEX idx_actor_last_name ON actor(last_name) WHERE (first_name IS NOT NULL)");
+            sb.AppendLine("DROP INDEX idx_actor_last_name ON customer_data.actor");
+            sb.AppendLine("CREATE INDEX idx_actor_last_name ON customer_data.actor(last_name) WHERE (first_name IS NOT NULL)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -398,8 +400,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetDifferentIndexType(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("DROP INDEX idx_fk_address_id ON store");
-            sb.AppendLine("CREATE CLUSTERED INDEX idx_fk_address_id ON store(manager_staff_id)");
+            sb.AppendLine("DROP INDEX idx_fk_address_id ON business.store");
+            sb.AppendLine("CREATE CLUSTERED INDEX idx_fk_address_id ON business.store(manager_staff_id)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -413,7 +415,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetMissingTrigger(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("DROP TRIGGER reminder1");
+            sb.AppendLine("DROP TRIGGER customer_data.reminder1");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -428,7 +430,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("CREATE TRIGGER reminder2");
-            sb.AppendLine("ON dbo.country");
+            sb.AppendLine("ON customer_data.country");
             sb.AppendLine("AFTER DELETE");
             sb.AppendLine("AS RAISERROR ('BLABLABLA', 16, 10)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
@@ -444,8 +446,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetDifferentTrigger(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TRIGGER reminder1");
-            sb.AppendLine("ON dbo.country");
+            sb.AppendLine("ALTER TRIGGER customer_data.reminder1");
+            sb.AppendLine("ON customer_data.country");
             sb.AppendLine("AFTER INSERT, DELETE");
             sb.AppendLine("AS RAISERROR ('test', 2, 10)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
@@ -461,7 +463,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetMissingDefaultConstraint(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE actor DROP CONSTRAINT DF_actor_last_update");
+            sb.AppendLine("ALTER TABLE customer_data.actor DROP CONSTRAINT DF_actor_last_update");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -475,7 +477,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetExtraDefaultConstraint(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE actor ADD CONSTRAINT DF_actor_last_name DEFAULT 'test' FOR last_name");
+            sb.AppendLine("ALTER TABLE customer_data.actor ADD CONSTRAINT DF_actor_last_name DEFAULT 'test' FOR last_name");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -489,8 +491,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetDifferentDefaultConstraint(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE actor DROP CONSTRAINT DF_actor_last_update");
-            sb.AppendLine("ALTER TABLE actor ADD CONSTRAINT DF_actor_last_update DEFAULT (GETDATE()-444) FOR last_update");
+            sb.AppendLine("ALTER TABLE customer_data.actor DROP CONSTRAINT DF_actor_last_update");
+            sb.AppendLine("ALTER TABLE customer_data.actor ADD CONSTRAINT DF_actor_last_update DEFAULT (GETDATE()-444) FOR last_update");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -504,7 +506,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetMissingCheckConstraint(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE film DROP CONSTRAINT CHECK_special_features");
+            sb.AppendLine("ALTER TABLE inventory.film DROP CONSTRAINT CHECK_special_features");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -518,7 +520,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetExtraCheckConstraint(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE customer ADD CONSTRAINT check_email CHECK(email LIKE '_%@_%._%')");
+            sb.AppendLine("ALTER TABLE customer_data.customer ADD CONSTRAINT check_email CHECK(email LIKE '_%@_%._%')");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -532,8 +534,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetDifferentCheckConstraint(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE film DROP CONSTRAINT CHECK_special_features");
-            sb.AppendLine("ALTER TABLE film ADD CONSTRAINT CHECK_special_features CHECK(special_features IS NOT null)");
+            sb.AppendLine("ALTER TABLE inventory.film DROP CONSTRAINT CHECK_special_features");
+            sb.AppendLine("ALTER TABLE inventory.film ADD CONSTRAINT CHECK_special_features CHECK(special_features IS NOT null)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -547,7 +549,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetMissingPrimaryKey(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE film_actor_description DROP CONSTRAINT PK_film_actor_description_film_actor_description_id");
+            sb.AppendLine("ALTER TABLE inventory.film_actor_description DROP CONSTRAINT PK_film_actor_description_film_actor_description_id");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -561,7 +563,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetExtraPrimaryKey(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY NONCLUSTERED (film_id)");
+            sb.AppendLine("ALTER TABLE inventory.film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY NONCLUSTERED (film_id)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -575,8 +577,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY NONCLUSTERED (film_id)");
-            sb.AppendLine("ALTER TABLE film_text_extra ADD CONSTRAINT FK_film_text_extra_film FOREIGN KEY (film_id) REFERENCES film_text (film_id) ON DELETE CASCADE");
+            sb.AppendLine("ALTER TABLE inventory.film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY NONCLUSTERED (film_id)");
+            sb.AppendLine("ALTER TABLE inventory.film_text_extra ADD CONSTRAINT FK_film_text_extra_film FOREIGN KEY (film_id) REFERENCES inventory.film_text (film_id) ON DELETE CASCADE");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port, 2);
         }
 
@@ -590,8 +592,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetPrimaryKeyOnDifferentColumn(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE payment DROP CONSTRAINT PK_payment_payment_id");
-            sb.AppendLine("ALTER TABLE payment ADD CONSTRAINT PK_payment_payment_id PRIMARY KEY NONCLUSTERED (payment_id_new)");
+            sb.AppendLine("ALTER TABLE business.payment DROP CONSTRAINT PK_payment_payment_id");
+            sb.AppendLine("ALTER TABLE business.payment ADD CONSTRAINT PK_payment_payment_id PRIMARY KEY NONCLUSTERED (payment_id_new)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -619,7 +621,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetMissingForeignKey(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE film_actor DROP CONSTRAINT fk_film_actor_film");
+            sb.AppendLine("ALTER TABLE inventory.film_actor DROP CONSTRAINT fk_film_actor_film");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -633,8 +635,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetForeignKeyReferencesDifferentColumn(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE address DROP CONSTRAINT fk_address_city");
-            sb.AppendLine("ALTER TABLE address ADD CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES actor (actor_id) ON DELETE NO ACTION ON UPDATE CASCADE");
+            sb.AppendLine("ALTER TABLE customer_data.address DROP CONSTRAINT fk_address_city");
+            sb.AppendLine("ALTER TABLE customer_data.address ADD CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES customer_data.actor (actor_id) ON DELETE NO ACTION ON UPDATE CASCADE");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -648,8 +650,22 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMicrosoftSqlDatabaseTargetForeignKeyDifferentOptions(short port)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("ALTER TABLE address DROP CONSTRAINT fk_address_city");
-            sb.AppendLine("ALTER TABLE address ADD CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES city (city_id) ON DELETE CASCADE ON UPDATE NO ACTION");
+            sb.AppendLine("ALTER TABLE customer_data.address DROP CONSTRAINT fk_address_city");
+            sb.AppendLine("ALTER TABLE customer_data.address ADD CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES customer_data.city (city_id) ON DELETE CASCADE ON UPDATE NO ACTION");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a schema with different owner
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        public void MigrateMicrosoftSqlDatabaseTargetSchemaDifferentOwner(short port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER AUTHORIZATION ON SCHEMA::[business] TO [guest]");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
     }

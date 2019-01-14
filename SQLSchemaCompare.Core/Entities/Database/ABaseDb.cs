@@ -25,6 +25,11 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
         public CompareDirection Direction { get; set; }
 
         /// <summary>
+        /// Gets the database schemas
+        /// </summary>
+        public List<ABaseDbSchema> Schemas { get; } = new List<ABaseDbSchema>();
+
+        /// <summary>
         /// Gets the database tables
         /// </summary>
         public List<ABaseDbTable> Tables { get; } = new List<ABaseDbTable>();

@@ -719,4 +719,19 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="ErrorCommentMustBe2500Max" xml:space="preserve">
     <value>Der Kommentar darf nicht mehr als 2500 Zeichen beinhalten</value>
   </data>
+  <data name="LabelSchema" xml:space="preserve">
+    <value>Schema</value>
+  </data>
+  <data name="LabelSchemas" xml:space="preserve">
+    <value>Schemas</value>
+  </data>
+  <data name="StatusComparingSchemas" xml:space="preserve">
+    <value>Vergleiche Schemas...</value>
+  </data>
+  <data name="StatusMappingSchemas" xml:space="preserve">
+    <value>Schemas zuordnen...</value>
+  </data>
+  <data name="StatusRetrievingSchemas" xml:space="preserve">
+    <value>Lese Schemas...</value>
+  </data>
 </root>

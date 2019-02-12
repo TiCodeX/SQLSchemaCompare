@@ -1,0 +1,40 @@
+pool:
+  vmImage: 'vs2017-win2016'
+
+trigger:
+- develop
+- master
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreInstaller@0
+  displayName: 'Use .NET Core sdk 2.2.103'
+  inputs:
+    version: 2.2.103
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: restore
+    projects: '**/*.csproj'
+
+- task: Npm@1
+  displayName: 'npm install'
+  inputs:
+    workingDir: SQLSchemaCompare
+    verbose: false
+
+- task: VSBuild@1
+  displayName: 'Build solution **\*.sln'
+  inputs:
+    configuration: '$(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: test
+    projects: '.\SQLSchemaCompare.Test\SQLSchemaCompare.Test.csproj'
+    arguments: '--no-build --configuration $(buildConfiguration) --filter Category!=IntegrationTest --collect "Code coverage"'
+

@@ -15,7 +15,6 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
         /// <param name="target">The target database</param>
         /// <param name="mappingTable">The mapping table</param>
         /// <param name="taskInfo">The task information</param>
-        /// <returns>The result</returns>
-        object PerformMapping(ABaseDb source, ABaseDb target, object mappingTable, TaskInfo taskInfo);
+        void PerformMapping(ABaseDb source, ABaseDb target, object mappingTable, TaskInfo taskInfo);
     }
 }

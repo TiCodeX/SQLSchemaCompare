@@ -1,10 +1,17 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
+﻿using TiCodeX.SQLSchemaCompare.Core.Enums;
+
+namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
     /// <summary>
     /// Provides the common properties of a database object
     /// </summary>
     public abstract class ABaseDbObject
     {
+        /// <summary>
+        /// Gets the object type
+        /// </summary>
+        public abstract DatabaseObjectType ObjectType { get; }
+
         /// <summary>
         /// Gets or sets the object name
         /// </summary>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
 
 namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
@@ -14,6 +15,9 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
         {
             this.AlterScriptSupported = false;
         }
+
+        /// <inheritdoc />
+        public override DatabaseObjectType ObjectType { get; } = DatabaseObjectType.Constraint;
 
         /// <summary>
         /// Gets or sets the table schema

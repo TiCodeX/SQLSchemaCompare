@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
 
 namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
@@ -7,6 +8,9 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
     /// </summary>
     public class ABaseDbIndex : ABaseDbConstraint
     {
+        /// <inheritdoc />
+        public override DatabaseObjectType ObjectType { get; } = DatabaseObjectType.Index;
+
         /// <summary>
         /// Gets or sets a value indicating whether is descending
         /// </summary>

@@ -146,7 +146,7 @@
         "indent": [ true, "spaces", 4 ],
         "linebreak-style": [ true, "CRLF" ],
         "max-classes-per-file": [ true, 1 ],
-        "max-file-line-count": [ true, 600 ],
+        "max-file-line-count": [ true, 800 ],
         "max-line-length": [ true, 200 ],
         "no-default-export": true,
         "no-duplicate-imports": true,

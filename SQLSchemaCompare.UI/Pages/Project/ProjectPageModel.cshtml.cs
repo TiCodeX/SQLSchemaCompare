@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -227,6 +228,35 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
             this.projectService.Project.SourceProviderOptions = this.GetDatabaseProviderOptions(options, CompareDirection.Source);
             this.projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(options, CompareDirection.Target);
             this.projectService.Project.Options = options.ProjectOptions;
+
+            // The UI  have the object type filter set only to the first clause of each group,
+            // set the same type to the others of the same group
+            if (this.projectService.Project.Options.Filtering.Clauses.Any())
+            {
+                var groupCounter = 0;
+                foreach (var filterClauseGroup in this.projectService.Project.Options.Filtering.Clauses.GroupBy(x => x.Group))
+                {
+                    var clauses = filterClauseGroup.ToList();
+
+                    // Recompute the group number
+                    clauses.ForEach(x => x.Group = groupCounter);
+
+                    // If there are more clauses, set the ObjectType of the first to the others
+                    if (clauses.Count > 1)
+                    {
+                        clauses.ForEach(x => x.ObjectType = clauses[0].ObjectType);
+                    }
+
+                    groupCounter++;
+                }
+
+                // If there is only one clause and it's Value is not set, then discard it
+                if (this.projectService.Project.Options.Filtering.Clauses.Count == 1 &&
+                    string.IsNullOrWhiteSpace(this.projectService.Project.Options.Filtering.Clauses[0].Value))
+                {
+                    this.projectService.Project.Options.Filtering.Clauses.Clear();
+                }
+            }
 
             return new JsonResult(new ApiResponse());
         }

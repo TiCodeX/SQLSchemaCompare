@@ -12,6 +12,12 @@
             <li class="nav-item">
                 <a data-toggle="tab" href="#tabOptions" class="nav-link">@Localization.LabelOptions</a>
             </li>
+            <li class="nav-item">
+                @* The filters table is hidden when it's created and we display it when the tab is clicked because the dialog
+                    computes the height itself and if there are too many clauses it will be too big, there is the max-height attribute
+                    on the table but works only after the dialog is created with a certain height *@
+                <a data-toggle="tab" href="#tabFiltering" class="nav-link" onclick="$('#tableFilterClauses').show();">@Localization.LabelFilters</a>
+            </li>
         </ul>
         <div class="tab-content p-3 mb-3">
             <div class="tab-pane active" id="tabDataSources">
@@ -19,6 +25,9 @@
             </div>
             <div class="tab-pane" id="tabOptions">
                 @await Html.PartialAsync("_OptionsTab", Model.Project.Options)
+            </div>
+            <div class="tab-pane" id="tabFiltering">
+                @await Html.PartialAsync("_FilteringTab", Model.Project.Options.Filtering)
             </div>
         </div>
 

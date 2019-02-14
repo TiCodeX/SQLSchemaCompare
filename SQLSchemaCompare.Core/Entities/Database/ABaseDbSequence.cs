@@ -1,10 +1,15 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
+﻿using TiCodeX.SQLSchemaCompare.Core.Enums;
+
+namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
     /// <summary>
     /// Provides generic information for database sequence classes
     /// </summary>
     public class ABaseDbSequence : ABaseDbObject
     {
+        /// <inheritdoc />
+        public override DatabaseObjectType ObjectType { get; } = DatabaseObjectType.Sequence;
+
         /// <summary>
         /// Gets or sets the data type of the sequence
         /// </summary>

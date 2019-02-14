@@ -734,4 +734,76 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelSchema" xml:space="preserve">
     <value>Schema</value>
   </data>
+  <data name="LabelFilters" xml:space="preserve">
+    <value>Filtri</value>
+  </data>
+  <data name="LabelIncluded" xml:space="preserve">
+    <value>Inclusi</value>
+  </data>
+  <data name="LabelExcluded" xml:space="preserve">
+    <value>Escludi</value>
+  </data>
+  <data name="LabelObjectType" xml:space="preserve">
+    <value>Tipo di oggetto</value>
+  </data>
+  <data name="LabelProperty" xml:space="preserve">
+    <value>Proprietà</value>
+  </data>
+  <data name="LabelOperator" xml:space="preserve">
+    <value>Operatore</value>
+  </data>
+  <data name="LabelValue" xml:space="preserve">
+    <value>Valore</value>
+  </data>
+  <data name="LabelAllObjects" xml:space="preserve">
+    <value>Tutti gli oggetti</value>
+  </data>
+  <data name="LabelPrimaryKey" xml:space="preserve">
+    <value>Chiave Primaria</value>
+  </data>
+  <data name="LabelForeignKey" xml:space="preserve">
+    <value>Chiave Esterna</value>
+  </data>
+  <data name="LabelIndex" xml:space="preserve">
+    <value>Indice</value>
+  </data>
+  <data name="LabelConstraint" xml:space="preserve">
+    <value>Vincolo</value>
+  </data>
+  <data name="LabelTrigger" xml:space="preserve">
+    <value>Trigger</value>
+  </data>
+  <data name="LabelBeginsWith" xml:space="preserve">
+    <value>Comincia con</value>
+  </data>
+  <data name="LabelEndsWith" xml:space="preserve">
+    <value>Termina con</value>
+  </data>
+  <data name="LabelContains" xml:space="preserve">
+    <value>Contiene</value>
+  </data>
+  <data name="LabelEquals" xml:space="preserve">
+    <value>Uguale</value>
+  </data>
+  <data name="LabelNotBeginsWith" xml:space="preserve">
+    <value>Non comincia con</value>
+  </data>
+  <data name="LabelNotEndsWith" xml:space="preserve">
+    <value>Non termina con</value>
+  </data>
+  <data name="LabelNotContains" xml:space="preserve">
+    <value>Non contiente</value>
+  </data>
+  <data name="LabelNotEquals" xml:space="preserve">
+    <value>Non è uguale</value>
+  </data>
+  <data name="LabelAddANDClause" xml:space="preserve">
+    <value>Aggiungi clausola AND</value>
+  </data>
+  <data name="LabelAddORClause" xml:space="preserve">
+    <value>Aggiungi clausola OR</value>
+  </data>
+  <data name="LabelFilterMatchCondition" xml:space="preserve">
+    <value>Gli oggetti del database che corrispondono alle condizioni del filtro saranno</value>
+  </data>
 </root>

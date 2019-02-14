@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
 
 namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
@@ -7,6 +8,9 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
     /// </summary>
     public abstract class ABaseDbView : ABaseDbObject
     {
+        /// <inheritdoc />
+        public override DatabaseObjectType ObjectType { get; } = DatabaseObjectType.View;
+
         /// <summary>
         /// Gets or sets the database view definition script
         /// </summary>

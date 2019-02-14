@@ -51,7 +51,7 @@ class Utility {
                     if (info.platform === "linux") {
                         $("#myNotificationMessage").html(genericMessage);
                         $("#myNotification").show();
-                   } else {
+                    } else {
                         // Windows & MacOS
                         if (info.readyToBeInstalled) {
                             let message: string = "<button type=\"button\" class=\"btn btn-primary float-right\" onclick=\"electron.ipcRenderer.send('QuitAndInstall');\">";
@@ -62,7 +62,7 @@ class Utility {
                             message += `${Localization.Get("NotificationUpdateReadyToBeInstalled").replace("{0}", info.version)}`;
                             $("#myNotificationMessage").html(message);
                             $("#myNotification").show();
-                       } else if (info.autoDownloadFailed) {
+                        } else if (info.autoDownloadFailed) {
                             $("#myNotificationMessage").html(genericMessage);
                             $("#myNotification").show();
                         }
@@ -137,6 +137,23 @@ class Utility {
             if (element.hasClass("needs-validation")) {
                 const valid: boolean = (<HTMLFormElement>form[0]).checkValidity();
                 element.addClass("was-validated");
+
+                // Check if there are tabs in order to color based on their content validity
+                let firstTabWithErrorOpened: boolean = false;
+                element.find(".tab-content > .tab-pane").each((i: number, item: HTMLElement) => {
+                    const navTab: JQuery = element.find(`.nav-tabs > .nav-item > a[href='#${item.id}']`);
+                    navTab.removeClass("text-danger text-success");
+                    if ($(item).find("*:invalid").length > 0) {
+                        navTab.addClass("text-danger");
+                        if (!firstTabWithErrorOpened) {
+                            navTab.tab("show");
+                            firstTabWithErrorOpened = true;
+                        }
+                    } else {
+                        navTab.addClass("text-success");
+                    }
+                });
+
                 if (!valid) {
                     return undefined;
                 }

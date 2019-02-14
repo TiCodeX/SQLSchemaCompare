@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
 
 namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
@@ -8,6 +9,9 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
     /// </summary>
     public abstract class ABaseDbTable : ABaseDbObject
     {
+        /// <inheritdoc />
+        public override DatabaseObjectType ObjectType { get; } = DatabaseObjectType.Table;
+
         /// <summary>
         /// Gets or sets database table last modification date
         /// </summary>

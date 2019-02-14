@@ -475,11 +475,47 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add AND Clause.
+        /// </summary>
+        public static string LabelAddANDClause {
+            get {
+                return ResourceManager.GetString("LabelAddANDClause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add OR Clause.
+        /// </summary>
+        public static string LabelAddORClause {
+            get {
+                return ResourceManager.GetString("LabelAddORClause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All objects.
+        /// </summary>
+        public static string LabelAllObjects {
+            get {
+                return ResourceManager.GetString("LabelAllObjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automatic renewal.
         /// </summary>
         public static string LabelAutoRenewal {
             get {
                 return ResourceManager.GetString("LabelAutoRenewal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Begins with.
+        /// </summary>
+        public static string LabelBeginsWith {
+            get {
+                return ResourceManager.GetString("LabelBeginsWith", resourceCulture);
             }
         }
         
@@ -493,11 +529,29 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Constraint.
+        /// </summary>
+        public static string LabelConstraint {
+            get {
+                return ResourceManager.GetString("LabelConstraint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Constraints.
         /// </summary>
         public static string LabelConstraints {
             get {
                 return ResourceManager.GetString("LabelConstraints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contains.
+        /// </summary>
+        public static string LabelContains {
+            get {
+                return ResourceManager.GetString("LabelContains", resourceCulture);
             }
         }
         
@@ -592,11 +646,65 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ends with.
+        /// </summary>
+        public static string LabelEndsWith {
+            get {
+                return ResourceManager.GetString("LabelEndsWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Equals.
+        /// </summary>
+        public static string LabelEquals {
+            get {
+                return ResourceManager.GetString("LabelEquals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Excluded.
+        /// </summary>
+        public static string LabelExcluded {
+            get {
+                return ResourceManager.GetString("LabelExcluded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expiration date.
         /// </summary>
         public static string LabelExpirationDate {
             get {
                 return ResourceManager.GetString("LabelExpirationDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The database objects matching the filter conditions will be.
+        /// </summary>
+        public static string LabelFilterMatchCondition {
+            get {
+                return ResourceManager.GetString("LabelFilterMatchCondition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filters.
+        /// </summary>
+        public static string LabelFilters {
+            get {
+                return ResourceManager.GetString("LabelFilters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Foreign Key.
+        /// </summary>
+        public static string LabelForeignKey {
+            get {
+                return ResourceManager.GetString("LabelForeignKey", resourceCulture);
             }
         }
         
@@ -689,6 +797,24 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelInBothButDifferent {
             get {
                 return ResourceManager.GetString("LabelInBothButDifferent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Included.
+        /// </summary>
+        public static string LabelIncluded {
+            get {
+                return ResourceManager.GetString("LabelIncluded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Index.
+        /// </summary>
+        public static string LabelIndex {
+            get {
+                return ResourceManager.GetString("LabelIndex", resourceCulture);
             }
         }
         
@@ -801,6 +927,51 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Doesn&apos;t begin with.
+        /// </summary>
+        public static string LabelNotBeginsWith {
+            get {
+                return ResourceManager.GetString("LabelNotBeginsWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Doesn&apos;t contain.
+        /// </summary>
+        public static string LabelNotContains {
+            get {
+                return ResourceManager.GetString("LabelNotContains", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Doesn&apos;t end with.
+        /// </summary>
+        public static string LabelNotEndsWith {
+            get {
+                return ResourceManager.GetString("LabelNotEndsWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Doesn&apos;t equal.
+        /// </summary>
+        public static string LabelNotEquals {
+            get {
+                return ResourceManager.GetString("LabelNotEquals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object Type.
+        /// </summary>
+        public static string LabelObjectType {
+            get {
+                return ResourceManager.GetString("LabelObjectType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only in Source.
         /// </summary>
         public static string LabelOnlyInSource {
@@ -824,6 +995,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelOpen {
             get {
                 return ResourceManager.GetString("LabelOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operator.
+        /// </summary>
+        public static string LabelOperator {
+            get {
+                return ResourceManager.GetString("LabelOperator", resourceCulture);
             }
         }
         
@@ -873,11 +1053,29 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Primary Key.
+        /// </summary>
+        public static string LabelPrimaryKey {
+            get {
+                return ResourceManager.GetString("LabelPrimaryKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Primary Keys.
         /// </summary>
         public static string LabelPrimaryKeys {
             get {
                 return ResourceManager.GetString("LabelPrimaryKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property.
+        /// </summary>
+        public static string LabelProperty {
+            get {
+                return ResourceManager.GetString("LabelProperty", resourceCulture);
             }
         }
         
@@ -1098,6 +1296,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Trigger.
+        /// </summary>
+        public static string LabelTrigger {
+            get {
+                return ResourceManager.GetString("LabelTrigger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Triggers.
         /// </summary>
         public static string LabelTriggers {
@@ -1157,6 +1364,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelUseWindowsAuthentication {
             get {
                 return ResourceManager.GetString("LabelUseWindowsAuthentication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value.
+        /// </summary>
+        public static string LabelValue {
+            get {
+                return ResourceManager.GetString("LabelValue", resourceCulture);
             }
         }
         

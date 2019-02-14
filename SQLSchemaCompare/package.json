@@ -1,6 +1,6 @@
 {
     "name": "sqlschemacompare",
-    "version": "2019.1.3",
+    "version": "2019.2.1-beta",
     "description": "The Swiss Army Knife of Database Schema Comparison for Microsoft SQL, mySQL and PostgreSQL which runs on Windows, Linux and macOS systems.",
     "main": "app.min.js",
     "homepage": "https://www.ticodex.com",
@@ -97,16 +97,16 @@
     "devDependencies": {
         "@types/detect-port": "^1.1.0",
         "@types/glob": "^7.1.1",
-        "@types/node": "^10.12.0",
-        "electron": "^3.0.4",
-        "electron-builder": "^20.28.4",
+        "@types/node": "^10.12.21",
+        "electron": "^4.0.4",
+        "electron-builder": "^20.38.5",
         "uglify-js": "^3.4.9"
     },
     "dependencies": {
-        "detect-port": "^1.2.3",
-        "electron-updater": "^3.1.2",
-        "electron-window-state": "^5.0.2",
+        "detect-port": "^1.3.0",
+        "electron-updater": "^4.0.6",
+        "electron-window-state": "^5.0.3",
         "glob": "^7.1.3",
-        "log4js": "^3.0.6"
+        "log4js": "^4.0.2"
     }
 }

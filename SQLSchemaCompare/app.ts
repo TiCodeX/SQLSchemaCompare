@@ -27,7 +27,7 @@ const autoUpdaterUrl: string = "https://download.ticodex.com/sqlschemacompare";
 const authorizationHeaderName: string = "CustomAuthToken";
 const authorizationHeaderValue: string = "d6e9b4c2-25d3-a625-e9a6-2135f3d2f809";
 let servicePath: string;
-switch (electronUpdater.getCurrentPlatform()) {
+switch (process.platform) {
     case "linux":
         servicePath = path.join(path.dirname(process.execPath), "bin", "TiCodeX.SQLSchemaCompare.UI");
         break;
@@ -117,7 +117,7 @@ electronUpdater.autoUpdater.logger = {
     error: (message: string): void => { autoUpdaterLogger.error(message); },
     debug: (message: string): void => { autoUpdaterLogger.debug(message); },
 };
-electronUpdater.autoUpdater.autoDownload = !isDebug && !isSecondInstance && electronUpdater.getCurrentPlatform() !== "linux";
+electronUpdater.autoUpdater.autoDownload = !isDebug && !isSecondInstance && process.platform !== "linux";
 electronUpdater.autoUpdater.autoInstallOnAppQuit = false;
 const autoUpdaterPublishOptions: builderUtilRuntime.GenericServerOptions = {
     provider: "generic",
@@ -134,7 +134,7 @@ function NotifyUpdateAvailable(): void {
     if (currentWindow !== undefined && currentWindow !== null) {
         currentWindow.webContents.send("UpdateAvailable",
             {
-                platform: electronUpdater.getCurrentPlatform(),
+                platform: process.platform,
                 readyToBeInstalled: autoUpdaterReadyToBeInstalled,
                 autoDownloadFailed: autoUpdaterAutoDownloadFailed,
                 version: (autoUpdaterInfo === undefined ? "" : autoUpdaterInfo.version),
@@ -253,7 +253,7 @@ electron.ipcMain.on("OpenLogsFolder", () => {
  */
 function setEmptyApplicationMenu(): void {
     if (!isDebug) {
-        if (electronUpdater.getCurrentPlatform() === "darwin") {
+        if (process.platform === "darwin") {
             // On OSX is not possible to remove the menu, hence create only the Exit entry
             electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate([
                 {
@@ -418,7 +418,7 @@ function createLoginWindow(showInstantly: boolean): void {
                 if (retries > 0) {
                     // Reset the flag and trigger a new load
                     loadFailed = false;
-                    if (electronUpdater.getCurrentPlatform() !== "linux") {
+                    if (process.platform !== "linux") {
                         loginWindow.loadURL(loginUrl);
                     } else {
                         // Add a small delay on linux because the fail event is triggered very fast

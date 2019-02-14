@@ -17,8 +17,8 @@ using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers;
 using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders;
+using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
 using TiCodeX.SQLSchemaCompare.Services;
 using Xunit.Sdk;
@@ -385,6 +385,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 new DatabaseService(new DatabaseProviderFactory(this.LoggerFactory, new CipherService())),
                 new DatabaseScripterFactory(this.LoggerFactory),
                 new DatabaseMapper(),
+                new DatabaseFilter(),
                 taskService);
             dbCompareService.StartCompare();
 

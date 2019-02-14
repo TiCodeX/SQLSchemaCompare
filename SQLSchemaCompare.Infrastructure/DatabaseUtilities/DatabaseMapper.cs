@@ -7,7 +7,7 @@ using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 using TiCodeX.SQLSchemaCompare.Services;
 
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers
+namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
 {
     /// <summary>
     /// Implements the database mapper functionality
@@ -15,7 +15,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers
     public class DatabaseMapper : IDatabaseMapper
     {
         /// <inheritdoc/>
-        public object PerformMapping(ABaseDb source, ABaseDb target, object mappingTable, TaskInfo taskInfo)
+        public void PerformMapping(ABaseDb source, ABaseDb target, object mappingTable, TaskInfo taskInfo)
         {
             // Linearize the 2 databases for mapping
             var maps = new List<ObjectMap>
@@ -30,8 +30,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseMappers
             };
 
             this.PerformMapping(maps, taskInfo);
-
-            return null;
         }
 
         private void PerformMapping(IReadOnlyCollection<ObjectMap> maps, TaskInfo taskInfo = null)

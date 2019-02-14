@@ -1,0 +1,211 @@
+﻿@using Core.Entities.Project
+@using Core.Enums
+@using Core.Interfaces
+@using Services
+@model FilteringOptions
+@{
+    // If the project doesn't have any filter clauses, add one just to render something in the UI
+    if (!Model.Clauses.Any())
+    {
+        Model.Clauses.Add(new FilterClause
+        {
+            Group = 0,
+            ObjectType = null,
+            Field = FilterField.Schema,
+            Operator = FilterOperator.BeginsWith,
+            Value = string.Empty,
+        });
+    }
+}
+<div class="row mb-2">
+    <div class="col-12 form-inline">
+        <div class="form-group">
+            <label class="mr-2">@Localization.LabelFilterMatchCondition</label>
+            <select name="ProjectOptions[Filtering[Include]]:boolean" required>
+                <option value="false" selected="@(!Model.Include)">
+                    @Localization.LabelExcluded
+                </option>
+                <option value="true" selected="@(Model.Include)">
+                    @Localization.LabelIncluded
+                </option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <table class="table table-sm table-borderless mb-0">
+        <thead class="thead-light">
+            <tr>
+                <th style="width: 5%"></th>
+                <th style="width: 20%">@Localization.LabelObjectType</th>
+                <th style="width: 15%">@Localization.LabelProperty</th>
+                <th style="width: 25%">@Localization.LabelOperator</th>
+                <th style="width: 30%">@Localization.LabelValue</th>
+                <th style="width: 1%"></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div class="row tcx-row-filter-clauses">
+    <table id="tableFilterClauses" class="table table-sm table-borderless" style="display: none;">
+        <tbody>
+            @{
+                var firstGroup = true;
+                foreach (var filterClauseGroup in Model.Clauses.GroupBy(x => x.Group))
+                {
+                    var clauses = filterClauseGroup.ToList();
+                    for (var i = 0; i < clauses.Count; i++)
+                    {
+                        <tr @(i == 0 ? "group-start" : "")>
+                            @if (i == 0)
+                            {
+                                <td style="width: 5%" rowspan="@(clauses.Count + 1)" class="align-middle border-right border-bottom">
+                                    @if (firstGroup)
+                                    {
+                                        firstGroup = false;
+                                    }
+                                    else
+                                    {
+                                        @:OR
+                                    }
+                                </td>
+                                <td style="width: 20%" class="text-center align-middle">
+                                    <select name="ProjectOptions[Filtering[Clauses[][ObjectType]]">
+                                        <option value=""
+                                                selected="@(!clauses[i].ObjectType.HasValue)">
+                                            @Localization.LabelAllObjects
+                                        </option>
+                                        <option value="@((int) DatabaseObjectType.Table)"
+                                                selected="@(clauses[i].ObjectType == DatabaseObjectType.Table)">
+                                            @Localization.LabelTable
+                                        </option>
+                                        <option value="@((int) DatabaseObjectType.PrimaryKey)"
+                                                selected="@(clauses[i].ObjectType == DatabaseObjectType.PrimaryKey)">
+                                            @Localization.LabelPrimaryKey
+                                        </option>
+                                        <option value="@((int) DatabaseObjectType.ForeignKey)"
+                                                selected="@(clauses[i].ObjectType == DatabaseObjectType.ForeignKey)">
+                                            @Localization.LabelForeignKey
+                                        </option>
+                                        <option value="@((int) DatabaseObjectType.Index)"
+                                                selected="@(clauses[i].ObjectType == DatabaseObjectType.Index)">
+                                            @Localization.LabelIndex
+                                        </option>
+                                        <option value="@((int) DatabaseObjectType.Constraint)"
+                                                selected="@(clauses[i].ObjectType == DatabaseObjectType.Constraint)">
+                                            @Localization.LabelConstraint
+                                        </option>
+                                        <option value="@((int) DatabaseObjectType.Trigger)"
+                                                selected="@(clauses[i].ObjectType == DatabaseObjectType.Trigger)">
+                                            @Localization.LabelTrigger
+                                        </option>
+                                        <option value="@((int) DatabaseObjectType.View)"
+                                                selected="@(clauses[i].ObjectType == DatabaseObjectType.View)">
+                                            @Localization.LabelView
+                                        </option>
+                                        <option value="@((int) DatabaseObjectType.Function)"
+                                                selected="@(clauses[i].ObjectType == DatabaseObjectType.Function)">
+                                            @Localization.LabelFunction
+                                        </option>
+                                        <option value="@((int) DatabaseObjectType.StoredProcedure)"
+                                                selected="@(clauses[i].ObjectType == DatabaseObjectType.StoredProcedure)">
+                                            @Localization.LabelStoredProcedure
+                                        </option>
+                                        <option value="@((int) DatabaseObjectType.DataType)"
+                                                selected="@(clauses[i].ObjectType == DatabaseObjectType.DataType)">
+                                            @Localization.LabelUserDefinedType
+                                        </option>
+                                        <option value="@((int) DatabaseObjectType.Sequence)"
+                                                selected="@(clauses[i].ObjectType == DatabaseObjectType.Sequence)">
+                                            @Localization.LabelSequence
+                                        </option>
+                                    </select>
+                                </td>
+                            }
+                            else
+                            {
+                                <td style="width: 20%" class="text-center align-middle">
+                                    <input type="hidden" name="ProjectOptions[Filtering[Clauses[][ObjectType]]" value="" />
+                                    AND
+                                </td>
+                            }
+
+                            <td style="width: 15%">
+                                <input type="hidden" name="ProjectOptions[Filtering[Clauses[][Group]]" value="@filterClauseGroup.Key" />
+                                <select name="ProjectOptions[Filtering[Clauses[][Field]]" required>
+                                    <option value="@((int) FilterField.Schema)"
+                                            selected="@(clauses[i].Field == FilterField.Schema)">
+                                        @Localization.LabelSchema
+                                    </option>
+                                    <option value="@((int) FilterField.Name)"
+                                            selected="@(clauses[i].Field == FilterField.Name)">
+                                        @Localization.LabelName
+                                    </option>
+                                </select>
+                            </td>
+                            <td style="width: 25%">
+                                <select name="ProjectOptions[Filtering[Clauses[][Operator]]" required>
+                                    <option value="@((int) FilterOperator.BeginsWith)"
+                                            selected="@(clauses[i].Operator == FilterOperator.BeginsWith)">
+                                        @Localization.LabelBeginsWith
+                                    </option>
+                                    <option value="@((int) FilterOperator.EndsWith)"
+                                            selected="@(clauses[i].Operator == FilterOperator.EndsWith)">
+                                        @Localization.LabelEndsWith
+                                    </option>
+                                    <option value="@((int) FilterOperator.Contains)"
+                                            selected="@(clauses[i].Operator == FilterOperator.Contains)">
+                                        @Localization.LabelContains
+                                    </option>
+                                    <option value="@((int) FilterOperator.Equals)"
+                                            selected="@(clauses[i].Operator == FilterOperator.Equals)">
+                                        @Localization.LabelEquals
+                                    </option>
+                                    <option value="@((int) FilterOperator.NotBeginsWith)"
+                                            selected="@(clauses[i].Operator == FilterOperator.NotBeginsWith)">
+                                        @Localization.LabelNotBeginsWith
+                                    </option>
+                                    <option value="@((int) FilterOperator.NotEndsWith)"
+                                            selected="@(clauses[i].Operator == FilterOperator.NotEndsWith)">
+                                        @Localization.LabelNotEndsWith
+                                    </option>
+                                    <option value="@((int) FilterOperator.NotContains)"
+                                            selected="@(clauses[i].Operator == FilterOperator.NotContains)">
+                                        @Localization.LabelNotContains
+                                    </option>
+                                    <option value="@((int) FilterOperator.NotEquals)"
+                                            selected="@(clauses[i].Operator == FilterOperator.NotEquals)">
+                                        @Localization.LabelNotEquals
+                                    </option>
+                                </select>
+                            </td>
+                            <td style="width: 30%">
+                                <input type="text" name="ProjectOptions[Filtering[Clauses[][Value]]"
+                                       value="@(clauses[i].Value)" required="@(Model.Clauses.Count > 1)" />
+                            </td>
+                            <td style="width: 1%" class="text-center align-middle pl-0">
+                                <i class="fas fa-times text-danger"
+                                   style="display: @(i == 0 && clauses.Count > 1 || Model.Clauses.Count == 1 ? "none" : "block")"
+                                   onclick="Project.RemoveFilterClause($(this))"></i>
+                            </td>
+                        </tr>
+                    }
+                    <tr class="border-bottom" group-end>
+                        <td colspan="5">
+                            <a href="#" class="text-body" onclick="Project.AddFilterClause($(this))">
+                                <i class="fas fa-plus text-success"></i> @Localization.LabelAddANDClause
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td colspan="6">
+                    <a href="#" class="text-body" onclick="Project.AddFilterClause($(this))">
+                        <i class="fas fa-plus text-success"></i> @Localization.LabelAddORClause
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

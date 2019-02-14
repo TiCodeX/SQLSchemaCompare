@@ -22,6 +22,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers
         /// <remarks>Works only when the type is checkbox</remarks>
         public bool Checked { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="InputTagHelper"/> is required
+        /// </summary>
+        public bool Required { get; set; }
+
         /// <inheritdoc />
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -60,6 +65,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers
                 this.Checked)
             {
                 output.Attributes.SetAttribute("checked", "checked");
+            }
+
+            if (this.Required)
+            {
+                output.Attributes.SetAttribute("required", "required");
             }
         }
     }

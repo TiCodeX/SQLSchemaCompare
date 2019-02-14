@@ -734,4 +734,76 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="StatusRetrievingSchemas" xml:space="preserve">
     <value>Lese Schemas...</value>
   </data>
+  <data name="LabelFilters" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="LabelIncluded" xml:space="preserve">
+    <value>Inbegriffen</value>
+  </data>
+  <data name="LabelExcluded" xml:space="preserve">
+    <value>Ausgeschlossen</value>
+  </data>
+  <data name="LabelObjectType" xml:space="preserve">
+    <value>Objekttyp</value>
+  </data>
+  <data name="LabelProperty" xml:space="preserve">
+    <value>Eigenschaft</value>
+  </data>
+  <data name="LabelOperator" xml:space="preserve">
+    <value>Operation</value>
+  </data>
+  <data name="LabelValue" xml:space="preserve">
+    <value>Wert</value>
+  </data>
+  <data name="LabelAllObjects" xml:space="preserve">
+    <value>Alle Objekte</value>
+  </data>
+  <data name="LabelPrimaryKey" xml:space="preserve">
+    <value>Primärschlüssel</value>
+  </data>
+  <data name="LabelForeignKey" xml:space="preserve">
+    <value>Fremdschlüssel</value>
+  </data>
+  <data name="LabelIndex" xml:space="preserve">
+    <value>Index</value>
+  </data>
+  <data name="LabelConstraint" xml:space="preserve">
+    <value>Einschränkung</value>
+  </data>
+  <data name="LabelTrigger" xml:space="preserve">
+    <value>Trigger</value>
+  </data>
+  <data name="LabelBeginsWith" xml:space="preserve">
+    <value>Beginnt mit</value>
+  </data>
+  <data name="LabelEndsWith" xml:space="preserve">
+    <value>Endet mit</value>
+  </data>
+  <data name="LabelContains" xml:space="preserve">
+    <value>Enthält</value>
+  </data>
+  <data name="LabelEquals" xml:space="preserve">
+    <value>Ist gleich</value>
+  </data>
+  <data name="LabelNotBeginsWith" xml:space="preserve">
+    <value>Beginnt nicht mit</value>
+  </data>
+  <data name="LabelNotEndsWith" xml:space="preserve">
+    <value>Endet nicht mit</value>
+  </data>
+  <data name="LabelNotContains" xml:space="preserve">
+    <value>Enthält nicht</value>
+  </data>
+  <data name="LabelNotEquals" xml:space="preserve">
+    <value>Ungleich</value>
+  </data>
+  <data name="LabelAddANDClause" xml:space="preserve">
+    <value>AND Klausel hinzufügen</value>
+  </data>
+  <data name="LabelAddORClause" xml:space="preserve">
+    <value>OR Klause hinzufügen</value>
+  </data>
+  <data name="LabelFilterMatchCondition" xml:space="preserve">
+    <value>Datenbankobjekte die zu den Filterbedingungen passen sind</value>
+  </data>
 </root>

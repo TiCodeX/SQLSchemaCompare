@@ -4,6 +4,7 @@ using System.Xml;
 using FluentAssertions;
 using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
 using Xunit;
 using Xunit.Abstractions;
@@ -143,9 +144,20 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
                         IgnoreCollate = true,
                         OrderColumnAlphabetically = true,
                         IgnoreReferenceTableColumnOrder = true,
+                    },
+                    Filtering = new FilteringOptions
+                    {
+                        Include = false,
                     }
                 }
             };
+            compareProject.Options.Filtering.Clauses.Add(new FilterClause
+            {
+                Group = 0,
+                Field = FilterField.Schema,
+                Operator = FilterOperator.Equals,
+                Value = "customer_data",
+            });
 
             var filename = Path.GetTempFileName();
             try
@@ -180,6 +192,18 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
       <OrderColumnAlphabetically>true</OrderColumnAlphabetically>
       <IgnoreReferenceTableColumnOrder>true</IgnoreReferenceTableColumnOrder>
     </Scripting>
+    <Filtering>
+      <Include>false</Include>
+      <Clauses>
+        <FilterClause>
+          <Group>0</Group>
+          <ObjectType xsi:nil=""true"" />
+          <Field>Schema</Field>
+          <Operator>Equals</Operator>
+          <Value>customer_data</Value>
+        </FilterClause>
+      </Clauses>
+    </Filtering>
   </Options>
 </CompareProject>";
 

@@ -206,6 +206,10 @@ $fa-font-size-base: $font-size-base;
     }
 }
 
+.tcx-row-filter-clauses {
+    overflow-y: auto;
+    max-height: 90%;
+}
 
 /*#region checkbox switch */
 .tcx-switch {

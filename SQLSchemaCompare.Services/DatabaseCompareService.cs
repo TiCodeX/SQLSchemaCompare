@@ -26,6 +26,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
         private readonly IDatabaseService databaseService;
         private readonly IDatabaseScripterFactory databaseScripterFactory;
         private readonly IDatabaseMapper databaseMapper;
+        private readonly IDatabaseFilter databaseFilter;
         private readonly ITaskService taskService;
 
         private readonly List<CompareResultItem<ABaseDbSchema>> schemas = new List<CompareResultItem<ABaseDbSchema>>();
@@ -52,6 +53,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
         /// <param name="databaseService">The injected database service</param>
         /// <param name="databaseScripterFactory">The injected database scripter factory</param>
         /// <param name="databaseMapper">The injected database mapper</param>
+        /// <param name="databaseFilter">The injected database filter</param>
         /// <param name="taskService">The injected task service</param>
         public DatabaseCompareService(
             ILoggerFactory loggerFactory,
@@ -59,6 +61,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             IDatabaseService databaseService,
             IDatabaseScripterFactory databaseScripterFactory,
             IDatabaseMapper databaseMapper,
+            IDatabaseFilter databaseFilter,
             ITaskService taskService)
         {
             this.logger = loggerFactory.CreateLogger(nameof(DatabaseCompareService));
@@ -66,6 +69,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
             this.databaseService = databaseService;
             this.databaseScripterFactory = databaseScripterFactory;
             this.databaseMapper = databaseMapper;
+            this.databaseFilter = databaseFilter;
             this.taskService = taskService;
         }
 
@@ -82,6 +86,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                         this.retrievedSourceDatabase = this.databaseService.GetDatabase(
                             this.projectService.Project.SourceProviderOptions, taskInfo);
                         this.retrievedSourceDatabase.Direction = CompareDirection.Source;
+                        this.databaseFilter.PerformFilter(this.retrievedSourceDatabase, this.projectService.Project.Options.Filtering);
                         return true;
                     }),
                 new TaskWork(
@@ -92,6 +97,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                         this.retrievedTargetDatabase = this.databaseService.GetDatabase(
                             this.projectService.Project.TargetProviderOptions, taskInfo);
                         this.retrievedTargetDatabase.Direction = CompareDirection.Target;
+                        this.databaseFilter.PerformFilter(this.retrievedTargetDatabase, this.projectService.Project.Options.Filtering);
                         return true;
                     }),
                 new TaskWork(

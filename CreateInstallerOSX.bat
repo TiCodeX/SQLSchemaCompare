@@ -74,16 +74,6 @@ if exist %publishDir% ( rmdir /S /Q %publishDir% )
 
 if ERRORLEVEL 1 goto:error
 
-REM Create backup of latest-mac.yml
-for /f "tokens=1-2" %%a in (%~dp0\installer\latest-mac.yml) do (
-    set "version=%%b"
-    goto:versionfound
-)
-:versionfound
-copy /Y %~dp0\installer\latest-mac.yml %~dp0\installer\latest-mac-%version%.yml
-
-if ERRORLEVEL 1 goto:error
-
 echo.
 echo.
 echo DONE.

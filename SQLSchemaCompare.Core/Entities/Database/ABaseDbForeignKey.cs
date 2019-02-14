@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TiCodeX.SQLSchemaCompare.Core.Enums;
 
 namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
@@ -7,6 +8,9 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
     /// </summary>
     public class ABaseDbForeignKey : ABaseDbConstraint
     {
+        /// <inheritdoc />
+        public override DatabaseObjectType ObjectType { get; } = DatabaseObjectType.ForeignKey;
+
         /// <summary>
         /// Gets or sets referenced table schema
         /// </summary>

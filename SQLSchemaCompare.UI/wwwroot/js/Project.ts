@@ -487,6 +487,113 @@ class Project {
 
         this.SetDirtyState();
     }
+
+    /**
+     * Remove the filter clause row
+     * @param button The element that triggered the function
+     */
+    public static RemoveFilterClause(button: JQuery): void {
+        const tr: JQuery = button.closest("tr");
+        const tbody: JQuery = tr.parent();
+
+        // Find the first row of the group
+        let trGroupStart: JQuery = tr;
+        if (!tr.is("[group-start]")) {
+            trGroupStart = <JQuery>trGroupStart.prevAll("tr[group-start]:first");
+        }
+
+        // Get the first column which has the rowspan and reduce the value by 1
+        const rowSpanCol: JQuery = trGroupStart.children("td:first");
+        rowSpanCol.attr("rowspan", parseInt(rowSpanCol.attr("rowspan"), 10) - 1);
+
+        /* If we are removing the first row of the group, it means that there aren't any other clauses
+         * so we should also remove the last row of the group which contains the button to
+         * add new clause
+         */
+        if (tr === trGroupStart) {
+            tr.next("tr[group-end]").remove();
+            // If we are removing the first clause in the table clear the content of the first cell of the next group which contains the OR label
+            if (tr.prev("tr").length === 0) {
+                tr.next("tr[group-start]").find("td:first").empty();
+            }
+        }
+
+        tr.remove();
+
+        // If the group now contains only one clause, enable the button to remove it
+        if (trGroupStart.next("tr").is("[group-end]")) {
+            trGroupStart.find("td:last > i").show();
+        }
+
+        // If the table now contains only one group, hide the remove button
+        if (tbody.find("tr[group-start]").length === 1) {
+            tbody.find("tr[group-start]:first > td:last > i").hide();
+
+            // If the group has only one clause, remove the required attribute
+            const rowCountWithOnlyOneClause: number = 3;
+            if (tbody.find("tr").length === rowCountWithOnlyOneClause) {
+                tbody.find("tr[group-start]:first > td > input[name='ProjectOptions[Filtering[Clauses[][Value]]']").removeAttr("required");
+            }
+        }
+
+        // Reset the form validation
+        $("div.tcx-project").removeClass("was-validated");
+    }
+
+    /**
+     * Add a new filter clause row
+     * @param button The element that triggered the function
+     */
+    public static AddFilterClause(button: JQuery): void {
+        const tr: JQuery = button.closest("tr");
+        const tbody: JQuery = tr.parent();
+        const inputGroup: JQuery = tr.parent().find("input[name='ProjectOptions[Filtering[Clauses[][Group]]']:last");
+        const trGroupStart: JQuery = tr.prevAll("tr[group-start]:first");
+        const trGroupEnd: JQuery = tr.prev("tr[group-end]");
+        let trGroupStartNew: JQuery;
+
+        if (tr.is("[group-end]")) {
+            // Add AND clause
+            trGroupStartNew = trGroupStart.clone().insertBefore(tr);
+            // Remove the attribute and the first column which is spanned
+            trGroupStartNew.removeAttr("group-start");
+            trGroupStartNew.children("td:first").remove();
+
+            // Get the first column which has the rowspan and increment the value by 1
+            const rowSpanCol: JQuery = trGroupStart.children("td:first");
+            rowSpanCol.attr("rowspan", parseInt(rowSpanCol.attr("rowspan"), 10) + 1);
+
+            // Hide the object type select and add the AND label
+            trGroupStartNew.find("select[name='ProjectOptions[Filtering[Clauses[][ObjectType]]']").hide().after("AND");
+
+            // Hide the remove button from the first row
+            trGroupStart.find("td:last > i").hide();
+
+        } else {
+            // Add OR clause
+            trGroupStartNew = trGroupStart.clone().insertBefore(tr);
+            // Reset the rowspan on the first column to 1 and write the OR label
+            trGroupStartNew.children("td:first").attr("rowspan", "2").text("OR");
+            // Increment the group number
+            trGroupStartNew.find("input[name='ProjectOptions[Filtering[Clauses[][Group]]']").val(parseInt(<string>inputGroup.val(), 10) + 1);
+            trGroupEnd.clone().insertAfter(trGroupStartNew);
+
+            // Show the remove button on the first clause of the first group if it there is only one clause
+            if (tbody.find("tr[group-start]:first").next("tr").is("[group-end]")) {
+                tbody.find("tr[group-start]:first > td:last > i").show();
+            }
+        }
+
+        // Remove the value of the cloned field and mark it as required
+        trGroupStartNew.find("input[name='ProjectOptions[Filtering[Clauses[][Value]]']").val("").attr("required", "required");
+        // Show the remove button on the new row
+        trGroupStartNew.find("td:last > i").show();
+        // Set the required attribute also to the first clause of the first group
+        tbody.find("tr[group-start]:first > td > input[name='ProjectOptions[Filtering[Clauses[][Value]]']").attr("required", "required");
+
+        // Reset the form validation
+        $("div.tcx-project").removeClass("was-validated");
+    }
 }
 
 namespace Project {

@@ -743,4 +743,76 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelSchema" xml:space="preserve">
     <value>Schema</value>
   </data>
+  <data name="LabelFilters" xml:space="preserve">
+    <value>Filters</value>
+  </data>
+  <data name="LabelIncluded" xml:space="preserve">
+    <value>Included</value>
+  </data>
+  <data name="LabelExcluded" xml:space="preserve">
+    <value>Excluded</value>
+  </data>
+  <data name="LabelObjectType" xml:space="preserve">
+    <value>Object Type</value>
+  </data>
+  <data name="LabelProperty" xml:space="preserve">
+    <value>Property</value>
+  </data>
+  <data name="LabelOperator" xml:space="preserve">
+    <value>Operator</value>
+  </data>
+  <data name="LabelValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="LabelAllObjects" xml:space="preserve">
+    <value>All objects</value>
+  </data>
+  <data name="LabelPrimaryKey" xml:space="preserve">
+    <value>Primary Key</value>
+  </data>
+  <data name="LabelForeignKey" xml:space="preserve">
+    <value>Foreign Key</value>
+  </data>
+  <data name="LabelIndex" xml:space="preserve">
+    <value>Index</value>
+  </data>
+  <data name="LabelConstraint" xml:space="preserve">
+    <value>Constraint</value>
+  </data>
+  <data name="LabelTrigger" xml:space="preserve">
+    <value>Trigger</value>
+  </data>
+  <data name="LabelBeginsWith" xml:space="preserve">
+    <value>Begins with</value>
+  </data>
+  <data name="LabelEndsWith" xml:space="preserve">
+    <value>Ends with</value>
+  </data>
+  <data name="LabelContains" xml:space="preserve">
+    <value>Contains</value>
+  </data>
+  <data name="LabelEquals" xml:space="preserve">
+    <value>Equals</value>
+  </data>
+  <data name="LabelNotBeginsWith" xml:space="preserve">
+    <value>Doesn't begin with</value>
+  </data>
+  <data name="LabelNotEndsWith" xml:space="preserve">
+    <value>Doesn't end with</value>
+  </data>
+  <data name="LabelNotContains" xml:space="preserve">
+    <value>Doesn't contain</value>
+  </data>
+  <data name="LabelNotEquals" xml:space="preserve">
+    <value>Doesn't equal</value>
+  </data>
+  <data name="LabelAddANDClause" xml:space="preserve">
+    <value>Add AND Clause</value>
+  </data>
+  <data name="LabelAddORClause" xml:space="preserve">
+    <value>Add OR Clause</value>
+  </data>
+  <data name="LabelFilterMatchCondition" xml:space="preserve">
+    <value>The database objects matching the filter conditions will be</value>
+  </data>
 </root>

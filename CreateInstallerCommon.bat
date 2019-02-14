@@ -17,6 +17,19 @@ REM Cleanup solution
 msbuild %~dp0\SQLSchemaCompare.sln /t:Clean /p:Configuration=%configuration%
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 
+rd /Q /S %~dp0\SQLSchemaCompare\bin
+rd /Q /S %~dp0\SQLSchemaCompare\obj
+rd /Q /S %~dp0\SQLSchemaCompare.Core\bin
+rd /Q /S %~dp0\SQLSchemaCompare.Core\obj
+rd /Q /S %~dp0\SQLSchemaCompare.Infrastructure\bin
+rd /Q /S %~dp0\SQLSchemaCompare.Infrastructure\obj
+rd /Q /S %~dp0\SQLSchemaCompare.Services\bin
+rd /Q /S %~dp0\SQLSchemaCompare.Services\obj
+rd /Q /S %~dp0\SQLSchemaCompare.Test\bin
+rd /Q /S %~dp0\SQLSchemaCompare.Test\obj
+rd /Q /S %~dp0\SQLSchemaCompare.UI\bin
+rd /Q /S %~dp0\SQLSchemaCompare.UI\obj
+
 echo.
 echo     ___________________________
 echo    /\                           \  
@@ -45,6 +58,12 @@ echo      ^|    SQLSchemaCompare     ^|
 echo      ^|  _______________________^|_ 
 echo       \_/_________________________/
 echo.
+
+rem BUG https://github.com/dotnet/cli/issues/10310
+rem Workaround:
+mkdir %~dp0\SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\win-x64\
+copy /Y %~dp0\SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.dll %~dp0\SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\win-x64\
+copy /Y %~dp0\SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.pdb %~dp0\SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\win-x64\
 
 dotnet publish --no-build --no-restore %~dp0\SQLSchemaCompare.UI\SQLSchemaCompare.UI.csproj -r %targetdotnet% -c %configuration%
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%

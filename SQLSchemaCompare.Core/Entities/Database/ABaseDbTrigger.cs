@@ -1,10 +1,15 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
+﻿using TiCodeX.SQLSchemaCompare.Core.Enums;
+
+namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
     /// <summary>
     /// Provides generic information for database triggers
     /// </summary>
     public class ABaseDbTrigger : ABaseDbObject
     {
+        /// <inheritdoc />
+        public override DatabaseObjectType ObjectType { get; } = DatabaseObjectType.Trigger;
+
         /// <summary>
         /// Gets or sets the table schema
         /// </summary>

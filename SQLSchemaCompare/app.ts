@@ -19,8 +19,8 @@ electron.app.setPath("userData", path.join(electron.app.getPath("appData"), "SQL
 const isDebug: boolean = process.defaultApp;
 const initialPort: number = 5000;
 const splashUrl: string = `file://${__dirname}/splash.html`;
-const loggerPath: string = path.join(os.homedir(), ".SQLSchemaCompare", "log", "SQLSchemaCompare");
-const loggerPattern: string = "-yyyy-MM-dd-ui.log";
+const loggerPath: string = path.join(os.homedir(), ".SQLSchemaCompare", "log", "SQLSchemaCompare.log");
+const loggerPattern: string = "yyyy-MM-dd-ui";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;
 const autoUpdaterUrl: string = "https://download.ticodex.com/sqlschemacompare";

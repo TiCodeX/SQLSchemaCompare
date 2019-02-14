@@ -53,7 +53,7 @@ namespace TiCodeX.SQLSchemaCompare.UI
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
             ".SQLSchemaCompare",
             "log",
-            @"SQLSchemaCompare-${shortdate}-service.log");
+            @"SQLSchemaCompare.${shortdate}-service.log");
 
         /// <inheritdoc/>
         public int LoggerMaxArchiveFiles => 9;

@@ -1,0 +1,138 @@
+pool:
+  vmImage: 'vs2017-win2016'
+
+trigger: none
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreInstaller@0
+  displayName: 'Use .NET Core sdk 2.2.103'
+  inputs:
+    version: 2.2.103
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore win-x64'
+  inputs:
+    command: custom
+    projects: '**/*.csproj'
+    custom: restore
+    arguments: '-r win-x64'
+
+- task: Npm@1
+  displayName: 'npm install'
+  inputs:
+    workingDir: SQLSchemaCompare
+    verbose: false
+
+- task: VSBuild@1
+  displayName: 'Build solution **\*.sln'
+  inputs:
+    configuration: '$(buildConfiguration)'
+
+- script: |
+   mkdir SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\win-x64
+   copy /Y SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.dll SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\win-x64\
+   copy /Y SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.pdb SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\win-x64\
+  displayName: 'BUG WORKAROUND'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet publish win-x64'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '.\SQLSchemaCompare.UI\SQLSchemaCompare.UI.csproj'
+    arguments: '--no-build --no-restore -r win-x64 -c $(buildConfiguration)'
+    zipAfterPublish: false
+    modifyOutputPath: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: win'
+  inputs:
+    PathtoPublish: .publish
+    ArtifactName: '.publish-win'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: SQLSchemaCompare'
+  inputs:
+    PathtoPublish: SQLSchemaCompare
+    ArtifactName: SQLSchemaCompare
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: SigningKey'
+  inputs:
+    PathtoPublish: TiCodeXCodeSigningCertificate.p12
+    ArtifactName: SigningKey
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore linux-x64'
+  inputs:
+    command: custom
+    projects: '**/*.csproj'
+    custom: restore
+    arguments: '-r linux-x64'
+
+- task: VSBuild@1
+  displayName: 'Build solution **\*.sln'
+  inputs:
+    configuration: '$(buildConfiguration)'
+
+- script: |
+   mkdir SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\linux-x64
+   copy /Y SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.dll SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\linux-x64\
+   copy /Y SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.pdb SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\linux-x64\
+  displayName: 'BUG WORKAROUND'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet publish linux-x64'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '.\SQLSchemaCompare.UI\SQLSchemaCompare.UI.csproj'
+    arguments: '--no-build --no-restore -r linux-x64 -c $(buildConfiguration)'
+    zipAfterPublish: false
+    modifyOutputPath: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: linux'
+  inputs:
+    PathtoPublish: .publish
+    ArtifactName: '.publish-linux'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore osx-x64'
+  inputs:
+    command: custom
+    projects: '**/*.csproj'
+    custom: restore
+    arguments: '-r osx-x64'
+
+- task: VSBuild@1
+  displayName: 'Build solution **\*.sln'
+  inputs:
+    configuration: '$(buildConfiguration)'
+
+- script: |
+   mkdir SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\osx-x64
+   copy /Y SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.dll SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\osx-x64\
+   copy /Y SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.pdb SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\osx-x64\
+  displayName: 'BUG WORKAROUND'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet publish osx-x64'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '.\SQLSchemaCompare.UI\SQLSchemaCompare.UI.csproj'
+    arguments: '--no-build --no-restore -r osx-x64 -c $(buildConfiguration)'
+    zipAfterPublish: false
+    modifyOutputPath: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: osx'
+  inputs:
+    PathtoPublish: .publish
+    ArtifactName: '.publish-osx'
+
+

@@ -67,8 +67,12 @@
     <Content Remove="wwwroot\**\*.css" />
     <None Include="wwwroot\**\*.css" />
     <!--Configure the *.min.js/*.min.css as EmbeddedResource-->
-    <EmbeddedResource Include="wwwroot\**\*.min.js" />
-    <EmbeddedResource Include="wwwroot\**\*.min.css" />
+    <EmbeddedResource Include="wwwroot\js\Index.min.js" />
+    <EmbeddedResource Include="wwwroot\js\Login.min.js" />
+    <EmbeddedResource Include="wwwroot\css\Index.min.css" />
+    <EmbeddedResource Include="wwwroot\css\Login.min.css" />
+    <EmbeddedResource Include="wwwroot\lib\**\*.min.js" />
+    <EmbeddedResource Include="wwwroot\lib\**\*.min.css" />
     <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*.js" />
     <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*.css" />
     <!--Configure the images as EmbeddedResource-->

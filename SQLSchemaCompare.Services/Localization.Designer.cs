@@ -97,6 +97,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        public static string ButtonDownload {
+            get {
+                return ResourceManager.GetString("ButtonDownload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Project.
         /// </summary>
         public static string ButtonNewProject {

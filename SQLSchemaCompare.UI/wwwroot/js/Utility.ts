@@ -45,7 +45,10 @@ class Utility {
                 version: string;
             }) => {
                 if (info !== null && info.version !== "") {
-                    let genericMessage: string = `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
+                    let genericMessage: string = "<button type=\"button\" class=\"btn btn-primary float-right\" onclick=\"Utility.OpenExternalBrowser('https://www.ticodex.com/download')\">";
+                    genericMessage += `${Localization.Get("ButtonDownload")}`;
+                    genericMessage += "</button>";
+                    genericMessage += `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
                     genericMessage += "<br/>";
                     genericMessage += `${Localization.Get("NotificationNewVersionAvailableMessage").replace("{0}", info.version)}`;
                     if (info.platform === "linux") {

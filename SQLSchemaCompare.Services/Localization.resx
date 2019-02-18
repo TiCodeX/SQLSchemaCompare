@@ -818,4 +818,7 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelDatabasesAreIdentical" xml:space="preserve">
     <value>The databases are identical</value>
   </data>
+  <data name="ButtonDownload" xml:space="preserve">
+    <value>Download</value>
+  </data>
 </root>

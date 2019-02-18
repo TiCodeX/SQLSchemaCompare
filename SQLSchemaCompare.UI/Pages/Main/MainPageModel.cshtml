@@ -6,6 +6,24 @@
     var show = true;
 }
 <div id="mainTop" class="tcx-main-top">
+    @if (Model.DifferentItems.Count == 0 && Model.OnlySourceItems.Count == 0 && Model.OnlyTargetItems.Count == 0)
+    {
+        <div class="card">
+            <div class="p-2">
+                <button type="button" class="close" onclick="$(this).closest('.card').fadeOut();">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="text-center mb-4">
+                <span class="fa-stack fa-10x mb-3">
+                    <i class="fas fa-circle fa-stack-2x text-success"></i>
+                    <i class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
+                </span>
+                <h4 class="text-success">@Localization.LabelDatabasesAreIdentical</h4>
+            </div>
+        </div>
+    }
+
     @if (Model.DifferentItems.Count > 0)
     {
         @await Html.PartialAsync("_ResultTable", Model.DifferentItems, new ViewDataDictionary(this.ViewData)

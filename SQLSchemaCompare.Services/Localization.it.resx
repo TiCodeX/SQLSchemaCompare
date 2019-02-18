@@ -806,4 +806,7 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelFilterMatchCondition" xml:space="preserve">
     <value>Gli oggetti del database che corrispondono alle condizioni del filtro saranno</value>
   </data>
+  <data name="LabelDatabasesAreIdentical" xml:space="preserve">
+    <value>I database sono identici</value>
+  </data>
 </root>

@@ -610,6 +610,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The databases are identical.
+        /// </summary>
+        public static string LabelDatabasesAreIdentical {
+            get {
+                return ResourceManager.GetString("LabelDatabasesAreIdentical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Data sources.
         /// </summary>
         public static string LabelDataSources {

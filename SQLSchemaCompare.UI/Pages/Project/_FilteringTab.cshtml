@@ -5,9 +5,10 @@
 @model FilteringOptions
 @{
     // If the project doesn't have any filter clauses, add one just to render something in the UI
-    if (!Model.Clauses.Any())
+    var filterClauses = Model.Clauses.ToList();
+    if (!filterClauses.Any())
     {
-        Model.Clauses.Add(new FilterClause
+        filterClauses.Add(new FilterClause
         {
             Group = 0,
             ObjectType = null,
@@ -51,7 +52,7 @@
         <tbody>
             @{
                 var firstGroup = true;
-                foreach (var filterClauseGroup in Model.Clauses.GroupBy(x => x.Group))
+                foreach (var filterClauseGroup in filterClauses.GroupBy(x => x.Group))
                 {
                     var clauses = filterClauseGroup.ToList();
                     for (var i = 0; i < clauses.Count; i++)
@@ -181,11 +182,11 @@
                             </td>
                             <td style="width: 30%">
                                 <input type="text" name="ProjectOptions[Filtering[Clauses[][Value]]"
-                                       value="@(clauses[i].Value)" required="@(Model.Clauses.Count > 1)" />
+                                       value="@(clauses[i].Value)" required="@(filterClauses.Count > 1)" />
                             </td>
                             <td style="width: 1%" class="text-center align-middle pl-0">
                                 <i class="fas fa-times text-danger"
-                                   style="display: @(i == 0 && clauses.Count > 1 || Model.Clauses.Count == 1 ? "none" : "block")"
+                                   style="display: @(i == 0 && clauses.Count > 1 || filterClauses.Count == 1 ? "none" : "block")"
                                    onclick="Project.RemoveFilterClause($(this))"></i>
                             </td>
                         </tr>

@@ -815,4 +815,7 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelFilterMatchCondition" xml:space="preserve">
     <value>The database objects matching the filter conditions will be</value>
   </data>
+  <data name="LabelDatabasesAreIdentical" xml:space="preserve">
+    <value>The databases are identical</value>
+  </data>
 </root>

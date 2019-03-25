@@ -12,6 +12,7 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Project
     [XmlInclude(typeof(MicrosoftSqlDatabaseProviderOptions))]
     [XmlInclude(typeof(MySqlDatabaseProviderOptions))]
     [XmlInclude(typeof(PostgreSqlDatabaseProviderOptions))]
+    [XmlInclude(typeof(MariaDbDatabaseProviderOptions))]
     [XmlInclude(typeof(ProjectOptions))]
     public class CompareProject
     {

@@ -204,6 +204,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                     break;
 
                 case DatabaseType.MySql:
+                case DatabaseType.MariaDb:
                     tableType = typeof(MySqlTable);
                     columnType = typeof(MySqlColumn);
                     foreignKeyType = typeof(MySqlForeignKey);
@@ -440,6 +441,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
             {
                 case DatabaseType.MicrosoftSql:
                 case DatabaseType.MySql:
+                case DatabaseType.MariaDb:
                     this.ExecuteScript(projectService.Project.Result.FullAlterScript, targetDatabaseName, port);
                     break;
 

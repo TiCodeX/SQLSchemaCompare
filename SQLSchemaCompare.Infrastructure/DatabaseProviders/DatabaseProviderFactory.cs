@@ -36,6 +36,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                     return new MySqlDatabaseProvider(this.loggerFactory, this.cipherService, mySqlOptions);
                 case PostgreSqlDatabaseProviderOptions postgreSqlOptions:
                     return new PostgreSqlDatabaseProvider(this.loggerFactory, this.cipherService, postgreSqlOptions);
+                case MariaDbDatabaseProviderOptions mariaDbOptions:
+                    return new MariaDbDatabaseProvider(this.loggerFactory, this.cipherService, mariaDbOptions);
                 default:
                     throw new NotImplementedException("Unknown Database Type");
             }

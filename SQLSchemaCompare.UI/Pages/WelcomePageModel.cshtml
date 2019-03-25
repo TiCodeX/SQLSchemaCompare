@@ -66,6 +66,11 @@
                         @Localization.LabelNewPostgreSQLProject
                     </li>
                     <li class="list-group-item list-group-item-action py-1 border-0"
+                        onclick="Project.New(false, Project.DatabaseType.MariaDb)">
+                        <i class="fas fa-plus pr-1"></i>
+                        @Localization.LabelNewMariaDbProject
+                    </li>
+                    <li class="list-group-item list-group-item-action py-1 border-0"
                         onclick="Project.New(false)">
                         <i class="fas fa-plus pr-1"></i>
                         @Localization.LabelNewProject

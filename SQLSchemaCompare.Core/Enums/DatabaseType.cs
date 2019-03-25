@@ -18,6 +18,11 @@
         /// <summary>
         /// PostgreSQL
         /// </summary>
-        PostgreSql = 2
+        PostgreSql = 2,
+
+        /// <summary>
+        /// MariaDB
+        /// </summary>
+        MariaDb = 3,
     }
 }

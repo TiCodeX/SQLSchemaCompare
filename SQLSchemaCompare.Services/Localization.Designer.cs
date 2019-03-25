@@ -909,6 +909,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New MariaDB Project.
+        /// </summary>
+        public static string LabelNewMariaDbProject {
+            get {
+                return ResourceManager.GetString("LabelNewMariaDbProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Microsoft SQL Server Project.
         /// </summary>
         public static string LabelNewMicrosoftSQLServerProject {

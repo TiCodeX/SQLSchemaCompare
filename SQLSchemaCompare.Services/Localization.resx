@@ -821,4 +821,7 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="ButtonDownload" xml:space="preserve">
     <value>Download</value>
   </data>
+  <data name="LabelNewMariaDbProject" xml:space="preserve">
+    <value>New MariaDB Project</value>
+  </data>
 </root>

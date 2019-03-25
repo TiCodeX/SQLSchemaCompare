@@ -812,4 +812,7 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="ButtonDownload" xml:space="preserve">
     <value>Herunterladen</value>
   </data>
+  <data name="LabelNewMariaDbProject" xml:space="preserve">
+    <value>Neues MariaDB Projekt</value>
+  </data>
 </root>

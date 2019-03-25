@@ -24,10 +24,15 @@
                             selected="@(Model.SourceProviderOptions is PostgreSqlDatabaseProviderOptions)">
                         PostgreSQL Server
                     </option>
+                    <option value="@((int) DatabaseType.MariaDb)"
+                            selected="@(Model.SourceProviderOptions is MariaDbDatabaseProviderOptions)">
+                        MariaDB Server
+                    </option>
                 </select>
                 <input type="hidden" name="DefaultMicrosoftSqlPort" value="@MicrosoftSqlDatabaseProviderOptions.DefaultPort" />
                 <input type="hidden" name="DefaultMySqlPort" value="@MySqlDatabaseProviderOptions.DefaultPort" />
                 <input type="hidden" name="DefaultPostgreSqlPort" value="@PostgreSqlDatabaseProviderOptions.DefaultPort" />
+                <input type="hidden" name="DefaultMariaDbPort" value="@MariaDbDatabaseProviderOptions.DefaultPort" />
             }
             else
             {
@@ -46,6 +51,11 @@
                     case PostgreSqlDatabaseProviderOptions _:
                         <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.PostgreSql)" />
                         <input type="text" disabled="@true" value="PostgreSQL Server" />
+                        break;
+
+                    case MariaDbDatabaseProviderOptions _:
+                        <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.MariaDb)" />
+                        <input type="text" disabled="@true" value="MariaDB Server" />
                         break;
                 }
             }

@@ -812,4 +812,7 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="ButtonDownload" xml:space="preserve">
     <value>Scarica</value>
   </data>
+  <data name="LabelNewMariaDbProject" xml:space="preserve">
+    <value>Nuovo Progetto MariaDB</value>
+  </data>
 </root>

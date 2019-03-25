@@ -354,6 +354,16 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
                         SavePassword = savePassword,
                         Database = database,
                     };
+                case DatabaseType.MariaDb:
+                    return new MariaDbDatabaseProviderOptions
+                    {
+                        Hostname = hostname,
+                        Port = port ?? MariaDbDatabaseProviderOptions.DefaultPort,
+                        Username = username,
+                        Password = password,
+                        SavePassword = savePassword,
+                        Database = database,
+                    };
                 default:
                     this.logger.LogError($"Unknown Database type: {type}");
                     throw new ArgumentException("Unknown Database type");

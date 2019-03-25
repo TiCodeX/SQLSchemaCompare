@@ -29,6 +29,11 @@ steps:
     docker pull postgres:9.6-alpine
     docker pull postgres:10-alpine
     docker pull postgres:11-alpine
+    docker pull mariadb:5.5
+    docker pull mariadb:10.0
+    docker pull mariadb:10.1
+    docker pull mariadb:10.2
+    docker pull mariadb:10.3
   displayName: docker pull images
 
 - script: |
@@ -42,6 +47,11 @@ steps:
     docker run --rm --name postgres-9.6 -p 26004:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:9.6-alpine
     docker run --rm --name postgres-10 -p 26005:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:10-alpine
     docker run --rm --name postgres-11 -p 26006:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:11-alpine
+    docker run --rm --name mariadb-5.5 -p 29001:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:5.5
+    docker run --rm --name mariadb-10.0 -p 29002:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.0
+    docker run --rm --name mariadb-10.1 -p 29003:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.1
+    docker run --rm --name mariadb-10.2 -p 29004:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.2
+    docker run --rm --name mariadb-10.3 -p 29005:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.3
   displayName: docker start containers
 
 - script: dotnet build SQLSchemaCompare.Test --configuration $(buildConfiguration)
@@ -70,4 +80,9 @@ steps:
 #    docker container stop postgres-9.6
 #    docker container stop postgres-10
 #    docker container stop postgres-11
+#    docker container stop mariadb-5.5
+#    docker container stop mariadb-10.0
+#    docker container stop mariadb-10.1
+#    docker container stop mariadb-10.2
+#    docker container stop mariadb-10.3
 #  displayName: docker stop containers

@@ -403,6 +403,12 @@ class Project {
                 sourcePort.val($("input[name='DefaultPostgreSqlPort']").val());
                 targetPort.val($("input[name='DefaultPostgreSqlPort']").val());
                 break;
+            case Project.DatabaseType.MariaDb:
+                useWindowAuthentication.hide();
+                $("input[name$='Port']").prop("disabled", false);
+                sourcePort.val($("input[name='DefaultMariaDbPort']").val());
+                targetPort.val($("input[name='DefaultMariaDbPort']").val());
+                break;
             default:
         }
         this.SetDirtyState();
@@ -612,6 +618,11 @@ namespace Project {
          * PostgreSQL
          */
         PostgreSql = 2,
+
+        /**
+         * MariaDB
+         */
+        MariaDb = 3,
     }
 
     export enum CopyDirection {

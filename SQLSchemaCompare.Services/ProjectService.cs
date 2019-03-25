@@ -65,6 +65,16 @@ namespace TiCodeX.SQLSchemaCompare.Services
                             State = ProjectState.New,
                         };
                         break;
+
+                    case DatabaseType.MariaDb:
+                        this.Project = new CompareProject
+                        {
+                            SourceProviderOptions = new MariaDbDatabaseProviderOptions(),
+                            TargetProviderOptions = new MariaDbDatabaseProviderOptions(),
+                            Options = new ProjectOptions(),
+                            State = ProjectState.New,
+                        };
+                        break;
                 }
             }
             else

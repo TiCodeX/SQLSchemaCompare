@@ -46,11 +46,17 @@ let autoUpdaterAutoDownloadFailed: boolean = false;
 let serviceCommunicationSuccessful: boolean = false;
 
 // Read the first argument to get the project file
-// In debug multiple arguments are passed, so we ignore it.
-// After an update the application is started with the --updated argument
+// In debug or during an auto-update multiple arguments are passed, so we check that is actually a file
 let projectToOpen: string;
-if (!isDebug && process.argv.length > 1 && process.argv[1] !== "--updated") {
-    projectToOpen = process.argv[1];
+if (process.argv.length > 1) {
+    try {
+        const stat: fs.Stats = fs.lstatSync(process.argv[1]);
+        if (stat.isFile()) {
+            projectToOpen = process.argv[1];
+        }
+    } catch (ex) {
+        // Ignore
+    }
 }
 
 /**

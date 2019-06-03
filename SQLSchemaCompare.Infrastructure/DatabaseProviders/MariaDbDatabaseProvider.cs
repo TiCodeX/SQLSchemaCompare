@@ -40,7 +40,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       a.COLUMN_NAME as Name,");
             query.AppendLine("       CAST(a.ORDINAL_POSITION AS SIGNED) as OrdinalPosition,");
 
-            if (this.CurrentServerVersion.Major >= 10 && this.CurrentServerVersion.Minor >= 2)
+            if (this.CurrentServerVersion.Major > 10 || (this.CurrentServerVersion.Major == 10 && this.CurrentServerVersion.Minor >= 2))
             {
                 query.AppendLine("       CASE WHEN a.COLUMN_DEFAULT = 'NULL' THEN NULL ELSE TRIM('\\'' FROM a.COLUMN_DEFAULT) END as ColumnDefault,");
             }
@@ -54,7 +54,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       a.CHARACTER_SET_NAME as CharacterSetName,");
             query.AppendLine("       a.COLLATION_NAME as CollationName,");
 
-            if (this.CurrentServerVersion.Major >= 10 && this.CurrentServerVersion.Minor >= 2)
+            if (this.CurrentServerVersion.Major > 10 || (this.CurrentServerVersion.Major == 10 && this.CurrentServerVersion.Minor >= 2))
             {
                 query.AppendLine("       a.GENERATION_EXPRESSION as GenerationExpression,");
             }

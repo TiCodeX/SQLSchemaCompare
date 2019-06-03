@@ -78,7 +78,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc />
         protected override IEnumerable<ABaseDbColumn> GetColumns(MySqlDatabaseContext context)
         {
-            var includeGenerationExpression = this.CurrentServerVersion.Major >= 5 && this.CurrentServerVersion.Minor >= 7;
+            var includeGenerationExpression = this.CurrentServerVersion.Major > 5 || (this.CurrentServerVersion.Major == 5 && this.CurrentServerVersion.Minor >= 7);
             try
             {
                 return context.Query<MySqlColumn>(this.GetColumnsQuery(context, includeGenerationExpression));

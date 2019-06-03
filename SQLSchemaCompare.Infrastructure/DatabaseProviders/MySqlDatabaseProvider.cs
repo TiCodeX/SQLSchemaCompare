@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -77,26 +78,21 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc />
         protected override IEnumerable<ABaseDbColumn> GetColumns(MySqlDatabaseContext context)
         {
-            var query = new StringBuilder();
-            query.AppendLine("SELECT a.TABLE_NAME as TableName,");
-            query.AppendLine("       a.COLUMN_NAME as Name,");
-            query.AppendLine("       CAST(a.ORDINAL_POSITION AS SIGNED) as OrdinalPosition,");
-            query.AppendLine("       a.COLUMN_DEFAULT as ColumnDefault,");
-            query.AppendLine("       a.IS_NULLABLE as IsNullable,");
-            query.AppendLine("       a.DATA_TYPE as DataType,");
-            query.AppendLine("       a.CHARACTER_SET_NAME as CharacterSetName,");
-            query.AppendLine("       a.COLLATION_NAME as CollationName,");
-
-            if (this.CurrentServerVersion.Major >= 5 && this.CurrentServerVersion.Minor >= 7)
+            var includeGenerationExpression = this.CurrentServerVersion.Major >= 5 && this.CurrentServerVersion.Minor >= 7;
+            try
             {
-                query.AppendLine("       a.GENERATION_EXPRESSION as GenerationExpression,");
+                return context.Query<MySqlColumn>(this.GetColumnsQuery(context, includeGenerationExpression));
             }
+            catch (Exception)
+            {
+                // If the query fails with the GenerationExpression, try without
+                if (includeGenerationExpression)
+                {
+                    return context.Query<MySqlColumn>(this.GetColumnsQuery(context, false));
+                }
 
-            query.AppendLine("       a.EXTRA as Extra,");
-            query.AppendLine("       a.COLUMN_TYPE as ColumnType");
-            query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
-            query.AppendLine($"WHERE TABLE_SCHEMA = '{context.DatabaseName}'");
-            return context.Query<MySqlColumn>(query.ToString());
+                throw;
+            }
         }
 
         /// <inheritdoc/>
@@ -248,6 +244,37 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         {
             // An empty list is returned because MySQL doesn't have sequences
             return Enumerable.Empty<ABaseDbSequence>();
+        }
+
+        /// <summary>
+        /// Gets the columns query
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="includeGenerationExpression">if set to <c>true</c> will include the GENERATION_EXPRESSION column</param>
+        /// <returns>The query string</returns>
+        private string GetColumnsQuery(MySqlDatabaseContext context, bool includeGenerationExpression)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT a.TABLE_NAME as TableName,");
+            query.AppendLine("       a.COLUMN_NAME as Name,");
+            query.AppendLine("       CAST(a.ORDINAL_POSITION AS SIGNED) as OrdinalPosition,");
+            query.AppendLine("       a.COLUMN_DEFAULT as ColumnDefault,");
+            query.AppendLine("       a.IS_NULLABLE as IsNullable,");
+            query.AppendLine("       a.DATA_TYPE as DataType,");
+            query.AppendLine("       a.CHARACTER_SET_NAME as CharacterSetName,");
+            query.AppendLine("       a.COLLATION_NAME as CollationName,");
+
+            if (includeGenerationExpression)
+            {
+                query.AppendLine("       a.GENERATION_EXPRESSION as GenerationExpression,");
+            }
+
+            query.AppendLine("       a.EXTRA as Extra,");
+            query.AppendLine("       a.COLUMN_TYPE as ColumnType");
+            query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
+            query.AppendLine($"WHERE TABLE_SCHEMA = '{context.DatabaseName}'");
+
+            return query.ToString();
         }
     }
 }

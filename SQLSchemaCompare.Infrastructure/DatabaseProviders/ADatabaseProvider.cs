@@ -252,7 +252,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 56;
                 taskInfo.Message = Localization.StatusRetrievingTriggers;
-                db.Triggers.AddRange(this.GetTriggers(context));
+                db.Triggers.AddRange(this.GetTriggers(context).Where(_ => !string.IsNullOrWhiteSpace(_.Definition)));
                 db.Triggers.ForEach(x =>
                 {
                     x.Definition = x.Definition.TrimStart('\r', '\n');
@@ -275,7 +275,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 64;
                 taskInfo.Message = Localization.StatusRetrievingViews;
-                db.Views.AddRange(this.GetViews(context));
+                db.Views.AddRange(this.GetViews(context).Where(_ => !string.IsNullOrWhiteSpace(_.ViewDefinition)));
                 db.Views.ForEach(x =>
                 {
                     x.ViewDefinition = x.ViewDefinition.TrimStart('\r', '\n');
@@ -298,7 +298,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 72;
                 taskInfo.Message = Localization.StatusRetrievingFunctions;
-                db.Functions.AddRange(this.GetFunctions(context));
+                db.Functions.AddRange(this.GetFunctions(context).Where(_ => !string.IsNullOrWhiteSpace(_.Definition)));
                 db.Functions.ForEach(x =>
                 {
                     x.Definition = x.Definition.TrimStart('\r', '\n');
@@ -317,7 +317,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             {
                 taskInfo.Percentage = 80;
                 taskInfo.Message = Localization.StatusRetrievingStoredProcedures;
-                db.StoredProcedures.AddRange(this.GetStoredProcedures(context));
+                db.StoredProcedures.AddRange(this.GetStoredProcedures(context).Where(_ => !string.IsNullOrWhiteSpace(_.Definition)));
                 db.StoredProcedures.ForEach(x =>
                 {
                     x.Definition = x.Definition.TrimStart('\r', '\n');

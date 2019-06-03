@@ -118,7 +118,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
                 {
                     while (reader.Read())
                     {
-                        result.Add((T)reader.GetValue(columnIndex));
+                        try
+                        {
+                            var value = reader.GetValue(columnIndex);
+                            result.Add(value is DBNull ? default(T) : (T)value);
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            result.Add(default(T));
+                        }
                     }
                 }
             }

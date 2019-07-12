@@ -36,17 +36,17 @@
                 <br />
                 <b>@Localization.LabelSubscriptionPlan:</b> @(Model.CustomerInformation.BillingType == BillingType.Month ? Localization.LabelMonthlyPayment : Localization.LabelYearlyPayment)
                 <br />
-                <b>@Localization.LabelAutoRenewal:</b> @(Model.CustomerInformation.CancelAtPeriodEnd.HasValue && Model.CustomerInformation.CancelAtPeriodEnd.Value ? Localization.LabelEnabled : Localization.LabelDisabled)
+                <b>@Localization.LabelAutoRenewal:</b> @(Model.CustomerInformation.CancelAtPeriodEnd.HasValue && Model.CustomerInformation.CancelAtPeriodEnd.Value ? Localization.LabelDisabled : Localization.LabelEnabled)
                 <br />
                 if (Model.CustomerInformation.CancelAtPeriodEnd.HasValue && Model.CustomerInformation.CancelAtPeriodEnd.Value)
-                {
-                    <b>@Localization.LabelRenewalDate:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
-                }
-                else
                 {
                     <b>@Localization.LabelExpirationDate:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
                     <br />
                     <b>@Localization.LabelRemainingDays:</b> @Model.CustomerInformation.RemainingDays
+                }
+                else
+                {
+                    <b>@Localization.LabelRenewalDate:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
                 }
             }
         </div>

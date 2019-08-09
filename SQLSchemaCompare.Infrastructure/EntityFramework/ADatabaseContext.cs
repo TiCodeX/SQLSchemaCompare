@@ -80,6 +80,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
                                             throw new WrongTypeException();
                                     }
                                 }
+                                else if (prop.PropertyType == typeof(long) && (value is decimal))
+                                {
+                                    prop.SetValue(t, decimal.ToInt64((decimal)value));
+                                }
                                 else
                                 {
                                     prop.SetValue(t, value is DBNull ? null : value, null);

@@ -36,6 +36,11 @@
         public int MaxLength { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance is table type
+        /// </summary>
+        public bool IsTableType { get; set; }
+
+        /// <summary>
         /// Gets or sets the referenced system type
         /// </summary>
         public MicrosoftSqlDataType SystemType { get; set; }

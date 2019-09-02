@@ -287,6 +287,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       t.user_type_id AS 'TypeId',");
             query.AppendLine("       t.system_type_id AS 'SystemTypeId',");
             query.AppendLine("       t.is_user_defined AS 'IsUserDefined',");
+            query.AppendLine("       t.is_table_type AS 'IsTableType',");
             query.AppendLine("       t.is_nullable AS 'IsNullable',");
             query.AppendLine("       t.precision AS 'Precision',");
             query.AppendLine("       t.scale AS 'Scale',");
@@ -294,12 +295,29 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("FROM sys.types t");
             query.AppendLine("INNER JOIN sys.schemas sc ON t.schema_id = sc.schema_id");
 
-            var types = context.Query<MicrosoftSqlDataType>(query.ToString());
+            var allTypes = context.Query<MicrosoftSqlDataType>(query.ToString());
 
-            // Get all the user defined and set the reference to the related system type
-            foreach (var t in types.Where(x => x.IsUserDefined))
+            var types = new List<MicrosoftSqlDataType>();
+            foreach (var type in allTypes)
             {
-                t.SystemType = types.FirstOrDefault(x => x.TypeId == t.SystemTypeId);
+                if (type.IsTableType)
+                {
+                    this.Logger.LogError($"Unsupported User-Defined Table Type: {type.Name}");
+                    continue;
+                }
+
+                if (type.IsUserDefined)
+                {
+                    type.SystemType = allTypes.FirstOrDefault(x => x.TypeId == type.SystemTypeId);
+
+                    if (type.SystemType == null)
+                    {
+                        this.Logger.LogError($"Unable to find corresponding system type for '{type.Name}'");
+                        continue;
+                    }
+                }
+
+                types.Add(type);
             }
 
             return types;

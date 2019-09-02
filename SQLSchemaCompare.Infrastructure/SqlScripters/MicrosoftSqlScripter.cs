@@ -593,12 +593,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         {
             var msType = (MicrosoftSqlDataType)type;
 
-            if (msType.SystemType == null)
-            {
-                this.Logger.LogError($"No SystemType found for DataType: {msType.Name}/{msType.TypeId}");
-                return string.Empty;
-            }
-
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE TYPE {this.ScriptHelper.ScriptObjectName(type)}");
             sb.Append($"{this.Indent}FROM {msType.SystemType.Name}");

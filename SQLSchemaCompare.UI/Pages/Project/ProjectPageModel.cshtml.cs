@@ -352,6 +352,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
                         Username = username,
                         Password = password,
                         SavePassword = savePassword,
+                        UseSSL = useSSL,
                         Database = database,
                     };
                 case DatabaseType.MariaDb:
@@ -362,6 +363,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
                         Username = username,
                         Password = password,
                         SavePassword = savePassword,
+                        UseSSL = useSSL,
                         Database = database,
                     };
                 default:

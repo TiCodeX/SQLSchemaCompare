@@ -20,7 +20,12 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Api
         /// <summary>
         /// Per year
         /// </summary>
-        Year
+        Year,
+
+        /// <summary>
+        /// Perpetual
+        /// </summary>
+        Perpetual
     }
 
     /// <summary>

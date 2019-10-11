@@ -34,19 +34,28 @@
             {
                 <b>@Localization.LabelSubscription:</b> @Localization.LabelSubscriptionPro
                 <br />
-                <b>@Localization.LabelSubscriptionPlan:</b> @(Model.CustomerInformation.BillingType == BillingType.Month ? Localization.LabelMonthlyPayment : Localization.LabelYearlyPayment)
-                <br />
-                <b>@Localization.LabelAutoRenewal:</b> @(Model.CustomerInformation.CancelAtPeriodEnd.HasValue && Model.CustomerInformation.CancelAtPeriodEnd.Value ? Localization.LabelDisabled : Localization.LabelEnabled)
-                <br />
-                if (Model.CustomerInformation.CancelAtPeriodEnd.HasValue && Model.CustomerInformation.CancelAtPeriodEnd.Value)
+                if (Model.CustomerInformation.BillingType != BillingType.Perpetual)
                 {
-                    <b>@Localization.LabelExpirationDate:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
+                    <b>@Localization.LabelSubscriptionPlan:</b> @(Model.CustomerInformation.BillingType == BillingType.Month ? Localization.LabelMonthlyPayment : Localization.LabelYearlyPayment)
                     <br />
-                    <b>@Localization.LabelRemainingDays:</b> @Model.CustomerInformation.RemainingDays
+                    <b>@Localization.LabelAutoRenewal:</b> @(Model.CustomerInformation.CancelAtPeriodEnd.HasValue && Model.CustomerInformation.CancelAtPeriodEnd.Value ? Localization.LabelDisabled : Localization.LabelEnabled)
+                    <br />
+                    if (Model.CustomerInformation.CancelAtPeriodEnd.HasValue && Model.CustomerInformation.CancelAtPeriodEnd.Value)
+                    {
+                        <b>@Localization.LabelExpirationDate:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
+                        <br />
+                        <b>@Localization.LabelRemainingDays:</b> @Model.CustomerInformation.RemainingDays
+                    }
+                    else
+                    {
+                        <b>@Localization.LabelRenewalDate:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
+                    }
                 }
                 else
                 {
-                    <b>@Localization.LabelRenewalDate:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
+                    <b>@Localization.LabelSubscriptionPlan:</b> @Localization.LabelPerpetualPayment
+                    <br />
+                    <b>@Localization.LabelUpgradesUntil:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
                 }
             }
         </div>

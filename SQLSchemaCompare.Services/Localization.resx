@@ -824,4 +824,10 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelNewMariaDbProject" xml:space="preserve">
     <value>New MariaDB Project</value>
   </data>
+  <data name="LabelPerpetualPayment" xml:space="preserve">
+    <value>Perpetual</value>
+  </data>
+  <data name="LabelUpgradesUntil" xml:space="preserve">
+    <value>Upgrades until</value>
+  </data>
 </root>

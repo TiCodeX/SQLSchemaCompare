@@ -815,4 +815,10 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="LabelNewMariaDbProject" xml:space="preserve">
     <value>Neues MariaDB Projekt</value>
   </data>
+  <data name="LabelPerpetualPayment" xml:space="preserve">
+    <value>Ewig</value>
+  </data>
+  <data name="LabelUpgradesUntil" xml:space="preserve">
+    <value>Upgrades bis</value>
+  </data>
 </root>

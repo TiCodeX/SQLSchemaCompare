@@ -1071,6 +1071,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Perpetual.
+        /// </summary>
+        public static string LabelPerpetualPayment {
+            get {
+                return ResourceManager.GetString("LabelPerpetualPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Port.
         /// </summary>
         public static string LabelPort {
@@ -1346,6 +1355,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelType {
             get {
                 return ResourceManager.GetString("LabelType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upgrades until.
+        /// </summary>
+        public static string LabelUpgradesUntil {
+            get {
+                return ResourceManager.GetString("LabelUpgradesUntil", resourceCulture);
             }
         }
         

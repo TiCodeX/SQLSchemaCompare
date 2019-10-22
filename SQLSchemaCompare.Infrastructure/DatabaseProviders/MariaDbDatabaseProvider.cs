@@ -42,7 +42,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 
             if (this.CurrentServerVersion.Major > 10 || (this.CurrentServerVersion.Major == 10 && this.CurrentServerVersion.Minor >= 2))
             {
-                query.AppendLine("       CASE WHEN a.COLUMN_DEFAULT = 'NULL' THEN NULL ELSE TRIM('\\'' FROM a.COLUMN_DEFAULT) END as ColumnDefault,");
+                query.AppendLine("       CASE WHEN a.COLUMN_DEFAULT = 'NULL' THEN NULL ELSE a.COLUMN_DEFAULT END as ColumnDefault,");
             }
             else
             {

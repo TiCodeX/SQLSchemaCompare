@@ -22,6 +22,7 @@ CREATE TABLE actor (
   first_name VARCHAR(45) NOT NULL,
   last_name VARCHAR(45) NOT NULL,
   last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted BIT(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY  (actor_id),
   KEY idx_actor_last_name (last_name)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

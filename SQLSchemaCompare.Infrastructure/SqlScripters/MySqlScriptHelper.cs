@@ -61,7 +61,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     case "tinytext":
                     case "mediumtext":
                     case "longtext":
-                        sb.Append($" DEFAULT '{col.ColumnDefault}'");
+                        sb.Append($" DEFAULT '{col.ColumnDefault.Trim('\'')}'");
                         break;
                     default:
                         sb.Append($" DEFAULT {col.ColumnDefault}");
@@ -71,7 +71,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             // Append the Extra properties only if it's not auto_increment because it has
             // to be defined when the primary key is added
-            if (col.Extra.ToUpperInvariant() != "AUTO_INCREMENT")
+            if (!string.IsNullOrWhiteSpace(col.Extra) &&
+                col.Extra.ToUpperInvariant() != "AUTO_INCREMENT")
             {
                 var extra = col.Extra;
                 if (extra.ToUpperInvariant().Contains("DEFAULT_GENERATED"))

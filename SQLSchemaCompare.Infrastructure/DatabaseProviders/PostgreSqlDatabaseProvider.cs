@@ -42,7 +42,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc />
         public override List<string> GetDatabaseList()
         {
-            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options))
+            // Copy the connection options to set the always existing postgres database
+            var options = new PostgreSqlDatabaseProviderOptions
+            {
+                Hostname = this.Options.Hostname,
+                Port = this.Options.Port,
+                Database = "postgres",
+                Username = this.Options.Username,
+                Password = this.Options.Password,
+                UseSSL = this.Options.UseSSL,
+            };
+
+            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.CipherService, options))
             {
                 return context.QuerySingleColumn<string>("SELECT datname FROM pg_catalog.pg_database WHERE datistemplate = FALSE");
             }

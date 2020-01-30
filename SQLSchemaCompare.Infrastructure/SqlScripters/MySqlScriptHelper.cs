@@ -75,7 +75,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 col.Extra.ToUpperInvariant() != "AUTO_INCREMENT")
             {
                 var extra = col.Extra;
-                if (extra.ToUpperInvariant().Contains("DEFAULT_GENERATED"))
+                if (extra.Contains("DEFAULT_GENERATED", StringComparison.OrdinalIgnoreCase))
                 {
                     extra = Regex.Replace(extra, "DEFAULT_GENERATED\\s", string.Empty, RegexOptions.IgnoreCase);
                 }

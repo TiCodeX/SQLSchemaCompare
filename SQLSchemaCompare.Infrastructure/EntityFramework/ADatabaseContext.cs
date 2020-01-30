@@ -23,6 +23,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
         /// <param name="dbpo">The database provider options</param>
         protected ADatabaseContext(ILoggerFactory loggerFactory, TDatabaseProviderOptions dbpo)
         {
+            if (dbpo == null)
+            {
+                throw new ArgumentNullException(nameof(dbpo));
+            }
+
             this.loggerFactory = loggerFactory;
             this.Hostname = dbpo.Hostname;
             this.DatabaseName = dbpo.Database;
@@ -52,7 +57,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
             this.Database.OpenConnection();
             using (var command = this.Database.GetDbConnection().CreateCommand())
             {
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
                 command.CommandText = query;
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -117,7 +124,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
             this.Database.OpenConnection();
             using (var command = this.Database.GetDbConnection().CreateCommand())
             {
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
                 command.CommandText = query;
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -148,7 +157,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
             this.Database.OpenConnection();
             using (var command = this.Database.GetDbConnection().CreateCommand())
             {
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
                 command.CommandText = query;
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
                 command.ExecuteNonQuery();
             }
         }
@@ -156,6 +167,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
         /// <inheritdoc/>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            if (optionsBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(optionsBuilder));
+            }
+
             optionsBuilder.UseLoggerFactory(this.loggerFactory);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Extensions.Logging;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
@@ -20,6 +21,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.Repository
         /// <param name="loggerFactory">The injected logger factory</param>
         public ProjectRepository(ILoggerFactory loggerFactory)
         {
+            if (loggerFactory == null)
+            {
+                throw new ArgumentNullException(nameof(loggerFactory));
+            }
+
             this.logger = loggerFactory.CreateLogger(nameof(ProjectRepository));
         }
 
@@ -28,10 +34,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.Repository
         {
             this.logger.LogInformation($"Reading project file: {filename}");
             var xml = new XmlSerializer(typeof(CompareProject));
-            using (var f = File.OpenRead(filename))
-            {
-                return xml.Deserialize(f) as CompareProject;
-            }
+            using var f = File.OpenRead(filename);
+            using var r = XmlReader.Create(f);
+            return xml.Deserialize(r) as CompareProject;
         }
 
         /// <inheritdoc />

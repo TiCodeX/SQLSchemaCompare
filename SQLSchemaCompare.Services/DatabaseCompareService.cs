@@ -64,6 +64,11 @@ namespace TiCodeX.SQLSchemaCompare.Services
             IDatabaseFilter databaseFilter,
             ITaskService taskService)
         {
+            if (loggerFactory == null)
+            {
+                throw new ArgumentNullException(nameof(loggerFactory));
+            }
+
             this.logger = loggerFactory.CreateLogger(nameof(DatabaseCompareService));
             this.projectService = projectService;
             this.databaseService = databaseService;
@@ -111,7 +116,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                 new TaskWork(
                     new TaskInfo(Localization.LabelDatabaseComparison),
                     false,
-                    this.ExecuteDatabaseComparison)
+                    this.ExecuteDatabaseComparison),
             });
         }
 
@@ -130,8 +135,8 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     {
                         SourceCreateScript = item.CreateScript,
                         TargetCreateScript = item.MappedDbObject != null ? item.MappedDbObject.CreateScript : string.Empty,
-                        AlterScript = item.AlterScript
-                    }
+                        AlterScript = item.AlterScript,
+                    },
                 });
             }
 
@@ -144,8 +149,8 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     Scripts = new CompareResultItemScripts
                     {
                         TargetCreateScript = item.CreateScript,
-                        AlterScript = item.AlterScript
-                    }
+                        AlterScript = item.AlterScript,
+                    },
                 });
             }
         }

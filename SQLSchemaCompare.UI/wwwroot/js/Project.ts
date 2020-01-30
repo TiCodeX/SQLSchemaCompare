@@ -102,6 +102,7 @@ class Project {
      * @param ignoreDirty Whether to ignore if the project is dirty or prompt to save
      */
     public static New(ignoreDirty: boolean, databaseType?: Project.DatabaseType): void {
+        // tslint:disable-next-line:completed-docs
         const data: { ignoreDirty: boolean; databaseType: Project.DatabaseType } = {
             ignoreDirty: ignoreDirty,
             databaseType: databaseType,
@@ -137,7 +138,7 @@ class Project {
 
         let filename: string = this.filename;
         if (filename === undefined || showDialog) {
-            filename = electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
+            filename = (await electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
                 {
                     title: Localization.Get("TitleSaveProject"),
                     buttonLabel: Localization.Get("ButtonSave"),
@@ -147,8 +148,9 @@ class Project {
                             extensions: [this.projectFileExtension],
                         },
                     ],
-                });
+                })).filePath;
         }
+
         if (Utility.IsNullOrWhitespace(filename)) {
             return Promise.resolve();
         }
@@ -172,10 +174,10 @@ class Project {
      * @param ignoreDirty Whether to ignore if the project is dirty or prompt to save
      * @param filename The Project file path
      */
-    public static Load(ignoreDirty: boolean = false, filename?: string): void {
+    public static async Load(ignoreDirty: boolean = false, filename?: string): Promise<void> {
         let file: string = filename;
         if (file === undefined) {
-            const filenames: Array<string> = electron.remote.dialog.showOpenDialog(electron.remote.getCurrentWindow(),
+            const filenames: Array<string> = (await electron.remote.dialog.showOpenDialog(electron.remote.getCurrentWindow(),
                 {
                     title: Localization.Get("TitleOpenProject"),
                     buttonLabel: Localization.Get("ButtonOpen"),
@@ -186,23 +188,25 @@ class Project {
                         },
                     ],
                     properties: ["openFile"],
-                });
+                })).filePaths;
 
             if (!Array.isArray(filenames) || filenames.length < 1 || Utility.IsNullOrWhitespace(filenames[0])) {
-                return;
+                return Promise.resolve();
             }
 
             file = filenames[0];
         }
 
-        Utility.AjaxCall(this.loadUrl, Utility.HttpMethod.Post, { IgnoreDirty: ignoreDirty, Filename: file }).then((response: ApiResponse<string>): void => {
+        return Utility.AjaxCall(this.loadUrl, Utility.HttpMethod.Post, { IgnoreDirty: ignoreDirty, Filename: file }).then((response: ApiResponse<string>): void => {
             if (response.Success) {
                 this.isDirty = false;
                 this.filename = file;
                 this.OpenPage(true);
             } else {
                 this.HandleProjectNeedToBeSavedError(response).then((): void => {
-                    this.Load(true, file);
+                    this.Load(true, file).catch((): void => {
+                        // Do nothing
+                    });
                 }).catch((): void => {
                     // Do nothing
                 });
@@ -505,7 +509,7 @@ class Project {
         // Find the first row of the group
         let trGroupStart: JQuery = tr;
         if (!tr.is("[group-start]")) {
-            trGroupStart = <JQuery>trGroupStart.prevAll("tr[group-start]:first");
+            trGroupStart = trGroupStart.prevAll("tr[group-start]:first");
         }
 
         // Get the first column which has the rowspan and reduce the value by 1

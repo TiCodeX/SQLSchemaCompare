@@ -19,9 +19,9 @@
       <TSLintFormat Condition="'$(TSLintFormat)' == ''">msbuild</TSLintFormat>
       <TSLintNodeExe Condition="'$(TSLintNodeExe)' == ''">node</TSLintNodeExe>
       <TSLintTimeout Condition="'$(TSLintTimeout)' == ''">10000000</TSLintTimeout>
-      <TSLintVersion Condition="'$(TSLintVersion)' == ''">5.10.0</TSLintVersion>
+      <TSLintVersion Condition="'$(TSLintVersion)' == ''">5.17.0</TSLintVersion>
       <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
-      <TSLintCli Condition="'$(TSLintCli)' == ''">$(NuGetPackageRoot)tslint\$(TSLintVersion)\tools\node_modules\tslint\lib\tslint-cli.js</TSLintCli>
+      <TSLintCli Condition="'$(TSLintCli)' == ''">$(NuGetPackageRoot)tslint\$(TSLintVersion)\tools\node_modules\tslint\lib\tslintCli.js</TSLintCli>
     </PropertyGroup>
 
     <!-- TSLintExclude might include special characters, so those should be escaped -->

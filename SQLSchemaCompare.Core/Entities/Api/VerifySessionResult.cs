@@ -25,7 +25,7 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Api
         /// <summary>
         /// Perpetual
         /// </summary>
-        Perpetual
+        Perpetual,
     }
 
     /// <summary>

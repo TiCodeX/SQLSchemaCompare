@@ -52,6 +52,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <returns>The scripted function attributes</returns>
         public static string ScriptFunctionAttributes(PostgreSqlFunction function)
         {
+            if (function == null)
+            {
+                throw new ArgumentNullException(nameof(function));
+            }
+
             var sb = new StringBuilder();
 
             switch (function.Volatile)
@@ -181,6 +186,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Switch with lot of cases")]
         public string ScriptDataType(PostgreSqlColumn column)
         {
+            if (column == null)
+            {
+                throw new ArgumentNullException(nameof(column));
+            }
+
             switch (column.DataType)
             {
                 // Exact numerics

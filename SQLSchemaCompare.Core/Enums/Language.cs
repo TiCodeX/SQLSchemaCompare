@@ -18,6 +18,6 @@
         /// <summary>
         /// The Italian
         /// </summary>
-        Italian = 2
+        Italian = 2,
     }
 }

@@ -39,7 +39,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
         {
             return new JsonResult(new ApiResponse<Dictionary<string, string>>
             {
-                Result = this.localizationService.GetLocalizationDictionary()
+                Result = this.localizationService.GetLocalizationDictionary(),
             });
         }
 

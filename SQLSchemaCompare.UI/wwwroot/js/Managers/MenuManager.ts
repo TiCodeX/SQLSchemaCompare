@@ -6,10 +6,6 @@ class MenuManager {
      * Creates the main application menu
      */
     public static async CreateMenu(): Promise<void> {
-        if (electron === undefined) {
-            return;
-        }
-
         //#region Electron Menu
         const template: Array<Electron.MenuItemConstructorOptions> = [
             {
@@ -28,7 +24,9 @@ class MenuManager {
                         label: `${Localization.Get("MenuOpenProject")}...`,
                         accelerator: "CmdOrCtrl+O",
                         click(): void {
-                            Project.Load();
+                            Project.Load().catch((): void => {
+                                // Do nothing
+                            });
                         },
                     },
                     {
@@ -288,10 +286,6 @@ class MenuManager {
      * @param enable Whether to enable or disable the menu items
      */
     private static ToggleMenuItems(items: Array<string>, enable: boolean): void {
-        if (electron === undefined) {
-            return;
-        }
-
         const menu: Electron.Menu = electron.remote.Menu.getApplicationMenu();
 
         for (const item of items) {

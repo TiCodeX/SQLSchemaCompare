@@ -79,10 +79,9 @@ class DialogManager {
                     noLink: true,
                     title: title,
                 },
-                (response: number) => {
-                    resolve(response);
-                },
-            );
+            ).then((value: Electron.MessageBoxReturnValue) => {
+                resolve(value.response);
+            });
         });
     }
 
@@ -131,8 +130,7 @@ class DialogManager {
         if (link !== undefined) {
             if (linkText !== undefined) {
                 $(this.modalLinkId).html(linkText);
-            }
-            else {
+            } else {
                 $(this.modalLinkId).html(link);
             }
 

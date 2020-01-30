@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
@@ -20,7 +21,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
             : base(loggerFactory, dbpo)
         {
             var server = dbpo.Hostname;
-            if (!server.Contains("\\"))
+            if (!server.Contains("\\", StringComparison.Ordinal))
             {
                 server += $",{dbpo.Port}";
             }

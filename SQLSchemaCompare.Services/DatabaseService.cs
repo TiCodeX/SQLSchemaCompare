@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
@@ -27,6 +28,11 @@ namespace TiCodeX.SQLSchemaCompare.Services
         /// <inheritdoc />
         public List<string> ListDatabases(ADatabaseProviderOptions options)
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
             // Remove the database since we want to retrieve all of them
             options.Database = string.Empty;
             var provider = this.dbProviderFactory.Create(options);

@@ -58,6 +58,6 @@
         /// <summary>
         /// Custom highlight theme color
         /// </summary>
-        TcxHighlight
+        TcxHighlight,
     }
 }

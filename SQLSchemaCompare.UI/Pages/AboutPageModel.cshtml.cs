@@ -26,6 +26,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
         /// <param name="appSettingsService">The injected app settings service</param>
         public AboutPageModel(ILoggerFactory loggerFactory, IAppGlobals appGlobals, IAccountService accountService, IAppSettingsService appSettingsService)
         {
+            if (loggerFactory == null)
+            {
+                throw new ArgumentNullException(nameof(loggerFactory));
+            }
+
             this.logger = loggerFactory.CreateLogger(nameof(AboutPageModel));
             this.appGlobals = appGlobals;
             this.accountService = accountService;

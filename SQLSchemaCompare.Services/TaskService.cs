@@ -56,6 +56,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                                     x.Item1.Info.Status = TaskStatus.Canceled;
                                     x.Item1.Info.Exception = new OperationCanceledException(Localization.ErrorOperationNotExecuted);
                                 }
+
                                 return x.Item1;
                             }));
                             runningTasks.Clear();
@@ -73,6 +74,7 @@ namespace TiCodeX.SQLSchemaCompare.Services
                                 break;
                             }
                         }
+
                         runningTasks.Add(new Tuple<TaskWork, Task>(task, this.PerformTask(task)));
                     }
                 },

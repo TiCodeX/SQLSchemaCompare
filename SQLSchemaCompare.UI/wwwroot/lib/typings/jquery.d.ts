@@ -8155,7 +8155,7 @@ declare namespace JQuery {
         TData = null> extends Partial<Pick<PointerEvent & KeyboardEvent & TouchEvent, 'altKey' | 'bubbles' | 'cancelable' |
         'changedTouches' | 'ctrlKey' | 'detail' | 'eventPhase' | 'metaKey' | 'pageX' | 'pageY' | 'shiftKey' | 'view' |
         'char' | 'charCode' | 'key' | 'keyCode' | 'button' | 'buttons' | 'clientX' | 'clientY' | 'offsetX' | 'offsetY' |
-        'pointerId' | 'pointerType' | 'screenX' | 'screenY' | 'targetTouches' | 'toElement' | 'touches'>> {
+        'pointerId' | 'pointerType' | 'screenX' | 'screenY' | 'targetTouches' | 'touches'>> {
         /**
          * The current DOM element within the event bubbling phase.
          *

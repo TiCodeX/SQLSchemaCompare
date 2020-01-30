@@ -5,12 +5,11 @@ using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities;
-using TiCodeX.SQLSchemaCompare.Test;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
+namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
 {
     /// <summary>
     /// Test class for the DatabaseFilter
@@ -68,7 +67,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
 
             var filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -113,7 +112,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -128,7 +127,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -151,7 +150,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -166,7 +165,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -189,7 +188,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -204,7 +203,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -227,7 +226,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -242,7 +241,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -265,7 +264,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -280,7 +279,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -303,7 +302,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -318,7 +317,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -341,7 +340,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -356,7 +355,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -379,7 +378,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -394,7 +393,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = true
+                Include = true,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -417,7 +416,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -432,7 +431,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -455,7 +454,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -470,7 +469,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -493,7 +492,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -508,7 +507,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -531,7 +530,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -546,7 +545,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -569,7 +568,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -584,7 +583,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -607,7 +606,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -622,7 +621,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -645,7 +644,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -660,7 +659,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -683,7 +682,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Positive match
             var filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {
@@ -698,7 +697,7 @@ namespace SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
             // Negative match
             filteringOptions = new FilteringOptions
             {
-                Include = false
+                Include = false,
             };
             filteringOptions.Clauses.Add(new FilterClause
             {

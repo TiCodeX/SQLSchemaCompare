@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text;
 using FluentAssertions;
-using SQLSchemaCompare.Test;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
@@ -27,6 +26,11 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public MySqlTests(ITestOutputHelper output, DatabaseFixtureMySql dbFixture)
             : base(output)
         {
+            if (dbFixture == null)
+            {
+                throw new ArgumentNullException(nameof(dbFixture));
+            }
+
             this.dbFixture = dbFixture;
             this.dbFixture.SetLoggerFactory(this.LoggerFactory);
             this.dbFixture.InitServers(DatabaseFixtureMySql.ServerPorts);
@@ -39,6 +43,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void GetMySqlDatabaseList(short port)
         {
             var mysqldbp = this.dbFixture.GetDatabaseProvider(string.Empty, port);
@@ -54,6 +59,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void GetMySqlSakilaDatabase(short port)
         {
             var mysqldbp = this.dbFixture.GetDatabaseProvider("sakila", port);
@@ -98,6 +104,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void CloneMySqlDatabase(short port)
         {
             const string databaseName = "sakila";
@@ -131,6 +138,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseSourceEmpty(short port)
         {
             var sourceDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
@@ -160,6 +168,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetEmpty(short port)
         {
             const string sourceDatabaseName = "sakila";
@@ -184,6 +193,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetMissingColumn(short port)
         {
             var sb = new StringBuilder();
@@ -198,6 +208,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetMissingColumns(short port)
         {
             var sb = new StringBuilder();
@@ -213,6 +224,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetExtraColumn(short port)
         {
             var sb = new StringBuilder();
@@ -227,6 +239,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetExtraColumns(short port)
         {
             var sb = new StringBuilder();
@@ -242,6 +255,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetColumnDifferentType(short port)
         {
             var sb = new StringBuilder();
@@ -256,6 +270,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetColumnMissingDefault(short port)
         {
             var sb = new StringBuilder();
@@ -270,6 +285,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetColumnExtraDefault(short port)
         {
             var sb = new StringBuilder();
@@ -284,6 +300,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetColumnDifferentDefault(short port)
         {
             var sb = new StringBuilder();
@@ -298,6 +315,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetDifferentView(short port)
         {
             var sb = new StringBuilder();
@@ -312,6 +330,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetDifferentFunction(short port)
         {
             var sb = new StringBuilder();
@@ -341,6 +360,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetDifferentStoredProcedure(short port)
         {
             var sb = new StringBuilder();
@@ -366,6 +386,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetMissingIndex(short port)
         {
             var sb = new StringBuilder();
@@ -380,6 +401,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetExtraIndex(short port)
         {
             var sb = new StringBuilder();
@@ -394,6 +416,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetDifferentIndex(short port)
         {
             var sb = new StringBuilder();
@@ -409,6 +432,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetMissingTrigger(short port)
         {
             var sb = new StringBuilder();
@@ -423,6 +447,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetExtraTrigger(short port)
         {
             var sb = new StringBuilder();
@@ -441,6 +466,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetDifferentTrigger(short port)
         {
             var sb = new StringBuilder();
@@ -467,6 +493,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetMissingPrimaryKey(short port)
         {
             var sb = new StringBuilder();
@@ -482,6 +509,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetExtraPrimaryKey(short port)
         {
             var sb = new StringBuilder();
@@ -496,6 +524,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey(short port)
         {
             var sb = new StringBuilder();
@@ -511,6 +540,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetPrimaryKeyOnDifferentColumn(short port)
         {
             var sb = new StringBuilder();
@@ -528,6 +558,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetExtraForeignKey(short port)
         {
             var sb = new StringBuilder();
@@ -542,6 +573,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetMissingForeignKey(short port)
         {
             var sb = new StringBuilder();
@@ -556,6 +588,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetForeignKeyReferencesDifferentColumn(short port)
         {
             var sb = new StringBuilder();
@@ -571,6 +604,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
+        [Category("MySQL")]
         public void MigrateMySqlDatabaseTargetForeignKeyDifferentOptions(short port)
         {
             var sb = new StringBuilder();

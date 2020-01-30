@@ -17,6 +17,16 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
         /// <inheritdoc/>
         public void PerformMapping(ABaseDb source, ABaseDb target, object mappingTable, TaskInfo taskInfo)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
             // Linearize the 2 databases for mapping
             var maps = new List<ObjectMap>
             {

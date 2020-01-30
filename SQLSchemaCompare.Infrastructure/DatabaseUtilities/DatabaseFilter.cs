@@ -17,6 +17,16 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
         /// <inheritdoc />
         public void PerformFilter(ABaseDb database, FilteringOptions filteringOptions)
         {
+            if (database == null)
+            {
+                throw new ArgumentNullException(nameof(database));
+            }
+
+            if (filteringOptions == null)
+            {
+                throw new ArgumentNullException(nameof(filteringOptions));
+            }
+
             if (!filteringOptions.Clauses.Any())
             {
                 return;
@@ -134,7 +144,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
                             objectMatch = objectFieldToCheck.EndsWith(filterClause.Value, StringComparison.Ordinal);
                             break;
                         case FilterOperator.Contains:
-                            objectMatch = objectFieldToCheck.Contains(filterClause.Value);
+                            objectMatch = objectFieldToCheck.Contains(filterClause.Value, StringComparison.Ordinal);
                             break;
                         case FilterOperator.Equals:
                             objectMatch = objectFieldToCheck.Equals(filterClause.Value, StringComparison.Ordinal);
@@ -146,7 +156,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
                             objectMatch = !objectFieldToCheck.EndsWith(filterClause.Value, StringComparison.Ordinal);
                             break;
                         case FilterOperator.NotContains:
-                            objectMatch = !objectFieldToCheck.Contains(filterClause.Value);
+                            objectMatch = !objectFieldToCheck.Contains(filterClause.Value, StringComparison.Ordinal);
                             break;
                         case FilterOperator.NotEquals:
                             objectMatch = !objectFieldToCheck.Equals(filterClause.Value, StringComparison.Ordinal);

@@ -127,7 +127,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
                     Password = sourcePassword,
                     SavePassword = sourceSavePassword,
                     UseWindowsAuthentication = sourceUseWindowsAuthentication,
-                    UseSSL = sourceUseSSL
+                    UseSSL = sourceUseSSL,
                 },
                 TargetProviderOptions = new PostgreSqlDatabaseProviderOptions
                 {
@@ -135,7 +135,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
                     Database = targetDatabase,
                     Username = targetUsername,
                     Password = targetPassword,
-                    UseSSL = targetUseSSL
+                    UseSSL = targetUseSSL,
                 },
                 Options = new ProjectOptions
                 {
@@ -148,8 +148,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
                     Filtering = new FilteringOptions
                     {
                         Include = false,
-                    }
-                }
+                    },
+                },
             };
             compareProject.Options.Filtering.Clauses.Add(new FilterClause
             {

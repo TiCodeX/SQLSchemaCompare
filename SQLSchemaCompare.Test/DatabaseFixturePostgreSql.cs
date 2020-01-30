@@ -4,9 +4,8 @@ using System.IO;
 using System.Text;
 using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
-using TiCodeX.SQLSchemaCompare.Test;
 
-namespace SQLSchemaCompare.Test
+namespace TiCodeX.SQLSchemaCompare.Test
 {
     /// <summary>
     /// Creates the sakila database for the tests
@@ -30,6 +29,7 @@ namespace SQLSchemaCompare.Test
                     serverPorts.Add(new object[] { (short)26004 }); // Version 9.6 (EOL November 2021)
                     serverPorts.Add(new object[] { (short)26005 }); // Version 10 (EOL November 2022)
                     serverPorts.Add(new object[] { (short)26006 }); // Version 11 (EOL November 2023)
+                    serverPorts.Add(new object[] { (short)26007 }); // Version 12 (EOL November 2024)
                 }
                 else
                 {
@@ -49,7 +49,7 @@ namespace SQLSchemaCompare.Test
                 Database = databaseName,
                 Username = "postgres",
                 Password = this.CipherService.EncryptString("test1234"),
-                Port = port
+                Port = port,
             };
         }
 

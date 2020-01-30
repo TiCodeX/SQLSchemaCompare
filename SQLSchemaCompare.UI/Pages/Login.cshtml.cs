@@ -35,6 +35,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
         /// <param name="projectService">The injected project service</param>
         public Login(IAppSettingsService appSettingsService, IAccountService accountService, ILoggerFactory loggerFactory, IAppGlobals appGlobals, IProjectService projectService)
         {
+            if (loggerFactory == null)
+            {
+                throw new ArgumentNullException(nameof(loggerFactory));
+            }
+
             this.appSettingsService = appSettingsService;
             this.accountService = accountService;
             this.logger = loggerFactory.CreateLogger(nameof(Login));
@@ -134,7 +139,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
                 {
                     Success = false,
                     ErrorCode = EErrorCode.ErrorRedirectUrlIsNull,
-                    ErrorMessage = Localization.ErrorLoginVerificationFailed
+                    ErrorMessage = Localization.ErrorLoginVerificationFailed,
                 });
             }
 
@@ -149,7 +154,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
                 {
                     Success = false,
                     ErrorCode = EErrorCode.ErrorSessionTokenIsNullOrEmpty,
-                    ErrorMessage = Localization.ErrorLoginVerificationFailed
+                    ErrorMessage = Localization.ErrorLoginVerificationFailed,
                 });
             }
 
@@ -255,7 +260,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
                 {
                     Success = false,
                     ErrorCode = ex.ErrorCode,
-                    ErrorMessage = error
+                    ErrorMessage = error,
                 };
             }
             catch (Exception ex)
@@ -265,7 +270,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
                 {
                     Success = false,
                     ErrorCode = EErrorCode.ErrorUnexpected,
-                    ErrorMessage = Localization.ErrorLoginVerificationFailed
+                    ErrorMessage = Localization.ErrorLoginVerificationFailed,
                 };
             }
         }

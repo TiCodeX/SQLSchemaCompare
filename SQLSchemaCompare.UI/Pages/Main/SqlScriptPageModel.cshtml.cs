@@ -33,7 +33,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Main
             {
                 Result = direction == CompareDirection.Source
                     ? this.projectService.Project.Result.SourceFullScript
-                    : this.projectService.Project.Result.TargetFullScript
+                    : this.projectService.Project.Result.TargetFullScript,
             });
         }
 
@@ -45,7 +45,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Main
         {
             return new JsonResult(new ApiResponse<string>
             {
-                Result = this.projectService.Project.Result.FullAlterScript
+                Result = this.projectService.Project.Result.FullAlterScript,
             });
         }
     }

@@ -262,6 +262,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
         public string GenerateFullDropScript(ABaseDb database)
         {
+            if (database == null)
+            {
+                throw new ArgumentNullException(nameof(database));
+            }
+
             var sb = new StringBuilder();
 
             // Triggers
@@ -526,7 +531,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     scriptableObjects.Add(new ObjectMap
                     {
                         ObjectTitle = Localization.LabelConstraints,
-                        DbObjects = t.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).Concat(defaultConstraints.OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                        DbObjects = t.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).Concat(defaultConstraints.OrderBy(x => x.Schema).ThenBy(x => x.Name)),
                     });
                     scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = t.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
                     scriptableObjects.Add(new ObjectMap { DbObjects = new[] { t } });
@@ -918,6 +923,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <returns>The sorted columns</returns>
         protected IEnumerable<ABaseDbColumn> GetSortedTableColumns(ABaseDbTable table)
         {
+            if (table == null)
+            {
+                throw new ArgumentNullException(nameof(table));
+            }
+
             // Order table columns alphabetically or by ordinal position
             var columns = this.Options.Scripting.OrderColumnAlphabetically ? table.Columns.OrderBy(x => x.Name).ToList() : this.OrderColumnsByOrdinalPosition(table).ToList();
 

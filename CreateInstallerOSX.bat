@@ -3,10 +3,12 @@
 set "target=osx-x64"
 set "publishDir=%~dp0\.publish"
 set "electronDir=%~dp0\SQLSchemaCompare"
-set "remoteIp=192.168.247.128"
-set "remoteUser=ticodex"
-set "remotePass=test1234"
+set "remoteIp=10.0.10.205"
+set "remoteUser=neolution"
+set "remotePass=Neo-1234."
 set "remoteDir=/private/tmp/sqlschemacompare-build"
+set "certFile=TiCodeXCodeSigningCertificate.p12"
+set "certPass=test1234"
 
 call CreateInstallerCommon.bat %target%
 

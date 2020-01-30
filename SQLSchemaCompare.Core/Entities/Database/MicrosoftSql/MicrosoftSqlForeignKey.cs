@@ -28,7 +28,7 @@
             /// <summary>
             /// Set default
             /// </summary>
-            SETDEFAULT = 3
+            SETDEFAULT = 3,
         }
 
         /// <summary>

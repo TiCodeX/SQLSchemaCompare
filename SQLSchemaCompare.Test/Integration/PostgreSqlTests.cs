@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text;
 using FluentAssertions;
-using SQLSchemaCompare.Test;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
@@ -27,6 +26,11 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public PostgreSqlTests(ITestOutputHelper output, DatabaseFixturePostgreSql dbFixture)
             : base(output)
         {
+            if (dbFixture == null)
+            {
+                throw new ArgumentNullException(nameof(dbFixture));
+            }
+
             this.dbFixture = dbFixture;
             this.dbFixture.SetLoggerFactory(this.LoggerFactory);
             this.dbFixture.InitServers(DatabaseFixturePostgreSql.ServerPorts);
@@ -39,6 +43,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void GetDatabaseList(short port)
         {
             var pgsqldbp = this.dbFixture.GetDatabaseProvider(string.Empty, port);
@@ -54,6 +59,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void GetPostgreSqlDatabase(short port)
         {
             var pgsqldbp = this.dbFixture.GetDatabaseProvider("sakila", port);
@@ -99,6 +105,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void ClonePostgreSqlDatabase(short port)
         {
             const string databaseName = "sakila";
@@ -136,6 +143,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseSourceEmpty(short port)
         {
             var sourceDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
@@ -165,6 +173,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetEmpty(short port)
         {
             const string sourceDatabaseName = "sakila";
@@ -189,6 +198,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetMissingColumn(short port)
         {
             var sb = new StringBuilder();
@@ -203,6 +213,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetMissingColumns(short port)
         {
             var sb = new StringBuilder();
@@ -218,6 +229,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetExtraColumn(short port)
         {
             var sb = new StringBuilder();
@@ -232,6 +244,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetExtraColumns(short port)
         {
             var sb = new StringBuilder();
@@ -247,6 +260,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetColumnDifferentType(short port)
         {
             var sb = new StringBuilder();
@@ -261,6 +275,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetColumnMissingDefault(short port)
         {
             var sb = new StringBuilder();
@@ -275,6 +290,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetColumnExtraDefault(short port)
         {
             var sb = new StringBuilder();
@@ -289,6 +305,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetColumnDifferentDefault(short port)
         {
             var sb = new StringBuilder();
@@ -303,6 +320,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetDifferentView(short port)
         {
             var sb = new StringBuilder();
@@ -318,6 +336,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetDifferentFunction(short port)
         {
             var sb = new StringBuilder();
@@ -340,6 +359,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetDifferentSequence(short port)
         {
             var sb = new StringBuilder();
@@ -355,6 +375,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetDifferentType(short port)
         {
             var sb = new StringBuilder();
@@ -370,6 +391,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetMissingIndex(short port)
         {
             var sb = new StringBuilder();
@@ -384,6 +406,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetExtraIndex(short port)
         {
             var sb = new StringBuilder();
@@ -398,6 +421,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetDifferentIndex(short port)
         {
             var sb = new StringBuilder();
@@ -413,6 +437,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetMissingTrigger(short port)
         {
             var sb = new StringBuilder();
@@ -427,6 +452,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetExtraTrigger(short port)
         {
             var sb = new StringBuilder();
@@ -441,6 +467,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetDifferentTrigger(short port)
         {
             var sb = new StringBuilder();
@@ -456,6 +483,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetMissingCheckConstraint(short port)
         {
             var sb = new StringBuilder();
@@ -470,6 +498,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetExtraCheckConstraint(short port)
         {
             var sb = new StringBuilder();
@@ -484,6 +513,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetDifferentCheckConstraint(short port)
         {
             var sb = new StringBuilder();
@@ -499,6 +529,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetMissingPrimaryKey(short port)
         {
             var sb = new StringBuilder();
@@ -513,6 +544,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetExtraPrimaryKey(short port)
         {
             var sb = new StringBuilder();
@@ -527,6 +559,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey(short port)
         {
             var sb = new StringBuilder();
@@ -542,6 +575,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetPrimaryKeyOnDifferentColumn(short port)
         {
             var sb = new StringBuilder();
@@ -557,6 +591,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetExtraForeignKey(short port)
         {
             var sb = new StringBuilder();
@@ -571,6 +606,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetMissingForeignKey(short port)
         {
             var sb = new StringBuilder();
@@ -585,6 +621,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetForeignKeyReferencesDifferentColumn(short port)
         {
             var sb = new StringBuilder();
@@ -600,6 +637,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetForeignKeyDifferentOptions(short port)
         {
             var sb = new StringBuilder();
@@ -615,6 +653,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
+        [Category("PostgreSQL")]
         public void MigratePostgreSqlDatabaseTargetSchemaDifferentOwner(short port)
         {
             var sb = new StringBuilder();

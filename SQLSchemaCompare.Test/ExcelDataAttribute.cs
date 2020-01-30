@@ -119,7 +119,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                     typeof(DateTime),
                     typeof(DateTimeOffset),
                     typeof(TimeSpan),
-                    typeof(Guid)
+                    typeof(Guid),
                 }.Contains(type) ||
                 Convert.GetTypeCode(type) != TypeCode.Object ||
                 (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>) && IsSimpleType(type.GetGenericArguments()[0]));

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -48,7 +49,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
                             listenOptions.UseHttps(new HttpsConnectionAdapterOptions
                             {
                                 ServerCertificate = new X509Certificate2(memoryStream.ToArray(), "test1234"),
-                                SslProtocols = SslProtocols.Tls12
+                                SslProtocols = SslProtocols.Tls12,
 
                                 // other settings???
                             });
@@ -68,6 +69,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
         /// <summary>
         /// Configures the logger
         /// </summary>
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Cannot handle dispose of logger")]
         internal static void ConfigureLogger()
         {
             // As we don't have IAppGlobals injected yet, we instantiate it directly
@@ -102,7 +104,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
                 // Configure the console/debugger logger only for development
                 var consoleTarget = new ColoredConsoleTarget("Console")
                 {
-                    Layout = appGlobals.LoggerLayout
+                    Layout = appGlobals.LoggerLayout,
                 };
                 config.AddTarget(consoleTarget);
 
@@ -119,7 +121,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
             // Configure the logging rule to log everything into all targets
             var allRule = new LoggingRule
             {
-                LoggerNamePattern = "*"
+                LoggerNamePattern = "*",
             };
             allRule.SetLoggingLevels(NLog.LogLevel.Info, NLog.LogLevel.Fatal);
             foreach (var target in config.ConfiguredNamedTargets)

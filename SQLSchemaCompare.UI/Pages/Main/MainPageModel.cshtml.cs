@@ -25,6 +25,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Main
         /// <param name="projectService">The injected project service</param>
         public MainPageModel(ILoggerFactory loggerFactory, IProjectService projectService)
         {
+            if (loggerFactory == null)
+            {
+                throw new ArgumentNullException(nameof(loggerFactory));
+            }
+
             this.logger = loggerFactory.CreateLogger(nameof(MainPageModel));
             this.projectService = projectService;
         }
@@ -80,7 +85,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Main
 
             return new JsonResult(new ApiResponse<CompareResultItemScripts>
             {
-                Result = resultItem.Scripts
+                Result = resultItem.Scripts,
             });
         }
     }

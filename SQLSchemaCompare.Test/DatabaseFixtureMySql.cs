@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
-using TiCodeX.SQLSchemaCompare.Test;
 
-namespace SQLSchemaCompare.Test
+namespace TiCodeX.SQLSchemaCompare.Test
 {
     /// <summary>
     /// Creates the sakila database for the tests
@@ -56,12 +57,34 @@ namespace SQLSchemaCompare.Test
         /// <inheritdoc/>
         public override void ExecuteScriptCore(string script, string databaseName, short port)
         {
+            if (script == null)
+            {
+                throw new ArgumentNullException(nameof(script));
+            }
+
             using (var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, (MySqlDatabaseProviderOptions)this.GetDatabaseProviderOptions(databaseName, port)))
             {
                 context.Database.OpenConnection();
 
-                var mySqlScript = new MySqlScript((MySqlConnection)context.Database.GetDbConnection(), script);
-                mySqlScript.Execute();
+                var queries = Regex.Split(script, "^(DELIMITER .*)$", RegexOptions.Multiline);
+                var currentDelimiter = string.Empty;
+                foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    if (query.StartsWith("DELIMITER", StringComparison.Ordinal))
+                    {
+                        currentDelimiter = query.Substring(9).Trim();
+                        continue;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(currentDelimiter))
+                    {
+                        context.ExecuteNonQuery(query.Replace(currentDelimiter, ";", StringComparison.Ordinal));
+                    }
+                    else
+                    {
+                        context.ExecuteNonQuery(query);
+                    }
+                }
             }
         }
 

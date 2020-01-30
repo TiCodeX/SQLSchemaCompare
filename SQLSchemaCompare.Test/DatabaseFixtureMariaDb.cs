@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
-using TiCodeX.SQLSchemaCompare.Test;
 
-namespace SQLSchemaCompare.Test
+namespace TiCodeX.SQLSchemaCompare.Test
 {
     /// <summary>
     /// Creates the sakila database for the tests
@@ -30,6 +31,7 @@ namespace SQLSchemaCompare.Test
                     serverPorts.Add(new object[] { (short)29003 }); // Version 10.1 (EOL October 2020)
                     serverPorts.Add(new object[] { (short)29004 }); // Version 10.2 (EOL May 2022)
                     serverPorts.Add(new object[] { (short)29005 }); // Version 10.3 (EOL May 2023)
+                    serverPorts.Add(new object[] { (short)29006 }); // Version 10.4 (EOL July 2024)
                 }
                 else
                 {
@@ -57,6 +59,11 @@ namespace SQLSchemaCompare.Test
         /// <inheritdoc/>
         public override void ExecuteScriptCore(string script, string databaseName, short port)
         {
+            if (script == null)
+            {
+                throw new ArgumentNullException(nameof(script));
+            }
+
             var mariadbdpo = this.GetDatabaseProviderOptions(databaseName, port);
             var mysqldpo = new MySqlDatabaseProviderOptions
             {
@@ -67,12 +74,30 @@ namespace SQLSchemaCompare.Test
                 UseSSL = mariadbdpo.UseSSL,
                 Port = mariadbdpo.Port,
             };
+
             using (var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, mysqldpo))
             {
                 context.Database.OpenConnection();
 
-                var mySqlScript = new MySqlScript((MySqlConnection)context.Database.GetDbConnection(), script);
-                mySqlScript.Execute();
+                var queries = Regex.Split(script, "^(DELIMITER .*)$", RegexOptions.Multiline);
+                var currentDelimiter = string.Empty;
+                foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    if (query.StartsWith("DELIMITER", StringComparison.Ordinal))
+                    {
+                        currentDelimiter = query.Substring(9).Trim();
+                        continue;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(currentDelimiter))
+                    {
+                        context.ExecuteNonQuery(query.Replace(currentDelimiter, ";", StringComparison.Ordinal));
+                    }
+                    else
+                    {
+                        context.ExecuteNonQuery(query);
+                    }
+                }
             }
         }
 

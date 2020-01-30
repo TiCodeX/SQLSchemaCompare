@@ -1,5 +1,5 @@
 pool:
-  vmImage: 'vs2017-win2016'
+  vmImage: 'windows-2019'
 
 trigger: none
 
@@ -7,10 +7,10 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: DotNetCoreInstaller@0
-  displayName: 'Use .NET Core sdk 2.2.103'
+- task: UseDotNet@2
+  displayName: 'Use .Net Core sdk 3.1.100'
   inputs:
-    version: 2.2.103
+    version: 3.1.100
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet restore win-x64'
@@ -30,12 +30,7 @@ steps:
   displayName: 'Build solution **\*.sln'
   inputs:
     configuration: '$(buildConfiguration)'
-
-- script: |
-   mkdir SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\win-x64
-   copy /Y SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.dll SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\win-x64\
-   copy /Y SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.pdb SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\win-x64\
-  displayName: 'BUG WORKAROUND'
+    msbuildArgs: '/p:RuntimeIdentifier=win-x64'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet publish win-x64'
@@ -77,12 +72,7 @@ steps:
   displayName: 'Build solution **\*.sln'
   inputs:
     configuration: '$(buildConfiguration)'
-
-- script: |
-   mkdir SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\linux-x64
-   copy /Y SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.dll SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\linux-x64\
-   copy /Y SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.pdb SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\linux-x64\
-  displayName: 'BUG WORKAROUND'
+    msbuildArgs: '/p:RuntimeIdentifier=linux-x64'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet publish linux-x64'
@@ -112,12 +102,7 @@ steps:
   displayName: 'Build solution **\*.sln'
   inputs:
     configuration: '$(buildConfiguration)'
-
-- script: |
-   mkdir SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\osx-x64
-   copy /Y SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.dll SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\osx-x64\
-   copy /Y SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\*.pdb SQLSchemaCompare.UI\obj\Release\netcoreapp2.2\osx-x64\
-  displayName: 'BUG WORKAROUND'
+    msbuildArgs: '/p:RuntimeIdentifier=osx-x64'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet publish osx-x64'

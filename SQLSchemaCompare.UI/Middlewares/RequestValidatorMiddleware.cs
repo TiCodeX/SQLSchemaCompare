@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -27,6 +28,16 @@ namespace TiCodeX.SQLSchemaCompare.UI.Middlewares
         /// <param name="appGlobals">The injected application global constants</param>
         public RequestValidatorMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, IOptions<RequestValidatorSettings> options, IAppGlobals appGlobals)
         {
+            if (loggerFactory == null)
+            {
+                throw new ArgumentNullException(nameof(loggerFactory));
+            }
+
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
             this.next = next;
             this.logger = loggerFactory.CreateLogger(nameof(RequestValidatorMiddleware));
             this.options = options.Value;
@@ -41,6 +52,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Middlewares
         [Obfuscation(Exclude = true)]
         public async Task Invoke(HttpContext context)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             string authToken = context.Request.Headers[this.appGlobals.AuthorizationHeaderName];
             string userAgent = context.Request.Headers["User-Agent"];
 

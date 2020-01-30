@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
@@ -48,6 +49,11 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
         [ExcelData(@"Datasources/ScriptMicrosoftSqlDataTypeTest.xlsx")]
         public void ScriptDataType(ProjectOptions options, MicrosoftSqlDataType dataType, string expectedResult)
         {
+            if (dataType == null)
+            {
+                throw new ArgumentNullException(nameof(dataType));
+            }
+
             var scripter = new MicrosoftSqlScripter(this.Logger, options);
             dataType.Database = new MicrosoftSqlDb();
             scripter.GenerateCreateScript(dataType, false).Should().Be(expectedResult);

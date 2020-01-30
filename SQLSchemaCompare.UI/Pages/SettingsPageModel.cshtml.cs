@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
@@ -32,6 +33,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
             IProjectService projectService,
             ILocalizationService localizationService)
         {
+            if (loggerFactory == null)
+            {
+                throw new ArgumentNullException(nameof(loggerFactory));
+            }
+
             this.logger = loggerFactory.CreateLogger(nameof(SettingsPageModel));
             this.appSettingsService = appSettingsService;
             this.projectService = projectService;
@@ -64,6 +70,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
         /// <returns>The ApiResponse in JSON</returns>
         public ActionResult OnPostSave([FromBody] AppSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             this.logger.LogDebug("Saving settings...");
             this.logger.LogDebug($"LogLevel => {settings.LogLevel}");
             this.logger.LogDebug($"Language => {settings.Language}");

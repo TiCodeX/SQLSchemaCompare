@@ -1,4 +1,5 @@
-﻿using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+﻿using System;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
 
 namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
@@ -39,6 +40,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <returns>The normalized database object name</returns>
         public string ScriptObjectName(ABaseDbObject dbObject)
         {
+            if (dbObject == null)
+            {
+                throw new ArgumentNullException(nameof(dbObject));
+            }
+
             return this.ScriptObjectName(dbObject.Schema, dbObject.Name);
         }
 

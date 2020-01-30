@@ -5,9 +5,8 @@ using System.Linq;
 using System.Text;
 using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
-using TiCodeX.SQLSchemaCompare.Test;
 
-namespace SQLSchemaCompare.Test
+namespace TiCodeX.SQLSchemaCompare.Test
 {
     /// <summary>
     /// Creates the sakila database for the tests
@@ -26,7 +25,7 @@ namespace SQLSchemaCompare.Test
                 if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || DatabaseFixture.ForceDockerTests)
                 {
                     serverPorts.Add(new object[] { (short)28001 }); // Version 2017 Linux
-                    /*serverPorts.Add(new object[] { (short)28002 }); // Version 2019 Linux*/
+                    serverPorts.Add(new object[] { (short)28002 }); // Version 2019 Linux
                 }
                 else
                 {
@@ -46,13 +45,18 @@ namespace SQLSchemaCompare.Test
                 Database = databaseName,
                 Username = "sa",
                 Password = this.CipherService.EncryptString("Test1234!"),
-                Port = port
+                Port = port,
             };
         }
 
         /// <inheritdoc />
         public override void ExecuteScriptCore(string script, string databaseName, short port)
         {
+            if (script == null)
+            {
+                throw new ArgumentNullException(nameof(script));
+            }
+
             using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.CipherService, (MicrosoftSqlDatabaseProviderOptions)this.GetDatabaseProviderOptions(databaseName, port)))
             {
                 var queries = script.Split(new[] { "GO\r\n", "GO\n" }, StringSplitOptions.None);

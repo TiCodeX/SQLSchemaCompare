@@ -47,12 +47,12 @@ $(() => {
             e.preventDefault();
         });
 
-        if (electron !== undefined) {
-            electron.ipcRenderer.on("LoadProject", (event: Electron.Event, projectToLoad: string) => {
-                Project.Load(false, projectToLoad);
+        electron.ipcRenderer.on("LoadProject", (event: Electron.Event, projectToLoad: string) => {
+            Project.Load(false, projectToLoad).catch((): void => {
+                // Do nothing
             });
+        });
 
-            electron.ipcRenderer.send("CheckLoadProject");
-        }
+        electron.ipcRenderer.send("CheckLoadProject");
     });
 });

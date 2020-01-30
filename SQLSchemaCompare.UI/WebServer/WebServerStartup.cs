@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -57,7 +59,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
                 options.AllowedRequestGuid = AllowedRequestGuid;
             });
 
-            services.AddMvc().AddJsonOptions(options =>
+            services.AddRazorPages().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                 options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
@@ -100,6 +102,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
         /// <param name="appSettingsService">The app settings service</param>
         /// <param name="loggerFactory">The injected logger factory</param>
         [Obfuscation(Exclude = true)]
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "This should not be static otherwise it's not found")]
         public void Configure(
             IApplicationBuilder app,
             IAppGlobals appGlobals,
@@ -107,6 +110,26 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
             IAppSettingsService appSettingsService,
             ILoggerFactory loggerFactory)
         {
+            if (appGlobals == null)
+            {
+                throw new ArgumentNullException(nameof(appGlobals));
+            }
+
+            if (localizationService == null)
+            {
+                throw new ArgumentNullException(nameof(localizationService));
+            }
+
+            if (appSettingsService == null)
+            {
+                throw new ArgumentNullException(nameof(appSettingsService));
+            }
+
+            if (loggerFactory == null)
+            {
+                throw new ArgumentNullException(nameof(loggerFactory));
+            }
+
             var logger = loggerFactory.CreateLogger(nameof(WebServerStartup));
 
             var appSettings = appSettingsService.GetAppSettings();
@@ -127,13 +150,18 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
                 {
                     FileProvider = new HyphenFriendlyEmbeddedFileProvider(
                         new EmbeddedFileProvider(Assembly.GetExecutingAssembly(), "TiCodeX.SQLSchemaCompare.UI.wwwroot"),
-                        logger)
+                        logger),
                 });
             }
 
             app.UseExceptionHandler("/ErrorPage");
             app.UseRequestValidator();
-            app.UseMvc();
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+            });
         }
     }
 }

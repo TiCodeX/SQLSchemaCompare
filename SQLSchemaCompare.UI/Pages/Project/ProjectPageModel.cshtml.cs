@@ -50,6 +50,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
             IAppGlobals appGlobals,
             ICipherService cipherService)
         {
+            if (loggerFactory == null)
+            {
+                throw new ArgumentNullException(nameof(loggerFactory));
+            }
+
             this.logger = loggerFactory.CreateLogger(nameof(ProjectPageModel));
             this.appSettingsService = appSettingsService;
             this.projectService = projectService;
@@ -86,6 +91,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
         {
             try
             {
+                if (req == null)
+                {
+                    throw new ArgumentNullException(nameof(req));
+                }
+
                 if (this.projectService.NeedSave() && !req.IgnoreDirty)
                 {
                     return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorProjectNeedToBeSaved });
@@ -120,6 +130,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
         {
             try
             {
+                if (req == null)
+                {
+                    throw new ArgumentNullException(nameof(req));
+                }
+
                 if (this.projectService.NeedSave() && !req.IgnoreDirty)
                 {
                     return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorProjectNeedToBeSaved });
@@ -225,6 +240,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
         /// <returns>The ApiResponse in JSON</returns>
         public ActionResult OnPostEditProject([FromBody] CompareProjectOptions options)
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
             this.projectService.Project.SourceProviderOptions = this.GetDatabaseProviderOptions(options, CompareDirection.Source);
             this.projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(options, CompareDirection.Target);
             this.projectService.Project.Options = options.ProjectOptions;
@@ -281,9 +301,14 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
         {
             try
             {
+                if (options == null)
+                {
+                    throw new ArgumentNullException(nameof(options));
+                }
+
                 return new JsonResult(new ApiResponse<List<string>>
                 {
-                    Result = this.databaseService.ListDatabases(this.GetDatabaseProviderOptions(options, options.Direction))
+                    Result = this.databaseService.ListDatabases(this.GetDatabaseProviderOptions(options, options.Direction)),
                 });
             }
             catch (Exception ex)

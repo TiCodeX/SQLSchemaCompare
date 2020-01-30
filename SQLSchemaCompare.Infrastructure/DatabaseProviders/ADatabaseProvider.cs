@@ -78,6 +78,16 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         /// <returns>The discovered database structure</returns>
         protected TDatabase DiscoverDatabase(TDatabaseContext context, TaskInfo taskInfo)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (taskInfo == null)
+            {
+                throw new ArgumentNullException(nameof(taskInfo));
+            }
+
             this.Logger.LogInformation($"DiscoverDatabase started for database '{context.DatabaseName}' on server '{context.Hostname}'");
             var db = new TDatabase { Name = context.DatabaseName };
 

@@ -62,10 +62,6 @@ class Logger {
      * @param message The log message
      */
     private log(level: string, message: string): void {
-        if (electron === undefined) {
-            return;
-        }
-
         electron.ipcRenderer.send("log", { category: this.category, level: level, message: message });
     }
 }

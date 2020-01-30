@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
@@ -49,10 +50,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.Repository
             }
 
             var xml = new XmlSerializer(typeof(AppSettings));
-            using (var f = File.OpenRead(this.appGlobals.AppSettingsFullFilename))
-            {
-                return xml.Deserialize(f) as AppSettings;
-            }
+            using var f = File.OpenRead(this.appGlobals.AppSettingsFullFilename);
+            using var r = XmlReader.Create(f);
+            return xml.Deserialize(r) as AppSettings;
         }
     }
 }

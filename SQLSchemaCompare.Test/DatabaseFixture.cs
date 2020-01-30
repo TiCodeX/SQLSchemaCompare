@@ -62,6 +62,11 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="logFactory">The test output helper</param>
         public void SetLoggerFactory(ILoggerFactory logFactory)
         {
+            if (logFactory == null)
+            {
+                throw new ArgumentNullException(nameof(logFactory));
+            }
+
             this.LoggerFactory = logFactory;
             this.Logger = logFactory.CreateLogger(nameof(DatabaseFixture));
         }
@@ -72,6 +77,11 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="serverPorts">The server ports</param>
         public void InitServers(IEnumerable<object[]> serverPorts)
         {
+            if (serverPorts == null)
+            {
+                throw new ArgumentNullException(nameof(serverPorts));
+            }
+
             if (this.serversInitialized)
             {
                 return;
@@ -325,6 +335,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 {
                     options.Excluding(x => ((PostgreSqlFunction)x).ReturnType);
                 }
+
                 options.Excluding(x => ((ABaseDbObject)x).Database);
                 return options;
             });
@@ -379,38 +390,40 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="projectService">The project service</param>
         internal void PerformCompareAndWaitResult(IProjectService projectService)
         {
-            var taskService = new TaskService();
-            var dbCompareService = new DatabaseCompareService(
-                this.LoggerFactory,
-                projectService,
-                new DatabaseService(new DatabaseProviderFactory(this.LoggerFactory, new CipherService())),
-                new DatabaseScripterFactory(this.LoggerFactory),
-                new DatabaseMapper(),
-                new DatabaseFilter(),
-                taskService);
-            dbCompareService.StartCompare();
-
-            while (!taskService.CurrentTaskInfos.All(x => x.Status == TaskStatus.RanToCompletion ||
-                                                          x.Status == TaskStatus.Faulted ||
-                                                          x.Status == TaskStatus.Canceled))
+            using (var taskService = new TaskService())
             {
-                Thread.Sleep(200);
-            }
+                var dbCompareService = new DatabaseCompareService(
+                    this.LoggerFactory,
+                    projectService,
+                    new DatabaseService(new DatabaseProviderFactory(this.LoggerFactory, new CipherService())),
+                    new DatabaseScripterFactory(this.LoggerFactory),
+                    new DatabaseMapper(),
+                    new DatabaseFilter(),
+                    taskService);
+                dbCompareService.StartCompare();
 
-            if (taskService.CurrentTaskInfos.Any(x => x.Status == TaskStatus.Faulted ||
-                                                      x.Status == TaskStatus.Canceled))
-            {
-                var exception = taskService.CurrentTaskInfos.FirstOrDefault(x => x.Status == TaskStatus.Faulted ||
-                                                                                 x.Status == TaskStatus.Canceled)?.Exception;
-                if (exception != null)
+                while (!taskService.CurrentTaskInfos.All(x => x.Status == TaskStatus.RanToCompletion ||
+                                                              x.Status == TaskStatus.Faulted ||
+                                                              x.Status == TaskStatus.Canceled))
                 {
-                    throw exception;
+                    Thread.Sleep(200);
                 }
 
-                throw new XunitException("Unknown error during compare task");
-            }
+                if (taskService.CurrentTaskInfos.Any(x => x.Status == TaskStatus.Faulted ||
+                                                          x.Status == TaskStatus.Canceled))
+                {
+                    var exception = taskService.CurrentTaskInfos.FirstOrDefault(x => x.Status == TaskStatus.Faulted ||
+                                                                                     x.Status == TaskStatus.Canceled)?.Exception;
+                    if (exception != null)
+                    {
+                        throw exception;
+                    }
 
-            projectService.Project.Result.Should().NotBeNull();
+                    throw new XunitException("Unknown error during compare task");
+                }
+
+                projectService.Project.Result.Should().NotBeNull();
+            }
         }
 
         /// <summary>

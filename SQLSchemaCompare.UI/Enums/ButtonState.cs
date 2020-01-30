@@ -18,6 +18,6 @@
         /// <summary>
         /// Makes the button unclickable
         /// </summary>
-        Disabled
+        Disabled,
     }
 }

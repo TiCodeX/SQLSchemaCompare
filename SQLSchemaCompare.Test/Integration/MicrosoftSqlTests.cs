@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text;
 using FluentAssertions;
-using SQLSchemaCompare.Test;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
@@ -27,6 +26,11 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public MicrosoftSqlTests(ITestOutputHelper output, DatabaseFixtureMicrosoftSql dbFixture)
             : base(output)
         {
+            if (dbFixture == null)
+            {
+                throw new ArgumentNullException(nameof(dbFixture));
+            }
+
             this.dbFixture = dbFixture;
             this.dbFixture.SetLoggerFactory(this.LoggerFactory);
             this.dbFixture.InitServers(DatabaseFixtureMicrosoftSql.ServerPorts);
@@ -39,6 +43,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void GetMicrosoftSqlDatabaseList(short port)
         {
             var mssqldbp = this.dbFixture.GetDatabaseProvider(string.Empty, port);
@@ -55,6 +60,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void GetMicrosoftSqlSakilaDatabase(short port)
         {
             var mssqldbp = this.dbFixture.GetDatabaseProvider("sakila", port);
@@ -108,6 +114,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void CloneMicrosoftSqlDatabase(short port)
         {
             const string databaseName = "sakila";
@@ -141,6 +148,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseSourceEmpty(short port)
         {
             var sourceDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
@@ -170,6 +178,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetEmpty(short port)
         {
             const string sourceDatabaseName = "sakila";
@@ -194,6 +203,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetMissingColumn(short port)
         {
             var sb = new StringBuilder();
@@ -208,6 +218,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetMissingColumns(short port)
         {
             var sb = new StringBuilder();
@@ -222,6 +233,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetExtraColumn(short port)
         {
             var sb = new StringBuilder();
@@ -236,6 +248,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetExtraColumns(short port)
         {
             var sb = new StringBuilder();
@@ -251,6 +264,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetColumnDifferentType(short port)
         {
             var sb = new StringBuilder();
@@ -265,6 +279,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentView(short port)
         {
             var sb = new StringBuilder();
@@ -279,6 +294,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentFunction(short port)
         {
             var sb = new StringBuilder();
@@ -304,6 +320,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentStoredProcedure(short port)
         {
             var sb = new StringBuilder();
@@ -322,6 +339,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentSequence(short port)
         {
             var sb = new StringBuilder();
@@ -337,6 +355,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentType(short port)
         {
             var sb = new StringBuilder();
@@ -352,6 +371,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetMissingIndex(short port)
         {
             var sb = new StringBuilder();
@@ -366,6 +386,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetExtraIndex(short port)
         {
             var sb = new StringBuilder();
@@ -380,6 +401,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentIndexFilter(short port)
         {
             var sb = new StringBuilder();
@@ -395,6 +417,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentIndexType(short port)
         {
             var sb = new StringBuilder();
@@ -410,6 +433,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetMissingTrigger(short port)
         {
             var sb = new StringBuilder();
@@ -424,6 +448,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetExtraTrigger(short port)
         {
             var sb = new StringBuilder();
@@ -441,6 +466,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentTrigger(short port)
         {
             var sb = new StringBuilder();
@@ -458,6 +484,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetMissingDefaultConstraint(short port)
         {
             var sb = new StringBuilder();
@@ -472,6 +499,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetExtraDefaultConstraint(short port)
         {
             var sb = new StringBuilder();
@@ -486,6 +514,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentDefaultConstraint(short port)
         {
             var sb = new StringBuilder();
@@ -501,6 +530,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetMissingCheckConstraint(short port)
         {
             var sb = new StringBuilder();
@@ -515,6 +545,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetExtraCheckConstraint(short port)
         {
             var sb = new StringBuilder();
@@ -529,6 +560,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetDifferentCheckConstraint(short port)
         {
             var sb = new StringBuilder();
@@ -544,6 +576,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetMissingPrimaryKey(short port)
         {
             var sb = new StringBuilder();
@@ -558,6 +591,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetExtraPrimaryKey(short port)
         {
             var sb = new StringBuilder();
@@ -572,6 +606,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey(short port)
         {
             var sb = new StringBuilder();
@@ -587,6 +622,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetPrimaryKeyOnDifferentColumn(short port)
         {
             var sb = new StringBuilder();
@@ -602,6 +638,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetExtraForeignKey(short port)
         {
             var sb = new StringBuilder();
@@ -616,6 +653,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetMissingForeignKey(short port)
         {
             var sb = new StringBuilder();
@@ -630,6 +668,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetForeignKeyReferencesDifferentColumn(short port)
         {
             var sb = new StringBuilder();
@@ -645,6 +684,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetForeignKeyDifferentOptions(short port)
         {
             var sb = new StringBuilder();
@@ -660,6 +700,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
+        [Category("MicrosoftSQL")]
         public void MigrateMicrosoftSqlDatabaseTargetSchemaDifferentOwner(short port)
         {
             var sb = new StringBuilder();

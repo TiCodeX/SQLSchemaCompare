@@ -23,6 +23,11 @@ namespace TiCodeX.SQLSchemaCompare.Services
         /// <param name="loggerFactory">The injected logger factory</param>
         public ProjectService(IProjectRepository projectRepository, ILoggerFactory loggerFactory)
         {
+            if (loggerFactory == null)
+            {
+                throw new ArgumentNullException(nameof(loggerFactory));
+            }
+
             this.logger = loggerFactory.CreateLogger(nameof(ProjectService));
             this.projectRepository = projectRepository;
         }

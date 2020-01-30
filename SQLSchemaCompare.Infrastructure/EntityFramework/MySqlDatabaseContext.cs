@@ -42,7 +42,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseMySQL(this.ConnectionString);
+            optionsBuilder.UseMySql(this.ConnectionString);
         }
     }
 }

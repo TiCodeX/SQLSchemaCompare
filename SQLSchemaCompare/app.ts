@@ -1,4 +1,4 @@
-/* tslint:disable:no-require-imports no-implicit-dependencies max-file-line-count only-arrow-functions no-magic-numbers */
+/* tslint:disable:no-require-imports no-implicit-dependencies max-file-line-count only-arrow-functions no-magic-numbers file-name-casing */
 import builderUtilRuntime = require("builder-util-runtime");
 import childProcess = require("child_process");
 import portfinder = require("detect-port");
@@ -187,6 +187,7 @@ setTimeout(() => {
 
 //#region Register the rendered callbacks
 // Register the renderer callback for logging the UI
+// tslint:disable-next-line:completed-docs
 electron.ipcMain.on("log", (event: Electron.Event, data: { category: string; level: string; message: string }) => {
     const uiLogger: log4js.Logger = log4js.getLogger(data.category);
     switch (data.level) {
@@ -332,6 +333,7 @@ function createMainWindow(): void {
         show: false,
         webPreferences: {
             nodeIntegration: true,
+            webviewTag: true,
         },
     });
 
@@ -385,6 +387,10 @@ function createLoginWindow(showInstantly: boolean): void {
         center: true,
         resizable: false,
         maximizable: false,
+        webPreferences: {
+            nodeIntegration: true,
+            webviewTag: true,
+        },
     });
 
     setEmptyApplicationMenu();
@@ -491,18 +497,19 @@ function startup(): void {
     }
 
     // Setup request default auth header
-    const filter: Electron.OnBeforeSendHeadersFilter = {
+    const filter: Electron.Filter = {
         urls: [
             "http://*/*",
             "https://*/*",
         ],
     };
-    electron.session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details: { requestHeaders: object }, callback: Function) => {
+    electron.session.defaultSession.webRequest.onBeforeSendHeaders(filter,
+        (details: electron.OnBeforeSendHeadersListenerDetails, callback: (beforeSendResponse: electron.BeforeSendResponse) => void) => {
         details.requestHeaders[authorizationHeaderName] = authorizationHeaderValue;
         callback({ cancel: false, requestHeaders: details.requestHeaders });
     });
     // Notify the login window about a redirect
-    electron.session.fromPartition("login").webRequest.onBeforeRedirect(filter, (details: { redirectURL: string }) => {
+    electron.session.fromPartition("login").webRequest.onBeforeRedirect(filter, (details: electron.OnBeforeRedirectListenerDetails) => {
         if (loginWindow !== undefined && loginWindow !== null) {
             loginWindow.webContents.send("LoginRedirect", details.redirectURL);
         }
@@ -516,6 +523,10 @@ function startup(): void {
         alwaysOnTop: false,
         resizable: false,
         maximizable: false,
+        webPreferences: {
+            nodeIntegration: true,
+            webviewTag: true,
+        },
     });
     splashWindow.loadURL(splashUrl);
     splashWindow.show();
@@ -592,7 +603,13 @@ electron.app.on("activate", () => {
 });
 
 // SSL/TSL: this is the self signed certificate support
-electron.app.on("certificate-error", (event: Electron.Event, webContents: Electron.WebContents, url: string, error: string, certificate: Electron.Certificate, callback: Function) => {
+electron.app.on("certificate-error", (
+    event: Electron.Event,
+    webContents: Electron.WebContents,
+    url: string,
+    error: string,
+    certificate: Electron.Certificate,
+    callback: (isTrusted: boolean) => void) => {
     /**
      * On certificate error we disable default behavior (stop loading the page)
      * and we then say "it is all fine - true" to the callback

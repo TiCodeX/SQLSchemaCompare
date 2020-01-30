@@ -1,73 +1,197 @@
 pool:
-  vmImage: 'ubuntu-16.04'
+  vmImage: 'ubuntu-18.04'
 
 trigger: none
 
 variables:
   buildConfiguration: 'Release'
 
-steps:
-- task: DotNetCoreInstaller@0
-  displayName: 'Use .NET Core sdk 2.2.103'
-  inputs:
-    version: 2.2.103
+stages:
+- stage: MicrosoftSQL
+  jobs:
+  - job: IntegrationTests
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .Net Core sdk 3.1.100'
+      inputs:
+        version: 3.1.100
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet restore'
-  inputs:
-    command: restore
-    projects: '**/*.csproj'
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore'
+      inputs:
+        command: restore
+        projects: '**/*.csproj'
 
-- script: |
-    docker pull mcr.microsoft.com/mssql/server:2017-latest-ubuntu
-    #docker pull mcr.microsoft.com/mssql/server:2019-CTP2.2-ubuntu
-    docker pull mysql:5.6
-    docker pull mysql:5.7
-    docker pull mysql:8.0
-    docker pull postgres:9.4-alpine
-    docker pull postgres:9.5-alpine
-    docker pull postgres:9.6-alpine
-    docker pull postgres:10-alpine
-    docker pull postgres:11-alpine
-    docker pull mariadb:5.5
-    docker pull mariadb:10.0
-    docker pull mariadb:10.1
-    docker pull mariadb:10.2
-    docker pull mariadb:10.3
-  displayName: docker pull images
+    - script: |
+        docker pull mcr.microsoft.com/mssql/server:2017-latest
+        docker pull mcr.microsoft.com/mssql/server:2019-latest
+      displayName: docker pull images
 
-- script: |
-    docker run --rm --name mssql-linux-2017 -p 28001:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2017-latest-ubuntu
-    #docker run --rm --name mssql-linux-2019 -p 28002:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2019-CTP2.2-ubuntu
-    docker run --rm --name mysql-5.6 -p 27002:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:5.6
-    docker run --rm --name mysql-5.7 -p 27003:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:5.7
-    docker run --rm --name mysql-8.0 -p 27004:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.0
-    docker run --rm --name postgres-9.4 -p 26002:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:9.4-alpine
-    docker run --rm --name postgres-9.5 -p 26003:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:9.5-alpine
-    docker run --rm --name postgres-9.6 -p 26004:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:9.6-alpine
-    docker run --rm --name postgres-10 -p 26005:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:10-alpine
-    docker run --rm --name postgres-11 -p 26006:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:11-alpine
-    docker run --rm --name mariadb-5.5 -p 29001:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:5.5
-    docker run --rm --name mariadb-10.0 -p 29002:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.0
-    docker run --rm --name mariadb-10.1 -p 29003:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.1
-    docker run --rm --name mariadb-10.2 -p 29004:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.2
-    docker run --rm --name mariadb-10.3 -p 29005:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.3
-  displayName: docker start containers
+    - script: |
+        docker run --rm --name mssql-linux-2017 -p 28001:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2017-latest
+        docker run --rm --name mssql-linux-2019 -p 28002:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2019-latest
+      displayName: docker start containers
 
-- script: dotnet build SQLSchemaCompare.Test --configuration $(buildConfiguration)
-  displayName: dotnet build
+    - script: |
+        dotnet build SQLSchemaCompare.Test --configuration $(buildConfiguration)
+      displayName: dotnet build
 
-- script: dotnet test SQLSchemaCompare.Test --no-build --configuration $(buildConfiguration) --logger trx
-  displayName: dotnet test
-  continueOnError: true
-  env:
-    RunDockerTests: true
+    - script: |
+        dotnet test SQLSchemaCompare.Test --no-build --configuration $(buildConfiguration) --filter "Category=IntegrationTest&Category=MicrosoftSQL" --logger trx
+      displayName: dotnet test
+      continueOnError: true
+      env:
+        RunDockerTests: true
 
-- task: PublishTestResults@2
-  displayName: publish test results
-  inputs:
-    testRunner: VSTest
-    testResultsFiles: '**/*.trx'
+    - task: PublishTestResults@2
+      displayName: publish test results
+      inputs:
+        testRunner: VSTest
+        testResultsFiles: '**/*.trx'
+
+- stage: MySQL
+  jobs:
+  - job: IntegrationTests
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .Net Core sdk 3.1.100'
+      inputs:
+        version: 3.1.100
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore'
+      inputs:
+        command: restore
+        projects: '**/*.csproj'
+
+    - script: |
+        docker pull mysql:5.6
+        docker pull mysql:5.7
+        docker pull mysql:8.0
+      displayName: docker pull images
+
+    - script: |
+        docker run --rm --name mysql-5.6 -p 27002:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:5.6
+        docker run --rm --name mysql-5.7 -p 27003:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:5.7
+        docker run --rm --name mysql-8.0 -p 27004:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.0
+      displayName: docker start containers
+
+    - script: |
+        dotnet build SQLSchemaCompare.Test --configuration $(buildConfiguration)
+      displayName: dotnet build
+
+    - script: |
+        dotnet test SQLSchemaCompare.Test --no-build --configuration $(buildConfiguration) --filter "Category=IntegrationTest&Category=MySQL" --logger trx
+      displayName: dotnet test
+      continueOnError: true
+      env:
+        RunDockerTests: true
+
+    - task: PublishTestResults@2
+      displayName: publish test results
+      inputs:
+        testRunner: VSTest
+        testResultsFiles: '**/*.trx'
+
+- stage: PostgreSQL
+  jobs:
+  - job: IntegrationTests
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .Net Core sdk 3.1.100'
+      inputs:
+        version: 3.1.100
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore'
+      inputs:
+        command: restore
+        projects: '**/*.csproj'
+
+    - script: |
+        docker pull postgres:9.4-alpine
+        docker pull postgres:9.5-alpine
+        docker pull postgres:9.6-alpine
+        docker pull postgres:10-alpine
+        docker pull postgres:11-alpine
+        docker pull postgres:12-alpine
+      displayName: docker pull images
+
+    - script: |
+        docker run --rm --name postgres-9.4 -p 26002:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:9.4-alpine
+        docker run --rm --name postgres-9.5 -p 26003:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:9.5-alpine
+        docker run --rm --name postgres-9.6 -p 26004:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:9.6-alpine
+        docker run --rm --name postgres-10 -p 26005:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:10-alpine
+        docker run --rm --name postgres-11 -p 26006:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:11-alpine
+        docker run --rm --name postgres-12 -p 26007:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:12-alpine
+      displayName: docker start containers
+
+    - script: |
+        dotnet build SQLSchemaCompare.Test --configuration $(buildConfiguration)
+      displayName: dotnet build
+
+    - script: |
+        dotnet test SQLSchemaCompare.Test --no-build --configuration $(buildConfiguration) --filter "Category=IntegrationTest&Category=PostgreSQL" --logger trx
+      displayName: dotnet test
+      continueOnError: true
+      env:
+        RunDockerTests: true
+
+    - task: PublishTestResults@2
+      displayName: publish test results
+      inputs:
+        testRunner: VSTest
+        testResultsFiles: '**/*.trx'
+
+- stage: MariaDB
+  jobs:
+  - job: IntegrationTests
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .Net Core sdk 3.1.100'
+      inputs:
+        version: 3.1.100
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore'
+      inputs:
+        command: restore
+        projects: '**/*.csproj'
+
+    - script: |
+        docker pull mariadb:5.5
+        docker pull mariadb:10.0
+        docker pull mariadb:10.1
+        docker pull mariadb:10.2
+        docker pull mariadb:10.3
+        docker pull mariadb:10.4
+      displayName: docker pull images
+
+    - script: |
+        docker run --rm --name mariadb-5.5 -p 29001:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:5.5
+        docker run --rm --name mariadb-10.0 -p 29002:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.0
+        docker run --rm --name mariadb-10.1 -p 29003:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.1
+        docker run --rm --name mariadb-10.2 -p 29004:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.2
+        docker run --rm --name mariadb-10.3 -p 29005:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.3
+        docker run --rm --name mariadb-10.4 -p 29006:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.4
+      displayName: docker start containers
+
+    - script: |
+        dotnet build SQLSchemaCompare.Test --configuration $(buildConfiguration)
+      displayName: dotnet build
+
+    - script: |
+        dotnet test SQLSchemaCompare.Test --no-build --configuration $(buildConfiguration) --filter "Category=IntegrationTest&Category=MariaDB" --logger trx
+      displayName: dotnet test
+      continueOnError: true
+      env:
+        RunDockerTests: true
+
+    - task: PublishTestResults@2
+      displayName: publish test results
+      inputs:
+        testRunner: VSTest
+        testResultsFiles: '**/*.trx'
 
 #- script: |
 #    docker container stop mssql-linux-2017
@@ -80,9 +204,11 @@ steps:
 #    docker container stop postgres-9.6
 #    docker container stop postgres-10
 #    docker container stop postgres-11
+#    docker container stop postgres-12
 #    docker container stop mariadb-5.5
 #    docker container stop mariadb-10.0
 #    docker container stop mariadb-10.1
 #    docker container stop mariadb-10.2
 #    docker container stop mariadb-10.3
+#    docker container stop mariadb-10.4
 #  displayName: docker stop containers

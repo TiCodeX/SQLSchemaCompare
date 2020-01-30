@@ -5,12 +5,11 @@ using FluentAssertions;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
-using TiCodeX.SQLSchemaCompare.Test;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace SQLSchemaCompare.Test.Integration
+namespace TiCodeX.SQLSchemaCompare.Test.Integration
 {
     /// <summary>
     /// Integration tests for MariaDB
@@ -27,6 +26,11 @@ namespace SQLSchemaCompare.Test.Integration
         public MariaDbTests(ITestOutputHelper output, DatabaseFixtureMariaDb dbFixture)
             : base(output)
         {
+            if (dbFixture == null)
+            {
+                throw new ArgumentNullException(nameof(dbFixture));
+            }
+
             this.dbFixture = dbFixture;
             this.dbFixture.SetLoggerFactory(this.LoggerFactory);
             this.dbFixture.InitServers(DatabaseFixtureMariaDb.ServerPorts);
@@ -39,6 +43,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void GetMariaDbDatabaseList(short port)
         {
             var mariadbdbp = this.dbFixture.GetDatabaseProvider(string.Empty, port);
@@ -54,6 +59,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void GetMariaDbSakilaDatabase(short port)
         {
             var mariadbdbp = this.dbFixture.GetDatabaseProvider("sakila", port);
@@ -98,6 +104,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void CloneMariaDbDatabase(short port)
         {
             const string databaseName = "sakila";
@@ -131,6 +138,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseSourceEmpty(short port)
         {
             var sourceDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
@@ -160,6 +168,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetEmpty(short port)
         {
             const string sourceDatabaseName = "sakila";
@@ -184,6 +193,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetMissingColumn(short port)
         {
             var sb = new StringBuilder();
@@ -198,6 +208,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetMissingColumns(short port)
         {
             var sb = new StringBuilder();
@@ -213,6 +224,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetExtraColumn(short port)
         {
             var sb = new StringBuilder();
@@ -227,6 +239,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetExtraColumns(short port)
         {
             var sb = new StringBuilder();
@@ -242,6 +255,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetColumnDifferentType(short port)
         {
             var sb = new StringBuilder();
@@ -256,6 +270,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetColumnMissingDefault(short port)
         {
             var sb = new StringBuilder();
@@ -270,6 +285,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetColumnExtraDefault(short port)
         {
             var sb = new StringBuilder();
@@ -284,6 +300,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetColumnDifferentDefault(short port)
         {
             var sb = new StringBuilder();
@@ -298,6 +315,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetDifferentView(short port)
         {
             var sb = new StringBuilder();
@@ -312,6 +330,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetDifferentFunction(short port)
         {
             var sb = new StringBuilder();
@@ -341,6 +360,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetDifferentStoredProcedure(short port)
         {
             var sb = new StringBuilder();
@@ -366,6 +386,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetMissingIndex(short port)
         {
             var sb = new StringBuilder();
@@ -380,6 +401,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetExtraIndex(short port)
         {
             var sb = new StringBuilder();
@@ -394,6 +416,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetDifferentIndex(short port)
         {
             var sb = new StringBuilder();
@@ -409,6 +432,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetMissingTrigger(short port)
         {
             var sb = new StringBuilder();
@@ -423,6 +447,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetExtraTrigger(short port)
         {
             var sb = new StringBuilder();
@@ -441,6 +466,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetDifferentTrigger(short port)
         {
             var sb = new StringBuilder();
@@ -467,6 +493,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetMissingPrimaryKey(short port)
         {
             var sb = new StringBuilder();
@@ -482,6 +509,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetExtraPrimaryKey(short port)
         {
             var sb = new StringBuilder();
@@ -496,6 +524,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey(short port)
         {
             // Skip test for MariaDB version 5.5 because adding a new foreign key it creates automatically an index and
@@ -519,6 +548,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetPrimaryKeyOnDifferentColumn(short port)
         {
             var sb = new StringBuilder();
@@ -536,6 +566,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetExtraForeignKey(short port)
         {
             var sb = new StringBuilder();
@@ -550,6 +581,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetMissingForeignKey(short port)
         {
             var sb = new StringBuilder();
@@ -564,6 +596,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetForeignKeyReferencesDifferentColumn(short port)
         {
             var sb = new StringBuilder();
@@ -579,6 +612,7 @@ namespace SQLSchemaCompare.Test.Integration
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
+        [Category("MariaDB")]
         public void MigrateMariaDbDatabaseTargetForeignKeyDifferentOptions(short port)
         {
             var sb = new StringBuilder();

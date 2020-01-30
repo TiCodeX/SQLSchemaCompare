@@ -29,7 +29,7 @@
     <Rule Id="CA1027" Action="Error" />
     <Rule Id="CA1028" Action="Error" />
     <Rule Id="CA1030" Action="Error" />
-    <Rule Id="CA1031" Action="Error" />
+    <Rule Id="CA1031" Action="None" />
     <Rule Id="CA1032" Action="Error" />
     <Rule Id="CA1033" Action="Error" />
     <Rule Id="CA1034" Action="Error" />
@@ -65,7 +65,7 @@
     <Rule Id="CA1300" Action="Error" />
     <Rule Id="CA1301" Action="Error" />
     <Rule Id="CA1302" Action="Error" />
-    <Rule Id="CA1303" Action="Error" />
+    <Rule Id="CA1303" Action="None" />
     <Rule Id="CA1304" Action="Error" />
     <Rule Id="CA1305" Action="Error" />
     <Rule Id="CA1306" Action="Error" />
@@ -404,6 +404,8 @@
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <!--SA1200UsingDirectivesMustBePlacedCorrectly-->
     <Rule Id="SA1200" Action="None" />
+    <!--SA1629DocumentationTextMustEndWithAPeriod-->
+    <Rule Id="SA1629" Action="None" />
     <!--SA1633FileMustHaveHeader-->
     <Rule Id="SA1633" Action="None" />
     <!--SA1652EnableXmlDocumentationOutput-->

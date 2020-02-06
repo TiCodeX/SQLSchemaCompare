@@ -54,6 +54,11 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Api
         public DateTime? ExpirationDate { get; set; }
 
         /// <summary>
+        /// Gets or sets the server date
+        /// </summary>
+        public DateTime ServerDate { get; set; }
+
+        /// <summary>
         /// Gets or sets the account email address
         /// </summary>
         public string Email { get; set; }

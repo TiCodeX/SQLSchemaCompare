@@ -202,7 +202,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
                     };
                 }
 
-                if (!this.accountService.CustomerInformation.ExpirationDate.HasValue || this.accountService.CustomerInformation.ExpirationDate.Value < DateTime.Now)
+                if (!this.accountService.CustomerInformation.ExpirationDate.HasValue || this.accountService.CustomerInformation.ExpirationDate.Value < this.accountService.CustomerInformation.ServerDate)
                 {
                     if (this.accountService.CustomerInformation.IsTrial.HasValue && this.accountService.CustomerInformation.IsTrial.Value)
                     {

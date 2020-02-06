@@ -40,6 +40,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         }
 
         /// <summary>
+        /// Gets or sets the current server version
+        /// </summary>
+        public Version CurrentServerVersion { get; set; } = new Version(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
+
+        /// <summary>
         /// Gets the injected logger
         /// </summary>
         protected ILogger Logger { get; }
@@ -58,11 +63,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         /// Gets the options to connect to the Database
         /// </summary>
         protected TDatabaseProviderOptions Options { get; }
-
-        /// <summary>
-        /// Gets or sets the current server version
-        /// </summary>
-        protected Version CurrentServerVersion { get; set; } = new Version(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
 
         /// <inheritdoc/>
         public abstract List<string> GetDatabaseList();

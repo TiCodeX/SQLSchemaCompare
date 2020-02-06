@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
 
@@ -9,6 +10,11 @@ namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
     /// </summary>
     public interface IDatabaseProvider
     {
+        /// <summary>
+        /// Gets the server version
+        /// </summary>
+        Version CurrentServerVersion { get; }
+
         /// <summary>
         /// Gets the database structure
         /// </summary>

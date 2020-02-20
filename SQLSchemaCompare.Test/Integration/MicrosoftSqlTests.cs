@@ -92,7 +92,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             db.Views.Should().ContainSingle(x => x.Name == "film_list");
 
             db.Functions.Count.Should().Be(2);
-            db.StoredProcedures.Count.Should().Be(1);
+            db.StoredProcedures.Count.Should().Be(2);
 
             db.DataTypes.Should().NotBeNullOrEmpty();
             db.DataTypes.Count.Should().Be(37);
@@ -706,6 +706,21 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER AUTHORIZATION ON SCHEMA::[business] TO [guest]");
             this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have a long stored procedure
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingStoredProcedure(short port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP PROCEDURE SeedData");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port, 0);
         }
     }
 }

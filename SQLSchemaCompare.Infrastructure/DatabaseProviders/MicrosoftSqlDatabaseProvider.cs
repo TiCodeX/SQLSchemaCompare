@@ -220,12 +220,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbView> GetViews(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT TABLE_NAME as 'Name',");
-            query.AppendLine("       TABLE_SCHEMA as 'Schema',");
-            query.AppendLine("       VIEW_DEFINITION as 'ViewDefinition'");
-            query.AppendLine("FROM INFORMATION_SCHEMA.VIEWS");
-            query.AppendLine("WHERE NULLIF(VIEW_DEFINITION, '') IS NOT NULL AND");
-            query.AppendLine("      TABLE_SCHEMA <> 'sys'");
+            query.AppendLine("SELECT name as 'Name',");
+            query.AppendLine("       SCHEMA_NAME(schema_id) as 'Schema',");
+            query.AppendLine("       OBJECT_DEFINITION(object_id) as 'ViewDefinition'");
+            query.AppendLine("FROM sys.views");
+            query.AppendLine("WHERE NULLIF(OBJECT_DEFINITION(object_id), '') IS NOT NULL AND");
+            query.AppendLine("      SCHEMA_NAME(schema_id) <> 'sys'");
 
             return context.Query<MicrosoftSqlView>(query.ToString());
         }
@@ -234,13 +234,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbFunction> GetFunctions(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT ROUTINE_NAME as 'Name',");
-            query.AppendLine("       ROUTINE_SCHEMA as 'Schema',");
-            query.AppendLine("       ROUTINE_DEFINITION as 'Definition'");
-            query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
-            query.AppendLine("WHERE routine_type = 'FUNCTION' AND");
-            query.AppendLine("      NULLIF(ROUTINE_DEFINITION, '') IS NOT NULL AND");
-            query.AppendLine("      ROUTINE_SCHEMA <> 'sys'");
+            query.AppendLine("SELECT name as 'Name',");
+            query.AppendLine("       SCHEMA_NAME(schema_id) as 'Schema',");
+            query.AppendLine("       OBJECT_DEFINITION(object_id) as 'Definition'");
+            query.AppendLine("FROM sys.objects");
+            query.AppendLine("WHERE type IN ('FN', 'TF', 'IF', 'AF', 'FT', 'IS', 'FS') AND");
+            query.AppendLine("      NULLIF(OBJECT_DEFINITION(object_id), '') IS NOT NULL AND");
+            query.AppendLine("      SCHEMA_NAME(schema_id) <> 'sys'");
 
             return context.Query<MicrosoftSqlFunction>(query.ToString());
         }
@@ -249,13 +249,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT ROUTINE_NAME as 'Name',");
-            query.AppendLine("       ROUTINE_SCHEMA as 'Schema',");
-            query.AppendLine("       ROUTINE_DEFINITION as 'Definition'");
-            query.AppendLine("FROM INFORMATION_SCHEMA.ROUTINES");
-            query.AppendLine("WHERE routine_type = 'PROCEDURE' AND");
-            query.AppendLine("      NULLIF(ROUTINE_DEFINITION, '') IS NOT NULL AND");
-            query.AppendLine("      ROUTINE_SCHEMA <> 'sys'");
+            query.AppendLine("SELECT name as 'Name',");
+            query.AppendLine("       SCHEMA_NAME(schema_id) as 'Schema',");
+            query.AppendLine("       OBJECT_DEFINITION(object_id) as 'Definition'");
+            query.AppendLine("FROM sys.objects");
+            query.AppendLine("WHERE type IN ('P', 'PC') AND");
+            query.AppendLine("      NULLIF(OBJECT_DEFINITION(object_id), '') IS NOT NULL AND");
+            query.AppendLine("      SCHEMA_NAME(schema_id) <> 'sys'");
 
             return context.Query<MicrosoftSqlStoredProcedure>(query.ToString());
         }

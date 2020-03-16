@@ -73,7 +73,6 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
             services.AddSingleton<IProjectService, ProjectService>();
             services.AddSingleton<ITaskService, TaskService>();
-            services.AddSingleton<IAccountService, CustomerAccountService>();
             services.AddSingleton<ICipherService, CipherService>();
 
             // Repository

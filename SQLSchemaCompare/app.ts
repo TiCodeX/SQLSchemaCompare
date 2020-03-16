@@ -23,7 +23,6 @@ const loggerPath: string = path.join(os.homedir(), ".SQLSchemaCompare", "log", "
 const loggerPattern: string = "yyyy-MM-dd-ui";
 const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles: number = 9;
-const autoUpdaterUrl: string = "https://download.ticodex.com/sqlschemacompare";
 const authorizationHeaderName: string = "CustomAuthToken";
 const authorizationHeaderValue: string = "d6e9b4c2-25d3-a625-e9a6-2135f3d2f809";
 let servicePath: string;
@@ -37,12 +36,8 @@ switch (process.platform) {
     default: // Windows
         servicePath = path.join(path.dirname(process.execPath), "bin", "TiCodeX.SQLSchemaCompare.UI.exe");
 }
-let serviceUrl: string = "https://127.0.0.1:{port}";
-let loginUrl: string = `https://127.0.0.1:{port}/login?v=${electron.app.getVersion()}`;
+let serviceUrl: string = `https://127.0.0.1:{port}/?v=${electron.app.getVersion()}`;
 let serviceProcess: childProcess.ChildProcess;
-let autoUpdaterInfo: electronUpdater.UpdateInfo;
-let autoUpdaterReadyToBeInstalled: boolean = false;
-let autoUpdaterAutoDownloadFailed: boolean = false;
 let serviceCommunicationSuccessful: boolean = false;
 
 // Read the first argument to get the project file
@@ -65,7 +60,6 @@ if (process.argv.length > 1) {
  */
 let splashWindow: Electron.BrowserWindow;
 let mainWindow: Electron.BrowserWindow;
-let loginWindow: Electron.BrowserWindow;
 
 log4js.configure({
     appenders: {
@@ -100,7 +94,7 @@ logger.info(`Starting SQL Schema Compare v${electron.app.getVersion()}`);
 const isSecondInstance: boolean = !electron.app.requestSingleInstanceLock();
 electron.app.on("second-instance", (event: Event, argv: Array<string>) => {
     // Someone tried to run a second instance, we should focus our current window
-    const currentWindow: Electron.BrowserWindow = loginWindow !== undefined ? loginWindow : mainWindow;
+    const currentWindow: Electron.BrowserWindow = mainWindow;
     if (currentWindow !== undefined && currentWindow !== null) {
         if (currentWindow.isMinimized()) {
             currentWindow.restore();
@@ -110,56 +104,6 @@ electron.app.on("second-instance", (event: Event, argv: Array<string>) => {
         if (!isDebug && argv.length > 1 && argv[1] !== "--updated") {
             currentWindow.webContents.send("LoadProject", argv[1]);
         }
-    }
-});
-//#endregion
-
-//#region Configure electron auto-updater
-const autoUpdaterLogger: log4js.Logger = log4js.getLogger("electron-updater");
-autoUpdaterLogger.level = (isDebug ? "debug" : "info");
-electronUpdater.autoUpdater.logger = {
-    info: (message: string): void => { autoUpdaterLogger.info(message); },
-    warn: (message: string): void => { autoUpdaterLogger.warn(message); },
-    error: (message: string): void => { autoUpdaterLogger.error(message); },
-    debug: (message: string): void => { autoUpdaterLogger.debug(message); },
-};
-electronUpdater.autoUpdater.autoDownload = !isDebug && !isSecondInstance && process.platform !== "linux";
-electronUpdater.autoUpdater.autoInstallOnAppQuit = false;
-const autoUpdaterPublishOptions: builderUtilRuntime.GenericServerOptions = {
-    provider: "generic",
-    url: autoUpdaterUrl,
-    useMultipleRangeRequest: false,
-};
-electronUpdater.autoUpdater.setFeedURL(autoUpdaterPublishOptions);
-
-/**
- * Send a notification to the window that an update is available
- */
-function NotifyUpdateAvailable(): void {
-    const currentWindow: Electron.BrowserWindow = loginWindow !== undefined ? loginWindow : mainWindow;
-    if (currentWindow !== undefined && currentWindow !== null) {
-        currentWindow.webContents.send("UpdateAvailable",
-            {
-                platform: process.platform,
-                readyToBeInstalled: autoUpdaterReadyToBeInstalled,
-                autoDownloadFailed: autoUpdaterAutoDownloadFailed,
-                version: (autoUpdaterInfo === undefined ? "" : autoUpdaterInfo.version),
-            });
-    }
-}
-
-electronUpdater.autoUpdater.on("update-available", (info: electronUpdater.UpdateInfo) => {
-    autoUpdaterInfo = info;
-});
-electronUpdater.autoUpdater.on("update-downloaded", () => {
-    autoUpdaterReadyToBeInstalled = true;
-    NotifyUpdateAvailable();
-});
-electronUpdater.autoUpdater.on("error", () => {
-    // Only set that an error occurred if there is an update available
-    if (autoUpdaterInfo !== undefined) {
-        autoUpdaterAutoDownloadFailed = true;
-        NotifyUpdateAvailable();
     }
 });
 //#endregion
@@ -213,31 +157,19 @@ electron.ipcMain.on("log", (event: Electron.Event, data: { category: string; lev
 // Register the renderer callback for opening the main window
 electron.ipcMain.on("OpenMainWindow", () => {
     serviceCommunicationSuccessful = true;
-    createMainWindow();
-});
-// Register the renderer callback for opening the login window
-electron.ipcMain.on("OpenLoginWindow", () => {
-    serviceCommunicationSuccessful = true;
-    createLoginWindow(true);
-});
-// Register the renderer callback for opening the login window
-electron.ipcMain.on("ShowLoginWindow", () => {
-    serviceCommunicationSuccessful = true;
-    // Destroy splash window
+   // Destroy splash window
     if (splashWindow !== undefined) {
         splashWindow.destroy();
         splashWindow = undefined;
     }
-    // Show login window
-    if (loginWindow !== undefined) {
-        loginWindow.show();
-        loginWindow.focus();
+
+    // Show main Window
+    if (mainWindow !== undefined) {
+        mainWindow.show();
+        mainWindow.focus();
     }
 });
-// Register the renderer callback to retrieve the updates
-electron.ipcMain.on("CheckUpdateAvailable", () => {
-    NotifyUpdateAvailable();
-});
+
 // Register the renderer callback to check if need to load a project
 electron.ipcMain.on("CheckLoadProject", () => {
     if (projectToOpen !== undefined && mainWindow !== undefined) {
@@ -245,10 +177,7 @@ electron.ipcMain.on("CheckLoadProject", () => {
         projectToOpen = undefined;
     }
 });
-// Register the renderer callback to quit and install the update
-electron.ipcMain.on("QuitAndInstall", () => {
-    electronUpdater.autoUpdater.quitAndInstall(true, true);
-});
+
 // Register the renderer callback to open the logs folder
 electron.ipcMain.on("OpenLogsFolder", () => {
     electron.shell.openItem(path.dirname(loggerPath));
@@ -346,8 +275,6 @@ function createMainWindow(): void {
      */
     mainWindowState.manage(mainWindow);
 
-    mainWindow.loadURL(serviceUrl);
-
     // Emitted when the window is closed.
     mainWindow.on("closed", () => {
         /**
@@ -358,107 +285,49 @@ function createMainWindow(): void {
         mainWindow = undefined;
     });
 
-    // Destroy splash window
-    if (splashWindow !== undefined) {
-        splashWindow.destroy();
-        splashWindow = undefined;
-    }
-    // Destroy login window
-    if (loginWindow !== undefined) {
-        loginWindow.destroy();
-        loginWindow = undefined;
-    }
-
-    mainWindow.show();
-    mainWindow.focus();
-}
-
-/**
- * Create the login window ensuring to destroy the main window
- * @param showInstantly True if the window should be shown instantly
- */
-function createLoginWindow(showInstantly: boolean): void {
-    // Create the login window
-    loginWindow = new electron.BrowserWindow({
-        width: 700,
-        height: 650,
-        title: "SQL Schema Compare - TiCodeX SA",
-        show: false,
-        center: true,
-        resizable: false,
-        maximizable: false,
-        webPreferences: {
-            nodeIntegration: true,
-            webviewTag: true,
-        },
+    let loadFailed: boolean = false;
+    let loadFailedError: string;
+    let retries: number = 100;
+    mainWindow.webContents.on("did-fail-load", (event: electron.Event, errorCode: number, errorDescription: string) => {
+        loadFailed = true;
+        loadFailedError = errorDescription;
+        retries--;
     });
-
-    setEmptyApplicationMenu();
-
-    // Emitted when the window is closed.
-    loginWindow.on("closed", () => {
-        /**
-         * Dereference the window object, usually you would store windows
-         * in an array if your app supports multi windows, this is the time
-         * when you should delete the corresponding element.
-         */
-        loginWindow = undefined;
-    });
-
-    if (mainWindow !== undefined) {
-        mainWindow.destroy();
-        mainWindow = undefined;
-    }
-
-    if (showInstantly) {
-        loginWindow.loadURL(loginUrl);
-        loginWindow.show();
-        loginWindow.focus();
-
-    } else {
-        let loadFailed: boolean = false;
-        let loadFailedError: string;
-        let retries: number = 100;
-        loginWindow.webContents.on("did-fail-load", (event: electron.Event, errorCode: number, errorDescription: string) => {
-            loadFailed = true;
-            loadFailedError = errorDescription;
-            retries--;
-        });
-        loginWindow.webContents.on("did-finish-load", () => {
-            if (loadFailed) {
-                logger.debug(`Unable to contact service (${loadFailedError}), retrying... (${retries})`);
-                if (retries > 0) {
-                    // Reset the flag and trigger a new load
-                    loadFailed = false;
-                    if (process.platform !== "linux") {
-                        loginWindow.loadURL(loginUrl);
-                    } else {
-                        // Add a small delay on linux because the fail event is triggered very fast
-                        setTimeout(() => {
-                            loginWindow.loadURL(loginUrl);
-                        }, 400);
-                    }
+    mainWindow.webContents.on("did-finish-load", () => {
+        if (loadFailed) {
+            logger.debug(`Unable to contact service (${loadFailedError}), retrying... (${retries})`);
+            if (retries > 0) {
+                // Reset the flag and trigger a new load
+                loadFailed = false;
+                if (process.platform !== "linux") {
+                    mainWindow.loadURL(serviceUrl);
                 } else {
-                    logger.error(`Unable to contact service (${loadFailedError})`);
+                    // Add a small delay on linux because the fail event is triggered very fast
+                    setTimeout(() => {
+                        mainWindow.loadURL(serviceUrl);
+                    }, 400);
+                }
+            } else {
+                logger.error(`Unable to contact service (${loadFailedError})`);
+                electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
+                electron.app.quit();
+            }
+        } else {
+            logger.info("Application started successfully");
+
+            setTimeout(() => {
+                if (!serviceCommunicationSuccessful) {
+                    logger.error("Service unable to contact main application");
                     electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
                     electron.app.quit();
                 }
-            } else {
-                logger.info("Application started successfully");
+            }, 10000);
+        }
+    });
 
-                setTimeout(() => {
-                    if (!serviceCommunicationSuccessful) {
-                        logger.error("Service unable to contact main application");
-                        electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
-                        electron.app.quit();
-                    }
-                }, 10000);
-            }
-        });
+    // Events registered, now load the URL
+    mainWindow.loadURL(serviceUrl);
 
-        // Events registered, now load the URL
-        loginWindow.loadURL(loginUrl);
-    }
 }
 
 /**
@@ -505,15 +374,9 @@ function startup(): void {
     };
     electron.session.defaultSession.webRequest.onBeforeSendHeaders(filter,
         (details: electron.OnBeforeSendHeadersListenerDetails, callback: (beforeSendResponse: electron.BeforeSendResponse) => void) => {
-        details.requestHeaders[authorizationHeaderName] = authorizationHeaderValue;
-        callback({ cancel: false, requestHeaders: details.requestHeaders });
-    });
-    // Notify the login window about a redirect
-    electron.session.fromPartition("login").webRequest.onBeforeRedirect(filter, (details: electron.OnBeforeRedirectListenerDetails) => {
-        if (loginWindow !== undefined && loginWindow !== null) {
-            loginWindow.webContents.send("LoginRedirect", details.redirectURL);
-        }
-    });
+            details.requestHeaders[authorizationHeaderName] = authorizationHeaderValue;
+            callback({ cancel: false, requestHeaders: details.requestHeaders });
+        });
 
     splashWindow = new electron.BrowserWindow({
         width: 640,
@@ -533,17 +396,8 @@ function startup(): void {
     splashWindow.focus();
     logger.debug("Splashscreen window started");
 
-    electronUpdater.autoUpdater.checkForUpdates().catch(() => {
-        logger.error("Error checking for updates");
-    });
-
     splashWindow.on("closed", () => {
         if (!serviceCommunicationSuccessful) {
-            // Destroy login/main window if splash is closed before service contacting electron
-            if (loginWindow !== undefined) {
-                loginWindow.destroy();
-                loginWindow = undefined;
-            }
             if (mainWindow !== undefined) {
                 mainWindow.destroy();
                 mainWindow = undefined;
@@ -554,7 +408,6 @@ function startup(): void {
 
     portfinder(initialPort, (errorWebPort: Error, webPort: number) => {
         serviceUrl = serviceUrl.replace("{port}", `${webPort}`);
-        loginUrl = loginUrl.replace("{port}", `${webPort}`);
 
         startService(webPort);
 
@@ -563,7 +416,7 @@ function startup(): void {
             return;
         }
 
-        createLoginWindow(false);
+        createMainWindow();
     });
 }
 
@@ -597,7 +450,7 @@ electron.app.on("activate", () => {
      * On OS X it's common to re-create a window in the app when the
      * dock icon is clicked and there are no other windows open.
      */
-    if (mainWindow === undefined && loginWindow === undefined) {
+    if (mainWindow === undefined) {
         startup();
     }
 });

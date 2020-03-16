@@ -46,10 +46,14 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
         /// <summary>
         /// Initialize the state of the page
         /// </summary>
+        /// <param name="v">The application version</param>
         /// <returns>The page</returns>
-        public IActionResult OnGet()
+        public IActionResult OnGet(string v)
         {
             this.Title = $"{this.appGlobals.ProductName} - {this.appGlobals.CompanyName}";
+
+            // Set application version
+            this.appGlobals.AppVersion = v;
             return this.Page();
         }
     }

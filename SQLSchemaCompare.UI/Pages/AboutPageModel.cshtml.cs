@@ -14,7 +14,6 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
     {
         private readonly ILogger logger;
         private readonly IAppGlobals appGlobals;
-        private readonly IAccountService accountService;
         private readonly IAppSettingsService appSettingsService;
 
         /// <summary>
@@ -22,9 +21,8 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="appGlobals">The injected application globals</param>
-        /// <param name="accountService">The injected account service</param>
         /// <param name="appSettingsService">The injected app settings service</param>
-        public AboutPageModel(ILoggerFactory loggerFactory, IAppGlobals appGlobals, IAccountService accountService, IAppSettingsService appSettingsService)
+        public AboutPageModel(ILoggerFactory loggerFactory, IAppGlobals appGlobals, IAppSettingsService appSettingsService)
         {
             if (loggerFactory == null)
             {
@@ -33,7 +31,6 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
 
             this.logger = loggerFactory.CreateLogger(nameof(AboutPageModel));
             this.appGlobals = appGlobals;
-            this.accountService = accountService;
             this.appSettingsService = appSettingsService;
         }
 
@@ -64,7 +61,10 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
         {
             this.ProductName = this.appGlobals.ProductName;
             this.AppVersion = this.appGlobals.AppVersion;
-            this.CustomerInformation = this.accountService.CustomerInformation;
+            this.CustomerInformation = new VerifySessionResult
+            {
+                BillingType = BillingType.Perpetual,
+            };
 
             var session = string.Empty;
             try

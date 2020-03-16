@@ -54,5 +54,7 @@ $(() => {
         });
 
         electron.ipcRenderer.send("CheckLoadProject");
+
+        electron.ipcRenderer.send("OpenMainWindow");
     });
 });

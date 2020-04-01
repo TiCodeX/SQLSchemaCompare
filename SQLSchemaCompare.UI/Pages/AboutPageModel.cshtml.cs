@@ -66,17 +66,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
                 BillingType = BillingType.Perpetual,
             };
 
-            var session = string.Empty;
-            try
-            {
-                session = this.appSettingsService.GetAppSettings().Session;
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, "Unable to get app settings");
-            }
-
-            this.SubscribeEndpoint = $"{this.appGlobals.SubscribeEndpoint}&s={Uri.EscapeDataString(session)}";
+            this.SubscribeEndpoint = this.appGlobals.SubscribeEndpoint;
         }
     }
 }

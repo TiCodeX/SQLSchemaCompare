@@ -36,42 +36,6 @@ class Utility {
         // Prevent app zooming
         electron.webFrame.setVisualZoomLevelLimits(1, 1);
         electron.webFrame.setLayoutZoomLevelLimits(0, 0);
-        // Register electron callbacks
-        electron.ipcRenderer.on("UpdateAvailable", (event: Electron.Event, info: {
-            platform: string; // tslint:disable-line:completed-docs
-            readyToBeInstalled: boolean; // tslint:disable-line:completed-docs
-            autoDownloadFailed: boolean; // tslint:disable-line:completed-docs
-            version: string; // tslint:disable-line:completed-docs
-        }) => {
-            if (info !== null && info.version !== "") {
-                let genericMessage: string = "<button type=\"button\" class=\"btn btn-primary float-right\" onclick=\"Utility.OpenExternalBrowser('https://www.ticodex.com/download')\">";
-                genericMessage += `${Localization.Get("ButtonDownload")}`;
-                genericMessage += "</button>";
-                genericMessage += `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
-                genericMessage += "<br/>";
-                genericMessage += `${Localization.Get("NotificationNewVersionAvailableMessage").replace("{0}", info.version)}`;
-                if (info.platform === "linux") {
-                    $("#myNotificationMessage").html(genericMessage);
-                    $("#myNotification").show();
-                } else {
-                    // Windows & MacOS
-                    if (info.readyToBeInstalled) {
-                        let message: string = "<button type=\"button\" class=\"btn btn-primary float-right\" onclick=\"electron.ipcRenderer.send('QuitAndInstall');\">";
-                        message += `${Localization.Get("ButtonUpdateAndRestart")}`;
-                        message += "</button>";
-                        message += `<strong>${Localization.Get("NotificationNewVersionAvailable")}</strong>`;
-                        message += "<br/>";
-                        message += `${Localization.Get("NotificationUpdateReadyToBeInstalled").replace("{0}", info.version)}`;
-                        $("#myNotificationMessage").html(message);
-                        $("#myNotification").show();
-                    } else if (info.autoDownloadFailed) {
-                        $("#myNotificationMessage").html(genericMessage);
-                        $("#myNotification").show();
-                    }
-                }
-            }
-        });
-        electron.ipcRenderer.send("CheckUpdateAvailable");
     }
 
     /**

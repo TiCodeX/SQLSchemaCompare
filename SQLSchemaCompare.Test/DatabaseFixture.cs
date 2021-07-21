@@ -395,7 +395,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 var dbCompareService = new DatabaseCompareService(
                     this.LoggerFactory,
                     projectService,
-                    new DatabaseService(new DatabaseProviderFactory(this.LoggerFactory, new CipherService()), null),
+                    new DatabaseService(new DatabaseProviderFactory(this.LoggerFactory, new CipherService())),
                     new DatabaseScripterFactory(this.LoggerFactory),
                     new DatabaseMapper(),
                     new DatabaseFilter(),

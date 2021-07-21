@@ -5,12 +5,5 @@
         "minify": {
             "enabled": true
         }
-    },
-    {
-        "outputFile": "wwwroot/css/Login.css",
-        "inputFile": "wwwroot/css/Login.scss",
-        "minify": {
-            "enabled": true
-        }
     }
 ]

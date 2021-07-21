@@ -56,33 +56,6 @@
         string ProductCode { get; }
 
         /// <summary>
-        /// Gets the myaccount endpoint
-        /// </summary>
-        /// <remarks>Required additional session parameter</remarks>
-        string MyAccountEndpoint { get; }
-
-        /// <summary>
-        /// Gets the login endpoint
-        /// </summary>
-        string LoginEndpoint { get; }
-
-        /// <summary>
-        /// Gets the subscribe endpoint
-        /// </summary>
-        /// <remarks>Required additional session parameter</remarks>
-        string SubscribeEndpoint { get; }
-
-        /// <summary>
-        /// Gets the verify session endpoint
-        /// </summary>
-        string VerifySessionEndpoint { get; }
-
-        /// <summary>
-        /// Gets the save feedback endpoint
-        /// </summary>
-        string SaveFeedbackEndpoint { get; }
-
-        /// <summary>
         /// Gets or sets the application version
         /// </summary>
         string AppVersion { get; set; }

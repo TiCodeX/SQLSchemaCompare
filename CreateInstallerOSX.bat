@@ -7,8 +7,6 @@ set "remoteIp=10.0.10.205"
 set "remoteUser=neolution"
 set "remotePass=Neo-1234."
 set "remoteDir=/private/tmp/sqlschemacompare-build"
-set "certFile=TiCodeXCodeSigningCertificate.p12"
-set "certPass=test1234"
 
 call CreateInstallerCommon.bat %target%
 
@@ -34,7 +32,6 @@ if ERRORLEVEL 1 goto:error
 REM Copy files to OSX
 pscp -pw %remotePass% -r %publishDir% %remoteUser%@%remoteIp%:%remoteDir%
 pscp -pw %remotePass% -r %electronDir% %remoteUser%@%remoteIp%:%remoteDir%
-pscp -pw %remotePass% %~dp0\%certFile% %remoteUser%@%remoteIp%:%remoteDir%
 
 if ERRORLEVEL 1 goto:error
 
@@ -54,8 +51,6 @@ plink -pw %remotePass% %remoteUser%@%remoteIp% (^
    cd %remoteDir%/SQLSchemaCompare;^
    chmod -R a+rwx ./node_modules;^
    chmod +x ../.publish/TiCodeX.SQLSchemaCompare.UI;^
-   export CSC_LINK=%remoteDir%/%certFile%;^
-   export CSC_KEY_PASSWORD=%certPass%;^
    npm run dist-%target%;^
 )
 

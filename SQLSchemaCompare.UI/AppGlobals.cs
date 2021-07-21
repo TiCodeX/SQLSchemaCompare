@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-using TiCodeX.SQLSchemaCompare.Services;
 
 namespace TiCodeX.SQLSchemaCompare.UI
 {
@@ -10,14 +9,8 @@ namespace TiCodeX.SQLSchemaCompare.UI
     /// </summary>
     internal class AppGlobals : IAppGlobals
     {
-#if DEBUG
-        private const string MyAccountBaseEndpoint = "https://localhost:44349";
-#else
-        private const string MyAccountBaseEndpoint = "https://myaccount.ticodex.com";
-#endif
-
         /// <inheritdoc/>
-        public string CompanyName => "TiCodeX SA";
+        public string CompanyName => "TiCodeX";
 
         /// <inheritdoc/>
         public string ProductName => "SQL Schema Compare";
@@ -66,20 +59,5 @@ namespace TiCodeX.SQLSchemaCompare.UI
 
         /// <inheritdoc/>
         public string AppVersion { get; set; }
-
-        /// <inheritdoc/>
-        public string MyAccountEndpoint => $"{MyAccountBaseEndpoint}/Login?culture={Localization.Culture.Name}&product={this.ProductCode}&returnUrl={Uri.EscapeDataString("/")}";
-
-        /// <inheritdoc/>
-        public string LoginEndpoint => $"{MyAccountBaseEndpoint}/Login?culture={Localization.Culture.Name}&product={this.ProductCode}&appId={this.ElectronAuthAppId}";
-
-        /// <inheritdoc/>
-        public string SubscribeEndpoint => $"{MyAccountBaseEndpoint}/Login?culture={Localization.Culture.Name}&product={this.ProductCode}&returnUrl={Uri.EscapeDataString("/Subscribe")}";
-
-        /// <inheritdoc/>
-        public string VerifySessionEndpoint => $"{MyAccountBaseEndpoint}/api/VerifySession";
-
-        /// <inheritdoc/>
-        public string SaveFeedbackEndpoint => $"{MyAccountBaseEndpoint}/api/SaveFeedback";
     }
 }

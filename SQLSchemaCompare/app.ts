@@ -17,7 +17,7 @@ electron.app.setAppUserModelId("ch.ticodex.sqlschemacompare");
 electron.app.setPath("userData", path.join(electron.app.getPath("appData"), "SQL Schema Compare"));
 
 const isDebug: boolean = process.defaultApp;
-const initialPort: number = 5000;
+const initialPort: number = 5432;
 const splashUrl: string = `file://${__dirname}/splash.html`;
 const loggerPath: string = path.join(os.homedir(), ".SQLSchemaCompare", "log", "SQLSchemaCompare.log");
 const loggerPattern: string = "yyyy-MM-dd-ui";
@@ -237,7 +237,7 @@ function setEmptyApplicationMenu(): void {
 }
 
 /**
- * Create the main window ensuring to destroy the login window
+ * Create the main window
  * @param url The url to pass for authentication purpose
  */
 function createMainWindow(): void {
@@ -258,7 +258,7 @@ function createMainWindow(): void {
         y: mainWindowState.y < workAreaSize.height ? mainWindowState.y : undefined,
         width: mainWindowState.width,
         height: mainWindowState.height,
-        title: "SQL Schema Compare - TiCodeX SA",
+        title: "SQL Schema Compare - TiCodeX",
         show: false,
         webPreferences: {
             nodeIntegration: true,

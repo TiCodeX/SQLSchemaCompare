@@ -33,6 +33,7 @@ jobs:
       run: |
         docker run --rm --name mssql-linux-2017 -p 28001:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2017-latest
         docker run --rm --name mssql-linux-2019 -p 28002:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2019-latest
+        sleep 60s
     - name: Test
       run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --filter "Category=IntegrationTest&Category=MicrosoftSQL"
 
@@ -62,6 +63,7 @@ jobs:
         docker run --rm --name mysql-5.6 -p 27002:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:5.6
         docker run --rm --name mysql-5.7 -p 27003:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:5.7
         docker run --rm --name mysql-8.0 -p 27004:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.0
+        sleep 60s
     - name: Test
       run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --filter "Category=IntegrationTest&Category=MySQL"
 
@@ -97,6 +99,7 @@ jobs:
         docker run --rm --name postgres-10 -p 26005:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:10-alpine
         docker run --rm --name postgres-11 -p 26006:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:11-alpine
         docker run --rm --name postgres-12 -p 26007:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:12-alpine
+        sleep 60s
     - name: Test
       run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --filter "Category=IntegrationTest&Category=PostgreSQL"
 
@@ -132,5 +135,6 @@ jobs:
         docker run --rm --name mariadb-10.2 -p 29004:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.2
         docker run --rm --name mariadb-10.3 -p 29005:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.3
         docker run --rm --name mariadb-10.4 -p 29006:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.4
+        sleep 60s
     - name: Test
       run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --filter "Category=IntegrationTest&Category=MariaDB"

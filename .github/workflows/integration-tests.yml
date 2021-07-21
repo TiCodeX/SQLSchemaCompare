@@ -11,6 +11,8 @@ on:
 jobs:
   microsoft_sql:
     runs-on: ubuntu-latest
+    env:
+      RunDockerTests: true
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -36,6 +38,8 @@ jobs:
 
   my_sql:
     runs-on: ubuntu-latest
+    env:
+      RunDockerTests: true
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -63,6 +67,8 @@ jobs:
 
   postgre_sql:
     runs-on: ubuntu-latest
+    env:
+      RunDockerTests: true
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -96,6 +102,8 @@ jobs:
 
   maria_db:
     runs-on: ubuntu-latest
+    env:
+      RunDockerTests: true
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET

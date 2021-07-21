@@ -1,113 +1,112 @@
 {
-    "name": "sqlschemacompare",
-    "version": "2020.4.1",
-    "description": "The Swiss Army Knife of Database Schema Comparison for Microsoft SQL, mySQL and PostgreSQL which runs on Windows, Linux and macOS systems.",
-    "main": "app.min.js",
-    "homepage": "https://www.ticodex.com",
-    "author": {
-        "name": "TiCodeX SA",
-        "email": "support@ticodex.com"
-    },
-    "private": true,
-    "build": {
-        "appId": "ch.ticodex.sqlschemacompare",
-        "productName": "SQL Schema Compare",
-        "copyright": "Copyright @ 2020 TiCodeX SA",
-        "remoteBuild": false,
-        "win": {
-            "target": "nsis",
-            "artifactName": "SQLSchemaCompare-${version}.${ext}",
-            "publisherName": "TiCodeX SA",
-            "publish": {
-                "provider": "generic",
-                "url": ""
-            },
-            "fileAssociations": [
-                {
-                    "ext": "tcxsc",
-                    "name": "TCXSC"
-                }
-            ]
-        },
-        "nsis": {
-            "oneClick": false,
-            "allowToChangeInstallationDirectory": true,
-            "runAfterFinish": true,
-            "installerHeader": "installerHeader.bmp",
-            "installerSidebar": "installerSidebar.bmp",
-            "uninstallerSidebar": "installerSidebar.bmp",
-            "include": "installer.nsh"
-        },
-        "linux": {
-            "target": [
-                "deb",
-                "rpm",
-                "tar.gz"
-            ],
-            "category": "Utility",
-            "synopsis": "The Swiss Army Knife of Database Schema Comparison",
-            "executableName": "SQLSchemaCompare",
-            "artifactName": "SQLSchemaCompare-${version}.${ext}",
-            "publish": {
-                "provider": "generic",
-                "url": ""
-            }
-        },
-        "mac": {
-            "target": "default",
-            "category": "public.app-category.productivity",
-            "artifactName": "SQLSchemaCompare-${version}.${ext}",
-            "publish": {
-                "provider": "generic",
-                "url": ""
-            }
-        },
-        "files": [
-            "!app.ts",
-            "!app.js",
-            "!*.njsproj",
-            "!*.njsproj.user",
-            "!tsconfig.json",
-            "!bin",
-            "!obj",
-            "!build",
-            "font/*",
-            "img/*",
-            "splash.html",
-            "app.min.js"
-        ],
-        "extraFiles": [
-            {
-                "from": "../.publish",
-                "to": "bin",
-                "filter": [
-                    "**/*"
-                ]
-            }
-        ],
-        "directories": {
-            "output": "../installer"
+  "name": "sqlschemacompare",
+  "version": "2021.7.1",
+  "description": "The Swiss Army Knife of Database Schema Comparison for Microsoft SQL, mySQL and PostgreSQL which runs on Windows, Linux and macOS systems.",
+  "main": "app.min.js",
+  "homepage": "https://github.com/TiCodeX/SQLSchemaCompare",
+  "author": {
+    "name": "TiCodeX"
+  },
+  "private": true,
+  "build": {
+    "appId": "ch.ticodex.sqlschemacompare",
+    "productName": "SQL Schema Compare",
+    "copyright": "Copyright @ 2021 TiCodeX",
+    "remoteBuild": false,
+    "win": {
+      "target": "nsis",
+      "artifactName": "SQLSchemaCompare-${version}.${ext}",
+      "publisherName": "TiCodeX",
+      "publish": {
+        "provider": "generic",
+        "url": ""
+      },
+      "fileAssociations": [
+        {
+          "ext": "tcxsc",
+          "name": "TCXSC"
         }
+      ]
     },
-    "scripts": {
-        "dist-win-x64": "electron-builder --win --publish always",
-        "dist-linux-x64": "electron-builder --linux --publish always",
-        "dist-osx-x64": "electron-builder --mac --publish always"
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "runAfterFinish": true,
+      "installerHeader": "installerHeader.bmp",
+      "installerSidebar": "installerSidebar.bmp",
+      "uninstallerSidebar": "installerSidebar.bmp",
+      "include": "installer.nsh"
     },
-    "postinstall": "electron-builder install-app-deps",
-    "devDependencies": {
-        "@types/detect-port": "^1.1.0",
-        "@types/glob": "^7.1.1",
-        "@types/node": "^12.12.22",
-        "electron": "^7.1.7",
-        "electron-builder": "^21.2.0",
-        "uglify-js": "^3.7.3"
+    "linux": {
+      "target": [
+        "deb",
+        "rpm",
+        "tar.gz"
+      ],
+      "category": "Utility",
+      "synopsis": "The Swiss Army Knife of Database Schema Comparison",
+      "executableName": "SQLSchemaCompare",
+      "artifactName": "SQLSchemaCompare-${version}.${ext}",
+      "publish": {
+        "provider": "generic",
+        "url": ""
+      }
     },
-    "dependencies": {
-        "detect-port": "^1.3.0",
-        "electron-updater": "^4.2.0",
-        "electron-window-state": "^5.0.3",
-        "glob": "^7.1.6",
-        "log4js": "^6.1.0"
+    "mac": {
+      "target": "default",
+      "category": "public.app-category.productivity",
+      "artifactName": "SQLSchemaCompare-${version}.${ext}",
+      "publish": {
+        "provider": "generic",
+        "url": ""
+      }
+    },
+    "files": [
+      "!app.ts",
+      "!app.js",
+      "!*.njsproj",
+      "!*.njsproj.user",
+      "!tsconfig.json",
+      "!bin",
+      "!obj",
+      "!build",
+      "font/*",
+      "img/*",
+      "splash.html",
+      "app.min.js"
+    ],
+    "extraFiles": [
+      {
+        "from": "../.publish",
+        "to": "bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "directories": {
+      "output": "../installer"
     }
+  },
+  "scripts": {
+    "dist-win-x64": "electron-builder --win --publish always",
+    "dist-linux-x64": "electron-builder --linux --publish always",
+    "dist-osx-x64": "electron-builder --mac --publish always"
+  },
+  "postinstall": "electron-builder install-app-deps",
+  "devDependencies": {
+    "@types/detect-port": "^1.1.0",
+    "@types/glob": "^7.1.1",
+    "@types/node": "^12.12.22",
+    "electron": "^7.1.7",
+    "electron-builder": "^21.2.0",
+    "uglify-js": "^3.7.3"
+  },
+  "dependencies": {
+    "detect-port": "^1.3.0",
+    "electron-updater": "^4.2.0",
+    "electron-window-state": "^5.0.3",
+    "glob": "^7.1.6",
+    "log4js": "^6.1.0"
+  }
 }

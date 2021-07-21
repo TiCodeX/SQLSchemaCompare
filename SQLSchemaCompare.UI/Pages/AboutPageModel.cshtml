@@ -18,52 +18,12 @@
 
     <div class="row">
         <div class="col-12 tcx-about-license-info">
-            <b>@Localization.LabelLicensedTo:</b> @Model.CustomerInformation.Email
-            <br />
-            @if (Model.CustomerInformation.IsTrial.HasValue && Model.CustomerInformation.IsTrial.Value)
-            {
-                <b>@Localization.LabelSubscription:</b> @Localization.LabelSubscriptionTrial
-                <br />
-                <b>@Localization.LabelExpirationDate:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
-                <br />
-                <b>@Localization.LabelRemainingDays:</b> @Model.CustomerInformation.RemainingDays
-                <br />
-                <a href="#" onclick="Utility.OpenExternalBrowser('@Model.SubscribeEndpoint');">@Localization.MessageGetASubscription</a>
-            }
-            else
-            {
-                <b>@Localization.LabelSubscription:</b> @Localization.LabelSubscriptionPro
-                <br />
-                if (Model.CustomerInformation.BillingType != BillingType.Perpetual)
-                {
-                    <b>@Localization.LabelSubscriptionPlan:</b> @(Model.CustomerInformation.BillingType == BillingType.Month ? Localization.LabelMonthlyPayment : Localization.LabelYearlyPayment)
-                    <br />
-                    <b>@Localization.LabelAutoRenewal:</b> @(Model.CustomerInformation.CancelAtPeriodEnd.HasValue && Model.CustomerInformation.CancelAtPeriodEnd.Value ? Localization.LabelDisabled : Localization.LabelEnabled)
-                    <br />
-                    if (Model.CustomerInformation.CancelAtPeriodEnd.HasValue && Model.CustomerInformation.CancelAtPeriodEnd.Value)
-                    {
-                        <b>@Localization.LabelExpirationDate:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
-                        <br />
-                        <b>@Localization.LabelRemainingDays:</b> @Model.CustomerInformation.RemainingDays
-                    }
-                    else
-                    {
-                        <b>@Localization.LabelRenewalDate:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
-                    }
-                }
-                else
-                {
-                    <b>@Localization.LabelSubscriptionPlan:</b> @Localization.LabelPerpetualPayment
-                    <br />
-                    <b>@Localization.LabelUpgradesUntil:</b> @Model.CustomerInformation.ExpirationDate?.ToShortDateString()
-                }
-            }
         </div>
     </div>
     <div class="row">
         <div class="col-12">
             <label class="float-right text-right">
-                &copy; 2019 TiCodeX SA, Switzerland.<br />All rights protected.
+                &copy; 2021 TiCodeX.<br />All rights protected.
             </label>
         </div>
     </div>

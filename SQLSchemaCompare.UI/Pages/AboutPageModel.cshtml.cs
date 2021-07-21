@@ -1,7 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
@@ -45,28 +44,12 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages
         public string AppVersion { get; set; }
 
         /// <summary>
-        /// Gets or sets the customer information
-        /// </summary>
-        public VerifySessionResult CustomerInformation { get; set; }
-
-        /// <summary>
-        /// Gets or sets the subscribe URL
-        /// </summary>
-        public string SubscribeEndpoint { get; set; }
-
-        /// <summary>
         /// Get the about page
         /// </summary>
         public void OnGet()
         {
             this.ProductName = this.appGlobals.ProductName;
             this.AppVersion = this.appGlobals.AppVersion;
-            this.CustomerInformation = new VerifySessionResult
-            {
-                BillingType = BillingType.Perpetual,
-            };
-
-            this.SubscribeEndpoint = this.appGlobals.SubscribeEndpoint;
         }
     }
 }

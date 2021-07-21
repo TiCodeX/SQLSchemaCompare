@@ -19,11 +19,6 @@
     <OutputType>Exe</OutputType>
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <PublishDir>..\.publish</PublishDir>
-    <SignTool>..\signtool.exe</SignTool>
-    <CertFile>..\TiCodeXCodeSigningCertificate.p12</CertFile>
-    <CertPass>test1234</CertPass>
-    <CertDesc>TiCodeX SA application</CertDesc>
-    <CertTimeUrl>http://timestamp.comodoca.com</CertTimeUrl>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
@@ -70,9 +65,7 @@
     <None Include="wwwroot\**\*.css" />
     <!--Configure the *.min.js/*.min.css as EmbeddedResource-->
     <EmbeddedResource Include="wwwroot\js\Index.min.js" />
-    <EmbeddedResource Include="wwwroot\js\Login.min.js" />
     <EmbeddedResource Include="wwwroot\css\Index.min.css" />
-    <EmbeddedResource Include="wwwroot\css\Login.min.css" />
     <EmbeddedResource Include="wwwroot\lib\**\*.min.js" />
     <EmbeddedResource Include="wwwroot\lib\**\*.min.css" />
     <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*.js" />
@@ -149,11 +142,6 @@
         echo ERROR: Index.min.js not generated ^
         exit 1 ^
       )" />
-    <Exec Command="
-      if not exist wwwroot\js\Login.min.js ( ^
-        echo ERROR: Login.min.js not generated ^
-        exit 1 ^
-      )" />
   </Target>
 
   <Target Name="RemovePublishFolder" BeforeTargets="PrepareForPublish">
@@ -172,29 +160,7 @@
     <Exec Command="RMDIR $(PublishDir)\.obfuscated" />
   </Target>
 
-  <Target Name="SignDlls" AfterTargets="ObfuscateDlls">
-    <Message Text="==============================================" Importance="high" />
-    <Message Text="Sign TiCodeX dlls" Importance="high" />
-    <Message Text="==============================================" Importance="high" />
-    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.Core.dll' />
-    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.Core.dll' />
-    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.Infrastructure.dll' />
-    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.Infrastructure.dll' />
-    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.Services.dll' />
-    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.Services.dll' />
-    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.dll' />
-    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.dll' />
-    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.Views.dll' />
-    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.Views.dll' />
-    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\de\TiCodeX.SQLSchemaCompare.Services.resources.dll' />
-    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\de\TiCodeX.SQLSchemaCompare.Services.resources.dll' />
-    <Exec Command='$(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\it\TiCodeX.SQLSchemaCompare.Services.resources.dll' />
-    <Exec Command='$(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\it\TiCodeX.SQLSchemaCompare.Services.resources.dll' />
-    <Exec Command='if exist $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.exe ( $(SignTool) sign /f $(CertFile) /p $(CertPass) /t $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.exe )' />
-    <Exec Command='if exist $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.exe ( $(SignTool) sign /as /fd sha256 /f $(CertFile) /p $(CertPass) /tr $(CertTimeUrl) /d "$(CertDesc)" $(PublishDir)\TiCodeX.SQLSchemaCompare.UI.exe )' />
-  </Target>
-
-  <Target Name="RemoveUnwantedFiles" AfterTargets="SignDlls">
+  <Target Name="RemoveUnwantedFiles" AfterTargets="ObfuscateDlls">
     <Message Text="==============================================" Importance="high" />
     <Message Text="Remove unwanted published files" Importance="high" />
     <Message Text="==============================================" Importance="high" />

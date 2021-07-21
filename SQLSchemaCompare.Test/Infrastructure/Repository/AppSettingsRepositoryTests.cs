@@ -127,16 +127,6 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
 
             public string ProductCode => throw new System.NotImplementedException();
 
-            public string MyAccountEndpoint => throw new System.NotImplementedException();
-
-            public string LoginEndpoint => throw new System.NotImplementedException();
-
-            public string SubscribeEndpoint => throw new System.NotImplementedException();
-
-            public string VerifySessionEndpoint => throw new System.NotImplementedException();
-
-            public string SaveFeedbackEndpoint => throw new System.NotImplementedException();
-
             public string AppVersion { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
         }
     }

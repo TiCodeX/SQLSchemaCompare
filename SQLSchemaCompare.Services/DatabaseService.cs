@@ -15,17 +15,14 @@ namespace TiCodeX.SQLSchemaCompare.Services
     public class DatabaseService : IDatabaseService
     {
         private readonly IDatabaseProviderFactory dbProviderFactory;
-        private readonly IAppSettingsService appSettingsService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseService"/> class.
         /// </summary>
         /// <param name="dbProviderFactory">The injected database provider factory</param>
-        /// <param name="appSettingsService">The injected app settings service</param>
-        public DatabaseService(IDatabaseProviderFactory dbProviderFactory, IAppSettingsService appSettingsService)
+        public DatabaseService(IDatabaseProviderFactory dbProviderFactory)
         {
             this.dbProviderFactory = dbProviderFactory;
-            this.appSettingsService = appSettingsService;
         }
 
         /// <inheritdoc />

@@ -15,23 +15,7 @@
             "wwwroot/js/Main.js",
             "wwwroot/js/Project.js",
             "wwwroot/js/Settings.js",
-            "wwwroot/js/Logout.js",
             "wwwroot/js/Index.js"
-        ],
-        "minify": {
-            "enabled": true,
-            "renameLocals": true
-        },
-        "sourceMap": false
-    },
-    {
-        "outputFileName": "wwwroot/js/Login.min.js",
-        "inputFiles": [
-            "wwwroot/js/Entities/ApiResponse.js",
-            "wwwroot/js/Logger.js",
-            "wwwroot/js/Utility.js",
-            "wwwroot/js/Localization.js",
-            "wwwroot/js/Login.js"
         ],
         "minify": {
             "enabled": true,

@@ -1,0 +1,140 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+  workflow_dispatch:
+
+jobs:
+  microsoft_sql:
+    runs-on: ubuntu-latest
+    env:
+      RunDockerTests: true
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build SQLSchemaCompare.Test --configuration Release
+    - name: docker pull images
+      shell: bash
+      run: |
+        docker pull mcr.microsoft.com/mssql/server:2017-latest
+        docker pull mcr.microsoft.com/mssql/server:2019-latest
+    - name: docker start containers
+      shell: bash
+      run: |
+        docker run --rm --name mssql-linux-2017 -p 28001:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2017-latest
+        docker run --rm --name mssql-linux-2019 -p 28002:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2019-latest
+        sleep 60s
+    - name: Test
+      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --filter "Category=IntegrationTest&Category=MicrosoftSQL"
+
+  my_sql:
+    runs-on: ubuntu-latest
+    env:
+      RunDockerTests: true
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build SQLSchemaCompare.Test --configuration Release
+    - name: docker pull images
+      shell: bash
+      run: |
+        docker pull mysql:5.6
+        docker pull mysql:5.7
+        docker pull mysql:8.0
+    - name: docker start containers
+      shell: bash
+      run: |
+        docker run --rm --name mysql-5.6 -p 27002:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:5.6
+        docker run --rm --name mysql-5.7 -p 27003:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:5.7
+        docker run --rm --name mysql-8.0 -p 27004:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.0
+        sleep 60s
+    - name: Test
+      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --filter "Category=IntegrationTest&Category=MySQL"
+
+  postgre_sql:
+    runs-on: ubuntu-latest
+    env:
+      RunDockerTests: true
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build SQLSchemaCompare.Test --configuration Release
+    - name: docker pull images
+      shell: bash
+      run: |
+        docker pull postgres:9.4-alpine
+        docker pull postgres:9.5-alpine
+        docker pull postgres:9.6-alpine
+        docker pull postgres:10-alpine
+        docker pull postgres:11-alpine
+        docker pull postgres:12-alpine
+    - name: docker start containers
+      shell: bash
+      run: |
+        docker run --rm --name postgres-9.4 -p 26002:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:9.4-alpine
+        docker run --rm --name postgres-9.5 -p 26003:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:9.5-alpine
+        docker run --rm --name postgres-9.6 -p 26004:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:9.6-alpine
+        docker run --rm --name postgres-10 -p 26005:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:10-alpine
+        docker run --rm --name postgres-11 -p 26006:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:11-alpine
+        docker run --rm --name postgres-12 -p 26007:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:12-alpine
+        sleep 60s
+    - name: Test
+      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --filter "Category=IntegrationTest&Category=PostgreSQL"
+
+  maria_db:
+    runs-on: ubuntu-latest
+    env:
+      RunDockerTests: true
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build SQLSchemaCompare.Test --configuration Release
+    - name: docker pull images
+      shell: bash
+      run: |
+        docker pull mariadb:5.5
+        docker pull mariadb:10.0
+        docker pull mariadb:10.1
+        docker pull mariadb:10.2
+        docker pull mariadb:10.3
+        docker pull mariadb:10.4
+    - name: docker start containers
+      shell: bash
+      run: |
+        docker run --rm --name mariadb-5.5 -p 29001:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:5.5
+        docker run --rm --name mariadb-10.0 -p 29002:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.0
+        docker run --rm --name mariadb-10.1 -p 29003:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.1
+        docker run --rm --name mariadb-10.2 -p 29004:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.2
+        docker run --rm --name mariadb-10.3 -p 29005:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.3
+        docker run --rm --name mariadb-10.4 -p 29006:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.4
+        sleep 60s
+    - name: Test
+      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --filter "Category=IntegrationTest&Category=MariaDB"

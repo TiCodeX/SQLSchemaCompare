@@ -27,4 +27,5 @@ jobs:
     - name: Build
       run: msbuild SQLSchemaCompare.sln /p:Configuration=Release
     - name: Test
-      run: dotnet test --no-build --configuration Release --filter Category!=IntegrationTest
+      run: dotnet test SQLSchemaCompare.Test.csproj --no-build --configuration Release --filter Category!=IntegrationTest
+      working-directory: SQLSchemaCompare.Test

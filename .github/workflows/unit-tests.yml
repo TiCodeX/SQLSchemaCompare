@@ -23,6 +23,7 @@ jobs:
       run: dotnet restore
     - name: Install npm dependencies
       run: npm install
+      working-directory: SQLSchemaCompare
     - name: Build
       run: msbuild SQLSchemaCompare.sln /p:Configuration=Release
     - name: Test

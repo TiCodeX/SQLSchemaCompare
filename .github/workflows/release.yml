@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_windows:
+  build_artifacts:
     runs-on: windows-latest
 
     steps:
@@ -20,19 +20,52 @@ jobs:
         dotnet-version: 3.1.x
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
-    - name: Restore dependencies
-      run: dotnet restore -r win-x64
     - name: Install npm dependencies
       run: npm install
+      
+    - name: Restore win-x64 dependencies
+      run: dotnet restore -r win-x64
       working-directory: SQLSchemaCompare
-    - name: Build
+    - name: Build win-x64
       run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=win-x64
     - name: Publish win-x64
       run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r win-x64
       working-directory: SQLSchemaCompare.UI
-    - name: Upload artifacts
+    - name: Upload SQLSchemaCompare artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: SQLSchemaCompare
+        path: SQLSchemaCompare
+    - name: Upload win-x64 artifacts
       uses: actions/upload-artifact@v2
       with:
         name: publish-win
         path: .publish
-    
+
+    - name: Restore linux-x64 dependencies
+      run: dotnet restore -r linux-x64
+      working-directory: SQLSchemaCompare
+    - name: Build linux-x64
+      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=linux-x64
+    - name: Publish linux-x64
+      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r linux-x64
+      working-directory: SQLSchemaCompare.UI
+    - name: Upload linux-x64 artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: publish-linux
+        path: .publish
+
+    - name: Restore osx-x64 dependencies
+      run: dotnet restore -r osx-x64
+      working-directory: SQLSchemaCompare
+    - name: Build osx-x64
+      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=osx-x64
+    - name: Publish osx-x64
+      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r osx-x64
+      working-directory: SQLSchemaCompare.UI
+    - name: Upload osx-x64 artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: publish-osx
+        path: .publish

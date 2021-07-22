@@ -22,10 +22,10 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
     - name: Install npm dependencies
       run: npm install
+      working-directory: SQLSchemaCompare
       
     - name: Restore win-x64 dependencies
       run: dotnet restore -r win-x64
-      working-directory: SQLSchemaCompare
     - name: Build win-x64
       run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=win-x64
     - name: Publish win-x64
@@ -44,7 +44,6 @@ jobs:
 
     - name: Restore linux-x64 dependencies
       run: dotnet restore -r linux-x64
-      working-directory: SQLSchemaCompare
     - name: Build linux-x64
       run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=linux-x64
     - name: Publish linux-x64
@@ -58,7 +57,6 @@ jobs:
 
     - name: Restore osx-x64 dependencies
       run: dotnet restore -r osx-x64
-      working-directory: SQLSchemaCompare
     - name: Build osx-x64
       run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=osx-x64
     - name: Publish osx-x64

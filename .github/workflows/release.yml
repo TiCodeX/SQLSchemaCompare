@@ -2,6 +2,7 @@ name: Release
 
 on:
   push:
+    branches: [ feature/gh-action-release ]
     tags:
       - 'v*.*.*'
 

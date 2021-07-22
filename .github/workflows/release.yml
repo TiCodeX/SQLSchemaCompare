@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+  workflow_dispatch:
+
+jobs:
+  build_windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Restore dependencies
+      run: dotnet restore -r win-x64
+    - name: Install npm dependencies
+      run: npm install
+      working-directory: SQLSchemaCompare
+    - name: Build
+      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=win-x64
+    - name: Publish win-x64
+      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r win-x64
+      working-directory: SQLSchemaCompare.UI
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: publish-win
+        path: .publish
+    

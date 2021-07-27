@@ -68,6 +68,7 @@ jobs:
 
   installer_win_x64:
     runs-on: windows-latest
+    needs: build_artifacts
     defaults:
       run:
         shell: bash

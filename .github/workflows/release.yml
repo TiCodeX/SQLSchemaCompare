@@ -40,18 +40,18 @@ jobs:
         name: publish-win
         path: .publish
 
-#    - name: Restore linux-x64 dependencies
-#      run: dotnet restore -r linux-x64
-#    - name: Build linux-x64
-#      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=linux-x64
-#    - name: Publish linux-x64
-#      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r linux-x64
-#      working-directory: SQLSchemaCompare.UI
-#    - name: Upload linux-x64 artifacts
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: publish-linux
-#        path: .publish
+    - name: Restore linux-x64 dependencies
+      run: dotnet restore -r linux-x64
+    - name: Build linux-x64
+      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=linux-x64
+    - name: Publish linux-x64
+      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r linux-x64
+      working-directory: SQLSchemaCompare.UI
+    - name: Upload linux-x64 artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: publish-linux
+        path: .publish
 
 #    - name: Restore osx-x64 dependencies
 #      run: dotnet restore -r osx-x64
@@ -91,7 +91,11 @@ jobs:
       run: npm run dist-win-x64
       working-directory: SQLSchemaCompare
     - name: Clean installer files
-      run: rm -rf installer/win-unpacked
+      run: |
+        rm -rf win-unpacked
+        rm -f latest.yml
+        rm -f *.blockmap
+      working-directory: installer
     - name: Publish installer
       uses: actions/upload-artifact@v2
       with:
@@ -109,6 +113,33 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '10.15'
+    - name: Download SQLSchemaCompare artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: SQLSchemaCompare
+        path: SQLSchemaCompare
+    - name: Download publish-linux artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: publish-linux
+        path: .publish
+    - name: Prepare artifacts
+      run: |
+        chmod -R a+rwx SQLSchemaCompare/node_modules
+        chmod +x .publish/TiCodeX.SQLSchemaCompare.UI
+    - name: Create installer
+      run: npm run dist-linux-x64
+      working-directory: SQLSchemaCompare
+    - name: Clean installer files
+      run: |
+        rm -rf .icon-set
+        rm -rf linux-unpacked
+      working-directory: installer
+    - name: Publish installer
+      uses: actions/upload-artifact@v2
+      with:
+        name: installer-linux-x64
+        path: installer
 
   installer_osx_x64:
     runs-on: macos-latest

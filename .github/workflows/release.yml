@@ -80,8 +80,14 @@ jobs:
         node-version: '10.15'
     - name: Download artifacts
       uses: actions/download-artifact@v2
+      with:
+        name: |
+          SQLSchemaCompare
+          publish-win
     - name: Prepare artifacts
-      run: mv .publish-win .publish
+      run: |
+        find .
+        mv .publish-win .publish
     - name: Create installer
       run: npm run dist-win-x64
     - name: Clean installer files
@@ -91,3 +97,33 @@ jobs:
       with:
         name: installer-win-x64
         path: installer
+
+  installer_linux_x64:
+    runs-on: linux-latest
+    needs: build_artifacts
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v2
+
+  installer_osx_x64:
+    runs-on: osx-latest
+    needs: build_artifacts
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v2
+
+  clean_artifacts:
+    runs-on: windows-latest
+    needs: [installer_win_x64, installer_linux_x64, installer_osx_x64]
+    steps:
+    - uses: geekyeggo/delete-artifact@v1
+      with:
+        name: |
+          SQLSchemaCompare
+          publish-win
+          publish-linux
+          publish-osx

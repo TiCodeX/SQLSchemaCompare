@@ -5,13 +5,11 @@ on:
     branches: [ feature/gh-action-release ]
     tags:
       - 'v*.*.*'
-
   workflow_dispatch:
 
 jobs:
   build_artifacts:
     runs-on: windows-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -23,7 +21,7 @@ jobs:
     - name: Install npm dependencies
       run: npm install
       working-directory: SQLSchemaCompare
-      
+
     - name: Restore win-x64 dependencies
       run: dotnet restore -r win-x64
     - name: Build win-x64
@@ -42,28 +40,53 @@ jobs:
         name: publish-win
         path: .publish
 
-    - name: Restore linux-x64 dependencies
-      run: dotnet restore -r linux-x64
-    - name: Build linux-x64
-      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=linux-x64
-    - name: Publish linux-x64
-      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r linux-x64
-      working-directory: SQLSchemaCompare.UI
-    - name: Upload linux-x64 artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: publish-linux
-        path: .publish
+#    - name: Restore linux-x64 dependencies
+#      run: dotnet restore -r linux-x64
+#    - name: Build linux-x64
+#      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=linux-x64
+#    - name: Publish linux-x64
+#      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r linux-x64
+#      working-directory: SQLSchemaCompare.UI
+#    - name: Upload linux-x64 artifacts
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: publish-linux
+#        path: .publish
 
-    - name: Restore osx-x64 dependencies
-      run: dotnet restore -r osx-x64
-    - name: Build osx-x64
-      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=osx-x64
-    - name: Publish osx-x64
-      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r osx-x64
-      working-directory: SQLSchemaCompare.UI
-    - name: Upload osx-x64 artifacts
+#    - name: Restore osx-x64 dependencies
+#      run: dotnet restore -r osx-x64
+#    - name: Build osx-x64
+#      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=osx-x64
+#    - name: Publish osx-x64
+#      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r osx-x64
+#      working-directory: SQLSchemaCompare.UI
+#    - name: Upload osx-x64 artifacts
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: publish-osx
+#        path: .publish
+
+  installer_win_x64:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '10.15'
+    - name: Download artifacts
+      uses: actions/download-artifact@v2
+    - name: Prepare artifacts
+      run: mv .publish-win .publish
+    - name: Create installer
+      run: npm run dist-win-x64
+    - name: Clean installer files
+      run: rm -rf win-unpacked
+    - name: Publish installer
       uses: actions/upload-artifact@v2
       with:
-        name: publish-osx
-        path: .publish
+        name: installer-win-x64
+        path: installer

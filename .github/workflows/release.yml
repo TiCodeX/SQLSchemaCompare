@@ -53,18 +53,18 @@ jobs:
         name: publish-linux
         path: .publish
 
-#    - name: Restore osx-x64 dependencies
-#      run: dotnet restore -r osx-x64
-#    - name: Build osx-x64
-#      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=osx-x64
-#    - name: Publish osx-x64
-#      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r osx-x64
-#      working-directory: SQLSchemaCompare.UI
-#    - name: Upload osx-x64 artifacts
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: publish-osx
-#        path: .publish
+    - name: Restore osx-x64 dependencies
+      run: dotnet restore -r osx-x64
+    - name: Build osx-x64
+      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=osx-x64
+    - name: Publish osx-x64
+      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r osx-x64
+      working-directory: SQLSchemaCompare.UI
+    - name: Upload osx-x64 artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: publish-osx
+        path: .publish
 
   installer_win_x64:
     runs-on: windows-latest
@@ -152,6 +152,36 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '10.15'
+    - name: Download SQLSchemaCompare artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: SQLSchemaCompare
+        path: SQLSchemaCompare
+    - name: Download publish-osx artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: publish-osx
+        path: .publish
+    - name: Prepare artifacts
+      run: |
+        chmod -R a+rwx SQLSchemaCompare/node_modules
+        chmod +x .publish/TiCodeX.SQLSchemaCompare.UI
+    - name: Create installer
+      run: npm run dist-osx-x64
+      working-directory: SQLSchemaCompare
+    - name: Clean installer files
+      run: |
+        find .
+        rm -rf .icon-set
+        rm -rf osx-unpacked
+        rm -f latest.yml
+        rm -f *.blockmap
+      working-directory: installer
+    - name: Publish installer
+      uses: actions/upload-artifact@v2
+      with:
+        name: installer-osx-x64
+        path: installer
 
   clean_artifacts:
     runs-on: windows-latest

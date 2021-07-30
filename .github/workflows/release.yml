@@ -95,17 +95,6 @@ jobs:
         file_glob: true
         file: installer/*.exe
         tag: ${{ github.ref }}
-#    - name: Clean installer files
-#      run: |
-#        rm -rf win-unpacked
-#        rm -f latest.yml
-#        rm -f *.blockmap
-#      working-directory: installer
-#    - name: Publish installer
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: installer-win-x64
-#        path: installer
 
   installer_linux_x64:
     runs-on: ubuntu-latest
@@ -142,16 +131,6 @@ jobs:
         file_glob: true
         file: installer/*.{deb,rpm,tar.gz}
         tag: ${{ github.ref }}
-#    - name: Clean installer files
-#      run: |
-#        rm -rf .icon-set
-#        rm -rf linux-unpacked
-#      working-directory: installer
-#    - name: Publish installer
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: installer-linux-x64
-#        path: installer
 
   installer_osx_x64:
     runs-on: macos-latest
@@ -188,18 +167,6 @@ jobs:
         file_glob: true
         file: installer/*.dmg
         tag: ${{ github.ref }}
-#    - name: Clean installer files
-#      run: |
-#        rm -rf mac
-#        rm -f latest-mac.yml
-#        rm -f *.blockmap
-#        rm -f *.zip
-#      working-directory: installer
-#    - name: Publish installer
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: installer-osx-x64
-#        path: installer
 
   clean_artifacts:
     runs-on: windows-latest

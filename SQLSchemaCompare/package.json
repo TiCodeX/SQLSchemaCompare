@@ -5,7 +5,8 @@
   "main": "app.min.js",
   "homepage": "https://github.com/TiCodeX/SQLSchemaCompare",
   "author": {
-    "name": "TiCodeX"
+    "name": "TiCodeX",
+    "email": "ticodex@protonmail.com"
   },
   "private": true,
   "build": {

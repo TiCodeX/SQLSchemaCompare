@@ -166,7 +166,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
 
                 var xmlFile = File.ReadAllText(filename);
 
-                var xmlFileExpected = $@"<?xml version=""1.0""?>
+                var xmlFileExpected = $@"<?xml version=""1.0"" encoding=""utf-8""?>
 <CompareProject xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <SourceProviderOptions xsi:type=""MicrosoftSqlDatabaseProviderOptions"">
     <Hostname>{sourceHostname}</Hostname>

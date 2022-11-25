@@ -34,7 +34,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <summary>
         /// Force executing the docker tests without having to set the environment variable
         /// </summary>
-        public const bool ForceDockerTests = false;
+        public const bool ForceDockerTests = true;
 
         /// <summary>
         /// Whether the servers are already initialized
@@ -390,40 +390,38 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="projectService">The project service</param>
         internal void PerformCompareAndWaitResult(IProjectService projectService)
         {
-            using (var taskService = new TaskService())
-            {
-                var dbCompareService = new DatabaseCompareService(
-                    this.LoggerFactory,
-                    projectService,
-                    new DatabaseService(new DatabaseProviderFactory(this.LoggerFactory, new CipherService())),
-                    new DatabaseScripterFactory(this.LoggerFactory),
-                    new DatabaseMapper(),
-                    new DatabaseFilter(),
-                    taskService);
-                dbCompareService.StartCompare();
+            using var taskService = new TaskService();
+            var dbCompareService = new DatabaseCompareService(
+                this.LoggerFactory,
+                projectService,
+                new DatabaseService(new DatabaseProviderFactory(this.LoggerFactory, new CipherService())),
+                new DatabaseScripterFactory(this.LoggerFactory),
+                new DatabaseMapper(),
+                new DatabaseFilter(),
+                taskService);
+            dbCompareService.StartCompare();
 
-                while (!taskService.CurrentTaskInfos.All(x => x.Status == TaskStatus.RanToCompletion ||
-                                                              x.Status == TaskStatus.Faulted ||
-                                                              x.Status == TaskStatus.Canceled))
-                {
-                    Thread.Sleep(200);
-                }
-
-                if (taskService.CurrentTaskInfos.Any(x => x.Status == TaskStatus.Faulted ||
+            while (!taskService.CurrentTaskInfos.All(x => x.Status == TaskStatus.RanToCompletion ||
+                                                          x.Status == TaskStatus.Faulted ||
                                                           x.Status == TaskStatus.Canceled))
-                {
-                    var exception = taskService.CurrentTaskInfos.FirstOrDefault(x => x.Status == TaskStatus.Faulted ||
-                                                                                     x.Status == TaskStatus.Canceled)?.Exception;
-                    if (exception != null)
-                    {
-                        throw exception;
-                    }
+            {
+                Thread.Sleep(200);
+            }
 
-                    throw new XunitException("Unknown error during compare task");
+            if (taskService.CurrentTaskInfos.Any(x => x.Status == TaskStatus.Faulted ||
+                                                      x.Status == TaskStatus.Canceled))
+            {
+                var exception = taskService.CurrentTaskInfos.FirstOrDefault(x => x.Status == TaskStatus.Faulted ||
+                                                                                 x.Status == TaskStatus.Canceled)?.Exception;
+                if (exception != null)
+                {
+                    throw exception;
                 }
 
-                projectService.Project.Result.Should().NotBeNull();
+                throw new XunitException("Unknown error during compare task");
             }
+
+            projectService.Project.Result.Should().NotBeNull();
         }
 
         /// <summary>

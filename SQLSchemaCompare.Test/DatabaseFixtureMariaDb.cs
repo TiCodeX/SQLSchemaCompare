@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
 using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
 
@@ -26,12 +25,18 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
                 if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || DatabaseFixture.ForceDockerTests)
                 {
-                    serverPorts.Add(new object[] { (short)29001 }); // Version 5.5 (EOL April 2020)
-                    serverPorts.Add(new object[] { (short)29002 }); // Version 10.0 (EOL March 2019)
-                    serverPorts.Add(new object[] { (short)29003 }); // Version 10.1 (EOL October 2020)
-                    serverPorts.Add(new object[] { (short)29004 }); // Version 10.2 (EOL May 2022)
+                    /*serverPorts.Add(new object[] { (short)29001 });*/ // Version 5.5 (EOL April 2020)
+                    /*serverPorts.Add(new object[] { (short)29002 });*/ // Version 10.0 (EOL March 2019)
+                    /*serverPorts.Add(new object[] { (short)29003 });*/ // Version 10.1 (EOL October 2020)
+                    /*serverPorts.Add(new object[] { (short)29004 });*/ // Version 10.2 (EOL May 2022)
                     serverPorts.Add(new object[] { (short)29005 }); // Version 10.3 (EOL May 2023)
-                    serverPorts.Add(new object[] { (short)29006 }); // Version 10.4 (EOL July 2024)
+                    serverPorts.Add(new object[] { (short)29006 }); // Version 10.4 (EOL June 2024)
+                    serverPorts.Add(new object[] { (short)29007 }); // Version 10.5 (EOL June 2025)
+                    serverPorts.Add(new object[] { (short)29008 }); // Version 10.6 (EOL July 2026)
+                    serverPorts.Add(new object[] { (short)29009 }); // Version 10.7 (EOL February 2023)
+                    serverPorts.Add(new object[] { (short)29010 }); // Version 10.8 (EOL May 2023)
+                    serverPorts.Add(new object[] { (short)29011 }); // Version 10.9 (EOL August 2023)
+                    serverPorts.Add(new object[] { (short)29012 }); // Version 10.10 (EOL ???)
                 }
                 else
                 {
@@ -75,28 +80,26 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 Port = mariadbdpo.Port,
             };
 
-            using (var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, mysqldpo))
+            using var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, mysqldpo);
+            context.Database.OpenConnection();
+
+            var queries = Regex.Split(script, "^(DELIMITER .*)$", RegexOptions.Multiline);
+            var currentDelimiter = string.Empty;
+            foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
             {
-                context.Database.OpenConnection();
-
-                var queries = Regex.Split(script, "^(DELIMITER .*)$", RegexOptions.Multiline);
-                var currentDelimiter = string.Empty;
-                foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
+                if (query.StartsWith("DELIMITER", StringComparison.Ordinal))
                 {
-                    if (query.StartsWith("DELIMITER", StringComparison.Ordinal))
-                    {
-                        currentDelimiter = query.Substring(9).Trim();
-                        continue;
-                    }
+                    currentDelimiter = query.Substring(9).Trim();
+                    continue;
+                }
 
-                    if (!string.IsNullOrWhiteSpace(currentDelimiter))
-                    {
-                        context.ExecuteNonQuery(query.Replace(currentDelimiter, ";", StringComparison.Ordinal));
-                    }
-                    else
-                    {
-                        context.ExecuteNonQuery(query);
-                    }
+                if (!string.IsNullOrWhiteSpace(currentDelimiter))
+                {
+                    context.ExecuteNonQuery(query.Replace(currentDelimiter, ";", StringComparison.Ordinal));
+                }
+                else
+                {
+                    context.ExecuteNonQuery(query);
                 }
             }
         }

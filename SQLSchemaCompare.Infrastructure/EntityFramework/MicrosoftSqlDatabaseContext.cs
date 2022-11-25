@@ -37,9 +37,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
                 connStr += $"User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
             }
 
-            if (dbpo.UseSSL)
+            // The driver now defaults to secure-by-default options
+            // Ref: https://learn.microsoft.com/en-us/sql/connect/oledb/release-notes-for-oledb-driver-for-sql-server?view=sql-server-ver16#features-added-2
+            if (!dbpo.UseSSL)
             {
-                connStr += "Encrypt=true;";
+                connStr += "Encrypt=false;";
             }
 
             connStr += "Connection Timeout=15;";

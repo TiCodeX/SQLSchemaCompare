@@ -26,6 +26,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 {
                     serverPorts.Add(new object[] { (short)28001 }); // Version 2017 Linux
                     serverPorts.Add(new object[] { (short)28002 }); // Version 2019 Linux
+                    serverPorts.Add(new object[] { (short)28003 }); // Version 2022 Linux
                 }
                 else
                 {
@@ -57,13 +58,11 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 throw new ArgumentNullException(nameof(script));
             }
 
-            using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.CipherService, (MicrosoftSqlDatabaseProviderOptions)this.GetDatabaseProviderOptions(databaseName, port)))
+            using var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.CipherService, (MicrosoftSqlDatabaseProviderOptions)this.GetDatabaseProviderOptions(databaseName, port));
+            var queries = script.Split(new[] { "GO\r\n", "GO\n" }, StringSplitOptions.None);
+            foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
             {
-                var queries = script.Split(new[] { "GO\r\n", "GO\n" }, StringSplitOptions.None);
-                foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
-                {
-                    context.ExecuteNonQuery(query);
-                }
+                context.ExecuteNonQuery(query);
             }
         }
 

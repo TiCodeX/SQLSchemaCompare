@@ -1,12 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="rules" ToolsVersion="15.0">
+<RuleSet Name="rules" ToolsVersion="17.0">
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1000" Action="Error" />
     <Rule Id="CA1001" Action="Error" />
-    <Rule Id="CA1002" Action="Error" />
     <Rule Id="CA1003" Action="Error" />
     <Rule Id="CA1004" Action="Error" />
-    <Rule Id="CA1005" Action="Error" />
     <Rule Id="CA1006" Action="Error" />
     <Rule Id="CA1007" Action="Error" />
     <Rule Id="CA1008" Action="Error" />
@@ -29,7 +27,6 @@
     <Rule Id="CA1027" Action="Error" />
     <Rule Id="CA1028" Action="Error" />
     <Rule Id="CA1030" Action="Error" />
-    <Rule Id="CA1031" Action="None" />
     <Rule Id="CA1032" Action="Error" />
     <Rule Id="CA1033" Action="Error" />
     <Rule Id="CA1034" Action="Error" />
@@ -67,7 +64,6 @@
     <Rule Id="CA1302" Action="Error" />
     <Rule Id="CA1303" Action="None" />
     <Rule Id="CA1304" Action="Error" />
-    <Rule Id="CA1305" Action="Error" />
     <Rule Id="CA1306" Action="Error" />
     <Rule Id="CA1307" Action="Error" />
     <Rule Id="CA1308" Action="Error" />
@@ -389,7 +385,6 @@
     <Rule Id="CS8009" Action="Error" />
     <Rule Id="CS8012" Action="Error" />
     <Rule Id="CS8018" Action="Error" />
-    <Rule Id="CS8019" Action="Hidden" />
     <Rule Id="CS8020" Action="Error" />
     <Rule Id="CS8021" Action="Error" />
     <Rule Id="CS8029" Action="Error" />
@@ -401,14 +396,19 @@
     <Rule Id="CS8094" Action="Error" />
     <Rule Id="CS8105" Action="Error" />
   </Rules>
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp.Features" RuleNamespace="Microsoft.CodeAnalysis.CSharp.Features">
+    <Rule Id="IDE0065" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.NetAnalyzers" RuleNamespace="Microsoft.CodeAnalysis.NetAnalyzers">
+    <Rule Id="CA1305" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.NetCore.Analyzers" RuleNamespace="Microsoft.NetCore.Analyzers">
+    <Rule Id="CA1305" Action="None" />
+  </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
-    <!--SA1200UsingDirectivesMustBePlacedCorrectly-->
     <Rule Id="SA1200" Action="None" />
-    <!--SA1629DocumentationTextMustEndWithAPeriod-->
     <Rule Id="SA1629" Action="None" />
-    <!--SA1633FileMustHaveHeader-->
     <Rule Id="SA1633" Action="None" />
-    <!--SA1652EnableXmlDocumentationOutput-->
     <Rule Id="SA1652" Action="None" />
   </Rules>
 </RuleSet>

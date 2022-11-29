@@ -407,9 +407,13 @@ function startup(): void {
     });
 
     portfinder(initialPort, (errorWebPort: Error, webPort: number) => {
-        serviceUrl = serviceUrl.replace("{port}", `${webPort}`);
-
-        startService(webPort);
+        if (isDebug) {
+            // In debug the service always use the initial port and there's no need to start it
+            serviceUrl = serviceUrl.replace("{port}", `${initialPort}`);
+        } else {
+            serviceUrl = serviceUrl.replace("{port}", `${webPort}`);
+            startService(webPort);
+        }
 
         // Splash already closed
         if (splashWindow === undefined) {

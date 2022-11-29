@@ -1,6 +1,6 @@
 {
   "name": "sqlschemacompare",
-  "version": "2021.7.1",
+  "version": "2022.11.1",
   "description": "The Swiss Army Knife of Database Schema Comparison for Microsoft SQL, mySQL and PostgreSQL which runs on Windows, Linux and macOS systems.",
   "main": "app.min.js",
   "homepage": "https://github.com/TiCodeX/SQLSchemaCompare",
@@ -12,7 +12,7 @@
   "build": {
     "appId": "ch.ticodex.sqlschemacompare",
     "productName": "SQL Schema Compare",
-    "copyright": "Copyright @ 2021 TiCodeX",
+    "copyright": "Copyright @ 2022 TiCodeX",
     "remoteBuild": false,
     "win": {
       "target": "nsis",
@@ -90,6 +90,10 @@
     }
   },
   "scripts": {
+    "clean": "shx rm -f app.js app.min.js",
+    "prebuild": "npm run clean",
+    "build": "tsc --build && uglifyjs app.js --compress --mangle --toplevel --output app.min.js",
+    "start": "electron .",
     "dist-win-x64": "electron-builder --win --publish always",
     "dist-linux-x64": "electron-builder --linux --publish always",
     "dist-osx-x64": "electron-builder --mac --publish always"
@@ -101,6 +105,8 @@
     "@types/node": "^12.12.22",
     "electron": "^7.1.7",
     "electron-builder": "^21.2.0",
+    "shx": "^0.3.4",
+    "typescript": "^4.9.3",
     "uglify-js": "^3.7.3"
   },
   "dependencies": {

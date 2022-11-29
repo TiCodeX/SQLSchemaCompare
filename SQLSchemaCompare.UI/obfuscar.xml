@@ -16,9 +16,6 @@
         <SkipNamespace name="TiCodeX.SQLSchemaCompare.UI.Models*" />
         <SkipNamespace name="TiCodeX.SQLSchemaCompare.UI.Pages*" />
     </Module>
-    <Module file="$(InPath)\TiCodeX.SQLSchemaCompare.UI.Views.dll">
-        <SkipNamespace name="TiCodeX.SQLSchemaCompare.UI.Pages*" />
-    </Module>
     <Module file="$(InPath)\TiCodeX.SQLSchemaCompare.Services.dll">
         <SkipType name="TiCodeX.SQLSchemaCompare.Services.Localization" skipFields="true" />
     </Module>

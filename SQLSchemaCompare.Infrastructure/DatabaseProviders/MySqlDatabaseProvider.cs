@@ -81,14 +81,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             var includeGenerationExpression = this.CurrentServerVersion.Major > 5 || (this.CurrentServerVersion.Major == 5 && this.CurrentServerVersion.Minor >= 7);
             try
             {
-                return context.Query<MySqlColumn>(this.GetColumnsQuery(context, includeGenerationExpression));
+                return context.Query<MySqlColumn>(GetColumnsQuery(context, includeGenerationExpression));
             }
             catch (Exception)
             {
                 // If the query fails with the GenerationExpression, try without
                 if (includeGenerationExpression)
                 {
-                    return context.Query<MySqlColumn>(this.GetColumnsQuery(context, false));
+                    return context.Query<MySqlColumn>(GetColumnsQuery(context, false));
                 }
 
                 throw;
@@ -252,7 +252,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         /// <param name="context">The context</param>
         /// <param name="includeGenerationExpression">if set to <c>true</c> will include the GENERATION_EXPRESSION column</param>
         /// <returns>The query string</returns>
-        private string GetColumnsQuery(MySqlDatabaseContext context, bool includeGenerationExpression)
+        private static string GetColumnsQuery(MySqlDatabaseContext context, bool includeGenerationExpression)
         {
             var query = new StringBuilder();
             query.AppendLine("SELECT a.TABLE_NAME as TableName,");

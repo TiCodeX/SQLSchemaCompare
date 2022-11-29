@@ -24,12 +24,15 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || DatabaseFixture.ForceDockerTests)
                 {
                     /*serverPorts.Add(new object[] { (short)26001 });*/ // Version 9.3 (EOL November 2018)
-                    serverPorts.Add(new object[] { (short)26002 }); // Version 9.4 (EOL February 2020)
-                    serverPorts.Add(new object[] { (short)26003 }); // Version 9.5 (EOL February 2021)
-                    serverPorts.Add(new object[] { (short)26004 }); // Version 9.6 (EOL November 2021)
-                    serverPorts.Add(new object[] { (short)26005 }); // Version 10 (EOL November 2022)
+                    /*serverPorts.Add(new object[] { (short)26002 });*/ // Version 9.4 (EOL February 2020)
+                    /*serverPorts.Add(new object[] { (short)26003 });*/ // Version 9.5 (EOL February 2021)
+                    /*serverPorts.Add(new object[] { (short)26004 });*/ // Version 9.6 (EOL November 2021)
+                    /*serverPorts.Add(new object[] { (short)26005 });*/ // Version 10 (EOL November 2022)
                     serverPorts.Add(new object[] { (short)26006 }); // Version 11 (EOL November 2023)
                     serverPorts.Add(new object[] { (short)26007 }); // Version 12 (EOL November 2024)
+                    serverPorts.Add(new object[] { (short)26008 }); // Version 13 (EOL November 2025)
+                    serverPorts.Add(new object[] { (short)26009 }); // Version 14 (EOL November 2026)
+                    serverPorts.Add(new object[] { (short)26010 }); // Version 15 (EOL November 2027)
                 }
                 else
                 {
@@ -56,10 +59,8 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <inheritdoc />
         public override void ExecuteScriptCore(string script, string databaseName, short port)
         {
-            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.CipherService, (PostgreSqlDatabaseProviderOptions)this.GetDatabaseProviderOptions(databaseName, port)))
-            {
-                context.ExecuteNonQuery(script);
-            }
+            using var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.CipherService, (PostgreSqlDatabaseProviderOptions)this.GetDatabaseProviderOptions(databaseName, port));
+            context.ExecuteNonQuery(script);
         }
 
         /// <inheritdoc />

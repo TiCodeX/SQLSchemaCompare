@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
 using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
 
@@ -27,7 +26,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || DatabaseFixture.ForceDockerTests)
                 {
                     /*serverPorts.Add(new object[] { (short)27001 });*/ // Version 5.5 (EOL December 2018)
-                    serverPorts.Add(new object[] { (short)27002 }); // Version 5.6 (EOL February 2021)
+                    /*serverPorts.Add(new object[] { (short)27002 });*/ // Version 5.6 (EOL February 2021)
                     serverPorts.Add(new object[] { (short)27003 }); // Version 5.7 (EOL October 2023)
                     serverPorts.Add(new object[] { (short)27004 }); // Version 8.0 (EOL April 2026)
                 }
@@ -62,28 +61,26 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 throw new ArgumentNullException(nameof(script));
             }
 
-            using (var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, (MySqlDatabaseProviderOptions)this.GetDatabaseProviderOptions(databaseName, port)))
+            using var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, (MySqlDatabaseProviderOptions)this.GetDatabaseProviderOptions(databaseName, port));
+            context.Database.OpenConnection();
+
+            var queries = Regex.Split(script, "^(DELIMITER .*)$", RegexOptions.Multiline);
+            var currentDelimiter = string.Empty;
+            foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
             {
-                context.Database.OpenConnection();
-
-                var queries = Regex.Split(script, "^(DELIMITER .*)$", RegexOptions.Multiline);
-                var currentDelimiter = string.Empty;
-                foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
+                if (query.StartsWith("DELIMITER", StringComparison.Ordinal))
                 {
-                    if (query.StartsWith("DELIMITER", StringComparison.Ordinal))
-                    {
-                        currentDelimiter = query.Substring(9).Trim();
-                        continue;
-                    }
+                    currentDelimiter = query.Substring(9).Trim();
+                    continue;
+                }
 
-                    if (!string.IsNullOrWhiteSpace(currentDelimiter))
-                    {
-                        context.ExecuteNonQuery(query.Replace(currentDelimiter, ";", StringComparison.Ordinal));
-                    }
-                    else
-                    {
-                        context.ExecuteNonQuery(query);
-                    }
+                if (!string.IsNullOrWhiteSpace(currentDelimiter))
+                {
+                    context.ExecuteNonQuery(query.Replace(currentDelimiter, ";", StringComparison.Ordinal));
+                }
+                else
+                {
+                    context.ExecuteNonQuery(query);
                 }
             }
         }

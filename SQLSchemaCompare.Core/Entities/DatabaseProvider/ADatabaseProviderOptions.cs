@@ -41,6 +41,11 @@
         public bool UseSSL { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to ignore the server certificate
+        /// </summary>
+        public bool IgnoreServerCertificate { get; set; }
+
+        /// <summary>
         /// Specify whether to serialize the Password property
         /// </summary>
         /// <returns>True if the Password property should be serialized</returns>

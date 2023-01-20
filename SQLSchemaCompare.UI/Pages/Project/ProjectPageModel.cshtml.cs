@@ -214,7 +214,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
         /// </summary>
         /// <param name="ignoreDirty">Close project even if current project is dirty</param>
         /// <returns>The ApiResponse in JSON</returns>
-        public ActionResult OnPostCloseProject([FromBody]bool ignoreDirty)
+        public ActionResult OnPostCloseProject([FromBody] bool ignoreDirty)
         {
             try
             {
@@ -342,6 +342,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
             var savePassword = direction == CompareDirection.Source ? options.SourceSavePassword : options.TargetSavePassword;
             var useWindowsAuthentication = direction == CompareDirection.Source ? options.SourceUseWindowsAuthentication : options.TargetUseWindowsAuthentication;
             var useSSL = direction == CompareDirection.Source ? options.SourceUseSSL : options.TargetUseSSL;
+            var ignoreServerCertificate = direction == CompareDirection.Source ? options.SourceIgnoreServerCertificate : options.TargetIgnoreServerCertificate;
             var database = direction == CompareDirection.Source ? options.SourceDatabase : options.TargetDatabase;
 
             switch (type)
@@ -356,6 +357,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
                         SavePassword = savePassword,
                         UseWindowsAuthentication = useWindowsAuthentication,
                         UseSSL = useSSL,
+                        IgnoreServerCertificate = ignoreServerCertificate,
                         Database = database,
                     };
                 case DatabaseType.MySql:
@@ -367,6 +369,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
                         Password = password,
                         SavePassword = savePassword,
                         UseSSL = useSSL,
+                        IgnoreServerCertificate = ignoreServerCertificate,
                         Database = database,
                     };
                 case DatabaseType.PostgreSql:
@@ -378,6 +381,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
                         Password = password,
                         SavePassword = savePassword,
                         UseSSL = useSSL,
+                        IgnoreServerCertificate = ignoreServerCertificate,
                         Database = database,
                     };
                 case DatabaseType.MariaDb:
@@ -389,6 +393,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
                         Password = password,
                         SavePassword = savePassword,
                         UseSSL = useSSL,
+                        IgnoreServerCertificate = ignoreServerCertificate,
                         Database = database,
                     };
                 default:

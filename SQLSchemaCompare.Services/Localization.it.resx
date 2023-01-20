@@ -821,4 +821,7 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelUpgradesUntil" xml:space="preserve">
     <value>Upgrades fino</value>
   </data>
+  <data name="LabelIgnoreServerCertificate" xml:space="preserve">
+    <value>Ignora Certificato Server</value>
+  </data>
 </root>

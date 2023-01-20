@@ -2,6 +2,5 @@
   <PropertyGroup>
     <CleanCommand>npm run clean</CleanCommand>
     <BuildCommand>npm run build</BuildCommand>
-    <StartupCommand>npm start</StartupCommand>
   </PropertyGroup>
 </Project>

@@ -54,6 +54,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Models.Project
         public bool SourceUseSSL { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to ignore the server certificate for the source
+        /// </summary>
+        public bool SourceIgnoreServerCertificate { get; set; }
+
+        /// <summary>
         /// Gets or sets the source database
         /// </summary>
         public string SourceDatabase { get; set; }
@@ -92,6 +97,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Models.Project
         /// Gets or sets a value indicating whether to use the SSL for the target
         /// </summary>
         public bool TargetUseSSL { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to ignore the server certificate for the target
+        /// </summary>
+        public bool TargetIgnoreServerCertificate { get; set; }
 
         /// <summary>
         /// Gets or sets the target database

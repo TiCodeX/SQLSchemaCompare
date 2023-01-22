@@ -24,6 +24,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
             if (dbpo.UseSSL)
             {
                 connStr += "SSL Mode=Require;";
+
+                if (dbpo.IgnoreServerCertificate)
+                {
+                    connStr += "Trust Server Certificate=true;";
+                }
             }
 
             this.ConnectionString = connStr;

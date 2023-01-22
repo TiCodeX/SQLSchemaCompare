@@ -43,6 +43,13 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
             {
                 connStr += "Encrypt=false;";
             }
+            else
+            {
+                if (dbpo.IgnoreServerCertificate)
+                {
+                    connStr += "TrustServerCertificate=True;";
+                }
+            }
 
             connStr += "Connection Timeout=15;";
             connStr += "Persist Security Info=False;";

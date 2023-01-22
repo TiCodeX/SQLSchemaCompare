@@ -23,7 +23,14 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
 
             if (dbpo.UseSSL)
             {
-                connStr += "SslMode=Required;";
+                if (dbpo.IgnoreServerCertificate)
+                {
+                    connStr += "SslMode=Required;";
+                }
+                else
+                {
+                    connStr += "SslMode=VerifyFull;";
+                }
             }
             else
             {

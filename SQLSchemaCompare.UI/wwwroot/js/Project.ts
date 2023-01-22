@@ -444,6 +444,20 @@ class Project {
     }
 
     /**
+     * Handle the onChange event of the UseSSL checkbox
+     * @param checkbox The jQuery element of the checkbox
+     * @param prefix The page prefix (Source/Target)
+     */
+    public static HandleUseSSLOnChange(checkbox: JQuery, prefix: string): void {
+        if (checkbox.is(":checked")) {
+            $(`input[name='${prefix}IgnoreServerCertificate']`).parents(".form-group").show();
+        } else {
+            $(`input[name='${prefix}IgnoreServerCertificate']`).parents(".form-group").hide();
+        }
+        this.SetDirtyState();
+    }
+
+    /**
      * Handle the onMouseOver event of the project option by displaying the related description
      * @param id The id of the option
      */

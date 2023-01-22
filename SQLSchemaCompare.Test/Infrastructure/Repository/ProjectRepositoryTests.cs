@@ -110,12 +110,14 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
             const string sourceDatabase = "database1";
             const bool sourceUseWindowsAuthentication = true;
             const bool sourceUseSSL = false;
+            const bool sourceIgnoreServerCertificate = true;
             const string targetHostname = "192.168.1.1";
             const string targetUsername = "pippo";
             const string targetPassword = "pluto";
             const string targetDatabase = "database2";
             const bool targetSavePassword = false;
             const bool targetUseSSL = true;
+            const bool targetIgnoreServerCertificate = true;
 
             var compareProject = new CompareProject
             {
@@ -128,6 +130,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
                     SavePassword = sourceSavePassword,
                     UseWindowsAuthentication = sourceUseWindowsAuthentication,
                     UseSSL = sourceUseSSL,
+                    IgnoreServerCertificate = sourceIgnoreServerCertificate,
                 },
                 TargetProviderOptions = new PostgreSqlDatabaseProviderOptions
                 {
@@ -136,6 +139,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
                     Username = targetUsername,
                     Password = targetPassword,
                     UseSSL = targetUseSSL,
+                    IgnoreServerCertificate = targetIgnoreServerCertificate,
                 },
                 Options = new ProjectOptions
                 {
@@ -176,6 +180,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
     <Password>{sourcePassword}</Password>
     <SavePassword>{XmlConvert.ToString(sourceSavePassword)}</SavePassword>
     <UseSSL>{XmlConvert.ToString(sourceUseSSL)}</UseSSL>
+    <IgnoreServerCertificate>{XmlConvert.ToString(sourceIgnoreServerCertificate)}</IgnoreServerCertificate>
     <UseWindowsAuthentication>{XmlConvert.ToString(sourceUseWindowsAuthentication)}</UseWindowsAuthentication>
   </SourceProviderOptions>
   <TargetProviderOptions xsi:type=""PostgreSqlDatabaseProviderOptions"">
@@ -185,6 +190,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
     <Username>{targetUsername}</Username>
     <SavePassword>{XmlConvert.ToString(targetSavePassword)}</SavePassword>
     <UseSSL>{XmlConvert.ToString(targetUseSSL)}</UseSSL>
+    <IgnoreServerCertificate>{XmlConvert.ToString(targetIgnoreServerCertificate)}</IgnoreServerCertificate>
   </TargetProviderOptions>
   <Options>
     <Scripting>

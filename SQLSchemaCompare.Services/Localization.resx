@@ -830,4 +830,7 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelUpgradesUntil" xml:space="preserve">
     <value>Upgrades until</value>
   </data>
+  <data name="LabelIgnoreServerCertificate" xml:space="preserve">
+    <value>Ignore Server Certificate</value>
+  </data>
 </root>

@@ -17,7 +17,7 @@ electron.app.setAppUserModelId("ch.ticodex.sqlschemacompare");
 electron.app.setPath("userData", path.join(electron.app.getPath("appData"), "SQL Schema Compare"));
 
 const isDebug: boolean = process.defaultApp;
-const initialPort: number = 5432;
+const initialPort: number = 25436;
 const splashUrl: string = `file://${__dirname}/splash.html`;
 const loggerPath: string = path.join(os.homedir(), ".SQLSchemaCompare", "log", "SQLSchemaCompare.log");
 const loggerPattern: string = "yyyy-MM-dd-ui";

@@ -2,11 +2,11 @@
   "profiles": {
     "SQLSchemaCompare.UI": {
       "commandName": "Project",
-      "commandLineArgs": "5432",
+      "commandLineArgs": "25436",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:5432/"
+      "applicationUrl": "http://localhost:25436/"
     }
   }
 }

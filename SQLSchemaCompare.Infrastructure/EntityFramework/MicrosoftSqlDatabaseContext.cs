@@ -34,7 +34,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
             }
             else if (dbpo.UseAzureAuthentication)
             {
-                connStr += "Authentication=Active Directory Default;";
+                connStr += "Authentication=Active Directory Interactive;";
             }
             else
             {

@@ -1377,6 +1377,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Azure Authentication.
+        /// </summary>
+        public static string LabelUseAzureAuthentication {
+            get {
+                return ResourceManager.GetString("LabelUseAzureAuthentication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User-Defined Data Type.
         /// </summary>
         public static string LabelUserDefinedType {

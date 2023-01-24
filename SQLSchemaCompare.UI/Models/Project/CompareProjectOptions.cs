@@ -49,6 +49,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Models.Project
         public bool SourceUseWindowsAuthentication { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to use the azure authentication for the source
+        /// </summary>
+        public bool SourceUseAzureAuthentication { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether to use the SSL for the source
         /// </summary>
         public bool SourceUseSSL { get; set; }
@@ -92,6 +97,11 @@ namespace TiCodeX.SQLSchemaCompare.UI.Models.Project
         /// Gets or sets a value indicating whether to use the windows authentication for the target
         /// </summary>
         public bool TargetUseWindowsAuthentication { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use the azure authentication for the target
+        /// </summary>
+        public bool TargetUseAzureAuthentication { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to use the SSL for the target

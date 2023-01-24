@@ -109,6 +109,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
             const bool sourceSavePassword = true;
             const string sourceDatabase = "database1";
             const bool sourceUseWindowsAuthentication = true;
+            const bool sourceUseAzureAuthentication = true;
             const bool sourceUseSSL = false;
             const bool sourceIgnoreServerCertificate = true;
             const string targetHostname = "192.168.1.1";
@@ -129,6 +130,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
                     Password = sourcePassword,
                     SavePassword = sourceSavePassword,
                     UseWindowsAuthentication = sourceUseWindowsAuthentication,
+                    UseAzureAuthentication = sourceUseAzureAuthentication,
                     UseSSL = sourceUseSSL,
                     IgnoreServerCertificate = sourceIgnoreServerCertificate,
                 },
@@ -182,6 +184,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
     <UseSSL>{XmlConvert.ToString(sourceUseSSL)}</UseSSL>
     <IgnoreServerCertificate>{XmlConvert.ToString(sourceIgnoreServerCertificate)}</IgnoreServerCertificate>
     <UseWindowsAuthentication>{XmlConvert.ToString(sourceUseWindowsAuthentication)}</UseWindowsAuthentication>
+    <UseAzureAuthentication>{XmlConvert.ToString(sourceUseAzureAuthentication)}</UseAzureAuthentication>
   </SourceProviderOptions>
   <TargetProviderOptions xsi:type=""PostgreSqlDatabaseProviderOptions"">
     <Hostname>{targetHostname}</Hostname>

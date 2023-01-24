@@ -341,6 +341,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
             var password = this.cipherService.EncryptString(direction == CompareDirection.Source ? options.SourcePassword : options.TargetPassword);
             var savePassword = direction == CompareDirection.Source ? options.SourceSavePassword : options.TargetSavePassword;
             var useWindowsAuthentication = direction == CompareDirection.Source ? options.SourceUseWindowsAuthentication : options.TargetUseWindowsAuthentication;
+            var useAzureAuthentication = direction == CompareDirection.Source ? options.SourceUseAzureAuthentication : options.TargetUseAzureAuthentication;
             var useSSL = direction == CompareDirection.Source ? options.SourceUseSSL : options.TargetUseSSL;
             var ignoreServerCertificate = direction == CompareDirection.Source ? options.SourceIgnoreServerCertificate : options.TargetIgnoreServerCertificate;
             var database = direction == CompareDirection.Source ? options.SourceDatabase : options.TargetDatabase;
@@ -356,6 +357,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
                         Password = password,
                         SavePassword = savePassword,
                         UseWindowsAuthentication = useWindowsAuthentication,
+                        UseAzureAuthentication = useAzureAuthentication,
                         UseSSL = useSSL,
                         IgnoreServerCertificate = ignoreServerCertificate,
                         Database = database,

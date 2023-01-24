@@ -824,4 +824,7 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="LabelIgnoreServerCertificate" xml:space="preserve">
     <value>Serverzertifikat ignorieren</value>
   </data>
+  <data name="LabelUseAzureAuthentication" xml:space="preserve">
+    <value>Azure-Authentifizierung verwenden</value>
+  </data>
 </root>

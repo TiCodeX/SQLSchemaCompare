@@ -824,4 +824,7 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelIgnoreServerCertificate" xml:space="preserve">
     <value>Ignora Certificato Server</value>
   </data>
+  <data name="LabelUseAzureAuthentication" xml:space="preserve">
+    <value>Usa autenticazione di Azure</value>
+  </data>
 </root>

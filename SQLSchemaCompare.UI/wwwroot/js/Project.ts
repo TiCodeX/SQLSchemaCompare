@@ -385,11 +385,13 @@ class Project {
      */
     public static HandleDatabaseTypeOnChange(select: JQuery): void {
         const useWindowAuthentication: JQuery = $("input[name$='UseWindowsAuthentication']").parents(".form-group");
+        const useAzureAuthentication: JQuery = $("input[name$='UseAzureAuthentication']").parents(".form-group");
         const sourcePort: JQuery = $("input[name='SourcePort']");
         const targetPort: JQuery = $("input[name='TargetPort']");
         switch (+select.val()) {
             case Project.DatabaseType.MicrosoftSql:
                 useWindowAuthentication.show();
+                useAzureAuthentication.show();
                 this.HandleHostnameOnInput($("input[name='SourceHostname']"), "Source");
                 this.HandleHostnameOnInput($("input[name='TargetHostname']"), "Target");
                 sourcePort.val($("input[name='DefaultMicrosoftSqlPort']").val());
@@ -397,18 +399,21 @@ class Project {
                 break;
             case Project.DatabaseType.MySql:
                 useWindowAuthentication.hide();
+                useAzureAuthentication.hide();
                 $("input[name$='Port']").prop("disabled", false);
                 sourcePort.val($("input[name='DefaultMySqlPort']").val());
                 targetPort.val($("input[name='DefaultMySqlPort']").val());
                 break;
             case Project.DatabaseType.PostgreSql:
                 useWindowAuthentication.hide();
+                useAzureAuthentication.hide();
                 $("input[name$='Port']").prop("disabled", false);
                 sourcePort.val($("input[name='DefaultPostgreSqlPort']").val());
                 targetPort.val($("input[name='DefaultPostgreSqlPort']").val());
                 break;
             case Project.DatabaseType.MariaDb:
                 useWindowAuthentication.hide();
+                useAzureAuthentication.hide();
                 $("input[name$='Port']").prop("disabled", false);
                 sourcePort.val($("input[name='DefaultMariaDbPort']").val());
                 targetPort.val($("input[name='DefaultMariaDbPort']").val());
@@ -437,9 +442,29 @@ class Project {
      * @param prefix The page prefix (Source/Target)
      */
     public static HandleUseWindowsAuthenticationOnChange(checkbox: JQuery, prefix: string): void {
-        $(`input[name='${prefix}Username']`).prop("disabled", checkbox.is(":checked"));
-        $(`input[name='${prefix}Password']`).prop("disabled", checkbox.is(":checked"));
-        $(`input[name='${prefix}SavePassword']`).prop("disabled", checkbox.is(":checked"));
+        const checked: boolean = checkbox.is(":checked");
+        $(`input[name='${prefix}Username']`).prop("disabled", checked);
+        $(`input[name='${prefix}Password']`).prop("disabled", checked);
+        $(`input[name='${prefix}SavePassword']`).prop("disabled", checked);
+        if (checked) {
+            $(`input[name='${prefix}UseAzureAuthentication']`).prop("checked", false);
+        }
+        this.SetDirtyState();
+    }
+
+    /**
+     * Handle the onChange event of the UseAzureAuthentication checkbox
+     * @param checkbox The jQuery element of the checkbox
+     * @param prefix The page prefix (Source/Target)
+     */
+    public static HandleUseAzureAuthenticationOnChange(checkbox: JQuery, prefix: string): void {
+        const checked: boolean = checkbox.is(":checked");
+        $(`input[name='${prefix}Username']`).prop("disabled", checked);
+        $(`input[name='${prefix}Password']`).prop("disabled", checked);
+        $(`input[name='${prefix}SavePassword']`).prop("disabled", checked);
+        if (checked) {
+            $(`input[name='${prefix}UseWindowsAuthentication']`).prop("checked", false);
+        }
         this.SetDirtyState();
     }
 

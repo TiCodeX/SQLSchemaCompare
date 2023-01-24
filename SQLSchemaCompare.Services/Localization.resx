@@ -833,4 +833,7 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelIgnoreServerCertificate" xml:space="preserve">
     <value>Ignore Server Certificate</value>
   </data>
+  <data name="LabelUseAzureAuthentication" xml:space="preserve">
+    <value>Use Azure Authentication</value>
+  </data>
 </root>

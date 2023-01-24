@@ -32,6 +32,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
             {
                 connStr += "Integrated Security=SSPI;";
             }
+            else if (dbpo.UseAzureAuthentication)
+            {
+                connStr += "Authentication=Active Directory Default;";
+            }
             else
             {
                 connStr += $"User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
@@ -61,6 +65,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
         /// Gets the string used for the connection
         /// </summary>
         private string ConnectionString { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether to use azure authentication
+        /// </summary>
+        private bool UseAzureAuthentication { get; }
 
         /// <inheritdoc/>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

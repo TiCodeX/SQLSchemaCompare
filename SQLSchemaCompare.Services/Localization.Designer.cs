@@ -484,6 +484,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The swiss army knife for database schema comparison and synchronization which runs on multiple OS and supports multiple databases..
+        /// </summary>
+        public static string LabelAbout {
+            get {
+                return ResourceManager.GetString("LabelAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add AND Clause.
         /// </summary>
         public static string LabelAddANDClause {
@@ -864,11 +873,11 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Licensed to.
+        ///   Looks up a localized string similar to License.
         /// </summary>
-        public static string LabelLicensedTo {
+        public static string LabelLicense {
             get {
-                return ResourceManager.GetString("LabelLicensedTo", resourceCulture);
+                return ResourceManager.GetString("LabelLicense", resourceCulture);
             }
         }
         
@@ -1454,6 +1463,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelViews {
             get {
                 return ResourceManager.GetString("LabelViews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Website.
+        /// </summary>
+        public static string LabelWebsite {
+            get {
+                return ResourceManager.GetString("LabelWebsite", resourceCulture);
             }
         }
         

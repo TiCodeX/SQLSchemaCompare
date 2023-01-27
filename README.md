@@ -21,7 +21,7 @@
 
 ## Description
 
-The swiss army knife for DB schema comparison and synchronization which runs on multiple OS and supports multiple databases.
+The swiss army knife for database schema comparison and synchronization which runs on multiple OS and supports multiple databases.
 
 TiCodeX SQL Schema Compare runs on Windows, Mac and Linux and connects to Microsoft SQL (MS-SQL), mySQL and PostgreSQL.
 In addition, Azure SQL and MS-SQL on Amazon RDS is supported.

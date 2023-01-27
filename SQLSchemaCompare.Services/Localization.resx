@@ -656,8 +656,8 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="ButtonOk" xml:space="preserve">
     <value>Ok</value>
   </data>
-  <data name="LabelLicensedTo" xml:space="preserve">
-    <value>Licensed to</value>
+  <data name="LabelLicense" xml:space="preserve">
+    <value>License</value>
   </data>
   <data name="LabelSubscription" xml:space="preserve">
     <value>Subscription</value>
@@ -835,5 +835,11 @@ This option will ignore the matching and use the same order as when it was creat
   </data>
   <data name="LabelUseAzureAuthentication" xml:space="preserve">
     <value>Use Azure Authentication</value>
+  </data>
+  <data name="LabelAbout" xml:space="preserve">
+    <value>The swiss army knife for database schema comparison and synchronization which runs on multiple OS and supports multiple databases.</value>
+  </data>
+  <data name="LabelWebsite" xml:space="preserve">
+    <value>Website</value>
   </data>
 </root>

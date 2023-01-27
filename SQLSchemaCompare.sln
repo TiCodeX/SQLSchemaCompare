@@ -13,15 +13,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		azure-pipelines-integration-tests.yml = azure-pipelines-integration-tests.yml
 		CodeAnalysis.ruleset = CodeAnalysis.ruleset
 		CreateInstallerCommon.bat = CreateInstallerCommon.bat
 		CreateInstallerLinux.bat = CreateInstallerLinux.bat
 		CreateInstallerOSX.bat = CreateInstallerOSX.bat
 		CreateInstallerWin.bat = CreateInstallerWin.bat
+		LICENSE = LICENSE
 		pre-commit-hook.sh = pre-commit-hook.sh
+		README.md = README.md
 		RunTests.bat = RunTests.bat
-		TiCodeXCodeSigningCertificate.p12 = TiCodeXCodeSigningCertificate.p12
 		tslint.json = tslint.json
 		tslint.targets = tslint.targets
 	EndProjectSection
@@ -41,6 +41,22 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLSchemaCompare.Infrastructure", "SQLSchemaCompare.Infrastructure\SQLSchemaCompare.Infrastructure.csproj", "{327DD284-6D4E-4299-9570-13DD7608DE50}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "SQLSchemaCompare", "SQLSchemaCompare\SQLSchemaCompare.esproj", "{4F3E0A82-DD03-4F77-8575-855B9481475B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{F5A2A400-C955-4D11-8436-2D26A2C195C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{C4B2019D-D746-49D3-A248-3E3C602BCFA4}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\integration-tests.yml = .github\workflows\integration-tests.yml
+		.github\workflows\release.yml = .github\workflows\release.yml
+		.github\workflows\unit-tests.yml = .github\workflows\unit-tests.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{3D383B1E-D7C4-4915-9D43-6A064B3ACA2D}"
+	ProjectSection(SolutionItems) = preProject
+		images\sqlcompare-screenshot1.png = images\sqlcompare-screenshot1.png
+		images\sqlcompare-screenshot2.png = images\sqlcompare-screenshot2.png
+		images\sqlcompare-screenshot3.png = images\sqlcompare-screenshot3.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +101,9 @@ Global
 		{436CFDBA-5470-492A-BF73-CAC81FFB708E} = {02B9ABF6-5351-4EED-8153-152B695C7D4D}
 		{327DD284-6D4E-4299-9570-13DD7608DE50} = {6FD1F4D5-2B95-4A61-8394-00B8F0640B17}
 		{4F3E0A82-DD03-4F77-8575-855B9481475B} = {C87AF401-6CB2-4E53-8F5F-8E555FF98333}
+		{F5A2A400-C955-4D11-8436-2D26A2C195C0} = {EB87FDBE-CC7F-4AD6-BD06-1425586DEEDD}
+		{C4B2019D-D746-49D3-A248-3E3C602BCFA4} = {F5A2A400-C955-4D11-8436-2D26A2C195C0}
+		{3D383B1E-D7C4-4915-9D43-6A064B3ACA2D} = {EB87FDBE-CC7F-4AD6-BD06-1425586DEEDD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C1C5D5BC-124E-4706-BF7E-E08EA154F827}

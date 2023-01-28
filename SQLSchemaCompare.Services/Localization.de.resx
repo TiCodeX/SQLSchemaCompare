@@ -659,8 +659,8 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="LabelExpirationDate" xml:space="preserve">
     <value>Verfallsdatum</value>
   </data>
-  <data name="LabelLicensedTo" xml:space="preserve">
-    <value>Lizenziert an</value>
+  <data name="LabelLicense" xml:space="preserve">
+    <value>Lizenz</value>
   </data>
   <data name="LabelMonthlyPayment" xml:space="preserve">
     <value>Monatliche Zahlung</value>
@@ -826,5 +826,11 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   </data>
   <data name="LabelUseAzureAuthentication" xml:space="preserve">
     <value>Azure-Authentifizierung verwenden</value>
+  </data>
+  <data name="LabelAbout" xml:space="preserve">
+    <value>Das Schweizer Taschenmesser für den Vergleich und die Synchronisation von DB-Schemata welche auf mehreren Betriebssystemen und mehrere Datenbanken unterstützt.</value>
+  </data>
+  <data name="LabelWebsite" xml:space="preserve">
+    <value>Webseite</value>
   </data>
 </root>

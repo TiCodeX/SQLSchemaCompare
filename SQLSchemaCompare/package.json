@@ -1,6 +1,7 @@
 {
   "name": "sqlschemacompare",
-  "version": "2022.11.1",
+  "version": "2023.2.1",
+  "license": "GPL-3.0-only",
   "description": "The Swiss Army Knife of Database Schema Comparison for Microsoft SQL, mySQL and PostgreSQL which runs on Windows, Linux and macOS systems.",
   "main": "app.min.js",
   "homepage": "https://github.com/TiCodeX/SQLSchemaCompare",
@@ -12,7 +13,7 @@
   "build": {
     "appId": "ch.ticodex.sqlschemacompare",
     "productName": "SQL Schema Compare",
-    "copyright": "Copyright @ 2022 TiCodeX",
+    "copyright": "Copyright @ 2023 TiCodeX",
     "remoteBuild": false,
     "win": {
       "target": "nsis",
@@ -82,6 +83,12 @@
         "to": "bin",
         "filter": [
           "**/*"
+        ]
+      },
+      {
+        "from": "../",
+        "filter": [
+          "LICENSE"
         ]
       }
     ],

@@ -683,8 +683,8 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelRemainingDays" xml:space="preserve">
     <value>Giorni rimanenti</value>
   </data>
-  <data name="LabelLicensedTo" xml:space="preserve">
-    <value>Rilasciata a</value>
+  <data name="LabelLicense" xml:space="preserve">
+    <value>Licenza</value>
   </data>
   <data name="StatusRetrievingPrimaryKeys" xml:space="preserve">
     <value>Lettura delle Chiavi Primarie in corso...</value>
@@ -826,5 +826,11 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   </data>
   <data name="LabelUseAzureAuthentication" xml:space="preserve">
     <value>Usa autenticazione di Azure</value>
+  </data>
+  <data name="LabelAbout" xml:space="preserve">
+    <value>Il coltellino svizzero per il confronto e la sincronizzazione dello schema di banche dati, funziona su diversi Sistemi Operativi e supporta diverse Banche Dati.</value>
+  </data>
+  <data name="LabelWebsite" xml:space="preserve">
+    <value>Sito Web</value>
   </data>
 </root>

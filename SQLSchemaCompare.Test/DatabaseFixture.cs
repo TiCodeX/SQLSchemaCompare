@@ -34,7 +34,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <summary>
         /// Force executing the docker tests without having to set the environment variable
         /// </summary>
-        public const bool ForceDockerTests = true;
+        public const bool ForceDockerTests = false;
 
         /// <summary>
         /// Whether the servers are already initialized

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
 using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
 
@@ -74,10 +73,8 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <inheritdoc />
         public override void DropDatabase(string databaseName, short port)
         {
-            var dropDbQuery = new StringBuilder();
-            dropDbQuery.AppendLine($"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{databaseName}';");
-            dropDbQuery.AppendLine($"DROP DATABASE IF EXISTS {databaseName};");
-            this.ExecuteScript(dropDbQuery.ToString(), string.Empty, port);
+            this.ExecuteScript($"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{databaseName}';", string.Empty, port);
+            this.ExecuteScript($"DROP DATABASE IF EXISTS {databaseName};", string.Empty, port);
         }
 
         /// <inheritdoc />

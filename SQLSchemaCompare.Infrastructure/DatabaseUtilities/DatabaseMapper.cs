@@ -92,13 +92,17 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
                         {
                             this.PerformTableMapping(table);
                         }
+                        else if (sourceObject is ABaseDbView view)
+                        {
+                            this.PerformViewMapping(view);
+                        }
                     }
                 }
 
                 if (taskInfo != null)
                 {
                     taskInfo.CancellationToken.ThrowIfCancellationRequested();
-                    taskInfo.Percentage = (short)((100 * i++) / count);
+                    taskInfo.Percentage = (short)(100 * i++ / count);
                 }
             }
         }
@@ -120,6 +124,23 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
                 new ObjectMap { DbObjects = sourceTable.Constraints, MappableDbObjects = targetTable.Constraints },
                 new ObjectMap { DbObjects = sourceTable.Triggers, MappableDbObjects = targetTable.Triggers },
                 new ObjectMap { DbObjects = sourceTable.PrimaryKeys, MappableDbObjects = targetTable.PrimaryKeys },
+            };
+
+            this.PerformMapping(maps);
+        }
+
+        private void PerformViewMapping(ABaseDbView sourceView)
+        {
+            var targetView = sourceView.MappedDbObject as ABaseDbView;
+            if (targetView == null)
+            {
+                throw new ArgumentException($"{nameof(sourceView.MappedDbObject)} is null");
+            }
+
+            // Linearize the 2 views for mapping
+            var maps = new List<ObjectMap>
+            {
+                new ObjectMap { DbObjects = sourceView.Indexes, MappableDbObjects = targetView.Indexes },
             };
 
             this.PerformMapping(maps);

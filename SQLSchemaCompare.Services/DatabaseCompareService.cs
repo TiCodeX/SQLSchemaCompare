@@ -186,17 +186,17 @@ namespace TiCodeX.SQLSchemaCompare.Services
                     this.retrievedSourceDatabase,
                     this.projectService.Project.Options);
 
-                // Linearize the 2 databases into a single list of of all source items and the target items not present in source
+                // Linearize the 2 databases into a single list of all source items and the target items not present in source
                 var maps = new List<ObjectMap>
-            {
-                new ObjectMap { ObjectTitle = Localization.StatusComparingSchemas, DbObjects = this.retrievedSourceDatabase.Schemas.Concat(this.retrievedTargetDatabase.Schemas.Where(x => x.MappedDbObject == null)) },
-                new ObjectMap { ObjectTitle = Localization.StatusComparingTables, DbObjects = this.retrievedSourceDatabase.Tables.Concat(this.retrievedTargetDatabase.Tables.Where(x => x.MappedDbObject == null)) },
-                new ObjectMap { ObjectTitle = Localization.StatusComparingViews, DbObjects = this.retrievedSourceDatabase.Views.Concat(this.retrievedTargetDatabase.Views.Where(x => x.MappedDbObject == null)) },
-                new ObjectMap { ObjectTitle = Localization.StatusComparingFunctions, DbObjects = this.retrievedSourceDatabase.Functions.Concat(this.retrievedTargetDatabase.Functions.Where(x => x.MappedDbObject == null)) },
-                new ObjectMap { ObjectTitle = Localization.StatusComparingStoredProcedures, DbObjects = this.retrievedSourceDatabase.StoredProcedures.Concat(this.retrievedTargetDatabase.StoredProcedures.Where(x => x.MappedDbObject == null)) },
-                new ObjectMap { ObjectTitle = Localization.StatusComparingDataTypes, DbObjects = this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined).Concat(this.retrievedTargetDatabase.DataTypes.Where(x => x.MappedDbObject == null && x.IsUserDefined)) },
-                new ObjectMap { ObjectTitle = Localization.StatusComparingSequences, DbObjects = this.retrievedSourceDatabase.Sequences.Concat(this.retrievedTargetDatabase.Sequences.Where(x => x.MappedDbObject == null)) },
-            };
+                {
+                    new ObjectMap { ObjectTitle = Localization.StatusComparingSchemas, DbObjects = this.retrievedSourceDatabase.Schemas.Concat(this.retrievedTargetDatabase.Schemas.Where(x => x.MappedDbObject == null)) },
+                    new ObjectMap { ObjectTitle = Localization.StatusComparingTables, DbObjects = this.retrievedSourceDatabase.Tables.Concat(this.retrievedTargetDatabase.Tables.Where(x => x.MappedDbObject == null)) },
+                    new ObjectMap { ObjectTitle = Localization.StatusComparingViews, DbObjects = this.retrievedSourceDatabase.Views.Concat(this.retrievedTargetDatabase.Views.Where(x => x.MappedDbObject == null)) },
+                    new ObjectMap { ObjectTitle = Localization.StatusComparingFunctions, DbObjects = this.retrievedSourceDatabase.Functions.Concat(this.retrievedTargetDatabase.Functions.Where(x => x.MappedDbObject == null)) },
+                    new ObjectMap { ObjectTitle = Localization.StatusComparingStoredProcedures, DbObjects = this.retrievedSourceDatabase.StoredProcedures.Concat(this.retrievedTargetDatabase.StoredProcedures.Where(x => x.MappedDbObject == null)) },
+                    new ObjectMap { ObjectTitle = Localization.StatusComparingDataTypes, DbObjects = this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined).Concat(this.retrievedTargetDatabase.DataTypes.Where(x => x.MappedDbObject == null && x.IsUserDefined)) },
+                    new ObjectMap { ObjectTitle = Localization.StatusComparingSequences, DbObjects = this.retrievedSourceDatabase.Sequences.Concat(this.retrievedTargetDatabase.Sequences.Where(x => x.MappedDbObject == null)) },
+                };
 
                 var totalItems = maps.SelectMany(x => x.DbObjects).Count();
                 if (totalItems == 0)

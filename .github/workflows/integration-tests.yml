@@ -123,6 +123,7 @@ jobs:
         docker pull mariadb:10.8
         docker pull mariadb:10.9
         docker pull mariadb:10.10
+        docker pull mariadb:10.11
     - name: docker start containers
       shell: bash
       run: |
@@ -134,6 +135,7 @@ jobs:
         docker run --rm --name mariadb-10.8 -p 29010:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.8
         docker run --rm --name mariadb-10.9 -p 29011:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.9
         docker run --rm --name mariadb-10.10 -p 29012:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.10
+        docker run --rm --name mariadb-10.11 -p 29013:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.11
         sleep 60s
     - name: Test
       run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --filter "Category=IntegrationTest&Category=MariaDB"

@@ -36,7 +36,8 @@ namespace TiCodeX.SQLSchemaCompare.Test
                     serverPorts.Add(new object[] { (short)29009 }); // Version 10.7 (EOL February 2023)
                     serverPorts.Add(new object[] { (short)29010 }); // Version 10.8 (EOL May 2023)
                     serverPorts.Add(new object[] { (short)29011 }); // Version 10.9 (EOL August 2023)
-                    serverPorts.Add(new object[] { (short)29012 }); // Version 10.10 (EOL ???)
+                    serverPorts.Add(new object[] { (short)29012 }); // Version 10.10 (EOL November 2023)
+                    serverPorts.Add(new object[] { (short)29013 }); // Version 10.11 (EOL February 2028)
                 }
                 else
                 {

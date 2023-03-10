@@ -52,6 +52,10 @@ $fa-font-size-base: $font-size-base;
         }
     }
 }
+
+.monaco-editor.vs {
+    max-height: 0px; // Fix autoresize on focus
+}
 /*#endregion*/
 
 /*#region Toolbar */
@@ -98,6 +102,10 @@ $fa-font-size-base: $font-size-base;
     overflow: auto;
 }
 
+.tcx-main-page {
+    height: calc(100vh - #{$row-header-height});
+}
+
 .tcx-main-top {
     overflow: auto;
     height: 100%;
@@ -107,7 +115,7 @@ $fa-font-size-base: $font-size-base;
     display: none;
 
     > .tab-content {
-        height: calc(100% - 36px);
+        height: calc(100% - #{$row-header-height});
 
         @media screen and (max-width: 1073px) {
             height: calc(100% - 52px);

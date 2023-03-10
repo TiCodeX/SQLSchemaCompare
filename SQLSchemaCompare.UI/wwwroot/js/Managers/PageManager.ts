@@ -89,7 +89,9 @@ class PageManager {
             newPageDiv.appendTo(this.pageContainer);
             newPageDiv.attr("page", page);
             newPageDiv.addClass("col-12 p-0");
-            if (page !== PageManager.Page.Main) {
+            if (page === PageManager.Page.Main) {
+                newPageDiv.addClass("tcx-main-page");
+            } else {
                 newPageDiv.addClass("my-auto");
             }
             newPageDiv.html(result);

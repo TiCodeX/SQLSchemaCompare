@@ -153,6 +153,10 @@
     <Message Text="Remove $(PublishDir) folder" Importance="high" />
     <Message Text="==============================================" Importance="high" />
     <Exec Command="if exist $(PublishDir) ( rmdir /S /Q $(PublishDir) )" />
+    <Message Text="==============================================" Importance="high" />
+    <Message Text="Publish CLI project" Importance="high" />
+    <Message Text="==============================================" Importance="high" />
+    <Exec Command="dotnet publish ..\SQLSchemaCompare.CLI\SQLSchemaCompare.CLI.csproj -r $(RuntimeIdentifier) -c $(Configuration)" />
   </Target>
 
   <Target Name="ObfuscateDlls" AfterTargets="AfterPublish">

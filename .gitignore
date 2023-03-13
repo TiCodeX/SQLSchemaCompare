@@ -347,5 +347,6 @@ installer
 SQLSchemaCompare.Core/TiCodeX.SQLSchemaCompare.Core.xml
 SQLSchemaCompare.Services/TiCodeX.SQLSchemaCompare.Services.xml
 SQLSchemaCompare.Infrastructure/TiCodeX.SQLSchemaCompare.Infrastructure.xml
+SQLSchemaCompare.CLI/TiCodeX.SQLSchemaCompare.CLI.xml
 SQLSchemaCompare.UI/TiCodeX.SQLSchemaCompare.UI.xml
 SQLSchemaCompare.Test/TiCodeX.SQLSchemaCompare.Test.xml

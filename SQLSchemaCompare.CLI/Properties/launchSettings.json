@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SQLSchemaCompare.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
+    }
+  }
+}

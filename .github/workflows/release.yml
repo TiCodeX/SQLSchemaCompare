@@ -121,6 +121,7 @@ jobs:
       run: |
         chmod -R a+rwx SQLSchemaCompare/node_modules
         chmod +x .publish/TiCodeX.SQLSchemaCompare.UI
+        chmod +x .publish/TiCodeX.SQLSchemaCompare.CLI
     - name: Create installer
       run: npm run dist-linux-x64
       working-directory: SQLSchemaCompare
@@ -157,6 +158,7 @@ jobs:
       run: |
         chmod -R a+rwx SQLSchemaCompare/node_modules
         chmod +x .publish/TiCodeX.SQLSchemaCompare.UI
+        chmod +x .publish/TiCodeX.SQLSchemaCompare.CLI
     - name: Create installer
       run: npm run dist-osx-x64
       working-directory: SQLSchemaCompare

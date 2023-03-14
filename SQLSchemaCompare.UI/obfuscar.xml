@@ -24,5 +24,8 @@
         <SkipNamespace name="TiCodeX.SQLSchemaCompare.Core.Entities*" />
         <SkipNamespace name="TiCodeX.SQLSchemaCompare.Core.Enums*" />
     </Module>
+    <Module file="$(InPath)\TiCodeX.SQLSchemaCompare.CLI.dll">
+        <SkipType name="TiCodeX.SQLSchemaCompare.CLI.Options" skipFields="true" />
+    </Module>
 
 </Obfuscator>

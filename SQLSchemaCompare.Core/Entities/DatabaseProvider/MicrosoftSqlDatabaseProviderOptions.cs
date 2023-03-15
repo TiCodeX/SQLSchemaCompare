@@ -8,7 +8,7 @@
         /// <summary>
         /// The default port
         /// </summary>
-        public const short DefaultPort = 1433;
+        public const ushort DefaultPort = 1433;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicrosoftSqlDatabaseProviderOptions"/> class

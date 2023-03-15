@@ -26,7 +26,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Models.Project
         /// <summary>
         /// Gets or sets the source port
         /// </summary>
-        public short? SourcePort { get; set; }
+        public ushort? SourcePort { get; set; }
 
         /// <summary>
         /// Gets or sets the source username
@@ -76,7 +76,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.Models.Project
         /// <summary>
         /// Gets or sets the target port
         /// </summary>
-        public short? TargetPort { get; set; }
+        public ushort? TargetPort { get; set; }
 
         /// <summary>
         /// Gets or sets the target username

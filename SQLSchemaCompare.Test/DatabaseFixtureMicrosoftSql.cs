@@ -24,13 +24,13 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
                 if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || DatabaseFixture.ForceDockerTests)
                 {
-                    serverPorts.Add(new object[] { (short)28001 }); // Version 2017 Linux
-                    serverPorts.Add(new object[] { (short)28002 }); // Version 2019 Linux
-                    serverPorts.Add(new object[] { (short)28003 }); // Version 2022 Linux
+                    serverPorts.Add(new object[] { (ushort)28001 }); // Version 2017 Linux
+                    serverPorts.Add(new object[] { (ushort)28002 }); // Version 2019 Linux
+                    serverPorts.Add(new object[] { (ushort)28003 }); // Version 2022 Linux
                 }
                 else
                 {
-                    serverPorts.Add(new object[] { (short)1433 }); // Local server
+                    serverPorts.Add(new object[] { (ushort)1433 }); // Local server
                 }
 
                 return serverPorts;
@@ -38,7 +38,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <inheritdoc />
-        public override ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, short port)
+        public override ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, ushort port)
         {
             return new MicrosoftSqlDatabaseProviderOptions
             {
@@ -51,7 +51,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <inheritdoc />
-        public override void ExecuteScriptCore(string script, string databaseName, short port)
+        public override void ExecuteScriptCore(string script, string databaseName, ushort port)
         {
             if (script == null)
             {
@@ -67,7 +67,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <inheritdoc />
-        public override void CreateSakilaDatabase(string databaseName, short port)
+        public override void CreateSakilaDatabase(string databaseName, ushort port)
         {
             this.DropAndCreateDatabase(databaseName, port);
             var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-microsoftsql.sql");
@@ -75,7 +75,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <inheritdoc />
-        public override void DropDatabase(string databaseName, short port)
+        public override void DropDatabase(string databaseName, ushort port)
         {
             var dropDbQuery = new StringBuilder();
             dropDbQuery.AppendLine($"IF EXISTS(select * from sys.databases where name= '{databaseName}')");
@@ -87,7 +87,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <inheritdoc />
-        public override void DropAndCreateDatabase(string databaseName, short port)
+        public override void DropAndCreateDatabase(string databaseName, ushort port)
         {
             this.DropDatabase(databaseName, port);
             this.ExecuteScript($"CREATE DATABASE {databaseName}", string.Empty, port);

@@ -13,7 +13,7 @@
         /// <summary>
         /// Gets or sets the port
         /// </summary>
-        public short Port { get; set; }
+        public ushort Port { get; set; }
 
         /// <summary>
         /// Gets or sets the database name

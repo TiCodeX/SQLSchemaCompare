@@ -8,7 +8,7 @@
         /// <summary>
         /// The default port
         /// </summary>
-        public const short DefaultPort = 3306;
+        public const ushort DefaultPort = 3306;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MariaDbDatabaseProviderOptions"/> class

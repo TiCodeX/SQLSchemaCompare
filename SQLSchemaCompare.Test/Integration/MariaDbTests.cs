@@ -44,7 +44,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void GetMariaDbDatabaseList(short port)
+        public void GetMariaDbDatabaseList(ushort port)
         {
             var mariadbdbp = this.dbFixture.GetDatabaseProvider(string.Empty, port);
             var dbList = mariadbdbp.GetDatabaseList();
@@ -60,7 +60,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void GetMariaDbSakilaDatabase(short port)
+        public void GetMariaDbSakilaDatabase(ushort port)
         {
             var mariadbdbp = this.dbFixture.GetDatabaseProvider("sakila", port);
             var db = mariadbdbp.GetDatabase(new TaskInfo("test"));
@@ -105,7 +105,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void CloneMariaDbDatabase(short port)
+        public void CloneMariaDbDatabase(ushort port)
         {
             const string databaseName = "sakila";
             var clonedDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
@@ -139,7 +139,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseSourceEmpty(short port)
+        public void MigrateMariaDbDatabaseSourceEmpty(ushort port)
         {
             var sourceDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
             var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
@@ -169,7 +169,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetEmpty(short port)
+        public void MigrateMariaDbDatabaseTargetEmpty(ushort port)
         {
             const string sourceDatabaseName = "sakila";
             var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
@@ -194,7 +194,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetMissingColumn(short port)
+        public void MigrateMariaDbDatabaseTargetMissingColumn(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE staff DROP COLUMN email");
@@ -209,7 +209,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetMissingColumns(short port)
+        public void MigrateMariaDbDatabaseTargetMissingColumns(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE staff DROP COLUMN email,");
@@ -225,7 +225,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetExtraColumn(short port)
+        public void MigrateMariaDbDatabaseTargetExtraColumn(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE staff ADD COLUMN middle_name VARCHAR(45) NOT NULL");
@@ -240,7 +240,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetExtraColumns(short port)
+        public void MigrateMariaDbDatabaseTargetExtraColumns(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE staff ADD COLUMN middle_name VARCHAR(45) NOT NULL,");
@@ -256,7 +256,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetColumnDifferentType(short port)
+        public void MigrateMariaDbDatabaseTargetColumnDifferentType(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE country CHANGE COLUMN country country char NOT NULL");
@@ -271,7 +271,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetColumnMissingDefault(short port)
+        public void MigrateMariaDbDatabaseTargetColumnMissingDefault(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE country ALTER COLUMN country DROP DEFAULT");
@@ -286,7 +286,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetColumnExtraDefault(short port)
+        public void MigrateMariaDbDatabaseTargetColumnExtraDefault(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE actor ALTER COLUMN last_name SET DEFAULT 'MyLastName'");
@@ -301,7 +301,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetColumnDifferentDefault(short port)
+        public void MigrateMariaDbDatabaseTargetColumnDifferentDefault(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE country ALTER COLUMN country SET DEFAULT 'test'");
@@ -316,7 +316,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetDifferentView(short port)
+        public void MigrateMariaDbDatabaseTargetDifferentView(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER VIEW customer_list AS SELECT NULL AS 'test'");
@@ -331,7 +331,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetDifferentFunction(short port)
+        public void MigrateMariaDbDatabaseTargetDifferentFunction(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP FUNCTION inventory_held_by_customer;");
@@ -361,7 +361,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetDifferentStoredProcedure(short port)
+        public void MigrateMariaDbDatabaseTargetDifferentStoredProcedure(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP PROCEDURE film_not_in_stock;");
@@ -387,7 +387,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetMissingIndex(short port)
+        public void MigrateMariaDbDatabaseTargetMissingIndex(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP INDEX idx_last_name ON customer");
@@ -402,7 +402,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetExtraIndex(short port)
+        public void MigrateMariaDbDatabaseTargetExtraIndex(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("CREATE UNIQUE INDEX idx_staff_email ON staff (email)");
@@ -417,7 +417,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetDifferentIndex(short port)
+        public void MigrateMariaDbDatabaseTargetDifferentIndex(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP INDEX idx_last_name ON customer;");
@@ -433,7 +433,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetMissingTrigger(short port)
+        public void MigrateMariaDbDatabaseTargetMissingTrigger(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP TRIGGER upd_film");
@@ -448,7 +448,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetExtraTrigger(short port)
+        public void MigrateMariaDbDatabaseTargetExtraTrigger(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DELIMITER ;;");
@@ -467,7 +467,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetDifferentTrigger(short port)
+        public void MigrateMariaDbDatabaseTargetDifferentTrigger(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP TRIGGER upd_film;");
@@ -494,7 +494,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetMissingPrimaryKey(short port)
+        public void MigrateMariaDbDatabaseTargetMissingPrimaryKey(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE payment MODIFY payment_id SMALLINT UNSIGNED NOT NULL;");
@@ -510,7 +510,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetExtraPrimaryKey(short port)
+        public void MigrateMariaDbDatabaseTargetExtraPrimaryKey(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_actor_description ADD PRIMARY KEY (film_actor_description_id)");
@@ -525,7 +525,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey(short port)
+        public void MigrateMariaDbDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey(ushort port)
         {
             // Skip test for MariaDB version 5.5 because adding a new foreign key it creates automatically an index and
             // since we skip loading the indexes of type 'FOREIGN KEY' it will fail because it doesn't get dropped.
@@ -549,7 +549,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetPrimaryKeyOnDifferentColumn(short port)
+        public void MigrateMariaDbDatabaseTargetPrimaryKeyOnDifferentColumn(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE payment MODIFY payment_id SMALLINT UNSIGNED NOT NULL;");
@@ -567,7 +567,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetExtraForeignKey(short port)
+        public void MigrateMariaDbDatabaseTargetExtraForeignKey(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT FK_film_text_category FOREIGN KEY (category_id) REFERENCES category (category_id);");
@@ -582,7 +582,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetMissingForeignKey(short port)
+        public void MigrateMariaDbDatabaseTargetMissingForeignKey(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_actor DROP FOREIGN KEY fk_film_actor_film;");
@@ -597,7 +597,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetForeignKeyReferencesDifferentColumn(short port)
+        public void MigrateMariaDbDatabaseTargetForeignKeyReferencesDifferentColumn(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE address DROP FOREIGN KEY fk_address_city;");
@@ -613,7 +613,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void MigrateMariaDbDatabaseTargetForeignKeyDifferentOptions(short port)
+        public void MigrateMariaDbDatabaseTargetForeignKeyDifferentOptions(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE address DROP FOREIGN KEY fk_address_city;");

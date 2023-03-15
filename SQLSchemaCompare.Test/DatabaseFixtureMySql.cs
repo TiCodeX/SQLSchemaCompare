@@ -25,14 +25,14 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
                 if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || DatabaseFixture.ForceDockerTests)
                 {
-                    /*serverPorts.Add(new object[] { (short)27001 });*/ // Version 5.5 (EOL December 2018)
-                    /*serverPorts.Add(new object[] { (short)27002 });*/ // Version 5.6 (EOL February 2021)
-                    serverPorts.Add(new object[] { (short)27003 }); // Version 5.7 (EOL October 2023)
-                    serverPorts.Add(new object[] { (short)27004 }); // Version 8.0 (EOL April 2026)
+                    /*serverPorts.Add(new object[] { (ushort)27001 });*/ // Version 5.5 (EOL December 2018)
+                    /*serverPorts.Add(new object[] { (ushort)27002 });*/ // Version 5.6 (EOL February 2021)
+                    serverPorts.Add(new object[] { (ushort)27003 }); // Version 5.7 (EOL October 2023)
+                    serverPorts.Add(new object[] { (ushort)27004 }); // Version 8.0 (EOL April 2026)
                 }
                 else
                 {
-                    serverPorts.Add(new object[] { (short)3306 }); // Local server
+                    serverPorts.Add(new object[] { (ushort)3306 }); // Local server
                 }
 
                 return serverPorts;
@@ -40,7 +40,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <inheritdoc />
-        public override ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, short port)
+        public override ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, ushort port)
         {
             return new MySqlDatabaseProviderOptions
             {
@@ -54,7 +54,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <inheritdoc/>
-        public override void ExecuteScriptCore(string script, string databaseName, short port)
+        public override void ExecuteScriptCore(string script, string databaseName, ushort port)
         {
             if (script == null)
             {
@@ -86,7 +86,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <inheritdoc />
-        public override void CreateSakilaDatabase(string databaseName, short port)
+        public override void CreateSakilaDatabase(string databaseName, ushort port)
         {
             this.DropAndCreateDatabase(databaseName, port);
 
@@ -96,13 +96,13 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <inheritdoc />
-        public override void DropDatabase(string databaseName, short port)
+        public override void DropDatabase(string databaseName, ushort port)
         {
             this.ExecuteScript($"DROP SCHEMA IF EXISTS `{databaseName}`;", string.Empty, port);
         }
 
         /// <inheritdoc />
-        public override void DropAndCreateDatabase(string databaseName, short port)
+        public override void DropAndCreateDatabase(string databaseName, ushort port)
         {
             this.DropDatabase(databaseName, port);
 

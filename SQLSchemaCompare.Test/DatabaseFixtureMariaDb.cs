@@ -25,23 +25,23 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
                 if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || DatabaseFixture.ForceDockerTests)
                 {
-                    /*serverPorts.Add(new object[] { (short)29001 });*/ // Version 5.5 (EOL April 2020)
-                    /*serverPorts.Add(new object[] { (short)29002 });*/ // Version 10.0 (EOL March 2019)
-                    /*serverPorts.Add(new object[] { (short)29003 });*/ // Version 10.1 (EOL October 2020)
-                    /*serverPorts.Add(new object[] { (short)29004 });*/ // Version 10.2 (EOL May 2022)
-                    serverPorts.Add(new object[] { (short)29005 }); // Version 10.3 (EOL May 2023)
-                    serverPorts.Add(new object[] { (short)29006 }); // Version 10.4 (EOL June 2024)
-                    serverPorts.Add(new object[] { (short)29007 }); // Version 10.5 (EOL June 2025)
-                    serverPorts.Add(new object[] { (short)29008 }); // Version 10.6 (EOL July 2026)
-                    serverPorts.Add(new object[] { (short)29009 }); // Version 10.7 (EOL February 2023)
-                    serverPorts.Add(new object[] { (short)29010 }); // Version 10.8 (EOL May 2023)
-                    serverPorts.Add(new object[] { (short)29011 }); // Version 10.9 (EOL August 2023)
-                    serverPorts.Add(new object[] { (short)29012 }); // Version 10.10 (EOL November 2023)
-                    serverPorts.Add(new object[] { (short)29013 }); // Version 10.11 (EOL February 2028)
+                    /*serverPorts.Add(new object[] { (ushort)29001 });*/ // Version 5.5 (EOL April 2020)
+                    /*serverPorts.Add(new object[] { (ushort)29002 });*/ // Version 10.0 (EOL March 2019)
+                    /*serverPorts.Add(new object[] { (ushort)29003 });*/ // Version 10.1 (EOL October 2020)
+                    /*serverPorts.Add(new object[] { (ushort)29004 });*/ // Version 10.2 (EOL May 2022)
+                    serverPorts.Add(new object[] { (ushort)29005 }); // Version 10.3 (EOL May 2023)
+                    serverPorts.Add(new object[] { (ushort)29006 }); // Version 10.4 (EOL June 2024)
+                    serverPorts.Add(new object[] { (ushort)29007 }); // Version 10.5 (EOL June 2025)
+                    serverPorts.Add(new object[] { (ushort)29008 }); // Version 10.6 (EOL July 2026)
+                    serverPorts.Add(new object[] { (ushort)29009 }); // Version 10.7 (EOL February 2023)
+                    serverPorts.Add(new object[] { (ushort)29010 }); // Version 10.8 (EOL May 2023)
+                    serverPorts.Add(new object[] { (ushort)29011 }); // Version 10.9 (EOL August 2023)
+                    serverPorts.Add(new object[] { (ushort)29012 }); // Version 10.10 (EOL November 2023)
+                    serverPorts.Add(new object[] { (ushort)29013 }); // Version 10.11 (EOL February 2028)
                 }
                 else
                 {
-                    serverPorts.Add(new object[] { (short)3307 }); // Local server
+                    serverPorts.Add(new object[] { (ushort)3307 }); // Local server
                 }
 
                 return serverPorts;
@@ -49,7 +49,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <inheritdoc />
-        public override ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, short port)
+        public override ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, ushort port)
         {
             return new MariaDbDatabaseProviderOptions
             {
@@ -63,7 +63,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <inheritdoc/>
-        public override void ExecuteScriptCore(string script, string databaseName, short port)
+        public override void ExecuteScriptCore(string script, string databaseName, ushort port)
         {
             if (script == null)
             {
@@ -106,7 +106,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <inheritdoc />
-        public override void CreateSakilaDatabase(string databaseName, short port)
+        public override void CreateSakilaDatabase(string databaseName, ushort port)
         {
             this.DropAndCreateDatabase(databaseName, port);
 
@@ -116,13 +116,13 @@ namespace TiCodeX.SQLSchemaCompare.Test
         }
 
         /// <inheritdoc />
-        public override void DropDatabase(string databaseName, short port)
+        public override void DropDatabase(string databaseName, ushort port)
         {
             this.ExecuteScript($"DROP SCHEMA IF EXISTS `{databaseName}`;", string.Empty, port);
         }
 
         /// <inheritdoc />
-        public override void DropAndCreateDatabase(string databaseName, short port)
+        public override void DropAndCreateDatabase(string databaseName, ushort port)
         {
             this.DropDatabase(databaseName, port);
 

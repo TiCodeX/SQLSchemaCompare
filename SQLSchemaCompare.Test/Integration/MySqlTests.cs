@@ -44,7 +44,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void GetMySqlDatabaseList(short port)
+        public void GetMySqlDatabaseList(ushort port)
         {
             var mysqldbp = this.dbFixture.GetDatabaseProvider(string.Empty, port);
             var dbList = mysqldbp.GetDatabaseList();
@@ -60,7 +60,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void GetMySqlSakilaDatabase(short port)
+        public void GetMySqlSakilaDatabase(ushort port)
         {
             var mysqldbp = this.dbFixture.GetDatabaseProvider("sakila", port);
             var db = mysqldbp.GetDatabase(new TaskInfo("test"));
@@ -105,7 +105,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void CloneMySqlDatabase(short port)
+        public void CloneMySqlDatabase(ushort port)
         {
             const string databaseName = "sakila";
             var clonedDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
@@ -139,7 +139,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseSourceEmpty(short port)
+        public void MigrateMySqlDatabaseSourceEmpty(ushort port)
         {
             var sourceDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
             var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
@@ -169,7 +169,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetEmpty(short port)
+        public void MigrateMySqlDatabaseTargetEmpty(ushort port)
         {
             const string sourceDatabaseName = "sakila";
             var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
@@ -194,7 +194,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetMissingColumn(short port)
+        public void MigrateMySqlDatabaseTargetMissingColumn(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE staff DROP COLUMN email");
@@ -209,7 +209,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetMissingColumns(short port)
+        public void MigrateMySqlDatabaseTargetMissingColumns(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE staff DROP COLUMN email,");
@@ -225,7 +225,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetExtraColumn(short port)
+        public void MigrateMySqlDatabaseTargetExtraColumn(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE staff ADD COLUMN middle_name VARCHAR(45) NOT NULL");
@@ -240,7 +240,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetExtraColumns(short port)
+        public void MigrateMySqlDatabaseTargetExtraColumns(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE staff ADD COLUMN middle_name VARCHAR(45) NOT NULL,");
@@ -256,7 +256,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetColumnDifferentType(short port)
+        public void MigrateMySqlDatabaseTargetColumnDifferentType(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE country CHANGE COLUMN country country char NOT NULL");
@@ -271,7 +271,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetColumnMissingDefault(short port)
+        public void MigrateMySqlDatabaseTargetColumnMissingDefault(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE country ALTER COLUMN country DROP DEFAULT");
@@ -286,7 +286,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetColumnExtraDefault(short port)
+        public void MigrateMySqlDatabaseTargetColumnExtraDefault(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE actor ALTER COLUMN last_name SET DEFAULT 'MyLastName'");
@@ -301,7 +301,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetColumnDifferentDefault(short port)
+        public void MigrateMySqlDatabaseTargetColumnDifferentDefault(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE country ALTER COLUMN country SET DEFAULT 'test'");
@@ -316,7 +316,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetDifferentView(short port)
+        public void MigrateMySqlDatabaseTargetDifferentView(ushort port)
         {
             var sb = new StringBuilder();
             sb.Append("ALTER VIEW customer_list AS SELECT NULL AS 'test'");
@@ -331,7 +331,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetDifferentFunction(short port)
+        public void MigrateMySqlDatabaseTargetDifferentFunction(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP FUNCTION inventory_held_by_customer;");
@@ -361,7 +361,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetDifferentStoredProcedure(short port)
+        public void MigrateMySqlDatabaseTargetDifferentStoredProcedure(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP PROCEDURE film_not_in_stock;");
@@ -387,7 +387,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetMissingIndex(short port)
+        public void MigrateMySqlDatabaseTargetMissingIndex(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP INDEX idx_last_name ON customer");
@@ -402,7 +402,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetExtraIndex(short port)
+        public void MigrateMySqlDatabaseTargetExtraIndex(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("CREATE UNIQUE INDEX idx_staff_email ON staff (email)");
@@ -417,7 +417,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetDifferentIndex(short port)
+        public void MigrateMySqlDatabaseTargetDifferentIndex(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP INDEX idx_last_name ON customer;");
@@ -433,7 +433,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetMissingTrigger(short port)
+        public void MigrateMySqlDatabaseTargetMissingTrigger(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP TRIGGER upd_film");
@@ -448,7 +448,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetExtraTrigger(short port)
+        public void MigrateMySqlDatabaseTargetExtraTrigger(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DELIMITER ;;");
@@ -467,7 +467,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetDifferentTrigger(short port)
+        public void MigrateMySqlDatabaseTargetDifferentTrigger(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP TRIGGER upd_film;");
@@ -494,7 +494,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetMissingPrimaryKey(short port)
+        public void MigrateMySqlDatabaseTargetMissingPrimaryKey(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE payment MODIFY payment_id SMALLINT UNSIGNED NOT NULL;");
@@ -510,7 +510,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetExtraPrimaryKey(short port)
+        public void MigrateMySqlDatabaseTargetExtraPrimaryKey(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_actor_description ADD PRIMARY KEY (film_actor_description_id)");
@@ -525,7 +525,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey(short port)
+        public void MigrateMySqlDatabaseTargetExtraPrimaryKeyWithReferencingForeignKey(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_actor_description ADD PRIMARY KEY (film_actor_description_id);");
@@ -541,7 +541,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetPrimaryKeyOnDifferentColumn(short port)
+        public void MigrateMySqlDatabaseTargetPrimaryKeyOnDifferentColumn(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE payment MODIFY payment_id SMALLINT UNSIGNED NOT NULL;");
@@ -559,7 +559,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetExtraForeignKey(short port)
+        public void MigrateMySqlDatabaseTargetExtraForeignKey(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT FK_film_text_category FOREIGN KEY (category_id) REFERENCES category (category_id);");
@@ -574,7 +574,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetMissingForeignKey(short port)
+        public void MigrateMySqlDatabaseTargetMissingForeignKey(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_actor DROP FOREIGN KEY fk_film_actor_film;");
@@ -589,7 +589,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetForeignKeyReferencesDifferentColumn(short port)
+        public void MigrateMySqlDatabaseTargetForeignKeyReferencesDifferentColumn(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE address DROP FOREIGN KEY fk_address_city;");
@@ -605,7 +605,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void MigrateMySqlDatabaseTargetForeignKeyDifferentOptions(short port)
+        public void MigrateMySqlDatabaseTargetForeignKeyDifferentOptions(ushort port)
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE address DROP FOREIGN KEY fk_address_city;");

@@ -89,7 +89,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
             foreach (var serverPort in serverPorts)
             {
-                this.CreateSakilaDatabase("sakila", (short)serverPort[0]);
+                this.CreateSakilaDatabase("sakila", (ushort)serverPort[0]);
             }
 
             this.serversInitialized = true;
@@ -108,7 +108,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="databaseName">Name of the database</param>
         /// <param name="port">The port to connect to the database</param>
         /// <returns>The provider</returns>
-        public IDatabaseProvider GetDatabaseProvider(string databaseName, short port)
+        public IDatabaseProvider GetDatabaseProvider(string databaseName, ushort port)
         {
             var dpf = new DatabaseProviderFactory(this.LoggerFactory, this.CipherService);
             return dpf.Create(this.GetDatabaseProviderOptions(databaseName, port));
@@ -120,7 +120,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="script">The script to execute</param>
         /// <param name="databaseName">Name of the database</param>
         /// <param name="port">The port to connect to the database</param>
-        public void ExecuteScript(string script, string databaseName, short port)
+        public void ExecuteScript(string script, string databaseName, ushort port)
         {
             try
             {
@@ -144,7 +144,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="script">The script to execute</param>
         /// <param name="databaseName">Name of the database</param>
         /// <param name="port">The port to connect to the database</param>
-        public abstract void ExecuteScriptCore(string script, string databaseName, short port);
+        public abstract void ExecuteScriptCore(string script, string databaseName, ushort port);
 
         /// <summary>
         /// Gets the database provider options
@@ -152,28 +152,28 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="databaseName">Name of the database</param>
         /// <param name="port">The port to connect to the database</param>
         /// <returns>The provider options</returns>
-        public abstract ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, short port);
+        public abstract ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, ushort port);
 
         /// <summary>
         /// Creates the sakila database
         /// </summary>
         /// <param name="databaseName">Name of the database</param>
         /// <param name="port">The port to connect to the database</param>
-        public abstract void CreateSakilaDatabase(string databaseName, short port);
+        public abstract void CreateSakilaDatabase(string databaseName, ushort port);
 
         /// <summary>
         /// Drops the database
         /// </summary>
         /// <param name="databaseName">Name of the database</param>
         /// <param name="port">The port to connect to the database</param>
-        public abstract void DropDatabase(string databaseName, short port);
+        public abstract void DropDatabase(string databaseName, ushort port);
 
         /// <summary>
         /// Drops the and create database
         /// </summary>
         /// <param name="databaseName">Name of the database</param>
         /// <param name="port">The port to connect to the database</param>
-        public abstract void DropAndCreateDatabase(string databaseName, short port);
+        public abstract void DropAndCreateDatabase(string databaseName, ushort port);
 
         /// <summary>
         /// Compares the databases
@@ -182,7 +182,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="sourceDatabaseName">Name of the source database.</param>
         /// <param name="targetDatabaseName">Name of the target database.</param>
         /// <param name="port">The port to connect to the database</param>
-        internal void CompareDatabases(DatabaseType type, string sourceDatabaseName, string targetDatabaseName, short port)
+        internal void CompareDatabases(DatabaseType type, string sourceDatabaseName, string targetDatabaseName, ushort port)
         {
             var sourceProvider = this.GetDatabaseProvider(sourceDatabaseName, port);
             var targetProvider = this.GetDatabaseProvider(targetDatabaseName, port);
@@ -432,7 +432,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="targetDatabaseName">Name of the target database</param>
         /// <param name="port">The port to connect to the database</param>
         /// <param name="expectedDifferentItems">Amount of expected different items</param>
-        internal void ExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, short port, int? expectedDifferentItems = null)
+        internal void ExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, ushort port, int? expectedDifferentItems = null)
         {
             // Perform the compare
             var projectService = new ProjectService(null, this.LoggerFactory);
@@ -474,7 +474,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="alterScript">The script to alter the target database before the migration/comparison</param>
         /// <param name="port">The port to connect to the database</param>
         /// <param name="expectedDifferentItems">Amount of expected different items</param>
-        internal void AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string alterScript, short port, int expectedDifferentItems = 1)
+        internal void AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string alterScript, ushort port, int expectedDifferentItems = 1)
         {
             const string sourceDatabaseName = "sakila";
             var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";

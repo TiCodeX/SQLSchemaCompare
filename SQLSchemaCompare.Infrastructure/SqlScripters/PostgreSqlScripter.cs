@@ -246,6 +246,42 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             return sb.ToString();
         }
 
+        /// <inheritdoc />
+        protected override string ScriptAlterTableAddPeriod(ABaseDbTable table)
+        {
+            throw new NotSupportedException("PostgreSQL doesn't support periods");
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterTableDropPeriod(ABaseDbTable table)
+        {
+            throw new NotSupportedException("PostgreSQL doesn't support periods");
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterPeriod(ABaseDbTable sourceTable, ABaseDbTable targetTable)
+        {
+            throw new NotSupportedException("PostgreSQL doesn't support periods");
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterTableAddHistory(ABaseDbTable table)
+        {
+            throw new NotSupportedException("PostgreSQL doesn't support the history");
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterTableDropHistory(ABaseDbTable table)
+        {
+            throw new NotSupportedException("PostgreSQL doesn't support the history");
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterHistory(ABaseDbTable sourceTable, ABaseDbTable targetTable)
+        {
+            throw new NotSupportedException("PostgreSQL doesn't support the history");
+        }
+
         /// <inheritdoc/>
         protected override string ScriptCreateIndex(ABaseDbIndex index)
         {

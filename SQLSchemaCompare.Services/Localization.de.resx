@@ -833,4 +833,16 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="LabelWebsite" xml:space="preserve">
     <value>Webseite</value>
   </data>
+  <data name="LabelPeriod" xml:space="preserve">
+    <value>Zeitraum</value>
+  </data>
+  <data name="LabelHistory" xml:space="preserve">
+    <value>Verlaufstabelle</value>
+  </data>
+  <data name="LabelPeriods" xml:space="preserve">
+    <value>Zeitraums</value>
+  </data>
+  <data name="LabelHistories" xml:space="preserve">
+    <value>Verlaufstabellen</value>
+  </data>
 </root>

@@ -763,6 +763,24 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Histories.
+        /// </summary>
+        public static string LabelHistories {
+            get {
+                return ResourceManager.GetString("LabelHistories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to History.
+        /// </summary>
+        public static string LabelHistory {
+            get {
+                return ResourceManager.GetString("LabelHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hostname.
         /// </summary>
         public static string LabelHostname {
@@ -1085,6 +1103,24 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelPassword {
             get {
                 return ResourceManager.GetString("LabelPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Period.
+        /// </summary>
+        public static string LabelPeriod {
+            get {
+                return ResourceManager.GetString("LabelPeriod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Periods.
+        /// </summary>
+        public static string LabelPeriods {
+            get {
+                return ResourceManager.GetString("LabelPeriods", resourceCulture);
             }
         }
         

@@ -539,31 +539,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="expectedDifferentItems">Amount of expected different items</param>
         internal void AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType databaseType, string alterScript, ushort port, int expectedDifferentItems = 1)
         {
-            this.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(databaseType, alterScript, port, expectedDifferentItems);
-            this.AlterTargetDatabaseExecuteAllAlterScriptsAndCompare(databaseType, alterScript, port, expectedDifferentItems);
-        }
-
-        /// <summary>
-        /// Alters the target database then executes the full alter script and compare
-        /// </summary>
-        /// <param name="databaseType">The database type</param>
-        /// <param name="alterScript">The script to alter the target database before the migration/comparison</param>
-        /// <param name="port">The port to connect to the database</param>
-        /// <param name="expectedDifferentItems">Amount of expected different items</param>
-        internal void AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string alterScript, ushort port, int expectedDifferentItems = 1)
-        {
             this.AlterTargetDatabaseExecuteFullOrAllAlterScriptsAndCompare(databaseType, alterScript, port, true, expectedDifferentItems);
-        }
-
-        /// <summary>
-        /// Alters the target database then executes all the alter scripts and compare
-        /// </summary>
-        /// <param name="databaseType">The database type</param>
-        /// <param name="alterScript">The script to alter the target database before the migration/comparison</param>
-        /// <param name="port">The port to connect to the database</param>
-        /// <param name="expectedDifferentItems">Amount of expected different items</param>
-        internal void AlterTargetDatabaseExecuteAllAlterScriptsAndCompare(DatabaseType databaseType, string alterScript, ushort port, int expectedDifferentItems = 1)
-        {
             this.AlterTargetDatabaseExecuteFullOrAllAlterScriptsAndCompare(databaseType, alterScript, port, false, expectedDifferentItems);
         }
 

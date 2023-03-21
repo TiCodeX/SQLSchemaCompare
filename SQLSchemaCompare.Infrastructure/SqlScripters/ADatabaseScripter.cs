@@ -609,12 +609,23 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     }
 
                     var targetTable = t.MappedDbObject as ABaseDbTable;
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = targetTable.PrimaryKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name).Concat(t.PrimaryKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name)) });
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelForeignKeys, DbObjects = targetTable.ForeignKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name).Concat(t.ForeignKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name)) });
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelConstraints, DbObjects = targetTable.Constraints.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name).Concat(t.Constraints.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name)) });
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = targetTable.Triggers.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name).Concat(t.Triggers.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name)) });
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(targetTable.Indexes).Where(x => x.MappedDbObject == null).Concat(this.GetSortedIndexes(t.Indexes).Where(x => x.CreateScript != x.MappedDbObject?.CreateScript)) });
+
+                    // First drop what is not present anymore
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = targetTable.PrimaryKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelForeignKeys, DbObjects = targetTable.ForeignKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelConstraints, DbObjects = targetTable.Constraints.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = targetTable.Triggers.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(targetTable.Indexes).Where(x => x.MappedDbObject == null) });
+
+                    // Do the changes to the table itself
                     scriptableObjects.Add(new ObjectMap { DbObjects = new[] { t } });
+
+                    // Finally create/alter the rest
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = t.PrimaryKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelForeignKeys, DbObjects = t.ForeignKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelConstraints, DbObjects = t.Constraints.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = t.Triggers.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
+                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(t.Indexes).Where(x => x.CreateScript != x.MappedDbObject?.CreateScript) });
 
                     return GenerateObjectMapScript(scriptableObjects, this.GenerateAlterScript);
                 case ABaseDbView v:

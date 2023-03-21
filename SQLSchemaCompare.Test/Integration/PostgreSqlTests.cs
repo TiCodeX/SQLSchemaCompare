@@ -203,7 +203,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE business.staff DROP COLUMN password");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE business.staff DROP COLUMN password,");
             sb.Append("DROP COLUMN picture");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE business.staff ADD middle_name VARCHAR(45) NOT NULL");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE business.staff ADD middle_name VARCHAR(45) NOT NULL,");
             sb.AppendLine("ADD middle_name2 VARCHAR(45) NULL");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -265,7 +265,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE language ALTER COLUMN name TYPE character varying(100)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -280,7 +280,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE customer_data.customer ALTER COLUMN activebool DROP DEFAULT");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE customer_data.customer ALTER COLUMN last_name SET DEFAULT 'MyLastName'");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE inventory.film ALTER COLUMN replacement_cost SET DEFAULT 11.45");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -326,7 +326,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("DROP VIEW customer_list;");
             sb.AppendLine("CREATE VIEW customer_list AS SELECT NULL AS \"test\";");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("     WHERE film_id = $1");
             sb.AppendLine("     AND store_id = $2;");
             sb.AppendLine("$BODY$;");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -365,7 +365,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER SEQUENCE customer_customer_id_seq");
             sb.AppendLine("INCREMENT BY 5");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -381,7 +381,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("DROP TYPE bug_status;");
             sb.AppendLine("CREATE TYPE bug_status AS ENUM ('open', 'closed');");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -396,7 +396,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP INDEX inventory.idx_actor_last_name");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -411,7 +411,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("CREATE UNIQUE INDEX idx_staff_email ON business.staff (email)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -427,7 +427,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("DROP INDEX business.idx_unq_manager_staff_id;");
             sb.AppendLine("CREATE INDEX idx_unq_manager_staff_id ON business.store USING btree (address_id);");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -442,7 +442,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP TRIGGER film_fulltext_trigger ON inventory.film");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -457,7 +457,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("CREATE TRIGGER last_updated2 BEFORE DELETE ON business.store FOR EACH ROW EXECUTE PROCEDURE last_updated();");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -473,7 +473,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("DROP TRIGGER last_updated ON inventory.actor;");
             sb.AppendLine("CREATE TRIGGER last_updated AFTER INSERT ON inventory.actor FOR EACH ROW EXECUTE PROCEDURE last_updated();");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -488,7 +488,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE payment_p2017_01 DROP CONSTRAINT payment_p2017_01_payment_date_check");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -503,7 +503,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE business.staff ADD CONSTRAINT staff_check_email CHECK(email LIKE '_%@_%._%')");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -519,7 +519,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE payment_p2017_01 DROP CONSTRAINT payment_p2017_01_payment_date_check;");
             sb.AppendLine("ALTER TABLE payment_p2017_01 ADD CONSTRAINT payment_p2017_01_payment_date_check CHECK (((payment_date >= '2017-01-01 00:00:00'::timestamp without time zone) AND (payment_date < '2017-01-31 00:00:00'::timestamp without time zone)));");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -534,7 +534,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE business.payment DROP CONSTRAINT payment_pkey");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -549,7 +549,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE inventory.film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY (film_id)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -565,7 +565,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE inventory.film_text ADD CONSTRAINT PK_film_text_film_id PRIMARY KEY (film_id);");
             sb.AppendLine("ALTER TABLE inventory.film_category ADD CONSTRAINT FK_film_category_extra_film FOREIGN KEY (film_text_id) REFERENCES inventory.film_text (film_id) ON DELETE CASCADE");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port, 2);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port, 2);
         }
 
         /// <summary>
@@ -581,7 +581,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE business.payment DROP CONSTRAINT payment_pkey;");
             sb.AppendLine("ALTER TABLE business.payment ADD CONSTRAINT payment_pkey PRIMARY KEY (payment_id_new)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -596,7 +596,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE category ADD CONSTRAINT FK_category_language FOREIGN KEY (language_id) REFERENCES language (language_id)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -611,7 +611,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE inventory.film_actor DROP CONSTRAINT film_actor_film_id_fkey");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -627,7 +627,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE customer_data.address DROP CONSTRAINT address_city_id_fkey;");
             sb.AppendLine("ALTER TABLE customer_data.address ADD CONSTRAINT address_city_id_fkey FOREIGN KEY (city_id) REFERENCES category (category_id) ON UPDATE CASCADE ON DELETE RESTRICT");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -643,7 +643,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE customer_data.address DROP CONSTRAINT address_city_id_fkey;");
             sb.AppendLine("ALTER TABLE customer_data.address ADD CONSTRAINT address_city_id_fkey FOREIGN KEY (city_id) REFERENCES customer_data.city (city_id) ON UPDATE RESTRICT ON DELETE NO ACTION");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 
         /// <summary>
@@ -665,7 +665,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("END");
             sb.AppendLine("$do$;");
             sb.AppendLine("ALTER SCHEMA business OWNER TO sakila_user_test;");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
     }
 }

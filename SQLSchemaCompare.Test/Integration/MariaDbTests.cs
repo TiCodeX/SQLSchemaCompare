@@ -198,7 +198,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE staff DROP COLUMN email");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE staff DROP COLUMN email,");
             sb.Append("DROP COLUMN picture");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -229,7 +229,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE staff ADD COLUMN middle_name VARCHAR(45) NOT NULL");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE staff ADD COLUMN middle_name VARCHAR(45) NOT NULL,");
             sb.Append("ADD COLUMN middle_name2 VARCHAR(45) NOT NULL");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -260,7 +260,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE country CHANGE COLUMN country country char NOT NULL");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE country ALTER COLUMN country DROP DEFAULT");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE actor ALTER COLUMN last_name SET DEFAULT 'MyLastName'");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE country ALTER COLUMN country SET DEFAULT 'test'");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -320,7 +320,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.Append("ALTER VIEW customer_list AS SELECT NULL AS 'test'");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("  RETURN v_customer_id;");
             sb.AppendLine("END$$$$");
             sb.AppendLine("DELIMITER ;");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -376,7 +376,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("     SELECT FOUND_ROWS() INTO p_film_count;");
             sb.AppendLine("END$$$$");
             sb.AppendLine("DELIMITER ;");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -391,7 +391,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP INDEX idx_last_name ON customer");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -406,7 +406,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("CREATE UNIQUE INDEX idx_staff_email ON staff (email)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -422,7 +422,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("DROP INDEX idx_last_name ON customer;");
             sb.AppendLine("CREATE UNIQUE INDEX idx_last_name ON customer(last_name);");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -437,7 +437,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("DROP TRIGGER upd_film");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -456,7 +456,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("   DELETE FROM film_actor WHERE film_id = new.film_id;");
             sb.AppendLine("END;;");
             sb.AppendLine("DELIMITER ;");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -483,7 +483,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("    END IF;");
             sb.AppendLine("  END$$$$");
             sb.AppendLine("DELIMITER ;");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -499,7 +499,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE payment MODIFY payment_id SMALLINT UNSIGNED NOT NULL;");
             sb.AppendLine("ALTER TABLE payment DROP PRIMARY KEY");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -514,7 +514,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_actor_description ADD PRIMARY KEY (film_actor_description_id)");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -538,7 +538,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_actor_description ADD PRIMARY KEY (film_actor_description_id);");
             sb.AppendLine("ALTER TABLE film_actor ADD CONSTRAINT FK_film_film_actor_description FOREIGN KEY (film_actor_description_id) REFERENCES film_actor_description (film_actor_description_id) ON DELETE CASCADE");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port, 2);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port, 2);
         }
 
         /// <summary>
@@ -556,7 +556,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             sb.AppendLine("ALTER TABLE payment DROP PRIMARY KEY;");
             sb.AppendLine("ALTER TABLE payment ADD CONSTRAINT PK_payment_payment_id PRIMARY KEY (payment_id_new);");
             sb.AppendLine("ALTER TABLE payment MODIFY payment_id_new SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT;");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -571,7 +571,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_text ADD CONSTRAINT FK_film_text_category FOREIGN KEY (category_id) REFERENCES category (category_id);");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -586,7 +586,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         {
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE film_actor DROP FOREIGN KEY fk_film_actor_film;");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -602,7 +602,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE address DROP FOREIGN KEY fk_address_city;");
             sb.AppendLine("ALTER TABLE address ADD CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES actor (actor_id) ON DELETE RESTRICT ON UPDATE CASCADE");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 
         /// <summary>
@@ -618,7 +618,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("ALTER TABLE address DROP FOREIGN KEY fk_address_city;");
             sb.AppendLine("ALTER TABLE address ADD CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES city (city_id) ON DELETE CASCADE ON UPDATE NO ACTION");
-            this.dbFixture.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
     }
 }

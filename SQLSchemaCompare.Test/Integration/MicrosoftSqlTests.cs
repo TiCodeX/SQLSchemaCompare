@@ -662,6 +662,23 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         }
 
         /// <summary>
+        /// Test migration script when target db doesn't have a column with a foreign key
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingColumnWithForeignKey(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP INDEX idx_fk_city_id ON customer_data.address");
+            sb.AppendLine("ALTER TABLE customer_data.address DROP CONSTRAINT fk_address_city");
+            sb.AppendLine("ALTER TABLE customer_data.address DROP COLUMN city_id");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
         /// Test migration script when target db have a foreign key that references a different column
         /// </summary>
         /// <param name="port">The port of the server</param>

@@ -39,6 +39,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
+        check_name: "microsoft_sql Test Results"
         files: SQLSchemaCompare.Test/TestResults/*.trx
 
   my_sql:
@@ -72,6 +73,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
+        check_name: "my_sql Test Results"
         files: SQLSchemaCompare.Test/TestResults/*.trx
 
   postgre_sql:
@@ -111,6 +113,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
+        check_name: "postgre_sql Test Results"
         files: SQLSchemaCompare.Test/TestResults/*.trx
 
   maria_db:
@@ -158,4 +161,5 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
+        check_name: "maria_db Test Results"
         files: SQLSchemaCompare.Test/TestResults/*.trx

@@ -220,7 +220,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelTriggers));
                 foreach (var trigger in database.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name))
                 {
-                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
                     sb.AppendLine(this.ScriptCreateTrigger(trigger));
                 }
 
@@ -549,6 +548,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
                     return GenerateObjectMapScript(scriptableObjects, this.GenerateDropScript);
 
+                case ABaseDbPrimaryKey pk:
+                    return this.ScriptAlterTableDropPrimaryKey(pk);
                 case ABaseDbIndex i:
                     return this.ScriptDropIndex(i);
                 case ABaseDbForeignKey fk:

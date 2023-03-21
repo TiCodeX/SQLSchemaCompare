@@ -305,7 +305,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     break;
 
                 default:
-                    throw new NotSupportedException($"Index of type '{indexMicrosoft.Type.ToString()}' is not supported");
+                    throw new NotSupportedException($"Index of type '{indexMicrosoft.Type}' is not supported");
             }
 
             sb.AppendLine($"INDEX {this.ScriptHelper.ScriptObjectName(index.Name)} ON {this.ScriptHelper.ScriptObjectName(index.TableSchema, index.TableName)}({string.Join(",", columnList)})");
@@ -461,6 +461,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         protected override string ScriptCreateTrigger(ABaseDbTrigger trigger)
         {
             var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
             sb.Append($"{trigger.Definition}");
             if (!trigger.Definition.EndsWith("\n", StringComparison.Ordinal))
             {
@@ -487,6 +488,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             const string replacement = @"$1ALTER$2$3$4";
 
             var sb = new StringBuilder();
+            sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
             sb.Append(Regex.Replace(sourceTrigger.Definition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Multiline));
             if (!sourceTrigger.Definition.EndsWith("\n", StringComparison.Ordinal))
             {

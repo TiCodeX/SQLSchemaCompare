@@ -108,7 +108,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void CloneMySqlDatabase(ushort port)
         {
             const string databaseName = "sakila";
-            var clonedDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
+            var clonedDatabaseName = DatabaseFixture.GenerateDatabaseName();
 
             try
             {
@@ -141,8 +141,8 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [Category("MySQL")]
         public void MigrateMySqlDatabaseSourceEmpty(ushort port)
         {
-            var sourceDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
-            var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
+            var sourceDatabaseName = DatabaseFixture.GenerateDatabaseName();
+            var targetDatabaseName = DatabaseFixture.GenerateDatabaseName();
 
             try
             {
@@ -172,7 +172,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         public void MigrateMySqlDatabaseTargetEmpty(ushort port)
         {
             const string sourceDatabaseName = "sakila";
-            var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
+            var targetDatabaseName = DatabaseFixture.GenerateDatabaseName();
 
             try
             {

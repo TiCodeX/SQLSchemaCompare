@@ -37,6 +37,11 @@ namespace TiCodeX.SQLSchemaCompare.Test
         public const bool ForceDockerTests = false;
 
         /// <summary>
+        /// The database name prefix
+        /// </summary>
+        public const string DatabaseNamePrefix = "tcx_test_";
+
+        /// <summary>
         /// Whether the servers are already initialized
         /// </summary>
         private bool serversInitialized = false;
@@ -89,6 +94,13 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
             foreach (var serverPort in serverPorts)
             {
+                // Delete any leftover database from previous tests
+                var mssqldbp = this.GetDatabaseProvider(string.Empty, (ushort)serverPort[0]);
+                foreach (var dbName in mssqldbp.GetDatabaseList().Where(x => x.StartsWith(DatabaseNamePrefix)))
+                {
+                    this.DropDatabase(dbName, (ushort)serverPort[0]);
+                }
+
                 this.CreateSakilaDatabase("sakila", (ushort)serverPort[0]);
             }
 
@@ -174,6 +186,15 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="databaseName">Name of the database</param>
         /// <param name="port">The port to connect to the database</param>
         public abstract void DropAndCreateDatabase(string databaseName, ushort port);
+
+        /// <summary>
+        /// Generates the name of the database.
+        /// </summary>
+        /// <returns>The generated database name</returns>
+        internal static string GenerateDatabaseName()
+        {
+            return $"{DatabaseNamePrefix}{Guid.NewGuid():N}";
+        }
 
         /// <summary>
         /// Compares the databases
@@ -434,6 +455,33 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="expectedDifferentItems">Amount of expected different items</param>
         internal void ExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, ushort port, int? expectedDifferentItems = null)
         {
+            this.ExecuteFullOrAllAlterScriptsAndCompare(databaseType, sourceDatabaseName, targetDatabaseName, port, true, expectedDifferentItems);
+        }
+
+        /// <summary>
+        /// Executes all the alter scripts and compare
+        /// </summary>
+        /// <param name="databaseType">The database type</param>
+        /// <param name="sourceDatabaseName">Name of the source database</param>
+        /// <param name="targetDatabaseName">Name of the target database</param>
+        /// <param name="port">The port to connect to the database</param>
+        /// <param name="expectedDifferentItems">Amount of expected different items</param>
+        internal void ExecuteAllAlterScriptsAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, ushort port, int? expectedDifferentItems = null)
+        {
+            this.ExecuteFullOrAllAlterScriptsAndCompare(databaseType, sourceDatabaseName, targetDatabaseName, port, false, expectedDifferentItems);
+        }
+
+        /// <summary>
+        /// Executes the full or all the alter scripts and compare
+        /// </summary>
+        /// <param name="databaseType">The database type</param>
+        /// <param name="sourceDatabaseName">Name of the source database</param>
+        /// <param name="targetDatabaseName">Name of the target database</param>
+        /// <param name="port">The port to connect to the database</param>
+        /// <param name="performFullAlterScript">Whether to run the full alter script or the alter script of every different item</param>
+        /// <param name="expectedDifferentItems">Amount of expected different items</param>
+        internal void ExecuteFullOrAllAlterScriptsAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, ushort port, bool performFullAlterScript, int? expectedDifferentItems = null)
+        {
             // Perform the compare
             var projectService = new ProjectService(null, this.LoggerFactory);
             projectService.NewProject(databaseType);
@@ -446,25 +494,53 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 projectService.Project.Result.DifferentItems.Count.Should().Be(expectedDifferentItems);
             }
 
-            projectService.Project.Result.FullAlterScript.Should().NotBeNullOrWhiteSpace();
-
-            switch (databaseType)
+            var scriptsToRun = new List<string>();
+            if (performFullAlterScript)
             {
-                case DatabaseType.MicrosoftSql:
-                case DatabaseType.MySql:
-                case DatabaseType.MariaDb:
-                    this.ExecuteScript(projectService.Project.Result.FullAlterScript, targetDatabaseName, port);
-                    break;
+                scriptsToRun.Add(projectService.Project.Result.FullAlterScript);
+            }
+            else
+            {
+                scriptsToRun.AddRange(projectService.Project.Result.OnlyTargetItems.Select(x => x.Scripts.AlterScript));
+                scriptsToRun.AddRange(projectService.Project.Result.OnlySourceItems.Select(x => x.Scripts.AlterScript));
+                scriptsToRun.AddRange(projectService.Project.Result.DifferentItems.Select(x => x.Scripts.AlterScript));
+            }
 
-                case DatabaseType.PostgreSql:
-                    var postgreSqlFullAlterScript = new StringBuilder();
-                    postgreSqlFullAlterScript.AppendLine("SET check_function_bodies = false;");
-                    postgreSqlFullAlterScript.AppendLine(projectService.Project.Result.FullAlterScript);
-                    this.ExecuteScript(postgreSqlFullAlterScript.ToString(), targetDatabaseName, port);
-                    break;
+            foreach (var script in scriptsToRun)
+            {
+                script.Should().NotBeNullOrWhiteSpace();
+
+                switch (databaseType)
+                {
+                    case DatabaseType.MicrosoftSql:
+                    case DatabaseType.MySql:
+                    case DatabaseType.MariaDb:
+                        this.ExecuteScript(script, targetDatabaseName, port);
+                        break;
+
+                    case DatabaseType.PostgreSql:
+                        var postgreSqlScript = new StringBuilder();
+                        postgreSqlScript.AppendLine("SET check_function_bodies = false;");
+                        postgreSqlScript.AppendLine(script);
+                        this.ExecuteScript(postgreSqlScript.ToString(), targetDatabaseName, port);
+                        break;
+                }
             }
 
             this.CompareDatabases(databaseType, targetDatabaseName, sourceDatabaseName, port);
+        }
+
+        /// <summary>
+        /// Alters the target database then executes the full alter script and compare and also all the alter scripts and compare
+        /// </summary>
+        /// <param name="databaseType">The database type</param>
+        /// <param name="alterScript">The script to alter the target database before the migration/comparison</param>
+        /// <param name="port">The port to connect to the database</param>
+        /// <param name="expectedDifferentItems">Amount of expected different items</param>
+        internal void AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType databaseType, string alterScript, ushort port, int expectedDifferentItems = 1)
+        {
+            this.AlterTargetDatabaseExecuteFullAlterScriptAndCompare(databaseType, alterScript, port, expectedDifferentItems);
+            this.AlterTargetDatabaseExecuteAllAlterScriptsAndCompare(databaseType, alterScript, port, expectedDifferentItems);
         }
 
         /// <summary>
@@ -476,8 +552,33 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="expectedDifferentItems">Amount of expected different items</param>
         internal void AlterTargetDatabaseExecuteFullAlterScriptAndCompare(DatabaseType databaseType, string alterScript, ushort port, int expectedDifferentItems = 1)
         {
+            this.AlterTargetDatabaseExecuteFullOrAllAlterScriptsAndCompare(databaseType, alterScript, port, true, expectedDifferentItems);
+        }
+
+        /// <summary>
+        /// Alters the target database then executes all the alter scripts and compare
+        /// </summary>
+        /// <param name="databaseType">The database type</param>
+        /// <param name="alterScript">The script to alter the target database before the migration/comparison</param>
+        /// <param name="port">The port to connect to the database</param>
+        /// <param name="expectedDifferentItems">Amount of expected different items</param>
+        internal void AlterTargetDatabaseExecuteAllAlterScriptsAndCompare(DatabaseType databaseType, string alterScript, ushort port, int expectedDifferentItems = 1)
+        {
+            this.AlterTargetDatabaseExecuteFullOrAllAlterScriptsAndCompare(databaseType, alterScript, port, false, expectedDifferentItems);
+        }
+
+        /// <summary>
+        /// Alters the target database then executes the full or all alter scripts and compare
+        /// </summary>
+        /// <param name="databaseType">The database type</param>
+        /// <param name="alterScript">The script to alter the target database before the migration/comparison</param>
+        /// <param name="port">The port to connect to the database</param>
+        /// <param name="performFullAlterScript">Whether to run the full alter script or the alter script of every different item</param>
+        /// <param name="expectedDifferentItems">Amount of expected different items</param>
+        internal void AlterTargetDatabaseExecuteFullOrAllAlterScriptsAndCompare(DatabaseType databaseType, string alterScript, ushort port, bool performFullAlterScript, int expectedDifferentItems = 1)
+        {
             const string sourceDatabaseName = "sakila";
-            var targetDatabaseName = $"tcx_test_{Guid.NewGuid():N}";
+            var targetDatabaseName = GenerateDatabaseName();
 
             try
             {
@@ -485,7 +586,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
                 this.ExecuteScript(alterScript, targetDatabaseName, port);
 
-                this.ExecuteFullAlterScriptAndCompare(databaseType, sourceDatabaseName, targetDatabaseName, port, expectedDifferentItems);
+                this.ExecuteFullOrAllAlterScriptsAndCompare(databaseType, sourceDatabaseName, targetDatabaseName, port, performFullAlterScript, expectedDifferentItems);
             }
             finally
             {

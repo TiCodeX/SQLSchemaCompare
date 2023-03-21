@@ -48,7 +48,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 Database = databaseName,
                 Username = "root",
                 Password = this.CipherService.EncryptString("test1234"),
-                UseSSL = port == 3306, // Use SSL only for local server
+                UseSSL = false,
                 Port = port,
             };
         }

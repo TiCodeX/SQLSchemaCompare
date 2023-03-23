@@ -34,7 +34,13 @@ jobs:
         docker run --rm --name mssql-linux-2022 -p 28003:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2022-latest
         sleep 60s
     - name: Test
-      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --filter "Category=IntegrationTest&Category=MicrosoftSQL"
+      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=MicrosoftSQL"
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        check_name: "microsoft_sql Test Results"
+        files: SQLSchemaCompare.Test/TestResults/*.trx
 
   my_sql:
     runs-on: ubuntu-latest
@@ -62,7 +68,13 @@ jobs:
         docker run --rm --name mysql-8.0 -p 27004:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.0
         sleep 60s
     - name: Test
-      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --filter "Category=IntegrationTest&Category=MySQL"
+      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=MySQL"
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        check_name: "my_sql Test Results"
+        files: SQLSchemaCompare.Test/TestResults/*.trx
 
   postgre_sql:
     runs-on: ubuntu-latest
@@ -96,7 +108,13 @@ jobs:
         docker run --rm --name postgres-15 -p 26010:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:15-alpine
         sleep 60s
     - name: Test
-      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --filter "Category=IntegrationTest&Category=PostgreSQL"
+      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=PostgreSQL"
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        check_name: "postgre_sql Test Results"
+        files: SQLSchemaCompare.Test/TestResults/*.trx
 
   maria_db:
     runs-on: ubuntu-latest
@@ -138,4 +156,10 @@ jobs:
         docker run --rm --name mariadb-10.11 -p 29013:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.11
         sleep 60s
     - name: Test
-      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --filter "Category=IntegrationTest&Category=MariaDB"
+      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=MariaDB"
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        check_name: "maria_db Test Results"
+        files: SQLSchemaCompare.Test/TestResults/*.trx

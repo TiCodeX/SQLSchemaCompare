@@ -24,5 +24,10 @@ jobs:
     - name: Build
       run: msbuild SQLSchemaCompare.sln /p:Configuration=Release
     - name: Test
-      run: dotnet test SQLSchemaCompare.Test.csproj --no-build --configuration Release --filter Category!=IntegrationTest
-      working-directory: SQLSchemaCompare.Test
+      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter Category!=IntegrationTest
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      if: always()
+      with:
+        check_name: "Unit Test Results"
+        files: SQLSchemaCompare.Test/TestResults/*.trx

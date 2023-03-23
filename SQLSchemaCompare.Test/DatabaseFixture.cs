@@ -480,7 +480,8 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="port">The port to connect to the database</param>
         /// <param name="performFullAlterScript">Whether to run the full alter script or the alter script of every different item</param>
         /// <param name="expectedDifferentItems">Amount of expected different items</param>
-        internal void ExecuteFullOrAllAlterScriptsAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, ushort port, bool performFullAlterScript, int? expectedDifferentItems = null)
+        /// <param name="reverseExecutionOrder">Reverse execution order of the alter scripts</param>
+        internal void ExecuteFullOrAllAlterScriptsAndCompare(DatabaseType databaseType, string sourceDatabaseName, string targetDatabaseName, ushort port, bool performFullAlterScript, int? expectedDifferentItems = null, bool reverseExecutionOrder = false)
         {
             // Perform the compare
             var projectService = new ProjectService(null, this.LoggerFactory);
@@ -503,7 +504,14 @@ namespace TiCodeX.SQLSchemaCompare.Test
             {
                 scriptsToRun.AddRange(projectService.Project.Result.OnlyTargetItems.Select(x => x.Scripts.AlterScript));
                 scriptsToRun.AddRange(projectService.Project.Result.OnlySourceItems.Select(x => x.Scripts.AlterScript));
-                scriptsToRun.AddRange(projectService.Project.Result.DifferentItems.Select(x => x.Scripts.AlterScript));
+
+                var diffItemsScripts = projectService.Project.Result.DifferentItems.Select(x => x.Scripts.AlterScript).ToList();
+                if (reverseExecutionOrder)
+                {
+                    diffItemsScripts.Reverse();
+                }
+
+                scriptsToRun.AddRange(diffItemsScripts);
             }
 
             foreach (var script in scriptsToRun)
@@ -537,10 +545,11 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="alterScript">The script to alter the target database before the migration/comparison</param>
         /// <param name="port">The port to connect to the database</param>
         /// <param name="expectedDifferentItems">Amount of expected different items</param>
-        internal void AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType databaseType, string alterScript, ushort port, int expectedDifferentItems = 1)
+        /// <param name="reverseExecutionOrder">Reverse execution order of the alter scripts</param>
+        internal void AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType databaseType, string alterScript, ushort port, int expectedDifferentItems = 1, bool reverseExecutionOrder = false)
         {
-            this.AlterTargetDatabaseExecuteFullOrAllAlterScriptsAndCompare(databaseType, alterScript, port, true, expectedDifferentItems);
-            this.AlterTargetDatabaseExecuteFullOrAllAlterScriptsAndCompare(databaseType, alterScript, port, false, expectedDifferentItems);
+            this.AlterTargetDatabaseExecuteFullOrAllAlterScriptsAndCompare(databaseType, alterScript, port, true, expectedDifferentItems, reverseExecutionOrder);
+            this.AlterTargetDatabaseExecuteFullOrAllAlterScriptsAndCompare(databaseType, alterScript, port, false, expectedDifferentItems, reverseExecutionOrder);
         }
 
         /// <summary>
@@ -551,7 +560,8 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <param name="port">The port to connect to the database</param>
         /// <param name="performFullAlterScript">Whether to run the full alter script or the alter script of every different item</param>
         /// <param name="expectedDifferentItems">Amount of expected different items</param>
-        internal void AlterTargetDatabaseExecuteFullOrAllAlterScriptsAndCompare(DatabaseType databaseType, string alterScript, ushort port, bool performFullAlterScript, int expectedDifferentItems = 1)
+        /// <param name="reverseExecutionOrder">Reverse execution order of the alter scripts</param>
+        internal void AlterTargetDatabaseExecuteFullOrAllAlterScriptsAndCompare(DatabaseType databaseType, string alterScript, ushort port, bool performFullAlterScript, int expectedDifferentItems = 1, bool reverseExecutionOrder = false)
         {
             const string sourceDatabaseName = "sakila";
             var targetDatabaseName = GenerateDatabaseName();
@@ -562,7 +572,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
 
                 this.ExecuteScript(alterScript, targetDatabaseName, port);
 
-                this.ExecuteFullOrAllAlterScriptsAndCompare(databaseType, sourceDatabaseName, targetDatabaseName, port, performFullAlterScript, expectedDifferentItems);
+                this.ExecuteFullOrAllAlterScriptsAndCompare(databaseType, sourceDatabaseName, targetDatabaseName, port, performFullAlterScript, expectedDifferentItems, reverseExecutionOrder);
             }
             finally
             {

@@ -60,7 +60,7 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
         [Category("PostgreSQL")]
-        public void GetPostgreSqlDatabase(ushort port)
+        public void GetPostgreSqlSakilaDatabase(ushort port)
         {
             var pgsqldbp = this.dbFixture.GetDatabaseProvider("sakila", port);
             var db = pgsqldbp.GetDatabase(new TaskInfo("test"));

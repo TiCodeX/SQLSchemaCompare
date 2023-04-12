@@ -1,6 +1,6 @@
 /*
 
-Sakila for Microsoft SQL Server is a port of the Sakila example database available for MySQL, which was originally developed by Mike Hillyer of the MySQL AB documentation team. 
+Sakila for Microsoft SQL Server is a port of the Sakila example database available for MySQL, which was originally developed by Mike Hillyer of the MySQL AB documentation team.
 This project is designed to help database administrators to decide which database to use for development of new products
 The user can run the same SQL against different kind of databases and compare the performance
 
@@ -113,7 +113,7 @@ CREATE TABLE customer_data.city (
 GO
  ALTER TABLE customer_data.city ADD CONSTRAINT [DF_city_last_update] DEFAULT (getdate()) FOR last_update
 GO
- CREATE  INDEX idx_fk_country_id ON customer_data.city(country_id) 
+ CREATE  INDEX idx_fk_country_id ON customer_data.city(country_id)
 GO
 
 --
@@ -134,7 +134,7 @@ CREATE TABLE customer_data.address (
 GO
 ALTER TABLE customer_data.address ADD CONSTRAINT [DF_address_last_update] DEFAULT (getdate()) FOR last_update
 GO
-CREATE  INDEX idx_fk_city_id ON customer_data.address(city_id) 
+CREATE  INDEX idx_fk_city_id ON customer_data.address(city_id)
 GO
 ALTER TABLE customer_data.address WITH NOCHECK ADD  CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES customer_data.city (city_id) ON DELETE NO ACTION ON UPDATE CASCADE
 GO
@@ -192,11 +192,11 @@ GO
 GO
  ALTER TABLE customer_data.customer ADD CONSTRAINT [DF_customer_create_date] DEFAULT (getdate()) FOR create_date
 GO
- CREATE  INDEX idx_fk_store_id ON customer_data.customer(store_id) 
+ CREATE  INDEX idx_fk_store_id ON customer_data.customer(store_id)
 GO
- CREATE  INDEX idx_fk_address_id ON customer_data.customer(address_id) 
+ CREATE  INDEX idx_fk_address_id ON customer_data.customer(address_id)
 GO
- CREATE  INDEX idx_last_name ON customer_data.customer(last_name) 
+ CREATE  INDEX idx_last_name ON customer_data.customer(last_name)
 GO
 
 --
@@ -219,22 +219,22 @@ CREATE TABLE inventory.film (
   last_update DATETIME NOT NULL,
   CONSTRAINT PK_film_film_id PRIMARY KEY NONCLUSTERED (film_id),
   CONSTRAINT fk_film_language FOREIGN KEY (language_id) REFERENCES language (language_id) ,
-  CONSTRAINT fk_film_language_original FOREIGN KEY (original_language_id) REFERENCES language (language_id) 
+  CONSTRAINT fk_film_language_original FOREIGN KEY (original_language_id) REFERENCES language (language_id)
 )
 GO
-ALTER TABLE inventory.film ADD CONSTRAINT CHECK_special_features CHECK(special_features is null or 
-                                                              special_features like '%Trailers%' or 
-                                                              special_features like '%Commentaries%' or 
-                                                              special_features like '%Deleted Scenes%' or 
+ALTER TABLE inventory.film ADD CONSTRAINT CHECK_special_features CHECK(special_features is null or
+                                                              special_features like '%Trailers%' or
+                                                              special_features like '%Commentaries%' or
+                                                              special_features like '%Deleted Scenes%' or
                                                               special_features like '%Behind the Scenes%')
 GO
 ALTER TABLE inventory.film ADD CONSTRAINT CHECK_special_rating CHECK(rating in ('G','PG','PG-13','R','NC-17'))
 GO
 ALTER TABLE inventory.film ADD CONSTRAINT [DF_film_last_update] DEFAULT (getdate()) FOR last_update
 GO
-CREATE  INDEX idx_fk_language_id ON inventory.film(language_id) 
+CREATE  INDEX idx_fk_language_id ON inventory.film(language_id)
 GO
-CREATE  INDEX idx_fk_original_language_id ON inventory.film(original_language_id) 
+CREATE  INDEX idx_fk_original_language_id ON inventory.film(original_language_id)
 GO
 
 
@@ -253,9 +253,9 @@ CREATE TABLE inventory.film_actor (
 GO
  ALTER TABLE inventory.film_actor ADD CONSTRAINT [DF_film_actor_last_update] DEFAULT (getdate()) FOR last_update
 GO
- CREATE  INDEX idx_fk_film_actor_film ON inventory.film_actor(film_id) 
+ CREATE  INDEX idx_fk_film_actor_film ON inventory.film_actor(film_id)
 GO
- CREATE  INDEX idx_fk_film_actor_actor ON inventory.film_actor(actor_id) 
+ CREATE  INDEX idx_fk_film_actor_actor ON inventory.film_actor(actor_id)
 GO
 
 --
@@ -285,9 +285,9 @@ CREATE TABLE inventory.film_category (
 GO
  ALTER TABLE inventory.film_category ADD CONSTRAINT [DF_film_category_last_update] DEFAULT (getdate()) FOR last_update
 GO
- CREATE  INDEX idx_fk_film_category_film ON inventory.film_category(film_id) 
+ CREATE  INDEX idx_fk_film_category_film ON inventory.film_category(film_id)
 GO
- CREATE  INDEX idx_fk_film_category_category ON inventory.film_category(category_id) 
+ CREATE  INDEX idx_fk_film_category_category ON inventory.film_category(category_id)
 GO
 --
 -- Table structure for table film_text
@@ -318,9 +318,9 @@ CREATE TABLE inventory.inventory (
 GO
  ALTER TABLE inventory.inventory ADD CONSTRAINT [DF_inventory_last_update] DEFAULT (getdate()) FOR last_update
 GO
- CREATE  INDEX idx_fk_film_id ON inventory.inventory(film_id) 
+ CREATE  INDEX idx_fk_film_id ON inventory.inventory(film_id)
 GO
- CREATE  INDEX idx_fk_film_id_store_id ON inventory.inventory(store_id DESC, film_id ASC) 
+ CREATE  INDEX idx_fk_film_id_store_id ON inventory.inventory(store_id DESC, film_id ASC)
 GO
 
 --
@@ -345,9 +345,9 @@ CREATE TABLE business.staff (
 GO
  ALTER TABLE business.staff ADD CONSTRAINT [DF_staff_last_update] DEFAULT (getdate()) FOR last_update
 GO
- CREATE  INDEX idx_fk_store_id ON business.staff(store_id) 
+ CREATE  INDEX idx_fk_store_id ON business.staff(store_id)
 GO
- CREATE  INDEX idx_fk_address_id ON business.staff(address_id) 
+ CREATE  INDEX idx_fk_address_id ON business.staff(address_id)
 GO
 
 --
@@ -361,15 +361,15 @@ CREATE TABLE business.store (
   last_update DATETIME NOT NULL,
   CONSTRAINT PK_store_store_id PRIMARY KEY NONCLUSTERED (store_id),
   CONSTRAINT fk_store_staff FOREIGN KEY (manager_staff_id) REFERENCES business.staff (staff_id) ,
-  CONSTRAINT fk_store_address FOREIGN KEY (address_id) REFERENCES customer_data.address (address_id) 
+  CONSTRAINT fk_store_address FOREIGN KEY (address_id) REFERENCES customer_data.address (address_id)
 )
 
 GO
  ALTER TABLE business.store ADD CONSTRAINT [DF_store_last_update] DEFAULT (getdate()) FOR last_update
 GO
- CREATE UNIQUE NONCLUSTERED INDEX idx_fk_address_id ON business.store(manager_staff_id) 
+ CREATE UNIQUE NONCLUSTERED INDEX idx_fk_address_id ON business.store(manager_staff_id)
 GO
- CREATE  INDEX idx_fk_store_address ON business.store(address_id) 
+ CREATE  INDEX idx_fk_store_address ON business.store(address_id)
 GO
 
 
@@ -388,14 +388,14 @@ CREATE TABLE business.payment (
   last_update DATETIME NOT NULL,
   CONSTRAINT PK_payment_payment_id PRIMARY KEY NONCLUSTERED (payment_id),
   CONSTRAINT fk_payment_customer FOREIGN KEY (customer_id) REFERENCES customer_data.customer (customer_id) ,
-  CONSTRAINT fk_payment_staff FOREIGN KEY (staff_id) REFERENCES business.staff (staff_id) 
+  CONSTRAINT fk_payment_staff FOREIGN KEY (staff_id) REFERENCES business.staff (staff_id)
 )
 GO
  ALTER TABLE business.payment ADD CONSTRAINT [DF_payment_last_update] DEFAULT (getdate()) FOR last_update
 GO
- CREATE  INDEX idx_fk_staff_id ON business.payment(staff_id) 
+ CREATE  INDEX idx_fk_staff_id ON business.payment(staff_id)
 GO
- CREATE  INDEX idx_fk_customer_id ON business.payment(customer_id) 
+ CREATE  INDEX idx_fk_customer_id ON business.payment(customer_id)
 GO
 
 --
@@ -413,16 +413,16 @@ CREATE TABLE business.rental (
   CONSTRAINT PK_rental_rental_id PRIMARY KEY NONCLUSTERED (rental_id),
   CONSTRAINT fk_rental_staff FOREIGN KEY (staff_id) REFERENCES business.staff (staff_id) ,
   CONSTRAINT fk_rental_inventory FOREIGN KEY (inventory_id) REFERENCES inventory.inventory (inventory_id) ,
-  CONSTRAINT fk_rental_customer FOREIGN KEY (customer_id) REFERENCES customer_data.customer (customer_id) 
+  CONSTRAINT fk_rental_customer FOREIGN KEY (customer_id) REFERENCES customer_data.customer (customer_id)
 )
 GO
  ALTER TABLE business.rental ADD CONSTRAINT [DF_rental_last_update] DEFAULT (getdate()) FOR last_update
 GO
- CREATE INDEX idx_fk_inventory_id ON business.rental(inventory_id) 
+ CREATE INDEX idx_fk_inventory_id ON business.rental(inventory_id)
 GO
- CREATE INDEX idx_fk_customer_id ON business.rental(customer_id) 
+ CREATE INDEX idx_fk_customer_id ON business.rental(customer_id)
 GO
- CREATE INDEX idx_fk_staff_id ON business.rental(staff_id) 
+ CREATE INDEX idx_fk_staff_id ON business.rental(staff_id)
 GO
  CREATE UNIQUE INDEX   idx_uq  ON business.rental (rental_date,inventory_id,customer_id)
 GO
@@ -451,14 +451,14 @@ GO
 
 CREATE VIEW customer_list
 AS
-SELECT cu.customer_id AS ID, 
-       cu.first_name + ' ' + cu.last_name AS name, 
-       a.address AS address, 
+SELECT cu.customer_id AS ID,
+       cu.first_name + ' ' + cu.last_name AS name,
+       a.address AS address,
        a.postal_code AS zip_code,
-	   a.phone AS phone, 
-	   customer_data.city.city AS city, 
-	   c.country AS country, 
-	   case when cu.active=1 then 'active' else '' end AS notes, 
+	   a.phone AS phone,
+	   customer_data.city.city AS city,
+	   c.country AS country,
+	   case when cu.active=1 then 'active' else '' end AS notes,
 	   cu.store_id AS SID
 FROM customer_data.customer AS cu JOIN customer_data.address AS a ON cu.address_id = a.address_id JOIN customer_data.city ON a.city_id = customer_data.city.city_id
 	JOIN customer_data.country c ON customer_data.city.country_id = c.country_id
@@ -469,16 +469,16 @@ GO
 
 CREATE VIEW film_list
 AS
-SELECT f.film_id AS FID, 
-       f.title AS title, 
-       f.description AS description, 
-       category.name AS category, 
+SELECT f.film_id AS FID,
+       f.title AS title,
+       f.description AS description,
+       category.name AS category,
        f.rental_rate AS price,
-	   f.length AS length, 
-	   f.rating AS rating, 
+	   f.length AS length,
+	   f.rating AS rating,
 	   a.first_name+' '+a.last_name AS actors
-FROM category 
-  LEFT JOIN inventory.film_category AS fc ON category.category_id = fc.category_id 
+FROM category
+  LEFT JOIN inventory.film_category AS fc ON category.category_id = fc.category_id
   LEFT JOIN inventory.film AS f ON fc.film_id = f.film_id
   JOIN inventory.film_actor AS fa ON f.film_id = fa.film_id
 	JOIN customer_data.actor a ON fa.actor_id = a.actor_id
@@ -490,13 +490,13 @@ GO
 
 CREATE VIEW staff_list
 AS
-SELECT s.staff_id AS ID, 
-       s.first_name+' '+s.last_name AS name, 
-       a.address AS address, 
-       a.postal_code AS zip_code, 
+SELECT s.staff_id AS ID,
+       s.first_name+' '+s.last_name AS name,
+       a.address AS address,
+       a.postal_code AS zip_code,
        a.phone AS phone,
-	   customer_data.city.city AS city, 
-	   c.country AS country, 
+	   customer_data.city.city AS city,
+	   c.country AS country,
 	   s.store_id AS SID
 FROM business.staff AS s JOIN customer_data.address AS a ON s.address_id = a.address_id JOIN customer_data.city ON a.city_id = customer_data.city.city_id
 	JOIN customer_data.country c ON customer_data.city.country_id = c.country_id
@@ -520,9 +520,9 @@ INNER JOIN customer_data.address AS a ON s.address_id = a.address_id
 INNER JOIN customer_data.city AS c ON a.city_id = c.city_id
 INNER JOIN customer_data.country AS cy ON c.country_id = cy.country_id
 INNER JOIN business.staff AS m ON s.manager_staff_id = m.staff_id
-GROUP BY   
+GROUP BY
   s.store_id
-, c.city+ ','+cy.country 
+, c.city+ ','+cy.country
 , m.first_name+' '+ m.last_name
 GO
 --
@@ -822,3 +822,25 @@ IF CAST(SERVERPROPERTY('ProductMajorVersion') AS INT) > 10
 BEGIN
   EXECUTE('CREATE SEQUENCE actor_seq START WITH 1 INCREMENT BY 1')
 END
+
+-- TABLE WITH PERIOD
+CREATE TABLE business.TableWithPeriod (
+  [TableWithPeriodId] int NOT NULL IDENTITY,
+  [Name] nvarchar(100) NOT NULL,
+  [ValidFrom] datetime2 GENERATED ALWAYS AS ROW START HIDDEN,
+  [ValidTo] datetime2 GENERATED ALWAYS AS ROW END HIDDEN,
+  PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo),
+  CONSTRAINT PK_TableWithPeriod_TableWithPeriodId PRIMARY KEY NONCLUSTERED (TableWithPeriodId)
+)
+GO
+
+-- TEMPORAL TABLE
+CREATE TABLE business.TemporalTable (
+  [TemporalTableId] int NOT NULL,
+  [Name] nvarchar(100) NOT NULL,
+  [ValidFrom] datetime2 GENERATED ALWAYS AS ROW START HIDDEN,
+  [ValidTo] datetime2 GENERATED ALWAYS AS ROW END HIDDEN,
+  PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo),
+  CONSTRAINT PK_TemporalTable_TemporalTableId PRIMARY KEY NONCLUSTERED (TemporalTableId)
+)
+WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = business.TemporalTableHistory))

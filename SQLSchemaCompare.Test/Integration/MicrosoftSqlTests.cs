@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using FluentAssertions;
 using TiCodeX.SQLSchemaCompare.Core.Entities;
+using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
 using TiCodeX.SQLSchemaCompare.Core.Enums;
 using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
 using Xunit;
@@ -69,24 +70,72 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             db.Name.Should().Be("sakila");
 
             db.Schemas.Count.Should().Be(3);
+            db.Tables.Count.Should().Be(20);
 
-            db.Tables.Count.Should().Be(18);
             var table = db.Tables.FirstOrDefault(x => x.Name == "film");
             table.Should().NotBeNull();
-            table?.Columns.Count.Should().Be(13);
-            table?.Columns.Select(x => x.Name).Should().Contain("language_id");
+            table.HasPeriod.Should().BeFalse();
+            table.PeriodName.Should().BeNull();
+            table.PeriodStartColumn.Should().BeNull();
+            table.PeriodEndColumn.Should().BeNull();
+            table.HasHistoryTable.Should().BeFalse();
+            table.HistoryTableSchema.Should().BeNull();
+            table.HistoryTableName.Should().BeNull();
+            table.Columns.Count.Should().Be(13);
+            table.Columns.Select(x => x.Name).Should().Contain("language_id");
 
             table = db.Tables.FirstOrDefault(x => x.Name == "film_category");
             table.Should().NotBeNull();
-            table?.PrimaryKeys.Count.Should().Be(1);
-            table?.PrimaryKeys.First().ColumnNames.Should().Contain("film_id");
-            table?.PrimaryKeys.First().ColumnNames.Should().Contain("category_id");
+            table.HasPeriod.Should().BeFalse();
+            table.PeriodName.Should().BeNull();
+            table.PeriodStartColumn.Should().BeNull();
+            table.PeriodEndColumn.Should().BeNull();
+            table.HasHistoryTable.Should().BeFalse();
+            table.HistoryTableSchema.Should().BeNull();
+            table.HistoryTableName.Should().BeNull();
+            table.PrimaryKeys.Count.Should().Be(1);
+            table.PrimaryKeys.First().ColumnNames.Should().Contain("film_id");
+            table.PrimaryKeys.First().ColumnNames.Should().Contain("category_id");
 
             table = db.Tables.FirstOrDefault(x => x.Name == "rental");
-            table?.ForeignKeys.Count.Should().Be(3);
-            table?.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_customer");
-            table?.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_inventory");
-            table?.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_staff");
+            table.Should().NotBeNull();
+            table.HasPeriod.Should().BeFalse();
+            table.PeriodName.Should().BeNull();
+            table.PeriodStartColumn.Should().BeNull();
+            table.PeriodEndColumn.Should().BeNull();
+            table.HasHistoryTable.Should().BeFalse();
+            table.HistoryTableSchema.Should().BeNull();
+            table.HistoryTableName.Should().BeNull();
+            table.ForeignKeys.Count.Should().Be(3);
+            table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_customer");
+            table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_inventory");
+            table.ForeignKeys.Should().Contain(x => x.Name == "fk_rental_staff");
+
+            table = db.Tables.FirstOrDefault(x => x.Name == "TableWithPeriod");
+            table.Should().NotBeNull();
+            table.HasPeriod.Should().BeTrue();
+            table.PeriodName.Should().Be("SYSTEM_TIME");
+            table.PeriodStartColumn.Should().Be("ValidFrom");
+            table.PeriodEndColumn.Should().Be("ValidTo");
+            table.HasHistoryTable.Should().BeFalse();
+            table.HistoryTableSchema.Should().BeNull();
+            table.HistoryTableName.Should().BeNull();
+            table.Columns.Count.Should().Be(4);
+            ((MicrosoftSqlColumn)table.Columns.First(x => x.Name == "ValidFrom")).GeneratedAlwaysType.Should().Be(1);
+            ((MicrosoftSqlColumn)table.Columns.First(x => x.Name == "ValidTo")).GeneratedAlwaysType.Should().Be(2);
+
+            table = db.Tables.FirstOrDefault(x => x.Name == "TemporalTable");
+            table.Should().NotBeNull();
+            table.HasPeriod.Should().BeTrue();
+            table.PeriodName.Should().Be("SYSTEM_TIME");
+            table.PeriodStartColumn.Should().Be("ValidFrom");
+            table.PeriodEndColumn.Should().Be("ValidTo");
+            table.HasHistoryTable.Should().BeTrue();
+            table.HistoryTableSchema.Should().Be("business");
+            table.HistoryTableName.Should().Be("TemporalTableHistory");
+            table.Columns.Count.Should().Be(4);
+            ((MicrosoftSqlColumn)table.Columns.First(x => x.Name == "ValidFrom")).GeneratedAlwaysType.Should().Be(1);
+            ((MicrosoftSqlColumn)table.Columns.First(x => x.Name == "ValidTo")).GeneratedAlwaysType.Should().Be(2);
 
             db.Views.Count.Should().Be(6);
             db.Views.Should().ContainSingle(x => x.Name == "film_list");
@@ -738,6 +787,186 @@ namespace TiCodeX.SQLSchemaCompare.Test.Integration
             var sb = new StringBuilder();
             sb.AppendLine("DROP PROCEDURE SeedData");
             this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port, 0);
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have the table with the period
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingTableWithPeriod(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP TABLE business.TableWithPeriod");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port, 0);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have the table without the period
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetTableMissingPeriod(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE business.TableWithPeriod DROP PERIOD FOR SYSTEM_TIME");
+            sb.AppendLine("ALTER TABLE business.TableWithPeriod DROP COLUMN ValidFrom");
+            sb.AppendLine("ALTER TABLE business.TableWithPeriod DROP COLUMN ValidTo");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have the table with the period
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetTableWithPeriod(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE customer_data.actor ADD");
+            sb.AppendLine("   ValidFrom DATETIME2 GENERATED ALWAYS AS ROW START NOT NULL,");
+            sb.AppendLine("   ValidTo DATETIME2 GENERATED ALWAYS AS ROW END NOT NULL,");
+            sb.AppendLine("   PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an extra table with the period
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetExtraTableWithPeriod(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("CREATE TABLE business.TableWithPeriodExtra (");
+            sb.AppendLine("  [TableWithPeriodExtraId] int NOT NULL,");
+            sb.AppendLine("  [Name] nvarchar(100) NOT NULL,");
+            sb.AppendLine("  [ValidFrom] datetime2 GENERATED ALWAYS AS ROW START HIDDEN,");
+            sb.AppendLine("  [ValidTo] datetime2 GENERATED ALWAYS AS ROW END HIDDEN,");
+            sb.AppendLine("  PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo),");
+            sb.AppendLine("  CONSTRAINT PK_TableWithPeriodExtra_TableWithPeriodExtraId PRIMARY KEY NONCLUSTERED (TableWithPeriodExtraId)");
+            sb.AppendLine(")");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port, 0);
+        }
+
+        /// <summary>
+        /// Test migration script when target db doesn't have the table with the history
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingTableWithHistory(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE business.TemporalTable SET (SYSTEM_VERSIONING = OFF)");
+            sb.AppendLine("DROP TABLE business.TemporalTableHistory");
+            sb.AppendLine("DROP TABLE business.TemporalTable");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port, 0);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have the table without the history
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetTableMissingHistory(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE business.TemporalTable SET (SYSTEM_VERSIONING = OFF)");
+            sb.AppendLine("DROP TABLE business.TemporalTableHistory");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have the table with the history
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetTableWithHistory(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE customer_data.actor ADD");
+            sb.AppendLine("   ValidFrom DATETIME2 GENERATED ALWAYS AS ROW START NOT NULL,");
+            sb.AppendLine("   ValidTo DATETIME2 GENERATED ALWAYS AS ROW END NOT NULL,");
+            sb.AppendLine("   PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)");
+            sb.AppendLine("ALTER TABLE customer_data.actor SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = customer_data.actorHistory))");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an extra table with the history
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetExtraTableWithHistory(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("CREATE TABLE business.TemporalTableExtra (");
+            sb.AppendLine("  [TemporalTableExtraId] int NOT NULL,");
+            sb.AppendLine("  [Name] nvarchar(100) NOT NULL,");
+            sb.AppendLine("  [ValidFrom] datetime2 GENERATED ALWAYS AS ROW START HIDDEN,");
+            sb.AppendLine("  [ValidTo] datetime2 GENERATED ALWAYS AS ROW END HIDDEN,");
+            sb.AppendLine("  PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo),");
+            sb.AppendLine("  CONSTRAINT PK_TemporalTableExtra_TemporalTableExtraId PRIMARY KEY NONCLUSTERED (TemporalTableExtraId)");
+            sb.AppendLine(")");
+            sb.AppendLine("WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = business.TemporalTableExtraHistory))");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port, 0);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have the table with a different history table
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentHistoryTable(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE business.TemporalTable SET (SYSTEM_VERSIONING = OFF)");
+            sb.AppendLine("DROP TABLE business.TemporalTableHistory");
+            sb.AppendLine("ALTER TABLE business.TemporalTable SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = business.TemporalTableDifferentHistory))");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional default constraint on the period
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetExtraDefaultConstraintOnPeriod(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("ALTER TABLE business.TableWithPeriod ADD CONSTRAINT DF_TableWithPeriod_ValidFrom DEFAULT SYSUTCDATETIME() FOR ValidFrom");
+            sb.AppendLine("ALTER TABLE business.TableWithPeriod ADD CONSTRAINT DF_TableWithPeriod_ValidTo DEFAULT CONVERT(DATETIME2, '9999-12-3123:59:59.9999999') FOR ValidTo");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
     }
 }

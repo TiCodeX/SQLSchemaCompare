@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+using TiCodeX.SQLSchemaCompare.Core.Extensions;
+using TiCodeX.SQLSchemaCompare.Services;
 
 namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
@@ -56,18 +58,18 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <inheritdoc/>
         protected override string ScriptCreateTable(ABaseDbTable table)
         {
-            var ncol = table.Columns.Count;
-
-            var columns = this.GetSortedTableColumns(table);
-
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE TABLE {this.ScriptHelper.ScriptObjectName(table)}(");
 
             var i = 0;
+            var columns = this.GetSortedTableColumns(table)
+                .Cast<MicrosoftSqlColumn>()
+                .Where(x => x.GeneratedAlwaysType == 0)
+                .ToList();
             foreach (var col in columns)
             {
                 sb.Append($"{this.Indent}{this.ScriptHelper.ScriptColumn(col)}");
-                sb.AppendLine(++i == ncol ? string.Empty : ",");
+                sb.AppendLine(++i == columns.Count ? string.Empty : ",");
             }
 
             sb.AppendLine(")");
@@ -95,63 +97,30 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 throw new ArgumentException($"{nameof(t.MappedDbObject)} is null");
             }
 
-            // Remove columns
-            foreach (var c in targetTable.Columns.Where(x => x.MappedDbObject == null))
+            sb.Append(this.ScriptAlterTableColumns(t, targetTable));
+
+            if (!t.HasHistoryTable && targetTable.HasHistoryTable)
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} DROP COLUMN {this.ScriptHelper.ScriptObjectName(c.Name)}");
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                sb.AppendLine(this.ScriptAlterTableDropHistory(targetTable));
             }
 
-            // Alter columns
-            foreach (var c in t.Columns.Where(x => x.MappedDbObject != null && x.CreateScript != x.MappedDbObject.CreateScript))
+            if (t.HasPeriod != targetTable.HasPeriod)
             {
-                var targetColumn = (MicrosoftSqlColumn)c.MappedDbObject;
-                var defaultIsMissingInSource = string.IsNullOrWhiteSpace(c.ColumnDefault) &&
-                                             !string.IsNullOrWhiteSpace(targetColumn.ColumnDefault) &&
-                                             !string.IsNullOrWhiteSpace(targetColumn.DefaultConstraintName);
-                var defaultIsMissingInTarget = !string.IsNullOrWhiteSpace(c.ColumnDefault) &&
-                                             string.IsNullOrWhiteSpace(targetColumn.ColumnDefault);
-                var defaultIsDifferent = !string.IsNullOrWhiteSpace(c.ColumnDefault) && !string.IsNullOrWhiteSpace(targetColumn.ColumnDefault) && c.ColumnDefault != targetColumn.ColumnDefault;
-
-                if (defaultIsMissingInSource || defaultIsDifferent)
-                {
-                    var constraint = new ABaseDbConstraint
-                    {
-                        TableSchema = targetTable.Schema,
-                        TableName = targetTable.Name,
-                        Name = ((MicrosoftSqlColumn)c.MappedDbObject).DefaultConstraintName,
-                    };
-
-                    sb.Append(this.ScriptAlterTableDropConstraint(constraint));
-                }
-
-                // Compare again the columns without the default constraint
-                var columnScriptSource = this.ScriptHelper.ScriptColumn(c, false);
-                var columnScriptTarget = this.ScriptHelper.ScriptColumn(targetColumn, false);
-                if (columnScriptSource != columnScriptTarget)
-                {
-                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN {columnScriptSource}");
-                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-                }
-
-                if (defaultIsMissingInTarget || defaultIsDifferent)
-                {
-                    sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD");
-                    if (!string.IsNullOrWhiteSpace(c.DefaultConstraintName))
-                    {
-                        sb.Append($" CONSTRAINT {this.ScriptHelper.ScriptObjectName(c.DefaultConstraintName)}");
-                    }
-
-                    sb.AppendLine($" DEFAULT {c.ColumnDefault} FOR {this.ScriptHelper.ScriptObjectName(c.Name)}");
-                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-                }
+                sb.AppendLine(this.ScriptAlterPeriod(t, targetTable));
             }
 
-            // Add columns
-            foreach (var c in t.Columns.Where(x => x.MappedDbObject == null))
+            if (t.HasHistoryTable && !targetTable.HasHistoryTable)
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD {this.ScriptHelper.ScriptColumn(c)}");
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                sb.AppendLine(this.ScriptAlterTableAddHistory(t));
+            }
+
+            if (t.HasHistoryTable && targetTable.HasHistoryTable &&
+                (t.HistoryTableSchema != targetTable.HistoryTableSchema ||
+                 t.HistoryTableName != targetTable.HistoryTableName))
+            {
+                sb.AppendLineIfNotEmpty();
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelHistory));
+                sb.Append(this.ScriptAlterHistory(t, targetTable));
             }
 
             return sb.ToString();
@@ -264,6 +233,86 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             var sb = new StringBuilder();
             sb.Append(this.ScriptAlterTableDropConstraint(targetConstraint));
             sb.Append(this.ScriptAlterTableAddConstraint(sourceConstraint));
+            return sb.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterTableAddPeriod(ABaseDbTable t)
+        {
+            var startColumn = t.Columns.Single(x => x.Name == t.PeriodStartColumn);
+            var endColumn = t.Columns.Single(x => x.Name == t.PeriodEndColumn);
+            var sb = new StringBuilder();
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD");
+            sb.AppendLine($"{this.Indent}{this.ScriptHelper.ScriptColumn(startColumn)},");
+            sb.AppendLine($"{this.Indent}{this.ScriptHelper.ScriptColumn(endColumn)},");
+            sb.AppendLine($"{this.Indent}PERIOD FOR {t.PeriodName} ({this.ScriptHelper.ScriptObjectName(t.PeriodStartColumn)}, {this.ScriptHelper.ScriptObjectName(t.PeriodEndColumn)})");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterTableDropPeriod(ABaseDbTable t)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} DROP PERIOD FOR {t.PeriodName}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} DROP COLUMN {this.ScriptHelper.ScriptObjectName(t.PeriodStartColumn)}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} DROP COLUMN {this.ScriptHelper.ScriptObjectName(t.PeriodEndColumn)}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterPeriod(ABaseDbTable sourceTable, ABaseDbTable targetTable)
+        {
+            var sb = new StringBuilder();
+
+            if (sourceTable.HasPeriod && !targetTable.HasPeriod)
+            {
+                sb.Append(this.ScriptAlterTableAddPeriod(sourceTable));
+            }
+            else if (!sourceTable.HasPeriod && targetTable.HasPeriod)
+            {
+                sb.Append(this.ScriptAlterTableDropPeriod(targetTable));
+            }
+            else if (sourceTable.PeriodName != targetTable.PeriodName ||
+                     sourceTable.PeriodStartColumn != targetTable.PeriodStartColumn ||
+                     sourceTable.PeriodEndColumn != targetTable.PeriodEndColumn)
+            {
+                sb.Append(this.ScriptAlterTableDropPeriod(targetTable));
+                sb.Append(this.ScriptAlterTableAddPeriod(sourceTable));
+            }
+
+            return sb.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterTableAddHistory(ABaseDbTable t)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = {this.ScriptHelper.ScriptObjectName(t.HistoryTableSchema, t.HistoryTableName)}))");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterTableDropHistory(ABaseDbTable table)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} SET (SYSTEM_VERSIONING = OFF)");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            sb.AppendLine($"DROP TABLE {this.ScriptHelper.ScriptObjectName(table.HistoryTableSchema, table.HistoryTableName)}");
+            sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            return sb.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override string ScriptAlterHistory(ABaseDbTable sourceTable, ABaseDbTable targetTable)
+        {
+            var sb = new StringBuilder();
+            sb.Append(this.ScriptAlterTableDropHistory(targetTable));
+            sb.Append(this.ScriptAlterTableAddHistory(sourceTable));
             return sb.ToString();
         }
 
@@ -691,6 +740,75 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             orderedIndexes.AddRange(indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type == MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
             orderedIndexes.AddRange(indexes.Cast<MicrosoftSqlIndex>().Where(x => x.Type != MicrosoftSqlIndex.IndexType.Clustered).OrderBy(x => x.Schema).ThenBy(x => x.Name));
             return orderedIndexes;
+        }
+
+        private string ScriptAlterTableColumns(ABaseDbTable t, ABaseDbTable targetTable)
+        {
+            var sb = new StringBuilder();
+
+            // Remove columns
+            foreach (var c in targetTable.Columns.Cast<MicrosoftSqlColumn>().Where(x => x.MappedDbObject == null && x.GeneratedAlwaysType == 0))
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} DROP COLUMN {this.ScriptHelper.ScriptObjectName(c.Name)}");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            }
+
+            // Alter columns
+            foreach (var c in t.Columns.Cast<MicrosoftSqlColumn>().Where(x => x.MappedDbObject != null && x.CreateScript != x.MappedDbObject.CreateScript))
+            {
+                var targetColumn = (MicrosoftSqlColumn)c.MappedDbObject;
+                var defaultIsMissingInSource = string.IsNullOrWhiteSpace(c.ColumnDefault) &&
+                                             !string.IsNullOrWhiteSpace(targetColumn.ColumnDefault) &&
+                                             !string.IsNullOrWhiteSpace(targetColumn.DefaultConstraintName);
+                var defaultIsMissingInTarget = !string.IsNullOrWhiteSpace(c.ColumnDefault) &&
+                                             string.IsNullOrWhiteSpace(targetColumn.ColumnDefault);
+                var defaultIsDifferent = !string.IsNullOrWhiteSpace(c.ColumnDefault) && !string.IsNullOrWhiteSpace(targetColumn.ColumnDefault) && c.ColumnDefault != targetColumn.ColumnDefault;
+
+                if (defaultIsMissingInSource || defaultIsDifferent)
+                {
+                    var constraint = new ABaseDbConstraint
+                    {
+                        TableSchema = targetTable.Schema,
+                        TableName = targetTable.Name,
+                        Name = ((MicrosoftSqlColumn)c.MappedDbObject).DefaultConstraintName,
+                    };
+
+                    sb.Append(this.ScriptAlterTableDropConstraint(constraint));
+                }
+
+                if (c.GeneratedAlwaysType == 0)
+                {
+                    // Compare again the columns without the default constraint
+                    var columnScriptSource = this.ScriptHelper.ScriptColumn(c, false);
+                    var columnScriptTarget = this.ScriptHelper.ScriptColumn(targetColumn, false);
+                    if (columnScriptSource != columnScriptTarget)
+                    {
+                        sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN {columnScriptSource}");
+                        sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                    }
+                }
+
+                if (defaultIsMissingInTarget || defaultIsDifferent)
+                {
+                    sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD");
+                    if (!string.IsNullOrWhiteSpace(c.DefaultConstraintName))
+                    {
+                        sb.Append($" CONSTRAINT {this.ScriptHelper.ScriptObjectName(c.DefaultConstraintName)}");
+                    }
+
+                    sb.AppendLine($" DEFAULT {c.ColumnDefault} FOR {this.ScriptHelper.ScriptObjectName(c.Name)}");
+                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                }
+            }
+
+            // Add columns
+            foreach (var c in t.Columns.Cast<MicrosoftSqlColumn>().Where(x => x.MappedDbObject == null && x.GeneratedAlwaysType == 0))
+            {
+                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD {this.ScriptHelper.ScriptColumn(c)}");
+                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+            }
+
+            return sb.ToString();
         }
     }
 }

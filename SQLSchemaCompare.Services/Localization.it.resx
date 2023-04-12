@@ -833,4 +833,16 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelWebsite" xml:space="preserve">
     <value>Sito Web</value>
   </data>
+  <data name="LabelPeriod" xml:space="preserve">
+    <value>Periodo</value>
+  </data>
+  <data name="LabelHistory" xml:space="preserve">
+    <value>Cronologia</value>
+  </data>
+  <data name="LabelPeriods" xml:space="preserve">
+    <value>Periodi</value>
+  </data>
+  <data name="LabelHistories" xml:space="preserve">
+    <value>Cronologie</value>
+  </data>
 </root>

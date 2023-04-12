@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
 using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+using TiCodeX.SQLSchemaCompare.Core.Extensions;
 using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 using TiCodeX.SQLSchemaCompare.Services;
 
@@ -226,6 +227,26 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 sb.AppendLine();
             }
 
+            // Periods
+            if (database.Tables.Any(x => x.HasPeriod))
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPeriods));
+                foreach (var table in database.Tables.Where(x => x.HasPeriod).OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.AppendLine(this.ScriptAlterTableAddPeriod(table));
+                }
+            }
+
+            // Histories
+            if (database.Tables.Any(x => x.HasHistoryTable))
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelHistories));
+                foreach (var table in database.Tables.Where(x => x.HasHistoryTable).OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.AppendLine(this.ScriptAlterTableAddHistory(table));
+                }
+            }
+
             return sb.ToString();
         }
 
@@ -267,6 +288,26 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             }
 
             var sb = new StringBuilder();
+
+            // Histories
+            if (database.Tables.Any(x => x.HasHistoryTable))
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelHistories));
+                foreach (var table in database.Tables.Where(x => x.HasHistoryTable).OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.AppendLine(this.ScriptAlterTableDropHistory(table));
+                }
+            }
+
+            // Periods
+            if (database.Tables.Any(x => x.HasPeriod))
+            {
+                sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPeriods));
+                foreach (var table in database.Tables.Where(x => x.HasPeriod).OrderBy(x => x.Schema).ThenBy(x => x.Name))
+                {
+                    sb.AppendLine(this.ScriptAlterTableDropPeriod(table));
+                }
+            }
 
             // Triggers
             if (database.Triggers.Any())
@@ -455,7 +496,24 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = t.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
                     scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(t.Indexes) });
 
-                    return GenerateObjectMapScript(scriptableObjects, this.GenerateCreateScript);
+                    var sb = new StringBuilder();
+                    sb.Append(GenerateObjectMapScript(scriptableObjects, this.GenerateCreateScript));
+
+                    if (t.HasPeriod)
+                    {
+                        sb.AppendLineIfNotEmpty();
+                        sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPeriod));
+                        sb.Append(this.ScriptAlterTableAddPeriod(t));
+                    }
+
+                    if (t.HasHistoryTable)
+                    {
+                        sb.AppendLineIfNotEmpty();
+                        sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelHistory));
+                        sb.Append(this.ScriptAlterTableAddHistory(t));
+                    }
+
+                    return sb.ToString();
 
                 case ABaseDbView v:
                     if (!includeChildDbObjects)
@@ -535,7 +593,23 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = t.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
                     scriptableObjects.Add(new ObjectMap { DbObjects = new[] { t } });
 
-                    return GenerateObjectMapScript(scriptableObjects, this.GenerateDropScript);
+                    var sb = new StringBuilder();
+
+                    if (t.HasHistoryTable)
+                    {
+                        sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelHistory));
+                        sb.AppendLine(this.ScriptAlterTableDropHistory(t));
+                    }
+
+                    if (t.HasPeriod)
+                    {
+                        sb.AppendLine(AScriptHelper.ScriptComment(Localization.LabelPeriod));
+                        sb.AppendLine(this.ScriptAlterTableDropPeriod(t));
+                    }
+
+                    sb.Append(GenerateObjectMapScript(scriptableObjects, this.GenerateDropScript));
+
+                    return sb.ToString();
 
                 case ABaseDbView v:
                     if (!includeChildDbObjects)
@@ -596,38 +670,16 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 return string.Empty;
             }
 
-            var scriptableObjects = new List<ObjectMap>();
             switch (dbObject)
             {
                 case ABaseDbSchema s:
                     return this.ScriptAlterSchema(s);
 
                 case ABaseDbTable t:
-                    if (!includeChildDbObjects)
-                    {
-                        return this.ScriptAlterTable(t);
-                    }
+                    return includeChildDbObjects ?
+                        this.ScriptAlterTableAndChildDbObjects(t) :
+                        this.ScriptAlterTable(t);
 
-                    var targetTable = t.MappedDbObject as ABaseDbTable;
-
-                    // First drop what is not present anymore
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = targetTable.PrimaryKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelForeignKeys, DbObjects = targetTable.ForeignKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelConstraints, DbObjects = targetTable.Constraints.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = targetTable.Triggers.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(targetTable.Indexes).Where(x => x.MappedDbObject == null) });
-
-                    // Do the changes to the table itself
-                    scriptableObjects.Add(new ObjectMap { DbObjects = new[] { t } });
-
-                    // Finally create/alter the rest
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = t.PrimaryKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelForeignKeys, DbObjects = t.ForeignKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelConstraints, DbObjects = t.Constraints.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = t.Triggers.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) });
-                    scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(t.Indexes).Where(x => x.CreateScript != x.MappedDbObject?.CreateScript) });
-
-                    return GenerateObjectMapScript(scriptableObjects, this.GenerateAlterScript);
                 case ABaseDbView v:
                     return this.ScriptAlterView(v, v.MappedDbObject as ABaseDbView);
                 case ABaseDbPrimaryKey pk:
@@ -760,6 +812,50 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <param name="targetConstraint">The target constraint to drop</param>
         /// <returns>The alter table script</returns>
         protected abstract string ScriptAlterConstraint(ABaseDbConstraint souceConstraint, ABaseDbConstraint targetConstraint);
+
+        /// <summary>
+        /// Generates the alter table for adding the period
+        /// </summary>
+        /// <param name="table">The table</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterTableAddPeriod(ABaseDbTable table);
+
+        /// <summary>
+        /// Generates the alter table for dropping the period
+        /// </summary>
+        /// <param name="table">The table</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterTableDropPeriod(ABaseDbTable table);
+
+        /// <summary>
+        /// Generates the alter table for altering the period
+        /// </summary>
+        /// <param name="sourceTable">The source table</param>
+        /// <param name="targetTable">The target table</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterPeriod(ABaseDbTable sourceTable, ABaseDbTable targetTable);
+
+        /// <summary>
+        /// Generates the alter table for adding the history
+        /// </summary>
+        /// <param name="table">The table</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterTableAddHistory(ABaseDbTable table);
+
+        /// <summary>
+        /// Generates the alter table for dropping the history
+        /// </summary>
+        /// <param name="table">The table</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterTableDropHistory(ABaseDbTable table);
+
+        /// <summary>
+        /// Generates the alter table for altering the history
+        /// </summary>
+        /// <param name="sourceTable">The source table</param>
+        /// <param name="targetTable">The target table</param>
+        /// <returns>The alter table script</returns>
+        protected abstract string ScriptAlterHistory(ABaseDbTable sourceTable, ABaseDbTable targetTable);
 
         /// <summary>
         /// Generates the create index script
@@ -1016,7 +1112,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
                 if (additionalEmptyLine)
                 {
-                    sb.AppendLine();
+                    sb.AppendLineIfNotEmpty();
                 }
 
                 if (!string.IsNullOrWhiteSpace(objectMap.ObjectTitle))
@@ -1033,6 +1129,32 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             }
 
             return sb.ToString();
+        }
+
+        private string ScriptAlterTableAndChildDbObjects(ABaseDbTable t)
+        {
+            var targetTable = t.MappedDbObject as ABaseDbTable;
+            var scriptableObjects = new List<ObjectMap>
+            {
+                // First drop what is not present anymore
+                new ObjectMap { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = targetTable.PrimaryKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new ObjectMap { ObjectTitle = Localization.LabelForeignKeys, DbObjects = targetTable.ForeignKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new ObjectMap { ObjectTitle = Localization.LabelConstraints, DbObjects = targetTable.Constraints.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = targetTable.Triggers.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(targetTable.Indexes).Where(x => x.MappedDbObject == null) },
+
+                // Do the changes to the table itself
+                new ObjectMap { DbObjects = new[] { t } },
+
+                // Finally create/alter the rest
+                new ObjectMap { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = t.PrimaryKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new ObjectMap { ObjectTitle = Localization.LabelForeignKeys, DbObjects = t.ForeignKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new ObjectMap { ObjectTitle = Localization.LabelConstraints, DbObjects = t.Constraints.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = t.Triggers.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(t.Indexes).Where(x => x.CreateScript != x.MappedDbObject?.CreateScript) },
+            };
+
+            return GenerateObjectMapScript(scriptableObjects, this.GenerateAlterScript);
         }
     }
 }

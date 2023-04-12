@@ -69,5 +69,15 @@
         /// Gets or sets the user defined data type
         /// </summary>
         public string UserDefinedDataType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the generated always type
+        /// </summary>
+        public short GeneratedAlwaysType { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether is hidden
+        /// </summary>
+        public bool IsHidden { get; set; }
     }
 }

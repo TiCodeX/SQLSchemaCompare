@@ -51,5 +51,40 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
         /// Gets the database's triggers
         /// </summary>
         public List<ABaseDbTrigger> Triggers { get; } = new List<ABaseDbTrigger>();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the table has a period
+        /// </summary>
+        public bool HasPeriod { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the period
+        /// </summary>
+        public string PeriodName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the period start column
+        /// </summary>
+        public string PeriodStartColumn { get; set; }
+
+        /// <summary>
+        /// Gets or sets the period end column
+        /// </summary>
+        public string PeriodEndColumn { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the table has an history table
+        /// </summary>
+        public bool HasHistoryTable { get; set; }
+
+        /// <summary>
+        /// Gets or sets the history table schema
+        /// </summary>
+        public string HistoryTableSchema { get; set; }
+
+        /// <summary>
+        /// Gets or sets the history table name
+        /// </summary>
+        public string HistoryTableName { get; set; }
     }
 }

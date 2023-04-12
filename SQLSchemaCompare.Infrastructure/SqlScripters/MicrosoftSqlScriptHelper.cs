@@ -59,16 +59,38 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             var sb = new StringBuilder();
 
-            sb.Append($"{this.ScriptObjectName(col.Name)} {this.ScriptDataType(col)} ");
+            sb.Append($"{this.ScriptObjectName(col.Name)} {this.ScriptDataType(col)}");
 
             if (!col.IsComputed)
             {
                 if (col.IsIdentity)
                 {
-                    sb.Append($"IDENTITY({col.IdentitySeed},{col.IdentityIncrement}) ");
+                    sb.Append($" IDENTITY({col.IdentitySeed},{col.IdentityIncrement})");
                 }
 
-                sb.Append(col.IsNullable ? "NULL" : "NOT NULL");
+                if (col.GeneratedAlwaysType != 0)
+                {
+                    sb.Append(" GENERATED ALWAYS AS ");
+
+                    switch (col.GeneratedAlwaysType)
+                    {
+                        case 1:
+                            sb.Append("ROW START");
+                            break;
+                        case 2:
+                            sb.Append("ROW END");
+                            break;
+                        default:
+                            throw new NotSupportedException();
+                    }
+                }
+
+                if (col.IsHidden)
+                {
+                    sb.Append(" HIDDEN");
+                }
+
+                sb.Append(col.IsNullable ? " NULL" : " NOT NULL");
 
                 if (col.IsRowGuidCol)
                 {

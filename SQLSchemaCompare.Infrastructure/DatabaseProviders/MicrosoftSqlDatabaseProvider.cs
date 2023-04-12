@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -69,12 +69,21 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         protected override IEnumerable<ABaseDbTable> GetTables(MicrosoftSqlDatabaseContext context)
         {
             var query = new StringBuilder();
-            query.AppendLine("SELECT a.TABLE_NAME as Name,");
-            query.AppendLine("       a.TABLE_SCHEMA as 'Schema',");
-            query.AppendLine("       b.modify_date as 'ModifyDate'");
-            query.AppendLine("FROM INFORMATION_SCHEMA.TABLES a");
-            query.AppendLine("JOIN sys.objects b ON b.object_id = object_id(QUOTENAME(a.TABLE_SCHEMA) + '.' + QUOTENAME(a.TABLE_NAME))");
-            query.AppendLine("WHERE b.type = 'U' AND a.TABLE_SCHEMA <> 'sys'");
+            query.AppendLine("SELECT t.name as Name,");
+            query.AppendLine("       s.name as 'Schema',");
+            query.AppendLine("       CASE WHEN p.period_type IS NULL THEN 0 ELSE 1 END AS 'HasPeriod',");
+            query.AppendLine("       p.name AS 'PeriodName',");
+            query.AppendLine("       (SELECT c.name FROM sys.columns c WHERE c.object_id = t.object_id AND c.column_id = p.start_column_id) AS 'PeriodStartColumn',");
+            query.AppendLine("       (SELECT c.name FROM sys.columns c WHERE c.object_id = t.object_id AND c.column_id = p.end_column_id) AS 'PeriodEndColumn',");
+            query.AppendLine("       CASE t.temporal_type WHEN 2 THEN 1 ELSE 0 END as 'HasHistoryTable',");
+            query.AppendLine("       OBJECT_SCHEMA_NAME(t.history_table_id) AS 'HistoryTableSchema',");
+            query.AppendLine("       OBJECT_NAME(t.history_table_id) AS 'HistoryTableName',");
+            query.AppendLine("       o.modify_date as 'ModifyDate'");
+            query.AppendLine("FROM sys.tables t");
+            query.AppendLine("JOIN sys.schemas s ON s.schema_id = t.schema_id");
+            query.AppendLine("JOIN sys.objects o ON o.object_id = t.object_id");
+            query.AppendLine("LEFT JOIN sys.periods p ON p.object_id = t.object_id");
+            query.AppendLine("WHERE o.type = 'U' AND s.name <> 'sys' AND t.temporal_type <> 1");
 
             return context.Query<MicrosoftSqlTable>(query.ToString());
         }
@@ -104,7 +113,9 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("       IsNull(c.is_rowguidcol, 0) as 'IsRowGuidCol',");
             query.AppendLine("       cc.definition as 'Definition',");
             query.AppendLine("       isc.DOMAIN_SCHEMA as 'UserDefinedDataTypeSchema',");
-            query.AppendLine("       isc.DOMAIN_NAME as 'UserDefinedDataType'");
+            query.AppendLine("       isc.DOMAIN_NAME as 'UserDefinedDataType',");
+            query.AppendLine("       c.generated_always_type as 'GeneratedAlwaysType',");
+            query.AppendLine("       c.is_hidden as 'IsHidden'");
             query.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS isc");
             query.AppendLine("JOIN sys.columns c ON object_id(QUOTENAME(isc.TABLE_SCHEMA) + '.' + QUOTENAME(isc.TABLE_NAME)) = c.object_id AND isc.COLUMN_NAME = c.name");
             query.AppendLine("LEFT JOIN sys.identity_columns ic ON c.object_id = ic.object_id AND c.column_id = ic.column_id");
@@ -211,7 +222,8 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             query.AppendLine("FROM sys.indexes i");
             query.AppendLine("JOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id");
             query.AppendLine("JOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id");
-            query.AppendLine("WHERE object_schema_name(i.object_id) <> 'sys' AND i.is_primary_key = 0");
+            query.AppendLine("LEFT JOIN sys.tables t ON i.object_id = t.object_id");
+            query.AppendLine("WHERE object_schema_name(i.object_id) <> 'sys' AND i.is_primary_key = 0 AND ISNULL(t.temporal_type, 0) <> 1");
 
             return context.Query<MicrosoftSqlIndex>(query.ToString());
         }

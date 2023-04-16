@@ -1,7 +1,19 @@
 @echo off
 
 REM Bring dev tools into the PATH.
-call "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\Tools\VsDevCmd.bat"
+set "VsDevCmdPath=C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\Tools\VsDevCmd.bat"
+if not exist "%VsDevCmdPath%" (
+  set "VsDevCmdPath=C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat"
+)
+if not exist "%VsDevCmdPath%" (
+  echo Unable to find VsDevCmd.bat
+  echo.
+  echo Press any key to close...
+  pause > nul
+  exit
+)
+
+call "%VsDevCmdPath%"
 
 set "targetdotnet=%1"
 if /i "%1" == "" ( set "targetdotnet=win-x64" )

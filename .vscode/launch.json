@@ -1,0 +1,37 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "UI",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "Build UI",
+      "program": "${workspaceFolder}/SQLSchemaCompare.UI/bin/Debug/net6.0/TiCodeX.SQLSchemaCompare.UI.dll",
+      "cwd": "${workspaceFolder}/SQLSchemaCompare.UI",
+      "presentation": {
+        "hidden": true,
+      },
+    },
+    {
+      "name": "App",
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "Build App",
+      "runtimeExecutable": "${workspaceFolder}/SQLSchemaCompare/node_modules/.bin/electron",
+      "program": "${workspaceFolder}/SQLSchemaCompare/app.js",
+      "outputCapture": "std",
+      "presentation": {
+        "hidden": true,
+      },
+    }
+  ],
+  "compounds": [
+    {
+      "name": "SQL Schema Compare",
+      "configurations": [
+        "UI",
+        "App"
+      ]
+    }
+  ]
+}

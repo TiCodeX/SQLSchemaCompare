@@ -41,12 +41,12 @@ let serviceProcess: childProcess.ChildProcess;
 let serviceCommunicationSuccessful: boolean = false;
 
 // Read the first argument to get the project file
-// In debug or during an auto-update multiple arguments are passed, so we check that is actually a file
+// In debug or during an auto-update multiple arguments are passed, so we check that is actually a tcxsc file
 let projectToOpen: string;
 if (process.argv.length > 1) {
     try {
         const stat: fs.Stats = fs.lstatSync(process.argv[1]);
-        if (stat.isFile()) {
+        if (stat.isFile() && path.extname(process.argv[1]).toLowerCase() === ".tcxsc") {
             projectToOpen = process.argv[1];
         }
     } catch (ex) {

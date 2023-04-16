@@ -1,0 +1,84 @@
+{
+  "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "configuration",
+      "description": "The build configuration",
+      "type": "pickString",
+      "options": [
+        "Debug",
+        "Release"
+      ],
+      "default": "Debug"
+    }
+  ],
+  "tasks": [
+    {
+      "label": "Build UI + App",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": [
+        "Build UI",
+        "Build App"
+      ]
+    },
+    {
+      "label": "Build UI",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "build",
+        "-c",
+        "${input:configuration}",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/SQLSchemaCompare.UI"
+      },
+      "group": {
+        "kind": "build"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Build App",
+      "type": "npm",
+      "script": "build",
+      "options": {
+        "cwd": "${workspaceFolder}/SQLSchemaCompare"
+      },
+      "group": {
+        "kind": "build"
+      },
+      "problemMatcher": {
+        "base": "$tsc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/SQLSchemaCompare"
+        ]
+      }
+    },
+    {
+      "label": "Build Test",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "build",
+        "-c",
+        "${input:configuration}",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/SQLSchemaCompare.Test"
+      },
+      "group": {
+        "kind": "build"
+      },
+      "problemMatcher": "$msCompile"
+    },
+  ]
+}

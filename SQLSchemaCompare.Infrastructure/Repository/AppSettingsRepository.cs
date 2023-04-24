@@ -1,18 +1,21 @@
-﻿using System;
-using System.IO;
-using System.Xml;
-using System.Xml.Serialization;
-using TiCodeX.SQLSchemaCompare.Core.Entities;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.Repository
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.Repository
 {
+    using System;
+    using System.IO;
+    using System.Xml;
+    using System.Xml.Serialization;
+    using TiCodeX.SQLSchemaCompare.Core.Entities;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
+
     /// <summary>
     /// Implementation that provides the mechanism to store and retrieve application settings
     /// </summary>
     public class AppSettingsRepository : IAppSettingsRepository
     {
+        /// <summary>
+        /// The app globals
+        /// </summary>
         private readonly IAppGlobals appGlobals;
 
         /// <summary>

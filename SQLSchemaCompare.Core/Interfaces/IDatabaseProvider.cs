@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using TiCodeX.SQLSchemaCompare.Core.Entities;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
 {
+    using System;
+    using System.Collections.Generic;
+    using TiCodeX.SQLSchemaCompare.Core.Entities;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+
     /// <summary>
     /// Defines a class that provides the mechanisms to retrieve various information of a database
     /// </summary>

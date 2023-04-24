@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
+    using System.Text;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+
     /// <summary>
     /// Script helper class specific for PostgreSql database
     /// </summary>
@@ -210,10 +210,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 case "real":
                 case "double precision":
 
-                // TODO: check if float can be specified
-                // case "float":
-                // return $"{column.DataType}({column.NumericPrecision})";
-
                 // Money
                 case "money":
                     return $"{column.DataType}";
@@ -376,6 +372,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             }
         }
 
+        /// <summary>
+        /// Script the data type name
+        /// </summary>
+        /// <param name="dataTypeName">The data type name</param>
+        /// <returns>The scripted data type name</returns>
         private static string ScriptDataTypeName(string dataTypeName)
         {
             switch (dataTypeName)

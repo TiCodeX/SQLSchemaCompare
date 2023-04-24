@@ -1,15 +1,22 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
-using Xunit.Abstractions;
-
-namespace TiCodeX.SQLSchemaCompare.Test
+﻿namespace TiCodeX.SQLSchemaCompare.Test
 {
+    using System;
+    using Microsoft.Extensions.Logging;
+    using Xunit.Abstractions;
+
     /// <summary>
     /// Implementation of the ILogger interface that uses the Xunit log system to write
     /// </summary>
     public sealed class XunitLogger : ILogger, IDisposable
     {
+        /// <summary>
+        /// The name
+        /// </summary>
         private readonly string name;
+
+        /// <summary>
+        /// The output
+        /// </summary>
         private readonly ITestOutputHelper output;
 
         /// <summary>
@@ -49,6 +56,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <inheritdoc/>
         public void Dispose()
         {
+            // Do nothing
         }
     }
 }

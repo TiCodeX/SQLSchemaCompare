@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+
     /// <summary>
     /// Sql scripter class specific for MySql database
     /// </summary>
@@ -66,7 +66,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 sb.AppendLine(++i == ncol ? string.Empty : ",");
             }
 
-            sb.Append(")");
+            sb.Append(')');
             if (!string.IsNullOrWhiteSpace(mySqlTable.Engine) && !mySqlTable.Engine.Equals("InnoDB", StringComparison.OrdinalIgnoreCase))
             {
                 sb.Append($" ENGINE={mySqlTable.Engine}");
@@ -290,9 +290,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             // If there is a column with descending order, specify the order on all columns
             var scriptOrder = index.ColumnDescending.Any(x => x);
-            var columnList = index.ColumnNames.Select((x, i) => scriptOrder ?
-                $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}" :
-                $"{this.ScriptHelper.ScriptObjectName(x)}");
+            var columnList = index.ColumnNames.Select((x, i) =>
+            {
+                if (scriptOrder)
+                {
+                    return $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}";
+                }
+
+                return $"{this.ScriptHelper.ScriptObjectName(x)}";
+            });
 
             sb.Append("CREATE ");
             if (indexMySql.IndexType == "FULLTEXT")

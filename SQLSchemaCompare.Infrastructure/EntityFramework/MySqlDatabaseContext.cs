@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
 {
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
     /// <summary>
     /// Defines the MySql database context
     /// </summary>

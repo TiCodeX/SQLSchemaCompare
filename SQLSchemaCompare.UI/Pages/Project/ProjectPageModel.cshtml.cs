@@ -1,34 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
-using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-using TiCodeX.SQLSchemaCompare.Core.Enums;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-using TiCodeX.SQLSchemaCompare.Services;
-using TiCodeX.SQLSchemaCompare.UI.Models;
-using TiCodeX.SQLSchemaCompare.UI.Models.Project;
-
-namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.RazorPages;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+    using TiCodeX.SQLSchemaCompare.Core.Enums;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+    using TiCodeX.SQLSchemaCompare.Services;
+    using TiCodeX.SQLSchemaCompare.UI.Models;
+    using TiCodeX.SQLSchemaCompare.UI.Models.Project;
+
     /// <summary>
     /// PageModel of the Project page
     /// </summary>
     public class ProjectPageModel : PageModel
     {
+        /// <summary>
+        /// The logger
+        /// </summary>
         private readonly ILogger logger;
+
+        /// <summary>
+        /// The app settings service
+        /// </summary>
         private readonly IAppSettingsService appSettingsService;
+
+        /// <summary>
+        /// The project service
+        /// </summary>
         private readonly IProjectService projectService;
+
+        /// <summary>
+        /// The database service
+        /// </summary>
         private readonly IDatabaseService databaseService;
+
+        /// <summary>
+        /// The database compare service
+        /// </summary>
         private readonly IDatabaseCompareService databaseCompareService;
+
+        /// <summary>
+        /// The app globals
+        /// </summary>
         private readonly IAppGlobals appGlobals;
+
+        /// <summary>
+        /// The cipher service
+        /// </summary>
         private readonly ICipherService cipherService;
 
         /// <summary>
@@ -332,6 +359,12 @@ namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
             return new JsonResult(new ApiResponse());
         }
 
+        /// <summary>
+        /// Get the database provider options
+        /// </summary>
+        /// <param name="options">The compare project options</param>
+        /// <param name="direction">The compare direction</param>
+        /// <returns>The database provider options</returns>
         private ADatabaseProviderOptions GetDatabaseProviderOptions(CompareProjectOptions options, CompareDirection direction)
         {
             var type = options.DatabaseType;

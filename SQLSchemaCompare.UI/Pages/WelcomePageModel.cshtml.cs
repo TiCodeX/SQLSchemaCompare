@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
-namespace TiCodeX.SQLSchemaCompare.UI.Pages
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Microsoft.AspNetCore.Mvc.RazorPages;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
     /// <summary>
     /// PageModel of the Welcome page
     /// </summary>
     public class WelcomePageModel : PageModel
     {
+        /// <summary>
+        /// The app settings service
+        /// </summary>
         private readonly IAppSettingsService appSettingsService;
 
         /// <summary>

@@ -62,6 +62,25 @@
       }
     },
     {
+      "label": "Build CLI",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "build",
+        "-c",
+        "${input:configuration}",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/SQLSchemaCompare.CLI"
+      },
+      "group": {
+        "kind": "build"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
       "label": "Build Test",
       "command": "dotnet",
       "type": "shell",

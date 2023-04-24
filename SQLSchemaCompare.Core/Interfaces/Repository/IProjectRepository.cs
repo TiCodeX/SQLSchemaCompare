@@ -1,7 +1,7 @@
-﻿using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository
 {
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+
     /// <summary>
     /// Defines a class that provides the mechanism to store and retrieve the project configuration
     /// </summary>

@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-using TiCodeX.SQLSchemaCompare.Core.Extensions;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-using TiCodeX.SQLSchemaCompare.Services;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
+    using System.Text;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+    using TiCodeX.SQLSchemaCompare.Core.Extensions;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+    using TiCodeX.SQLSchemaCompare.Services;
+
     /// <summary>
     /// Implement base database scripting functionality
     /// </summary>
@@ -640,7 +640,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                     return this.ScriptDropTrigger(tr);
                 case ABaseDbDataType dt:
                     return this.ScriptDropType(dt);
-                case ABaseDbColumn c:
+                case ABaseDbColumn:
                     throw new NotImplementedException();
                 default:
                     throw new NotSupportedException();
@@ -764,10 +764,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <summary>
         /// Generates the alter table for altering the primary key from the table
         /// </summary>
-        /// <param name="soucePrimaryKey">The source primary key to add</param>
+        /// <param name="sourcePrimaryKey">The source primary key to add</param>
         /// <param name="targetPrimaryKey">The target primary key to drop</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptAlterPrimaryKey(ABaseDbPrimaryKey soucePrimaryKey, ABaseDbPrimaryKey targetPrimaryKey);
+        protected abstract string ScriptAlterPrimaryKey(ABaseDbPrimaryKey sourcePrimaryKey, ABaseDbPrimaryKey targetPrimaryKey);
 
         /// <summary>
         /// Generates the alter table for adding the foreign key to the table
@@ -786,10 +786,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <summary>
         /// Generates the alter table for altering the foreign key from the table
         /// </summary>
-        /// <param name="souceForeignKey">The source foreign key to add</param>
+        /// <param name="sourceForeignKey">The source foreign key to add</param>
         /// <param name="targetForeignKey">The target foreign key to drop</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptAlterForeignKey(ABaseDbForeignKey souceForeignKey, ABaseDbForeignKey targetForeignKey);
+        protected abstract string ScriptAlterForeignKey(ABaseDbForeignKey sourceForeignKey, ABaseDbForeignKey targetForeignKey);
 
         /// <summary>
         /// Generates the alter table for adding the constraint to the table
@@ -808,10 +808,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <summary>
         /// Generates the alter table for altering the constraint from the table
         /// </summary>
-        /// <param name="souceConstraint">The source constraint to add</param>
+        /// <param name="sourceConstraint">The source constraint to add</param>
         /// <param name="targetConstraint">The target constraint to drop</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptAlterConstraint(ABaseDbConstraint souceConstraint, ABaseDbConstraint targetConstraint);
+        protected abstract string ScriptAlterConstraint(ABaseDbConstraint sourceConstraint, ABaseDbConstraint targetConstraint);
 
         /// <summary>
         /// Generates the alter table for adding the period
@@ -874,10 +874,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <summary>
         /// Generates the alter table for altering the index from the table
         /// </summary>
-        /// <param name="souceIndex">The source index to add</param>
+        /// <param name="sourceIndex">The source index to add</param>
         /// <param name="targetIndex">The target index to drop</param>
         /// <returns>The alter table script</returns>
-        protected abstract string ScriptAlterIndex(ABaseDbIndex souceIndex, ABaseDbIndex targetIndex);
+        protected abstract string ScriptAlterIndex(ABaseDbIndex sourceIndex, ABaseDbIndex targetIndex);
 
         /// <summary>
         /// Generates the create view script
@@ -1099,6 +1099,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         /// <returns>The sorted indexes</returns>
         protected abstract IEnumerable<ABaseDbIndex> GetSortedIndexes(List<ABaseDbIndex> indexes);
 
+        /// <summary>
+        /// Generate the script of the objects mapped
+        /// </summary>
+        /// <param name="scriptableObjects">The scriptable objects</param>
+        /// <param name="scriptFunc">The script function</param>
+        /// <returns>The script</returns>
         private static string GenerateObjectMapScript(IEnumerable<ObjectMap> scriptableObjects, Func<ABaseDbObject, bool, string> scriptFunc)
         {
             var sb = new StringBuilder();
@@ -1131,6 +1137,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Generate the alter script of the table and the child objects
+        /// </summary>
+        /// <param name="t">The table</param>
+        /// <returns>The script</returns>
         private string ScriptAlterTableAndChildDbObjects(ABaseDbTable t)
         {
             var targetTable = t.MappedDbObject as ABaseDbTable;

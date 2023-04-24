@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Entities
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities
 {
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     /// <summary>
     /// Information about a Task
     /// </summary>

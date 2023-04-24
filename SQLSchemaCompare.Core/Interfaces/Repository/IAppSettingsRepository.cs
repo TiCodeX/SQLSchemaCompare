@@ -1,7 +1,7 @@
-﻿using TiCodeX.SQLSchemaCompare.Core.Entities;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository
 {
+    using TiCodeX.SQLSchemaCompare.Core.Entities;
+
     /// <summary>
     /// Defines a class that provides the mechanism to store and retrieve application settings
     /// </summary>

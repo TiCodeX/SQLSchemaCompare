@@ -1,23 +1,38 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-using TiCodeX.SQLSchemaCompare.UI.WebServer;
-
-namespace TiCodeX.SQLSchemaCompare.UI.Pages
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
+    using System;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.RazorPages;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+    using TiCodeX.SQLSchemaCompare.UI.WebServer;
+
     /// <summary>
     /// PageModel of the settings page
     /// </summary>
     public class SettingsPageModel : PageModel
     {
+        /// <summary>
+        /// The logger
+        /// </summary>
         private readonly ILogger logger;
+
+        /// <summary>
+        /// The app settings service
+        /// </summary>
         private readonly IAppSettingsService appSettingsService;
+
+        /// <summary>
+        /// The project service
+        /// </summary>
         private readonly IProjectService projectService;
+
+        /// <summary>
+        /// The localization service
+        /// </summary>
         private readonly ILocalizationService localizationService;
 
         /// <summary>

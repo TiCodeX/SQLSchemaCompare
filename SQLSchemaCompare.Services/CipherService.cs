@@ -1,19 +1,24 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
-namespace TiCodeX.SQLSchemaCompare.Services
+﻿namespace TiCodeX.SQLSchemaCompare.Services
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
+    using System.Security.Cryptography;
+    using System.Text;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
     /// <summary>
     /// Implementation that provides the mechanisms to encrypt/decrypt strings
     /// </summary>
     public class CipherService : ICipherService
     {
+        /// <summary>
+        /// Gets the secret key
+        /// </summary>
         private static byte[] Key { get; } = Encoding.UTF8.GetBytes("FischersFritzFischtFrischeFische");
 
         /// <inheritdoc/>
+        [SuppressMessage("Security", "CA5401:Do not use CreateEncryptor with non-default IV", Justification = "IV is necessary here")]
         public string EncryptString(string text)
         {
             if (string.IsNullOrEmpty(text))

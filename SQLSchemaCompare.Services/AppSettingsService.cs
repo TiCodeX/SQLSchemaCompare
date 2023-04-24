@@ -1,18 +1,29 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
-namespace TiCodeX.SQLSchemaCompare.Services
+﻿namespace TiCodeX.SQLSchemaCompare.Services
 {
+    using System;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
     /// <summary>
     /// Defines the service that handle the application settings
     /// </summary>
     public class AppSettingsService : IAppSettingsService
     {
+        /// <summary>
+        /// The logger
+        /// </summary>
         private readonly ILogger logger;
+
+        /// <summary>
+        /// The app settings repository
+        /// </summary>
         private readonly IAppSettingsRepository appSettingsRepository;
+
+        /// <summary>
+        /// The current app settings
+        /// </summary>
         private AppSettings currentAppSettings;
 
         /// <summary>

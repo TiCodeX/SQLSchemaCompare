@@ -1,12 +1,12 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Text;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+
     /// <summary>
     /// Script helper class specific for MicrosoftSql database
     /// </summary>
@@ -119,6 +119,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Script the column data type
+        /// </summary>
+        /// <param name="column">The column</param>
+        /// <returns>The scripted data type</returns>
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Switch with lot of cases")]
         private string ScriptDataType(MicrosoftSqlColumn column)
         {

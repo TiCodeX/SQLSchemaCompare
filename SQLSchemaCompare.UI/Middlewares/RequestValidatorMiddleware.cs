@@ -1,22 +1,37 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-
-namespace TiCodeX.SQLSchemaCompare.UI.Middlewares
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Middlewares
 {
+    using System;
+    using System.IO;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+
     /// <summary>
     /// Middleware that validate the header of each request
     /// </summary>
     public class RequestValidatorMiddleware
     {
+        /// <summary>
+        /// The next request
+        /// </summary>
         private readonly RequestDelegate next;
+
+        /// <summary>
+        /// The logger
+        /// </summary>
         private readonly ILogger logger;
+
+        /// <summary>
+        /// The options
+        /// </summary>
         private readonly RequestValidatorSettings options;
+
+        /// <summary>
+        /// The app globals
+        /// </summary>
         private readonly IAppGlobals appGlobals;
 
         /// <summary>
@@ -50,25 +65,30 @@ namespace TiCodeX.SQLSchemaCompare.UI.Middlewares
         /// <param name="context">The HttpContext of the current request</param>
         /// <returns>The next task</returns>
         [Obfuscation(Exclude = true)]
-        public async Task Invoke(HttpContext context)
+        public Task Invoke(HttpContext context)
         {
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            string authToken = context.Request.Headers[this.appGlobals.AuthorizationHeaderName];
-            string userAgent = context.Request.Headers["User-Agent"];
+            return InvokeInternal(context);
 
-            if ((string.IsNullOrEmpty(this.options.AllowedRequestGuid) || authToken == this.options.AllowedRequestGuid) &&
-                (string.IsNullOrEmpty(this.options.AllowedRequestAgent) || userAgent == this.options.AllowedRequestAgent))
+            async Task InvokeInternal(HttpContext context)
             {
-                await this.next.Invoke(context).ConfigureAwait(false);
-            }
-            else
-            {
-                this.logger.LogError($"Request refused. Token:{authToken}; UserAgent:{userAgent}");
-                context.Response.Body = new MemoryStream(0);
+                string authToken = context.Request.Headers[this.appGlobals.AuthorizationHeaderName];
+                string userAgent = context.Request.Headers["User-Agent"];
+
+                if ((string.IsNullOrEmpty(this.options.AllowedRequestGuid) || authToken == this.options.AllowedRequestGuid) &&
+                    (string.IsNullOrEmpty(this.options.AllowedRequestAgent) || userAgent == this.options.AllowedRequestAgent))
+                {
+                    await this.next.Invoke(context).ConfigureAwait(false);
+                }
+                else
+                {
+                    this.logger.LogError($"Request refused. Token:{authToken}; UserAgent:{userAgent}");
+                    context.Response.Body = new MemoryStream(0);
+                }
             }
         }
     }

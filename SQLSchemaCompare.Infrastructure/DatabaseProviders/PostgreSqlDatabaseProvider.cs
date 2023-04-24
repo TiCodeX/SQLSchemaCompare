@@ -1,18 +1,18 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
-using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
-using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
-
 namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+    using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
+    using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
+
     /// <summary>
     /// Retrieves various information from a PostgreSQL Server
     /// </summary>
@@ -321,7 +321,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         /// <inheritdoc/>
         protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(PostgreSqlDatabaseContext context)
         {
-            // In PostgreSql Stored Procedures doesn't exists. Therefore we will return an empty list;
+            // In PostgreSql Stored Procedures doesn't exists. Therefore we will return an empty list.
             return Enumerable.Empty<ABaseDbStoredProcedure>();
         }
 

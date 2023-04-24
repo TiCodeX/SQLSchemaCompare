@@ -1,18 +1,25 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
-namespace TiCodeX.SQLSchemaCompare.UI.Pages
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
+    using System.Collections.Generic;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.RazorPages;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
     /// <summary>
     /// PageModel of the Index page
     /// </summary>
     public class Index : PageModel
     {
+        /// <summary>
+        /// The app globals
+        /// </summary>
         private readonly IAppGlobals appGlobals;
+
+        /// <summary>
+        /// The localization service
+        /// </summary>
         private readonly ILocalizationService localizationService;
 
         /// <summary>

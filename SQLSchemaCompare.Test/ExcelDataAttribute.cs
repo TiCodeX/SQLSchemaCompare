@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using OfficeOpenXml;
-using Xunit.Sdk;
-
-namespace TiCodeX.SQLSchemaCompare.Test
+﻿namespace TiCodeX.SQLSchemaCompare.Test
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using OfficeOpenXml;
+    using Xunit.Sdk;
+
     /// <summary>
     /// Provides an excel data source for a data theory
     /// </summary>
@@ -37,63 +37,74 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 throw new ArgumentNullException(nameof(testMethod));
             }
 
-            // Get the absolute path to the file
-            var path = Path.IsPathRooted(this.FilePath)
-                ? this.FilePath
-                : Path.GetRelativePath(Directory.GetCurrentDirectory(), this.FilePath);
+            return GetDataInternal(testMethod);
 
-            if (!File.Exists(path))
+            IEnumerable<object[]> GetDataInternal(MethodInfo testMethod)
             {
-                throw new ArgumentException($"Could not find file at path: {path}");
-            }
+                // Get the absolute path to the file
+                var path = Path.IsPathRooted(this.FilePath)
+                    ? this.FilePath
+                    : Path.GetRelativePath(Directory.GetCurrentDirectory(), this.FilePath);
 
-            using (var p = new ExcelPackage(new FileInfo(path)))
-            {
-                // Retrieve first Worksheet
-                var ws = p.Workbook.Worksheets.First();
-
-                // Read the first Row for the column names and place into a list so that
-                // it can be used as reference to properties
-                var columnNames = new Dictionary<string, int>();
-                var colPosition = 0;
-                foreach (var cell in ws.Cells[1, 1, 1, ws.Dimension.Columns])
+                if (!File.Exists(path))
                 {
-                    columnNames.Add(cell.Value.ToString().ToUpperInvariant(), colPosition++);
+                    throw new ArgumentException($"Could not find file at path: {path}");
                 }
 
-                // Loop through the rows of the excel sheet
-                for (var rowNum = 2; rowNum <= ws.Dimension.End.Row; rowNum++)
+                using (var p = new ExcelPackage(new FileInfo(path)))
                 {
-                    var wsRow = ws.Cells[rowNum, 1, rowNum, ws.Cells.Count()];
+                    // Retrieve first Worksheet
+                    var ws = p.Workbook.Worksheets.First();
 
-                    var objArr = new List<object>();
-                    foreach (var parameterInfo in testMethod.GetParameters())
+                    // Read the first Row for the column names and place into a list so that
+                    // it can be used as reference to properties
+                    var columnNames = new Dictionary<string, int>();
+                    var colPosition = 0;
+                    foreach (var cell in ws.Cells[1, 1, 1, ws.Dimension.Columns])
                     {
-                        if (IsSimpleType(parameterInfo.ParameterType))
-                        {
-                            if (!columnNames.TryGetValue(
-                                $"{parameterInfo.Name}".ToUpperInvariant(),
-                                out var position))
-                            {
-                                throw new KeyNotFoundException($"Could not find column with header: {parameterInfo.Name}");
-                            }
-
-                            objArr.Add(ConvertParameter(parameterInfo.ParameterType, wsRow[rowNum, position + 1].Value));
-                        }
-                        else
-                        {
-                            var obj = Activator.CreateInstance(parameterInfo.ParameterType);
-                            objArr.Add(obj);
-
-                            this.RecursiveSetProperty(columnNames, wsRow, rowNum, parameterInfo.Name, obj);
-                        }
+                        columnNames.Add(cell.Value.ToString().ToUpperInvariant(), colPosition++);
                     }
 
-                    yield return objArr.ToArray();
+                    // Loop through the rows of the excel sheet
+                    for (var rowNum = 2; rowNum <= ws.Dimension.End.Row; rowNum++)
+                    {
+                        var wsRow = ws.Cells[rowNum, 1, rowNum, ws.Cells.Count()];
+
+                        var objArr = new List<object>();
+                        foreach (var parameterInfo in testMethod.GetParameters())
+                        {
+                            if (IsSimpleType(parameterInfo.ParameterType))
+                            {
+                                if (!columnNames.TryGetValue(
+                                    $"{parameterInfo.Name}".ToUpperInvariant(),
+                                    out var position))
+                                {
+                                    throw new KeyNotFoundException($"Could not find column with header: {parameterInfo.Name}");
+                                }
+
+                                objArr.Add(ConvertParameter(parameterInfo.ParameterType, wsRow[rowNum, position + 1].Value));
+                            }
+                            else
+                            {
+                                var obj = Activator.CreateInstance(parameterInfo.ParameterType);
+                                objArr.Add(obj);
+
+                                this.RecursiveSetProperty(columnNames, wsRow, rowNum, parameterInfo.Name, obj);
+                            }
+                        }
+
+                        yield return objArr.ToArray();
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// Convert the parameter
+        /// </summary>
+        /// <param name="parameterType">The parameter type</param>
+        /// <param name="value">The value</param>
+        /// <returns>The converted parameter</returns>
         private static object ConvertParameter(Type parameterType, object value)
         {
             var type = Nullable.GetUnderlyingType(parameterType) ?? parameterType;
@@ -108,6 +119,11 @@ namespace TiCodeX.SQLSchemaCompare.Test
             return returnValue;
         }
 
+        /// <summary>
+        /// Check whether the type is a simple type
+        /// </summary>
+        /// <param name="type">The type</param>
+        /// <returns>True if it's a simple type; otherwise false</returns>
         private static bool IsSimpleType(Type type)
         {
             return type.IsPrimitive ||
@@ -125,23 +141,28 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>) && IsSimpleType(type.GetGenericArguments()[0]));
         }
 
+        /// <summary>
+        /// Set the property recusively
+        /// </summary>
+        /// <param name="columnNames">The column names</param>
+        /// <param name="wsRow">The worksheet row</param>
+        /// <param name="rowNum">The row number</param>
+        /// <param name="parameterPrefix">The parameter prefix</param>
+        /// <param name="obj">The object</param>
         private void RecursiveSetProperty(IReadOnlyDictionary<string, int> columnNames, ExcelRange wsRow, int rowNum, string parameterPrefix, object obj)
         {
             foreach (var propertyInfo in obj.GetType().GetProperties())
             {
-                if (!IsSimpleType(propertyInfo.PropertyType))
+                // Check if there are columns in the excel related to this property, otherwise skip it
+                if (!IsSimpleType(propertyInfo.PropertyType) && columnNames.Keys.Any(x => x.StartsWith($"{parameterPrefix}.{propertyInfo.Name}".ToUpperInvariant(), StringComparison.Ordinal)))
                 {
-                    // Check if there are columns in the excel related to this property, otherwise skip it
-                    if (columnNames.Keys.Any(x => x.StartsWith($"{parameterPrefix}.{propertyInfo.Name}".ToUpperInvariant(), StringComparison.Ordinal)))
+                    // Since there are values, check if the object exists, otherwise create it
+                    if (propertyInfo.GetValue(obj) == null)
                     {
-                        // Since there are values, check if the object exists, otherwise create it
-                        if (propertyInfo.GetValue(obj) == null)
-                        {
-                            propertyInfo.SetValue(obj, Activator.CreateInstance(propertyInfo.PropertyType));
-                        }
-
-                        this.RecursiveSetProperty(columnNames, wsRow, rowNum, $"{parameterPrefix}.{propertyInfo.Name}", propertyInfo.GetValue(obj));
+                        propertyInfo.SetValue(obj, Activator.CreateInstance(propertyInfo.PropertyType));
                     }
+
+                    this.RecursiveSetProperty(columnNames, wsRow, rowNum, $"{parameterPrefix}.{propertyInfo.Name}", propertyInfo.GetValue(obj));
                 }
 
                 if (!columnNames.TryGetValue(

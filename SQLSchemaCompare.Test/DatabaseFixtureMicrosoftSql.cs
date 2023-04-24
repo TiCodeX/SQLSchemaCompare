@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
-
-namespace TiCodeX.SQLSchemaCompare.Test
+﻿namespace TiCodeX.SQLSchemaCompare.Test
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+    using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
+
     /// <summary>
     /// Creates the sakila database for the tests
     /// </summary>
@@ -16,6 +17,7 @@ namespace TiCodeX.SQLSchemaCompare.Test
         /// <summary>
         /// Gets the list of MicrosoftSQL server ports
         /// </summary>
+        [SuppressMessage("Code Smell", "S2589:Boolean expressions should not be gratuitous", Justification = "Debugging convenience")]
         public static IEnumerable<object[]> ServerPorts
         {
             get

@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-
-namespace TiCodeX.SQLSchemaCompare.UI.Pages
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
+    using Microsoft.AspNetCore.Mvc.RazorPages;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+
     /// <summary>
     /// PageModel for the Error page
     /// </summary>
     public class ErrorPage : PageModel
     {
+        /// <summary>
+        /// The app globals
+        /// </summary>
         private readonly IAppGlobals appGlobals;
 
         /// <summary>

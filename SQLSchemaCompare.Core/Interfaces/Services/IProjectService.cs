@@ -1,8 +1,8 @@
-﻿using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-using TiCodeX.SQLSchemaCompare.Core.Enums;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Services
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Services
 {
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+    using TiCodeX.SQLSchemaCompare.Core.Enums;
+
     /// <summary>
     /// Defines a class that provides the mechanisms to handle the project.
     /// </summary>

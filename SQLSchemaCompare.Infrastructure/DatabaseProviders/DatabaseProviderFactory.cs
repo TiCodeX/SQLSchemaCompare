@@ -1,17 +1,24 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 {
+    using System;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
     /// <summary>
     /// Implementation that creates a database provider
     /// </summary>
     public class DatabaseProviderFactory : IDatabaseProviderFactory
     {
+        /// <summary>
+        /// The logger factory
+        /// </summary>
         private readonly ILoggerFactory loggerFactory;
+
+        /// <summary>
+        /// The cipher service
+        /// </summary>
         private readonly ICipherService cipherService;
 
         /// <summary>

@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-using TiCodeX.SQLSchemaCompare.Core.Extensions;
-using TiCodeX.SQLSchemaCompare.Services;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+    using TiCodeX.SQLSchemaCompare.Core.Extensions;
+    using TiCodeX.SQLSchemaCompare.Services;
+
     /// <summary>
     /// Sql scripter class specific for MicrosoftSql database
     /// </summary>
@@ -237,28 +237,28 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc />
-        protected override string ScriptAlterTableAddPeriod(ABaseDbTable t)
+        protected override string ScriptAlterTableAddPeriod(ABaseDbTable table)
         {
-            var startColumn = t.Columns.Single(x => x.Name == t.PeriodStartColumn);
-            var endColumn = t.Columns.Single(x => x.Name == t.PeriodEndColumn);
+            var startColumn = table.Columns.Single(x => x.Name == table.PeriodStartColumn);
+            var endColumn = table.Columns.Single(x => x.Name == table.PeriodEndColumn);
             var sb = new StringBuilder();
-            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD");
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD");
             sb.AppendLine($"{this.Indent}{this.ScriptHelper.ScriptColumn(startColumn)},");
             sb.AppendLine($"{this.Indent}{this.ScriptHelper.ScriptColumn(endColumn)},");
-            sb.AppendLine($"{this.Indent}PERIOD FOR {t.PeriodName} ({this.ScriptHelper.ScriptObjectName(t.PeriodStartColumn)}, {this.ScriptHelper.ScriptObjectName(t.PeriodEndColumn)})");
+            sb.AppendLine($"{this.Indent}PERIOD FOR {table.PeriodName} ({this.ScriptHelper.ScriptObjectName(table.PeriodStartColumn)}, {this.ScriptHelper.ScriptObjectName(table.PeriodEndColumn)})");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
 
         /// <inheritdoc />
-        protected override string ScriptAlterTableDropPeriod(ABaseDbTable t)
+        protected override string ScriptAlterTableDropPeriod(ABaseDbTable table)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} DROP PERIOD FOR {t.PeriodName}");
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP PERIOD FOR {table.PeriodName}");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} DROP COLUMN {this.ScriptHelper.ScriptObjectName(t.PeriodStartColumn)}");
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP COLUMN {this.ScriptHelper.ScriptObjectName(table.PeriodStartColumn)}");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
-            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} DROP COLUMN {this.ScriptHelper.ScriptObjectName(t.PeriodEndColumn)}");
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} DROP COLUMN {this.ScriptHelper.ScriptObjectName(table.PeriodEndColumn)}");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
@@ -288,10 +288,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
         }
 
         /// <inheritdoc />
-        protected override string ScriptAlterTableAddHistory(ABaseDbTable t)
+        protected override string ScriptAlterTableAddHistory(ABaseDbTable table)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = {this.ScriptHelper.ScriptObjectName(t.HistoryTableSchema, t.HistoryTableName)}))");
+            sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = {this.ScriptHelper.ScriptObjectName(table.HistoryTableSchema, table.HistoryTableName)}))");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
@@ -325,9 +325,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             // If there is a column with descending order, specify the order on all columns
             var scriptOrder = index.ColumnDescending.Any(x => x);
-            var columnList = index.ColumnNames.Select((x, i) => scriptOrder ?
-                $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}" :
-                $"{this.ScriptHelper.ScriptObjectName(x)}");
+            var columnList = index.ColumnNames.Select((x, i) =>
+            {
+                if (scriptOrder)
+                {
+                    return $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}";
+                }
+
+                return $"{this.ScriptHelper.ScriptObjectName(x)}";
+            });
 
             sb.Append("CREATE ");
             switch (indexMicrosoft.Type)
@@ -742,6 +748,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             return orderedIndexes;
         }
 
+        /// <summary>
+        /// Generate the alter table columns script
+        /// </summary>
+        /// <param name="t">The source table</param>
+        /// <param name="targetTable">The target table</param>
+        /// <returns>The script</returns>
         private string ScriptAlterTableColumns(ABaseDbTable t, ABaseDbTable targetTable)
         {
             var sb = new StringBuilder();

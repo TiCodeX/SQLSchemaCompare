@@ -1,30 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
-using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-using TiCodeX.SQLSchemaCompare.Core.Enums;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders;
-using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities;
-using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
-using TiCodeX.SQLSchemaCompare.Services;
-using Xunit.Sdk;
-
-namespace TiCodeX.SQLSchemaCompare.Test
+﻿namespace TiCodeX.SQLSchemaCompare.Test
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using FluentAssertions;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+    using TiCodeX.SQLSchemaCompare.Core.Enums;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+    using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders;
+    using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities;
+    using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
+    using TiCodeX.SQLSchemaCompare.Services;
+    using Xunit.Sdk;
+
     /// <summary>
     /// Creates the sakila/pagila databases for the tests
     /// </summary>
@@ -535,7 +535,10 @@ namespace TiCodeX.SQLSchemaCompare.Test
                 }
             }
 
-            this.CompareDatabases(databaseType, targetDatabaseName, sourceDatabaseName, port);
+            // Swap source/target for the comparison
+            (sourceDatabaseName, targetDatabaseName) = (targetDatabaseName, sourceDatabaseName);
+
+            this.CompareDatabases(databaseType, sourceDatabaseName, targetDatabaseName, port);
         }
 
         /// <summary>

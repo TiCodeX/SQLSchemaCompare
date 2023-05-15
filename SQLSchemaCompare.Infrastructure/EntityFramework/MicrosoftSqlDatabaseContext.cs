@@ -1,11 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
 {
+    using System;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
     /// <summary>
     /// Defines the MicrosoftSql database context
     /// </summary>
@@ -65,11 +65,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
         /// Gets the string used for the connection
         /// </summary>
         private string ConnectionString { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether to use azure authentication
-        /// </summary>
-        private bool UseAzureAuthentication { get; }
 
         /// <inheritdoc/>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

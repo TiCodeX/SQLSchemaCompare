@@ -1,24 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using TiCodeX.SQLSchemaCompare.Core.Enums;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
-namespace TiCodeX.SQLSchemaCompare.Services
+﻿namespace TiCodeX.SQLSchemaCompare.Services
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
+    using System.Linq;
+    using System.Reflection;
+    using TiCodeX.SQLSchemaCompare.Core.Enums;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
     /// <summary>
     /// Provides the mechanisms to handle various languages
     /// </summary>
     /// <seealso cref="System.Resources.ResourceManager" />
     public class LocalizationService : ILocalizationService
     {
+        /// <summary>
+        /// The custom resource manager
+        /// </summary>
         private readonly CustomResourceManager customResourceManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocalizationService"/> class
         /// </summary>
+        [SuppressMessage("Major Code Smell", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields", Justification = "Necessary")]
         public LocalizationService()
         {
             // Prevent multiple initializations

@@ -1,36 +1,28 @@
-using System;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
 namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
+    using System;
+    using Microsoft.AspNetCore.Mvc.RazorPages;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
     /// <summary>
     /// PageModel of the about page
     /// </summary>
     public class AboutPageModel : PageModel
     {
-        private readonly ILogger logger;
+        /// <summary>
+        /// The app globals
+        /// </summary>
         private readonly IAppGlobals appGlobals;
-        private readonly IAppSettingsService appSettingsService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AboutPageModel"/> class
         /// </summary>
-        /// <param name="loggerFactory">The injected logger factory</param>
         /// <param name="appGlobals">The injected application globals</param>
-        /// <param name="appSettingsService">The injected app settings service</param>
-        public AboutPageModel(ILoggerFactory loggerFactory, IAppGlobals appGlobals, IAppSettingsService appSettingsService)
+        public AboutPageModel(IAppGlobals appGlobals)
         {
-            if (loggerFactory == null)
-            {
-                throw new ArgumentNullException(nameof(loggerFactory));
-            }
-
-            this.logger = loggerFactory.CreateLogger(nameof(AboutPageModel));
             this.appGlobals = appGlobals;
-            this.appSettingsService = appSettingsService;
         }
 
         /// <summary>

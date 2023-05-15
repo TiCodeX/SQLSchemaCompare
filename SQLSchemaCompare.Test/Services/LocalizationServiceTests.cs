@@ -1,21 +1,24 @@
-﻿using System.Globalization;
-using System.IO;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using FluentAssertions;
-using TiCodeX.SQLSchemaCompare.Core.Enums;
-using TiCodeX.SQLSchemaCompare.Services;
-using Xunit;
-using Xunit.Abstractions;
-using Xunit.Categories;
-
-namespace TiCodeX.SQLSchemaCompare.Test.Services
+﻿namespace TiCodeX.SQLSchemaCompare.Test.Services
 {
+    using System.Globalization;
+    using System.IO;
+    using System.Reflection;
+    using System.Text.RegularExpressions;
+    using FluentAssertions;
+    using TiCodeX.SQLSchemaCompare.Core.Enums;
+    using TiCodeX.SQLSchemaCompare.Services;
+    using Xunit;
+    using Xunit.Abstractions;
+    using Xunit.Categories;
+
     /// <summary>
     /// Test class for the LocalizationService
     /// </summary>
     public class LocalizationServiceTests : BaseTests<LocalizationServiceTests>
     {
+        /// <summary>
+        /// The localization service
+        /// </summary>
         private readonly LocalizationService localizationService;
 
         /// <summary>

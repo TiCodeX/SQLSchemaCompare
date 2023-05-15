@@ -1,7 +1,7 @@
-﻿using TiCodeX.SQLSchemaCompare.Core.Enums;
-
-namespace TiCodeX.SQLSchemaCompare.UI.Models
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Models
 {
+    using TiCodeX.SQLSchemaCompare.Core.Enums;
+
     /// <summary>
     /// Represent a new project request
     /// </summary>

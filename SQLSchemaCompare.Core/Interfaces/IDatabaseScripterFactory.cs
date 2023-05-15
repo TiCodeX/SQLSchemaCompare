@@ -1,8 +1,8 @@
-﻿using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
 {
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+
     /// <summary>
     /// Defines a class that creates a database scripter
     /// </summary>

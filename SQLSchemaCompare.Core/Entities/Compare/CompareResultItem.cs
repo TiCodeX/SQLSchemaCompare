@@ -1,7 +1,7 @@
-﻿using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Entities.Compare
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Compare
 {
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+
     /// <summary>
     /// Represent the result of the comparison of a specific item
     /// </summary>

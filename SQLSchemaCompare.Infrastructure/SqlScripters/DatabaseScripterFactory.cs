@@ -1,19 +1,22 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
+    using System;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+
     /// <summary>
     /// Implementation class for the factory that create a Database scripter
     /// </summary>
     public class DatabaseScripterFactory : IDatabaseScripterFactory
     {
+        /// <summary>
+        /// The logger factory
+        /// </summary>
         private readonly ILoggerFactory loggerFactory;
 
         /// <summary>

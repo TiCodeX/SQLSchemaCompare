@@ -1,19 +1,26 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-using TiCodeX.SQLSchemaCompare.Core.Enums;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
-namespace TiCodeX.SQLSchemaCompare.Services
+﻿namespace TiCodeX.SQLSchemaCompare.Services
 {
+    using System;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+    using TiCodeX.SQLSchemaCompare.Core.Enums;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
     /// <summary>
     /// Implementation that provides the mechanisms to handle the comparison project.
     /// </summary>
     public class ProjectService : IProjectService
     {
+        /// <summary>
+        /// The logger
+        /// </summary>
         private readonly ILogger logger;
+
+        /// <summary>
+        /// The project repository
+        /// </summary>
         private readonly IProjectRepository projectRepository;
 
         /// <summary>

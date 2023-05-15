@@ -13,11 +13,11 @@
         /// <summary>
         /// Gets or sets a value indicating whether column should be scripted in alphabetical order
         /// </summary>
-        public bool OrderColumnAlphabetically { get; set; } = false;
+        public bool OrderColumnAlphabetically { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the reference table columns order should be ignored when scripting columns
         /// </summary>
-        public bool IgnoreReferenceTableColumnOrder { get; set; } = false;
+        public bool IgnoreReferenceTableColumnOrder { get; set; }
     }
 }

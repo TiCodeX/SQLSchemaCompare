@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
-using TiCodeX.SQLSchemaCompare.Services;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+    using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
+    using TiCodeX.SQLSchemaCompare.Services;
+
     /// <summary>
     /// Retrieves common information from a Server
     /// </summary>
@@ -480,6 +480,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
         /// <returns>The list of sequences</returns>
         protected abstract IEnumerable<ABaseDbSequence> GetSequences(TDatabaseContext context);
 
+        /// <summary>
+        /// Assign the retrieved items to the related tables
+        /// </summary>
+        /// <param name="taskInfo">The task info</param>
+        /// <param name="db">The database</param>
+        /// <param name="columns">The columns</param>
         private static void AssignRetrievedItemsToRelatedTables(TaskInfo taskInfo, TDatabase db, IReadOnlyCollection<ABaseDbColumn> columns)
         {
             foreach (var table in db.Tables)
@@ -496,6 +502,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
             }
         }
 
+        /// <summary>
+        /// Assign the retrieved items to the related views
+        /// </summary>
+        /// <param name="taskInfo">The task info</param>
+        /// <param name="db">The database</param>
         private static void AssignRetrievedItemsToRelatedViews(TaskInfo taskInfo, TDatabase db)
         {
             foreach (var view in db.Views)

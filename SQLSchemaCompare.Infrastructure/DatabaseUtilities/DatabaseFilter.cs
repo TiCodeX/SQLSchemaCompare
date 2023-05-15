@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-using TiCodeX.SQLSchemaCompare.Core.Enums;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+    using TiCodeX.SQLSchemaCompare.Core.Enums;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+
     /// <summary>
     /// Implements the database filtering functionality
     /// </summary>
@@ -126,7 +126,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
             }
 
             bool? includeObject = null;
-
             foreach (var filterClauseGroup in filteredClauses.GroupBy(x => x.Group))
             {
                 bool? includeObjectGroup = null;
@@ -185,6 +184,12 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
                 {
                     includeObject |= includeObjectGroup;
                 }
+            }
+
+            // Should never happen because at this point there is at least one filter clause
+            if (includeObject == null)
+            {
+                throw new NotImplementedException();
             }
 
             return filteringOptions.Include ? includeObject.Value : !includeObject.Value;

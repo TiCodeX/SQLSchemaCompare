@@ -1,18 +1,25 @@
-﻿using System;
-using System.Text;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
-
-namespace TiCodeX.SQLSchemaCompare.UI.WebServer
+﻿namespace TiCodeX.SQLSchemaCompare.UI.WebServer
 {
+    using System;
+    using System.Text;
+    using Microsoft.Extensions.FileProviders;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Primitives;
+
     /// <summary>
     /// EmbeddedFileProvider wrapper that properly handles the hyphen characters.
     /// See: https://github.com/aspnet/FileSystem/issues/184
     /// </summary>
     public class HyphenFriendlyEmbeddedFileProvider : IFileProvider
     {
+        /// <summary>
+        /// The embedded file provider
+        /// </summary>
         private readonly EmbeddedFileProvider embeddedFileProvider;
+
+        /// <summary>
+        /// The logger
+        /// </summary>
         private readonly ILogger logger;
 
         /// <summary>

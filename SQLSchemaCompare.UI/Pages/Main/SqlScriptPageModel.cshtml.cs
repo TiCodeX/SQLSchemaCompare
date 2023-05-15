@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
-using TiCodeX.SQLSchemaCompare.Core.Enums;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
-namespace TiCodeX.SQLSchemaCompare.UI.Pages.Main
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages.Main
 {
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.RazorPages;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
+    using TiCodeX.SQLSchemaCompare.Core.Enums;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
     /// <summary>
     /// PageModel of the SqlScript page
     /// </summary>
     public class SqlScriptPageModel : PageModel
     {
+        /// <summary>
+        /// The project service
+        /// </summary>
         private readonly IProjectService projectService;
 
         /// <summary>

@@ -1,7 +1,7 @@
-﻿using CommandLine;
-
-namespace TiCodeX.SQLSchemaCompare.CLI
+﻿namespace TiCodeX.SQLSchemaCompare.CLI
 {
+    using CommandLine;
+
     /// <summary>
     /// The CLI options
     /// </summary>

@@ -1,11 +1,13 @@
-﻿using System;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions
 {
+    using System;
+    using System.Runtime.Serialization;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
+
     /// <summary>
     /// The exception that is thrown if the response of the Account Service has error
     /// </summary>
+    [Serializable]
     public class AccountServiceException : Exception
     {
         /// <summary>
@@ -31,6 +33,16 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions
         /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified.</param>
         public AccountServiceException(string message, Exception innerException)
             : base(message, innerException)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccountServiceException"/> class
+        /// </summary>
+        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual information about the source or destination.</param>
+        protected AccountServiceException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
 

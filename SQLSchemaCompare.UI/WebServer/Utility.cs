@@ -1,24 +1,24 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Https;
-using Microsoft.Extensions.Logging;
-using NLog;
-using NLog.Common;
-using NLog.Config;
-using NLog.Targets;
-using NLog.Web;
-using LogLevel = TiCodeX.SQLSchemaCompare.Core.Enums.LogLevel;
-
-namespace TiCodeX.SQLSchemaCompare.UI.WebServer
+﻿namespace TiCodeX.SQLSchemaCompare.UI.WebServer
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using System.Security.Authentication;
+    using System.Security.Cryptography.X509Certificates;
+    using Microsoft.AspNetCore;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Server.Kestrel.Https;
+    using Microsoft.Extensions.Logging;
+    using NLog;
+    using NLog.Common;
+    using NLog.Config;
+    using NLog.Targets;
+    using NLog.Web;
+    using LogLevel = TiCodeX.SQLSchemaCompare.Core.Enums.LogLevel;
+
     /// <summary>
     /// Utility functions
     /// </summary>
@@ -29,6 +29,7 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
         /// </summary>
         /// <param name="args">The arguments</param>
         /// <returns>The web host builder</returns>
+        [SuppressMessage("Security", "CA5398:Avoid hardcoded SslProtocols values", Justification = "To avoid older protocols")]
         internal static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             if (args == null || args.Length < 1 || !int.TryParse(args[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out var webPort))
@@ -107,12 +108,6 @@ namespace TiCodeX.SQLSchemaCompare.UI.WebServer
                     Layout = appGlobals.LoggerLayout,
                 };
                 config.AddTarget(consoleTarget);
-
-                /*var debugTarget = new DebuggerTarget("Debugger")
-                {
-                    Layout = appGlobals.LoggerLayout
-                };
-                config.AddTarget(debugTarget);*/
 
                 // Set the NLog internal logger to log into the console
                 InternalLogger.LogToConsole = true;

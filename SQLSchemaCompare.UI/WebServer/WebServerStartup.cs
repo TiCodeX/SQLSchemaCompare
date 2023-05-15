@@ -1,32 +1,35 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders;
-using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities;
-using TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
-using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
-using TiCodeX.SQLSchemaCompare.Services;
-using TiCodeX.SQLSchemaCompare.UI.Extensions;
-using TiCodeX.SQLSchemaCompare.UI.Middlewares;
-
-namespace TiCodeX.SQLSchemaCompare.UI.WebServer
+﻿namespace TiCodeX.SQLSchemaCompare.UI.WebServer
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Reflection;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.FileProviders;
+    using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+    using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders;
+    using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities;
+    using TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
+    using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
+    using TiCodeX.SQLSchemaCompare.Services;
+    using TiCodeX.SQLSchemaCompare.UI.Extensions;
+    using TiCodeX.SQLSchemaCompare.UI.Middlewares;
+
     /// <summary>
     /// WebServer configuration class used during the startup
     /// </summary>
     public class WebServerStartup
     {
+        /// <summary>
+        /// The allowed request guid
+        /// </summary>
         private const string AllowedRequestGuid = "d6e9b4c2-25d3-a625-e9a6-2135f3d2f809";
 
         /// <summary>

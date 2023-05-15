@@ -1,12 +1,21 @@
-﻿using System;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions
 {
+    using System;
+    using System.Runtime.Serialization;
+
     /// <summary>
     /// The exception that is thrown when a property cannot be mapped during a query
     /// </summary>
+    [Serializable]
     public class PropertyNotFoundException : Exception
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PropertyNotFoundException"/> class.
+        /// </summary>
+        public PropertyNotFoundException()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyNotFoundException"/> class.
         /// </summary>
@@ -66,9 +75,12 @@ namespace TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyNotFoundException"/> class.
+        /// Initializes a new instance of the <see cref="PropertyNotFoundException"/> class
         /// </summary>
-        public PropertyNotFoundException()
+        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual information about the source or destination.</param>
+        protected PropertyNotFoundException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
 

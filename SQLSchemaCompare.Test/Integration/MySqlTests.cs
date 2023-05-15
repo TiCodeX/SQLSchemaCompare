@@ -1,21 +1,26 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using FluentAssertions;
-using TiCodeX.SQLSchemaCompare.Core.Entities;
-using TiCodeX.SQLSchemaCompare.Core.Enums;
-using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
-using Xunit;
-using Xunit.Abstractions;
-using Xunit.Categories;
-
-namespace TiCodeX.SQLSchemaCompare.Test.Integration
+﻿namespace TiCodeX.SQLSchemaCompare.Test.Integration
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
+    using System.Text;
+    using FluentAssertions;
+    using TiCodeX.SQLSchemaCompare.Core.Entities;
+    using TiCodeX.SQLSchemaCompare.Core.Enums;
+    using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
+    using Xunit;
+    using Xunit.Abstractions;
+    using Xunit.Categories;
+
     /// <summary>
     /// Integration tests for MySQL
     /// </summary>
+    [SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "Limitation: the rule does not perform cross-procedural analysis")]
     public class MySqlTests : BaseTests<MySqlTests>, IClassFixture<DatabaseFixtureMySql>
     {
+        /// <summary>
+        /// The database fixture
+        /// </summary>
         private readonly DatabaseFixtureMySql dbFixture;
 
         /// <summary>

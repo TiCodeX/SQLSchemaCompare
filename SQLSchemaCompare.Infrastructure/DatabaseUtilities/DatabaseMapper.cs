@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using TiCodeX.SQLSchemaCompare.Core.Entities;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-using TiCodeX.SQLSchemaCompare.Services;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using TiCodeX.SQLSchemaCompare.Core.Entities;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+    using TiCodeX.SQLSchemaCompare.Services;
+
     /// <summary>
     /// Implements the database mapper functionality
     /// </summary>
@@ -42,6 +42,11 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
             this.PerformMapping(maps, taskInfo);
         }
 
+        /// <summary>
+        /// Perform the mapping
+        /// </summary>
+        /// <param name="maps">The objects to map</param>
+        /// <param name="taskInfo">The task info</param>
         private void PerformMapping(IReadOnlyCollection<ObjectMap> maps, TaskInfo taskInfo = null)
         {
             var i = 1;
@@ -57,28 +62,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
 
                 foreach (var sourceObject in m.DbObjects)
                 {
-                    // For the moment we much schema and name.
-                    /*var foundTargets = m.Target.Where(x => x.Name == sourceObject.Name);
-                    if (foundTargets.Any())
-                    {
-                        var targetObject = foundTargets.FirstOrDefault(x => x.Schema == sourceObject.Schema);
-
-                        if (targetObject == null)
-                        {
-                            targetObject = foundTargets.First();
-                        }
-
-                        sourceObject.Schema = targetObject.Schema;
-                        sourceObject.Name = targetObject.Name;
-
-                        sourceObject.MappedDbObject = targetObject;
-                        targetObject.MappedDbObject = sourceObject;
-
-                        if (sourceObject is ABaseDbTable)
-                        {
-                            this.PerformTableMapping(sourceObject as ABaseDbTable);
-                        }
-                    }*/
                     var targetObject = m.MappableDbObjects.FirstOrDefault(x => x.Schema == sourceObject.Schema && x.Name == sourceObject.Name);
                     if (targetObject != null)
                     {
@@ -107,6 +90,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
             }
         }
 
+        /// <summary>
+        /// Perform the mapping of the table
+        /// </summary>
+        /// <param name="sourceTable">The source table</param>
         private void PerformTableMapping(ABaseDbTable sourceTable)
         {
             var targetTable = sourceTable.MappedDbObject as ABaseDbTable;
@@ -129,6 +116,10 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
             this.PerformMapping(maps);
         }
 
+        /// <summary>
+        /// Perform the mapping of the view
+        /// </summary>
+        /// <param name="sourceView">The source view</param>
         private void PerformViewMapping(ABaseDbView sourceView)
         {
             var targetView = sourceView.MappedDbObject as ABaseDbView;

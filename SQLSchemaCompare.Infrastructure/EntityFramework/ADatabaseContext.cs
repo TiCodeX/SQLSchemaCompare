@@ -1,19 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
 {
-    /// <inheritdoc />
+    using System;
+    using System.Collections.Generic;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions;
+
     /// <summary>
     /// Common EF database context
     /// </summary>
+    /// <typeparam name="TDatabaseProviderOptions">The database provider options type</typeparam>
     public abstract class ADatabaseContext<TDatabaseProviderOptions> : DbContext
         where TDatabaseProviderOptions : ADatabaseProviderOptions
     {
+        /// <summary>
+        /// The logger factory
+        /// </summary>
         private readonly ILoggerFactory loggerFactory;
 
         /// <summary>
@@ -52,7 +55,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
         public List<T> Query<T>(string query)
             where T : new()
         {
-            /*this.logger.LogDebug($"ExecuteQuery:{Environment.NewLine}{query}");*/
             var result = new List<T>();
             this.Database.OpenConnection();
             using (var command = this.Database.GetDbConnection().CreateCommand())
@@ -119,7 +121,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
         /// <returns>The list of the requested column</returns>
         public List<T> QuerySingleColumn<T>(string query, int columnIndex = 0)
         {
-            /*this.logger.LogDebug($"ExecuteQuery:{Environment.NewLine}{query}");*/
             var result = new List<T>();
             this.Database.OpenConnection();
             using (var command = this.Database.GetDbConnection().CreateCommand())
@@ -153,7 +154,6 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
         /// <param name="query">The SQL query</param>
         public void ExecuteNonQuery(string query)
         {
-            /*this.logger.LogDebug($"ExecuteQuery:{Environment.NewLine}{query}");*/
             this.Database.OpenConnection();
             using (var command = this.Database.GetDbConnection().CreateCommand())
             {

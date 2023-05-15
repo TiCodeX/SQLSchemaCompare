@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using TiCodeX.SQLSchemaCompare.Core.Enums;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
+    using System;
+    using System.Collections.Generic;
+    using TiCodeX.SQLSchemaCompare.Core.Enums;
+
     /// <summary>
     /// Provides generic information for database table classes
     /// </summary>

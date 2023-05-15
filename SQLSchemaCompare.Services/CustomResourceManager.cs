@@ -1,14 +1,17 @@
-﻿using System.Globalization;
-using System.Resources;
-
-namespace TiCodeX.SQLSchemaCompare.Services
+﻿namespace TiCodeX.SQLSchemaCompare.Services
 {
+    using System.Globalization;
+    using System.Resources;
+
     /// <summary>
     /// Custom wrapper to properly handle the localization
     /// </summary>
     /// <seealso cref="System.Resources.ResourceManager" />
     public class CustomResourceManager : ResourceManager
     {
+        /// <summary>
+        /// The original resource manager
+        /// </summary>
         private readonly ResourceManager originalResourceManager;
 
         /// <summary>

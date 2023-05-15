@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
 {
+    using System.Collections.Generic;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+
     /// <summary>
     /// Defines a class that provides the mechanisms to script the database
     /// </summary>

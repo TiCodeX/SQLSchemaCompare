@@ -1,16 +1,16 @@
-﻿using System.IO;
-using System.Text.RegularExpressions;
-using FluentAssertions;
-using TiCodeX.SQLSchemaCompare.Core.Entities;
-using TiCodeX.SQLSchemaCompare.Core.Enums;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-using TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
-using Xunit;
-using Xunit.Abstractions;
-using Xunit.Categories;
-
-namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
+﻿namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
 {
+    using System.IO;
+    using System.Text.RegularExpressions;
+    using FluentAssertions;
+    using TiCodeX.SQLSchemaCompare.Core.Entities;
+    using TiCodeX.SQLSchemaCompare.Core.Enums;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
+    using TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
+    using Xunit;
+    using Xunit.Abstractions;
+    using Xunit.Categories;
+
     /// <summary>
     /// Test class for the AppSettingsRepository
     /// </summary>
@@ -103,30 +103,69 @@ namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
             xmlFile.Should().Be(xmlFileExpected);
         }
 
+        /// <summary>
+        /// The app globals
+        /// </summary>
         private class AppGlobals : IAppGlobals
         {
+            /// <summary>
+            /// The temp setting file
+            /// </summary>
             private static readonly string TempSettingFile = Path.GetTempFileName();
 
+            /// <summary>
+            /// Gets the company name
+            /// </summary>
             public string CompanyName => throw new System.NotImplementedException();
 
+            /// <summary>
+            /// Gets the product name
+            /// </summary>
             public string ProductName => throw new System.NotImplementedException();
 
+            /// <summary>
+            /// Gets a value indicating whether is development
+            /// </summary>
             public bool IsDevelopment => throw new System.NotImplementedException();
 
+            /// <summary>
+            /// Gets the authoritation header name
+            /// </summary>
             public string AuthorizationHeaderName => throw new System.NotImplementedException();
 
+            /// <summary>
+            /// Gets the app settings full filename
+            /// </summary>
             public string AppSettingsFullFilename => TempSettingFile;
 
+            /// <summary>
+            /// Gets the logger layout
+            /// </summary>
             public string LoggerLayout => throw new System.NotImplementedException();
 
+            /// <summary>
+            /// Gets the logger file
+            /// </summary>
             public string LoggerFile => throw new System.NotImplementedException();
 
+            /// <summary>
+            /// Gets the logger max archive files
+            /// </summary>
             public int LoggerMaxArchiveFiles => throw new System.NotImplementedException();
 
+            /// <summary>
+            /// Gets the electron auth app id
+            /// </summary>
             public string ElectronAuthAppId => throw new System.NotImplementedException();
 
+            /// <summary>
+            /// Gets the product code
+            /// </summary>
             public string ProductCode => throw new System.NotImplementedException();
 
+            /// <summary>
+            /// Gets or sets the app version
+            /// </summary>
             public string AppVersion { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
         }
     }

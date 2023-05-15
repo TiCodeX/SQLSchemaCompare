@@ -1,25 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using TiCodeX.SQLSchemaCompare.Core.Entities;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
-namespace TiCodeX.SQLSchemaCompare.Services
+﻿namespace TiCodeX.SQLSchemaCompare.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using TiCodeX.SQLSchemaCompare.Core.Entities;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
     /// <summary>
     /// Implementation class that provides the mechanisms to handle asynchronous Tasks.
     /// </summary>
     public sealed class TaskService : ITaskService, IDisposable
     {
+        /// <summary>
+        /// The cancellation token source
+        /// </summary>
         private CancellationTokenSource cancellationTokenSource;
 
         /// <inheritdoc />
         public ReadOnlyCollection<TaskInfo> CurrentTaskInfos { get; private set; }
 
         /// <inheritdoc />
+        [SuppressMessage("Blocker Code Smell", "S4462:Calls to 'async' methods should not be blocking.", Justification = "Necessary")]
         public void ExecuteTasks(List<TaskWork> tasks)
         {
             this.cancellationTokenSource = new CancellationTokenSource();
@@ -95,6 +100,11 @@ namespace TiCodeX.SQLSchemaCompare.Services
             this.cancellationTokenSource?.Dispose();
         }
 
+        /// <summary>
+        /// Perform the task
+        /// </summary>
+        /// <param name="taskWork">The task work</param>
+        /// <returns>The task</returns>
         private Task PerformTask(TaskWork taskWork)
         {
             return Task.Factory.StartNew(

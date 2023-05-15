@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Extensions.Logging;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
-using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using Microsoft.Extensions.Logging;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+
     /// <summary>
     /// Sql scripter class specific for PostgreSql database
     /// </summary>
@@ -70,7 +70,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                 sb.AppendLine(++i == ncol ? string.Empty : ",");
             }
 
-            sb.Append(")");
+            sb.Append(')');
             if (!string.IsNullOrWhiteSpace(tablePostgreSql.InheritedTableName))
             {
                 sb.AppendLine();
@@ -291,9 +291,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 
             // If there is a column with descending order, specify the order on all columns
             var scriptOrder = index.ColumnDescending.Any(x => x);
-            var columnList = index.ColumnNames.Select((x, i) => scriptOrder ?
-                $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}" :
-                $"{this.ScriptHelper.ScriptObjectName(x)}");
+            var columnList = index.ColumnNames.Select((x, i) =>
+            {
+                if (scriptOrder)
+                {
+                    return $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}";
+                }
+
+                return $"{this.ScriptHelper.ScriptObjectName(x)}";
+            });
 
             sb.Append("CREATE ");
             if (indexPostgreSql.IsUnique)
@@ -511,7 +517,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
             sb.Append($"{trigger.Definition}");
             if (!trigger.Definition.EndsWith(";", StringComparison.Ordinal))
             {
-                sb.Append(";");
+                sb.Append(';');
             }
 
             sb.AppendLine();
@@ -684,7 +690,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                         sb.Append($"{this.Indent}'{labels[i]}'");
                         if (i != labels.Length - 1)
                         {
-                            sb.Append(",");
+                            sb.Append(',');
                         }
                     }
 
@@ -703,7 +709,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                         sb.Append($"{this.Indent}{attributeNames[i]} {PostgreSqlScriptHelper.ScriptFunctionArgumentType(attributeTypeIds[i], dataTypes)}");
                         if (i != attributeNames.Length - 1)
                         {
-                            sb.Append(",");
+                            sb.Append(',');
                         }
                     }
 
@@ -738,9 +744,15 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
                         sb.AppendLine($"{this.Indent}CONSTRAINT {this.ScriptHelper.ScriptObjectName(string.Empty, typeDomain.ConstraintName)}");
                     }
 
-                    sb.Append(string.IsNullOrEmpty(typeDomain.ConstraintDefinition)
-                        ? $"{this.Indent}{(typeDomain.NotNull ? "NOT NULL" : "NULL")}"
-                        : $"{this.Indent}{typeDomain.ConstraintDefinition}");
+                    if (string.IsNullOrEmpty(typeDomain.ConstraintDefinition))
+                    {
+                        sb.Append($"{this.Indent}{(typeDomain.NotNull ? "NOT NULL" : "NULL")}");
+                    }
+                    else
+                    {
+                        sb.Append($"{this.Indent}{typeDomain.ConstraintDefinition}");
+                    }
+
                     sb.AppendLine(";");
 
                     break;

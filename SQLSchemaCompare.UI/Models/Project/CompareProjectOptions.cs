@@ -1,8 +1,8 @@
-﻿using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-using TiCodeX.SQLSchemaCompare.Core.Enums;
-
-namespace TiCodeX.SQLSchemaCompare.UI.Models.Project
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Models.Project
 {
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+    using TiCodeX.SQLSchemaCompare.Core.Enums;
+
     /// <summary>
     /// Model class for the Project page
     /// </summary>

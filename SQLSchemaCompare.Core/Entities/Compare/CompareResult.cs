@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace TiCodeX.SQLSchemaCompare.Core.Entities.Compare
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Compare
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Represent the result of a comparison
     /// </summary>

@@ -1,19 +1,22 @@
-﻿using System;
-using System.Text;
-using FluentAssertions;
-using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-using TiCodeX.SQLSchemaCompare.Services;
-using Xunit;
-using Xunit.Abstractions;
-using Xunit.Categories;
-
-namespace TiCodeX.SQLSchemaCompare.Test.Services
+﻿namespace TiCodeX.SQLSchemaCompare.Test.Services
 {
+    using System;
+    using System.Text;
+    using FluentAssertions;
+    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+    using TiCodeX.SQLSchemaCompare.Services;
+    using Xunit;
+    using Xunit.Abstractions;
+    using Xunit.Categories;
+
     /// <summary>
     /// Test class for the CipherService
     /// </summary>
     public class CipherServiceTests : BaseTests<CipherServiceTests>
     {
+        /// <summary>
+        /// The cipher service
+        /// </summary>
         private readonly ICipherService cipherService;
 
         /// <summary>

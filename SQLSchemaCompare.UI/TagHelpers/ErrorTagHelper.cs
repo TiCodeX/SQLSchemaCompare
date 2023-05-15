@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-
-namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers
+﻿namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers
 {
+    using System;
+    using Microsoft.AspNetCore.Razor.TagHelpers;
+
     /// <summary>
     /// TagHelper for errors
     /// </summary>

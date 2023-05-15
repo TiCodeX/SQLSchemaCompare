@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Hosting;
-using NLog;
-using TiCodeX.SQLSchemaCompare.UI.WebServer;
-
-namespace TiCodeX.SQLSchemaCompare.UI
+﻿namespace TiCodeX.SQLSchemaCompare.UI
 {
+    using System;
+    using Microsoft.AspNetCore.Hosting;
+    using NLog;
+    using TiCodeX.SQLSchemaCompare.UI.WebServer;
+
     /// <summary>
     /// SQLSchemaCompare UI application, providing the WebServer
     /// </summary>
@@ -41,6 +41,11 @@ namespace TiCodeX.SQLSchemaCompare.UI
             }
         }
 
+        /// <summary>
+        /// Create the web host builder
+        /// </summary>
+        /// <param name="args">The args</param>
+        /// <returns>The web host builder</returns>
         private static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             return Utility.CreateWebHostBuilder(args);

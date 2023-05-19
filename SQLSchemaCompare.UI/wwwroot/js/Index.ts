@@ -1,4 +1,3 @@
-
 $(() => {
     Utility.ApplicationStartup().then(() => {
         // Configure the monaco editor loader
@@ -18,8 +17,8 @@ $(() => {
         PageManager.LoadPage(PageManager.Page.Welcome);
 
         $(document).on("keydown", (e: JQuery.Event): void => {
-            const keyUp: number = 38;
-            const keyDown: number = 40;
+            const keyUp = 38;
+            const keyDown = 40;
 
             switch (e.which) {
                 case keyUp:
@@ -27,8 +26,7 @@ $(() => {
                     if (PageManager.GetOpenPage() !== PageManager.Page.Main) {
                         return;
                     }
-                    const selectedElement: JQuery = $(".tcx-selected-row");
-                    if (selectedElement.length === 0) {
+                    if ($(".tcx-selected-row").length === 0) {
                         return;
                     }
                     if (e.which === keyUp) {

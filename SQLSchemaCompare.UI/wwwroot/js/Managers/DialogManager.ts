@@ -24,6 +24,10 @@ class DialogManager {
 
     /**
      * Show the error in the modal dialog
+     * @param title The title
+     * @param message The message
+     * @param link The link
+     * @param linkText The link text
      */
     public static ShowError(title: string, message: string, link?: string, linkText?: string): void {
         if (title === undefined) {
@@ -36,6 +40,10 @@ class DialogManager {
 
     /**
      * Show the information in the modal dialog
+     * @param title The title
+     * @param message The message
+     * @param link The link
+     * @param linkText The link text
      */
     public static ShowInformation(title: string, message: string, link?: string, linkText?: string): void {
         this.ShowModal(title, message, link, linkText);
@@ -47,11 +55,9 @@ class DialogManager {
      * @param message The question message to display
      * @param buttons The button choices
      */
-    public static async OpenQuestionDialog(title: string, message: string, buttons: Array<DialogManager.DialogButton>): Promise<DialogManager.DialogButton> {
-
+    public static async OpenQuestionDialog(title: string, message: string, buttons: DialogManager.DialogButton[]): Promise<DialogManager.DialogButton> {
         return new Promise<DialogManager.DialogButton>((resolve: PromiseResolve<DialogManager.DialogButton>): void => {
-
-            const buttonLabels: Array<string> = [];
+            const buttonLabels: string[] = [];
             let cancelId: number = buttons.length - 1;
             for (const button of buttons) {
                 switch (button) {
@@ -73,11 +79,11 @@ class DialogManager {
                 electron.remote.getCurrentWindow(),
                 {
                     type: "question",
-                    message: message,
+                    message,
                     buttons: buttonLabels,
-                    cancelId: cancelId,
+                    cancelId,
                     noLink: true,
-                    title: title,
+                    title,
                 },
             ).then((value: Electron.MessageBoxReturnValue) => {
                 resolve(value.response);
@@ -122,6 +128,10 @@ class DialogManager {
 
     /**
      * Display the modal dialog
+     * @param title The title
+     * @param message The message
+     * @param link The link
+     * @param linkText The link text
      */
     private static ShowModal(title: string, message: string, link?: string, linkText?: string): void {
         $(this.modalTitleId).html(title);

@@ -18,9 +18,12 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
     - name: Restore dependencies
       run: dotnet restore
-    - name: Install npm dependencies
+    - name: Install npm dependencies of SQLSchemaCompare
       run: npm install
       working-directory: SQLSchemaCompare
+    - name: Install npm dependencies of SQLSchemaCompare.UI
+      run: npm install
+      working-directory: SQLSchemaCompare.UI
     - name: Build
       run: msbuild SQLSchemaCompare.sln /p:Configuration=Release
     - name: Test

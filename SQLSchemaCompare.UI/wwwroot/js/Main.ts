@@ -35,7 +35,7 @@ class Main {
     /**
      * Contains a reference to the splitter sizes
      */
-    private static mainSplitterSizes: Array<number> = [60, 40]; // tslint:disable-line:no-magic-numbers
+    private static mainSplitterSizes: number[] = [60, 40];
 
     /**
      * Open the Main page
@@ -52,7 +52,6 @@ class Main {
      * @param rowId The id of the database object to show
      */
     public static ShowBottomPanel(rowId: string): void {
-
         $("#mainBottom").show();
 
         if (this.mainSplitter === undefined || $(".gutter").length === 0) {
@@ -87,12 +86,14 @@ class Main {
         $(".tcx-diff-item-name").html(`${sourceItem} <span class='fa fa-long-arrow-alt-right'></span> ${targetItem}`);
 
         Utility.AjaxCall(this.resultItemScriptsUrl + rowId, Utility.HttpMethod.Get).then((response: ApiResponse<CompareResultItemScripts>): void => {
-
-            EditorManager.CreateEditor(EditorManager.Type.Diff, "sqlDiff",
+            EditorManager.CreateEditor(
+                EditorManager.Type.Diff,
+                "sqlDiff",
                 {
                     original: monaco.editor.createModel(response.Result.SourceCreateScript, "sql"),
                     modified: monaco.editor.createModel(response.Result.TargetCreateScript, "sql"),
-                });
+                },
+            );
 
             EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlAlterScript", monaco.editor.createModel(response.Result.AlterScript, "sql"));
         });
@@ -216,7 +217,7 @@ class Main {
             return;
         }
         const mainTop: JQuery = $("#mainTop");
-        const half: number = 0.5;
+        const half = 0.5;
         mainTop.scrollTop(mainTop.scrollTop() + selectedElement.offset().top - mainTop.innerHeight() * half);
     }
 

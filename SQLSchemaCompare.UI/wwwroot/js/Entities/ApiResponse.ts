@@ -2,7 +2,6 @@
  * Represent an Api response
  */
 class ApiResponse<T> {
-
     /**
      * Indicates whether a response is success
      */
@@ -22,7 +21,6 @@ class ApiResponse<T> {
      * The error message
      */
     public Result: T;
-
 }
 
 namespace ApiResponse {

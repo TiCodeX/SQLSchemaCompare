@@ -34,13 +34,14 @@ class PageManager {
 
     /**
      * Get the currently opened page
+     * @returns The currently opened page
      */
     public static GetOpenPage(): PageManager.Page {
         const currentPage: JQuery = this.pageContainer.children("div:last");
         if (currentPage.length > 0) {
-            const pageAttribute: number = Number(currentPage.attr("page"));
+            const pageAttribute = Number(currentPage.attr("page"));
 
-            return PageManager.Page[PageManager.Page[pageAttribute]]; // tslint:disable-line:no-unsafe-any
+            return PageManager.Page[PageManager.Page[pageAttribute]] as PageManager.Page;
         }
 
         return undefined;
@@ -50,11 +51,11 @@ class PageManager {
      * Refresh all the currently opened pages
      */
     public static async RefreshOpenPages(): Promise<void> {
-        const pages: Array<PageManager.Page> = [];
+        const pages: PageManager.Page[] = [];
         this.pageContainer.children("div").each((index: number, element: HTMLElement) => {
-            const pageAttribute: number = Number($(element).attr("page"));
+            const pageAttribute = Number($(element).attr("page"));
 
-            pages.push(PageManager.Page[PageManager.Page[pageAttribute]]); // tslint:disable-line:no-unsafe-any
+            pages.push(PageManager.Page[PageManager.Page[pageAttribute]] as PageManager.Page);
         });
 
         // Remove all the pages
@@ -72,9 +73,8 @@ class PageManager {
      * @param page The page to open
      * @param closePreviousPage Tell if the previous page needs to be closed
      */
-    public static async LoadPage(page: PageManager.Page, closePreviousPage: boolean = true): Promise<void> {
+    public static async LoadPage(page: PageManager.Page, closePreviousPage = true): Promise<void> {
         return Utility.AjaxGetPage(this.GetPageUrl(page)).then((result: string): void => {
-
             if (closePreviousPage) {
                 this.pageContainer.children("div:last").remove();
             }
@@ -128,6 +128,8 @@ class PageManager {
 
     /**
      * Get the page url
+     * @param page The page
+     * @returns The page url
      */
     private static GetPageUrl(page: PageManager.Page): string {
         switch (page) {
@@ -148,18 +150,18 @@ namespace PageManager {
         /**
          * The main page
          */
-        Main,
+        Main = 0,
         /**
          * The welcome page
          */
-        Welcome,
+        Welcome = 1,
         /**
          * The project page
          */
-        Project,
+        Project = 2,
         /**
          * The task status page
          */
-        TaskStatus,
+        TaskStatus = 3,
     }
 }

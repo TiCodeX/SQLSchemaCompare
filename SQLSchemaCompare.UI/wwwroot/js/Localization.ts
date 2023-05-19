@@ -5,7 +5,7 @@ class Localization {
     /**
      * Dictionary containing the tokens and their related localized strings
      */
-    private static dictionary: Array<[string, string]> = new Array<[string, string]>();
+    private static dictionary: [string, string][] = new Array<[string, string]>();
 
     /**
      * Get the localized string
@@ -34,9 +34,8 @@ class Localization {
         // Add new values
         for (const key in result.Result) {
             if (result.Result.hasOwnProperty(key)) {
-                this.dictionary.push([key, <string>result.Result[key]]);
+                this.dictionary.push([key, result.Result[key] as string]);
             }
         }
     }
-
 }

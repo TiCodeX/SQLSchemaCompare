@@ -6,8 +6,8 @@ class MenuManager {
      * Creates the main application menu
      */
     public static async CreateMenu(): Promise<void> {
-        //#region Electron Menu
-        const template: Array<Electron.MenuItemConstructorOptions> = [
+        // #region Electron Menu
+        const template: Electron.MenuItemConstructorOptions[] = [
             {
                 label: Localization.Get("MenuFile"),
                 submenu: [
@@ -130,7 +130,7 @@ class MenuManager {
             },
         ];
 
-        if (electron.remote.process.defaultApp) { // tslint:disable-line:no-unsafe-any
+        if (electron.remote.process.defaultApp) {
             template.push({
                 label: "DEBUG",
                 submenu: [
@@ -157,22 +157,22 @@ class MenuManager {
         }
 
         electron.remote.Menu.setApplicationMenu(electron.remote.Menu.buildFromTemplate(template));
-        //#endregion
+        // #endregion
 
-        //#region Toolbar
+        // #region Toolbar
 
         await Utility.AjaxGetPage("/ToolbarPageModel").then((result: string): void => {
             $(".tcx-row-header").html(result);
         });
 
-        //#endregion
+        // #endregion
 
         Promise.resolve();
     }
 
     /**
      * Enable/Disable the Project related menu items
-     * @param enabled Whether to enable or disable the menu items
+     * @param enable Whether to enable or disable the menu items
      */
     public static ToggleProjectRelatedMenuStatus(enable: boolean): void {
         this.ToggleMenuItems([
@@ -193,7 +193,7 @@ class MenuManager {
 
     /**
      * Enable/Disable the menu items during the running task
-     * @param enabled Whether to enable or disable the menu items
+     * @param enable Whether to enable or disable the menu items
      */
     public static ToggleRunningTaskRelatedMenuStatus(enable: boolean): void {
         this.ToggleMenuItems([
@@ -246,30 +246,31 @@ class MenuManager {
      * Send the feedback
      */
     public static SendFeedback(): void {
-
         // Close the menu
         $("#feedback-button").dropdown("toggle");
 
         // Send the feedback to back-end
-        Utility.AjaxCall("/ToolbarPageModel?handler=SendFeedback", Utility.HttpMethod.Post, { Rating: $("#rating-value").val(), Comment: $("#feedback-message").val() })
-            .then((response: ApiResponse<object>): void => {
-                if (response.Success) {
+        Utility.AjaxCall(
+            "/ToolbarPageModel?handler=SendFeedback",
+            Utility.HttpMethod.Post,
+            { Rating: $("#rating-value").val(), Comment: $("#feedback-message").val() },
+        ).then((response: ApiResponse<object>): void => {
+            if (response.Success) {
+                // Reset fields
+                $("#rating-value").val("");
+                $("#feedback-message").val("");
 
-                    // Reset fields
-                    $("#rating-value").val("");
-                    $("#feedback-message").val("");
+                // Remove highlight from button
+                $("#feedback-button").removeClass("btn-tcx-highlight").addClass("btn-secondary");
 
-                    // Remove highlight from button
-                    $("#feedback-button").removeClass("btn-tcx-highlight").addClass("btn-secondary");
+                // Reset the 5 rating stars
+                $("#rating-stars .fa.fa-star").removeClass("fa").addClass("far");
 
-                    // Reset the 5 rating stars
-                    $("#rating-stars .fa.fa-star").removeClass("fa").addClass("far");
-
-                    DialogManager.ShowInformation(Localization.Get("TitleFeedbackSent"), Localization.Get("MessageThanksForFeedback"));
-                } else {
-                    DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
-                }
-            });
+                DialogManager.ShowInformation(Localization.Get("TitleFeedbackSent"), Localization.Get("MessageThanksForFeedback"));
+            } else {
+                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
+            }
+        });
     }
 
     /**
@@ -277,11 +278,10 @@ class MenuManager {
      * @param items The list of items
      * @param enable Whether to enable or disable the menu items
      */
-    private static ToggleMenuItems(items: Array<string>, enable: boolean): void {
+    private static ToggleMenuItems(items: string[], enable: boolean): void {
         const menu: Electron.Menu = electron.remote.Menu.getApplicationMenu();
 
         for (const item of items) {
-
             const menuItem: Electron.MenuItem = menu.getMenuItemById(item);
             if (menuItem !== undefined && menuItem !== null) {
                 menuItem.enabled = enable;

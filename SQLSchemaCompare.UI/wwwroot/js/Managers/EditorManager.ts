@@ -2,7 +2,6 @@
  * Contains utility methods to handle the monaco editor
  */
 class EditorManager {
-
     /**
      * Default monaco editor options
      */
@@ -26,24 +25,23 @@ class EditorManager {
         scrollbar: {
             vertical: "visible",
         },
-        /*fontWeight: "normal",*/
-        /*fontFamily: "Open Sans",*/
+        /* fontWeight: "normal", */
+        /* fontFamily: "Open Sans", */
         fontSize: 13,
-        /*lineHeight: 1,*/
+        /* lineHeight: 1, */
     };
 
     /**
      * Default monaco diff editor options
      */
-    public static readonly defaultOptionsDiff: monaco.editor.IDiffEditorConstructionOptions = $.extend({}, EditorManager.defaultOptions,
-        {
-            ignoreTrimWhitespace: false,
-        });
+    public static readonly defaultOptionsDiff: monaco.editor.IDiffEditorConstructionOptions = $.extend({}, EditorManager.defaultOptions, {
+        ignoreTrimWhitespace: false,
+    });
 
     /**
      * List of currently active editor instances
      */
-    private static readonly instances: Array<monaco.editor.IStandaloneCodeEditor | monaco.editor.IStandaloneDiffEditor> = [];
+    private static readonly instances: (monaco.editor.IStandaloneCodeEditor | monaco.editor.IStandaloneDiffEditor)[] = [];
 
     /**
      * Create the monaco editor
@@ -72,14 +70,13 @@ class EditorManager {
 
         // Register context menu
         $(`#${domElementId} .monaco-editor .monaco-scrollable-element`).on("contextmenu", (e: JQuery.Event) => {
-
             let currentEditor: monaco.editor.IStandaloneCodeEditor;
             if (type === EditorManager.Type.Normal) {
-                currentEditor = <monaco.editor.IStandaloneCodeEditor>editor;
+                currentEditor = editor as monaco.editor.IStandaloneCodeEditor;
             } else {
                 currentEditor = $(e.currentTarget).parents(".editor").hasClass("original") ?
-                    (<monaco.editor.IStandaloneDiffEditor>editor).getOriginalEditor() :
-                    (<monaco.editor.IStandaloneDiffEditor>editor).getModifiedEditor();
+                    (editor as monaco.editor.IStandaloneDiffEditor).getOriginalEditor() :
+                    (editor as monaco.editor.IStandaloneDiffEditor).getModifiedEditor();
             }
 
             electron.remote.Menu.buildFromTemplate([
@@ -157,10 +154,10 @@ namespace EditorManager {
         /**
          * Normal editor
          */
-        Normal,
+        Normal = 0,
         /**
          * Diff editor
          */
-        Diff,
+        Diff = 1,
     }
 }

@@ -1,7 +1,5 @@
-/* tslint:disable:no-require-imports no-implicit-dependencies */
 declare const amdRequire: Require;
-const electron: Electron.AllElectron = (typeof require !== "undefined" ? <Electron.AllElectron>require("electron") : undefined);
-/* tslint:enable:no-require-imports no-implicit-dependencies */
+const electron: Electron.AllElectron = (typeof require !== "undefined" ? require("electron") as Electron.AllElectron : undefined);
 
 /**
  * Contains various utility methods
@@ -56,6 +54,7 @@ class Utility {
     /**
      * Indicates whether the specified string is null or an Empty string.
      * @param s The string to test
+     * @returns Whether the specified string is null or an Empty string
      */
     public static IsNullOrEmpty(s: string): boolean {
         return s === null || typeof s === "undefined" || s.length < 1;
@@ -64,6 +63,7 @@ class Utility {
     /**
      * Indicates whether a specified string is null, empty, or consists only of white-space characters.
      * @param s The string to test
+     * @returns Whether the specified string is null, empty, or consists only of white-space characters
      */
     public static IsNullOrWhitespace(s: string): boolean {
         return this.IsNullOrEmpty(s) || s.trim().length < 1;
@@ -72,7 +72,7 @@ class Utility {
     /**
      * Get a Logger for the specified category
      * @param category The logger category
-     * @return The logger
+     * @returns The logger
      */
     public static GetLogger(category: string): Logger {
         return new Logger(category);
@@ -100,11 +100,11 @@ class Utility {
 
         try {
             if (element.hasClass("needs-validation")) {
-                const valid: boolean = (<HTMLFormElement>form[0]).checkValidity();
+                const valid: boolean = (form[0] as HTMLFormElement).checkValidity();
                 element.addClass("was-validated");
 
                 // Check if there are tabs in order to color based on their content validity
-                let firstTabWithErrorOpened: boolean = false;
+                let firstTabWithErrorOpened = false;
                 element.find(".tab-content > .tab-pane").each((i: number, item: HTMLElement) => {
                     const navTab: JQuery = element.find(`.nav-tabs > .nav-item > a[href='#${item.id}']`);
                     navTab.removeClass("text-danger text-success");
@@ -125,7 +125,7 @@ class Utility {
             }
 
             // Serialize inputs
-            const result: object = <object>form.serializeJSON(settings);
+            const result: object = form.serializeJSON(settings) as object;
 
             return result;
         } finally {
@@ -139,7 +139,7 @@ class Utility {
      * @param url The URL of the ajax call
      * @param method The method (GET/POST)
      * @param data The object data to send when the method is POST
-     * @return The ApiResponse
+     * @returns The ApiResponse
      */
     public static async AjaxCall<T>(url: string, method: Utility.HttpMethod, data?: object): Promise<ApiResponse<T>> {
         let ajaxMethod: string;
@@ -154,14 +154,11 @@ class Utility {
                 ajaxMethod = "GET";
         }
 
-        /*this.logger.debug(`Executing AjaxCall... (Method=${ajaxMethod} Url=${url})`);*/
-
         return new Promise<ApiResponse<T>>((resolve: PromiseResolve<ApiResponse<T>>): void => {
             $.ajax(url, {
                 type: ajaxMethod,
                 beforeSend: (xhr: JQuery.jqXHR): void => {
-                    xhr.setRequestHeader("XSRF-TOKEN",
-                        $("input:hidden[name='__RequestVerificationToken']").val().toString());
+                    xhr.setRequestHeader("XSRF-TOKEN", $("input:hidden[name='__RequestVerificationToken']").val().toString());
                 },
                 contentType: "application/json",
                 data: data !== undefined ? JSON.stringify(data) : "",
@@ -181,7 +178,7 @@ class Utility {
     /**
      * Perform an ajax call to load the html page
      * @param url The URL of the ajax call
-     * @return The html of the page
+     * @returns The html of the page
      */
     public static async AjaxGetPage(url: string): Promise<string> {
         this.logger.debug(`Executing AjaxGetPage... (Url=${url})`);
@@ -190,8 +187,7 @@ class Utility {
             $.ajax(url, {
                 type: "GET",
                 beforeSend: (xhr: JQuery.jqXHR): void => {
-                    xhr.setRequestHeader("XSRF-TOKEN",
-                        $("input:hidden[name='__RequestVerificationToken']").val().toString());
+                    xhr.setRequestHeader("XSRF-TOKEN", $("input:hidden[name='__RequestVerificationToken']").val().toString());
                 },
                 contentType: "application/json",
                 data: "",
@@ -216,10 +212,10 @@ namespace Utility {
         /**
          * HTTP Method GET
          */
-        Get,
+        Get = 0,
         /**
          * HTTP Method POST
          */
-        Post,
+        Post = 1,
     }
 }

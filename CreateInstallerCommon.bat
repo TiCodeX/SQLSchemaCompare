@@ -52,6 +52,11 @@ rd /Q /S node_modules
 call npm install
 popd
 
+pushd %~dp0\SQLSchemaCompare.UI
+rd /Q /S node_modules
+call npm install
+popd
+
 dotnet restore -r %targetdotnet%
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 

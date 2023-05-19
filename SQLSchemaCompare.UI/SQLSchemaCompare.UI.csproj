@@ -5,26 +5,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-    <TypeScriptTarget>ES5</TypeScriptTarget>
-    <TypeScriptLib>ES5,ES6,DOM</TypeScriptLib>
-    <TypeScriptSourceMap>False</TypeScriptSourceMap>
-    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
-    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
-    <TSLintConfig>..\tslint.json</TSLintConfig>
-    <TSLintProject>tsconfig.json</TSLintProject>
     <OutputType>Exe</OutputType>
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <PublishDir>..\.publish</PublishDir>
-    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
-    <TypeScriptModuleKind />
-    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-    <TypeScriptOutFile />
-    <TypeScriptOutDir />
-    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-    <TypeScriptMapRoot />
-    <TypeScriptSourceRoot />
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,8 +21,15 @@
     <None Include="bundleconfig.json" />
     <Content Remove="compilerconfig.json" />
     <None Include="compilerconfig.json" />
+    <Content Remove="package.json" />
+    <None Include="package.json" />
+    <Content Remove="package-lock.json" />
+    <None Include="package-lock.json" />
+    <!--The tsconfig.json needs to be TypeScriptCompile so that it's used for the compilation -->
     <Content Remove="tsconfig.json" />
-    <None Include="tsconfig.json" />
+    <TypeScriptCompile Include="tsconfig.json" />
+    <Content Remove="tsconfig.eslint.json" />
+    <TypeScriptCompile Include="tsconfig.eslint.json" />
     <!--Configure all TypeScript files to be compiled-->
     <Content Remove="wwwroot\**\*.ts" />
     <TypeScriptCompile Include="wwwroot\**\*.ts" />
@@ -107,11 +97,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="tslint" Version="5.17.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -120,24 +105,9 @@
     <ProjectReference Include="..\SQLSchemaCompare.Services\SQLSchemaCompare.Services.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <TSLintExclude Include="wwwroot\lib\typings\%2A%2A\%2A.d.ts" />
-  </ItemGroup>
-
-  <ImportGroup>
-    <Import Project="..\tslint.targets" />
-  </ImportGroup>
-
   <Target Name="CustomPreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command='npx eslint "wwwroot/js/**/*.ts" .eslintrc.js --format visualstudio --quiet --cache'></Exec>
     <Exec Command="del /Q /S wwwroot\js\*.js" />
-  </Target>
-
-  <Target Name="CustomPostBuild" BeforeTargets="PostBuildEvent">
-    <Exec Command="
-      if not exist wwwroot\js\Index.min.js ( ^
-        echo ERROR: Index.min.js not generated ^
-        exit 1 ^
-      )" />
   </Target>
 
   <Target Name="RemovePublishFolder" BeforeTargets="PrepareForPublish">

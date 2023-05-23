@@ -24,7 +24,7 @@ class Settings {
      * @param projectIsOpen Whether the project is open or not, in order to show the correct page
      */
     public static Save(projectIsOpen: boolean): void {
-        const data: object = Utility.SerializeJSON($("#Settings"));
+        const data = Utility.SerializeJSON($("#Settings"));
         if (data === undefined) {
             return;
         }

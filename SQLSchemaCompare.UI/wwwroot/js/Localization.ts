@@ -26,16 +26,9 @@ class Localization {
      * Load the localization
      */
     public static async Load(): Promise<void> {
-        const result: ApiResponse<object> = await Utility.AjaxCall("/Index?handler=LoadLocalization", Utility.HttpMethod.Get, undefined);
-
-        // Remove old localization
-        this.dictionary = new Array<[string, string]>();
-
-        // Add new values
-        for (const key in result.Result) {
-            if (result.Result.hasOwnProperty(key)) {
-                this.dictionary.push([key, result.Result[key] as string]);
-            }
+        const result = await Utility.AjaxCall<[string, string][]>("/Index?handler=LoadLocalization", Utility.HttpMethod.Get, undefined);
+        if (result.Result) {
+            this.dictionary = result.Result;
         }
     }
 }

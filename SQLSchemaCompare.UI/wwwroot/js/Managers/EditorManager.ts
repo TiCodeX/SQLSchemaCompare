@@ -50,14 +50,15 @@ class EditorManager {
      * @param model The editor data model
      */
     public static CreateEditor(type: EditorManager.Type, domElementId: string, model: monaco.editor.IEditorModel): void {
+        const domElement = $(`#${domElementId}`);
         // Clear the dom element
-        $(`#${domElementId}`).empty();
+        domElement.empty();
         // And clear the old instances
         this.ClearOldInstances();
 
         const editor: monaco.editor.IStandaloneCodeEditor | monaco.editor.IStandaloneDiffEditor = type === EditorManager.Type.Normal ?
-            monaco.editor.create(document.getElementById(domElementId), this.defaultOptions) :
-            monaco.editor.createDiffEditor(document.getElementById(domElementId), this.defaultOptionsDiff);
+            monaco.editor.create(domElement.get(0), this.defaultOptions) :
+            monaco.editor.createDiffEditor(domElement.get(0), this.defaultOptionsDiff);
 
         $(`#${domElementId}`).attr("editorId", editor.getId());
 

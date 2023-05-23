@@ -5,22 +5,22 @@ class ApiResponse<T> {
     /**
      * Indicates whether a response is success
      */
-    public Success: boolean;
+    public Success?: boolean;
 
     /**
      * The error code
      */
-    public ErrorCode: ApiResponse.EErrorCodes;
+    public ErrorCode?: ApiResponse.EErrorCodes;
 
     /**
      * The error message
      */
-    public ErrorMessage: string;
+    public ErrorMessage?: string;
 
     /**
      * The error message
      */
-    public Result: T;
+    public Result?: T;
 }
 
 namespace ApiResponse {

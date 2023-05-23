@@ -36,12 +36,11 @@ class PageManager {
      * Get the currently opened page
      * @returns The currently opened page
      */
-    public static GetOpenPage(): PageManager.Page {
+    public static GetOpenPage(): PageManager.Page | undefined {
         const currentPage: JQuery = this.pageContainer.children("div:last");
         if (currentPage.length > 0) {
-            const pageAttribute = Number(currentPage.attr("page"));
-
-            return PageManager.Page[PageManager.Page[pageAttribute]] as PageManager.Page;
+            const pageAttribute = parseInt(currentPage.attr("page") as string, 10);
+            return PageManager.Page[PageManager.Page[pageAttribute] as keyof typeof PageManager.Page];
         }
 
         return undefined;
@@ -53,9 +52,8 @@ class PageManager {
     public static async RefreshOpenPages(): Promise<void> {
         const pages: PageManager.Page[] = [];
         this.pageContainer.children("div").each((index: number, element: HTMLElement) => {
-            const pageAttribute = Number($(element).attr("page"));
-
-            pages.push(PageManager.Page[PageManager.Page[pageAttribute]] as PageManager.Page);
+            const pageAttribute = parseInt($(element).attr("page") as string, 10);
+            pages.push(PageManager.Page[PageManager.Page[pageAttribute] as keyof typeof PageManager.Page]);
         });
 
         // Remove all the pages
@@ -74,7 +72,7 @@ class PageManager {
      * @param closePreviousPage Tell if the previous page needs to be closed
      */
     public static async LoadPage(page: PageManager.Page, closePreviousPage = true): Promise<void> {
-        return Utility.AjaxGetPage(this.GetPageUrl(page)).then((result: string): void => {
+        return Utility.AjaxGetPage(this.GetPageUrl(page) ?? "").then((result: string): void => {
             if (closePreviousPage) {
                 this.pageContainer.children("div:last").remove();
             }
@@ -131,7 +129,7 @@ class PageManager {
      * @param page The page
      * @returns The page url
      */
-    private static GetPageUrl(page: PageManager.Page): string {
+    private static GetPageUrl(page: PageManager.Page): string | undefined {
         switch (page) {
             case PageManager.Page.Main: return "/Main/MainPageModel";
             case PageManager.Page.Welcome: return "/WelcomePageModel";

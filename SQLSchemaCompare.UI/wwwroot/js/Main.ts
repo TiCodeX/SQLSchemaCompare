@@ -30,12 +30,12 @@ class Main {
     /**
      * Contains a reference to the splitter instance
      */
-    private static mainSplitter: Split.Instance;
+    private static mainSplitter?: Split.Instance;
 
     /**
      * Contains a reference to the splitter sizes
      */
-    private static mainSplitterSizes: number[] = [60, 40];
+    private static mainSplitterSizes?: number[] = [60, 40];
 
     /**
      * Open the Main page
@@ -64,7 +64,7 @@ class Main {
                     $(".tcx-row-main").css("overflow", "hidden");
                 },
                 onDragEnd: (): void => {
-                    this.mainSplitterSizes = this.mainSplitter.getSizes();
+                    this.mainSplitterSizes = this.mainSplitter?.getSizes();
                     // Trigger monaco-editor recalculate height
                     $(".monaco-sash").height(0);
                     // Restore original overflow
@@ -85,17 +85,18 @@ class Main {
         }
         $(".tcx-diff-item-name").html(`${sourceItem} <span class='fa fa-long-arrow-alt-right'></span> ${targetItem}`);
 
-        Utility.AjaxCall(this.resultItemScriptsUrl + rowId, Utility.HttpMethod.Get).then((response: ApiResponse<CompareResultItemScripts>): void => {
-            EditorManager.CreateEditor(
-                EditorManager.Type.Diff,
-                "sqlDiff",
-                {
-                    original: monaco.editor.createModel(response.Result.SourceCreateScript, "sql"),
-                    modified: monaco.editor.createModel(response.Result.TargetCreateScript, "sql"),
-                },
-            );
+        Utility.AjaxCall<CompareResultItemScripts>(this.resultItemScriptsUrl + rowId, Utility.HttpMethod.Get)
+            .then((response: ApiResponse<CompareResultItemScripts>): void => {
+                EditorManager.CreateEditor(
+                    EditorManager.Type.Diff,
+                    "sqlDiff",
+                    {
+                        original: monaco.editor.createModel(response.Result?.SourceCreateScript ?? "", "sql"),
+                        modified: monaco.editor.createModel(response.Result?.TargetCreateScript ?? "", "sql"),
+                    },
+                );
 
-            EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlAlterScript", monaco.editor.createModel(response.Result.AlterScript, "sql"));
+                EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlAlterScript", monaco.editor.createModel(response.Result?.AlterScript ?? "", "sql"));
         });
     }
 
@@ -191,8 +192,8 @@ class Main {
             ? Localization.Get("MenuFullSourceDatabaseScript")
             : Localization.Get("MenuFullTargetDatabaseScript");
         DialogManager.OpenModalDialog(title, this.sqlScriptUrl).then((): void => {
-            Utility.AjaxCall(`${this.fullSqlScriptUrl}${direction}`, Utility.HttpMethod.Get).then((response: ApiResponse<string>): void => {
-                EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlEditor", monaco.editor.createModel(response.Result, "sql"));
+            Utility.AjaxCall<string>(`${this.fullSqlScriptUrl}${direction}`, Utility.HttpMethod.Get).then((response: ApiResponse<string>): void => {
+                EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlEditor", monaco.editor.createModel(response.Result ?? "", "sql"));
             });
         });
     }
@@ -202,8 +203,8 @@ class Main {
      */
     public static ShowFullAlterScript(): void {
         DialogManager.OpenModalDialog(Localization.Get("MenuFullMigrationScript"), this.sqlScriptUrl).then((): void => {
-            Utility.AjaxCall(`${this.fullSqlAlterScriptUrl}`, Utility.HttpMethod.Get).then((response: ApiResponse<string>): void => {
-                EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlEditor", monaco.editor.createModel(response.Result, "sql"));
+            Utility.AjaxCall<string>(`${this.fullSqlAlterScriptUrl}`, Utility.HttpMethod.Get).then((response: ApiResponse<string>): void => {
+                EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlEditor", monaco.editor.createModel(response.Result ?? "", "sql"));
             });
         });
     }
@@ -217,8 +218,11 @@ class Main {
             return;
         }
         const mainTop: JQuery = $("#mainTop");
+        const scrollTop = mainTop.scrollTop() ?? 0;
+        const offsetTop = selectedElement.offset()?.top ?? 0;
+        const innerHeight = mainTop.innerHeight() ?? 0;
         const half = 0.5;
-        mainTop.scrollTop(mainTop.scrollTop() + selectedElement.offset().top - mainTop.innerHeight() * half);
+        mainTop.scrollTop(scrollTop + offsetTop - innerHeight * half);
     }
 
     /**

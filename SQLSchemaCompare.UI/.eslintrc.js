@@ -17,11 +17,6 @@ module.exports = {
         "@typescript-eslint/indent": "off",
         "linebreak-style": ["error", "windows"],
 
-        // Requires the `strictNullChecks` compiler option
-        "@typescript-eslint/prefer-nullish-coalescing": "off",
-        "@typescript-eslint/no-unnecessary-condition": "off",
-        "@typescript-eslint/strict-boolean-expressions": "off",
-
         // Electron stuff (move to inline disable?)
         "global-require": "off",
         "@typescript-eslint/no-require-imports": "off",

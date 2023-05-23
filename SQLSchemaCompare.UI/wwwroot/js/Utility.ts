@@ -1,5 +1,5 @@
 declare const amdRequire: Require;
-const electron: Electron.AllElectron = (typeof require !== "undefined" ? require("electron") as Electron.AllElectron : undefined);
+const electron = require("electron") as Electron.AllElectron;
 
 /**
  * Contains various utility methods
@@ -15,7 +15,7 @@ class Utility {
      */
     public static async ApplicationStartup(): Promise<void> {
         // Disable context menu
-        window.addEventListener("contextmenu", (e: PointerEvent) => {
+        window.addEventListener("contextmenu", (e: MouseEvent) => {
             e.preventDefault();
         }, false);
 
@@ -56,7 +56,7 @@ class Utility {
      * @param s The string to test
      * @returns Whether the specified string is null or an Empty string
      */
-    public static IsNullOrEmpty(s: string): boolean {
+    public static IsNullOrEmpty(s?: string): boolean {
         return s === null || typeof s === "undefined" || s.length < 1;
     }
 
@@ -65,8 +65,8 @@ class Utility {
      * @param s The string to test
      * @returns Whether the specified string is null, empty, or consists only of white-space characters
      */
-    public static IsNullOrWhitespace(s: string): boolean {
-        return this.IsNullOrEmpty(s) || s.trim().length < 1;
+    public static IsNullOrWhitespace(s?: string): boolean {
+        return this.IsNullOrEmpty(s) || (s ?? "").trim().length < 1;
     }
 
     /**
@@ -83,7 +83,7 @@ class Utility {
      * @param element The container to search for input elements
      * @returns The serialized JSON object
      */
-    public static SerializeJSON(element: JQuery): object {
+    public static SerializeJSON(element: JQuery): object | undefined {
         // Ref: https://github.com/marioizquierdo/jquery.serializeJSON#options
         const settings: SerializeJSONSettings = {
             useIntKeysAsArrayIndex: true,
@@ -154,11 +154,11 @@ class Utility {
                 ajaxMethod = "GET";
         }
 
-        return new Promise<ApiResponse<T>>((resolve: PromiseResolve<ApiResponse<T>>): void => {
+        return new Promise<ApiResponse<T>>((resolve): void => {
             $.ajax(url, {
                 type: ajaxMethod,
                 beforeSend: (xhr: JQuery.jqXHR): void => {
-                    xhr.setRequestHeader("XSRF-TOKEN", $("input:hidden[name='__RequestVerificationToken']").val().toString());
+                    xhr.setRequestHeader("XSRF-TOKEN", $("input:hidden[name='__RequestVerificationToken']").val() as string);
                 },
                 contentType: "application/json",
                 data: data !== undefined ? JSON.stringify(data) : "",
@@ -183,11 +183,11 @@ class Utility {
     public static async AjaxGetPage(url: string): Promise<string> {
         this.logger.debug(`Executing AjaxGetPage... (Url=${url})`);
 
-        return new Promise<string>((resolve: PromiseResolve<string>): void => {
+        return new Promise<string>((resolve): void => {
             $.ajax(url, {
                 type: "GET",
                 beforeSend: (xhr: JQuery.jqXHR): void => {
-                    xhr.setRequestHeader("XSRF-TOKEN", $("input:hidden[name='__RequestVerificationToken']").val().toString());
+                    xhr.setRequestHeader("XSRF-TOKEN", $("input:hidden[name='__RequestVerificationToken']").val() as string);
                 },
                 contentType: "application/json",
                 data: "",

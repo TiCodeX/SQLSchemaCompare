@@ -60,7 +60,7 @@ class Project {
     /**
      * Current opened project file
      */
-    private static filename: string;
+    private static filename: string | undefined;
 
     /**
      * Defines if the current project is dirty
@@ -74,7 +74,7 @@ class Project {
     public static async OpenPage(closePreviousPage = true): Promise<void> {
         return PageManager.LoadPage(PageManager.Page.Project, closePreviousPage).then((): void => {
             MenuManager.ToggleProjectRelatedMenuStatus(true);
-            $(".editable-select").on("show.editable-select", (e: Event) => {
+            $(".editable-select").on("show.editable-select", (e: JQuery.Event) => {
                 const list: JQuery = $(e.target).siblings("ul.es-list") as JQuery;
                 list.empty();
                 list.append("<li class=\"es-visible\" disabled>Loading...</li>");
@@ -111,7 +111,7 @@ class Project {
             databaseType,
         };
 
-        Utility.AjaxCall(this.newUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string>): void => {
+        Utility.AjaxCall<string>(this.newUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string>): void => {
             if (response.Success) {
                 this.isDirty = false;
                 this.filename = undefined;
@@ -162,14 +162,14 @@ class Project {
 
         const data: object = JSON.parse(JSON.stringify(filename)) as object;
 
-        return Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<object>): void => {
+        return Utility.AjaxCall<object>(this.saveUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<object>): void => {
             if (response.Success) {
                 this.filename = filename;
                 this.isDirty = false;
                 MenuManager.ToggleProjectRelatedMenuStatus(true);
                 DialogManager.ShowInformation(Localization.Get("TitleSaveProject"), Localization.Get("MessageProjectSavedSuccessfully"));
             } else {
-                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
+                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage ?? "");
             }
         });
     }
@@ -180,7 +180,7 @@ class Project {
      * @param filename The Project file path
      */
     public static async Load(ignoreDirty = false, filename?: string): Promise<void> {
-        let file: string = filename;
+        let file = filename;
         if (file === undefined) {
             const filenames: string[] = (await electron.remote.dialog.showOpenDialog(
                 electron.remote.getCurrentWindow(),
@@ -204,7 +204,7 @@ class Project {
             file = filenames.shift();
         }
 
-        return Utility.AjaxCall(
+        return Utility.AjaxCall<string>(
             this.loadUrl,
             Utility.HttpMethod.Post,
             { IgnoreDirty: ignoreDirty, Filename: file },
@@ -229,12 +229,12 @@ class Project {
      * Serialize the project values in the UI and send them to the service
      */
     public static async Edit<T>(): Promise<ApiResponse<T>> {
-        return new Promise<ApiResponse<T>>((resolve: PromiseResolve<ApiResponse<T>>, reject: PromiseReject): void => {
-            const data: object = Utility.SerializeJSON($("#ProjectPage"));
+        return new Promise<ApiResponse<T>>((resolve, reject): void => {
+            const data = Utility.SerializeJSON($("#ProjectPage"));
             if (data === undefined) {
                 reject();
             } else {
-                Utility.AjaxCall(this.editUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<T>): void => {
+                Utility.AjaxCall<T>(this.editUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<T>): void => {
                     resolve(response);
                 });
             }
@@ -247,7 +247,7 @@ class Project {
      */
     public static Close(ignoreDirty: boolean): void {
         const data: object = JSON.parse(JSON.stringify(ignoreDirty)) as object;
-        Utility.AjaxCall(this.closeUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string>) => {
+        Utility.AjaxCall<string>(this.closeUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string>) => {
             if (response.Success) {
                 this.isDirty = false;
                 this.filename = undefined;
@@ -277,7 +277,7 @@ class Project {
         const select: JQuery = $(`input[name="${selectId}"]`);
         select.trigger("blur").attr("disabled", "disabled");
 
-        const data: object = Utility.SerializeJSON($(`#${dataDivId}`));
+        const data = Utility.SerializeJSON($(`#${dataDivId}`));
         if (data === undefined) {
             select.removeAttr("disabled");
             button.removeClass("spin").removeAttr("disabled");
@@ -291,7 +291,7 @@ class Project {
         const databaseType: JQuery = $("[name='DatabaseType']");
         $.extend(data, { DatabaseType: databaseType.val() });
 
-        Utility.AjaxCall(this.loadDatabaseListUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string[]>): void => {
+        Utility.AjaxCall<string[]>(this.loadDatabaseListUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string[]>): void => {
             if (response.Success) {
                 select.editableSelect("clear");
                 $.each(response.Result, (index: number, value: string): void => {
@@ -302,7 +302,7 @@ class Project {
                 });
             } else {
                 select.editableSelect("hide");
-                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
+                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage ?? "");
             }
             select.removeAttr("disabled");
             button.removeClass("spin").removeAttr("disabled");
@@ -383,7 +383,7 @@ class Project {
                     }
                 });
             } else {
-                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
+                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage ?? "");
                 reject();
             }
         });
@@ -398,35 +398,35 @@ class Project {
         const useAzureAuthentication: JQuery = $("input[name$='UseAzureAuthentication']").parents(".form-group");
         const sourcePort: JQuery = $("input[name='SourcePort']");
         const targetPort: JQuery = $("input[name='TargetPort']");
-        switch (+select.val()) {
+        switch (parseInt(select.val() as string, 10)) {
             case Project.DatabaseType.MicrosoftSql:
                 useWindowAuthentication.show();
                 useAzureAuthentication.show();
                 this.HandleHostnameOnInput($("input[name='SourceHostname']"), "Source");
                 this.HandleHostnameOnInput($("input[name='TargetHostname']"), "Target");
-                sourcePort.val($("input[name='DefaultMicrosoftSqlPort']").val());
-                targetPort.val($("input[name='DefaultMicrosoftSqlPort']").val());
+                sourcePort.val($("input[name='DefaultMicrosoftSqlPort']").val() as string);
+                targetPort.val($("input[name='DefaultMicrosoftSqlPort']").val() as string);
                 break;
             case Project.DatabaseType.MySql:
                 useWindowAuthentication.hide();
                 useAzureAuthentication.hide();
                 $("input[name$='Port']").prop("disabled", false);
-                sourcePort.val($("input[name='DefaultMySqlPort']").val());
-                targetPort.val($("input[name='DefaultMySqlPort']").val());
+                sourcePort.val($("input[name='DefaultMySqlPort']").val() as string);
+                targetPort.val($("input[name='DefaultMySqlPort']").val() as string);
                 break;
             case Project.DatabaseType.PostgreSql:
                 useWindowAuthentication.hide();
                 useAzureAuthentication.hide();
                 $("input[name$='Port']").prop("disabled", false);
-                sourcePort.val($("input[name='DefaultPostgreSqlPort']").val());
-                targetPort.val($("input[name='DefaultPostgreSqlPort']").val());
+                sourcePort.val($("input[name='DefaultPostgreSqlPort']").val() as string);
+                targetPort.val($("input[name='DefaultPostgreSqlPort']").val() as string);
                 break;
             case Project.DatabaseType.MariaDb:
                 useWindowAuthentication.hide();
                 useAzureAuthentication.hide();
                 $("input[name$='Port']").prop("disabled", false);
-                sourcePort.val($("input[name='DefaultMariaDbPort']").val());
-                targetPort.val($("input[name='DefaultMariaDbPort']").val());
+                sourcePort.val($("input[name='DefaultMariaDbPort']").val() as string);
+                targetPort.val($("input[name='DefaultMariaDbPort']").val() as string);
                 break;
             default:
         }
@@ -440,7 +440,7 @@ class Project {
      */
     public static HandleHostnameOnInput(input: JQuery, prefix: string): void {
         const databaseType: JQuery = $("[name='DatabaseType']");
-        if (+databaseType.val() === Project.DatabaseType.MicrosoftSql) {
+        if (parseInt(databaseType.val() as string, 10) === Project.DatabaseType.MicrosoftSql) {
             $(`input[name='${prefix}Port']`).prop("disabled", (input.val() as string).includes("\\"));
         }
         this.SetDirtyState();
@@ -522,7 +522,7 @@ class Project {
             const tmpValue: string = $(`input[name='${prefixTo}${field}'`).val() as string;
             const tmpDisabled: boolean = $(`input[name='${prefixTo}${field}'`).is(":disabled");
 
-            $(`input[name='${prefixTo}${field}'`).val($(`input[name='${prefixFrom}${field}'`).val());
+            $(`input[name='${prefixTo}${field}'`).val($(`input[name='${prefixFrom}${field}'`).val() as string);
             $(`input[name='${prefixTo}${field}'`).prop("disabled", $(`input[name='${prefixFrom}${field}'`).is(":disabled"));
 
             if (direction === Project.CopyDirection.Exchange) {
@@ -563,7 +563,7 @@ class Project {
 
         // Get the first column which has the rowspan and reduce the value by 1
         const rowSpanCol: JQuery = trGroupStart.children("td:first");
-        rowSpanCol.attr("rowspan", parseInt(rowSpanCol.attr("rowspan"), 10) - 1);
+        rowSpanCol.attr("rowspan", parseInt(rowSpanCol.attr("rowspan") ?? "", 10) - 1);
 
         /* If we are removing the first row of the group, it means that there aren't any other clauses
          * so we should also remove the last row of the group which contains the button to
@@ -620,7 +620,7 @@ class Project {
 
             // Get the first column which has the rowspan and increment the value by 1
             const rowSpanCol: JQuery = trGroupStart.children("td:first");
-            rowSpanCol.attr("rowspan", parseInt(rowSpanCol.attr("rowspan"), 10) + 1);
+            rowSpanCol.attr("rowspan", parseInt(rowSpanCol.attr("rowspan") ?? "", 10) + 1);
 
             // Hide the object type select and add the AND label
             trGroupStartNew.find("select[name='ProjectOptions[Filtering[Clauses[][ObjectType]]']").hide().after("AND");

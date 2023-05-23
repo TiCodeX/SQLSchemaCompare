@@ -56,7 +56,7 @@ class DialogManager {
      * @param buttons The button choices
      */
     public static async OpenQuestionDialog(title: string, message: string, buttons: DialogManager.DialogButton[]): Promise<DialogManager.DialogButton> {
-        return new Promise<DialogManager.DialogButton>((resolve: PromiseResolve<DialogManager.DialogButton>): void => {
+        return new Promise<DialogManager.DialogButton>((resolve): void => {
             const buttonLabels: string[] = [];
             let cancelId: number = buttons.length - 1;
             for (const button of buttons) {

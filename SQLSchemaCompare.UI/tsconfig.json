@@ -5,6 +5,13 @@
         "lib": [ "es5", "es6", "dom" ],
         "sourceMap": false,
         "removeComments": true,
-        "noEmitOnError": true
+        "noEmitOnError": true,
+        "strict": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noPropertyAccessFromIndexSignature": true,
+        "noUnusedLocals": true
     }
 }

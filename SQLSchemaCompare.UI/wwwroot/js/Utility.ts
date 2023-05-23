@@ -1,4 +1,5 @@
 declare const amdRequire: Require;
+// eslint-disable-next-line global-require, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, import/no-unresolved
 const electron = require("electron") as Electron.AllElectron;
 
 /**

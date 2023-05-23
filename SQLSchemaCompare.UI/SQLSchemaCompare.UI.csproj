@@ -105,12 +105,18 @@
     <ProjectReference Include="..\SQLSchemaCompare.Services\SQLSchemaCompare.Services.csproj" />
   </ItemGroup>
 
-  <Target Name="ESLint" BeforeTargets="CleanJSFiles">
-    <Exec Command='npx eslint "wwwroot/js/**/*.ts" .eslintrc.js --format visualstudio --quiet --cache'></Exec>
+  <Target Name="CleanJSFiles" BeforeTargets="BeforeBuild">
+    <Message Text="==============================================" Importance="high" />
+    <Message Text="Clean JS Files" Importance="high" />
+    <Exec Command="del /Q /S wwwroot\js\*.js" />
+    <Message Text="==============================================" Importance="high" />
   </Target>
 
-  <Target Name="CleanJSFiles" BeforeTargets="Build">
-    <Exec Command="del /Q /S wwwroot\js\*.js" />
+  <Target Name="ESLint" BeforeTargets="BeforeBuild" AfterTargets="CleanJSFiles">
+    <Message Text="==============================================" Importance="high" />
+    <Message Text="Run ESLint" Importance="high" />
+    <Exec Command='npx eslint "wwwroot/js/**/*.ts" .eslintrc.js --format visualstudio --quiet --cache'></Exec>
+    <Message Text="==============================================" Importance="high" />
   </Target>
 
   <Target Name="RemovePublishFolder" BeforeTargets="PrepareForPublish">

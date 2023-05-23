@@ -17,12 +17,6 @@ module.exports = {
         "@typescript-eslint/indent": "off",
         "linebreak-style": ["error", "windows"],
 
-        // Electron stuff (move to inline disable?)
-        "global-require": "off",
-        "@typescript-eslint/no-require-imports": "off",
-        "@typescript-eslint/no-var-requires": "off",
-        "import/no-unresolved": "off",
-
         // TODO:
         "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/lines-around-comment": "off",
@@ -30,9 +24,6 @@ module.exports = {
         "@typescript-eslint/no-floating-promises": "off",
         "@typescript-eslint/no-unused-vars": "off",
         "import/prefer-default-export": "off",
-        "operator-linebreak": "off",
         "max-lines": "off",
-        "no-prototype-builtins": "off",
-        "no-restricted-syntax": "off",
     },
 };

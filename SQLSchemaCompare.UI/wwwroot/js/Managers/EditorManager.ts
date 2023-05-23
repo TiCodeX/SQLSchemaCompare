@@ -56,9 +56,9 @@ class EditorManager {
         // And clear the old instances
         this.ClearOldInstances();
 
-        const editor: monaco.editor.IStandaloneCodeEditor | monaco.editor.IStandaloneDiffEditor = type === EditorManager.Type.Normal ?
-            monaco.editor.create(domElement.get(0), this.defaultOptions) :
-            monaco.editor.createDiffEditor(domElement.get(0), this.defaultOptionsDiff);
+        const editor: monaco.editor.IStandaloneCodeEditor | monaco.editor.IStandaloneDiffEditor = type === EditorManager.Type.Normal
+            ? monaco.editor.create(domElement.get(0), this.defaultOptions)
+            : monaco.editor.createDiffEditor(domElement.get(0), this.defaultOptionsDiff);
 
         $(`#${domElementId}`).attr("editorId", editor.getId());
 
@@ -75,9 +75,9 @@ class EditorManager {
             if (type === EditorManager.Type.Normal) {
                 currentEditor = editor as monaco.editor.IStandaloneCodeEditor;
             } else {
-                currentEditor = $(e.currentTarget).parents(".editor").hasClass("original") ?
-                    (editor as monaco.editor.IStandaloneDiffEditor).getOriginalEditor() :
-                    (editor as monaco.editor.IStandaloneDiffEditor).getModifiedEditor();
+                currentEditor = $(e.currentTarget).parents(".editor").hasClass("original")
+                    ? (editor as monaco.editor.IStandaloneDiffEditor).getOriginalEditor()
+                    : (editor as monaco.editor.IStandaloneDiffEditor).getModifiedEditor();
             }
 
             electron.remote.Menu.buildFromTemplate([

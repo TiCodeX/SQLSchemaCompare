@@ -235,7 +235,7 @@ class MenuManager {
 
         for (const item of items) {
             const menuItem = menu?.getMenuItemById(item);
-            if (menuItem !== undefined && menuItem !== null) {
+            if (menuItem !== undefined) {
                 menuItem.enabled = enable;
                 continue;
             }

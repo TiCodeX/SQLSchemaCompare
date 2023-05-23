@@ -105,8 +105,11 @@
     <ProjectReference Include="..\SQLSchemaCompare.Services\SQLSchemaCompare.Services.csproj" />
   </ItemGroup>
 
-  <Target Name="CustomPreBuild" BeforeTargets="PreBuildEvent">
+  <Target Name="ESLint" BeforeTargets="CleanJSFiles">
     <Exec Command='npx eslint "wwwroot/js/**/*.ts" .eslintrc.js --format visualstudio --quiet --cache'></Exec>
+  </Target>
+
+  <Target Name="CleanJSFiles" BeforeTargets="Build">
     <Exec Command="del /Q /S wwwroot\js\*.js" />
   </Target>
 

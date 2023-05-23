@@ -112,7 +112,7 @@ class Project {
         };
 
         Utility.AjaxCall<string>(this.newUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string>): void => {
-            if (response.Success) {
+            if (response.Success === true) {
                 this.isDirty = false;
                 this.filename = undefined;
                 this.OpenPage(true);
@@ -163,13 +163,13 @@ class Project {
         const data: object = JSON.parse(JSON.stringify(filename)) as object;
 
         return Utility.AjaxCall<object>(this.saveUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<object>): void => {
-            if (response.Success) {
+            if (response.Success === true) {
                 this.filename = filename;
                 this.isDirty = false;
                 MenuManager.ToggleProjectRelatedMenuStatus(true);
                 DialogManager.ShowInformation(Localization.Get("TitleSaveProject"), Localization.Get("MessageProjectSavedSuccessfully"));
             } else {
-                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage ?? "");
+                DialogManager.ShowError(response.ErrorMessage);
             }
         });
     }
@@ -209,7 +209,7 @@ class Project {
             Utility.HttpMethod.Post,
             { IgnoreDirty: ignoreDirty, Filename: file },
         ).then((response: ApiResponse<string>): void => {
-            if (response.Success) {
+            if (response.Success === true) {
                 this.isDirty = false;
                 this.filename = file;
                 this.OpenPage(true);
@@ -248,7 +248,7 @@ class Project {
     public static Close(ignoreDirty: boolean): void {
         const data: object = JSON.parse(JSON.stringify(ignoreDirty)) as object;
         Utility.AjaxCall<string>(this.closeUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string>) => {
-            if (response.Success) {
+            if (response.Success === true) {
                 this.isDirty = false;
                 this.filename = undefined;
                 PageManager.CloseAllPages().then((): void => {
@@ -292,7 +292,7 @@ class Project {
         $.extend(data, { DatabaseType: databaseType.val() });
 
         Utility.AjaxCall<string[]>(this.loadDatabaseListUrl, Utility.HttpMethod.Post, data).then((response: ApiResponse<string[]>): void => {
-            if (response.Success) {
+            if (response.Success === true) {
                 select.editableSelect("clear");
                 $.each(response.Result, (index: number, value: string): void => {
                     select.editableSelect("add", value);
@@ -302,13 +302,13 @@ class Project {
                 });
             } else {
                 select.editableSelect("hide");
-                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage ?? "");
+                DialogManager.ShowError(response.ErrorMessage);
             }
             select.removeAttr("disabled");
             button.removeClass("spin").removeAttr("disabled");
 
             // If everything is ok, the select should be open, so lets focus it
-            if (response.Success) {
+            if (response.Success === true) {
                 select.trigger("focus");
             }
         });
@@ -383,7 +383,7 @@ class Project {
                     }
                 });
             } else {
-                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage ?? "");
+                DialogManager.ShowError(response.ErrorMessage);
                 reject();
             }
         });
@@ -439,8 +439,9 @@ class Project {
      * @param prefix The page prefix (Source/Target)
      */
     public static HandleHostnameOnInput(input: JQuery, prefix: string): void {
-        const databaseType: JQuery = $("[name='DatabaseType']");
-        if (parseInt(databaseType.val() as string, 10) === Project.DatabaseType.MicrosoftSql) {
+        const databaseType = parseInt($("[name='DatabaseType']").val() as string, 10);
+        const databaseTypeEnum = Project.DatabaseType[Project.DatabaseType[databaseType] as keyof typeof Project.DatabaseType];
+        if (databaseTypeEnum === Project.DatabaseType.MicrosoftSql) {
             $(`input[name='${prefix}Port']`).prop("disabled", (input.val() as string).includes("\\"));
         }
         this.SetDirtyState();

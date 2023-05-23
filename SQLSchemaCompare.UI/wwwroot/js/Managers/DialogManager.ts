@@ -24,18 +24,12 @@ class DialogManager {
 
     /**
      * Show the error in the modal dialog
-     * @param title The title
      * @param message The message
      * @param link The link
      * @param linkText The link text
      */
-    public static ShowError(title: string, message: string, link?: string, linkText?: string): void {
-        if (title === undefined) {
-            this.ShowModal(Localization.Get("TitleError"), message, link);
-
-            return;
-        }
-        this.ShowModal(title, message, link, linkText);
+    public static ShowError(message?: string, link?: string, linkText?: string): void {
+        this.ShowModal(Localization.Get("TitleError"), message ?? "An unexpected error occurred", link, linkText);
     }
 
     /**

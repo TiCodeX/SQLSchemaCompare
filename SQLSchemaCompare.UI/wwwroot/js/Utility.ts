@@ -56,7 +56,7 @@ class Utility {
      * @param s The string to test
      * @returns Whether the specified string is null or an Empty string
      */
-    public static IsNullOrEmpty(s?: string): boolean {
+    public static IsNullOrEmpty(s?: string | null): boolean {
         return s === null || typeof s === "undefined" || s.length < 1;
     }
 
@@ -65,7 +65,7 @@ class Utility {
      * @param s The string to test
      * @returns Whether the specified string is null, empty, or consists only of white-space characters
      */
-    public static IsNullOrWhitespace(s?: string): boolean {
+    public static IsNullOrWhitespace(s?: string | null): boolean {
         return this.IsNullOrEmpty(s) || (s ?? "").trim().length < 1;
     }
 
@@ -169,7 +169,7 @@ class Utility {
                 },
                 error: (error: JQuery.jqXHR): void => {
                     this.logger.error(`Error executing AjaxCall: ${error.responseText}`);
-                    DialogManager.ShowError("Error", "An unexpected error occured");
+                    DialogManager.ShowError(error.responseText);
                 },
             });
         });
@@ -196,8 +196,9 @@ class Utility {
                 success: (response: string): void => {
                     resolve(response);
                 },
-                error: (): void => {
-                    DialogManager.ShowError("Error", "An unexpected error occured");
+                error: (error: JQuery.jqXHR): void => {
+                    this.logger.error(`Error executing AjaxCall: ${error.responseText}`);
+                    DialogManager.ShowError(error.responseText);
                 },
             });
         });

@@ -29,7 +29,6 @@ module.exports = {
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-floating-promises": "off",
         "@typescript-eslint/no-unused-vars": "off",
-        "@typescript-eslint/no-unsafe-enum-comparison": "off",
         "import/prefer-default-export": "off",
         "operator-linebreak": "off",
         "max-lines": "off",

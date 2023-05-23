@@ -142,13 +142,13 @@ class Utility {
      * @param data The object data to send when the method is POST
      * @returns The ApiResponse
      */
-    public static async AjaxCall<T>(url: string, method: Utility.HttpMethod, data?: object): Promise<ApiResponse<T>> {
+    public static async AjaxCall<T>(url: string, method: HttpMethod, data?: object): Promise<ApiResponse<T>> {
         let ajaxMethod: string;
         switch (method) {
-            case Utility.HttpMethod.Get:
+            case HttpMethod.Get:
                 ajaxMethod = "GET";
                 break;
-            case Utility.HttpMethod.Post:
+            case HttpMethod.Post:
                 ajaxMethod = "POST";
                 break;
             default:
@@ -203,21 +203,5 @@ class Utility {
                 },
             });
         });
-    }
-}
-
-namespace Utility {
-    /**
-     * HTTP Method for the ajax call
-     */
-    export enum HttpMethod {
-        /**
-         * HTTP Method GET
-         */
-        Get = 0,
-        /**
-         * HTTP Method POST
-         */
-        Post = 1,
     }
 }

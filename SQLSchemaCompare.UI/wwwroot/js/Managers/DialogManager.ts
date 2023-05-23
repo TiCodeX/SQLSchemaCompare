@@ -49,19 +49,19 @@ class DialogManager {
      * @param message The question message to display
      * @param buttons The button choices
      */
-    public static async OpenQuestionDialog(title: string, message: string, buttons: DialogManager.DialogButton[]): Promise<DialogManager.DialogButton> {
-        return new Promise<DialogManager.DialogButton>((resolve): void => {
+    public static async OpenQuestionDialog(title: string, message: string, buttons: DialogButton[]): Promise<DialogButton> {
+        return new Promise<DialogButton>((resolve): void => {
             const buttonLabels: string[] = [];
             let cancelId: number = buttons.length - 1;
             for (const button of buttons) {
                 switch (button) {
-                    case DialogManager.DialogButton.Yes:
+                    case DialogButton.Yes:
                         buttonLabels.push(Localization.Get("ButtonYes"));
                         break;
-                    case DialogManager.DialogButton.No:
+                    case DialogButton.No:
                         buttonLabels.push(Localization.Get("ButtonNo"));
                         break;
-                    case DialogManager.DialogButton.Cancel:
+                    case DialogButton.Cancel:
                         buttonLabels.push(Localization.Get("ButtonCancel"));
                         cancelId = buttonLabels.length - 1;
                         break;
@@ -144,25 +144,5 @@ class DialogManager {
         }
 
         $(this.modalId).modal("show");
-    }
-}
-
-namespace DialogManager {
-    /**
-     * Dialog buttons
-     */
-    export enum DialogButton {
-        /**
-         * Yes
-         */
-        Yes = 0,
-        /**
-         * No
-         */
-        No = 1,
-        /**
-         * Cancel
-         */
-        Cancel = 2,
     }
 }

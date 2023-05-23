@@ -21,7 +21,7 @@ class TaskManager {
 
         return new Promise<void>((resolve: PromiseResolve<void>, reject: PromiseReject): void => {
             const pollingFunc: VoidFunction = (): void => {
-                PageManager.LoadPage(PageManager.Page.TaskStatus, false).then(() => {
+                PageManager.LoadPage(Page.TaskStatus, false).then(() => {
                     if ($("#stopPolling").length > 0) {
                         // Enable the menu/toolbar and resolve/reject depending if there are failed tasks
                         MenuManager.ToggleRunningTaskRelatedMenuStatus(true);
@@ -48,11 +48,11 @@ class TaskManager {
         DialogManager.OpenQuestionDialog(
             Localization.Get("TitleAbortCompare"),
             Localization.Get("MessageConfirmAbortOperation"),
-            [DialogManager.DialogButton.Yes, DialogManager.DialogButton.No],
+            [DialogButton.Yes, DialogButton.No],
         )
-        .then((answer: DialogManager.DialogButton): void => {
-            if (answer === DialogManager.DialogButton.Yes) {
-                Utility.AjaxCall(this.abortUrl, Utility.HttpMethod.Get).then((): void => {
+        .then((answer: DialogButton): void => {
+            if (answer === DialogButton.Yes) {
+                Utility.AjaxCall(this.abortUrl, HttpMethod.Get).then((): void => {
                     // Allows to call abort only once, disable button
                     $("#btnAbortTask").attr("disabled", "disabled");
                 });

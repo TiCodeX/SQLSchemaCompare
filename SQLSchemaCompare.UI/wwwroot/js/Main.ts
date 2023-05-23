@@ -41,7 +41,7 @@ class Main {
      * Open the Main page
      */
     public static Open(): void {
-        PageManager.LoadPage(PageManager.Page.Main).then((): void => {
+        PageManager.LoadPage(Page.Main).then((): void => {
             this.RemoveSplitter();
             MenuManager.ToggleMainOpenRelatedMenuStatus(true);
         });
@@ -85,10 +85,10 @@ class Main {
         }
         $(".tcx-diff-item-name").html(`${sourceItem} <span class='fa fa-long-arrow-alt-right'></span> ${targetItem}`);
 
-        Utility.AjaxCall<CompareResultItemScripts>(this.resultItemScriptsUrl + rowId, Utility.HttpMethod.Get)
+        Utility.AjaxCall<CompareResultItemScripts>(this.resultItemScriptsUrl + rowId, HttpMethod.Get)
             .then((response: ApiResponse<CompareResultItemScripts>): void => {
                 EditorManager.CreateEditor(
-                    EditorManager.Type.Diff,
+                    EditorType.Diff,
                     "sqlDiff",
                     {
                         original: monaco.editor.createModel(response.Result?.SourceCreateScript ?? "", "sql"),
@@ -96,7 +96,7 @@ class Main {
                     },
                 );
 
-                EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlAlterScript", monaco.editor.createModel(response.Result?.AlterScript ?? "", "sql"));
+                EditorManager.CreateEditor(EditorType.Normal, "sqlAlterScript", monaco.editor.createModel(response.Result?.AlterScript ?? "", "sql"));
         });
     }
 
@@ -187,13 +187,13 @@ class Main {
      * Show the full script page
      * @param direction The source or target
      */
-    public static ShowFullScript(direction: Main.CompareDirection): void {
-        const title: string = direction === Main.CompareDirection.Source
+    public static ShowFullScript(direction: CompareDirection): void {
+        const title: string = direction === CompareDirection.Source
             ? Localization.Get("MenuFullSourceDatabaseScript")
             : Localization.Get("MenuFullTargetDatabaseScript");
         DialogManager.OpenModalDialog(title, this.sqlScriptUrl).then((): void => {
-            Utility.AjaxCall<string>(`${this.fullSqlScriptUrl}${direction}`, Utility.HttpMethod.Get).then((response: ApiResponse<string>): void => {
-                EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlEditor", monaco.editor.createModel(response.Result ?? "", "sql"));
+            Utility.AjaxCall<string>(`${this.fullSqlScriptUrl}${direction}`, HttpMethod.Get).then((response: ApiResponse<string>): void => {
+                EditorManager.CreateEditor(EditorType.Normal, "sqlEditor", monaco.editor.createModel(response.Result ?? "", "sql"));
             });
         });
     }
@@ -203,8 +203,8 @@ class Main {
      */
     public static ShowFullAlterScript(): void {
         DialogManager.OpenModalDialog(Localization.Get("MenuFullMigrationScript"), this.sqlScriptUrl).then((): void => {
-            Utility.AjaxCall<string>(`${this.fullSqlAlterScriptUrl}`, Utility.HttpMethod.Get).then((response: ApiResponse<string>): void => {
-                EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlEditor", monaco.editor.createModel(response.Result ?? "", "sql"));
+            Utility.AjaxCall<string>(`${this.fullSqlAlterScriptUrl}`, HttpMethod.Get).then((response: ApiResponse<string>): void => {
+                EditorManager.CreateEditor(EditorType.Normal, "sqlEditor", monaco.editor.createModel(response.Result ?? "", "sql"));
             });
         });
     }
@@ -239,19 +239,5 @@ class Main {
         } finally {
             this.mainSplitter = undefined;
         }
-    }
-}
-
-namespace Main {
-    export enum CompareDirection {
-        /**
-         * Represent the source database
-         */
-        Source = 0,
-
-        /**
-         * Represent the target database
-         */
-        Target = 1,
     }
 }

@@ -20,10 +20,8 @@ module.exports = {
         // TODO:
         "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/lines-around-comment": "off",
-        "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-floating-promises": "off",
         "@typescript-eslint/no-unused-vars": "off",
-        "import/prefer-default-export": "off",
         "max-lines": "off",
     },
 };

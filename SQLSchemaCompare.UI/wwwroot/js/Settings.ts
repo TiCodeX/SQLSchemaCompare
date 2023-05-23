@@ -29,13 +29,13 @@ class Settings {
             return;
         }
 
-        Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data).then((): void => {
+        Utility.AjaxCall(this.saveUrl, HttpMethod.Post, data).then((): void => {
             // Load the new localization
             Localization.Load().then((): void => {
                 // Recreate the menu with the new language
                 MenuManager.CreateMenu().then((): void => {
                     MenuManager.ToggleProjectRelatedMenuStatus(projectIsOpen);
-                    MenuManager.ToggleMainOpenRelatedMenuStatus(PageManager.GetOpenPage() === PageManager.Page.Main);
+                    MenuManager.ToggleMainOpenRelatedMenuStatus(PageManager.GetOpenPage() === Page.Main);
                 });
                 // Close the modal and reopen the current page
                 DialogManager.CloseModalDialog();

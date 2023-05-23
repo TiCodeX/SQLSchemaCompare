@@ -14,7 +14,7 @@ $(() => {
 
         MenuManager.CreateMenu();
 
-        PageManager.LoadPage(PageManager.Page.Welcome);
+        PageManager.LoadPage(Page.Welcome);
 
         $(document).on("keydown", (e: JQuery.Event): void => {
             const keyUp = 38;
@@ -23,7 +23,7 @@ $(() => {
             switch (e.which) {
                 case keyUp:
                 case keyDown:
-                    if (PageManager.GetOpenPage() !== PageManager.Page.Main) {
+                    if (PageManager.GetOpenPage() !== Page.Main) {
                         return;
                     }
                     if ($(".tcx-selected-row").length === 0) {

@@ -49,14 +49,14 @@ class EditorManager {
      * @param domElementId The id of the dom element to create the editor
      * @param model The editor data model
      */
-    public static CreateEditor(type: EditorManager.Type, domElementId: string, model: monaco.editor.IEditorModel): void {
+    public static CreateEditor(type: EditorType, domElementId: string, model: monaco.editor.IEditorModel): void {
         const domElement = $(`#${domElementId}`);
         // Clear the dom element
         domElement.empty();
         // And clear the old instances
         this.ClearOldInstances();
 
-        const editor: monaco.editor.IStandaloneCodeEditor | monaco.editor.IStandaloneDiffEditor = type === EditorManager.Type.Normal
+        const editor: monaco.editor.IStandaloneCodeEditor | monaco.editor.IStandaloneDiffEditor = type === EditorType.Normal
             ? monaco.editor.create(domElement.get(0), this.defaultOptions)
             : monaco.editor.createDiffEditor(domElement.get(0), this.defaultOptionsDiff);
 
@@ -72,7 +72,7 @@ class EditorManager {
         // Register context menu
         $(`#${domElementId} .monaco-editor .monaco-scrollable-element`).on("contextmenu", (e: JQuery.Event) => {
             let currentEditor: monaco.editor.IStandaloneCodeEditor;
-            if (type === EditorManager.Type.Normal) {
+            if (type === EditorType.Normal) {
                 currentEditor = editor as monaco.editor.IStandaloneCodeEditor;
             } else {
                 currentEditor = $(e.currentTarget).parents(".editor").hasClass("original")
@@ -144,21 +144,5 @@ class EditorManager {
                 this.instances.splice(i, 1);
             }
         }
-    }
-}
-
-namespace EditorManager {
-    /**
-     * HTTP Method for the ajax call
-     */
-    export enum Type {
-        /**
-         * Normal editor
-         */
-        Normal = 0,
-        /**
-         * Diff editor
-         */
-        Diff = 1,
     }
 }

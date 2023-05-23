@@ -1,7 +1,8 @@
-﻿[
+[
     {
         "outputFileName": "wwwroot/js/Index.min.js",
         "inputFiles": [
+            "wwwroot/js/Enums.js",
             "wwwroot/js/Entities/ApiResponse.js",
             "wwwroot/js/Entities/CompareResultItemScripts.js",
             "wwwroot/js/Managers/DialogManager.js",

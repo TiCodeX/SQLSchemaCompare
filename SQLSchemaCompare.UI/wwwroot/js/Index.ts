@@ -1,5 +1,5 @@
 $(() => {
-    Utility.ApplicationStartup().then(() => {
+    Utility.ApplicationStartup().then(async () => {
         // Configure the monaco editor loader
         amdRequire.config({
             baseUrl: "lib/monaco-editor",
@@ -12,9 +12,9 @@ $(() => {
             });
         }, 0);
 
-        MenuManager.CreateMenu();
+        await MenuManager.CreateMenu();
 
-        PageManager.LoadPage(Page.Welcome);
+        await PageManager.LoadPage(Page.Welcome);
 
         $(document).on("keydown", (e: JQuery.Event): void => {
             const keyUp = 38;
@@ -54,5 +54,7 @@ $(() => {
         electron.ipcRenderer.send("CheckLoadProject");
 
         electron.ipcRenderer.send("OpenMainWindow");
+    }).catch(() => {
+        // Do nothing
     });
 });

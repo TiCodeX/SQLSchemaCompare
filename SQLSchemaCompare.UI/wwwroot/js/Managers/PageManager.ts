@@ -63,7 +63,7 @@ class PageManager {
             await this.LoadPage(page, false);
         }
 
-        Promise.resolve();
+        return Promise.resolve();
     }
 
     /**

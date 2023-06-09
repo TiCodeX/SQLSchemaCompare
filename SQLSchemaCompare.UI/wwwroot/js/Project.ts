@@ -96,6 +96,8 @@ class Project {
 
             Utility.AjaxCall(this.dirtyUrl, HttpMethod.Post).then(() => {
                 MenuManager.ToggleProjectRelatedMenuStatus(true);
+            }).catch(() => {
+                // Do nothing
             });
         }
     }
@@ -111,18 +113,18 @@ class Project {
             databaseType,
         };
 
-        Utility.AjaxCall<string>(this.newUrl, HttpMethod.Post, data).then((response: ApiResponse<string>): void => {
+        Utility.AjaxCall<string>(this.newUrl, HttpMethod.Post, data).then(async (response: ApiResponse<string>) => {
             if (response.Success === true) {
                 this.isDirty = false;
                 this.filename = undefined;
-                this.OpenPage(true);
+                await this.OpenPage(true);
             } else {
-                this.HandleProjectNeedToBeSavedError(response).then((): void => {
+                await this.HandleProjectNeedToBeSavedError(response).then((): void => {
                     this.New(true, databaseType);
-                }).catch((): void => {
-                    // Do nothing
                 });
             }
+        }).catch(() => {
+            // Do nothing
         });
     }
 
@@ -208,18 +210,14 @@ class Project {
             this.loadUrl,
             HttpMethod.Post,
             { IgnoreDirty: ignoreDirty, Filename: file },
-        ).then((response: ApiResponse<string>): void => {
+        ).then(async (response: ApiResponse<string>) => {
             if (response.Success === true) {
                 this.isDirty = false;
                 this.filename = file;
-                this.OpenPage(true);
+                await this.OpenPage(true);
             } else {
-                this.HandleProjectNeedToBeSavedError(response).then((): void => {
-                    this.Load(true, file).catch((): void => {
-                        // Do nothing
-                    });
-                }).catch((): void => {
-                    // Do nothing
+                await this.HandleProjectNeedToBeSavedError(response).then(async () => {
+                    await this.Load(true, file);
                 });
             }
         });
@@ -236,6 +234,8 @@ class Project {
             } else {
                 Utility.AjaxCall<T>(this.editUrl, HttpMethod.Post, data).then((response: ApiResponse<T>): void => {
                     resolve(response);
+                }).catch(() => {
+                    // Do nothing
                 });
             }
         });
@@ -247,20 +247,20 @@ class Project {
      */
     public static Close(ignoreDirty: boolean): void {
         const data: object = JSON.parse(JSON.stringify(ignoreDirty)) as object;
-        Utility.AjaxCall<string>(this.closeUrl, HttpMethod.Post, data).then((response: ApiResponse<string>) => {
+        Utility.AjaxCall<string>(this.closeUrl, HttpMethod.Post, data).then(async (response: ApiResponse<string>) => {
             if (response.Success === true) {
                 this.isDirty = false;
                 this.filename = undefined;
-                PageManager.CloseAllPages().then((): void => {
+                await PageManager.CloseAllPages().then((): void => {
                     MenuManager.ToggleProjectRelatedMenuStatus(false);
                 });
             } else {
-                this.HandleProjectNeedToBeSavedError(response).then((): void => {
+                await this.HandleProjectNeedToBeSavedError(response).then((): void => {
                     this.Close(true);
-                }).catch((): void => {
-                    // Do nothing
                 });
             }
+        }).catch(() => {
+            // Do nothing
         });
     }
 
@@ -311,6 +311,8 @@ class Project {
             if (response.Success === true) {
                 select.trigger("focus");
             }
+        }).catch(() => {
+            // Do nothing
         });
     }
 
@@ -329,16 +331,15 @@ class Project {
      * Perform the comparison
      */
     public static Compare(): void {
-        Utility.AjaxCall(this.startCompareUrl, HttpMethod.Get).then((): void => {
-            TaskManager.CheckTask()
-                .then((): void => {
+        Utility.AjaxCall(this.startCompareUrl, HttpMethod.Get).then(async () => {
+            await TaskManager.CheckTask()
+                .then(async () => {
                     // Close the task page and open the main page
-                    PageManager.ClosePage();
+                    await PageManager.ClosePage();
                     Main.Open();
-                })
-                .catch((): void => {
-                    // Do nothing
                 });
+        }).catch(() => {
+            // Do nothing
         });
     }
 
@@ -349,10 +350,12 @@ class Project {
     public static RemoveRecentProject(filename: string): void {
         const data: object = JSON.parse(JSON.stringify(filename)) as object;
 
-        Utility.AjaxCall(this.removeRecentUrl, HttpMethod.Post, data).then((): void => {
+        Utility.AjaxCall(this.removeRecentUrl, HttpMethod.Post, data).then(async () => {
             if (PageManager.GetOpenPage() === Page.Welcome) {
-                PageManager.LoadPage(Page.Welcome);
+                await PageManager.LoadPage(Page.Welcome);
             }
+        }).catch(() => {
+            // Do nothing
         });
     }
 
@@ -381,6 +384,8 @@ class Project {
                             break;
                         default:
                     }
+                }).catch(() => {
+                    // Do nothing
                 });
             } else {
                 DialogManager.ShowError(response.ErrorMessage);

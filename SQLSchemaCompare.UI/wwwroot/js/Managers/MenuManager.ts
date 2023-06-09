@@ -92,7 +92,9 @@ class MenuManager {
                         accelerator: "CmdOrCtrl+E",
                         enabled: false,
                         click(): void {
-                            Project.OpenPage(false);
+                            Project.OpenPage(false).catch(() => {
+                                // Do nothing
+                            });
                         },
                     },
                     {
@@ -123,7 +125,9 @@ class MenuManager {
                         label: Localization.Get("MenuAbout"),
                         accelerator: "F1",
                         click(): void {
-                            DialogManager.OpenModalDialog(Localization.Get("MenuAbout"), "/AboutPageModel", "500px", true);
+                            DialogManager.OpenModalDialog(Localization.Get("MenuAbout"), "/AboutPageModel", "500px", true).catch(() => {
+                                // Do nothing
+                            });
                         },
                     },
                 ],
@@ -167,7 +171,7 @@ class MenuManager {
 
         // #endregion
 
-        Promise.resolve();
+        return Promise.resolve();
     }
 
     /**

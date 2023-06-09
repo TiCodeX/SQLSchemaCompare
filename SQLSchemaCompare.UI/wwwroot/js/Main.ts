@@ -44,6 +44,8 @@ class Main {
         PageManager.LoadPage(Page.Main).then((): void => {
             this.RemoveSplitter();
             MenuManager.ToggleMainOpenRelatedMenuStatus(true);
+        }).catch(() => {
+            // Do nothing
         });
     }
 
@@ -97,7 +99,9 @@ class Main {
                 );
 
                 EditorManager.CreateEditor(EditorType.Normal, "sqlAlterScript", monaco.editor.createModel(response.Result?.AlterScript ?? "", "sql"));
-        });
+            }).catch(() => {
+                // Do nothing
+            });
     }
 
     /**
@@ -194,7 +198,11 @@ class Main {
         DialogManager.OpenModalDialog(title, this.sqlScriptUrl).then((): void => {
             Utility.AjaxCall<string>(`${this.fullSqlScriptUrl}${direction}`, HttpMethod.Get).then((response: ApiResponse<string>): void => {
                 EditorManager.CreateEditor(EditorType.Normal, "sqlEditor", monaco.editor.createModel(response.Result ?? "", "sql"));
+            }).catch(() => {
+                // Do nothing
             });
+        }).catch(() => {
+            // Do nothing
         });
     }
 
@@ -205,7 +213,11 @@ class Main {
         DialogManager.OpenModalDialog(Localization.Get("MenuFullMigrationScript"), this.sqlScriptUrl).then((): void => {
             Utility.AjaxCall<string>(`${this.fullSqlAlterScriptUrl}`, HttpMethod.Get).then((response: ApiResponse<string>): void => {
                 EditorManager.CreateEditor(EditorType.Normal, "sqlEditor", monaco.editor.createModel(response.Result ?? "", "sql"));
+            }).catch(() => {
+                // Do nothing
             });
+        }).catch(() => {
+            // Do nothing
         });
     }
 

@@ -42,7 +42,9 @@ class Utility {
      * @param url The url to be opened in external browser
      */
     public static OpenExternalBrowser(url: string): void {
-        electron.shell.openExternal(url);
+        electron.shell.openExternal(url).catch(() => {
+            // Do nothing
+        });
     }
 
     /**
@@ -172,6 +174,8 @@ class Utility {
                     this.logger.error(`Error executing AjaxCall: ${error.responseText}`);
                     DialogManager.ShowError(error.responseText);
                 },
+            }).catch(() => {
+                // Do nothing
             });
         });
     }
@@ -201,6 +205,8 @@ class Utility {
                     this.logger.error(`Error executing AjaxCall: ${error.responseText}`);
                     DialogManager.ShowError(error.responseText);
                 },
+            }).catch(() => {
+                // Do nothing
             });
         });
     }

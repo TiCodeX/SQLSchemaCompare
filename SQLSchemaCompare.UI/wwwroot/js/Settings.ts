@@ -16,7 +16,9 @@ class Settings {
      * Open the Settings page
      */
     public static Open(): void {
-        DialogManager.OpenModalDialog(Localization.Get("MenuSettings"), this.pageUrl, "300px");
+        DialogManager.OpenModalDialog(Localization.Get("MenuSettings"), this.pageUrl, "300px").catch(() => {
+            // Do nothing
+        });
     }
 
     /**
@@ -29,18 +31,20 @@ class Settings {
             return;
         }
 
-        Utility.AjaxCall(this.saveUrl, HttpMethod.Post, data).then((): void => {
+        Utility.AjaxCall(this.saveUrl, HttpMethod.Post, data).then(async () => {
             // Load the new localization
-            Localization.Load().then((): void => {
+            await Localization.Load().then(async () => {
                 // Recreate the menu with the new language
-                MenuManager.CreateMenu().then((): void => {
+                await MenuManager.CreateMenu().then((): void => {
                     MenuManager.ToggleProjectRelatedMenuStatus(projectIsOpen);
                     MenuManager.ToggleMainOpenRelatedMenuStatus(PageManager.GetOpenPage() === Page.Main);
                 });
                 // Close the modal and reopen the current page
                 DialogManager.CloseModalDialog();
-                PageManager.RefreshOpenPages();
+                await PageManager.RefreshOpenPages();
             });
+        }).catch(() => {
+            // Do nothing
         });
     }
 }

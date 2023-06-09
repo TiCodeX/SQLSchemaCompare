@@ -35,6 +35,8 @@ class TaskManager {
                             pollingFunc();
                         }, this.checkFrequency);
                     }
+                }).catch(() => {
+                    // Do nothing
                 });
             };
             pollingFunc();
@@ -55,8 +57,12 @@ class TaskManager {
                 Utility.AjaxCall(this.abortUrl, HttpMethod.Get).then((): void => {
                     // Allows to call abort only once, disable button
                     $("#btnAbortTask").attr("disabled", "disabled");
+                }).catch(() => {
+                    // Do nothing
                 });
             }
+        }).catch(() => {
+            // Do nothing
         });
     }
 }

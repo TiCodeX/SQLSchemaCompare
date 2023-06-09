@@ -81,6 +81,8 @@ class DialogManager {
                 },
             ).then((value: Electron.MessageBoxReturnValue) => {
                 resolve(value.response);
+            }).catch(() => {
+                // Do nothing
             });
         });
     }

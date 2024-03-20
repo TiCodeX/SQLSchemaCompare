@@ -280,9 +280,9 @@
                 options.Excluding(x => ((ABaseDbTable)x).ReferencingForeignKeys);
                 options.Excluding(x => ((ABaseDbTable)x).Indexes);
                 options.Excluding(x => ((ABaseDbObject)x).Database);
-                options.Excluding(x => new Regex("^Triggers\\[.+\\]\\.Database$").IsMatch(x.Path));
-                options.Excluding(x => new Regex("^Constraints\\[.+\\]\\.Database$").IsMatch(x.Path));
-                options.Excluding(x => new Regex("^PrimaryKeys\\[.+\\]\\.Database$").IsMatch(x.Path));
+                options.For(x => ((ABaseDbTable)x).Triggers).Exclude(x => x.Database);
+                options.For(x => ((ABaseDbTable)x).Constraints).Exclude(x => x.Database);
+                options.For(x => ((ABaseDbTable)x).PrimaryKeys).Exclude(x => x.Database);
                 return options;
             });
             for (var i = 0; i < tables.Count; i++)

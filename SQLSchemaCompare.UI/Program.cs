@@ -1,6 +1,7 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI
 {
     using System;
+    using System.Globalization;
     using Microsoft.AspNetCore.Hosting;
     using NLog;
     using TiCodeX.SQLSchemaCompare.UI.WebServer;
@@ -21,8 +22,8 @@
             var logger = LogManager.GetLogger(nameof(Program));
             try
             {
-                logger.Info("===============================================================");
-                logger.Info("Starting WebHost Service...");
+                logger.Info("===============================================================", CultureInfo.InvariantCulture);
+                logger.Info("Starting WebHost Service...", CultureInfo.InvariantCulture);
                 CreateWebHostBuilder(args)
                     .Build()
                     .Run();
@@ -34,7 +35,7 @@
             }
             finally
             {
-                logger.Debug("Closing Application...");
+                logger.Debug("Closing Application...", CultureInfo.InvariantCulture);
 
                 // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
                 LogManager.Shutdown();

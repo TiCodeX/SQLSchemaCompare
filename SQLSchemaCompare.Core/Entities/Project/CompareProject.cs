@@ -41,7 +41,7 @@
         /// Gets or sets a value indicating whether the database type is editalbe
         /// </summary>
         [XmlIgnore]
-        public bool EditableDatabaseType { get; set; } = false;
+        public bool EditableDatabaseType { get; set; }
 
         /// <summary>
         /// Gets or sets the result of the comparison

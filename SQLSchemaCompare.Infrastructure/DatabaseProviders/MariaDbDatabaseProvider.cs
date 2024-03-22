@@ -22,7 +22,7 @@
         /// <param name="cipherService">The injected cipher service</param>
         /// <param name="options">The options to connect to the MariaDB Database</param>
         public MariaDbDatabaseProvider(ILoggerFactory loggerFactory, ICipherService cipherService, MariaDbDatabaseProviderOptions options)
-            : base(loggerFactory, cipherService, new MySqlDatabaseProviderOptions { Hostname = options.Hostname, Port = options.Port, Username = options.Username, Password = options.Password, SavePassword = options.SavePassword, UseSSL = options.UseSSL, Database = options.Database })
+            : base(loggerFactory, cipherService, new MySqlDatabaseProviderOptions { Hostname = options.Hostname, Port = options.Port, Username = options.Username, Password = options.Password, SavePassword = options.SavePassword, UseSsl = options.UseSsl, Database = options.Database })
         {
         }
 
@@ -40,14 +40,9 @@
             query.AppendLine("       a.COLUMN_NAME as Name,");
             query.AppendLine("       CAST(a.ORDINAL_POSITION AS SIGNED) as OrdinalPosition,");
 
-            if (this.CurrentServerVersion.Major > 10 || (this.CurrentServerVersion.Major == 10 && this.CurrentServerVersion.Minor >= 2))
-            {
-                query.AppendLine("       CASE WHEN a.COLUMN_DEFAULT = 'NULL' THEN NULL ELSE a.COLUMN_DEFAULT END as ColumnDefault,");
-            }
-            else
-            {
-                query.AppendLine("       a.COLUMN_DEFAULT as ColumnDefault,");
-            }
+            query.AppendLine(this.CurrentServerVersion.Major > 10 || (this.CurrentServerVersion.Major == 10 && this.CurrentServerVersion.Minor >= 2)
+                ? "       CASE WHEN a.COLUMN_DEFAULT = 'NULL' THEN NULL ELSE a.COLUMN_DEFAULT END as ColumnDefault,"
+                : "       a.COLUMN_DEFAULT as ColumnDefault,");
 
             query.AppendLine("       a.IS_NULLABLE as IsNullable,");
             query.AppendLine("       a.DATA_TYPE as DataType,");

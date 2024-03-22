@@ -87,6 +87,9 @@
                             State = ProjectState.New,
                         };
                         break;
+
+                    default:
+                        throw new NotSupportedException("Unknown Database Type");
                 }
             }
             else

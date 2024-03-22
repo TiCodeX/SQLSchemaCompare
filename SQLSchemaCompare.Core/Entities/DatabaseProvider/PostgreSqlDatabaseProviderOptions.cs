@@ -8,7 +8,7 @@
         /// <summary>
         /// The default port
         /// </summary>
-        public const ushort DefaultPort = 5432;
+        public static readonly ushort DefaultPort = 5432;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDatabaseProviderOptions"/> class

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Linq;
     using System.Text;
@@ -18,6 +19,11 @@
     /// </summary>
     internal class MicrosoftSqlScripter : ADatabaseScripter<MicrosoftSqlScriptHelper>
     {
+        /// <summary>
+        /// The alter regex replacement
+        /// </summary>
+        private const string AlterRegexReplacement = @"$1ALTER$2$3$4";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MicrosoftSqlScripter"/> class.
         /// </summary>
@@ -68,7 +74,7 @@
                 .ToList();
             foreach (var col in columns)
             {
-                sb.Append($"{this.Indent}{this.ScriptHelper.ScriptColumn(col)}");
+                sb.Append($"{Indent}{this.ScriptHelper.ScriptColumn(col)}");
                 sb.AppendLine(++i == columns.Count ? string.Empty : ",");
             }
 
@@ -243,9 +249,9 @@
             var endColumn = table.Columns.Single(x => x.Name == table.PeriodEndColumn);
             var sb = new StringBuilder();
             sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(table)} ADD");
-            sb.AppendLine($"{this.Indent}{this.ScriptHelper.ScriptColumn(startColumn)},");
-            sb.AppendLine($"{this.Indent}{this.ScriptHelper.ScriptColumn(endColumn)},");
-            sb.AppendLine($"{this.Indent}PERIOD FOR {table.PeriodName} ({this.ScriptHelper.ScriptObjectName(table.PeriodStartColumn)}, {this.ScriptHelper.ScriptObjectName(table.PeriodEndColumn)})");
+            sb.AppendLine($"{Indent}{this.ScriptHelper.ScriptColumn(startColumn)},");
+            sb.AppendLine($"{Indent}{this.ScriptHelper.ScriptColumn(endColumn)},");
+            sb.AppendLine($"{Indent}PERIOD FOR {table.PeriodName} ({this.ScriptHelper.ScriptObjectName(table.PeriodStartColumn)}, {this.ScriptHelper.ScriptObjectName(table.PeriodEndColumn)})");
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
         }
@@ -282,6 +288,10 @@
             {
                 sb.Append(this.ScriptAlterTableDropPeriod(targetTable));
                 sb.Append(this.ScriptAlterTableAddPeriod(sourceTable));
+            }
+            else
+            {
+                // Do nothing
             }
 
             return sb.ToString();
@@ -366,7 +376,7 @@
             sb.AppendLine($"INDEX {this.ScriptHelper.ScriptObjectName(index.Name)} ON {this.ScriptHelper.ScriptObjectName(index.TableSchema, index.TableName)}({string.Join(",", columnList)})");
             if (!string.IsNullOrWhiteSpace(indexMicrosoft.FilterDefinition))
             {
-                sb.AppendLine($"{this.Indent}WHERE {indexMicrosoft.FilterDefinition}");
+                sb.AppendLine($"{Indent}WHERE {indexMicrosoft.FilterDefinition}");
             }
 
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
@@ -419,10 +429,9 @@
         protected override string ScriptAlterView(ABaseDbView sourceView, ABaseDbView targetView)
         {
             const string pattern = @"^(\s*)CREATE(\s+)(VIEW)(\s+)";
-            const string replacement = @"$1ALTER$2$3$4";
 
             var sb = new StringBuilder();
-            sb.Append(Regex.Replace(sourceView.ViewDefinition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Multiline));
+            sb.Append(Regex.Replace(sourceView.ViewDefinition, pattern, AlterRegexReplacement, RegexOptions.IgnoreCase | RegexOptions.Multiline));
             if (!sourceView.ViewDefinition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
@@ -459,10 +468,9 @@
         protected override string ScriptAlterFunction(ABaseDbFunction sourceFunction, ABaseDbFunction targetFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             const string pattern = @"^(\s*)CREATE(\s+)(FUNCTION)(\s+)";
-            const string replacement = @"$1ALTER$2$3$4";
 
             var sb = new StringBuilder();
-            sb.Append(Regex.Replace(sourceFunction.Definition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Multiline));
+            sb.Append(Regex.Replace(sourceFunction.Definition, pattern, AlterRegexReplacement, RegexOptions.IgnoreCase | RegexOptions.Multiline));
             if (!sourceFunction.Definition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
@@ -499,10 +507,9 @@
         protected override string ScriptAlterStoredProcedure(ABaseDbStoredProcedure sourceStoredProcedure, ABaseDbStoredProcedure targetStoredProcedure)
         {
             const string pattern = @"^(\s*)CREATE(\s+)(PROC|PROCEDURE)(\s+)";
-            const string replacement = @"$1ALTER$2$3$4";
 
             var sb = new StringBuilder();
-            sb.Append(Regex.Replace(sourceStoredProcedure.Definition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Multiline));
+            sb.Append(Regex.Replace(sourceStoredProcedure.Definition, pattern, AlterRegexReplacement, RegexOptions.IgnoreCase | RegexOptions.Multiline));
             if (!sourceStoredProcedure.Definition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
@@ -540,11 +547,10 @@
         protected override string ScriptAlterTrigger(ABaseDbTrigger sourceTrigger, ABaseDbTrigger targetTrigger)
         {
             const string pattern = @"^(\s*)CREATE(\s+)(TRIGGER)(\s+)";
-            const string replacement = @"$1ALTER$2$3$4";
 
             var sb = new StringBuilder();
             sb.AppendLine(this.ScriptHelper.ScriptCommitTransaction());
-            sb.Append(Regex.Replace(sourceTrigger.Definition, pattern, replacement, RegexOptions.IgnoreCase | RegexOptions.Multiline));
+            sb.Append(Regex.Replace(sourceTrigger.Definition, pattern, AlterRegexReplacement, RegexOptions.IgnoreCase | RegexOptions.Multiline));
             if (!sourceTrigger.Definition.EndsWith("\n", StringComparison.Ordinal))
             {
                 sb.AppendLine();
@@ -565,17 +571,17 @@
 
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE SEQUENCE {this.ScriptHelper.ScriptObjectName(sequence)}");
-            sb.AppendLine($"{this.Indent}AS {sequence.DataType}");
-            sb.AppendLine($"{this.Indent}START WITH {sequence.StartValue}");
-            sb.AppendLine($"{this.Indent}INCREMENT BY {sequence.Increment}");
-            sb.AppendLine($"{this.Indent}MINVALUE {sequence.MinValue}");
-            sb.AppendLine($"{this.Indent}MAXVALUE {sequence.MaxValue}");
+            sb.AppendLine($"{Indent}AS {sequence.DataType}");
+            sb.AppendLine($"{Indent}START WITH {sequence.StartValue}");
+            sb.AppendLine($"{Indent}INCREMENT BY {sequence.Increment}");
+            sb.AppendLine($"{Indent}MINVALUE {sequence.MinValue}");
+            sb.AppendLine($"{Indent}MAXVALUE {sequence.MaxValue}");
             sb.AppendLine(sequence.IsCycling ?
-                $"{this.Indent}CYCLE" :
-                $"{this.Indent}NO CYCLE");
+                $"{Indent}CYCLE" :
+                $"{Indent}NO CYCLE");
             sb.AppendLine(sequenceMicrosoft.IsCached ?
-                $"{this.Indent}CACHE" :
-                $"{this.Indent}NO CACHE");
+                $"{Indent}CACHE" :
+                $"{Indent}NO CACHE");
 
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
             return sb.ToString();
@@ -609,36 +615,36 @@
             sb.AppendLine($"ALTER SEQUENCE {this.ScriptHelper.ScriptObjectName(targetSequence)}");
             if (sourceSequence.StartValue != targetSequence.StartValue)
             {
-                sb.AppendLine($"{this.Indent}RESTART WITH {sourceSequence.StartValue}");
+                sb.AppendLine($"{Indent}RESTART WITH {sourceSequence.StartValue}");
             }
 
             if (sourceSequence.Increment != targetSequence.Increment)
             {
-                sb.AppendLine($"{this.Indent}INCREMENT BY {sourceSequence.Increment}");
+                sb.AppendLine($"{Indent}INCREMENT BY {sourceSequence.Increment}");
             }
 
             if (sourceSequence.MinValue != targetSequence.MinValue)
             {
-                sb.AppendLine($"{this.Indent}MINVALUE {sourceSequence.MinValue}");
+                sb.AppendLine($"{Indent}MINVALUE {sourceSequence.MinValue}");
             }
 
             if (sourceSequence.MaxValue != targetSequence.MaxValue)
             {
-                sb.AppendLine($"{this.Indent}MAXVALUE {sourceSequence.MaxValue}");
+                sb.AppendLine($"{Indent}MAXVALUE {sourceSequence.MaxValue}");
             }
 
             if (sourceSequence.IsCycling != targetSequence.IsCycling)
             {
                 sb.AppendLine(sourceSequence.IsCycling ?
-                    $"{this.Indent}CYCLE" :
-                    $"{this.Indent}NO CYCLE");
+                    $"{Indent}CYCLE" :
+                    $"{Indent}NO CYCLE");
             }
 
             if (sourceSequenceMicrosoft.IsCached != targetSequenceMicrosoft.IsCached)
             {
                 sb.AppendLine(sourceSequenceMicrosoft.IsCached ?
-                    $"{this.Indent}CACHE" :
-                    $"{this.Indent}NO CACHE");
+                    $"{Indent}CACHE" :
+                    $"{Indent}NO CACHE");
             }
 
             sb.Append(this.ScriptHelper.ScriptCommitTransaction());
@@ -652,7 +658,7 @@
 
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE TYPE {this.ScriptHelper.ScriptObjectName(type)}");
-            sb.Append($"{this.Indent}FROM {msType.SystemType.Name}");
+            sb.Append($"{Indent}FROM {msType.SystemType.Name}");
 
             switch (msType.SystemType.Name)
             {
@@ -692,6 +698,10 @@
                 case "decimal":
                 case "numeric":
                     sb.Append($"({msType.Precision.ToString(CultureInfo.InvariantCulture)},{msType.Scale.ToString(CultureInfo.InvariantCulture)})");
+                    break;
+
+                default:
+                    // Do nothing
                     break;
             }
 
@@ -754,6 +764,7 @@
         /// <param name="t">The source table</param>
         /// <param name="targetTable">The target table</param>
         /// <returns>The script</returns>
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         private string ScriptAlterTableColumns(ABaseDbTable t, ABaseDbTable targetTable)
         {
             var sb = new StringBuilder();

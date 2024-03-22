@@ -116,22 +116,22 @@
             /// <summary>
             /// Gets the company name
             /// </summary>
-            public string CompanyName => throw new System.NotImplementedException();
+            public string CompanyName => throw new System.NotSupportedException();
 
             /// <summary>
             /// Gets the product name
             /// </summary>
-            public string ProductName => throw new System.NotImplementedException();
+            public string ProductName => throw new System.NotSupportedException();
 
             /// <summary>
             /// Gets a value indicating whether is development
             /// </summary>
-            public bool IsDevelopment => throw new System.NotImplementedException();
+            public bool IsDevelopment => throw new System.NotSupportedException();
 
             /// <summary>
             /// Gets the authoritation header name
             /// </summary>
-            public string AuthorizationHeaderName => throw new System.NotImplementedException();
+            public string AuthorizationHeaderName => throw new System.NotSupportedException();
 
             /// <summary>
             /// Gets the app settings full filename
@@ -141,32 +141,32 @@
             /// <summary>
             /// Gets the logger layout
             /// </summary>
-            public string LoggerLayout => throw new System.NotImplementedException();
+            public string LoggerLayout => throw new System.NotSupportedException();
 
             /// <summary>
             /// Gets the logger file
             /// </summary>
-            public string LoggerFile => throw new System.NotImplementedException();
+            public string LoggerFile => throw new System.NotSupportedException();
 
             /// <summary>
             /// Gets the logger max archive files
             /// </summary>
-            public int LoggerMaxArchiveFiles => throw new System.NotImplementedException();
+            public int LoggerMaxArchiveFiles => throw new System.NotSupportedException();
 
             /// <summary>
             /// Gets the electron auth app id
             /// </summary>
-            public string ElectronAuthAppId => throw new System.NotImplementedException();
+            public string ElectronAuthAppId => throw new System.NotSupportedException();
 
             /// <summary>
             /// Gets the product code
             /// </summary>
-            public string ProductCode => throw new System.NotImplementedException();
+            public string ProductCode => throw new System.NotSupportedException();
 
             /// <summary>
             /// Gets or sets the app version
             /// </summary>
-            public string AppVersion { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+            public string AppVersion { get => throw new System.NotSupportedException(); set => throw new System.NotSupportedException(); }
         }
     }
 }

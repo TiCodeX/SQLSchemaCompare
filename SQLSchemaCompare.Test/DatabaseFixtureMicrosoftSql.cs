@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -17,7 +16,6 @@
         /// <summary>
         /// Gets the list of MicrosoftSQL server ports
         /// </summary>
-        [SuppressMessage("Code Smell", "S2589:Boolean expressions should not be gratuitous", Justification = "Debugging convenience")]
         public static IEnumerable<object[]> ServerPorts
         {
             get

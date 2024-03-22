@@ -56,7 +56,7 @@
         /// <summary>
         /// Gets or sets a value indicating whether to use the SSL for the source
         /// </summary>
-        public bool SourceUseSSL { get; set; }
+        public bool SourceUseSsl { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to ignore the server certificate for the source
@@ -106,7 +106,7 @@
         /// <summary>
         /// Gets or sets a value indicating whether to use the SSL for the target
         /// </summary>
-        public bool TargetUseSSL { get; set; }
+        public bool TargetUseSsl { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to ignore the server certificate for the target

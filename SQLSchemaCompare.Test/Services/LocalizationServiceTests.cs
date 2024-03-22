@@ -2,7 +2,7 @@
 {
     using System.Globalization;
     using System.IO;
-    using System.Reflection;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using FluentAssertions;
     using TiCodeX.SQLSchemaCompare.Core.Enums;
@@ -67,12 +67,10 @@
         {
             try
             {
-#pragma warning disable CA1304 // Specify CultureInfo
                 this.localizationService.SetLanguage(Language.English);
-                this.localizationService.GetString("ButtonNewProject").Should().Be("New Project");
+                this.localizationService.GetString("ButtonNewProject", Localization.Culture).Should().Be("New Project");
                 this.localizationService.SetLanguage(Language.Italian);
-                this.localizationService.GetString("ButtonNewProject").Should().Be("Nuovo Progetto");
-#pragma warning restore CA1304 // Specify CultureInfo
+                this.localizationService.GetString("ButtonNewProject", Localization.Culture).Should().Be("Nuovo Progetto");
 
                 this.localizationService.GetString("ButtonNewProject", CultureInfo.GetCultureInfo("en")).Should().Be("New Project");
                 this.localizationService.GetString("ButtonNewProject", CultureInfo.GetCultureInfo("it")).Should().Be("Nuovo Progetto");
@@ -128,16 +126,14 @@
             var dict = this.localizationService.GetLocalizationDictionary();
 
             // Find the root path of the solution
-            var solutionDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            while (!File.Exists(Path.Combine(solutionDir, "SQLSchemaCompare.sln")))
+            var solutionDir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            while (solutionDir != null && !solutionDir.GetFiles("*.sln").Any())
             {
-                var parentDir = Directory.GetParent(solutionDir);
-                parentDir.Should().NotBeNull();
-                solutionDir = parentDir.FullName;
+                solutionDir = solutionDir.Parent;
             }
 
             var expr = new Regex("Localization\\.Get\\(\\\"(?<token>\\w+)\\\"\\)");
-            foreach (var file in Directory.EnumerateFiles(Path.Combine(solutionDir, "SQLSchemaCompare.UI", "wwwroot", "js"), "*.ts", SearchOption.AllDirectories))
+            foreach (var file in Directory.EnumerateFiles(Path.Combine(solutionDir.FullName, "SQLSchemaCompare.UI", "wwwroot", "js"), "*.ts", SearchOption.AllDirectories))
             {
                 var content = File.ReadAllText(file);
                 foreach (Match x in expr.Matches(content))

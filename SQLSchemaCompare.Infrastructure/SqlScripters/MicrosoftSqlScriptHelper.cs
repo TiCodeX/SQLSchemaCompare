@@ -48,7 +48,8 @@
         }
 
         /// <inheritdoc/>
-        public override string ScriptColumn(ABaseDbColumn column, bool scriptDefaultConstraint = true)
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
+        public override string ScriptColumn(ABaseDbColumn column, bool scriptDefaultConstraint)
         {
             if (column == null)
             {
@@ -124,7 +125,7 @@
         /// </summary>
         /// <param name="column">The column</param>
         /// <returns>The scripted data type</returns>
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Switch with lot of cases")]
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         private string ScriptDataType(MicrosoftSqlColumn column)
         {
             // Computed columns return AS + definition
@@ -219,7 +220,7 @@
                 case "geography":
                 case "geometry":
                     return this.ScriptObjectName(column.DataType);
-                default: throw new ArgumentException($"Unknown column data type: {column.DataType}");
+                default: throw new ArgumentException($"Unknown data type: {column.DataType}");
             }
         }
     }

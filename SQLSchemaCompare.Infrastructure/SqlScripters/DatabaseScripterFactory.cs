@@ -40,7 +40,7 @@
                 case PostgreSqlDb _:
                     return new PostgreSqlScripter(this.loggerFactory.CreateLogger(nameof(PostgreSqlScripter)), options);
                 default:
-                    throw new NotImplementedException("Unknown Database Type");
+                    throw new NotSupportedException("Unknown Database Type");
             }
         }
     }

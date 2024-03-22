@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
     using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
@@ -50,9 +51,10 @@
         /// Performs a query
         /// </summary>
         /// <typeparam name="T">The type of the result</typeparam>
-        /// <param name="query">The SQL query</param>
+        /// <param name="sqlQuery">The SQL query</param>
         /// <returns>The list of specified type</returns>
-        public List<T> Query<T>(string query)
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
+        public List<T> Query<T>(string sqlQuery)
             where T : new()
         {
             var result = new List<T>();
@@ -60,7 +62,7 @@
             using (var command = this.Database.GetDbConnection().CreateCommand())
             {
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
-                command.CommandText = query;
+                command.CommandText = sqlQuery;
 #pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
                 using (var reader = command.ExecuteReader())
                 {
@@ -117,9 +119,20 @@
         /// </summary>
         /// <typeparam name="T">The type of the result</typeparam>
         /// <param name="query">The SQL query</param>
+        /// <returns>The list of the requested column</returns>
+        public List<T> QuerySingleColumn<T>(string query)
+        {
+            return this.QuerySingleColumn<T>(query, 0);
+        }
+
+        /// <summary>
+        /// Performs a query
+        /// </summary>
+        /// <typeparam name="T">The type of the result</typeparam>
+        /// <param name="query">The SQL query</param>
         /// <param name="columnIndex">The desired column</param>
         /// <returns>The list of the requested column</returns>
-        public List<T> QuerySingleColumn<T>(string query, int columnIndex = 0)
+        public List<T> QuerySingleColumn<T>(string query, int columnIndex)
         {
             var result = new List<T>();
             this.Database.OpenConnection();
@@ -135,11 +148,11 @@
                         try
                         {
                             var value = reader.GetValue(columnIndex);
-                            result.Add(value is DBNull ? default(T) : (T)value);
+                            result.Add(value is DBNull ? default : (T)value);
                         }
                         catch (IndexOutOfRangeException)
                         {
-                            result.Add(default(T));
+                            result.Add(default);
                         }
                     }
                 }

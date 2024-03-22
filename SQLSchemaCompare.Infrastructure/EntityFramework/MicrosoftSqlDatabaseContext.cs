@@ -21,7 +21,7 @@
             : base(loggerFactory, dbpo)
         {
             var server = dbpo.Hostname;
-            if (!server.Contains("\\", StringComparison.Ordinal))
+            if (!server.Contains('\\', StringComparison.Ordinal))
             {
                 server += $",{dbpo.Port}";
             }
@@ -43,7 +43,7 @@
 
             // The driver now defaults to secure-by-default options
             // Ref: https://learn.microsoft.com/en-us/sql/connect/oledb/release-notes-for-oledb-driver-for-sql-server?view=sql-server-ver16#features-added-2
-            if (!dbpo.UseSSL)
+            if (!dbpo.UseSsl)
             {
                 connStr += "Encrypt=false;";
             }

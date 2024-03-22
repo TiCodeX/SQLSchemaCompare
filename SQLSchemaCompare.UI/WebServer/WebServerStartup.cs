@@ -1,7 +1,6 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.WebServer
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Mvc;
@@ -104,7 +103,6 @@
         /// <param name="appSettingsService">The app settings service</param>
         /// <param name="loggerFactory">The injected logger factory</param>
         [Obfuscation(Exclude = true)]
-        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "This should not be static otherwise it's not found")]
         public void Configure(
             IApplicationBuilder app,
             IAppGlobals appGlobals,
@@ -151,7 +149,7 @@
                 app.UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = new HyphenFriendlyEmbeddedFileProvider(
-                        new EmbeddedFileProvider(Assembly.GetExecutingAssembly(), "TiCodeX.SQLSchemaCompare.UI.wwwroot"),
+                        new EmbeddedFileProvider(typeof(WebServerStartup).Assembly, "TiCodeX.SQLSchemaCompare.UI.wwwroot"),
                         logger),
                 });
             }

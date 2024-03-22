@@ -25,6 +25,7 @@
 
         /// <inheritdoc />
         [SuppressMessage("Blocker Code Smell", "S4462:Calls to 'async' methods should not be blocking.", Justification = "Necessary")]
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         public void ExecuteTasks(List<TaskWork> tasks)
         {
             this.cancellationTokenSource = new CancellationTokenSource();
@@ -80,7 +81,7 @@
                             }
                         }
 
-                        runningTasks.Add(new Tuple<TaskWork, Task>(task, this.PerformTask(task)));
+                        runningTasks.Add(new Tuple<TaskWork, Task>(task, this.PerformTaskAsync(task)));
                     }
                 },
                 this.cancellationTokenSource.Token,
@@ -105,7 +106,7 @@
         /// </summary>
         /// <param name="taskWork">The task work</param>
         /// <returns>The task</returns>
-        private Task PerformTask(TaskWork taskWork)
+        private Task PerformTaskAsync(TaskWork taskWork)
         {
             return Task.Factory.StartNew(
                 () =>

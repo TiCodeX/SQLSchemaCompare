@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AnalysisInput xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Rules>
+    <Rule>
+      <!--Control flow statements "if", "switch", "for", "foreach", "while", "do" and "try" should not be nested too deeply-->
+      <Key>S134</Key>
+      <Parameters>
+        <Parameter>
+          <Key>maximumNestingLevel</Key>
+          <Value>5</Value>
+        </Parameter>
+      </Parameters>
+    </Rule>
+    <Rule>
+      <!--Functions should not have too many lines of code-->
+      <Key>S138</Key>
+      <Parameters>
+        <Parameter>
+          <Key>max</Key>
+          <Value>150</Value>
+        </Parameter>
+      </Parameters>
+    </Rule>
+    <Rule>
+      <!--Expressions should not be too complex-->
+      <Key>S1067</Key>
+      <Parameters>
+        <Parameter>
+          <Key>max</Key>
+          <Value>10</Value>
+        </Parameter>
+      </Parameters>
+    </Rule>
+    <Rule>
+      <!--"switch case" clauses should not have too many lines of code-->
+      <Key>S1151</Key>
+      <Parameters>
+        <Parameter>
+          <Key>max</Key>
+          <Value>50</Value>
+        </Parameter>
+      </Parameters>
+    </Rule>
+  </Rules>
+</AnalysisInput>

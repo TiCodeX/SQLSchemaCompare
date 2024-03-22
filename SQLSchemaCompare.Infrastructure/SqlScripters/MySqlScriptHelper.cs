@@ -1,7 +1,6 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Text;
     using System.Text.RegularExpressions;
     using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
@@ -29,7 +28,7 @@
         }
 
         /// <inheritdoc/>
-        public override string ScriptColumn(ABaseDbColumn column, bool scriptDefaultConstraint = true)
+        public override string ScriptColumn(ABaseDbColumn column, bool scriptDefaultConstraint)
         {
             if (column == null)
             {
@@ -97,7 +96,6 @@
         /// </summary>
         /// <param name="column">The column</param>
         /// <returns>The scripted data type</returns>
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Switch with lot of cases")]
         private string ScriptDataType(MySqlColumn column)
         {
             if (column.Extra.Equals("VIRTUAL GENERATED", StringComparison.OrdinalIgnoreCase))
@@ -171,7 +169,7 @@
                         return $"{column.ColumnType}{binary}{charachterSet}{collate}";
                     }
 
-                default: throw new ArgumentException($"Unknown column data type: {column.DataType}");
+                default: throw new ArgumentException($"Unknown data type: {column.DataType}");
             }
         }
     }

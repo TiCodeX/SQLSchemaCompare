@@ -375,7 +375,7 @@
             var savePassword = direction == CompareDirection.Source ? options.SourceSavePassword : options.TargetSavePassword;
             var useWindowsAuthentication = direction == CompareDirection.Source ? options.SourceUseWindowsAuthentication : options.TargetUseWindowsAuthentication;
             var useAzureAuthentication = direction == CompareDirection.Source ? options.SourceUseAzureAuthentication : options.TargetUseAzureAuthentication;
-            var useSSL = direction == CompareDirection.Source ? options.SourceUseSSL : options.TargetUseSSL;
+            var useSsl = direction == CompareDirection.Source ? options.SourceUseSsl : options.TargetUseSsl;
             var ignoreServerCertificate = direction == CompareDirection.Source ? options.SourceIgnoreServerCertificate : options.TargetIgnoreServerCertificate;
             var database = direction == CompareDirection.Source ? options.SourceDatabase : options.TargetDatabase;
 
@@ -391,7 +391,7 @@
                         SavePassword = savePassword,
                         UseWindowsAuthentication = useWindowsAuthentication,
                         UseAzureAuthentication = useAzureAuthentication,
-                        UseSSL = useSSL,
+                        UseSsl = useSsl,
                         IgnoreServerCertificate = ignoreServerCertificate,
                         Database = database,
                     };
@@ -403,7 +403,7 @@
                         Username = username,
                         Password = password,
                         SavePassword = savePassword,
-                        UseSSL = useSSL,
+                        UseSsl = useSsl,
                         IgnoreServerCertificate = ignoreServerCertificate,
                         Database = database,
                     };
@@ -415,7 +415,7 @@
                         Username = username,
                         Password = password,
                         SavePassword = savePassword,
-                        UseSSL = useSSL,
+                        UseSsl = useSsl,
                         IgnoreServerCertificate = ignoreServerCertificate,
                         Database = database,
                     };
@@ -427,7 +427,7 @@
                         Username = username,
                         Password = password,
                         SavePassword = savePassword,
-                        UseSSL = useSSL,
+                        UseSsl = useSsl,
                         IgnoreServerCertificate = ignoreServerCertificate,
                         Database = database,
                     };

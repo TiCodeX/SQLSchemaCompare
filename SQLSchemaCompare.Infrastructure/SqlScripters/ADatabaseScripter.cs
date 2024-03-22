@@ -21,6 +21,11 @@
         where TScriptHelper : AScriptHelper
     {
         /// <summary>
+        /// Gets the indentation value
+        /// </summary>
+        protected const string Indent = "    "; // 4 spaces
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ADatabaseScripter{TScriptHelper}"/> class.
         /// </summary>
         /// <param name="logger">The injected logger</param>
@@ -32,11 +37,6 @@
             this.Options = options;
             this.ScriptHelper = scriptHelper;
         }
-
-        /// <summary>
-        /// Gets the indentation value
-        /// </summary>
-        protected string Indent => "    "; // 4 spaces
 
         /// <summary>
         /// Gets the logger
@@ -65,7 +65,7 @@
         }
 
         /// <inheritdoc/>
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         public string GenerateFullCreateScript(ABaseDb database)
         {
             if (database == null)
@@ -279,7 +279,7 @@
         }
 
         /// <inheritdoc/>
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         public string GenerateFullDropScript(ABaseDb database)
         {
             if (database == null)
@@ -640,8 +640,6 @@
                     return this.ScriptDropTrigger(tr);
                 case ABaseDbDataType dt:
                     return this.ScriptDropType(dt);
-                case ABaseDbColumn:
-                    throw new NotImplementedException();
                 default:
                     throw new NotSupportedException();
             }

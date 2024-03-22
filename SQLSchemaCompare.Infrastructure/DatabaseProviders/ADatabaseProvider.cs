@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
@@ -19,6 +20,7 @@
     /// <typeparam name="TDatabaseProviderOptions">Concrete type of the database provider options</typeparam>
     /// <typeparam name="TDatabaseContext">Concrete type of the database context</typeparam>
     /// <typeparam name="TDatabase">Concrete type of the database</typeparam>
+    [SuppressMessage("Major Code Smell", "S2436:Types and methods should not have too many generic parameters", Justification = "Necessary")]
     public abstract class ADatabaseProvider<TDatabaseProviderOptions, TDatabaseContext, TDatabase> : IDatabaseProvider
         where TDatabaseProviderOptions : ADatabaseProviderOptions
         where TDatabaseContext : ADatabaseContext<TDatabaseProviderOptions>
@@ -76,6 +78,8 @@
         /// <param name="context">The database context</param>
         /// <param name="taskInfo">The task info for async operations</param>
         /// <returns>The discovered database structure</returns>
+        [SuppressMessage("Major Code Smell", "S138:Functions should not have too many lines of code", Justification = "TODO")]
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         protected TDatabase DiscoverDatabase(TDatabaseContext context, TaskInfo taskInfo)
         {
             if (context == null)
@@ -188,7 +192,7 @@
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "Error retrieving foreign keys");
+                this.Logger.LogError(ex, "Error retrieving primary keys");
                 exceptions.Add(ex);
             }
 

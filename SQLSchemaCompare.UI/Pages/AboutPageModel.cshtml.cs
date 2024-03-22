@@ -1,10 +1,7 @@
-namespace TiCodeX.SQLSchemaCompare.UI.Pages
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
-    using System;
     using Microsoft.AspNetCore.Mvc.RazorPages;
-    using Microsoft.Extensions.Logging;
     using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
     /// <summary>
     /// PageModel of the about page

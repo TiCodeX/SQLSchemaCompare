@@ -1,6 +1,7 @@
-namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
     using Microsoft.Extensions.Logging;
@@ -16,6 +17,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
     /// <summary>
     /// Retrieves various information from a PostgreSQL Server
     /// </summary>
+    [SuppressMessage("Minor Code Smell", "S1192:String literals should not be duplicated", Justification = "Necessary in SQL code")]
     internal class PostgreSqlDatabaseProvider
         : ADatabaseProvider<PostgreSqlDatabaseProviderOptions, PostgreSqlDatabaseContext, PostgreSqlDb>
     {
@@ -50,7 +52,7 @@ namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
                 Database = "postgres",
                 Username = this.Options.Username,
                 Password = this.Options.Password,
-                UseSSL = this.Options.UseSSL,
+                UseSsl = this.Options.UseSsl,
             };
 
             using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.CipherService, options))

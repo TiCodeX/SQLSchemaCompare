@@ -62,7 +62,7 @@
             var i = 0;
             foreach (var col in columns)
             {
-                sb.Append($"{this.Indent}{this.ScriptHelper.ScriptColumn(col)}");
+                sb.Append($"{Indent}{this.ScriptHelper.ScriptColumn(col)}");
                 sb.AppendLine(++i == ncol ? string.Empty : ",");
             }
 
@@ -312,6 +312,10 @@
             else if (index.ConstraintType == "UNIQUE")
             {
                 sb.Append("UNIQUE ");
+            }
+            else
+            {
+                // Do nothing
             }
 
             sb.Append($"INDEX {index.Name} ");

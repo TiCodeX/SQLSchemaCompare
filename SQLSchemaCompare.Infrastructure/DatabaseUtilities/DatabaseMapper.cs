@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using TiCodeX.SQLSchemaCompare.Core.Entities;
     using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
@@ -47,6 +48,7 @@
         /// </summary>
         /// <param name="maps">The objects to map</param>
         /// <param name="taskInfo">The task info</param>
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         private void PerformMapping(IReadOnlyCollection<ObjectMap> maps, TaskInfo taskInfo = null)
         {
             var i = 1;
@@ -78,6 +80,10 @@
                         else if (sourceObject is ABaseDbView view)
                         {
                             this.PerformViewMapping(view);
+                        }
+                        else
+                        {
+                            // Do nothing
                         }
                     }
                 }

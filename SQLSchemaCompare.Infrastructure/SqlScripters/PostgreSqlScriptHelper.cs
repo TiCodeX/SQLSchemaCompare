@@ -70,7 +70,7 @@
                 case 'v':
                     sb.Append("VOLATILE");
                     break;
-                default: throw new ArgumentException($"Unknown function volatile: {function.Volatile}");
+                default: throw new ArgumentException($"Unknown volatile attribute: {function.Volatile}");
             }
 
             if (function.SecurityType == "DEFINER")
@@ -108,6 +108,9 @@
                     break;
                 case 'v':
                     sb.Append("VARIADIC ");
+                    break;
+                default:
+                    // Do nothing
                     break;
             }
 
@@ -149,7 +152,7 @@
         }
 
         /// <inheritdoc/>
-        public override string ScriptColumn(ABaseDbColumn column, bool scriptDefaultConstraint = true)
+        public override string ScriptColumn(ABaseDbColumn column, bool scriptDefaultConstraint)
         {
             var col = column as PostgreSqlColumn;
             if (col == null)
@@ -183,7 +186,7 @@
         /// </summary>
         /// <param name="column">The column</param>
         /// <returns>The scripted data type</returns>
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Switch with lot of cases")]
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         public string ScriptDataType(PostgreSqlColumn column)
         {
             if (column == null)
@@ -275,6 +278,10 @@
                         else if (column.DateTimePrecision != 6)
                         {
                             precision = $"({column.DateTimePrecision})";
+                        }
+                        else
+                        {
+                            // Do nothing
                         }
 
                         return $"interval{precision}";
@@ -368,7 +375,7 @@
 
                     return $"{column.UdtName}";
 
-                default: throw new ArgumentException($"Unknown column data type: {column.DataType}");
+                default: throw new ArgumentException($"Unknown data type: {column.DataType}");
             }
         }
 

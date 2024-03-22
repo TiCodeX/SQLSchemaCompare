@@ -19,7 +19,6 @@
         /// Gets the list of MySQL server ports
         /// </summary>
         [SuppressMessage("Code Smell", "S125:Sections of code should not be commented out", Justification = "Historical reference")]
-        [SuppressMessage("Code Smell", "S2589:Boolean expressions should not be gratuitous", Justification = "Debugging convenience")]
         public static IEnumerable<object[]> ServerPorts
         {
             get
@@ -51,7 +50,7 @@
                 Database = databaseName,
                 Username = "root",
                 Password = this.CipherService.EncryptString("test1234"),
-                UseSSL = false,
+                UseSsl = false,
                 Port = port,
             };
         }
@@ -77,14 +76,7 @@
                     continue;
                 }
 
-                if (!string.IsNullOrWhiteSpace(currentDelimiter))
-                {
-                    context.ExecuteNonQuery(query.Replace(currentDelimiter, ";", StringComparison.Ordinal));
-                }
-                else
-                {
-                    context.ExecuteNonQuery(query);
-                }
+                context.ExecuteNonQuery(!string.IsNullOrWhiteSpace(currentDelimiter) ? query.Replace(currentDelimiter, ";", StringComparison.Ordinal) : query);
             }
         }
 

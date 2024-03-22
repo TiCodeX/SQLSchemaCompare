@@ -1,7 +1,6 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.WebServer
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -29,7 +28,6 @@
         /// </summary>
         /// <param name="args">The arguments</param>
         /// <returns>The web host builder</returns>
-        [SuppressMessage("Security", "CA5398:Avoid hardcoded SslProtocols values", Justification = "To avoid older protocols")]
         internal static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             if (args == null || args.Length < 1 || !int.TryParse(args[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out var webPort))
@@ -42,7 +40,7 @@
                 {
                     options.ListenLocalhost(webPort, listenOptions =>
                     {
-                        using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TiCodeX.SQLSchemaCompare.UI.certificate.pfx"))
+                        using (var resourceStream = typeof(Utility).Assembly.GetManifestResourceStream("TiCodeX.SQLSchemaCompare.UI.certificate.pfx"))
                         using (var memoryStream = new MemoryStream())
                         {
                             resourceStream.CopyTo(memoryStream);
@@ -70,7 +68,6 @@
         /// <summary>
         /// Configures the logger
         /// </summary>
-        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Cannot handle dispose of logger")]
         internal static void ConfigureLogger()
         {
             // As we don't have IAppGlobals injected yet, we instantiate it directly
@@ -143,7 +140,7 @@
 
             var logConfig = LogManager.Configuration.LoggingRules.FirstOrDefault(x => x.LoggerNamePattern == "*");
 
-            var nlogLevel = NLog.LogLevel.Info;
+            NLog.LogLevel nlogLevel;
             switch (logLevel)
             {
                 case LogLevel.Trace:
@@ -167,6 +164,8 @@
                 case LogLevel.None:
                     nlogLevel = NLog.LogLevel.Off;
                     break;
+                default:
+                    throw new NotSupportedException("Unknown log level");
             }
 
             logConfig?.SetLoggingLevels(nlogLevel, NLog.LogLevel.Fatal);

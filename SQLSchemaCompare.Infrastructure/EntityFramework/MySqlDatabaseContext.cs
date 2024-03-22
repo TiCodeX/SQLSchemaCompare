@@ -21,21 +21,11 @@
         {
             var connStr = $"Server={dbpo.Hostname};Port={dbpo.Port};Database={dbpo.Database};User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
 
-            if (dbpo.UseSSL)
-            {
-                if (dbpo.IgnoreServerCertificate)
-                {
-                    connStr += "SslMode=Required;";
-                }
-                else
-                {
-                    connStr += "SslMode=VerifyFull;";
-                }
-            }
-            else
-            {
-                connStr += "SslMode=None;AllowPublicKeyRetrieval=true;";
-            }
+            connStr += dbpo.UseSsl
+                ? dbpo.IgnoreServerCertificate
+                    ? "SslMode=Required;"
+                    : "SslMode=VerifyFull;"
+                : "SslMode=None;AllowPublicKeyRetrieval=true;";
 
             this.ConnectionString = connStr;
         }

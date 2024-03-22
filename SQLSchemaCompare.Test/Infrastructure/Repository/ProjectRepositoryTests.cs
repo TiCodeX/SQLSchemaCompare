@@ -131,7 +131,7 @@
                     SavePassword = sourceSavePassword,
                     UseWindowsAuthentication = sourceUseWindowsAuthentication,
                     UseAzureAuthentication = sourceUseAzureAuthentication,
-                    UseSSL = sourceUseSSL,
+                    UseSsl = sourceUseSSL,
                     IgnoreServerCertificate = sourceIgnoreServerCertificate,
                 },
                 TargetProviderOptions = new PostgreSqlDatabaseProviderOptions
@@ -140,7 +140,7 @@
                     Database = targetDatabase,
                     Username = targetUsername,
                     Password = targetPassword,
-                    UseSSL = targetUseSSL,
+                    UseSsl = targetUseSSL,
                     IgnoreServerCertificate = targetIgnoreServerCertificate,
                 },
                 Options = new ProjectOptions

@@ -149,6 +149,7 @@
         /// <param name="source">The source</param>
         /// <param name="target">The target</param>
         /// <param name="scripter">The database scripter</param>
+        [SuppressMessage("Major Code Smell", "S4017:Method signatures should not contain nested generic types", Justification = "TODO")]
         private static void SetCompareResultList<T>(ICollection<CompareResultItem<T>> resultList, IEnumerable<T> source, IEnumerable<T> target, IDatabaseScripter scripter)
             where T : ABaseDbObject
         {
@@ -215,7 +216,7 @@
         /// </summary>
         /// <param name="taskInfo">The task info</param>
         /// <returns>Whether the execution succeeded</returns>
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         private bool ExecuteDatabaseComparison(TaskInfo taskInfo)
         {
             try
@@ -310,7 +311,7 @@
         /// </summary>
         /// <param name="result">The compare result</param>
         /// <param name="compareResultItems">The compare result items</param>
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         private void FillCompareResultItems(CompareResult result, CompareResultItems compareResultItems)
         {
             result.DifferentItems.AddRange(compareResultItems.Schemas.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
@@ -356,7 +357,7 @@
         /// <param name="scripter">The database scripter</param>
         /// <param name="compareResultItems">The compare result items</param>
         /// <returns>The full alter script</returns>
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         private string GenerateFullAlterScript(IDatabaseScripter scripter, CompareResultItems compareResultItems)
         {
             // Add items related to tables directly in the different items list only for the alter script generation
@@ -394,7 +395,7 @@
                     break;
 
                 default:
-                    throw new NotImplementedException("Unknown Database Type");
+                    throw new NotSupportedException("Unknown Database Type");
             }
 
             onlySourceDb.Schemas.AddRange(compareResultItems.Schemas.Where(x => x.SourceItem != null && x.TargetItem == null).Select(x => x.SourceItem));

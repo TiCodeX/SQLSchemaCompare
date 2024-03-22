@@ -89,13 +89,13 @@
                     <label class="tcx-switch">
                         <input type="checkbox" name="@(prefix)UseSSL"
                                data-value-type="boolean"
-                               checked="@Model.UseSSL"
+                               checked="@Model.UseSsl"
                                onchange="Project.HandleUseSSLOnChange($(this), '@prefix')">
                         <span class="tcx-switch-slider"></span>
                     </label>
                 </div>
             </div>
-            <div class="form-group row" style="@(Model.UseSSL ? string.Empty : "display: none;")">
+            <div class="form-group row" style="@(Model.UseSsl ? string.Empty : "display: none;")">
                 <div class="col-9">
                     <label>@Localization.LabelIgnoreServerCertificate</label>
                 </div>

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
     using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
@@ -117,6 +118,7 @@
         /// <param name="dbObject">The database object</param>
         /// <param name="filteringOptions">The filtering options</param>
         /// <returns>Whether to include the object</returns>
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         private static bool FilterIncludeObject(ABaseDbObject dbObject, FilteringOptions filteringOptions)
         {
             var filteredClauses = filteringOptions.Clauses.Where(x => x.ObjectType == null || x.ObjectType == dbObject.ObjectType).ToList();
@@ -161,7 +163,7 @@
                             objectMatch = !objectFieldToCheck.Equals(filterClause.Value, StringComparison.Ordinal);
                             break;
                         default:
-                            throw new NotImplementedException();
+                            throw new NotSupportedException("Unknown operator");
                     }
 
                     // If it's the first match inside the group, take the actual value, otherwise perform an AND
@@ -189,7 +191,7 @@
             // Should never happen because at this point there is at least one filter clause
             if (includeObject == null)
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
 
             return filteringOptions.Include ? includeObject.Value : !includeObject.Value;

@@ -16,7 +16,6 @@
         /// Gets the list of MicrosoftSQL server ports
         /// </summary>
         [SuppressMessage("Code Smell", "S125:Sections of code should not be commented out", Justification = "Historical reference")]
-        [SuppressMessage("Code Smell", "S2589:Boolean expressions should not be gratuitous", Justification = "Debugging convenience")]
         public static IEnumerable<object[]> ServerPorts
         {
             get

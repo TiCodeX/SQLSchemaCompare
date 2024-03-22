@@ -1,5 +1,7 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider
 {
+    using System.Xml.Serialization;
+
     /// <summary>
     /// Provides generic options for Database Provider Class.
     /// </summary>
@@ -38,7 +40,8 @@
         /// <summary>
         /// Gets or sets a value indicating whether to use SSL for the connection
         /// </summary>
-        public bool UseSSL { get; set; }
+        [XmlElement("UseSSL")]
+        public bool UseSsl { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to ignore the server certificate

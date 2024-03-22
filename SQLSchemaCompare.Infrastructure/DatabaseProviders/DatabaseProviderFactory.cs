@@ -46,7 +46,7 @@
                 case MariaDbDatabaseProviderOptions mariaDbOptions:
                     return new MariaDbDatabaseProvider(this.loggerFactory, this.cipherService, mariaDbOptions);
                 default:
-                    throw new NotImplementedException("Unknown Database Type");
+                    throw new NotSupportedException("Unknown Database Type");
             }
         }
     }

@@ -87,7 +87,7 @@
             if (resultItem == null)
             {
                 this.logger.LogError("Unable to find the item specified");
-                throw new NotImplementedException("Unable to find the item specified");
+                throw new NotSupportedException("Unable to find the item specified");
             }
 
             return new JsonResult(new ApiResponse<CompareResultItemScripts>

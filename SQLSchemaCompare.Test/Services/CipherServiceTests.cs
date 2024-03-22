@@ -1,6 +1,7 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Test.Services
 {
     using System;
+    using System.Security.Cryptography;
     using System.Text;
     using FluentAssertions;
     using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
@@ -36,11 +37,9 @@
         [UnitTest]
         public void EncryptDecryptRandomStrings()
         {
-            var rnd = new Random();
             for (var i = 0; i <= 1000; i++)
             {
-                var randomBytes = new byte[i];
-                rnd.NextBytes(randomBytes);
+                var randomBytes = RandomNumberGenerator.GetBytes(i);
                 var randomString = Encoding.UTF8.GetString(randomBytes);
                 var encryptedString = this.cipherService.EncryptString(randomString);
                 var decryptedString = this.cipherService.DecryptString(encryptedString);

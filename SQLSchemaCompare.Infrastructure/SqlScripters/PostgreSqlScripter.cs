@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
     using Microsoft.Extensions.Logging;
@@ -66,7 +67,7 @@
             var i = 0;
             foreach (var col in columns)
             {
-                sb.Append($"{this.Indent}{this.ScriptHelper.ScriptColumn(col)}");
+                sb.Append($"{Indent}{this.ScriptHelper.ScriptColumn(col)}");
                 sb.AppendLine(++i == ncol ? string.Empty : ",");
             }
 
@@ -90,6 +91,7 @@
         }
 
         /// <inheritdoc/>
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         protected override string ScriptAlterTable(ABaseDbTable t)
         {
             var sb = new StringBuilder();
@@ -363,7 +365,7 @@
             {
                 sb.AppendLine($"CREATE VIEW {this.ScriptHelper.ScriptObjectName(view)}");
                 sb.AppendLine("WITH(");
-                sb.AppendLine($"{this.Indent}CHECK_OPTION = {checkOption}");
+                sb.AppendLine($"{Indent}CHECK_OPTION = {checkOption}");
                 sb.AppendLine(") AS");
             }
 
@@ -416,19 +418,19 @@
             if (function.IsAggregate)
             {
                 sb.AppendLine("(");
-                sb.AppendLine($"{this.Indent}SFUNC = {function.AggregateTransitionFunction},");
-                sb.Append($"{this.Indent}STYPE = {PostgreSqlScriptHelper.ScriptFunctionArgumentType(function.AggregateTransitionType, dataTypes)}");
+                sb.AppendLine($"{Indent}SFUNC = {function.AggregateTransitionFunction},");
+                sb.Append($"{Indent}STYPE = {PostgreSqlScriptHelper.ScriptFunctionArgumentType(function.AggregateTransitionType, dataTypes)}");
 
                 if (!string.IsNullOrWhiteSpace(function.AggregateFinalFunction))
                 {
                     sb.AppendLine(",");
-                    sb.Append($"{this.Indent}FINALFUNC = {function.AggregateFinalFunction}");
+                    sb.Append($"{Indent}FINALFUNC = {function.AggregateFinalFunction}");
                 }
 
                 if (!string.IsNullOrWhiteSpace(function.AggregateInitialValue))
                 {
                     sb.AppendLine(",");
-                    sb.Append($"{this.Indent}INITCOND = '{function.AggregateInitialValue}'");
+                    sb.Append($"{Indent}INITCOND = '{function.AggregateInitialValue}'");
                 }
 
                 sb.AppendLine();
@@ -438,17 +440,17 @@
             {
                 var setOfString = function.ReturnSet ? "SETOF " : string.Empty;
 
-                sb.AppendLine($"{this.Indent}RETURNS {setOfString}{PostgreSqlScriptHelper.ScriptFunctionArgumentType(function.ReturnType, dataTypes)}");
-                sb.AppendLine($"{this.Indent}LANGUAGE {function.ExternalLanguage}");
+                sb.AppendLine($"{Indent}RETURNS {setOfString}{PostgreSqlScriptHelper.ScriptFunctionArgumentType(function.ReturnType, dataTypes)}");
+                sb.AppendLine($"{Indent}LANGUAGE {function.ExternalLanguage}");
                 sb.AppendLine();
-                sb.AppendLine($"{this.Indent}COST {function.Cost}");
+                sb.AppendLine($"{Indent}COST {function.Cost}");
 
                 if (function.Rows > 0)
                 {
-                    sb.AppendLine($"{this.Indent}ROWS {function.Rows}");
+                    sb.AppendLine($"{Indent}ROWS {function.Rows}");
                 }
 
-                sb.AppendLine($"{this.Indent}{PostgreSqlScriptHelper.ScriptFunctionAttributes(function)}");
+                sb.AppendLine($"{Indent}{PostgreSqlScriptHelper.ScriptFunctionAttributes(function)}");
                 sb.Append("AS $BODY$");
                 sb.Append(function.Definition);
                 sb.AppendLine("$BODY$;");
@@ -556,17 +558,17 @@
 
             if (sequence.Database.ServerVersion.Major >= 10)
             {
-                sb.AppendLine($"{this.Indent}AS {sequence.DataType}");
+                sb.AppendLine($"{Indent}AS {sequence.DataType}");
             }
 
-            sb.AppendLine($"{this.Indent}START WITH {sequence.StartValue}");
-            sb.AppendLine($"{this.Indent}INCREMENT BY {sequence.Increment}");
-            sb.AppendLine($"{this.Indent}MINVALUE {sequence.MinValue}");
-            sb.AppendLine($"{this.Indent}MAXVALUE {sequence.MaxValue}");
+            sb.AppendLine($"{Indent}START WITH {sequence.StartValue}");
+            sb.AppendLine($"{Indent}INCREMENT BY {sequence.Increment}");
+            sb.AppendLine($"{Indent}MINVALUE {sequence.MinValue}");
+            sb.AppendLine($"{Indent}MAXVALUE {sequence.MaxValue}");
             sb.AppendLine(sequence.IsCycling ?
-                $"{this.Indent}CYCLE" :
-                $"{this.Indent}NO CYCLE");
-            sb.AppendLine($"{this.Indent}CACHE {sequencePgsql.Cache};");
+                $"{Indent}CYCLE" :
+                $"{Indent}NO CYCLE");
+            sb.AppendLine($"{Indent}CACHE {sequencePgsql.Cache};");
             return sb.ToString();
         }
 
@@ -579,6 +581,7 @@
         }
 
         /// <inheritdoc/>
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         protected override string ScriptAlterSequence(ABaseDbSequence sourceSequence, ABaseDbSequence targetSequence)
         {
             var sourceSequencePostgreSql = sourceSequence as PostgreSqlSequence;
@@ -599,7 +602,7 @@
             var appendNewLine = false;
             if (sourceSequence.DataType != targetSequence.DataType)
             {
-                sb.Append($"{this.Indent}AS {sourceSequence.DataType}");
+                sb.Append($"{Indent}AS {sourceSequence.DataType}");
                 appendNewLine = true;
             }
 
@@ -610,7 +613,7 @@
                     sb.AppendLine();
                 }
 
-                sb.Append($"{this.Indent}INCREMENT BY {sourceSequence.Increment}");
+                sb.Append($"{Indent}INCREMENT BY {sourceSequence.Increment}");
                 appendNewLine = true;
             }
 
@@ -621,7 +624,7 @@
                     sb.AppendLine();
                 }
 
-                sb.Append($"{this.Indent}MINVALUE {sourceSequence.MinValue}");
+                sb.Append($"{Indent}MINVALUE {sourceSequence.MinValue}");
                 appendNewLine = true;
             }
 
@@ -632,7 +635,7 @@
                     sb.AppendLine();
                 }
 
-                sb.Append($"{this.Indent}MAXVALUE {sourceSequence.MaxValue}");
+                sb.Append($"{Indent}MAXVALUE {sourceSequence.MaxValue}");
                 appendNewLine = true;
             }
 
@@ -643,7 +646,7 @@
                     sb.AppendLine();
                 }
 
-                sb.Append($"{this.Indent}START WITH {sourceSequence.StartValue}");
+                sb.Append($"{Indent}START WITH {sourceSequence.StartValue}");
                 appendNewLine = true;
             }
 
@@ -654,7 +657,7 @@
                     sb.AppendLine();
                 }
 
-                sb.Append($"{this.Indent}CACHE {sourceSequencePostgreSql.Cache}");
+                sb.Append($"{Indent}CACHE {sourceSequencePostgreSql.Cache}");
                 appendNewLine = true;
             }
 
@@ -666,8 +669,8 @@
                 }
 
                 sb.Append(sourceSequence.IsCycling ?
-                    $"{this.Indent}CYCLE" :
-                    $"{this.Indent}NO CYCLE");
+                    $"{Indent}CYCLE" :
+                    $"{Indent}NO CYCLE");
             }
 
             sb.AppendLine(";");
@@ -675,6 +678,7 @@
         }
 
         /// <inheritdoc />
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         protected override string ScriptCreateType(ABaseDbDataType type, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             var sb = new StringBuilder();
@@ -687,7 +691,7 @@
                     for (var i = 0; i < labels.Length; i++)
                     {
                         sb.AppendLine();
-                        sb.Append($"{this.Indent}'{labels[i]}'");
+                        sb.Append($"{Indent}'{labels[i]}'");
                         if (i != labels.Length - 1)
                         {
                             sb.Append(',');
@@ -706,7 +710,7 @@
                     for (var i = 0; i < attributeNames.Length; i++)
                     {
                         sb.AppendLine();
-                        sb.Append($"{this.Indent}{attributeNames[i]} {PostgreSqlScriptHelper.ScriptFunctionArgumentType(attributeTypeIds[i], dataTypes)}");
+                        sb.Append($"{Indent}{attributeNames[i]} {PostgreSqlScriptHelper.ScriptFunctionArgumentType(attributeTypeIds[i], dataTypes)}");
                         if (i != attributeNames.Length - 1)
                         {
                             sb.Append(',');
@@ -719,17 +723,17 @@
 
                 case PostgreSqlDataTypeRange typeRange:
                     sb.AppendLine($"CREATE TYPE {this.ScriptHelper.ScriptObjectName(typeRange)} AS RANGE (");
-                    sb.Append($"{this.Indent}SUBTYPE = {PostgreSqlScriptHelper.ScriptFunctionArgumentType(typeRange.SubTypeId, dataTypes)}");
+                    sb.Append($"{Indent}SUBTYPE = {PostgreSqlScriptHelper.ScriptFunctionArgumentType(typeRange.SubTypeId, dataTypes)}");
                     if (!string.IsNullOrEmpty(typeRange.Canonical))
                     {
                         sb.AppendLine(",");
-                        sb.Append($"{this.Indent}CANONICAL = {typeRange.Canonical}");
+                        sb.Append($"{Indent}CANONICAL = {typeRange.Canonical}");
                     }
 
                     if (!string.IsNullOrEmpty(typeRange.SubTypeDiff))
                     {
                         sb.AppendLine(",");
-                        sb.Append($"{this.Indent}SUBTYPE_DIFF = {typeRange.SubTypeDiff}");
+                        sb.Append($"{Indent}SUBTYPE_DIFF = {typeRange.SubTypeDiff}");
                     }
 
                     sb.AppendLine();
@@ -738,20 +742,15 @@
 
                 case PostgreSqlDataTypeDomain typeDomain:
                     sb.AppendLine($"CREATE DOMAIN {this.ScriptHelper.ScriptObjectName(typeDomain)}");
-                    sb.AppendLine($"{this.Indent}AS {PostgreSqlScriptHelper.ScriptFunctionArgumentType(typeDomain.BaseTypeId, dataTypes)}");
+                    sb.AppendLine($"{Indent}AS {PostgreSqlScriptHelper.ScriptFunctionArgumentType(typeDomain.BaseTypeId, dataTypes)}");
                     if (!string.IsNullOrEmpty(typeDomain.ConstraintName))
                     {
-                        sb.AppendLine($"{this.Indent}CONSTRAINT {this.ScriptHelper.ScriptObjectName(string.Empty, typeDomain.ConstraintName)}");
+                        sb.AppendLine($"{Indent}CONSTRAINT {this.ScriptHelper.ScriptObjectName(string.Empty, typeDomain.ConstraintName)}");
                     }
 
-                    if (string.IsNullOrEmpty(typeDomain.ConstraintDefinition))
-                    {
-                        sb.Append($"{this.Indent}{(typeDomain.NotNull ? "NOT NULL" : "NULL")}");
-                    }
-                    else
-                    {
-                        sb.Append($"{this.Indent}{typeDomain.ConstraintDefinition}");
-                    }
+                    sb.Append(string.IsNullOrEmpty(typeDomain.ConstraintDefinition)
+                        ? $"{Indent}{(typeDomain.NotNull ? "NOT NULL" : "NULL")}"
+                        : $"{Indent}{typeDomain.ConstraintDefinition}");
 
                     sb.AppendLine(";");
 
@@ -796,6 +795,7 @@
         }
 
         /// <inheritdoc />
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         protected override IEnumerable<ABaseDbTable> GetSortedTables(List<ABaseDbTable> tables, bool dropOrder)
         {
             var tablesPostgreSql = tables.Cast<PostgreSqlTable>().OrderBy(x => x.Schema).ThenBy(x => x.Name).ToList();

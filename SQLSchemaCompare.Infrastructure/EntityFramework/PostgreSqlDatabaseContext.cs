@@ -21,7 +21,7 @@
         {
             var connStr = $"Server={dbpo.Hostname};Port={dbpo.Port};Database={dbpo.Database};User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
 
-            if (dbpo.UseSSL)
+            if (dbpo.UseSsl)
             {
                 connStr += "SSL Mode=Require;";
 

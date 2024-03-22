@@ -5,7 +5,6 @@
     using System.Globalization;
     using System.Linq;
     using System.Text;
-    using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
     using FluentAssertions;
@@ -34,17 +33,17 @@
         /// <summary>
         /// Force executing the docker tests without having to set the environment variable
         /// </summary>
-        public const bool ForceDockerTests = false;
+        public static readonly bool ForceDockerTests;
 
         /// <summary>
         /// The database name prefix
         /// </summary>
-        public const string DatabaseNamePrefix = "tcx_test_";
+        public static readonly string DatabaseNamePrefix = "tcx_test_";
 
         /// <summary>
         /// Whether the servers are already initialized
         /// </summary>
-        private bool serversInitialized = false;
+        private bool serversInitialized;
 
         /// <summary>
         /// Gets the cipher service

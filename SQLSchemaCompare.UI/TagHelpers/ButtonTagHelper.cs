@@ -53,10 +53,7 @@
 
             var className = new HashSet<string>();
 
-            if (output.Attributes["class"] != null)
-            {
-                output.Attributes["class"].Value.ToString().Trim().Split(' ').ToList().ForEach(x => className.Add(x));
-            }
+            output.Attributes["class"]?.Value.ToString().Trim().Split(' ').ToList().ForEach(x => className.Add(x));
 
             className.Add("btn");
 
@@ -93,6 +90,9 @@
                 case ButtonStyle.TcxHighlight:
                     className.Add($"btn-{outline}tcx-highlight");
                     break;
+                default:
+                    // Do nothing
+                    break;
             }
 
             switch (this.Size)
@@ -103,6 +103,9 @@
                 case ButtonSize.Large:
                     className.Add("btn-lg");
                     break;
+                default:
+                    // Do nothing
+                    break;
             }
 
             switch (this.Status)
@@ -112,6 +115,9 @@
                     break;
                 case ButtonState.Disabled:
                     output.Attributes.SetAttribute("disabled", null);
+                    break;
+                default:
+                    // Do nothing
                     break;
             }
 

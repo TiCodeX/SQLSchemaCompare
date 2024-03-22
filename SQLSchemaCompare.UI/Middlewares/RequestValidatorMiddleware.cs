@@ -65,16 +65,16 @@
         /// <param name="context">The HttpContext of the current request</param>
         /// <returns>The next task</returns>
         [Obfuscation(Exclude = true)]
-        public Task Invoke(HttpContext context)
+        public Task InvokeAsync(HttpContext context)
         {
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return InvokeInternal(context);
+            return InvokeAsyncInternal(context);
 
-            async Task InvokeInternal(HttpContext context)
+            async Task InvokeAsyncInternal(HttpContext context)
             {
                 string authToken = context.Request.Headers[this.appGlobals.AuthorizationHeaderName];
                 string userAgent = context.Request.Headers["User-Agent"];

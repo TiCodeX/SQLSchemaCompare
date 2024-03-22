@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -30,6 +31,7 @@
         public string FilePath { get; }
 
         /// <inheritdoc/>
+        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
             if (testMethod == null)

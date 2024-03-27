@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 - Solution Items", "00 -
 		CreateInstallerLinux.bat = CreateInstallerLinux.bat
 		CreateInstallerOSX.bat = CreateInstallerOSX.bat
 		CreateInstallerWin.bat = CreateInstallerWin.bat
+		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
 		pre-commit-hook.sh = pre-commit-hook.sh
 		README.md = README.md
@@ -58,6 +59,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{3D383B
 		images\sqlcompare-screenshot3.png = images\sqlcompare-screenshot3.png
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLSchemaCompare.AvaloniaUI", "SQLSchemaCompare.AvaloniaUI\SQLSchemaCompare.AvaloniaUI.csproj", "{434ADEF0-3B35-4CA8-9FBB-A622EA9E1600}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +97,10 @@ Global
 		{4F3E0A82-DD03-4F77-8575-855B9481475B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F3E0A82-DD03-4F77-8575-855B9481475B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4F3E0A82-DD03-4F77-8575-855B9481475B}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{434ADEF0-3B35-4CA8-9FBB-A622EA9E1600}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{434ADEF0-3B35-4CA8-9FBB-A622EA9E1600}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{434ADEF0-3B35-4CA8-9FBB-A622EA9E1600}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{434ADEF0-3B35-4CA8-9FBB-A622EA9E1600}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,6 +116,7 @@ Global
 		{F5A2A400-C955-4D11-8436-2D26A2C195C0} = {EB87FDBE-CC7F-4AD6-BD06-1425586DEEDD}
 		{C4B2019D-D746-49D3-A248-3E3C602BCFA4} = {F5A2A400-C955-4D11-8436-2D26A2C195C0}
 		{3D383B1E-D7C4-4915-9D43-6A064B3ACA2D} = {EB87FDBE-CC7F-4AD6-BD06-1425586DEEDD}
+		{434ADEF0-3B35-4CA8-9FBB-A622EA9E1600} = {C87AF401-6CB2-4E53-8F5F-8E555FF98333}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C1C5D5BC-124E-4706-BF7E-E08EA154F827}

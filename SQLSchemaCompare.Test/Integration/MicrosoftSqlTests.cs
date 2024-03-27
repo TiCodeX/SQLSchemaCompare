@@ -733,6 +733,24 @@
         }
 
         /// <summary>
+        /// Test migration script when target db have an extra column with data
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingColumnWithData(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DECLARE @sqlCommand nvarchar(MAX)");
+            sb.AppendLine("SET @sqlCommand = (SELECT STRING_AGG(CONCAT('ALTER TABLE business.TableWithData DROP COLUMN ', COLUMN_NAME), '; ') FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='business' AND TABLE_NAME='TableWithData' AND COLUMN_NAME != 'TableWithDataId')");
+            sb.AppendLine("EXEC (@sqlCommand)");
+            this.dbFixture.ProjectOptions.Scripting.GenerateUpdateScriptForNewNotNullColumns = true;
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
         /// Test migration script when target db have a foreign key that references a different column
         /// </summary>
         /// <param name="port">The port of the server</param>

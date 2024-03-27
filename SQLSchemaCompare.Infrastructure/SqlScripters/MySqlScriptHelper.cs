@@ -85,6 +85,12 @@
             return sb.ToString();
         }
 
+        /// <inheritdoc/>
+        public override string ScriptColumnDefaultValue(ABaseDbColumn column)
+        {
+            return "";
+        }
+
         /// <inheritdoc />
         public override string ScriptCommitTransaction()
         {

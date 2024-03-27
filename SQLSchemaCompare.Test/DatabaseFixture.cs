@@ -15,6 +15,7 @@
     using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
     using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
     using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
     using TiCodeX.SQLSchemaCompare.Core.Enums;
     using TiCodeX.SQLSchemaCompare.Core.Interfaces;
     using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
@@ -44,6 +45,15 @@
         /// Whether the servers are already initialized
         /// </summary>
         private bool serversInitialized;
+
+        /// <summary>
+        /// Gets the project options.
+        /// </summary>
+        public ProjectOptions ProjectOptions { get; } = new ProjectOptions
+        {
+            Scripting = new ScriptingOptions(),
+            Filtering = new FilteringOptions(),
+        };
 
         /// <summary>
         /// Gets the cipher service
@@ -487,6 +497,7 @@
             projectService.NewProject(databaseType);
             projectService.Project.SourceProviderOptions = this.GetDatabaseProviderOptions(sourceDatabaseName, port);
             projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(targetDatabaseName, port);
+            projectService.Project.Options = this.ProjectOptions;
             this.PerformCompareAndWaitResult(projectService);
 
             if (expectedDifferentItems.HasValue)

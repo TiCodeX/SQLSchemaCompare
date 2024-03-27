@@ -19,5 +19,10 @@
         /// Gets or sets a value indicating whether the reference table columns order should be ignored when scripting columns
         /// </summary>
         public bool IgnoreReferenceTableColumnOrder { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to generate update script for new not null columns.
+        /// </summary>
+        public bool GenerateUpdateScriptForNewNotNullColumns { get; set; }
     }
 }

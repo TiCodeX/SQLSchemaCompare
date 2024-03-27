@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:SQLSchemaCompare.AvaloniaUI.ViewModels"
+        mc:Ignorable="d"
+        d:DesignWidth="640"
+        d:DesignHeight="400"
+        Width="640"
+        Height="400"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None"
+		Topmost="True"
+        x:Class="SQLSchemaCompare.AvaloniaUI.Views.SplashScreen">
+
+    <Border BorderBrush="Black" BorderThickness="2">
+        <Grid RowDefinitions="*,Auto" ColumnDefinitions="*,Auto">
+            <Label Grid.Row="0"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   FontSize="18"
+                   Background="AliceBlue"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+                   HorizontalContentAlignment="Center"
+                   VerticalContentAlignment="Center">
+                Launching Application...
+            </Label>
+        </Grid>
+    </Border>
+</Window>

@@ -12,11 +12,12 @@ for file in $changedFiles; do
     [ -z "${file##"SQLSchemaCompare/img/"*}" ] && continue;
     [ -z "${file##"SQLSchemaCompare/font/"*}" ] && continue;
     [ -z "${file##"SQLSchemaCompare/build/"*}" ] && continue;
+    [ -z "${file##"SQLSchemaCompare.AvaloniaUI/Assets/"*}" ] && continue;
     [ -z "${file##*".xlsx"}" ] && continue;
     [ -z "${file##*".pfx"}" ] && continue;
     [ -z "${file##*".p12"}" ] && continue;
     [ -z "${file##*".exe"}" ] && continue;
-    
+
     unix2dos < "$file" | cmp -s - "$file"
     if [ ! $? -eq 0 ]; then
         error=1

@@ -1,7 +1,6 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.WebServer
 {
     using System;
-    using System.Reflection;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
@@ -49,7 +48,6 @@
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
         /// <param name="services">The WebHost service collection</param>
-        [Obfuscation(Exclude = true)]
         public static void ConfigureServices(IServiceCollection services)
         {
             services.Configure<MvcOptions>(options =>
@@ -102,7 +100,6 @@
         /// <param name="localizationService">The localization service</param>
         /// <param name="appSettingsService">The app settings service</param>
         /// <param name="loggerFactory">The injected logger factory</param>
-        [Obfuscation(Exclude = true)]
         public void Configure(
             IApplicationBuilder app,
             IAppGlobals appGlobals,

@@ -103,10 +103,6 @@
     </PackageReference>
     <PackageReference Include="NLog" Version="5.2.8" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
-    <PackageReference Include="Obfuscar" Version="2.2.38">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="tslint" Version="5.17.0" />
   </ItemGroup>
 
@@ -151,16 +147,7 @@
     <Exec Command="dotnet publish ..\SQLSchemaCompare.CLI\SQLSchemaCompare.CLI.csproj -r $(RuntimeIdentifier) -c $(Configuration)" />
   </Target>
 
-  <Target Name="ObfuscateDlls" AfterTargets="AfterPublish">
-    <Message Text="==============================================" Importance="high" />
-    <Message Text="Obfuscate TiCodeX dlls" Importance="high" />
-    <Message Text="==============================================" Importance="high" />
-    <Exec Command="$(Obfuscar) obfuscar.xml" />
-    <Exec Command="MOVE /Y $(PublishDir)\.obfuscated\* $(PublishDir)\" />
-    <Exec Command="RMDIR $(PublishDir)\.obfuscated" />
-  </Target>
-
-  <Target Name="RemoveUnwantedFiles" AfterTargets="ObfuscateDlls">
+  <Target Name="RemoveUnwantedFiles" AfterTargets="AfterPublish">
     <Message Text="==============================================" Importance="high" />
     <Message Text="Remove unwanted published files" Importance="high" />
     <Message Text="==============================================" Importance="high" />

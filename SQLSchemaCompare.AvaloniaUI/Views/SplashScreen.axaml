@@ -10,22 +10,15 @@
         Height="400"
         WindowStartupLocation="CenterScreen"
         SystemDecorations="None"
-		Topmost="True"
+		Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        TransparencyBackgroundFallback="Transparent"
         x:Class="SQLSchemaCompare.AvaloniaUI.Views.SplashScreen">
-
-    <Border BorderBrush="Black" BorderThickness="2">
-        <Grid RowDefinitions="*,Auto" ColumnDefinitions="*,Auto">
-            <Label Grid.Row="0"
-                   Grid.Column="0"
-                   Grid.ColumnSpan="2"
-                   FontSize="18"
-                   Background="AliceBlue"
-                   HorizontalAlignment="Stretch"
-                   VerticalAlignment="Stretch"
-                   HorizontalContentAlignment="Center"
-                   VerticalContentAlignment="Center">
-                Launching Application...
-            </Label>
-        </Grid>
+    <Border Background="White" CornerRadius="10" ClipToBounds="True">
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Image Source="/Assets/ticodex.png" Width="200" HorizontalAlignment="Left" Margin="20"></Image>
+            <TextBlock Text="SQL Schema Compare" Margin="20 0 0 20" FontSize="20"></TextBlock>
+            <Image Source="/Assets/background.jpg" Stretch="UniformToFill"></Image>
+        </StackPanel>
     </Border>
 </Window>

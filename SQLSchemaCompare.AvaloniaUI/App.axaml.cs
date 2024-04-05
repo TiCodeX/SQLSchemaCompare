@@ -2,7 +2,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-
+using Microsoft.Extensions.DependencyInjection;
 using SQLSchemaCompare.AvaloniaUI.ViewModels;
 using SQLSchemaCompare.AvaloniaUI.Views;
 
@@ -17,13 +17,18 @@ public partial class App : Application
 
     public override async void OnFrameworkInitializationCompleted()
     {
+        var collection = new ServiceCollection();
+        collection.AddTransient<SplashScreenViewModel>();
+        collection.AddTransient<MainWindowViewModel>();
+        var services = collection.BuildServiceProvider();
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Create the splash screen
-            var splashScreenVM = new SplashScreenViewModel();
+            var splashScreenVM = services.GetRequiredService<SplashScreenViewModel>();
             var splashScreen = new SplashScreen
             {
-                DataContext = splashScreenVM
+                DataContext = splashScreenVM,
             };
 
             // Set as the (temporary) main window.
@@ -39,12 +44,13 @@ public partial class App : Application
             await Task.Delay(splashScreenVM.Duration);
 
             // Create the main window, and swap it in for the real main window
-            var mainWin = new MainWindow
+            var mainWindowVM = services.GetRequiredService<MainWindowViewModel>();
+            var mainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = mainWindowVM,
             };
-            desktop.MainWindow = mainWin;
-            mainWin.Show();
+            desktop.MainWindow = mainWindow;
+            mainWindow.Show();
 
             // Get rid of the splash screen
             splashScreen.Close();

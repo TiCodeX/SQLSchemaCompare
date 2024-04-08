@@ -2,7 +2,6 @@
 {
     using System;
     using System.IO;
-    using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
@@ -64,7 +63,6 @@
         /// </summary>
         /// <param name="context">The HttpContext of the current request</param>
         /// <returns>The next task</returns>
-        [Obfuscation(Exclude = true)]
         public Task InvokeAsync(HttpContext context)
         {
             if (context == null)

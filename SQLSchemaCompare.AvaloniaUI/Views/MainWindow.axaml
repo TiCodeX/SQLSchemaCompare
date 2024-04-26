@@ -1,9 +1,11 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:SQLSchemaCompare.AvaloniaUI.ViewModels"
+        xmlns:l="using:TiCodeX.SQLSchemaCompare.Services"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:SQLSchemaCompare.AvaloniaUI.Views"
+        xmlns:i="https://github.com/projektanker/icons.avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="SQLSchemaCompare.AvaloniaUI.Views.MainWindow"
         Icon="/Assets/logo.png"
@@ -12,9 +14,61 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <StackPanel>
-        <Label>Connected to Device #1</Label>
-        <Button>Activate</Button>
-        <Button>Deactivate</Button>
-    </StackPanel>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Background="{Binding MenuBackground}" Foreground="{Binding MenuForeground}">
+            <Menu.Styles>
+                <Style Selector="MenuItem">
+                    <Setter Property="Background" Value="{Binding MenuBackground}" />
+                    <Setter Property="Foreground" Value="{Binding MenuForeground}" />
+                    <Setter Property="FontSize" Value="12" />
+                </Style>
+                <Style Selector="Separator">
+                    <Setter Property="Background" Value="Red" />
+                </Style>
+            </Menu.Styles>
+            <MenuItem Header="{x:Static l:Localization.MenuFile}">
+                <MenuItem Header="{x:Static l:Localization.MenuNewProject}"/>
+                <MenuItem Header="{x:Static l:Localization.MenuOpenProject}..."/>
+                <Separator/>
+                <MenuItem Header="{x:Static l:Localization.MenuSaveProject}"/>
+                <MenuItem Header="{x:Static l:Localization.MenuSaveProjectAs}..."/>
+                <MenuItem Header="{x:Static l:Localization.MenuCloseProject}"/>
+                <Separator/>
+                <MenuItem Header="{x:Static l:Localization.MenuSettings}"/>
+                <Separator/>
+                <MenuItem Header="{x:Static l:Localization.MenuExit}"/>
+            </MenuItem>
+            <MenuItem Header="{x:Static l:Localization.MenuProject}">
+                <MenuItem Header="{x:Static l:Localization.MenuEdit}"/>
+                <MenuItem Header="{x:Static l:Localization.MenuCompare}"/>
+            </MenuItem>
+            <MenuItem Header="{x:Static l:Localization.MenuHelp}">
+                <MenuItem Header="{x:Static l:Localization.MenuOpenLogsFolder}..."/>
+                <Separator/>
+                <MenuItem Header="{x:Static l:Localization.MenuAbout}"/>
+            </MenuItem>
+        </Menu>
+
+        <DockPanel DockPanel.Dock="Top" Background="{Binding MenuBackground}">
+            <DockPanel.Styles>
+                <Style Selector="Button">
+                    <Setter Property="Background" Value="Green"></Setter>
+                    <Setter Property="Foreground" Value="White"></Setter>
+                    <Setter Property="Height" Value="32"></Setter>
+                    <Setter Property="Margin" Value="4,0,0,4"></Setter>
+                    <Setter Property="FontSize" Value="16"></Setter>
+                </Style>
+                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                    <Setter Property="Background" Value="DarkGreen"></Setter>
+                </Style>
+            </DockPanel.Styles>
+            <Button i:Attached.Icon="fa-regular fa-file"/>
+            <Button i:Attached.Icon="fa-regular fa-folder-open"/>
+            <Button i:Attached.Icon="fa-regular fa-floppy-disk"/>
+        </DockPanel>
+
+        <StackPanel DockPanel.Dock="Top" >
+            <TextBlock Text="{Binding Greeting}"></TextBlock>
+        </StackPanel>
+    </DockPanel>
 </Window>

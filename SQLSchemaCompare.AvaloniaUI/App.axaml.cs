@@ -3,8 +3,11 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
+using Splat;
 using SQLSchemaCompare.AvaloniaUI.ViewModels;
 using SQLSchemaCompare.AvaloniaUI.Views;
+using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+using TiCodeX.SQLSchemaCompare.Services;
 
 namespace SQLSchemaCompare.AvaloniaUI;
 
@@ -17,6 +20,8 @@ public partial class App : Application
 
     public override async void OnFrameworkInitializationCompleted()
     {
+        Locator.CurrentMutable.Register<ILocalizationService>(() => new LocalizationService());
+
         var collection = new ServiceCollection();
         collection.AddTransient<SplashScreenViewModel>();
         collection.AddTransient<MainWindowViewModel>();

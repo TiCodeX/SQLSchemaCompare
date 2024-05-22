@@ -4,7 +4,7 @@
     <AssemblyName>TiCodeX.SQLSchemaCompare.CLI</AssemblyName>
     <RootNamespace>TiCodeX.SQLSchemaCompare.CLI</RootNamespace>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PublishDir>..\.publish</PublishDir>

@@ -28,20 +28,20 @@
         public void ExceptionMessage()
         {
             var ex = new PropertyNotFoundException(typeof(PropertyNotFoundException), "Test");
-            Assert.True(ex.ClassType != null && ex.PropopertyName == "Test");
+            Assert.True(ex.ClassType != null && ex.PropertyName == "Test");
             Assert.Equal($"The property has not been found in the class.{Environment.NewLine}Class: PropertyNotFoundException; Property: Test", ex.Message);
 
             ex = new PropertyNotFoundException("Test message", typeof(PropertyNotFoundException), "Test");
-            Assert.True(ex.ClassType != null && ex.PropopertyName == "Test");
+            Assert.True(ex.ClassType != null && ex.PropertyName == "Test");
             Assert.Equal($"Test message{Environment.NewLine}Class: PropertyNotFoundException; Property: Test", ex.Message);
 
             ex = new PropertyNotFoundException("Test message 2", typeof(PropertyNotFoundException), "Test", new InvalidOperationException());
-            Assert.True(ex.ClassType != null && ex.PropopertyName == "Test");
+            Assert.True(ex.ClassType != null && ex.PropertyName == "Test");
             Assert.True(ex.InnerException != null);
             Assert.Equal($"Test message 2{Environment.NewLine}Class: PropertyNotFoundException; Property: Test", ex.Message);
 
             ex = new PropertyNotFoundException("Test message 3");
-            Assert.True(ex.ClassType == null && ex.PropopertyName == null);
+            Assert.True(ex.ClassType == null && ex.PropertyName == null);
             Assert.Equal("Test message 3", ex.Message);
         }
     }

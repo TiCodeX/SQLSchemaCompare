@@ -46,7 +46,7 @@
             : base(message, innerException)
         {
             this.ClassType = classType;
-            this.PropopertyName = propertyName;
+            this.PropertyName = propertyName;
         }
 
         /// <summary>
@@ -59,7 +59,7 @@
             : base(message)
         {
             this.ClassType = classType;
-            this.PropopertyName = propertyName;
+            this.PropertyName = propertyName;
         }
 
         /// <summary>
@@ -71,7 +71,7 @@
             : base("The property has not been found in the class.")
         {
             this.ClassType = classType;
-            this.PropopertyName = propertyName;
+            this.PropertyName = propertyName;
         }
 
         /// <summary>
@@ -79,6 +79,7 @@
         /// </summary>
         /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
         /// <param name="context">The <see cref="StreamingContext"/> that contains contextual information about the source or destination.</param>
+        [Obsolete("This API supports obsolete formatter-based serialization. It should not be called or extended by application code.", DiagnosticId = "SYSLIB0051")]
         protected PropertyNotFoundException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
@@ -91,7 +92,7 @@
             {
                 if (this.ClassType != null)
                 {
-                    return base.Message + Environment.NewLine + $"Class: {this.ClassType.Name}; Property: {this.PropopertyName}";
+                    return base.Message + Environment.NewLine + $"Class: {this.ClassType.Name}; Property: {this.PropertyName}";
                 }
 
                 return base.Message;
@@ -106,6 +107,6 @@
         /// <summary>
         /// Gets the missing property name
         /// </summary>
-        public string PropopertyName { get; }
+        public string PropertyName { get; }
     }
 }

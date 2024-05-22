@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyName>TiCodeX.SQLSchemaCompare.UI</AssemblyName>
     <RootNamespace>TiCodeX.SQLSchemaCompare.UI</RootNamespace>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
@@ -88,21 +88,21 @@
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="BuildWebCompiler" Version="1.12.405" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.28" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.28" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.4.2">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.5" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.4.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
     <PackageReference Include="Neolution.CodeAnalysis" Version="3.0.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="NLog" Version="5.2.8" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
+    <PackageReference Include="NLog" Version="5.3.2" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.11" />
     <PackageReference Include="tslint" Version="5.17.0" />
   </ItemGroup>
 
@@ -111,9 +111,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SQLSchemaCompare.Core\SQLSchemaCompare.Core.csproj" />
     <ProjectReference Include="..\SQLSchemaCompare.Infrastructure\SQLSchemaCompare.Infrastructure.csproj" />
-    <ProjectReference Include="..\SQLSchemaCompare.Services\SQLSchemaCompare.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

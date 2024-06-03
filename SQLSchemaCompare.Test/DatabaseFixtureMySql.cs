@@ -29,8 +29,12 @@
                 {
                     /*serverPorts.Add(new object[] { (ushort)27001 });*/ // Version 5.5 (EOL December 2018)
                     /*serverPorts.Add(new object[] { (ushort)27002 });*/ // Version 5.6 (EOL February 2021)
-                    serverPorts.Add(new object[] { (ushort)27003 }); // Version 5.7 (EOL October 2023)
+                    /*serverPorts.Add(new object[] { (ushort)27003 });*/ // Version 5.7 (EOL October 2023)
                     serverPorts.Add(new object[] { (ushort)27004 }); // Version 8.0 (EOL April 2026)
+                    /*serverPorts.Add(new object[] { (ushort)27005 });*/ // Version 8.1 (EOL October 2023)
+                    serverPorts.Add(new object[] { (ushort)27006 }); // Version 8.2
+                    serverPorts.Add(new object[] { (ushort)27007 }); // Version 8.3
+                    serverPorts.Add(new object[] { (ushort)27008 }); // Version 8.4 (EOL April 2032)
                 }
                 else
                 {

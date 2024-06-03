@@ -59,13 +59,17 @@ jobs:
     - name: docker pull images
       shell: bash
       run: |
-        docker pull mysql:5.7
         docker pull mysql:8.0
+        docker pull mysql:8.2
+        docker pull mysql:8.3
+        docker pull mysql:8.4
     - name: docker start containers
       shell: bash
       run: |
-        docker run --rm --name mysql-5.7 -p 27003:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:5.7
         docker run --rm --name mysql-8.0 -p 27004:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.0
+        docker run --rm --name mysql-8.2 -p 27006:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.2
+        docker run --rm --name mysql-8.3 -p 27007:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.3
+        docker run --rm --name mysql-8.4 -p 27008:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.4
         sleep 60s
     - name: Test
       run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=MySQL"
@@ -93,19 +97,19 @@ jobs:
     - name: docker pull images
       shell: bash
       run: |
-        docker pull postgres:11-alpine
         docker pull postgres:12-alpine
         docker pull postgres:13-alpine
         docker pull postgres:14-alpine
         docker pull postgres:15-alpine
+        docker pull postgres:16-alpine
     - name: docker start containers
       shell: bash
       run: |
-        docker run --rm --name postgres-11 -p 26006:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:11-alpine
         docker run --rm --name postgres-12 -p 26007:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:12-alpine
         docker run --rm --name postgres-13 -p 26008:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:13-alpine
         docker run --rm --name postgres-14 -p 26009:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:14-alpine
         docker run --rm --name postgres-15 -p 26010:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:15-alpine
+        docker run --rm --name postgres-16 -p 26011:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:16-alpine
         sleep 60s
     - name: Test
       run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=PostgreSQL"
@@ -133,27 +137,27 @@ jobs:
     - name: docker pull images
       shell: bash
       run: |
-        docker pull mariadb:10.3
         docker pull mariadb:10.4
         docker pull mariadb:10.5
         docker pull mariadb:10.6
-        docker pull mariadb:10.7
-        docker pull mariadb:10.8
-        docker pull mariadb:10.9
-        docker pull mariadb:10.10
         docker pull mariadb:10.11
+        docker pull mariadb:11.0
+        docker pull mariadb:11.1
+        docker pull mariadb:11.2
+        docker pull mariadb:11.3
+        docker pull mariadb:11.4
     - name: docker start containers
       shell: bash
       run: |
-        docker run --rm --name mariadb-10.3 -p 29005:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.3
         docker run --rm --name mariadb-10.4 -p 29006:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.4
         docker run --rm --name mariadb-10.5 -p 29007:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.5
         docker run --rm --name mariadb-10.6 -p 29008:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.6
-        docker run --rm --name mariadb-10.7 -p 29009:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.7
-        docker run --rm --name mariadb-10.8 -p 29010:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.8
-        docker run --rm --name mariadb-10.9 -p 29011:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.9
-        docker run --rm --name mariadb-10.10 -p 29012:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.10
         docker run --rm --name mariadb-10.11 -p 29013:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.11
+        docker run --rm --name mariadb-11.0 -p 29014:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:11.0
+        docker run --rm --name mariadb-11.1 -p 29015:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:11.1
+        docker run --rm --name mariadb-11.2 -p 29016:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:11.2
+        docker run --rm --name mariadb-11.3 -p 29017:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:11.3
+        docker run --rm --name mariadb-11.4 -p 29018:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:11.4
         sleep 60s
     - name: Test
       run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=MariaDB"

@@ -33,6 +33,23 @@
         }
 
         /// <inheritdoc />
+        protected override IEnumerable<ABaseDbTable> GetTables(MySqlDatabaseContext context)
+        {
+            var query = new StringBuilder();
+            query.AppendLine("SELECT t.TABLE_NAME as Name,");
+            query.AppendLine("       t.ENGINE as Engine,");
+            query.AppendLine("       t.UPDATE_TIME as ModifyDate,");
+            query.AppendLine("       c.CHARACTER_SET_NAME as TableCharacterSet");
+            query.AppendLine("FROM INFORMATION_SCHEMA.TABLES t");
+            query.AppendLine(this.CurrentServerVersion.Major >= 11 && this.CurrentServerVersion.Minor >= 4
+                ? "INNER JOIN INFORMATION_SCHEMA.COLLATION_CHARACTER_SET_APPLICABILITY c ON c.full_collation_name = t.table_collation"
+                : "INNER JOIN INFORMATION_SCHEMA.COLLATION_CHARACTER_SET_APPLICABILITY c ON c.collation_name = t.table_collation");
+            query.AppendLine($"WHERE t.TABLE_TYPE = 'BASE TABLE' and t.TABLE_SCHEMA = '{context.DatabaseName}'");
+
+            return context.Query<MySqlTable>(query.ToString());
+        }
+
+        /// <inheritdoc />
         protected override IEnumerable<ABaseDbColumn> GetColumns(MySqlDatabaseContext context)
         {
             var query = new StringBuilder();

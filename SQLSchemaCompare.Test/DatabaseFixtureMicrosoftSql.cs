@@ -80,7 +80,23 @@
             var dropDbQuery = new StringBuilder();
             dropDbQuery.AppendLine($"IF EXISTS(select * from sys.databases where name= '{databaseName}')");
             dropDbQuery.AppendLine("BEGIN");
-            dropDbQuery.AppendLine($"  ALTER DATABASE {databaseName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE"); // Close existing connections
+
+            // Close existing connections
+            dropDbQuery.AppendLine("  DECLARE @Spid INT");
+            dropDbQuery.AppendLine("  DECLARE @ExecSQL VARCHAR(255)");
+            dropDbQuery.AppendLine("  DECLARE KillCursor CURSOR LOCAL STATIC READ_ONLY FORWARD_ONLY");
+            dropDbQuery.AppendLine($"  FOR SELECT DISTINCT SPID FROM MASTER..SysProcesses WHERE DBID = DB_ID('{databaseName}')");
+            dropDbQuery.AppendLine("  OPEN KillCursor");
+            dropDbQuery.AppendLine("  FETCH NEXT FROM KillCursor INTO @Spid");
+            dropDbQuery.AppendLine("  WHILE @@FETCH_STATUS = 0");
+            dropDbQuery.AppendLine("  BEGIN");
+            dropDbQuery.AppendLine("    SET @ExecSQL = 'KILL ' + CAST(@Spid AS VARCHAR(50))");
+            dropDbQuery.AppendLine("    EXEC(@ExecSQL)");
+            dropDbQuery.AppendLine("    FETCH NEXT FROM KillCursor INTO @Spid");
+            dropDbQuery.AppendLine("  END");
+            dropDbQuery.AppendLine("  CLOSE KillCursor");
+            dropDbQuery.AppendLine("  DEALLOCATE KillCursor");
+
             dropDbQuery.AppendLine($"  DROP DATABASE {databaseName}");
             dropDbQuery.AppendLine("END");
             this.ExecuteScript(dropDbQuery.ToString(), string.Empty, port);

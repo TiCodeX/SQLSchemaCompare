@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "Build UI",
-      "program": "${workspaceFolder}/SQLSchemaCompare.UI/bin/Debug/net6.0/TiCodeX.SQLSchemaCompare.UI.dll",
+      "program": "${workspaceFolder}/SQLSchemaCompare.UI/bin/Debug/net8.0/TiCodeX.SQLSchemaCompare.UI.dll",
       "cwd": "${workspaceFolder}/SQLSchemaCompare.UI",
       "presentation": {
         "hidden": true,

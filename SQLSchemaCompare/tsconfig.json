@@ -1,12 +1,13 @@
 {
-    "compileOnSave": true,
-    "compilerOptions": {
-        "target": "es5",
-        "lib": [ "es5", "es6", "dom" ],
-        "sourceMap": false,
-        "removeComments": true
-    },
-    "exclude": [
-        "node_modules"
-    ]
+  "compileOnSave": true,
+  "extends": [
+    "@tsconfig/recommended/tsconfig.json",
+    "@tsconfig/strictest/tsconfig.json"
+  ],
+  "compilerOptions": {
+    "checkJs": false,
+    "allowJs": false,
+    "noEmitOnError": true,
+    "exactOptionalPropertyTypes": false
+  }
 }

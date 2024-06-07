@@ -1,30 +1,26 @@
-/* tslint:disable:no-require-imports no-implicit-dependencies max-file-line-count only-arrow-functions no-magic-numbers file-name-casing */
-import builderUtilRuntime = require("builder-util-runtime");
 import childProcess = require("child_process");
 import portfinder = require("detect-port");
 import electron = require("electron");
-import electronUpdater = require("electron-updater");
 import electronWindowState = require("electron-window-state");
 import fs = require("fs");
 import glob = require("glob");
 import log4js = require("log4js");
 import os = require("os");
 import path = require("path");
-/* tslint:enable:no-require-imports no-implicit-dependencies */
 
 electron.app.setAppUserModelId("ch.ticodex.sqlschemacompare");
 // Set the productName in the userData path instead of the default application name
 electron.app.setPath("userData", path.join(electron.app.getPath("appData"), "SQL Schema Compare"));
 
-const isDebug: boolean = process.defaultApp;
-const initialPort: number = 25436;
-const splashUrl: string = `file://${__dirname}/splash.html`;
-const loggerPath: string = path.join(os.homedir(), ".SQLSchemaCompare", "log", "SQLSchemaCompare.log");
-const loggerPattern: string = "yyyy-MM-dd-ui";
-const loggerLayout: string = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
-const loggerMaxArchiveFiles: number = 9;
-const authorizationHeaderName: string = "CustomAuthToken";
-const authorizationHeaderValue: string = "d6e9b4c2-25d3-a625-e9a6-2135f3d2f809";
+const isDebug = process.defaultApp;
+const initialPort = 25436;
+const splashUrl = `file://${__dirname}/splash.html`;
+const loggerPath = path.join(os.homedir(), ".SQLSchemaCompare", "log", "SQLSchemaCompare.log");
+const loggerPattern = "yyyy-MM-dd-ui";
+const loggerLayout = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
+const loggerMaxArchiveFiles = 9;
+const authorizationHeaderName = "CustomAuthToken";
+const authorizationHeaderValue = "d6e9b4c2-25d3-a625-e9a6-2135f3d2f809";
 let servicePath: string;
 switch (process.platform) {
     case "linux":
@@ -36,14 +32,14 @@ switch (process.platform) {
     default: // Windows
         servicePath = path.join(path.dirname(process.execPath), "bin", "TiCodeX.SQLSchemaCompare.UI.exe");
 }
-let serviceUrl: string = `https://127.0.0.1:{port}/?v=${electron.app.getVersion()}`;
+let serviceUrl = `https://127.0.0.1:{port}/?v=${electron.app.getVersion()}`;
 let serviceProcess: childProcess.ChildProcess;
-let serviceCommunicationSuccessful: boolean = false;
+let serviceCommunicationSuccessful = false;
 
 // Read the first argument to get the project file
 // In debug or during an auto-update multiple arguments are passed, so we check that is actually a tcxsc file
-let projectToOpen: string;
-if (process.argv.length > 1) {
+let projectToOpen: string | undefined;
+if (process.argv.length > 1 && process.argv[1] !== undefined) {
     try {
         const stat: fs.Stats = fs.lstatSync(process.argv[1]);
         if (stat.isFile() && path.extname(process.argv[1]).toLowerCase() === ".tcxsc") {
@@ -58,8 +54,8 @@ if (process.argv.length > 1) {
  * Keep a global reference of the window object, if you don't, the window will
  * be closed automatically when the JavaScript object is garbage collected.
  */
-let splashWindow: Electron.BrowserWindow;
-let mainWindow: Electron.BrowserWindow;
+let splashWindow: Electron.BrowserWindow | undefined;
+let mainWindow: Electron.BrowserWindow | undefined;
 
 log4js.configure({
     appenders: {
@@ -86,15 +82,15 @@ log4js.configure({
     },
 });
 
-const logger: log4js.Logger = log4js.getLogger("electron");
+const logger = log4js.getLogger("electron");
 logger.info(`Starting SQL Schema Compare v${electron.app.getVersion()}`);
 
 //#region Check Single Instance
 // If it's not able to get the lock it means that another instance already have it
-const isSecondInstance: boolean = !electron.app.requestSingleInstanceLock();
-electron.app.on("second-instance", (event: Event, argv: Array<string>) => {
+const isSecondInstance = !electron.app.requestSingleInstanceLock();
+electron.app.on("second-instance", (_event, argv) => {
     // Someone tried to run a second instance, we should focus our current window
-    const currentWindow: Electron.BrowserWindow = mainWindow;
+    const currentWindow = mainWindow;
     if (currentWindow !== undefined && currentWindow !== null) {
         if (currentWindow.isMinimized()) {
             currentWindow.restore();
@@ -111,7 +107,7 @@ electron.app.on("second-instance", (event: Event, argv: Array<string>) => {
 //#region Start an asynchronous function to delete old log files
 setTimeout(() => {
     try {
-        glob(loggerPath + loggerPattern.replace("yyyy-MM-dd", "*"), (err: object, files: Array<string>) => {
+        glob(loggerPath + loggerPattern.replace("yyyy-MM-dd", "*"), (_err, files) => {
             files.sort();
             files.reverse();
             files.slice(loggerMaxArchiveFiles).forEach((file: string) => {
@@ -119,21 +115,20 @@ setTimeout(() => {
                     logger.info(`Deleting old archive file: ${file}`);
                     fs.unlinkSync(file);
                 } catch (e) {
-                    logger.error(`Delete file failed. Error: ${e}`);
+                    logger.error(`Delete file failed. Error: ${e as string}`);
                 }
             });
         });
     } catch (ex) {
-        logger.log(`Error deleting old log files: ${ex}`);
+        logger.log(`Error deleting old log files: ${ex as string}`);
     }
 }, 0);
 //#endregion
 
 //#region Register the rendered callbacks
 // Register the renderer callback for logging the UI
-// tslint:disable-next-line:completed-docs
-electron.ipcMain.on("log", (event: Electron.Event, data: { category: string; level: string; message: string }) => {
-    const uiLogger: log4js.Logger = log4js.getLogger(data.category);
+electron.ipcMain.on("log", (_event, data: { category: string; level: string; message: string }) => {
+    const uiLogger = log4js.getLogger(data.category);
     switch (data.level) {
         case "debug":
             uiLogger.debug(data.message);
@@ -204,7 +199,7 @@ function setEmptyApplicationMenu(): void {
             ]));
         } else {
             // On Windows and Linux remove the menu completely
-            electron.Menu.setApplicationMenu(null); // tslint:disable-line:no-null-keyword
+            electron.Menu.setApplicationMenu(null);
         }
     } else {
         // In debug mode it's useful to have the Reload and the developer tools
@@ -215,7 +210,7 @@ function setEmptyApplicationMenu(): void {
                     {
                         label: "Reload",
                         accelerator: "F5",
-                        click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
+                        click(_item, focusedWindow): void {
                             if (focusedWindow) {
                                 focusedWindow.reload();
                             }
@@ -224,7 +219,7 @@ function setEmptyApplicationMenu(): void {
                     {
                         label: "Toggle Developer Tools",
                         accelerator: "F12",
-                        click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
+                        click(_item, focusedWindow): void {
                             if (focusedWindow) {
                                 focusedWindow.webContents.toggleDevTools();
                             }
@@ -241,11 +236,11 @@ function setEmptyApplicationMenu(): void {
  * @param url The url to pass for authentication purpose
  */
 function createMainWindow(): void {
-    const workAreaSize: Electron.Size = electron.screen.getPrimaryDisplay().workAreaSize;
+    const workAreaSize = electron.screen.getPrimaryDisplay().workAreaSize;
     logger.debug("Primary display size: %dx%d", workAreaSize.width, workAreaSize.height);
 
     // Load the previous state with fall-back to defaults
-    const mainWindowState: electronWindowState.State = electronWindowState({
+    const mainWindowState = electronWindowState({
         defaultWidth: workAreaSize.width - 200,
         defaultHeight: workAreaSize.height - 100,
     });
@@ -285,10 +280,10 @@ function createMainWindow(): void {
         mainWindow = undefined;
     });
 
-    let loadFailed: boolean = false;
+    let loadFailed = false;
     let loadFailedError: string;
-    let retries: number = 100;
-    mainWindow.webContents.on("did-fail-load", (event: electron.Event, errorCode: number, errorDescription: string) => {
+    let retries = 100;
+    mainWindow.webContents.on("did-fail-load", (_event, _errorCode, errorDescription) => {
         loadFailed = true;
         loadFailedError = errorDescription;
         retries--;
@@ -300,11 +295,11 @@ function createMainWindow(): void {
                 // Reset the flag and trigger a new load
                 loadFailed = false;
                 if (process.platform !== "linux") {
-                    mainWindow.loadURL(serviceUrl);
+                    void mainWindow?.loadURL(serviceUrl);
                 } else {
                     // Add a small delay on linux because the fail event is triggered very fast
                     setTimeout(() => {
-                        mainWindow.loadURL(serviceUrl);
+                        void mainWindow?.loadURL(serviceUrl);
                     }, 400);
                 }
             } else {
@@ -326,8 +321,7 @@ function createMainWindow(): void {
     });
 
     // Events registered, now load the URL
-    mainWindow.loadURL(serviceUrl);
-
+    void mainWindow.loadURL(serviceUrl);
 }
 
 /**
@@ -372,11 +366,10 @@ function startup(): void {
             "https://*/*",
         ],
     };
-    electron.session.defaultSession.webRequest.onBeforeSendHeaders(filter,
-        (details: electron.OnBeforeSendHeadersListenerDetails, callback: (beforeSendResponse: electron.BeforeSendResponse) => void) => {
-            details.requestHeaders[authorizationHeaderName] = authorizationHeaderValue;
-            callback({ cancel: false, requestHeaders: details.requestHeaders });
-        });
+    electron.session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+        details.requestHeaders[authorizationHeaderName] = authorizationHeaderValue;
+        callback({ cancel: false, requestHeaders: details.requestHeaders });
+    });
 
     splashWindow = new electron.BrowserWindow({
         width: 640,
@@ -391,7 +384,7 @@ function startup(): void {
             webviewTag: true,
         },
     });
-    splashWindow.loadURL(splashUrl);
+    void splashWindow.loadURL(splashUrl);
     splashWindow.show();
     splashWindow.focus();
     logger.debug("Splashscreen window started");
@@ -406,7 +399,7 @@ function startup(): void {
         splashWindow = undefined;
     });
 
-    portfinder(initialPort, (errorWebPort: Error, webPort: number) => {
+    portfinder(initialPort, (_errorWebPort, webPort) => {
         if (isDebug) {
             // In debug the service always use the initial port and there's no need to start it
             serviceUrl = serviceUrl.replace("{port}", `${initialPort}`);
@@ -460,13 +453,7 @@ electron.app.on("activate", () => {
 });
 
 // SSL/TSL: this is the self signed certificate support
-electron.app.on("certificate-error", (
-    event: Electron.Event,
-    webContents: Electron.WebContents,
-    url: string,
-    error: string,
-    certificate: Electron.Certificate,
-    callback: (isTrusted: boolean) => void) => {
+electron.app.on("certificate-error", (event, _webContents, _url, _error, _certificate, callback: (isTrusted: boolean) => void) => {
     /**
      * On certificate error we disable default behavior (stop loading the page)
      * and we then say "it is all fine - true" to the callback

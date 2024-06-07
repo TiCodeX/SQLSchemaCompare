@@ -1,6 +1,7 @@
 /**
  * Contains utility methods related to the Settings page
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Settings {
     /**
      * Service URL for the Settings page
@@ -16,7 +17,7 @@ class Settings {
      * Open the Settings page
      */
     public static Open(): void {
-        DialogManager.OpenModalDialog(Localization.Get("MenuSettings"), this.pageUrl, "300px");
+        void DialogManager.OpenModalDialog(Localization.Get("MenuSettings"), this.pageUrl, "300px");
     }
 
     /**
@@ -24,22 +25,22 @@ class Settings {
      * @param projectIsOpen Whether the project is open or not, in order to show the correct page
      */
     public static Save(projectIsOpen: boolean): void {
-        const data: object = Utility.SerializeJSON($("#Settings"));
+        const data = Utility.SerializeJSON($("#Settings"));
         if (data === undefined) {
             return;
         }
 
-        Utility.AjaxCall(this.saveUrl, Utility.HttpMethod.Post, data).then((): void => {
+        void Utility.AjaxCall(this.saveUrl, HttpMethod.Post, data).then((): void => {
             // Load the new localization
-            Localization.Load().then((): void => {
+            void Localization.Load().then((): void => {
                 // Recreate the menu with the new language
-                MenuManager.CreateMenu().then((): void => {
+                void MenuManager.CreateMenu().then((): void => {
                     MenuManager.ToggleProjectRelatedMenuStatus(projectIsOpen);
-                    MenuManager.ToggleMainOpenRelatedMenuStatus(PageManager.GetOpenPage() === PageManager.Page.Main);
+                    MenuManager.ToggleMainOpenRelatedMenuStatus(PageManager.GetOpenPage() === Page.Main);
                 });
                 // Close the modal and reopen the current page
                 DialogManager.CloseModalDialog();
-                PageManager.RefreshOpenPages();
+                void PageManager.RefreshOpenPages();
             });
         });
     }

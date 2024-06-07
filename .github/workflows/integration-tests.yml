@@ -7,6 +7,7 @@ on:
 
 jobs:
   microsoft_sql:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     env:
       RunDockerTests: true
@@ -43,6 +44,7 @@ jobs:
         files: SQLSchemaCompare.Test/TestResults/*.trx
 
   my_sql:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     env:
       RunDockerTests: true
@@ -81,6 +83,7 @@ jobs:
         files: SQLSchemaCompare.Test/TestResults/*.trx
 
   postgre_sql:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     env:
       RunDockerTests: true
@@ -121,6 +124,7 @@ jobs:
         files: SQLSchemaCompare.Test/TestResults/*.trx
 
   maria_db:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     env:
       RunDockerTests: true

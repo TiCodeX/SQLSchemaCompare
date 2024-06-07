@@ -1,6 +1,7 @@
+declare const amdRequire: Require;
 
 $(() => {
-    Utility.ApplicationStartup().then(() => {
+    void Utility.ApplicationStartup().then(() => {
         // Configure the monaco editor loader
         amdRequire.config({
             baseUrl: "lib/monaco-editor",
@@ -13,9 +14,9 @@ $(() => {
             });
         }, 0);
 
-        MenuManager.CreateMenu();
+        void MenuManager.CreateMenu();
 
-        PageManager.LoadPage(PageManager.Page.Welcome);
+        void PageManager.LoadPage(Page.Welcome);
 
         $(document).on("keydown", (e: JQuery.Event): void => {
             const keyUp: number = 38;
@@ -24,11 +25,10 @@ $(() => {
             switch (e.which) {
                 case keyUp:
                 case keyDown:
-                    if (PageManager.GetOpenPage() !== PageManager.Page.Main) {
+                    if (PageManager.GetOpenPage() !== Page.Main) {
                         return;
                     }
-                    const selectedElement: JQuery = $(".tcx-selected-row");
-                    if (selectedElement.length === 0) {
+                    if ($(".tcx-selected-row").length === 0) {
                         return;
                     }
                     if (e.which === keyUp) {
@@ -47,10 +47,8 @@ $(() => {
             e.preventDefault();
         });
 
-        electron.ipcRenderer.on("LoadProject", (event: Electron.Event, projectToLoad: string) => {
-            Project.Load(false, projectToLoad).catch((): void => {
-                // Do nothing
-            });
+        electron.ipcRenderer.on("LoadProject", (_event, projectToLoad) => {
+            void Project.Load(false, projectToLoad as string);
         });
 
         electron.ipcRenderer.send("CheckLoadProject");

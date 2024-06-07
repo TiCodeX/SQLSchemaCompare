@@ -333,6 +333,9 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
+# ESLint
+.eslintcache
+
 # Custom rules
 SQLSchemaCompare/app.js
 SQLSchemaCompare/app.js.map

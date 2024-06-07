@@ -9,17 +9,17 @@ if ERRORLEVEL 1 goto:error
 
 echo.
 echo     _____________________
-echo    /\                    \  
-echo    \_^|    Packaging      ^|  
-echo      ^|    electron       ^|  
-echo      ^|  _________________^|_ 
+echo    /\                    \
+echo    \_^|    Packaging      ^|
+echo      ^|    electron       ^|
+echo      ^|  _________________^|_
 echo       \_/___________________/
 echo.
 
 REM Cleanup folders
 if exist %~dp0\installer\win-unpacked ( rmdir /S /Q %~dp0\installer\win-unpacked )
 
-call npm --prefix SQLSchemaCompare run dist-%target%
+call yarn --cwd SQLSchemaCompare dist-%target%
 
 if ERRORLEVEL 1 goto:error
 

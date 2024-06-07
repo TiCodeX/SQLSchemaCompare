@@ -5,26 +5,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-    <TypeScriptTarget>ES5</TypeScriptTarget>
-    <TypeScriptLib>ES5,ES6,DOM</TypeScriptLib>
-    <TypeScriptSourceMap>False</TypeScriptSourceMap>
-    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
-    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
-    <TSLintConfig>..\tslint.json</TSLintConfig>
-    <TSLintProject>tsconfig.json</TSLintProject>
+    <TypeScriptToolsVersion>latest</TypeScriptToolsVersion>
     <OutputType>Exe</OutputType>
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <PublishDir>..\.publish</PublishDir>
-    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
-    <TypeScriptModuleKind />
-    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-    <TypeScriptOutFile />
-    <TypeScriptOutDir />
-    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-    <TypeScriptMapRoot />
-    <TypeScriptSourceRoot />
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,8 +22,9 @@
     <None Include="bundleconfig.json" />
     <Content Remove="compilerconfig.json" />
     <None Include="compilerconfig.json" />
+    <!--The tsconfig.json needs to be TypeScriptCompile so that it's used for the compilation -->
     <Content Remove="tsconfig.json" />
-    <None Include="tsconfig.json" />
+    <TypeScriptCompile Include="tsconfig.json" />
     <!--Configure all TypeScript files to be compiled-->
     <Content Remove="wwwroot\**\*.ts" />
     <TypeScriptCompile Include="wwwroot\**\*.ts" />
@@ -103,7 +88,6 @@
     </PackageReference>
     <PackageReference Include="NLog" Version="5.3.2" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.11" />
-    <PackageReference Include="tslint" Version="5.17.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -114,19 +98,16 @@
     <ProjectReference Include="..\SQLSchemaCompare.Infrastructure\SQLSchemaCompare.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <TSLintExclude Include="wwwroot\lib\typings\%2A%2A\%2A.d.ts" />
-  </ItemGroup>
-
-  <ImportGroup>
-    <Import Project="..\tslint.targets" />
-  </ImportGroup>
-
-  <Target Name="CustomPreBuild" BeforeTargets="PreBuildEvent">
+  <Target Name="YarnLint" BeforeTargets="BeforeBuild">
+    <Exec Command='yarn lint-vs' />
     <Exec Command="del /Q /S wwwroot\js\*.js" />
   </Target>
 
-  <Target Name="CustomPostBuild" BeforeTargets="PostBuildEvent">
+  <Target Name="DeleteJs" BeforeTargets="VsTsc">
+    <Exec Command="del /Q /S wwwroot\js\*.js" />
+  </Target>
+
+  <Target Name="CheckBundle" AfterTargets="BundleMinify">
     <Exec Command="
       if not exist wwwroot\js\Index.min.js ( ^
         echo ERROR: Index.min.js not generated ^

@@ -7,6 +7,7 @@ on:
 
 jobs:
   unit_tests:
+    if: github.event.pull_request.draft == false
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -18,9 +19,6 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
     - name: Restore dependencies
       run: dotnet restore
-    - name: Install npm dependencies
-      run: npm install
-      working-directory: SQLSchemaCompare
     - name: Build
       run: msbuild SQLSchemaCompare.sln /p:Configuration=Release
     - name: Test

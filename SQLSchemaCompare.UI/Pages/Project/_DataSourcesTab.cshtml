@@ -12,19 +12,19 @@
             @if (Model.EditableDatabaseType)
             {
                 <select name="DatabaseType" onchange="Project.HandleDatabaseTypeOnChange($(this))" required>
-                    <option value="@((int) DatabaseType.MicrosoftSql)"
+                    <option value="@DatabaseType.MicrosoftSql.ToString()"
                             selected="@(Model.SourceProviderOptions is MicrosoftSqlDatabaseProviderOptions)">
                         Microsoft SQL Server
                     </option>
-                    <option value="@((int) DatabaseType.MySql)"
+                    <option value="@DatabaseType.MySql.ToString()"
                             selected="@(Model.SourceProviderOptions is MySqlDatabaseProviderOptions)">
                         MySQL Server
                     </option>
-                    <option value="@((int) DatabaseType.PostgreSql)"
+                    <option value="@DatabaseType.PostgreSql.ToString()"
                             selected="@(Model.SourceProviderOptions is PostgreSqlDatabaseProviderOptions)">
                         PostgreSQL Server
                     </option>
-                    <option value="@((int) DatabaseType.MariaDb)"
+                    <option value="@DatabaseType.MariaDb.ToString()"
                             selected="@(Model.SourceProviderOptions is MariaDbDatabaseProviderOptions)">
                         MariaDB Server
                     </option>

@@ -26,12 +26,12 @@ indent_size = 4
 indent_style = tab
 
 # XML Project Files
-[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj}]
+[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj,esproj}]
 indent_size = 2
 
 # Configuration Files
-[*.{json,xml,yml,config,props,targets,nuspec,resx,ruleset}]
-indent_size = 4
+[*.{json,xml,yml,config,props,targets,nuspec,resx,ruleset,js}]
+indent_size = 2
 
 # .NET Config Files
 [*.{config}]
@@ -43,7 +43,7 @@ charset = utf-8-bom
 trim_trailing_whitespace = false
 
 # Web Files
-[*.{htm,html,js,ts,css,scss,less}]
+[*.{htm,html,ts,css,scss,less}]
 indent_size = 4
 insert_final_newline = true
 

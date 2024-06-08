@@ -16,9 +16,6 @@ jobs:
         dotnet-version: 8.0.x
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
-    - name: Install npm dependencies
-      run: npm install
-      working-directory: SQLSchemaCompare
 
     - name: Restore win-x64 dependencies
       run: dotnet restore -r win-x64
@@ -86,7 +83,7 @@ jobs:
         name: publish-win
         path: .publish
     - name: Create installer
-      run: npm run dist-win-x64
+      run: yarn dist-win-x64
       working-directory: SQLSchemaCompare
     - name: Upload installer to release
       uses: svenstaro/upload-release-action@v2
@@ -123,7 +120,7 @@ jobs:
         chmod +x .publish/TiCodeX.SQLSchemaCompare.UI
         chmod +x .publish/TiCodeX.SQLSchemaCompare.CLI
     - name: Create installer
-      run: npm run dist-linux-x64
+      run: yarn dist-linux-x64
       working-directory: SQLSchemaCompare
     - name: Upload installer to release
       uses: svenstaro/upload-release-action@v2
@@ -160,7 +157,7 @@ jobs:
         chmod +x .publish/TiCodeX.SQLSchemaCompare.UI
         chmod +x .publish/TiCodeX.SQLSchemaCompare.CLI
     - name: Create installer
-      run: npm run dist-osx-x64
+      run: yarn dist-osx-x64
       working-directory: SQLSchemaCompare
     - name: Upload installer to release
       uses: svenstaro/upload-release-action@v2

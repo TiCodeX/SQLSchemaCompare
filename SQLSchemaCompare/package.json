@@ -97,9 +97,15 @@
     }
   },
   "scripts": {
+    "preclean": "yarn install --frozen-lockfile",
     "clean": "shx rm -f app.js app.min.js",
-    "prebuild": "npm run clean",
+    "prelint": "yarn clean",
+    "lint": "eslint \"**/*.{ts,tsx}\" --cache",
+    "lint-vs": "yarn lint --quiet --format visualstudio",
+    "prebuild": "yarn lint",
     "build": "tsc --build && uglifyjs app.js --compress --mangle --toplevel --output app.min.js",
+    "prebuild-vs": "yarn lint-vs",
+    "build-vs": "yarn build",
     "start": "electron .",
     "dist-win-x64": "electron-builder --win --publish always",
     "dist-linux-x64": "electron-builder --linux --publish always",
@@ -107,18 +113,25 @@
   },
   "postinstall": "electron-builder install-app-deps",
   "devDependencies": {
+    "@eslint/js": "^9.4.0",
+    "@tsconfig/recommended": "^1.0.6",
+    "@tsconfig/strictest": "^2.0.5",
     "@types/detect-port": "^1.1.0",
+    "@types/eslint__js": "^8.42.3",
     "@types/glob": "^7.1.1",
     "@types/node": "^12.12.22",
     "electron": "^7.1.7",
     "electron-builder": "^21.2.0",
+    "eslint": "^9.4.0",
+    "eslint-formatter-visualstudio": "^8.40.0",
+    "eslint-plugin-only-error": "^1.0.2",
     "shx": "^0.3.4",
-    "typescript": "^4.9.3",
-    "uglify-js": "^3.7.3"
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.12.0",
+    "uglify-js": "^3.17.4"
   },
   "dependencies": {
     "detect-port": "^1.3.0",
-    "electron-updater": "^4.2.0",
     "electron-window-state": "^5.0.3",
     "glob": "^7.1.6",
     "log4js": "^6.1.0"

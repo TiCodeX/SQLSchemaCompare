@@ -1,11 +1,10 @@
-/* tslint:disable:no-require-imports no-implicit-dependencies */
-declare const amdRequire: Require;
-const electron: Electron.AllElectron = (typeof require !== "undefined" ? <Electron.AllElectron>require("electron") : undefined);
-/* tslint:enable:no-require-imports no-implicit-dependencies */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const electron = require("electron") as Electron.AllElectron;
 
 /**
  * Contains various utility methods
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Utility {
     /**
      * Logger instance for this class
@@ -17,7 +16,7 @@ class Utility {
      */
     public static async ApplicationStartup(): Promise<void> {
         // Disable context menu
-        window.addEventListener("contextmenu", (e: PointerEvent) => {
+        window.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         }, false);
 
@@ -43,7 +42,7 @@ class Utility {
      * @param url The url to be opened in external browser
      */
     public static OpenExternalBrowser(url: string): void {
-        electron.shell.openExternal(url);
+        void electron.shell.openExternal(url);
     }
 
     /**
@@ -57,7 +56,7 @@ class Utility {
      * Indicates whether the specified string is null or an Empty string.
      * @param s The string to test
      */
-    public static IsNullOrEmpty(s: string): boolean {
+    public static IsNullOrEmpty(s?: string | null): boolean {
         return s === null || typeof s === "undefined" || s.length < 1;
     }
 
@@ -65,8 +64,8 @@ class Utility {
      * Indicates whether a specified string is null, empty, or consists only of white-space characters.
      * @param s The string to test
      */
-    public static IsNullOrWhitespace(s: string): boolean {
-        return this.IsNullOrEmpty(s) || s.trim().length < 1;
+    public static IsNullOrWhitespace(s?: string | null): boolean {
+        return this.IsNullOrEmpty(s) || (s ?? "").trim().length < 1;
     }
 
     /**
@@ -83,7 +82,7 @@ class Utility {
      * @param element The container to search for input elements
      * @returns The serialized JSON object
      */
-    public static SerializeJSON(element: JQuery): object {
+    public static SerializeJSON(element: JQuery) {
         // Ref: https://github.com/marioizquierdo/jquery.serializeJSON#options
         const settings: SerializeJSONSettings = {
             useIntKeysAsArrayIndex: true,
@@ -105,7 +104,7 @@ class Utility {
 
                 // Check if there are tabs in order to color based on their content validity
                 let firstTabWithErrorOpened: boolean = false;
-                element.find(".tab-content > .tab-pane").each((i: number, item: HTMLElement) => {
+                element.find(".tab-content > .tab-pane").each((_i, item) => {
                     const navTab: JQuery = element.find(`.nav-tabs > .nav-item > a[href='#${item.id}']`);
                     navTab.removeClass("text-danger text-success");
                     if ($(item).find("*:invalid").length > 0) {
@@ -124,10 +123,7 @@ class Utility {
                 }
             }
 
-            // Serialize inputs
-            const result: object = <object>form.serializeJSON(settings);
-
-            return result;
+            return form.serializeJSON(settings) as object;
         } finally {
             // Eliminate newly created form
             form.contents().unwrap();
@@ -141,13 +137,13 @@ class Utility {
      * @param data The object data to send when the method is POST
      * @return The ApiResponse
      */
-    public static async AjaxCall<T>(url: string, method: Utility.HttpMethod, data?: object): Promise<ApiResponse<T>> {
+    public static async AjaxCall<T>(url: string, method: HttpMethod, data?: object): Promise<ApiResponse<T>> {
         let ajaxMethod: string;
         switch (method) {
-            case Utility.HttpMethod.Get:
+            case HttpMethod.Get:
                 ajaxMethod = "GET";
                 break;
-            case Utility.HttpMethod.Post:
+            case HttpMethod.Post:
                 ajaxMethod = "POST";
                 break;
             default:
@@ -156,12 +152,11 @@ class Utility {
 
         /*this.logger.debug(`Executing AjaxCall... (Method=${ajaxMethod} Url=${url})`);*/
 
-        return new Promise<ApiResponse<T>>((resolve: PromiseResolve<ApiResponse<T>>): void => {
-            $.ajax(url, {
+        return new Promise<ApiResponse<T>>((resolve): void => {
+            void $.ajax(url, {
                 type: ajaxMethod,
                 beforeSend: (xhr: JQuery.jqXHR): void => {
-                    xhr.setRequestHeader("XSRF-TOKEN",
-                        $("input:hidden[name='__RequestVerificationToken']").val().toString());
+                    xhr.setRequestHeader("XSRF-TOKEN", $("input:hidden[name='__RequestVerificationToken']").val() as string);
                 },
                 contentType: "application/json",
                 data: data !== undefined ? JSON.stringify(data) : "",
@@ -186,12 +181,11 @@ class Utility {
     public static async AjaxGetPage(url: string): Promise<string> {
         this.logger.debug(`Executing AjaxGetPage... (Url=${url})`);
 
-        return new Promise<string>((resolve: PromiseResolve<string>): void => {
-            $.ajax(url, {
+        return new Promise<string>((resolve): void => {
+            void $.ajax(url, {
                 type: "GET",
                 beforeSend: (xhr: JQuery.jqXHR): void => {
-                    xhr.setRequestHeader("XSRF-TOKEN",
-                        $("input:hidden[name='__RequestVerificationToken']").val().toString());
+                    xhr.setRequestHeader("XSRF-TOKEN", $("input:hidden[name='__RequestVerificationToken']").val() as string);
                 },
                 contentType: "application/json",
                 data: "",
@@ -205,21 +199,5 @@ class Utility {
                 },
             });
         });
-    }
-}
-
-namespace Utility {
-    /**
-     * HTTP Method for the ajax call
-     */
-    export enum HttpMethod {
-        /**
-         * HTTP Method GET
-         */
-        Get,
-        /**
-         * HTTP Method POST
-         */
-        Post,
     }
 }

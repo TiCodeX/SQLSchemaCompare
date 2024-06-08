@@ -53,13 +53,16 @@
       "group": {
         "kind": "build"
       },
-      "problemMatcher": {
-        "base": "$tsc",
-        "fileLocation": [
-          "relative",
-          "${workspaceFolder}/SQLSchemaCompare"
-        ]
-      }
+      "problemMatcher": [
+        "$eslint-stylish",
+        {
+          "base": "$tsc",
+          "fileLocation": [
+            "relative",
+            "${workspaceFolder}/SQLSchemaCompare"
+          ]
+        }
+      ]
     },
     {
       "label": "Build CLI",

@@ -1,6 +1,7 @@
 /**
  * Contains utility methods related to the Main page
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Main {
     /**
      * Service URL for the Main page
@@ -30,18 +31,18 @@ class Main {
     /**
      * Contains a reference to the splitter instance
      */
-    private static mainSplitter: Split.Instance;
+    private static mainSplitter?: Split.Instance;
 
     /**
      * Contains a reference to the splitter sizes
      */
-    private static mainSplitterSizes: Array<number> = [60, 40]; // tslint:disable-line:no-magic-numbers
+    private static mainSplitterSizes?: Array<number> = [60, 40];
 
     /**
      * Open the Main page
      */
     public static Open(): void {
-        PageManager.LoadPage(PageManager.Page.Main).then((): void => {
+        void PageManager.LoadPage(Page.Main).then((): void => {
             this.RemoveSplitter();
             MenuManager.ToggleMainOpenRelatedMenuStatus(true);
         });
@@ -65,7 +66,7 @@ class Main {
                     $(".tcx-row-main").css("overflow", "hidden");
                 },
                 onDragEnd: (): void => {
-                    this.mainSplitterSizes = this.mainSplitter.getSizes();
+                    this.mainSplitterSizes = this.mainSplitter?.getSizes();
                     // Trigger monaco-editor recalculate height
                     $(".monaco-sash").height(0);
                     // Restore original overflow
@@ -86,15 +87,15 @@ class Main {
         }
         $(".tcx-diff-item-name").html(`${sourceItem} <span class='fa fa-long-arrow-alt-right'></span> ${targetItem}`);
 
-        Utility.AjaxCall(this.resultItemScriptsUrl + rowId, Utility.HttpMethod.Get).then((response: ApiResponse<CompareResultItemScripts>): void => {
+        void Utility.AjaxCall<CompareResultItemScripts>(this.resultItemScriptsUrl + rowId, HttpMethod.Get).then((response): void => {
 
-            EditorManager.CreateEditor(EditorManager.Type.Diff, "sqlDiff",
+            EditorManager.CreateEditor(EditorType.Diff, "sqlDiff",
                 {
-                    original: monaco.editor.createModel(response.Result.SourceCreateScript, "sql"),
-                    modified: monaco.editor.createModel(response.Result.TargetCreateScript, "sql"),
+                    original: monaco.editor.createModel(response.Result?.SourceCreateScript ?? "", "sql"),
+                    modified: monaco.editor.createModel(response.Result?.TargetCreateScript ?? "", "sql"),
                 });
 
-            EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlAlterScript", monaco.editor.createModel(response.Result.AlterScript, "sql"));
+            EditorManager.CreateEditor(EditorType.Normal, "sqlAlterScript", monaco.editor.createModel(response.Result?.AlterScript ?? "", "sql"));
         });
     }
 
@@ -185,13 +186,13 @@ class Main {
      * Show the full script page
      * @param direction The source or target
      */
-    public static ShowFullScript(direction: Main.CompareDirection): void {
-        const title: string = direction === Main.CompareDirection.Source
+    public static ShowFullScript(direction: CompareDirection): void {
+        const title: string = direction === CompareDirection.Source
             ? Localization.Get("MenuFullSourceDatabaseScript")
             : Localization.Get("MenuFullTargetDatabaseScript");
-        DialogManager.OpenModalDialog(title, this.sqlScriptUrl).then((): void => {
-            Utility.AjaxCall(`${this.fullSqlScriptUrl}${direction}`, Utility.HttpMethod.Get).then((response: ApiResponse<string>): void => {
-                EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlEditor", monaco.editor.createModel(response.Result, "sql"));
+        void DialogManager.OpenModalDialog(title, this.sqlScriptUrl).then((): void => {
+            void Utility.AjaxCall<string>(`${this.fullSqlScriptUrl}${direction}`, HttpMethod.Get).then((response): void => {
+                EditorManager.CreateEditor(EditorType.Normal, "sqlEditor", monaco.editor.createModel(response.Result ?? "", "sql"));
             });
         });
     }
@@ -200,9 +201,9 @@ class Main {
      * Show the full alter script page
      */
     public static ShowFullAlterScript(): void {
-        DialogManager.OpenModalDialog(Localization.Get("MenuFullMigrationScript"), this.sqlScriptUrl).then((): void => {
-            Utility.AjaxCall(`${this.fullSqlAlterScriptUrl}`, Utility.HttpMethod.Get).then((response: ApiResponse<string>): void => {
-                EditorManager.CreateEditor(EditorManager.Type.Normal, "sqlEditor", monaco.editor.createModel(response.Result, "sql"));
+        void DialogManager.OpenModalDialog(Localization.Get("MenuFullMigrationScript"), this.sqlScriptUrl).then((): void => {
+            void Utility.AjaxCall<string>(`${this.fullSqlAlterScriptUrl}`, HttpMethod.Get).then((response): void => {
+                EditorManager.CreateEditor(EditorType.Normal, "sqlEditor", monaco.editor.createModel(response.Result ?? "", "sql"));
             });
         });
     }
@@ -211,13 +212,16 @@ class Main {
      * Scroll the main view to the selected element
      */
     private static ScollToSelectedElement(): void {
-        const selectedElement: JQuery = $(".tcx-selected-row");
+        const selectedElement = $(".tcx-selected-row");
         if (selectedElement.length === 0) {
             return;
         }
-        const mainTop: JQuery = $("#mainTop");
-        const half: number = 0.5;
-        mainTop.scrollTop(mainTop.scrollTop() + selectedElement.offset().top - mainTop.innerHeight() * half);
+        const mainTop = $("#mainTop");
+        const scrollTop = mainTop.scrollTop() ?? 0;
+        const offsetTop = selectedElement.offset()?.top ?? 0;
+        const innerHeight = mainTop.innerHeight() ?? 0;
+        const half = 0.5;
+        mainTop.scrollTop(scrollTop + offsetTop - innerHeight * half);
     }
 
     /**
@@ -234,19 +238,5 @@ class Main {
         } finally {
             this.mainSplitter = undefined;
         }
-    }
-}
-
-namespace Main {
-    export enum CompareDirection {
-        /**
-         * Represent the source database
-         */
-        Source = 0,
-
-        /**
-         * Represent the target database
-         */
-        Target = 1,
     }
 }

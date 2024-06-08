@@ -51,10 +51,10 @@
             <i class="fa fa-file-alt fa-lg"></i> @Localization.MenuGenerateScript
         </button>
         <div class="dropdown-menu">
-            <a class="dropdown-item" onclick="Main.ShowFullScript(@((int) CompareDirection.Source));">
+            <a class="dropdown-item" onclick="Main.ShowFullScript(CompareDirection.Source);">
                 @Localization.MenuFullSourceDatabaseScript
             </a>
-            <a class="dropdown-item" onclick="Main.ShowFullScript(@((int) CompareDirection.Target));">
+            <a class="dropdown-item" onclick="Main.ShowFullScript(CompareDirection.Target);">
                 @Localization.MenuFullTargetDatabaseScript
             </a>
             <a class="dropdown-item" onclick="Main.ShowFullAlterScript();">

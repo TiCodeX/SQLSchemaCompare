@@ -14,10 +14,10 @@ if ERRORLEVEL 1 goto:error
 
 echo.
 echo     _____________________
-echo    /\                    \  
-echo    \_^|    Preparing      ^|  
-echo      ^|       OSX         ^|  
-echo      ^|  _________________^|_ 
+echo    /\                    \
+echo    \_^|    Preparing      ^|
+echo      ^|       OSX         ^|
+echo      ^|  _________________^|_
 echo       \_/___________________/
 echo.
 
@@ -37,11 +37,11 @@ if ERRORLEVEL 1 goto:error
 
 echo.
 echo     _____________________
-echo    /\                    \  
-echo    \_^|    Packaging      ^|  
-echo      ^|    electron       ^|  
-echo      ^|       OSX         ^|  
-echo      ^|  _________________^|_ 
+echo    /\                    \
+echo    \_^|    Packaging      ^|
+echo      ^|    electron       ^|
+echo      ^|       OSX         ^|
+echo      ^|  _________________^|_
 echo       \_/___________________/
 echo.
 
@@ -51,7 +51,7 @@ plink -pw %remotePass% %remoteUser%@%remoteIp% (^
    cd %remoteDir%/SQLSchemaCompare;^
    chmod -R a+rwx ./node_modules;^
    chmod +x ../.publish/TiCodeX.SQLSchemaCompare.UI;^
-   npm run dist-%target%;^
+   yarn dist-%target%;^
 )
 
 if ERRORLEVEL 1 goto:error

@@ -30,7 +30,7 @@ docker run --rm^
    --env ELECTRON_CACHE="/root/.cache/electron"^
    --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder"^
    electronuserland/builder^
-   npm run dist-%target%
+   yarn dist-%target%
 
 if ERRORLEVEL 1 goto:error
 

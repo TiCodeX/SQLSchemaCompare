@@ -1,6 +1,6 @@
-<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.62-alpha">
+<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.1114476">
   <PropertyGroup>
-    <CleanCommand>npm run clean</CleanCommand>
-    <BuildCommand>npm run build</BuildCommand>
+    <ShouldRunNpmInstall>false</ShouldRunNpmInstall>
+    <BuildCommand>yarn build-vs</BuildCommand>
   </PropertyGroup>
 </Project>

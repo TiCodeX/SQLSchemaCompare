@@ -8,6 +8,7 @@ for file in $changedFiles; do
     [ -z "${file##"SQLSchemaCompare.UI/wwwroot/lib/"*}" ] && continue;
     [ -z "${file##"SQLSchemaCompare.UI/wwwroot/img/"*}" ] && continue;
     [ -z "${file##"SQLSchemaCompare.UI/wwwroot/font/"*}" ] && continue;
+    [ -z "${file##"SQLSchemaCompare.UI/package"*".json"}" ] && continue;
     [ -z "${file##"SQLSchemaCompare/package"*".json"}" ] && continue;
     [ -z "${file##"SQLSchemaCompare/img/"*}" ] && continue;
     [ -z "${file##"SQLSchemaCompare/font/"*}" ] && continue;
@@ -16,7 +17,7 @@ for file in $changedFiles; do
     [ -z "${file##*".pfx"}" ] && continue;
     [ -z "${file##*".p12"}" ] && continue;
     [ -z "${file##*".exe"}" ] && continue;
-    
+
     unix2dos < "$file" | cmp -s - "$file"
     if [ ! $? -eq 0 ]; then
         error=1

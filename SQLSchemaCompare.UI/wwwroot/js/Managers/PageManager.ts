@@ -1,6 +1,7 @@
 /**
  * Contains utility methods to handle the page displayed
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class PageManager {
     /**
      * Reference to the main container div
@@ -15,7 +16,7 @@ class PageManager {
         this.pageContainer.children("div:last").removeClass("d-none");
 
         if (this.pageContainer.children("div").length === 0) {
-            return this.LoadPage(PageManager.Page.Welcome);
+            return this.LoadPage(Page.Welcome);
         }
 
         this.RemoveTooltips();
@@ -35,12 +36,12 @@ class PageManager {
     /**
      * Get the currently opened page
      */
-    public static GetOpenPage(): PageManager.Page {
+    public static GetOpenPage(): Page | undefined {
         const currentPage: JQuery = this.pageContainer.children("div:last");
         if (currentPage.length > 0) {
             const pageAttribute: number = Number(currentPage.attr("page"));
 
-            return PageManager.Page[PageManager.Page[pageAttribute]]; // tslint:disable-line:no-unsafe-any
+            return Page[Page[pageAttribute] as keyof typeof Page];
         }
 
         return undefined;
@@ -50,11 +51,11 @@ class PageManager {
      * Refresh all the currently opened pages
      */
     public static async RefreshOpenPages(): Promise<void> {
-        const pages: Array<PageManager.Page> = [];
-        this.pageContainer.children("div").each((index: number, element: HTMLElement) => {
+        const pages: Array<Page> = [];
+        this.pageContainer.children("div").each((_index, element) => {
             const pageAttribute: number = Number($(element).attr("page"));
 
-            pages.push(PageManager.Page[PageManager.Page[pageAttribute]]); // tslint:disable-line:no-unsafe-any
+            pages.push(Page[Page[pageAttribute] as keyof typeof Page]);
         });
 
         // Remove all the pages
@@ -64,7 +65,7 @@ class PageManager {
             await this.LoadPage(page, false);
         }
 
-        Promise.resolve();
+        void Promise.resolve();
     }
 
     /**
@@ -72,8 +73,8 @@ class PageManager {
      * @param page The page to open
      * @param closePreviousPage Tell if the previous page needs to be closed
      */
-    public static async LoadPage(page: PageManager.Page, closePreviousPage: boolean = true): Promise<void> {
-        return Utility.AjaxGetPage(this.GetPageUrl(page)).then((result: string): void => {
+    public static async LoadPage(page: Page, closePreviousPage: boolean = true): Promise<void> {
+        return Utility.AjaxGetPage(this.GetPageUrl(page) ?? "").then((result: string): void => {
 
             if (closePreviousPage) {
                 this.pageContainer.children("div:last").remove();
@@ -89,7 +90,7 @@ class PageManager {
             newPageDiv.appendTo(this.pageContainer);
             newPageDiv.attr("page", page);
             newPageDiv.addClass("col-12 p-0");
-            if (page === PageManager.Page.Main) {
+            if (page === Page.Main) {
                 newPageDiv.addClass("tcx-main-page");
             } else {
                 newPageDiv.addClass("my-auto");
@@ -129,37 +130,13 @@ class PageManager {
     /**
      * Get the page url
      */
-    private static GetPageUrl(page: PageManager.Page): string {
+    private static GetPageUrl(page: Page): string | undefined {
         switch (page) {
-            case PageManager.Page.Main: return "/Main/MainPageModel";
-            case PageManager.Page.Welcome: return "/WelcomePageModel";
-            case PageManager.Page.Project: return "/Project/ProjectPageModel";
-            case PageManager.Page.TaskStatus: return "/TaskStatusPageModel";
+            case Page.Main: return "/Main/MainPageModel";
+            case Page.Welcome: return "/WelcomePageModel";
+            case Page.Project: return "/Project/ProjectPageModel";
+            case Page.TaskStatus: return "/TaskStatusPageModel";
             default: return undefined;
         }
-    }
-}
-
-namespace PageManager {
-    /**
-     * Pages handled by PageManager
-     */
-    export enum Page {
-        /**
-         * The main page
-         */
-        Main,
-        /**
-         * The welcome page
-         */
-        Welcome,
-        /**
-         * The project page
-         */
-        Project,
-        /**
-         * The task status page
-         */
-        TaskStatus,
     }
 }

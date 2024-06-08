@@ -2,6 +2,7 @@
  * Logger class which provides methods for logging
  * @param category The logger category
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Logger {
     /**
      * The logger category

@@ -1,6 +1,7 @@
 /**
  * Contains utility to handle the modal dialog
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class DialogManager {
     /**
      * The modal id
@@ -26,12 +27,7 @@ class DialogManager {
      * Show the error in the modal dialog
      */
     public static ShowError(title: string, message: string, link?: string, linkText?: string): void {
-        if (title === undefined) {
-            this.ShowModal(Localization.Get("TitleError"), message, link);
-
-            return;
-        }
-        this.ShowModal(title, message, link, linkText);
+        this.ShowModal(title === "" ? Localization.Get("TitleError") : title, message, link, linkText);
     }
 
     /**
@@ -47,21 +43,21 @@ class DialogManager {
      * @param message The question message to display
      * @param buttons The button choices
      */
-    public static async OpenQuestionDialog(title: string, message: string, buttons: Array<DialogManager.DialogButton>): Promise<DialogManager.DialogButton> {
+    public static async OpenQuestionDialog(title: string, message: string, buttons: Array<DialogButton>): Promise<DialogButton> {
 
-        return new Promise<DialogManager.DialogButton>((resolve: PromiseResolve<DialogManager.DialogButton>): void => {
+        return new Promise<DialogButton>((resolve): void => {
 
             const buttonLabels: Array<string> = [];
             let cancelId: number = buttons.length - 1;
             for (const button of buttons) {
                 switch (button) {
-                    case DialogManager.DialogButton.Yes:
+                    case DialogButton.Yes:
                         buttonLabels.push(Localization.Get("ButtonYes"));
                         break;
-                    case DialogManager.DialogButton.No:
+                    case DialogButton.No:
                         buttonLabels.push(Localization.Get("ButtonNo"));
                         break;
-                    case DialogManager.DialogButton.Cancel:
+                    case DialogButton.Cancel:
                         buttonLabels.push(Localization.Get("ButtonCancel"));
                         cancelId = buttonLabels.length - 1;
                         break;
@@ -69,7 +65,7 @@ class DialogManager {
                 }
             }
 
-            electron.remote.dialog.showMessageBox(
+            void electron.remote.dialog.showMessageBox(
                 electron.remote.getCurrentWindow(),
                 {
                     type: "question",
@@ -140,25 +136,5 @@ class DialogManager {
         }
 
         $(this.modalId).modal("show");
-    }
-}
-
-namespace DialogManager {
-    /**
-     * Dialog buttons
-     */
-    export enum DialogButton {
-        /**
-         * Yes
-         */
-        Yes = 0,
-        /**
-         * No
-         */
-        No = 1,
-        /**
-         * Cancel
-         */
-        Cancel = 2,
     }
 }

@@ -3,6 +3,9 @@
 REM Bring dev tools into the PATH.
 set "VsDevCmdPath=C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\Tools\VsDevCmd.bat"
 if not exist "%VsDevCmdPath%" (
+  set "VsDevCmdPath=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+)
+if not exist "%VsDevCmdPath%" (
   set "VsDevCmdPath=C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat"
 )
 if not exist "%VsDevCmdPath%" (
@@ -40,17 +43,12 @@ if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 
 echo.
 echo     ___________________________
-echo    /\                           \  
-echo    \_^|        Building         ^|  
-echo      ^|    SQLSchemaCompare     ^|  
-echo      ^|  _______________________^|_ 
+echo    /\                           \
+echo    \_^|        Building         ^|
+echo      ^|    SQLSchemaCompare     ^|
+echo      ^|  _______________________^|_
 echo       \_/_________________________/
 echo.
-
-pushd %~dp0\SQLSchemaCompare
-rd /Q /S node_modules
-call npm install
-popd
 
 dotnet restore -r %targetdotnet%
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
@@ -60,10 +58,10 @@ if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 
 echo.
 echo     ____________________________
-echo    /\                           \  
-echo    \_^|       Publishing        ^|  
-echo      ^|    SQLSchemaCompare     ^|  
-echo      ^|  _______________________^|_ 
+echo    /\                           \
+echo    \_^|       Publishing        ^|
+echo      ^|    SQLSchemaCompare     ^|
+echo      ^|  _______________________^|_
 echo       \_/_________________________/
 echo.
 

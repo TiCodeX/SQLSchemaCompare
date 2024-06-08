@@ -22,8 +22,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 - Solution Items", "00 -
 		README.md = README.md
 		RunTests.bat = RunTests.bat
 		SonarLint.xml = SonarLint.xml
-		tslint.json = tslint.json
-		tslint.targets = tslint.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 - Core", "01 - Core", "{733A9DC5-8F1A-4056-BAEA-EFF4A3F3E726}"

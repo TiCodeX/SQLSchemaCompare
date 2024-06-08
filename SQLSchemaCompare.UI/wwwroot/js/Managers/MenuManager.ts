@@ -1,6 +1,7 @@
 /**
  * Contains utility method to handle the main application menu
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class MenuManager {
     /**
      * Creates the main application menu
@@ -15,7 +16,7 @@ class MenuManager {
                         id: "menuNewProject",
                         label: Localization.Get("MenuNewProject"),
                         accelerator: "CmdOrCtrl+N",
-                        click(): void {
+                        click: () => {
                             Project.New(false);
                         },
                     },
@@ -23,7 +24,7 @@ class MenuManager {
                         id: "menuOpenProject",
                         label: `${Localization.Get("MenuOpenProject")}...`,
                         accelerator: "CmdOrCtrl+O",
-                        click(): void {
+                        click: () => {
                             Project.Load().catch((): void => {
                                 // Do nothing
                             });
@@ -37,10 +38,8 @@ class MenuManager {
                         label: `${Localization.Get("MenuSaveProject")}`,
                         accelerator: "CmdOrCtrl+S",
                         enabled: false,
-                        click(): void {
-                            Project.Save().catch((): void => {
-                                // Do nothing
-                            });
+                        click: () => {
+                            void Project.Save();
                         },
                     },
                     {
@@ -48,10 +47,8 @@ class MenuManager {
                         label: `${Localization.Get("MenuSaveProjectAs")}...`,
                         accelerator: "CmdOrCtrl+Shift+S",
                         enabled: false,
-                        click(): void {
-                            Project.Save(true).catch((): void => {
-                                // Do nothing
-                            });
+                        click: () => {
+                            void Project.Save(true);
                         },
                     },
                     {
@@ -59,7 +56,7 @@ class MenuManager {
                         label: Localization.Get("MenuCloseProject"),
                         accelerator: "CmdOrCtrl+Q",
                         enabled: false,
-                        click(): void {
+                        click: () => {
                             Project.Close(false);
                         },
                     },
@@ -69,7 +66,7 @@ class MenuManager {
                     {
                         id: "menuSettings",
                         label: Localization.Get("MenuSettings"),
-                        click(): void {
+                        click: () => {
                             Settings.Open();
                         },
                     },
@@ -91,8 +88,8 @@ class MenuManager {
                         label: Localization.Get("MenuEdit"),
                         accelerator: "CmdOrCtrl+E",
                         enabled: false,
-                        click(): void {
-                            Project.OpenPage(false);
+                        click: () => {
+                            void Project.OpenPage(false);
                         },
                     },
                     {
@@ -100,7 +97,7 @@ class MenuManager {
                         label: Localization.Get("MenuCompare"),
                         accelerator: "CmdOrCtrl+R",
                         enabled: false,
-                        click(): void {
+                        click: () => {
                             Project.Compare();
                         },
                     },
@@ -112,7 +109,7 @@ class MenuManager {
                     {
                         id: "menuOpenLogsFolder",
                         label: `${Localization.Get("MenuOpenLogsFolder")}...`,
-                        click(): void {
+                        click: () => {
                             electron.ipcRenderer.send("OpenLogsFolder");
                         },
                     },
@@ -122,22 +119,22 @@ class MenuManager {
                     {
                         label: Localization.Get("MenuAbout"),
                         accelerator: "F1",
-                        click(): void {
-                            DialogManager.OpenModalDialog(Localization.Get("MenuAbout"), "/AboutPageModel", "500px", true);
+                        click: () => {
+                            void DialogManager.OpenModalDialog(Localization.Get("MenuAbout"), "/AboutPageModel", "500px", true);
                         },
                     },
                 ],
             },
         ];
 
-        if (electron.remote.process.defaultApp) { // tslint:disable-line:no-unsafe-any
+        if (electron.remote.process.defaultApp) {
             template.push({
                 label: "DEBUG",
                 submenu: [
                     {
                         label: "Reload",
                         accelerator: "F5",
-                        click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
+                        click: (_item, focusedWindow) => {
                             if (focusedWindow) {
                                 focusedWindow.reload();
                             }
@@ -146,7 +143,7 @@ class MenuManager {
                     {
                         label: "Toggle Developer Tools",
                         accelerator: "F12",
-                        click(item: Electron.MenuItem, focusedWindow?: Electron.BrowserWindow): void {
+                        click: (_item, focusedWindow) => {
                             if (focusedWindow) {
                                 focusedWindow.webContents.toggleDevTools();
                             }
@@ -167,7 +164,7 @@ class MenuManager {
 
         //#endregion
 
-        Promise.resolve();
+        void Promise.resolve();
     }
 
     /**
@@ -226,63 +223,16 @@ class MenuManager {
     }
 
     /**
-     * Handle the onClick event of the rating stars
-     * @param star The star that fired the event
-     */
-    public static HandleRatingStarClick(star: JQuery): void {
-        const value: number = parseInt(star.attr("rating"), 10);
-        $("#rating-value").val(value);
-        star.removeClass("far").addClass("fa");
-        star.siblings(".fa-star").each((index: number, element: HTMLElement): void => {
-            if (parseInt($(element).attr("rating"), 10) >= value) {
-                $(element).removeClass("fa").addClass("far");
-            } else {
-                $(element).removeClass("far").addClass("fa");
-            }
-        });
-    }
-
-    /**
-     * Send the feedback
-     */
-    public static SendFeedback(): void {
-
-        // Close the menu
-        $("#feedback-button").dropdown("toggle");
-
-        // Send the feedback to back-end
-        Utility.AjaxCall("/ToolbarPageModel?handler=SendFeedback", Utility.HttpMethod.Post, { Rating: $("#rating-value").val(), Comment: $("#feedback-message").val() })
-            .then((response: ApiResponse<object>): void => {
-                if (response.Success) {
-
-                    // Reset fields
-                    $("#rating-value").val("");
-                    $("#feedback-message").val("");
-
-                    // Remove highlight from button
-                    $("#feedback-button").removeClass("btn-tcx-highlight").addClass("btn-secondary");
-
-                    // Reset the 5 rating stars
-                    $("#rating-stars .fa.fa-star").removeClass("fa").addClass("far");
-
-                    DialogManager.ShowInformation(Localization.Get("TitleFeedbackSent"), Localization.Get("MessageThanksForFeedback"));
-                } else {
-                    DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage);
-                }
-            });
-    }
-
-    /**
      * Enable/Disable the items specified in the array
      * @param items The list of items
      * @param enable Whether to enable or disable the menu items
      */
     private static ToggleMenuItems(items: Array<string>, enable: boolean): void {
-        const menu: Electron.Menu = electron.remote.Menu.getApplicationMenu();
+        const menu = electron.remote.Menu.getApplicationMenu();
 
         for (const item of items) {
 
-            const menuItem: Electron.MenuItem = menu.getMenuItemById(item);
+            const menuItem = menu?.getMenuItemById(item) as Electron.MenuItem | null;
             if (menuItem !== undefined && menuItem !== null) {
                 menuItem.enabled = enable;
                 continue;

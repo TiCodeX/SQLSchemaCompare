@@ -1,0 +1,9 @@
+{
+  "Exclude": [
+    "\\.Designer\\.cs$",
+    "\\.resx$",
+    "\\.sql$",
+    "\\.pfx$",
+    "^SQLSchemaCompare.UI/wwwroot/lib/"
+  ]
+}

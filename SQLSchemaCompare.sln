@@ -10,6 +10,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLSchemaCompare.Test", "SQ
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 - Solution Items", "00 - Solution Items", "{EB87FDBE-CC7F-4AD6-BD06-1425586DEEDD}"
 	ProjectSection(SolutionItems) = preProject
+		.ecrc = .ecrc
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		CodeAnalysis.ruleset = CodeAnalysis.ruleset

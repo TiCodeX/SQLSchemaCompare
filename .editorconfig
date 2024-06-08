@@ -1,17 +1,12 @@
-# EditorConfig is awesome: https://EditorConfig.org
-
-# top-most EditorConfig file
 root = true
 
-# All Files
 [*]
-charset = utf-8
-end_of_line = crlf
 indent_style = space
-#indent_size = 4
-# (Please don't specify an indent_size here; that has too many unintended consequences.)
-insert_final_newline = false
+indent_size = 2
+end_of_line = crlf
+charset = utf-8
 trim_trailing_whitespace = true
+insert_final_newline = true
 
 # Neolution.CodeAnalysis rules
 dotnet_diagnostic.S1200.severity = none
@@ -20,45 +15,12 @@ dotnet_diagnostic.S3358.severity = none
 dotnet_diagnostic.S3956.severity = none
 dotnet_diagnostic.S4049.severity = none
 
-# Solution Files
+# TO BE INVESTIGATED
 [*.sln]
-indent_size = 4
 indent_style = tab
 
-# XML Project Files
-[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj,esproj}]
-indent_size = 2
-
-# Configuration Files
-[*.{json,xml,yml,config,props,targets,nuspec,resx,ruleset,js}]
-indent_size = 2
-
-# .NET Config Files
-[*.{config}]
-indent_size = 4
-charset = utf-8-bom
-
-# Markdown Files
-[*.md]
-trim_trailing_whitespace = false
-
-# Web Files
-[*.{htm,html,ts,css,scss,less}]
-indent_size = 4
-insert_final_newline = true
-
-# Razor Files
 [*.cshtml]
 indent_size = 4
-charset = utf-8-bom
 
-# Bash Files
-[*.sh]
+[*.sql]
 indent_size = 4
-end_of_line = lf
-
-# Dotnet Code Files
-[*.{cs,csx,cake,vb}]
-indent_size = 4
-insert_final_newline = true
-charset = utf-8-bom

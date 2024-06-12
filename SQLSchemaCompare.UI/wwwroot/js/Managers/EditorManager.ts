@@ -106,14 +106,14 @@ class EditorManager {
                     label: Localization.Get("MenuFind"),
                     accelerator: "CmdOrCtrl+F",
                     click: () => {
-                        currentEditor.trigger("menu", "actions.find", undefined);
+                        currentEditor.trigger("menu", "actions.find", {});
                     },
                 },
                 {
                     label: Localization.Get("MenuGoToLine"),
                     accelerator: "CmdOrCtrl+G",
                     click: () => {
-                        currentEditor.trigger("menu", "editor.action.gotoLine", undefined);
+                        currentEditor.trigger("menu", "editor.action.gotoLine", {});
                     },
                 },
                 {

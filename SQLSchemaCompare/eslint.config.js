@@ -1,22 +1,4 @@
-const eslint = require("@eslint/js");
 const tseslint = require("typescript-eslint");
-const pluginOnlyError = require("eslint-plugin-only-error");
+const baseConfig = require("../BaseEslintConfig.js").getBaseConfig(__dirname);
 
-module.exports = tseslint.config(
-  {
-    plugins: {
-      pluginOnlyError,
-    },
-  },
-  eslint.configs.recommended,
-  {
-    languageOptions: {
-      parserOptions: {
-        project: true,
-        tsconfigDirName: __dirname,
-      },
-    },
-    files: ["**/*.ts"],
-  },
-  ...tseslint.configs.recommendedTypeChecked
-);
+module.exports = tseslint.config(baseConfig);

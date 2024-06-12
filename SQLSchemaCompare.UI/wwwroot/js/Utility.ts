@@ -55,23 +55,25 @@ class Utility {
     /**
      * Indicates whether the specified string is null or an Empty string.
      * @param s The string to test
+     * @returns True if the value parameter is null or an empty string; otherwise, false.
      */
     public static IsNullOrEmpty(s?: string | null): boolean {
-        return s === null || typeof s === "undefined" || s.length < 1;
+        return s === null || s === undefined || s.length === 0;
     }
 
     /**
      * Indicates whether a specified string is null, empty, or consists only of white-space characters.
      * @param s The string to test
+     * @returns True if the value parameter is null, an empty string or if value consists exclusively of white-space characters.
      */
     public static IsNullOrWhitespace(s?: string | null): boolean {
-        return this.IsNullOrEmpty(s) || (s ?? "").trim().length < 1;
+        return this.IsNullOrEmpty(s) || (s ?? "").trim().length === 0;
     }
 
     /**
      * Get a Logger for the specified category
      * @param category The logger category
-     * @return The logger
+     * @returns The logger
      */
     public static GetLogger(category: string): Logger {
         return new Logger(category);
@@ -119,7 +121,7 @@ class Utility {
                 });
 
                 if (!valid) {
-                    return undefined;
+                    return;
                 }
             }
 
@@ -135,9 +137,9 @@ class Utility {
      * @param url The URL of the ajax call
      * @param method The method (GET/POST)
      * @param data The object data to send when the method is POST
-     * @return The ApiResponse
+     * @returns The ApiResponse
      */
-    public static async AjaxCall<T>(url: string, method: HttpMethod, data?: object): Promise<ApiResponse<T>> {
+    public static async AjaxCall<T>(url: string, method: HttpMethod, data?: object | string | boolean): Promise<ApiResponse<T>> {
         let ajaxMethod: string;
         switch (method) {
             case HttpMethod.Get:
@@ -159,7 +161,7 @@ class Utility {
                     xhr.setRequestHeader("XSRF-TOKEN", $("input:hidden[name='__RequestVerificationToken']").val() as string);
                 },
                 contentType: "application/json",
-                data: data !== undefined ? JSON.stringify(data) : "",
+                data: data === undefined ? "" : JSON.stringify(data),
                 cache: false,
                 async: true,
                 success: (response: ApiResponse<T>): void => {
@@ -176,7 +178,7 @@ class Utility {
     /**
      * Perform an ajax call to load the html page
      * @param url The URL of the ajax call
-     * @return The html of the page
+     * @returns The html of the page
      */
     public static async AjaxGetPage(url: string): Promise<string> {
         this.logger.debug(`Executing AjaxGetPage... (Url=${url})`);

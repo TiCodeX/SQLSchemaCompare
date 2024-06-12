@@ -99,7 +99,7 @@
   </ItemGroup>
 
   <Target Name="YarnLint" BeforeTargets="BeforeBuild">
-    <Exec Command='yarn lint-vs' />
+    <Exec Command="yarn lint-vs" />
     <Exec Command="del /Q /S wwwroot\js\*.js" />
   </Target>
 

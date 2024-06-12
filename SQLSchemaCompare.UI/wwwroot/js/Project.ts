@@ -71,6 +71,7 @@ class Project {
     /**
      * Open the project page
      * @param closePreviousPage Tell if the previous page needs to be closed
+     * @returns A promise that will be resolved when the page is opened
      */
     public static async OpenPage(closePreviousPage: boolean = true): Promise<void> {
         return PageManager.LoadPage(Page.Project, closePreviousPage).then((): void => {
@@ -101,6 +102,7 @@ class Project {
     /**
      * Open the new Project page
      * @param ignoreDirty Whether to ignore if the project is dirty or prompt to save
+     * @param databaseType The database type to set in the new project
      */
     public static New(ignoreDirty: boolean, databaseType?: DatabaseType): void {
         const data = {
@@ -124,19 +126,16 @@ class Project {
     /**
      * Save the Project
      * @param showDialog Whether to show the save dialog
+     * @returns A promise that will be resolved when the project is saved
      */
     public static async Save(showDialog: boolean = false): Promise<void> {
         if (PageManager.GetOpenPage() === Page.Project) {
-            try {
-                await this.Edit();
-            } catch (e) {
-                return Promise.reject();
-            }
+            await this.Edit();
         }
 
         let filename = this.filename;
         if (filename === undefined || showDialog) {
-            filename = (await electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
+            ({ filePath: filename } = await electron.remote.dialog.showSaveDialog(electron.remote.getCurrentWindow(),
                 {
                     title: Localization.Get("TitleSaveProject"),
                     buttonLabel: Localization.Get("ButtonSave"),
@@ -146,16 +145,14 @@ class Project {
                             extensions: [this.projectFileExtension],
                         },
                     ],
-                })).filePath;
+                }));
         }
 
         if (Utility.IsNullOrWhitespace(filename)) {
-            return Promise.resolve();
+            return;
         }
 
-        const data: object = <object>JSON.parse(JSON.stringify(filename));
-
-        return Utility.AjaxCall<object>(this.saveUrl, HttpMethod.Post, data).then((response): void => {
+        return Utility.AjaxCall<object>(this.saveUrl, HttpMethod.Post, filename).then((response): void => {
             if (response.Success) {
                 this.filename = filename;
                 this.isDirty = false;
@@ -171,11 +168,12 @@ class Project {
      * Load the Project from the file, if not specified show the open file dialog
      * @param ignoreDirty Whether to ignore if the project is dirty or prompt to save
      * @param filename The Project file path
+     * @returns A promise that will be resolved when the project is loaded
      */
     public static async Load(ignoreDirty: boolean = false, filename?: string): Promise<void> {
         let file = filename;
         if (file === undefined) {
-            const filenames: Array<string> = (await electron.remote.dialog.showOpenDialog(electron.remote.getCurrentWindow(),
+            const { filePaths: filenames } = await electron.remote.dialog.showOpenDialog(electron.remote.getCurrentWindow(),
                 {
                     title: Localization.Get("TitleOpenProject"),
                     buttonLabel: Localization.Get("ButtonOpen"),
@@ -186,10 +184,10 @@ class Project {
                         },
                     ],
                     properties: ["openFile"],
-                })).filePaths;
+                });
 
-            if (!Array.isArray(filenames) || filenames.length < 1 || Utility.IsNullOrWhitespace(filenames[0])) {
-                return Promise.resolve();
+            if (!Array.isArray(filenames) || filenames.length === 0 || Utility.IsNullOrWhitespace(filenames[0])) {
+                return;
             }
 
             file = filenames[0];
@@ -210,6 +208,7 @@ class Project {
 
     /**
      * Serialize the project values in the UI and send them to the service
+     * @returns The api response
      */
     public static async Edit<T>(): Promise<ApiResponse<T>> {
         return new Promise<ApiResponse<T>>((resolve, reject): void => {
@@ -229,8 +228,7 @@ class Project {
      * @param ignoreDirty Whether to ignore if the project is dirty or prompt to save
      */
     public static Close(ignoreDirty: boolean): void {
-        const data: object = <object>JSON.parse(JSON.stringify(ignoreDirty));
-        void Utility.AjaxCall<string>(this.closeUrl, HttpMethod.Post, data).then((response) => {
+        void Utility.AjaxCall<string>(this.closeUrl, HttpMethod.Post, ignoreDirty).then((response) => {
             if (response.Success) {
                 this.isDirty = false;
                 this.filename = undefined;
@@ -323,9 +321,7 @@ class Project {
      * @param filename The Project file path
      */
     public static RemoveRecentProject(filename: string): void {
-        const data: object = <object>JSON.parse(JSON.stringify(filename));
-
-        void Utility.AjaxCall(this.removeRecentUrl, HttpMethod.Post, data).then((): void => {
+        void Utility.AjaxCall(this.removeRecentUrl, HttpMethod.Post, filename).then((): void => {
             if (PageManager.GetOpenPage() === Page.Welcome) {
                 void PageManager.LoadPage(Page.Welcome);
             }
@@ -415,7 +411,7 @@ class Project {
      * @param prefix The page prefix (Source/Target)
      */
     public static HandleHostnameOnInput(input: JQuery, prefix: string): void {
-        const databaseType = parseInt($("[name='DatabaseType']").val() as string, 10);
+        const databaseType = Number.parseInt($("[name='DatabaseType']").val() as string, 10);
         const databaseTypeEnum = DatabaseType[DatabaseType[databaseType] as keyof typeof DatabaseType];
         if (databaseTypeEnum === DatabaseType.MicrosoftSql) {
             $(`input[name='${prefix}Port']`).prop("disabled", (input.val() as string).includes("\\"));
@@ -540,7 +536,7 @@ class Project {
 
         // Get the first column which has the rowspan and reduce the value by 1
         const rowSpanCol: JQuery = trGroupStart.children("td:first");
-        rowSpanCol.attr("rowspan", parseInt(rowSpanCol.attr("rowspan") ?? "", 10) - 1);
+        rowSpanCol.attr("rowspan", Number.parseInt(rowSpanCol.attr("rowspan") ?? "", 10) - 1);
 
         /* If we are removing the first row of the group, it means that there aren't any other clauses
          * so we should also remove the last row of the group which contains the button to
@@ -597,7 +593,7 @@ class Project {
 
             // Get the first column which has the rowspan and increment the value by 1
             const rowSpanCol: JQuery = trGroupStart.children("td:first");
-            rowSpanCol.attr("rowspan", parseInt(rowSpanCol.attr("rowspan") ?? "", 10) + 1);
+            rowSpanCol.attr("rowspan", Number.parseInt(rowSpanCol.attr("rowspan") ?? "", 10) + 1);
 
             // Hide the object type select and add the AND label
             trGroupStartNew.find("select[name='ProjectOptions[Filtering[Clauses[][ObjectType]]']").hide().after("AND");
@@ -611,7 +607,7 @@ class Project {
             // Reset the rowspan on the first column to 1 and write the OR label
             trGroupStartNew.children("td:first").attr("rowspan", "2").text("OR");
             // Increment the group number
-            trGroupStartNew.find("input[name='ProjectOptions[Filtering[Clauses[][Group]]']").val(parseInt(<string>inputGroup.val(), 10) + 1);
+            trGroupStartNew.find("input[name='ProjectOptions[Filtering[Clauses[][Group]]']").val(Number.parseInt(<string>inputGroup.val(), 10) + 1);
             trGroupEnd.clone().insertAfter(trGroupStartNew);
 
             // Show the remove button on the first clause of the first group if it there is only one clause

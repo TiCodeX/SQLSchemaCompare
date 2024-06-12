@@ -4,7 +4,7 @@
   "license": "GPL-3.0-only",
   "scripts": {
     "prelint": "yarn install --frozen-lockfile",
-    "lint": "eslint \"**/*.{ts,tsx}\" --cache",
+    "lint": "eslint . --cache",
     "lint-vs": "yarn lint --quiet --format visualstudio"
   },
   "devDependencies": {
@@ -14,7 +14,10 @@
     "@types/eslint__js": "^8.42.3",
     "eslint": "^9.4.0",
     "eslint-formatter-visualstudio": "^8.40.0",
+    "eslint-plugin-jsdoc": "^48.2.9",
     "eslint-plugin-only-error": "^1.0.2",
+    "eslint-plugin-sonarjs": "^1.0.3",
+    "eslint-plugin-unicorn": "^53.0.0",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.12.0"
   }

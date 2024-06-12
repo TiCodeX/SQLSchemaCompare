@@ -1,13 +1,7 @@
 {
-  "compileOnSave": true,
   "extends": [
     "@tsconfig/recommended/tsconfig.json",
-    "@tsconfig/strictest/tsconfig.json"
-  ],
-  "compilerOptions": {
-    "checkJs": false,
-    "allowJs": false,
-    "noEmitOnError": true,
-    "exactOptionalPropertyTypes": false
-  }
+    "@tsconfig/strictest/tsconfig.json",
+    "../BaseTsConfig.json"
+  ]
 }

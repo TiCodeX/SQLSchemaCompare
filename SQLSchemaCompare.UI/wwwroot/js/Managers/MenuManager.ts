@@ -163,13 +163,11 @@ class MenuManager {
         });
 
         //#endregion
-
-        void Promise.resolve();
     }
 
     /**
      * Enable/Disable the Project related menu items
-     * @param enabled Whether to enable or disable the menu items
+     * @param enable Whether to enable or disable the menu items
      */
     public static ToggleProjectRelatedMenuStatus(enable: boolean): void {
         this.ToggleMenuItems([
@@ -190,7 +188,7 @@ class MenuManager {
 
     /**
      * Enable/Disable the menu items during the running task
-     * @param enabled Whether to enable or disable the menu items
+     * @param enable Whether to enable or disable the menu items
      */
     public static ToggleRunningTaskRelatedMenuStatus(enable: boolean): void {
         this.ToggleMenuItems([

@@ -10,22 +10,21 @@ class PageManager {
 
     /**
      * Close the current page, if it's last it will open the welcome page
+     * @returns A promise that will be resolved when the page is closed
      */
     public static async ClosePage(): Promise<void> {
         this.pageContainer.children("div:last").remove();
         this.pageContainer.children("div:last").removeClass("d-none");
+        this.RemoveTooltips();
 
         if (this.pageContainer.children("div").length === 0) {
             return this.LoadPage(Page.Welcome);
         }
-
-        this.RemoveTooltips();
-
-        return Promise.resolve();
     }
 
     /**
      * Closes all the pages and open the welcome page
+     * @returns A promise that will be resolved when the pages are closed
      */
     public static async CloseAllPages(): Promise<void> {
         this.pageContainer.children("div").remove();
@@ -35,6 +34,7 @@ class PageManager {
 
     /**
      * Get the currently opened page
+     * @returns The currently opened page
      */
     public static GetOpenPage(): Page | undefined {
         const currentPage: JQuery = this.pageContainer.children("div:last");
@@ -64,14 +64,13 @@ class PageManager {
         for (const page of pages) {
             await this.LoadPage(page, false);
         }
-
-        void Promise.resolve();
     }
 
     /**
      * Open the page
      * @param page The page to open
      * @param closePreviousPage Tell if the previous page needs to be closed
+     * @returns A promise that will be resolved when the page is opened
      */
     public static async LoadPage(page: Page, closePreviousPage: boolean = true): Promise<void> {
         return Utility.AjaxGetPage(this.GetPageUrl(page) ?? "").then((result: string): void => {
@@ -117,18 +116,20 @@ class PageManager {
     public static RemoveTooltips(): void {
         try {
             $("div.tooltip").tooltip("hide");
-        } catch (e) {
+        } catch {
             $("div.tooltip").remove();
         }
         try {
             $("div.popover").popover("hide");
-        } catch (e) {
+        } catch {
             $("div.popover").remove();
         }
     }
 
     /**
      * Get the page url
+     * @param page The page
+     * @returns The page url
      */
     private static GetPageUrl(page: Page): string | undefined {
         switch (page) {

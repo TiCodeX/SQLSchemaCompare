@@ -25,6 +25,10 @@ class DialogManager {
 
     /**
      * Show the error in the modal dialog
+     * @param title The title of the dialog
+     * @param message The error message to display
+     * @param link The link to display
+     * @param linkText The link text to display
      */
     public static ShowError(title: string, message: string, link?: string, linkText?: string): void {
         this.ShowModal(title === "" ? Localization.Get("TitleError") : title, message, link, linkText);
@@ -32,6 +36,10 @@ class DialogManager {
 
     /**
      * Show the information in the modal dialog
+     * @param title The title of the dialog
+     * @param message The information message to display
+     * @param link The link to display
+     * @param linkText The link text to display
      */
     public static ShowInformation(title: string, message: string, link?: string, linkText?: string): void {
         this.ShowModal(title, message, link, linkText);
@@ -42,6 +50,7 @@ class DialogManager {
      * @param title The title of the dialog
      * @param message The question message to display
      * @param buttons The button choices
+     * @returns The button clicked
      */
     public static async OpenQuestionDialog(title: string, message: string, buttons: Array<DialogButton>): Promise<DialogButton> {
 
@@ -87,12 +96,13 @@ class DialogManager {
      * @param url The URL of the ajax call
      * @param maxWidth CSS value for the dialog max-width
      * @param showCloseButton Whether to show the close button
+     * @returns The promise
      */
     public static async OpenModalDialog(title: string, url: string, maxWidth?: string, showCloseButton?: boolean): Promise<void> {
         return Utility.AjaxGetPage(url).then((result: string): void => {
             $("#myModal .modal-title").html(title);
             $("#myModal .modal-body").html(result);
-            $("#myModal .modal-dialog").css("max-width", maxWidth !== undefined ? maxWidth : "");
+            $("#myModal .modal-dialog").css("max-width", maxWidth === undefined ? "" : maxWidth);
             $("#myModal .modal-header > button").css("display", showCloseButton !== undefined && showCloseButton ? "block" : "none");
             $("#myModal").attr("tabindex", showCloseButton !== undefined && showCloseButton ? "-1" : "");
             $("#myModal").modal({
@@ -118,16 +128,20 @@ class DialogManager {
 
     /**
      * Display the modal dialog
+     * @param title The title
+     * @param message The message
+     * @param link The link
+     * @param linkText The link text
      */
     private static ShowModal(title: string, message: string, link?: string, linkText?: string): void {
         $(this.modalTitleId).html(title);
         $(this.modalMessageId).html(message);
 
         if (link !== undefined) {
-            if (linkText !== undefined) {
-                $(this.modalLinkId).html(linkText);
-            } else {
+            if (linkText === undefined) {
                 $(this.modalLinkId).html(link);
+            } else {
+                $(this.modalLinkId).html(linkText);
             }
 
             $(this.modalLinkId).on("click", () => {

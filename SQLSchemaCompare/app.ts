@@ -13,7 +13,7 @@ electron.app.setAppUserModelId("ch.ticodex.sqlschemacompare");
 electron.app.setPath("userData", path.join(electron.app.getPath("appData"), "SQL Schema Compare"));
 
 const isDebug = process.defaultApp;
-const initialPort = 25436;
+const initialPort = 25_436;
 const splashUrl = `file://${__dirname}/splash.html`;
 const loggerPath = path.join(os.homedir(), ".SQLSchemaCompare", "log", "SQLSchemaCompare.log");
 const loggerPattern = "yyyy-MM-dd-ui";
@@ -45,7 +45,7 @@ if (process.argv.length > 1 && process.argv[1] !== undefined) {
         if (stat.isFile() && path.extname(process.argv[1]).toLowerCase() === ".tcxsc") {
             projectToOpen = process.argv[1];
         }
-    } catch (ex) {
+    } catch {
         // Ignore
     }
 }
@@ -114,13 +114,13 @@ setTimeout(() => {
                 try {
                     logger.info(`Deleting old archive file: ${file}`);
                     fs.unlinkSync(file);
-                } catch (e) {
-                    logger.error(`Delete file failed. Error: ${e as string}`);
+                } catch (error) {
+                    logger.error(`Delete file failed. Error: ${error as string}`);
                 }
             });
         });
-    } catch (ex) {
-        logger.log(`Error deleting old log files: ${ex as string}`);
+    } catch (error) {
+        logger.log(`Error deleting old log files: ${error as string}`);
     }
 }, 0);
 //#endregion
@@ -152,7 +152,7 @@ electron.ipcMain.on("log", (_event, data: { category: string; level: string; mes
 // Register the renderer callback for opening the main window
 electron.ipcMain.on("OpenMainWindow", () => {
     serviceCommunicationSuccessful = true;
-   // Destroy splash window
+    // Destroy splash window
     if (splashWindow !== undefined) {
         splashWindow.destroy();
         splashWindow = undefined;
@@ -183,57 +183,27 @@ electron.ipcMain.on("OpenLogsFolder", () => {
  * Set an empty application menu (except OSX)
  */
 function setEmptyApplicationMenu(): void {
-    if (!isDebug) {
-        if (process.platform === "darwin") {
-            // On OSX is not possible to remove the menu, hence create only the Exit entry
-            electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate([
-                {
-                    label: "File",
-                    submenu: [
-                        {
-                            role: "close",
-                            label: "Exit",
-                        },
-                    ],
-                },
-            ]));
-        } else {
-            // On Windows and Linux remove the menu completely
-            electron.Menu.setApplicationMenu(null);
-        }
-    } else {
-        // In debug mode it's useful to have the Reload and the developer tools
+    if (process.platform === "darwin") {
+        // On OSX is not possible to remove the menu, hence create only the Exit entry
         electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate([
             {
-                label: "DEBUG",
+                label: "File",
                 submenu: [
                     {
-                        label: "Reload",
-                        accelerator: "F5",
-                        click(_item, focusedWindow): void {
-                            if (focusedWindow) {
-                                focusedWindow.reload();
-                            }
-                        },
-                    },
-                    {
-                        label: "Toggle Developer Tools",
-                        accelerator: "F12",
-                        click(_item, focusedWindow): void {
-                            if (focusedWindow) {
-                                focusedWindow.webContents.toggleDevTools();
-                            }
-                        },
+                        role: "close",
+                        label: "Exit",
                     },
                 ],
             },
         ]));
+    } else {
+        // On Windows and Linux remove the menu completely
+        electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate([]));
     }
 }
 
 /**
  * Create the main window
- * @param url The url to pass for authentication purpose
  */
 function createMainWindow(): void {
     const workAreaSize = electron.screen.getPrimaryDisplay().workAreaSize;
@@ -294,13 +264,13 @@ function createMainWindow(): void {
             if (retries > 0) {
                 // Reset the flag and trigger a new load
                 loadFailed = false;
-                if (process.platform !== "linux") {
-                    void mainWindow?.loadURL(serviceUrl);
-                } else {
+                if (process.platform === "linux") {
                     // Add a small delay on linux because the fail event is triggered very fast
                     setTimeout(() => {
                         void mainWindow?.loadURL(serviceUrl);
                     }, 400);
+                } else {
+                    void mainWindow?.loadURL(serviceUrl);
                 }
             } else {
                 logger.error(`Unable to contact service (${loadFailedError})`);
@@ -316,7 +286,7 @@ function createMainWindow(): void {
                     electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
                     electron.app.quit();
                 }
-            }, 10000);
+            }, 10_000);
         }
     });
 
@@ -390,11 +360,9 @@ function startup(): void {
     logger.debug("Splashscreen window started");
 
     splashWindow.on("closed", () => {
-        if (!serviceCommunicationSuccessful) {
-            if (mainWindow !== undefined) {
-                mainWindow.destroy();
-                mainWindow = undefined;
-            }
+        if (!serviceCommunicationSuccessful && mainWindow !== undefined) {
+            mainWindow.destroy();
+            mainWindow = undefined;
         }
         splashWindow = undefined;
     });

@@ -30,7 +30,7 @@ indent_style = tab
 indent_size = 2
 
 # Configuration Files
-[*.{json,xml,yml,config,props,targets,nuspec,resx,ruleset,js}]
+[*.{json,xml,yml,config,props,targets,nuspec,resx,ruleset,js,cjs,mjs}]
 indent_size = 2
 
 # .NET Config Files

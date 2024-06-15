@@ -5,13 +5,13 @@ import path from "node:path";
 export const getBaseConfig = async (dirname) => {
   const fileUrl = url.pathToFileURL(path.join(dirname, "/"));
   const eslint = (await import(import.meta.resolve("@eslint/js", fileUrl))).default;
+  const eslintCompat = await import(import.meta.resolve("@eslint/compat", fileUrl));
   const tseslint = (await import(import.meta.resolve("typescript-eslint", fileUrl))).default;
 
   const deprecationPlugin = (await import(import.meta.resolve("eslint-plugin-deprecation", fileUrl))).default;
   const eslintCommentsPlugin = (await import(import.meta.resolve("eslint-plugin-eslint-comments", fileUrl))).default;
   const importPlugin = (await import(import.meta.resolve("eslint-plugin-import", fileUrl))).default;
   const jsdocPlugin = (await import(import.meta.resolve("eslint-plugin-jsdoc", fileUrl))).default;
-  const simpleImportSortPlugin = (await import(import.meta.resolve("eslint-plugin-simple-import-sort", fileUrl))).default;
   const unicornPlugin = (await import(import.meta.resolve("eslint-plugin-unicorn", fileUrl))).default;
   const sonarjsPlugin = (await import(import.meta.resolve("eslint-plugin-sonarjs", fileUrl))).default;
   const onlyErrorPlugin = (await import(import.meta.resolve("eslint-plugin-only-error", fileUrl))).default;
@@ -23,11 +23,10 @@ export const getBaseConfig = async (dirname) => {
       name: "plugins",
       plugins: {
         ["@typescript-eslint"]: tseslint.plugin,
-        ["deprecation"]: deprecationPlugin,
+        ["deprecation"]: eslintCompat.fixupPluginRules(deprecationPlugin),
         ["eslint-comments"]: eslintCommentsPlugin,
-        ["import"]: importPlugin,
+        ["import"]: eslintCompat.fixupPluginRules(importPlugin),
         ["jsdoc"]: jsdocPlugin,
-        ["simple-import-sort"]: simpleImportSortPlugin,
         ["unicorn"]: unicornPlugin,
         ["sonarjs"]: sonarjsPlugin,
         ["only-error"]: onlyErrorPlugin,
@@ -47,21 +46,26 @@ export const getBaseConfig = async (dirname) => {
     },
     //eslint.configs.all, ???
     ...tseslint.configs.recommendedTypeChecked,
-    ////{
-    ////  name: "eslint-plugin-deprecation/recommended",
-    ////  rules: {
-    ////    ...deprecationPlugin.configs.recommended.rules,
-    ////  },
-    ////},
+    {
+      name: "eslint-plugin-deprecation/recommended",
+      rules: {
+        ...deprecationPlugin.configs.recommended.rules,
+      },
+    },
     {
       name: "eslint-plugin-eslint-comments/recommended",
       rules: {
         ...eslintCommentsPlugin.configs.recommended.rules,
       },
     },
-    //importPlugin???
+    {
+      name: "eslint-plugin-import/recommended",
+      files: ["**/*.ts", "**/*.tsx"],
+      rules: {
+        ...importPlugin.configs.recommended.rules,
+      },
+    },
     jsdocPlugin.configs["flat/recommended-typescript-error"],
-    //simpleImportSortPlugin???
     {
       name: "eslint-plugin-unicorn/recommended",
       rules: {
@@ -86,12 +90,6 @@ export const getBaseConfig = async (dirname) => {
         },
       },
       rules: {
-        //// make sure we"re not leveraging any deprecated APIs
-        //"deprecation/deprecation": "error",
-
-        //  // TODO: https://github.com/typescript-eslint/typescript-eslint/issues/8538
-        //  "@typescript-eslint/no-confusing-void-expression": "off",
-
         //
         // eslint-base
         //
@@ -153,6 +151,7 @@ export const getBaseConfig = async (dirname) => {
         //
         // eslint-plugin-import
         //
+
         //  // enforces consistent type specifier style for named imports
         //  "import/consistent-type-specifier-style": "error",
         //  // disallow non-import statements appearing before import statements
@@ -187,12 +186,9 @@ export const getBaseConfig = async (dirname) => {
         //  // Require modules with a single export to use a default export
         //  "import/prefer-default-export": "off", // we want everything to be named
 
-        //  // enforce a sort order across the codebase
-        //  "simple-import-sort/imports": "error",
-
-        //  //
-        //  // eslint-plugin-jsdoc
-        //  //
+        //
+        // eslint-plugin-jsdoc
+        //
 
         //  // We often use @remarks or other ad-hoc tag names
         //  "jsdoc/check-tag-names": "off",
@@ -226,9 +222,8 @@ export const getBaseConfig = async (dirname) => {
       files: ["**/*.{js,cjs,mjs}"],
       extends: [tseslint.configs.disableTypeChecked],
       rules: {
-        //// turn off other type-aware rules
-        //"deprecation/deprecation": "off",
-        //"@typescript-eslint/internal/no-poorly-typed-ts-props": "off",
+        // turn off other type-aware rules
+        "deprecation/deprecation": "off",
 
         //// turn off rules that don"t apply to JS code
         //"@typescript-eslint/explicit-function-return-type": "off",
@@ -245,48 +240,4 @@ export const getBaseConfig = async (dirname) => {
       },
     },
   ];
-  //return [{
-  //  name: "eslint/recommended",
-  //  files: ["**/*.js", "**/*.jsx"],
-  //  ...eslint.configs.recommended,
-  //},
-  //...tseslint.config({
-  //  files: ["**/*.ts", "**/*.tsx"],
-  //},
-  //  ...tseslint.configs.recommended)];
 };
-
-//export { getBaseConfig };
-
-//{
-//files: ["**/*.ts", "**/*.tsx"],
-//extends: [
-//  ,
-//  pluginUnicorn.configs["flat/recommended"],
-//  pluginJsDoc.configs["flat/recommended-typescript"],
-//],
-//plugins: {
-//  pluginSonarJS,
-//  pluginUnicorn,
-//  pluginJsDoc,
-//  pluginOnlyError,
-//},
-//languageOptions: {
-//  parser: tseslint.parser,
-//    parserOptions: {
-//    project: true,
-//      tsconfigRootDir: __dirname,
-//    },
-//},
-//rules: {
-//  // To keep disabled?
-//  "unicorn/throw-new-error": "off",
-//  "unicorn/prefer-module": "off",
-//  "unicorn/switch-case-braces": "off",
-//  "sonarjs/no-duplicate-string": "off",
-//  "unicorn/prevent-abbreviations": "off",
-//  "unicorn/no-array-for-each": "off",
-//}
-//});
-//  }
-//};

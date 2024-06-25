@@ -1,15 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using TiCodeX.SQLSchemaCompare.Core.Entities;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-    using TiCodeX.SQLSchemaCompare.Services;
-
     /// <summary>
     /// Implements the database mapper functionality
     /// </summary>

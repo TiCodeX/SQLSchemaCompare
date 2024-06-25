@@ -1,11 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <AssemblyName>TiCodeX.SQLSchemaCompare.Infrastructure</AssemblyName>
     <RootNamespace>TiCodeX.SQLSchemaCompare.Infrastructure</RootNamespace>
-    <TargetFramework>net8.0</TargetFramework>
-    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,5 +19,4 @@
   <ItemGroup>
     <ProjectReference Include="..\SQLSchemaCompare.Services\SQLSchemaCompare.Services.csproj" />
   </ItemGroup>
-
 </Project>

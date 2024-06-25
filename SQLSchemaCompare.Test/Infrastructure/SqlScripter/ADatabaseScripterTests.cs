@@ -1,19 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using ExposedObject;
-    using FluentAssertions;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
-    using Xunit;
-    using Xunit.Abstractions;
-    using Xunit.Categories;
-
     /// <summary>
     /// Test class for the abstract class ADatabaseScripter
     /// </summary>

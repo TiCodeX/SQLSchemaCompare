@@ -1,13 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions;
-
     /// <summary>
     /// Common EF database context
     /// </summary>

@@ -1,19 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 {
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Text;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Entities;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
-
     /// <summary>
     /// Retrieves various information from a PostgreSQL Server
     /// </summary>

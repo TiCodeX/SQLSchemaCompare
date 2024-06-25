@@ -1,15 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-
     /// <summary>
     /// Sql scripter class specific for MySql database
     /// </summary>

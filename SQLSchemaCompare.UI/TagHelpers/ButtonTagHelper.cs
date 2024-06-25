@@ -1,10 +1,6 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using Microsoft.AspNetCore.Razor.TagHelpers;
-    using TiCodeX.SQLSchemaCompare.UI.Enums;
 
     /// <summary>
     /// TagHelper for button

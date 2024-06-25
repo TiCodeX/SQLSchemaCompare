@@ -1,7 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Compare
 {
-    using System.Collections.Generic;
-
     /// <summary>
     /// Represent the result of a comparison
     /// </summary>

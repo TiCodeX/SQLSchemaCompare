@@ -1,21 +1,7 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.CLI
 {
-    using System;
-    using System.IO;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
     using Autofac;
     using CommandLine;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
-    using TiCodeX.SQLSchemaCompare.Services;
 
     /// <summary>
     /// SQLSchemaCompare CLI application

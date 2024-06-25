@@ -1,7 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Services
 {
-    using TiCodeX.SQLSchemaCompare.Core.Entities;
-
     /// <summary>
     /// Defines a class that provides the mechanisms to handle application settings.
     /// </summary>

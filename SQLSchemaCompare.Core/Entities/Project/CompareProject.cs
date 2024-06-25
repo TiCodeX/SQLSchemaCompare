@@ -1,10 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Project
 {
-    using System.Xml.Serialization;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-    using TiCodeX.SQLSchemaCompare.Core.Enums;
-
     /// <summary>
     /// Defines a database comparison project
     /// </summary>

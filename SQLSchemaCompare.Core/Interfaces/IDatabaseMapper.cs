@@ -1,8 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
 {
-    using TiCodeX.SQLSchemaCompare.Core.Entities;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-
     /// <summary>
     /// Defines a class that provides the mechanism to map 2 databases
     /// </summary>

@@ -1,12 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
-    using System.Collections.Generic;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.RazorPages;
-    using TiCodeX.SQLSchemaCompare.Core.Entities;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
     /// <summary>
     /// PageModel of the TaskStatus page
     /// </summary>

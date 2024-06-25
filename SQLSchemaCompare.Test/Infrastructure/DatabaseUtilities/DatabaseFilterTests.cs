@@ -1,16 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities
 {
-    using ExposedObject;
-    using FluentAssertions;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-    using TiCodeX.SQLSchemaCompare.Core.Enums;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities;
-    using Xunit;
-    using Xunit.Abstractions;
-    using Xunit.Categories;
-
     /// <summary>
     /// Test class for the DatabaseFilter
     /// </summary>

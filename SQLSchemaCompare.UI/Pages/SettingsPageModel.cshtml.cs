@@ -1,15 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
-    using System;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.RazorPages;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Entities;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-    using TiCodeX.SQLSchemaCompare.UI.WebServer;
-
     /// <summary>
     /// PageModel of the settings page
     /// </summary>

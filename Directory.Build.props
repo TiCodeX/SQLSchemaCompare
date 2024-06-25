@@ -1,4 +1,52 @@
 <Project>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Authors>TiCodeX</Authors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IncludeServicesUsings>true</IncludeServicesUsings>
+    <IncludeInfrastructureUsings>true</IncludeInfrastructureUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+    <Using Include="System.Globalization" />
+    <Using Include="System.Linq.Expressions" />
+    <Using Include="System.Text" />
+    <Using Include="System.Text.RegularExpressions" />
+    <Using Include="System.Xml" />
+    <Using Include="System.Xml.Serialization" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Entities" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Entities.Api" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Entities.Compare" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Entities.Database" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Entities.Project" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Enums" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Extensions" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Interfaces.Services" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Core.Interfaces" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeServicesUsings)' == 'true'">
+    <Using Include="Microsoft.Extensions.Logging" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Services" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeInfrastructureUsings)' == 'true'">
+    <Using Include="Microsoft.EntityFrameworkCore" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Infrastructure.Repository" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters" />
+  </ItemGroup>
+
   <ItemGroup>
     <AdditionalFiles Include="../SonarLint.xml" />
   </ItemGroup>

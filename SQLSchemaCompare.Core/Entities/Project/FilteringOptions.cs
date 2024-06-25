@@ -1,7 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Project
 {
-    using System.Collections.Generic;
-
     /// <summary>
     /// The filtering options for the project
     /// </summary>

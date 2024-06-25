@@ -1,10 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using Microsoft.AspNetCore.Mvc.RazorPages;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
     /// <summary>
     /// PageModel of the Welcome page
     /// </summary>

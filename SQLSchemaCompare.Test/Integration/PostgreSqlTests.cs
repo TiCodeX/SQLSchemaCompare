@@ -1,17 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Test.Integration
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Text;
-    using FluentAssertions;
-    using TiCodeX.SQLSchemaCompare.Core.Entities;
-    using TiCodeX.SQLSchemaCompare.Core.Enums;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
-    using Xunit;
-    using Xunit.Abstractions;
-    using Xunit.Categories;
-
     /// <summary>
     /// Integration tests for PostgreSQL
     /// </summary>

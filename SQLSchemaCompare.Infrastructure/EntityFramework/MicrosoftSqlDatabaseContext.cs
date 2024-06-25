@@ -1,11 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
 {
-    using System;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
     /// <summary>
     /// Defines the MicrosoftSql database context
     /// </summary>

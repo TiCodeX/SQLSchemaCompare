@@ -1,23 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages.Project
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.RazorPages;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-    using TiCodeX.SQLSchemaCompare.Core.Enums;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-    using TiCodeX.SQLSchemaCompare.Services;
-    using TiCodeX.SQLSchemaCompare.UI.Models;
-    using TiCodeX.SQLSchemaCompare.UI.Models.Project;
-
     /// <summary>
     /// PageModel of the Project page
     /// </summary>

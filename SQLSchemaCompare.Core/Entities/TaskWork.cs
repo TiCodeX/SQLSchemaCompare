@@ -1,7 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities
 {
-    using System;
-
     /// <summary>
     /// Defines a Task and it's work to do
     /// </summary>

@@ -1,7 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider
 {
-    using System.Xml.Serialization;
-
     /// <summary>
     /// Provides generic options for Database Provider Class.
     /// </summary>

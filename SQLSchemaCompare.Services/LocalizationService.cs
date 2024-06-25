@@ -1,13 +1,7 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Services
 {
     using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Globalization;
-    using System.Linq;
     using System.Reflection;
-    using TiCodeX.SQLSchemaCompare.Core.Enums;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
     /// <summary>
     /// Provides the mechanisms to handle various languages

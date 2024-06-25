@@ -1,6 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers
 {
-    using System;
     using Microsoft.AspNetCore.Razor.TagHelpers;
 
     /// <summary>

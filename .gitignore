@@ -339,9 +339,8 @@ ASALocalRun/
 # Custom rules
 SQLSchemaCompare/app.js
 SQLSchemaCompare/app.js.map
-SQLSchemaCompare/app.min.js
 SQLSchemaCompare.UI/wwwroot/js/**/*.js
-# Css generated files
+SQLSchemaCompare.UI/wwwroot/js/**/*.js.map
 SQLSchemaCompare.UI/wwwroot/css/**/*.css
 # Installer folders
 .publish

@@ -1,9 +1,12 @@
-﻿[
-    {
-        "outputFile": "wwwroot/css/Index.css",
-        "inputFile": "wwwroot/css/Index.scss",
-        "minify": {
-            "enabled": true
-        }
+[
+  {
+    "outputFile": "wwwroot/css/Index.css",
+    "inputFile": "wwwroot/css/Index.scss",
+    "minify": {
+      "enabled": false
+    },
+    "options": {
+      "sourceMap": true
     }
+  }
 ]

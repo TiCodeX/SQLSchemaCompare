@@ -854,4 +854,7 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelHistories" xml:space="preserve">
     <value>Histories</value>
   </data>
+  <data name="MenuDeveloperTools" xml:space="preserve">
+    <value>Developer tools</value>
+  </data>
 </root>

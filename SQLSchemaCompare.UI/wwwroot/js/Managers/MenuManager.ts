@@ -114,9 +114,20 @@ class MenuManager {
                         },
                     },
                     {
+                        id: "menuDeveloperTools",
+                        label: Localization.Get("MenuDeveloperTools"),
+                        accelerator: "F12",
+                        click: (_item, focusedWindow) => {
+                            if (focusedWindow) {
+                                focusedWindow.webContents.toggleDevTools();
+                            }
+                        },
+                    },
+                    {
                         type: "separator",
                     },
                     {
+                        id: "menuAbout",
                         label: Localization.Get("MenuAbout"),
                         accelerator: "F1",
                         click: () => {
@@ -126,33 +137,6 @@ class MenuManager {
                 ],
             },
         ];
-
-        if (electron.remote.process.defaultApp) {
-            template.push({
-                label: "DEBUG",
-                submenu: [
-                    {
-                        label: "Reload",
-                        accelerator: "F5",
-                        click: (_item, focusedWindow) => {
-                            if (focusedWindow) {
-                                focusedWindow.reload();
-                            }
-                        },
-                    },
-                    {
-                        label: "Toggle Developer Tools",
-                        accelerator: "F12",
-                        click: (_item, focusedWindow) => {
-                            if (focusedWindow) {
-                                focusedWindow.webContents.toggleDevTools();
-                            }
-                        },
-                    },
-                ],
-            });
-        }
-
         electron.remote.Menu.setApplicationMenu(electron.remote.Menu.buildFromTemplate(template));
         //#endregion
 

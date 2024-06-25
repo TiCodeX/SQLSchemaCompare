@@ -152,7 +152,7 @@ electron.ipcMain.on("log", (_event, data: { category: string; level: string; mes
 // Register the renderer callback for opening the main window
 electron.ipcMain.on("OpenMainWindow", () => {
     serviceCommunicationSuccessful = true;
-   // Destroy splash window
+    // Destroy splash window
     if (splashWindow !== undefined) {
         splashWindow.destroy();
         splashWindow = undefined;
@@ -183,51 +183,22 @@ electron.ipcMain.on("OpenLogsFolder", () => {
  * Set an empty application menu (except OSX)
  */
 function setEmptyApplicationMenu(): void {
-    if (!isDebug) {
-        if (process.platform === "darwin") {
-            // On OSX is not possible to remove the menu, hence create only the Exit entry
-            electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate([
-                {
-                    label: "File",
-                    submenu: [
-                        {
-                            role: "close",
-                            label: "Exit",
-                        },
-                    ],
-                },
-            ]));
-        } else {
-            // On Windows and Linux remove the menu completely
-            electron.Menu.setApplicationMenu(null);
-        }
-    } else {
-        // In debug mode it's useful to have the Reload and the developer tools
+    if (process.platform === "darwin") {
+        // On OSX is not possible to remove the menu, hence create only the Exit entry
         electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate([
             {
-                label: "DEBUG",
+                label: "File",
                 submenu: [
                     {
-                        label: "Reload",
-                        accelerator: "F5",
-                        click(_item, focusedWindow): void {
-                            if (focusedWindow) {
-                                focusedWindow.reload();
-                            }
-                        },
-                    },
-                    {
-                        label: "Toggle Developer Tools",
-                        accelerator: "F12",
-                        click(_item, focusedWindow): void {
-                            if (focusedWindow) {
-                                focusedWindow.webContents.toggleDevTools();
-                            }
-                        },
+                        role: "close",
+                        label: "Exit",
                     },
                 ],
             },
         ]));
+    } else {
+        // On Windows and Linux remove the menu completely
+        electron.Menu.setApplicationMenu(null);
     }
 }
 

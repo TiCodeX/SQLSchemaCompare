@@ -26,8 +26,6 @@
     <EmbeddedResource Remove="dist\**" />
     <None Remove="dist\**" />
     <!--Configure json files as None-->
-    <Content Remove="bundleconfig.json" />
-    <None Include="bundleconfig.json" />
     <Content Remove="compilerconfig.json" />
     <None Include="compilerconfig.json" />
     <!--The tsconfig.json needs to be TypeScriptCompile so that it's used for the compilation -->
@@ -45,50 +43,19 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <!--Configure all the JavaScript/Css files as None-->
-    <Content Remove="wwwroot\**\*.js" />
-    <None Include="wwwroot\**\*.js" />
-    <Content Remove="wwwroot\**\*.scss" />
-    <None Include="wwwroot\**\*.scss" />
-    <Content Remove="wwwroot\**\*.css" />
-    <None Include="wwwroot\**\*.css" />
-    <!--Configure the *.min.js/*.min.css as EmbeddedResource-->
-    <EmbeddedResource Include="wwwroot\js\Index.min.js" />
-    <EmbeddedResource Include="wwwroot\css\Index.min.css" />
-    <EmbeddedResource Include="wwwroot\lib\**\*.min.js" />
-    <EmbeddedResource Include="wwwroot\lib\**\*.min.css" />
-    <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*.js" />
-    <EmbeddedResource Include="wwwroot\lib\monaco-editor\**\*.css" />
-    <!--Configure the images as EmbeddedResource-->
-    <Content Remove="wwwroot\**\*.png" />
-    <EmbeddedResource Include="wwwroot\**\*.png" />
-    <Content Remove="wwwroot\**\*.jpg" />
-    <EmbeddedResource Include="wwwroot\**\*.jpg" />
-    <Content Remove="wwwroot\**\*.svg" />
-    <EmbeddedResource Include="wwwroot\**\*.svg" />
-    <!--Configure the fonts as EmbeddedResource-->
-    <Content Remove="wwwroot\**\*.ttf" />
-    <EmbeddedResource Include="wwwroot\**\*.ttf" />
-    <Content Remove="wwwroot\**\*.eot" />
-    <EmbeddedResource Include="wwwroot\**\*.eot" />
-    <Content Remove="wwwroot\**\*.woff" />
-    <EmbeddedResource Include="wwwroot\**\*.woff" />
-    <Content Remove="wwwroot\**\*.woff2" />
-    <EmbeddedResource Include="wwwroot\**\*.woff2" />
+    <!--Configure all the wwwroot files as EmbeddedResource-->
+    <Content Remove="wwwroot\**\*" />
+    <EmbeddedResource Include="wwwroot\**\*" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
-    <PackageReference Include="BuildWebCompiler" Version="1.12.405" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.5" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.4.4">
+    <PackageReference Include="BuildWebCompiler2022" Version="1.14.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.6" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.6" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.4.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
     <PackageReference Include="Neolution.CodeAnalysis" Version="3.0.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -107,20 +74,12 @@
   </ItemGroup>
 
   <Target Name="YarnLint" BeforeTargets="BeforeBuild">
-    <Exec Command='yarn lint-vs' />
-    <Exec Command="del /Q /S wwwroot\js\*.js" />
+    <Exec Command="yarn lint-vs" />
   </Target>
 
   <Target Name="DeleteJs" BeforeTargets="VsTsc">
     <Exec Command="del /Q /S wwwroot\js\*.js" />
-  </Target>
-
-  <Target Name="CheckBundle" AfterTargets="BundleMinify">
-    <Exec Command="
-      if not exist wwwroot\js\Index.min.js ( ^
-        echo ERROR: Index.min.js not generated ^
-        exit 1 ^
-      )" />
+    <Exec Command="del /Q /S wwwroot\js\*.js.map" />
   </Target>
 
   <Target Name="RemovePublishFolder" BeforeTargets="PrepareForPublish">

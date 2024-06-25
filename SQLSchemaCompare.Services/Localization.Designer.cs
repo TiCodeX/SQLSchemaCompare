@@ -1566,6 +1566,15 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Developer tools.
+        /// </summary>
+        public static string MenuDeveloperTools {
+            get {
+                return ResourceManager.GetString("MenuDeveloperTools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
         public static string MenuEdit {

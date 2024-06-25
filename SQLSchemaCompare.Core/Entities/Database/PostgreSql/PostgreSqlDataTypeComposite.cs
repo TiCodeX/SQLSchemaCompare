@@ -1,7 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql
 {
-    using System.Collections.Generic;
-
     /// <summary>
     /// Specific PostgreSql Composite data type definition
     /// </summary>

@@ -1,14 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using TiCodeX.SQLSchemaCompare.Core.Entities;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
     /// <summary>
     /// Implementation that provides the mechanisms to read information from a database
     /// </summary>

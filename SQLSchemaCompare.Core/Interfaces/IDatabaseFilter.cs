@@ -1,8 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
 {
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-
     /// <summary>
     /// Defines a class that provides the mechanism to filter the database objects
     /// </summary>

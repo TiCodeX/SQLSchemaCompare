@@ -1,19 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-    using TiCodeX.SQLSchemaCompare.Core.Extensions;
-    using TiCodeX.SQLSchemaCompare.Services;
-
     /// <summary>
     /// Sql scripter class specific for MicrosoftSql database
     /// </summary>

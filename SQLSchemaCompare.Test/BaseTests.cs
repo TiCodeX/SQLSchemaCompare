@@ -1,8 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Test
 {
-    using System;
-    using Xunit.Abstractions;
-
     /// <summary>
     /// Base class for every test
     /// </summary>

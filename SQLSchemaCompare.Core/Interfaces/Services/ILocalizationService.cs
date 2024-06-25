@@ -1,9 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Services
 {
-    using System.Collections.Generic;
-    using System.Globalization;
-    using TiCodeX.SQLSchemaCompare.Core.Enums;
-
     /// <summary>
     /// Defines a class that provides the mechanisms to handle the localization
     /// </summary>

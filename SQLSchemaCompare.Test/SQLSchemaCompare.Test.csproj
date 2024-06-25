@@ -1,12 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <AssemblyName>TiCodeX.SQLSchemaCompare.Test</AssemblyName>
-    <TargetFramework>net8.0</TargetFramework>
-    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="ExposedObject" />
+    <Using Include="FluentAssertions" />
+    <Using Include="Xunit" />
+    <Using Include="Xunit.Abstractions" />
+    <Using Include="Xunit.Categories" />
+    <Using Include="Xunit.Sdk" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="7.1.2" />
@@ -37,5 +42,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>

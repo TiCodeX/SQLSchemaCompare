@@ -1,8 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages
 {
-    using Microsoft.AspNetCore.Mvc.RazorPages;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-
     /// <summary>
     /// PageModel for the Error page
     /// </summary>

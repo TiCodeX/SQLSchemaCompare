@@ -1,12 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <AssemblyName>TiCodeX.SQLSchemaCompare.Services</AssemblyName>
     <RootNamespace>TiCodeX.SQLSchemaCompare.Services</RootNamespace>
-    <TargetFramework>net8.0</TargetFramework>
-    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NeutralLanguage>en</NeutralLanguage>
+    <IncludeInfrastructureUsings>false</IncludeInfrastructureUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,5 +34,4 @@
       <LastGenOutput>Localization.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
 </Project>

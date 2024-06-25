@@ -1,24 +1,11 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.WebServer
 {
-    using System;
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.FileProviders;
-    using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters;
-    using TiCodeX.SQLSchemaCompare.Services;
-    using TiCodeX.SQLSchemaCompare.UI.Extensions;
-    using TiCodeX.SQLSchemaCompare.UI.Middlewares;
 
     /// <summary>
     /// WebServer configuration class used during the startup

@@ -1,8 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities
 {
-    using System.Collections.Generic;
-    using TiCodeX.SQLSchemaCompare.Core.Enums;
-
     /// <summary>
     /// User configurable settings of the application
     /// </summary>

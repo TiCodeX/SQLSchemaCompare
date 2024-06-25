@@ -1,6 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions
 {
-    using System;
     using System.Runtime.Serialization;
 
     /// <summary>

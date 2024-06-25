@@ -1,6 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Services
 {
-    using System.Globalization;
     using System.Resources;
 
     /// <summary>

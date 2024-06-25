@@ -1,13 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Test
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
-
     /// <summary>
     /// Creates the sakila database for the tests
     /// </summary>

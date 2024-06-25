@@ -3,7 +3,5 @@
 // Project-level suppressions either have no target or are given
 // a specific target and scoped to a namespace, type, member, etc.
 
-using System.Diagnostics.CodeAnalysis;
-
 [assembly: SuppressMessage("Performance", "CA1825:Avoid zero-length array allocations", Justification = "False positive")]
 [assembly: SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1515:Single-line comment should be preceded by blank line", Justification = "Readability")]

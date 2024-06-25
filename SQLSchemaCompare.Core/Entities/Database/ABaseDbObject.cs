@@ -1,7 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
 {
-    using TiCodeX.SQLSchemaCompare.Core.Enums;
-
     /// <summary>
     /// Provides the common properties of a database object
     /// </summary>

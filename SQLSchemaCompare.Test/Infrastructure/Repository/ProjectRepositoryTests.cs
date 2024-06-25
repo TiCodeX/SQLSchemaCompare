@@ -1,17 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
 {
-    using System.IO;
-    using System.Text.RegularExpressions;
-    using System.Xml;
-    using FluentAssertions;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-    using TiCodeX.SQLSchemaCompare.Core.Enums;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
-    using Xunit;
-    using Xunit.Abstractions;
-    using Xunit.Categories;
-
     /// <summary>
     /// Test class for the ProjectRepository
     /// </summary>

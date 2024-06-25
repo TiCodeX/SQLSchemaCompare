@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 - Solution Items", "00 -
 		CreateInstallerLinux.bat = CreateInstallerLinux.bat
 		CreateInstallerOSX.bat = CreateInstallerOSX.bat
 		CreateInstallerWin.bat = CreateInstallerWin.bat
+		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
 		pre-commit-hook.sh = pre-commit-hook.sh
 		README.md = README.md

@@ -1,9 +1,6 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.WebServer
 {
-    using System;
-    using System.Text;
     using Microsoft.Extensions.FileProviders;
-    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Primitives;
 
     /// <summary>

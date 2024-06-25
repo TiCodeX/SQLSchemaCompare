@@ -1,12 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Text;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-
     /// <summary>
     /// Script helper class specific for MicrosoftSql database
     /// </summary>

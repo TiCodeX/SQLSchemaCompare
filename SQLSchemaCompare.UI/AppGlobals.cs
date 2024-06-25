@@ -1,9 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI
 {
-    using System;
-    using System.IO;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-
     /// <summary>
     /// Global configuration of the application
     /// </summary>

@@ -1,8 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Compare
 {
-    using System.Collections.Generic;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-
     /// <summary>
     /// The various compare result items
     /// </summary>

@@ -1,14 +1,6 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Services
 {
-    using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using TiCodeX.SQLSchemaCompare.Core.Entities;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
 
     /// <summary>
     /// Implementation class that provides the mechanisms to handle asynchronous Tasks.

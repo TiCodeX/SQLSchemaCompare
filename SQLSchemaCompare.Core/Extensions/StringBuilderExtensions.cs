@@ -1,8 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Extensions
 {
-    using System;
-    using System.Text;
-
     /// <summary>
     /// The StringBuilder extensions
     /// </summary>

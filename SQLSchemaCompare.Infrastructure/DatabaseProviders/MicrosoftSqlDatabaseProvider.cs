@@ -1,16 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Entities;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.MicrosoftSql;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
-
     /// <summary>
     /// Retrieves various information from a Microsoft SQL Server
     /// </summary>

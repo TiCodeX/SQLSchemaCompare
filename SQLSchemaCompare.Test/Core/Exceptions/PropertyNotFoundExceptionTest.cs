@@ -1,11 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Test.Core.Exceptions
 {
-    using System;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions;
-    using Xunit;
-    using Xunit.Abstractions;
-    using Xunit.Categories;
-
     /// <summary>
     /// Test class for the PropertyNotFoundException class
     /// </summary>

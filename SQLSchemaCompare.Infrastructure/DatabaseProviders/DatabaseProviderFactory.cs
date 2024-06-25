@@ -1,11 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
 {
-    using System;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
     /// <summary>
     /// Implementation that creates a database provider
     /// </summary>

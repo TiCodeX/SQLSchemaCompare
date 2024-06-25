@@ -1,9 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
-    using System;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-
     /// <summary>
     /// Implement common scripter helper functionality
     /// </summary>

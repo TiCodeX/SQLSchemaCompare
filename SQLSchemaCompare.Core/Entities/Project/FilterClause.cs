@@ -1,7 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Project
 {
-    using TiCodeX.SQLSchemaCompare.Core.Enums;
-
     /// <summary>
     /// Represent a single filtering clause
     /// </summary>

@@ -1,12 +1,7 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.Middlewares
 {
-    using System;
-    using System.IO;
-    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
 
     /// <summary>
     /// Middleware that validate the header of each request

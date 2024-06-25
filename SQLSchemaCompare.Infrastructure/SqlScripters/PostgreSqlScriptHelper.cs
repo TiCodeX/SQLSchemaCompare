@@ -1,14 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Text;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-
     /// <summary>
     /// Script helper class specific for PostgreSql database
     /// </summary>

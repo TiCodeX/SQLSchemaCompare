@@ -1,11 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Services
 {
-    using System;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Entities;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
     /// <summary>
     /// Defines the service that handle the application settings
     /// </summary>

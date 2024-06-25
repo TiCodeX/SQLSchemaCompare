@@ -1,13 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.Repository
 {
-    using System;
-    using System.IO;
-    using System.Xml;
-    using System.Xml.Serialization;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
-
     /// <summary>
     /// Implementation that provides the mechanism to store and retrieve the project configuration
     /// </summary>

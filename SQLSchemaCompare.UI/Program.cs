@@ -1,10 +1,7 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI
 {
-    using System;
-    using System.Globalization;
     using Microsoft.AspNetCore.Hosting;
     using NLog;
-    using TiCodeX.SQLSchemaCompare.UI.WebServer;
 
     /// <summary>
     /// SQLSchemaCompare UI application, providing the WebServer

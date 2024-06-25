@@ -1,11 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <AssemblyName>TiCodeX.SQLSchemaCompare.Core</AssemblyName>
     <RootNamespace>TiCodeX.SQLSchemaCompare.Core</RootNamespace>
-    <TargetFramework>net8.0</TargetFramework>
-    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeServicesUsings>false</IncludeServicesUsings>
+    <IncludeInfrastructureUsings>false</IncludeInfrastructureUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +15,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition=" '$(OS)' == 'Windows_NT' ">
-    <Exec Command="mkdir $(ProjectDir)..\.git\hooks\&#xD;&#xA;copy $(ProjectDir)..\pre-commit-hook.sh $(ProjectDir)..\.git\hooks\pre-commit" />
+    <Exec Command="mkdir $(ProjectDir)..\.git\hooks" IgnoreExitCode="true" />
+    <Exec Command="copy $(ProjectDir)..\pre-commit-hook.sh $(ProjectDir)..\.git\hooks\pre-commit" />
   </Target>
-
 </Project>

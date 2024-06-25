@@ -1,16 +1,11 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.WebServer
 {
-    using System;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
     using System.Reflection;
     using System.Security.Authentication;
     using System.Security.Cryptography.X509Certificates;
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Server.Kestrel.Https;
-    using Microsoft.Extensions.Logging;
     using NLog;
     using NLog.Common;
     using NLog.Config;

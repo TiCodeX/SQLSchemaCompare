@@ -2,14 +2,22 @@
   <PropertyGroup>
     <AssemblyName>TiCodeX.SQLSchemaCompare.UI</AssemblyName>
     <RootNamespace>TiCodeX.SQLSchemaCompare.UI</RootNamespace>
-    <TargetFramework>net8.0</TargetFramework>
-    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TypeScriptToolsVersion>latest</TypeScriptToolsVersion>
     <OutputType>Exe</OutputType>
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <PublishDir>..\.publish</PublishDir>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.AspNetCore.Mvc" />
+    <Using Include="Microsoft.AspNetCore.Mvc.RazorPages" />
+    <Using Include="TiCodeX.SQLSchemaCompare.UI.Enums" />
+    <Using Include="TiCodeX.SQLSchemaCompare.UI.Extensions" />
+    <Using Include="TiCodeX.SQLSchemaCompare.UI.Middlewares" />
+    <Using Include="TiCodeX.SQLSchemaCompare.UI.Models" />
+    <Using Include="TiCodeX.SQLSchemaCompare.UI.Models.Project" />
+    <Using Include="TiCodeX.SQLSchemaCompare.UI.WebServer" />
+  </ItemGroup>
 
   <ItemGroup>
     <!--Remove dist folder from the project-->

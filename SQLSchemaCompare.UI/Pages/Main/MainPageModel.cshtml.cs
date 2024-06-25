@@ -1,15 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages.Main
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.RazorPages;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
     /// <summary>
     /// PageModel of the Main page
     /// </summary>

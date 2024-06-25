@@ -1,13 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Services
 {
-    using System;
-    using Microsoft.Extensions.Logging;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Project;
-    using TiCodeX.SQLSchemaCompare.Core.Enums;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Repository;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
-
     /// <summary>
     /// Implementation that provides the mechanisms to handle the comparison project.
     /// </summary>

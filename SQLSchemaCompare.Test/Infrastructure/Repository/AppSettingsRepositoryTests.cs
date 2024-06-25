@@ -1,15 +1,6 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
 {
-    using System.IO;
-    using System.Text.RegularExpressions;
-    using FluentAssertions;
-    using TiCodeX.SQLSchemaCompare.Core.Entities;
-    using TiCodeX.SQLSchemaCompare.Core.Enums;
-    using TiCodeX.SQLSchemaCompare.Core.Interfaces;
-    using TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
-    using Xunit;
-    using Xunit.Abstractions;
-    using Xunit.Categories;
+    using LogLevel = TiCodeX.SQLSchemaCompare.Core.Enums.LogLevel;
 
     /// <summary>
     /// Test class for the AppSettingsRepository

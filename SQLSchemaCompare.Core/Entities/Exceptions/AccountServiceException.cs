@@ -1,8 +1,6 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Exceptions
 {
-    using System;
     using System.Runtime.Serialization;
-    using TiCodeX.SQLSchemaCompare.Core.Entities.Api;
 
     /// <summary>
     /// The exception that is thrown if the response of the Account Service has error

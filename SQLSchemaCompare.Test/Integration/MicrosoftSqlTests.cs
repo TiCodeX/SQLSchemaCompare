@@ -62,7 +62,7 @@
             db.Name.Should().Be("sakila");
 
             db.Schemas.Count.Should().Be(3);
-            db.Tables.Count.Should().Be(20);
+            db.Tables.Count.Should().Be(21);
 
             var table = db.Tables.FirstOrDefault(x => x.Name == "film");
             table.Should().NotBeNull();
@@ -249,6 +249,26 @@
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE business.staff DROP COLUMN last_name");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an extra column with data
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingColumnWithData(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DECLARE @sqlCommand nvarchar(MAX)");
+            sb.AppendLine("SET @sqlCommand = (SELECT STRING_AGG(CONCAT('ALTER TABLE business.TableWithData DROP COLUMN ', COLUMN_NAME), '; ')");
+            sb.AppendLine("                   FROM INFORMATION_SCHEMA.COLUMNS");
+            sb.AppendLine("                   WHERE TABLE_SCHEMA='business' AND TABLE_NAME='TableWithData' AND COLUMN_NAME != 'TableWithDataId')");
+            sb.AppendLine("EXEC (@sqlCommand)");
+            this.dbFixture.ProjectOptions.Scripting.GenerateUpdateScriptForNewNotNullColumns = true;
             this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 

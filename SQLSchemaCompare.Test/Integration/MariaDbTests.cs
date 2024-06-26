@@ -195,6 +195,22 @@
         }
 
         /// <summary>
+        /// Test migration script when target db have an extra column with data
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
+        [IntegrationTest]
+        [Category("MariaDB")]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingColumnWithData(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("TODO");
+            this.dbFixture.ProjectOptions.Scripting.GenerateUpdateScriptForNewNotNullColumns = true;
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
         /// Test migration script when target db doesn't have a column
         /// </summary>
         /// <param name="port">The port of the server</param>

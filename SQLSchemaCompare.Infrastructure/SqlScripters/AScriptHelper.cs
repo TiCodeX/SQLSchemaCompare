@@ -81,6 +81,13 @@
         public abstract string ScriptColumn(ABaseDbColumn column, bool scriptDefaultConstraint);
 
         /// <summary>
+        /// Scripts the column default value.
+        /// </summary>
+        /// <param name="column">The column.</param>
+        /// <returns>The column default value</returns>
+        public abstract string ScriptColumnDefaultValue(ABaseDbColumn column);
+
+        /// <summary>
         /// Scripts the command to commit a transaction
         /// </summary>
         /// <returns>The script</returns>

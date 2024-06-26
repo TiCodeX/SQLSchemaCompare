@@ -845,4 +845,7 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelHistories" xml:space="preserve">
     <value>Cronologie</value>
   </data>
+  <data name="MenuDeveloperTools" xml:space="preserve">
+    <value>Strumenti per sviluppatori</value>
+  </data>
 </root>

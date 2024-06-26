@@ -13,7 +13,7 @@ module.exports = tseslint.config(
     languageOptions: {
       parserOptions: {
         project: true,
-        tsconfigDirName: __dirname,
+        tsconfigRootDir: __dirname,
       },
     },
     files: ["**/*.ts"],

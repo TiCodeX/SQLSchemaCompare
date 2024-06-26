@@ -20,7 +20,7 @@ call "%VsDevCmdPath%"
 
 set "targetdotnet=%1"
 if /i "%1" == "" ( set "targetdotnet=win-x64" )
-set "configuration=release"
+set "configuration=Release"
 REM Disable node reuse. Don't leave MSBuild.exe processes hanging around locking files after the build completes
 set MSBUILDDISABLENODEREUSE=1
 

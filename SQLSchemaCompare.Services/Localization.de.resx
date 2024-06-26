@@ -845,4 +845,7 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="LabelHistories" xml:space="preserve">
     <value>Verlaufstabellen</value>
   </data>
+  <data name="MenuDeveloperTools" xml:space="preserve">
+    <value>Entwicklertools</value>
+  </data>
 </root>

@@ -81,7 +81,74 @@
         /// <inheritdoc/>
         public override string ScriptColumnDefaultValue(ABaseDbColumn column)
         {
-            return "TODO";
+            if (column == null)
+            {
+                throw new ArgumentNullException(nameof(column));
+            }
+
+            switch (column.DataType)
+            {
+                // Exact numerics
+                case "bit":
+                case "tinyint":
+                case "smallint":
+                case "mediumint":
+                case "int":
+                case "integer":
+                case "bigint":
+                case "numeric":
+                case "decimal":
+                    return "0";
+
+                // Approximate numerics
+                case "real":
+                case "double":
+                case "float":
+                    return "0";
+
+                // Date and time
+                case "date":
+                case "year":
+                case "time":
+                case "timestamp":
+                case "datetime":
+                    return "UTC_DATE()";
+
+                // Binary strings
+                case "binary":
+                case "varbinary":
+                case "tinyblob":
+                case "blob":
+                case "mediumblob":
+                case "longblob":
+                    return "0x00";
+
+                // Other data types
+                case "enum":
+                case "set":
+                case "json":
+                case "geometry":
+                case "point":
+                case "linestring":
+                case "polygon":
+                case "multipoint":
+                case "multilinestring":
+                case "multipolygon":
+                case "geomcollection":
+                    return "''";
+
+                // Character strings
+                case "char":
+                case "varchar":
+                case "text":
+                case "tinytext":
+                case "mediumtext":
+                case "longtext":
+                    return "''";
+
+                default:
+                    throw new ArgumentException($"Unknown data type: {column.DataType}");
+            }
         }
 
         /// <inheritdoc />
@@ -151,7 +218,7 @@
                 case "multipoint":
                 case "multilinestring":
                 case "multipolygon":
-                case "geometrycollection":
+                case "geomcollection":
                     return $"{column.ColumnType}";
 
                 // Character strings

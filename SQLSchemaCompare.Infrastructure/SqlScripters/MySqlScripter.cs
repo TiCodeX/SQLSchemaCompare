@@ -115,6 +115,7 @@
 
                     c.IsNullable = "NO";
                     sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} MODIFY COLUMN {this.ScriptHelper.ScriptColumn(c)};");
+                    sb.AppendLine();
                 }
                 else
                 {

@@ -344,34 +344,47 @@ CREATE TABLE table_with_data (
   data_type_datetime DATETIME NOT NULL,
   data_type_timestamp TIMESTAMP NOT NULL,
   data_type_year YEAR NOT NULL,
-  data_type_char CHAR NOT NULL,
-  data_type_varchar VARCHAR(20) NOT NULL,
   data_type_binary BINARY NOT NULL,
   data_type_varbinary VARBINARY(20) NOT NULL,
   data_type_tinyblob TINYBLOB NOT NULL,
-  data_type_mediumblob MEDIUMBLOB NOT NULL,
   data_type_blob BLOB NOT NULL,
+  data_type_mediumblob MEDIUMBLOB NOT NULL,
   data_type_longblob LONGBLOB NOT NULL,
+  data_type_char CHAR NOT NULL,
+  data_type_varchar VARCHAR(20) NOT NULL,
+  data_type_text TEXT NOT NULL,
   data_type_tinytext TINYTEXT NOT NULL,
   data_type_mediumtext MEDIUMTEXT NOT NULL,
-  data_type_text TEXT NOT NULL,
   data_type_longtext LONGTEXT NOT NULL,
   data_type_enum ENUM('A','B','C') NOT NULL,
   data_type_set SET('A','B','C') NOT NULL,
+  data_type_json JSON NOT NULL,
   data_type_geometry GEOMETRY NOT NULL,
-  data_type_geometrycollection GEOMETRYCOLLECTION NOT NULL,
   data_type_point POINT NOT NULL,
   data_type_linestring LINESTRING NOT NULL,
   data_type_polygon POLYGON NOT NULL,
   data_type_multipoint MULTIPOINT NOT NULL,
   data_type_multilinestring MULTILINESTRING NOT NULL,
   data_type_multipolygon MULTIPOLYGON NOT NULL,
-  data_type_json JSON NOT NULL,
+  data_type_geometrycollection GEOMETRYCOLLECTION NOT NULL,
   PRIMARY KEY  (table_with_data_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- INSERT INTO table_with_data
--- VALUES (NULL, 0);
+INSERT INTO table_with_data
+VALUES (NULL,
+        0, 0, 0, 0, 0, 0, 0, 0, 0,
+        UTC_DATE(), UTC_DATE(), UTC_DATE(), UTC_DATE(), UTC_DATE(),
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        '', '', '', '', '', '',
+        'B', 'C',
+        JSON_OBJECT(),
+        POINT(0,0), POINT(0,0),
+        LINESTRING(POINT(0,0), POINT(0,0)),
+        POLYGON(LINESTRING(POINT(0,0), POINT(0,0), POINT(0,0), POINT(0,0))),
+        MULTIPOINT(POINT(0,0)),
+        MULTILINESTRING(LINESTRING(POINT(0,0), POINT(0,0))),
+        MULTIPOLYGON(POLYGON(LINESTRING(POINT(0,0), POINT(0,0), POINT(0,0), POINT(0,0)))),
+        GEOMCOLLECTION());
 
 --
 -- View structure for view `customer_list`

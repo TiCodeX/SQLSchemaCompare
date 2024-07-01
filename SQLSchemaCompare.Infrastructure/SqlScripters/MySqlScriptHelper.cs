@@ -86,7 +86,9 @@
                 throw new ArgumentNullException(nameof(column));
             }
 
-            switch (column.DataType)
+            var col = (MySqlColumn)column;
+
+            switch (col.DataType)
             {
                 // Exact numerics
                 case "bit":
@@ -125,17 +127,26 @@
 
                 // Other data types
                 case "enum":
+                    return $"'{Regex.Match(col.ColumnType, "enum\\('(.*?)'").Groups[1].Value}'";
                 case "set":
+                    return $"'{Regex.Match(col.ColumnType, "set\\('(.*?)'").Groups[1].Value}'";
                 case "json":
+                    return "JSON_OBJECT()";
                 case "geometry":
                 case "point":
+                    return "POINT(0,0)";
                 case "linestring":
+                    return "LINESTRING(POINT(0,0), POINT(0,0))";
                 case "polygon":
+                    return "POLYGON(LINESTRING(POINT(0,0), POINT(0,0), POINT(0,0), POINT(0,0)))";
                 case "multipoint":
+                    return "MULTIPOINT(POINT(0,0))";
                 case "multilinestring":
+                    return "MULTILINESTRING(LINESTRING(POINT(0,0), POINT(0,0)))";
                 case "multipolygon":
+                    return "MULTIPOLYGON(POLYGON(LINESTRING(POINT(0,0), POINT(0,0), POINT(0,0), POINT(0,0))))";
                 case "geomcollection":
-                    return "''";
+                    return "GEOMCOLLECTION()";
 
                 // Character strings
                 case "char":

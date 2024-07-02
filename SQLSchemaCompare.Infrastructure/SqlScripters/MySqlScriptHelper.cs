@@ -78,6 +78,93 @@
             return sb.ToString();
         }
 
+        /// <inheritdoc/>
+        public override string ScriptColumnDefaultValue(ABaseDbColumn column)
+        {
+            if (column == null)
+            {
+                throw new ArgumentNullException(nameof(column));
+            }
+
+            var col = (MySqlColumn)column;
+
+            switch (col.DataType)
+            {
+                // Exact numerics
+                case "bit":
+                case "tinyint":
+                case "smallint":
+                case "mediumint":
+                case "int":
+                case "integer":
+                case "bigint":
+                case "numeric":
+                case "decimal":
+                    return "0";
+
+                // Approximate numerics
+                case "real":
+                case "double":
+                case "float":
+                    return "0";
+
+                // Date and time
+                case "date":
+                case "time":
+                case "timestamp":
+                case "datetime":
+                    return "UTC_DATE()";
+                case "year":
+                    return "0";
+
+                // Binary strings
+                case "binary":
+                case "varbinary":
+                case "tinyblob":
+                case "blob":
+                case "mediumblob":
+                case "longblob":
+                    return "0x00";
+
+                // Other data types
+                case "enum":
+                    return $"'{Regex.Match(col.ColumnType, "enum\\('(.*?)'").Groups[1].Value}'";
+                case "set":
+                    return $"'{Regex.Match(col.ColumnType, "set\\('(.*?)'").Groups[1].Value}'";
+                case "json":
+                    return "JSON_OBJECT()";
+                case "geometry":
+                case "point":
+                    return "POINT(0,0)";
+                case "linestring":
+                    return "LINESTRING(POINT(0,0), POINT(0,0))";
+                case "polygon":
+                    return "POLYGON(LINESTRING(POINT(0,0), POINT(0,0), POINT(0,0), POINT(0,0)))";
+                case "multipoint":
+                    return "MULTIPOINT(POINT(0,0))";
+                case "multilinestring":
+                    return "MULTILINESTRING(LINESTRING(POINT(0,0), POINT(0,0)))";
+                case "multipolygon":
+                    return "MULTIPOLYGON(POLYGON(LINESTRING(POINT(0,0), POINT(0,0), POINT(0,0), POINT(0,0))))";
+                case "geomcollection":
+                    return "GEOMCOLLECTION()";
+                case "geometrycollection":
+                    return "ST_GeomCollFromText('GEOMETRYCOLLECTION EMPTY')";
+
+                // Character strings
+                case "char":
+                case "varchar":
+                case "text":
+                case "tinytext":
+                case "mediumtext":
+                case "longtext":
+                    return "''";
+
+                default:
+                    throw new ArgumentException($"Unknown data type: {column.DataType}");
+            }
+        }
+
         /// <inheritdoc />
         public override string ScriptCommitTransaction()
         {
@@ -145,6 +232,7 @@
                 case "multipoint":
                 case "multilinestring":
                 case "multipolygon":
+                case "geomcollection":
                 case "geometrycollection":
                     return $"{column.ColumnType}";
 

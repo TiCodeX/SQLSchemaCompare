@@ -844,3 +844,49 @@ CREATE TABLE business.TemporalTable (
   CONSTRAINT PK_TemporalTable_TemporalTableId PRIMARY KEY NONCLUSTERED (TemporalTableId)
 )
 WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = business.TemporalTableHistory))
+
+-- TABLE WITH DATA
+CREATE TABLE business.TableWithData (
+  [TableWithDataId] int NOT NULL IDENTITY,
+  [DataTypeBit] bit NOT NULL,
+  [DataTypeTinyInt] tinyint NOT NULL,
+  [DataTypeSmallInt] smallint NOT NULL,
+  [DataTypeInt] int NOT NULL,
+  [DataTypeBigInt] bigint NOT NULL,
+  [DataTypeDecimal] decimal NOT NULL,
+  [DataTypeNumeric] numeric NOT NULL,
+  [DataTypeSmallMoney] smallmoney NOT NULL,
+  [DataTypeMoney] money NOT NULL,
+  [DataTypeFloat] float NOT NULL,
+  [DataTypeReal] real NOT NULL,
+  [DataTypeDate] date NOT NULL,
+  [DataTypeDateTime] datetime NOT NULL,
+  [DataTypeDateTime2] datetime2 NOT NULL,
+  [DataTypeDateTimeOffset] datetimeoffset NOT NULL,
+  [DataTypeSmallDateTime] smalldatetime NOT NULL,
+  [DataTypeTime] time NOT NULL,
+  [DataTypeChar] time NOT NULL,
+  [DataTypeNChar] time NOT NULL,
+  [DataTypeVarChar] time NOT NULL,
+  [DataTypeNVarChar] time NOT NULL,
+  [DataTypeText] time NOT NULL,
+  [DataTypeNText] time NOT NULL,
+  [DataTypeBinary] binary NOT NULL,
+  [DataTypeVarBinary] varbinary NOT NULL,
+  [DataTypeImage] image NOT NULL,
+  [DataTypeUniqueIdentified] uniqueidentifier NOT NULL,
+  [DataTypeXml] xml NOT NULL,
+  [DataTypeGeography] geography NOT NULL,
+  [DataTypeGeometry] geometry NOT NULL,
+  CONSTRAINT PK_TableWithData_TableWithDataId PRIMARY KEY NONCLUSTERED (TableWithDataId)
+)
+GO
+INSERT INTO business.TableWithData
+VALUES (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        GETUTCDATE(), GETUTCDATE(), GETUTCDATE(), GETUTCDATE(), GETUTCDATE(), GETUTCDATE(),
+        '', '', '', '', '', '',
+        0x00, 0x00, 0x00,
+        NEWID(),
+        '',
+        'POINT(0 0)', 'POINT(0 0)')
+GO

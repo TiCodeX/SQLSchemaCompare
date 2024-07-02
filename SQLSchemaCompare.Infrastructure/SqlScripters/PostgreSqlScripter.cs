@@ -136,9 +136,23 @@
             }
 
             // Add columns
-            foreach (var c in t.Columns.Where(x => x.MappedDbObject == null))
+            foreach (var c in t.Columns.Cast<PostgreSqlColumn>().Where(x => x.MappedDbObject == null))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD {this.ScriptHelper.ScriptColumn(c)};");
+                if (this.Options.Scripting.GenerateUpdateScriptForNewNotNullColumns && !c.IsNullable)
+                {
+                    c.IsNullable = true;
+                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD {this.ScriptHelper.ScriptColumn(c)};");
+
+                    sb.AppendLine($"UPDATE {this.ScriptHelper.ScriptObjectName(t)} SET {this.ScriptHelper.ScriptObjectName(c.Name)} = {this.ScriptHelper.ScriptColumnDefaultValue(c)};");
+
+                    c.IsNullable = false;
+                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN {this.ScriptHelper.ScriptObjectName(c.Name)} SET NOT NULL;");
+                    sb.AppendLine();
+                }
+                else
+                {
+                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD {this.ScriptHelper.ScriptColumn(c)};");
+                }
             }
 
             return sb.ToString();

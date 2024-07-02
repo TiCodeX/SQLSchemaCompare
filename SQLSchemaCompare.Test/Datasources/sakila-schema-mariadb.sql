@@ -1,7 +1,7 @@
 -- Sakila Sample Database Schema
 -- Version 1.0
 
--- Copyright (c) 2006, 2015, Oracle and/or its affiliates. 
+-- Copyright (c) 2006, 2015, Oracle and/or its affiliates.
 -- All rights reserved.
 
 -- Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,6 +13,7 @@
 -- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SET FOREIGN_KEY_CHECKS=0;
+SET sql_mode = TRADITIONAL;
 --
 -- Table structure for table `actor`
 --
@@ -171,9 +172,9 @@ CREATE TABLE film_category (
 
 --
 -- Table structure for table `film_text`
--- 
+--
 -- InnoDB added FULLTEXT support in 5.6.10. If you use an
--- earlier version, then consider upgrading (recommended) or 
+-- earlier version, then consider upgrading (recommended) or
 -- changing InnoDB to MyISAM as the film_text engine
 --
 
@@ -324,6 +325,67 @@ CREATE TABLE store (
   CONSTRAINT fk_store_staff FOREIGN KEY (manager_staff_id) REFERENCES staff (staff_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_store_address FOREIGN KEY (address_id) REFERENCES address (address_id) ON DELETE RESTRICT ON UPDATE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `table_with_data`
+--
+CREATE TABLE table_with_data (
+  table_with_data_id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  data_type_bit BIT NOT NULL,
+  data_type_tinyint TINYINT NOT NULL,
+  data_type_smallint SMALLINT NOT NULL,
+  data_type_mediumint MEDIUMINT NOT NULL,
+  data_type_int INT NOT NULL,
+  data_type_bigint BIGINT NOT NULL,
+  data_type_decimal DECIMAL NOT NULL,
+  data_type_float FLOAT NOT NULL,
+  data_type_double DOUBLE NOT NULL,
+  data_type_date DATE NOT NULL,
+  data_type_time TIME NOT NULL,
+  data_type_datetime DATETIME NOT NULL,
+  data_type_timestamp TIMESTAMP NOT NULL,
+  data_type_year YEAR NOT NULL,
+  data_type_binary BINARY NOT NULL,
+  data_type_varbinary VARBINARY(20) NOT NULL,
+  data_type_tinyblob TINYBLOB NOT NULL,
+  data_type_blob BLOB NOT NULL,
+  data_type_mediumblob MEDIUMBLOB NOT NULL,
+  data_type_longblob LONGBLOB NOT NULL,
+  data_type_char CHAR NOT NULL,
+  data_type_varchar VARCHAR(20) NOT NULL,
+  data_type_text TEXT NOT NULL,
+  data_type_tinytext TINYTEXT NOT NULL,
+  data_type_mediumtext MEDIUMTEXT NOT NULL,
+  data_type_longtext LONGTEXT NOT NULL,
+  data_type_enum ENUM('A','B','C') NOT NULL,
+  data_type_set SET('A','B','C') NOT NULL,
+  data_type_json JSON NOT NULL,
+  data_type_geometry GEOMETRY NOT NULL,
+  data_type_point POINT NOT NULL,
+  data_type_linestring LINESTRING NOT NULL,
+  data_type_polygon POLYGON NOT NULL,
+  data_type_multipoint MULTIPOINT NOT NULL,
+  data_type_multilinestring MULTILINESTRING NOT NULL,
+  data_type_multipolygon MULTIPOLYGON NOT NULL,
+  data_type_geometrycollection GEOMETRYCOLLECTION NOT NULL,
+  PRIMARY KEY  (table_with_data_id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO table_with_data
+VALUES (NULL,
+        0, 0, 0, 0, 0, 0, 0, 0, 0,
+        UTC_DATE(), UTC_DATE(), UTC_DATE(), UTC_DATE(), 0,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        '', '', '', '', '', '',
+        'B', 'C',
+        JSON_OBJECT(),
+        POINT(0,0), POINT(0,0),
+        LINESTRING(POINT(0,0), POINT(0,0)),
+        POLYGON(LINESTRING(POINT(0,0), POINT(0,0), POINT(0,0), POINT(0,0))),
+        MULTIPOINT(POINT(0,0)),
+        MULTILINESTRING(LINESTRING(POINT(0,0), POINT(0,0))),
+        MULTIPOLYGON(POLYGON(LINESTRING(POINT(0,0), POINT(0,0), POINT(0,0), POINT(0,0)))),
+        ST_GeomCollFromText('GEOMETRYCOLLECTION EMPTY'));
 
 --
 -- View structure for view `customer_list`

@@ -166,6 +166,130 @@
             return sb.ToString();
         }
 
+        /// <inheritdoc/>
+        public override string ScriptColumnDefaultValue(ABaseDbColumn column)
+        {
+            if (column == null)
+            {
+                throw new ArgumentNullException(nameof(column));
+            }
+
+            switch (column.DataType)
+            {
+                // Exact numerics
+                case "smallint":
+                case "integer":
+                case "bigint":
+                case "numeric":
+                case "decimal":
+                    return "0";
+
+                // Approximate numerics
+                case "real":
+                case "double precision":
+                    return "0";
+
+                // Money
+                case "money":
+                    return "0";
+
+                // Character strings
+                case "character":
+                case "character varying":
+                case "char":
+                case "varchar":
+                case "text":
+                    return "''";
+
+                // Date and time
+                case "date":
+                    return "CURRENT_DATE";
+
+                case "abstime":
+                case "reltime":
+                case "timetz":
+                case "time with time zone":
+                case "time":
+                case "time without time zone":
+                    return "CURRENT_TIME";
+
+                case "timestamptz":
+                case "timestamp with time zone":
+                case "timestamp":
+                case "timestamp without time zone":
+                    return "CURRENT_TIMESTAMP";
+
+                case "interval":
+                case "tinterval":
+                    return "INTERVAL '0'";
+
+                // Binary strings
+                case "bit":
+                case "bit varying":
+                    return "B'0'";
+
+                case "bytea":
+                    return "'\\000'";
+
+                // Boolean
+                case "boolean":
+                    return "false";
+
+                // Network Address
+                case "cidr":
+                case "inet":
+                    return "'0.0.0.0'";
+                case "macaddr":
+                    return "'00:00:00:00:00:00'";
+                case "macaddr8":
+                    return "'00:00:00:00:00:00:00:00'";
+
+                // Geometric
+                case "point":
+                    return "'(0,0)'";
+                case "line":
+                    return "'{1,1,0}'";
+                case "lseg":
+                    return "'[(0,0),(0,0)]'";
+                case "box":
+                    return "'((0,0),(0,0))'";
+                case "path":
+                    return "'[(0,0),(0,0)]'";
+                case "polygon":
+                    return "'((0,0),(0,0))'";
+                case "circle":
+                    return "'<(0,0),0>'";
+
+                // Range
+                case "int4range":
+                case "int8range":
+                case "numrange":
+                case "tsrange":
+                case "tstzrange":
+                case "daterange":
+                    return "'empty'";
+
+                // User defined types
+                case "USER-DEFINED":
+                    return column.ColumnDefault;
+
+                // Other data types
+                case "json":
+                case "jsonb":
+                    return "'{}'";
+                case "name":
+                case "tsquery":
+                case "tsvector":
+                    return "''";
+                case "uuid":
+                    return $"'{Guid.Empty}'";
+                case "xml":
+                    return "''";
+
+                default: throw new ArgumentException($"Unknown data type: {column.DataType}");
+            }
+        }
+
         /// <inheritdoc />
         public override string ScriptCommitTransaction()
         {
@@ -178,6 +302,7 @@
         /// <param name="column">The column</param>
         /// <returns>The scripted data type</returns>
         [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
+        [SuppressMessage("Major Code Smell", "S138:Functions should not have too many lines of code", Justification = "TODO")]
         public string ScriptDataType(PostgreSqlColumn column)
         {
             if (column == null)
@@ -198,7 +323,9 @@
 
                 case "numeric":
                 case "decimal":
-                    return $"{column.DataType}({column.NumericPrecision},{column.NumericScale})"; // TODO: check if it's possible to only specify numeric without params
+                    return column.NumericPrecision.HasValue && column.NumericScale.HasValue
+                        ? $"{column.DataType}({column.NumericPrecision},{column.NumericScale})"
+                        : $"{column.DataType}";
 
                 // Approximate numerics
                 case "real":
@@ -215,7 +342,9 @@
                 case "varchar":
                     {
                         var collate = this.Options.Scripting.IgnoreCollate ? string.Empty : $" COLLATE {column.CollationName}";
-                        return $"{column.DataType}({column.CharacterMaxLenght}){collate}";
+                        return column.CharacterMaxLenght.HasValue
+                            ? $"{column.DataType}({column.CharacterMaxLenght}){collate}"
+                            : $"{column.DataType}{collate}";
                     }
 
                 case "text":

@@ -22,6 +22,15 @@
         private bool serversInitialized;
 
         /// <summary>
+        /// Gets the project options.
+        /// </summary>
+        public ProjectOptions ProjectOptions { get; } = new ProjectOptions
+        {
+            Scripting = new ScriptingOptions(),
+            Filtering = new FilteringOptions(),
+        };
+
+        /// <summary>
         /// Gets the cipher service
         /// </summary>
         protected ICipherService CipherService { get; } = new CipherService();
@@ -463,6 +472,7 @@
             projectService.NewProject(databaseType);
             projectService.Project.SourceProviderOptions = this.GetDatabaseProviderOptions(sourceDatabaseName, port);
             projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(targetDatabaseName, port);
+            projectService.Project.Options = this.ProjectOptions;
             this.PerformCompareAndWaitResult(projectService);
 
             if (expectedDifferentItems.HasValue)

@@ -813,8 +813,24 @@
             // Add columns
             foreach (var c in t.Columns.Cast<MicrosoftSqlColumn>().Where(x => x.MappedDbObject == null && x.GeneratedAlwaysType == 0))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD {this.ScriptHelper.ScriptColumn(c)}");
-                sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                if (this.Options.Scripting.GenerateUpdateScriptForNewNotNullColumns && !c.IsNullable)
+                {
+                    c.IsNullable = true;
+                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD {this.ScriptHelper.ScriptColumn(c)}");
+                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+
+                    sb.AppendLine($"UPDATE {this.ScriptHelper.ScriptObjectName(t)} SET {this.ScriptHelper.ScriptObjectName(c.Name)} = {this.ScriptHelper.ScriptColumnDefaultValue(c)}");
+                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+
+                    c.IsNullable = false;
+                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN {this.ScriptHelper.ScriptColumn(c)}");
+                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                }
+                else
+                {
+                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD {this.ScriptHelper.ScriptColumn(c)}");
+                    sb.Append(this.ScriptHelper.ScriptCommitTransaction());
+                }
             }
 
             return sb.ToString();

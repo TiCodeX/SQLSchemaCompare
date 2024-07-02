@@ -15,14 +15,14 @@ SET client_min_messages = warning;
 --SET row_security = off;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -395,7 +395,7 @@ $$ LANGUAGE SQL;
 
 CREATE AGGREGATE sum_product(int, int) (
     sfunc = sum_product_fn,
-    stype = int, 
+    stype = int,
     initcond = 0
 );
 
@@ -1031,6 +1031,80 @@ CREATE TABLE business.store (
 
 
 ALTER TABLE business.store OWNER TO postgres;
+
+--
+-- Name: table_with_data; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE table_with_data (
+    table_with_data_id serial primary key,
+    data_type_smallint smallint NOT NULL,
+    data_type_integer integer NOT NULL,
+    data_type_bigint bigint NOT NULL,
+    data_type_numeric numeric NOT NULL,
+    data_type_decimal decimal NOT NULL,
+    data_type_real real NOT NULL,
+    data_type_double_precision double precision NOT NULL,
+    data_type_money money NOT NULL,
+    data_type_character character NOT NULL,
+    data_type_character_varying character varying NOT NULL,
+    data_type_char char NOT NULL,
+    data_type_varchar varchar NOT NULL,
+    data_type_text text NOT NULL,
+    data_type_date date NOT NULL,
+    data_type_time time NOT NULL,
+    data_type_timestamp timestamp NOT NULL,
+    data_type_interval interval NOT NULL,
+    data_type_bit bit NOT NULL,
+    data_type_bit_varying bit varying NOT NULL,
+    data_type_bytea bytea NOT NULL,
+    data_type_boolean boolean NOT NULL,
+    data_type_cidr cidr NOT NULL,
+    data_type_inet inet NOT NULL,
+    data_type_macaddr macaddr NOT NULL,
+    data_type_macaddr8 macaddr8 NOT NULL,
+    data_type_point point NOT NULL,
+    data_type_line line NOT NULL,
+    data_type_lseg lseg NOT NULL,
+    data_type_box box NOT NULL,
+    data_type_path path NOT NULL,
+    data_type_polygon polygon NOT NULL,
+    data_type_circle circle NOT NULL,
+    data_type_int4range int4range NOT NULL,
+    data_type_int8range int8range NOT NULL,
+    data_type_numrange numrange NOT NULL,
+    data_type_tsrange tsrange NOT NULL,
+    data_type_tstzrange tstzrange NOT NULL,
+    data_type_daterange daterange NOT NULL,
+    data_type_json json NOT NULL,
+    data_type_jsonb jsonb NOT NULL,
+    data_type_name name NOT NULL,
+    data_type_tsquery tsquery NOT NULL,
+    data_type_tsvector tsvector NOT NULL,
+    data_type_uuid uuid NOT NULL,
+    data_type_xml xml NOT NULL
+);
+
+
+ALTER TABLE table_with_data OWNER TO postgres;
+
+INSERT INTO table_with_data
+VALUES (DEFAULT,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        '', '', '', '', '',
+        CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP,
+        INTERVAL '0',
+        B'0', B'0', '\000',
+        false,
+        '0.0.0.0', '0.0.0.0',
+        '00:00:00:00:00:00', '00:00:00:00:00:00:00:00',
+        '(0,0)', '{1,1,0}', '[(0,0),(0,0)]', '((0,0),(0,0))',
+        '[(0,0),(0,0)]', '((0,0),(0,0))', '<(0,0),0>',
+        'empty', 'empty', 'empty', 'empty', 'empty', 'empty',
+        '{}', '{}',
+        '', '', '',
+        '00000000-0000-0000-0000-000000000000',
+        '');
 
 --
 -- Name: sales_by_store; Type: VIEW; Schema: public; Owner: postgres

@@ -110,11 +110,12 @@
 
                 // Date and time
                 case "date":
-                case "year":
                 case "time":
                 case "timestamp":
                 case "datetime":
                     return "UTC_DATE()";
+                case "year":
+                    return "0";
 
                 // Binary strings
                 case "binary":
@@ -147,6 +148,8 @@
                     return "MULTIPOLYGON(POLYGON(LINESTRING(POINT(0,0), POINT(0,0), POINT(0,0), POINT(0,0))))";
                 case "geomcollection":
                     return "GEOMCOLLECTION()";
+                case "geometrycollection":
+                    return "ST_GeomCollFromText('GEOMETRYCOLLECTION EMPTY')";
 
                 // Character strings
                 case "char":
@@ -230,6 +233,7 @@
                 case "multilinestring":
                 case "multipolygon":
                 case "geomcollection":
+                case "geometrycollection":
                     return $"{column.ColumnType}";
 
                 // Character strings

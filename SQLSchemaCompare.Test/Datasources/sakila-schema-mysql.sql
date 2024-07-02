@@ -373,7 +373,7 @@ CREATE TABLE table_with_data (
 INSERT INTO table_with_data
 VALUES (NULL,
         0, 0, 0, 0, 0, 0, 0, 0, 0,
-        UTC_DATE(), UTC_DATE(), UTC_DATE(), UTC_DATE(), UTC_DATE(),
+        UTC_DATE(), UTC_DATE(), UTC_DATE(), UTC_DATE(), 0,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         '', '', '', '', '', '',
         'B', 'C',

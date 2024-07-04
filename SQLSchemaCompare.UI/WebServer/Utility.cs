@@ -50,7 +50,7 @@
                         }
                     });
                 })
-                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseContentRoot(AppContext.BaseDirectory)
                 .UseStartup<WebServerStartup>()
                 .ConfigureLogging(logging =>
                 {

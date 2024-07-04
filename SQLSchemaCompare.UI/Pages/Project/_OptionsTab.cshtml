@@ -10,6 +10,8 @@
         Model.Scripting.OrderColumnAlphabetically, Localization.LabelOrderColumnAlphabeticallyDescription));
     options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[IgnoreReferenceTableColumnOrder]]", Localization.LabelIgnoreReferenceTableColumnOrder,
         Model.Scripting.IgnoreReferenceTableColumnOrder, Localization.LabelIgnoreReferenceTableColumnOrderDescription));
+    options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[GenerateUpdateScriptForNewNotNullColumns]]", Localization.LabelGenerateUpdateScriptForNewNotNullColumns,
+        Model.Scripting.GenerateUpdateScriptForNewNotNullColumns, Localization.LabelGenerateUpdateScriptForNewNotNullColumnsDescription));
 }
 <div class="row">
     <div class="col-6">

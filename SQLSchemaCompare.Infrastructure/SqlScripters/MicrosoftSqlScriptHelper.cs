@@ -105,6 +105,77 @@
             return sb.ToString();
         }
 
+        /// <inheritdoc/>
+        public override string ScriptColumnDefaultValue(ABaseDbColumn column)
+        {
+            if (column == null)
+            {
+                throw new ArgumentNullException(nameof(column));
+            }
+
+            switch (column.DataType)
+            {
+                // Exact numerics
+                case "bigint":
+                case "int":
+                case "smallint":
+                case "tinyint":
+                case "bit":
+                case "smallmoney":
+                case "money":
+                case "numeric":
+                case "decimal":
+                    return "0";
+
+                // Approximate numerics
+                case "float":
+                case "real":
+                    return "0";
+
+                // Date and time
+                case "date":
+                case "datetime":
+                case "datetime2":
+                case "datetimeoffset":
+                case "smalldatetime":
+                case "time":
+                    return "GETUTCDATE()";
+
+                // Character strings
+                // Unicode character strings
+                case "char":
+                case "nchar":
+                case "varchar":
+                case "nvarchar":
+                case "text":
+                case "ntext":
+                    return "''";
+
+                // Binary strings
+                case "binary":
+                case "varbinary":
+                case "image":
+                    return "0x00";
+
+                // Other data types
+                case "uniqueidentifier":
+                    return "NEWID()";
+                case "xml":
+                    return "''";
+                case "geography":
+                case "geometry":
+                    return "'POINT(0 0)'";
+                case "cursor":
+                case "rowversion":
+                case "hierarchyid":
+                case "sql_variant":
+                    throw new NotSupportedException($"Unknown default value for data type: {column.DataType}");
+
+                default:
+                    throw new ArgumentException($"Unknown data type: {column.DataType}");
+            }
+        }
+
         /// <inheritdoc />
         public override string ScriptCommitTransaction()
         {

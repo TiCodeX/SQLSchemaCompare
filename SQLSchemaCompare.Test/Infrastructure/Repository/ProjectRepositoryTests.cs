@@ -138,6 +138,7 @@
                         IgnoreCollate = true,
                         OrderColumnAlphabetically = true,
                         IgnoreReferenceTableColumnOrder = true,
+                        GenerateUpdateScriptForNewNotNullColumns = true,
                     },
                     Filtering = new FilteringOptions
                     {
@@ -188,6 +189,7 @@
       <IgnoreCollate>true</IgnoreCollate>
       <OrderColumnAlphabetically>true</OrderColumnAlphabetically>
       <IgnoreReferenceTableColumnOrder>true</IgnoreReferenceTableColumnOrder>
+      <GenerateUpdateScriptForNewNotNullColumns>true</GenerateUpdateScriptForNewNotNullColumns>
     </Scripting>
     <Filtering>
       <Include>false</Include>

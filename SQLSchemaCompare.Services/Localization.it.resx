@@ -848,4 +848,12 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="MenuDeveloperTools" xml:space="preserve">
     <value>Strumenti per sviluppatori</value>
   </data>
+  <data name="LabelGenerateUpdateScriptForNewNotNullColumns" xml:space="preserve">
+    <value>Genera script di aggiornamento per nuove colonne non nullabili</value>
+  </data>
+  <data name="LabelGenerateUpdateScriptForNewNotNullColumnsDescription" xml:space="preserve">
+    <value>Questa opzione influenzerà lo script delle nuove colonne non nullabili.
+
+Invece di aggiungere la colonna come non nullabile, la aggiungerà prima come nullabile, quindi eseguirà un aggiornamento per impostare un valore predefinito e infine modificherà la colonna in modo che non sia nullabile.</value>
+  </data>
 </root>

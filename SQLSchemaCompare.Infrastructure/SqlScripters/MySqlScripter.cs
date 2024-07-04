@@ -104,9 +104,23 @@
             }
 
             // Add columns
-            foreach (var c in t.Columns.Where(x => x.MappedDbObject == null))
+            foreach (var c in t.Columns.Cast<MySqlColumn>().Where(x => x.MappedDbObject == null))
             {
-                sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD COLUMN {this.ScriptHelper.ScriptColumn(c)};");
+                if (this.Options.Scripting.GenerateUpdateScriptForNewNotNullColumns && c.IsNullable != "YES")
+                {
+                    c.IsNullable = "YES";
+                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD COLUMN {this.ScriptHelper.ScriptColumn(c)};");
+
+                    sb.AppendLine($"UPDATE {this.ScriptHelper.ScriptObjectName(t)} SET {this.ScriptHelper.ScriptObjectName(c.Name)} = {this.ScriptHelper.ScriptColumnDefaultValue(c)};");
+
+                    c.IsNullable = "NO";
+                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} MODIFY COLUMN {this.ScriptHelper.ScriptColumn(c)};");
+                    sb.AppendLine();
+                }
+                else
+                {
+                    sb.AppendLine($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ADD COLUMN {this.ScriptHelper.ScriptColumn(c)};");
+                }
             }
 
             return sb.ToString();

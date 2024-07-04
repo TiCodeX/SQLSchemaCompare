@@ -763,6 +763,26 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generate update script for new not null columns.
+        /// </summary>
+        public static string LabelGenerateUpdateScriptForNewNotNullColumns {
+            get {
+                return ResourceManager.GetString("LabelGenerateUpdateScriptForNewNotNullColumns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This option will affect the script of the new not nullable columns.
+        ///
+        ///Instead of adding the column as not nullable, it will first add it as nullable, then it do an update to set a default value, and finally alter the column to be not nullable..
+        /// </summary>
+        public static string LabelGenerateUpdateScriptForNewNotNullColumnsDescription {
+            get {
+                return ResourceManager.GetString("LabelGenerateUpdateScriptForNewNotNullColumnsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Histories.
         /// </summary>
         public static string LabelHistories {

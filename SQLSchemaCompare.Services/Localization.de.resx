@@ -208,7 +208,7 @@
     <value>Kennwort speichern</value>
   </data>
   <data name="LabelNewProject" xml:space="preserve">
-    <value>Neues Projekt</value>
+    <value>Neues Projekt...</value>
   </data>
   <data name="LabelNewPostgreSQLProject" xml:space="preserve">
     <value>Neues PostgreSQL Projekt</value>
@@ -346,7 +346,7 @@
     <value>Verifizierung fehlgeschlagen</value>
   </data>
   <data name="ErrorNoSubscriptionAvailable" xml:space="preserve">
-    <value>Kein aktives Abonnement gefunden.</value>
+    <value>Kein aktives Abonnement gefunden</value>
   </data>
   <data name="ErrorPasswordNotSpecified" xml:space="preserve">
     <value>Kennwort wurde nicht angegeben</value>
@@ -379,16 +379,16 @@
     <value>Es ist eine neue Version von {0} verfügbar. Bitte aktualisieren.</value>
   </data>
   <data name="ErrorCannotCloseProject" xml:space="preserve">
-    <value>Projekt kann nicht geschlossen werden.</value>
+    <value>Projekt kann nicht geschlossen werden</value>
   </data>
   <data name="ErrorCannotCreateNewProject" xml:space="preserve">
-    <value>Es kann kein neues Projekt erstellt werden.</value>
+    <value>Es kann kein neues Projekt erstellt werden</value>
   </data>
   <data name="ErrorCannotSaveProject" xml:space="preserve">
     <value>Projekt kann nicht gespeichert werden: {0}</value>
   </data>
   <data name="ErrorEmptyDatabases" xml:space="preserve">
-    <value>Keine Objekte gefunden. Beide Datenbanken sind leer.</value>
+    <value>Keine Objekte gefunden. Beide Datenbanken sind leer</value>
   </data>
   <data name="ErrorLoadProjectFileNotFound" xml:space="preserve">
     <value>Projekt kann nicht geladen werden. Datei nicht gefunden.</value>
@@ -403,13 +403,13 @@
     <value>Projekt kann nicht geladen werden, Zugriff verweigert.</value>
   </data>
   <data name="ErrorOperationCanceled" xml:space="preserve">
-    <value>Der Vorgang wurde abgebrochen.</value>
+    <value>Der Vorgang wurde abgebrochen</value>
   </data>
   <data name="ErrorOperationNotExecuted" xml:space="preserve">
-    <value>Der Vorgang wurde nicht ausgeführt.</value>
+    <value>Der Vorgang wurde nicht ausgeführt</value>
   </data>
   <data name="ErrorUnableToReadAppSettings" xml:space="preserve">
-    <value>Die Einstellungen {0} konnten nicht von {1} geladen werden.</value>
+    <value>Die Einstellungen {0} konnten nicht von {1} geladen werden</value>
   </data>
   <data name="LabelDatabaseComparison" xml:space="preserve">
     <value>Datenbankvergleich</value>
@@ -520,7 +520,7 @@
     <value>Tabellen zuordnen...</value>
   </data>
   <data name="StatusMappingViews" xml:space="preserve">
-    <value>Sichten zuordnen.</value>
+    <value>Sichten zuordnen...</value>
   </data>
   <data name="StatusRetrievingDataTypes" xml:space="preserve">
     <value>Lese Benutzerdefinierte Datentypen...</value>
@@ -699,7 +699,7 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
     <value>Besten Dank für deine Rückmeldung!</value>
   </data>
   <data name="ErrorCannotSendFeedback" xml:space="preserve">
-    <value>Rückmeldung kann nicht versendet werden!</value>
+    <value>Rückmeldung kann nicht versendet werden</value>
   </data>
   <data name="ErrorInvalidFeedback" xml:space="preserve">
     <value>Der Kommentar ist nicht gültig</value>
@@ -847,5 +847,13 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   </data>
   <data name="MenuDeveloperTools" xml:space="preserve">
     <value>Entwicklertools</value>
+  </data>
+  <data name="LabelGenerateUpdateScriptForNewNotNullColumns" xml:space="preserve">
+    <value>Update-Skript für neue NOT NULL Spalten erzeugen</value>
+  </data>
+  <data name="LabelGenerateUpdateScriptForNewNotNullColumnsDescription" xml:space="preserve">
+    <value>Diese Option wirkt sich auf das Skript der neuen NOT NULL Spalten aus.
+
+Anstatt die Spalte als NOT NULL hinzuzufügen, wird sie zuerst mit NULL erlauben hinzugefügt. Dann wird ein Update durchgeführt, um einen Standardwert festzulegen, und schließlich wird die Spalte so geändert, dass sie NOT NULL ist.</value>
   </data>
 </root>

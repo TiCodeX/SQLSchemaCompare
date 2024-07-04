@@ -1,6 +1,6 @@
 {
   "name": "sqlschemacompare",
-  "version": "2024.5.1",
+  "version": "2024.7.1",
   "license": "GPL-3.0-only",
   "description": "The Swiss Army Knife of Database Schema Comparison for Microsoft SQL, mySQL and PostgreSQL which runs on Windows, Linux and macOS systems.",
   "main": "app.js",

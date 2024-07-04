@@ -857,4 +857,12 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="MenuDeveloperTools" xml:space="preserve">
     <value>Developer tools</value>
   </data>
+  <data name="LabelGenerateUpdateScriptForNewNotNullColumns" xml:space="preserve">
+    <value>Generate update script for new not null columns</value>
+  </data>
+  <data name="LabelGenerateUpdateScriptForNewNotNullColumnsDescription" xml:space="preserve">
+    <value>This option will affect the script of the new not nullable columns.
+
+Instead of adding the column as not nullable, it will first add it as nullable, then it do an update to set a default value, and finally alter the column to be not nullable.</value>
+  </data>
 </root>

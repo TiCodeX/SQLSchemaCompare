@@ -62,7 +62,7 @@
 
             db.DataTypes.Should().BeEmpty();
 
-            db.Tables.Count.Should().Be(17);
+            db.Tables.Count.Should().Be(18);
             var table = db.Tables.FirstOrDefault(x => x.Name == "film");
             table.Should().NotBeNull();
             table?.Columns.Count.Should().Be(13);
@@ -191,6 +191,27 @@
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE staff DROP COLUMN email");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an extra column with data
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
+        [IntegrationTest]
+        [Category("MariaDB")]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingColumnWithData(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("SET SESSION group_concat_max_len = 99999;");
+            sb.AppendLine("SET @sqlCommand = (SELECT CONCAT('ALTER TABLE table_with_data DROP ', GROUP_CONCAT(COLUMN_NAME SEPARATOR ', DROP '))");
+            sb.AppendLine("                   FROM INFORMATION_SCHEMA.COLUMNS");
+            sb.AppendLine("                   WHERE TABLE_SCHEMA='sakila' AND TABLE_NAME='table_with_data' AND COLUMN_NAME != 'table_with_data_id');");
+            sb.AppendLine("PREPARE stmt FROM @sqlCommand;");
+            sb.AppendLine("EXECUTE stmt;");
+            this.dbFixture.ProjectOptions.Scripting.GenerateUpdateScriptForNewNotNullColumns = true;
             this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MariaDb, sb.ToString(), port);
         }
 

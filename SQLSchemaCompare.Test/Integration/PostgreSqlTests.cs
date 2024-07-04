@@ -64,7 +64,7 @@
 
             db.DataTypes.Count(x => x.IsUserDefined).Should().Be(8);
 
-            db.Tables.Count.Should().Be(22);
+            db.Tables.Count.Should().Be(23);
             var table = db.Tables.FirstOrDefault(x => x.Name == "film");
             table.Should().NotBeNull();
             table?.Columns.Count.Should().Be(14);
@@ -196,6 +196,26 @@
         {
             var sb = new StringBuilder();
             sb.Append("ALTER TABLE business.staff DROP COLUMN password");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an extra column with data
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
+        [IntegrationTest]
+        [Category("PostgreSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingColumnWithData(ushort port)
+        {
+            var sb = new StringBuilder();
+            this.dbFixture.GetDatabaseProvider("sakila", port)
+                .GetDatabase(new TaskInfo("test"))
+                .Tables.Single(x => x.Name == "table_with_data")
+                .Columns.Where(x => x.Name != "table_with_data_id").ToList()
+                .ForEach(x => sb.AppendLine($"ALTER TABLE table_with_data DROP COLUMN {x.Name};"));
+            this.dbFixture.ProjectOptions.Scripting.GenerateUpdateScriptForNewNotNullColumns = true;
             this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.PostgreSql, sb.ToString(), port);
         }
 

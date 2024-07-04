@@ -3,7 +3,6 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.FileProviders;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
 
@@ -87,7 +86,7 @@
         /// <param name="localizationService">The localization service</param>
         /// <param name="appSettingsService">The app settings service</param>
         /// <param name="loggerFactory">The injected logger factory</param>
-        public void Configure(
+        public static void Configure(
             IApplicationBuilder app,
             IAppGlobals appGlobals,
             ILocalizationService localizationService,
@@ -124,20 +123,7 @@
             logger.LogDebug($"LogLevel => {appSettings.LogLevel}");
             logger.LogDebug($"Language => {appSettings.Language}");
 
-            if (appGlobals.IsDevelopment)
-            {
-                app.UseStaticFiles();
-            }
-            else
-            {
-                app.UseStaticFiles(new StaticFileOptions
-                {
-                    FileProvider = new HyphenFriendlyEmbeddedFileProvider(
-                        new EmbeddedFileProvider(typeof(WebServerStartup).Assembly, "TiCodeX.SQLSchemaCompare.UI.wwwroot"),
-                        logger),
-                });
-            }
-
+            app.UseStaticFiles();
             app.UseExceptionHandler("/ErrorPage");
             app.UseRequestValidator();
             app.UseRouting();

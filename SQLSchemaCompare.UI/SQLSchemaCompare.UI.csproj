@@ -25,6 +25,8 @@
     <Content Remove="dist\**" />
     <EmbeddedResource Remove="dist\**" />
     <None Remove="dist\**" />
+    <!--Copy wwwroot to output-->
+    <Content Update="wwwroot\**" CopyToOutputDirectory="Always" />
     <!--Configure json files as None-->
     <Content Remove="compilerconfig.json" />
     <None Include="compilerconfig.json" />
@@ -40,12 +42,6 @@
     <!--Configure the certificate as embedded resource-->
     <None Remove="certificate.pfx" />
     <EmbeddedResource Include="certificate.pfx" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <!--Configure all the wwwroot files as EmbeddedResource-->
-    <Content Remove="wwwroot\**\*" />
-    <EmbeddedResource Include="wwwroot\**\*" />
   </ItemGroup>
 
   <ItemGroup>

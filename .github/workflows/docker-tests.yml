@@ -15,16 +15,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-#    - name: Set up Docker Buildx
-#      uses: docker/setup-buildx-action@v3
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
-#    - name: Build and export to Docker
-#      uses: docker/build-push-action@v6
-#      with:
-#        context: .
-#        file: ./SQLSchemaCompare.CLI/Dockerfile
-#        tags: ${{ env.TEST_TAG }}
-#        load: true
+    - name: Build and export to Docker
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./SQLSchemaCompare.CLI/Dockerfile
+        tags: ${{ env.TEST_TAG }}
+        load: true
 
     - name: Set up MySQL
       run: |
@@ -33,7 +33,30 @@ jobs:
         mysql -u root -proot test1 < SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql
         mysql -u root -proot -e "CREATE DATABASE test2"
         mysql -u root -proot test2 < SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql
+        mysql -u root -proot test2 -e "ALTER TABLE actor DROP COLUMN first_name"
 
-#    - name: Test
-#      run: |
-#        docker run --rm ${{ env.TEST_TAG }}          
+    - name: Test
+      run: |
+        {
+          echo '<?xml version="1.0" encoding="utf-8"?>'
+          echo '<CompareProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">'
+          echo '  <SourceProviderOptions xsi:type="MySqlDatabaseProviderOptions">'
+          echo '    <Hostname>host.docker.internal</Hostname>'
+          echo '    <Port>3306</Port>'
+          echo '    <Database>test1</Database>'
+          echo '    <Username>root</Username>'
+          echo '    <Password>root</Password>'
+          echo '  </SourceProviderOptions>'
+          echo '  <TargetProviderOptions xsi:type="MicrosoftSqlDatabaseProviderOptions">'
+          echo '    <Hostname>host.docker.internal</Hostname>'
+          echo '    <Port>3306</Port>'
+          echo '    <Database>test1</Database>'
+          echo '    <Username>root</Username>'
+          echo '    <Password>root</Password>'
+          echo '  </TargetProviderOptions>'
+          echo '  <Options>'
+          echo '  </Options>'
+          echo '</CompareProject>'
+        } > project.tcxsc
+        docker run --rm -v $(pwd):/data ${{ env.TEST_TAG }} -p /data/project.tcxsc -o /data/output.sql
+        cat output.sql

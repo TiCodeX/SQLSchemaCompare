@@ -50,7 +50,7 @@ jobs:
           echo '  <TargetProviderOptions xsi:type="MicrosoftSqlDatabaseProviderOptions">'
           echo '    <Hostname>host.docker.internal</Hostname>'
           echo '    <Port>3306</Port>'
-          echo '    <Database>test1</Database>'
+          echo '    <Database>test2</Database>'
           echo '    <Username>root</Username>'
           echo '    <Password>root</Password>'
           echo '  </TargetProviderOptions>'

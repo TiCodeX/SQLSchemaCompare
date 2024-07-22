@@ -52,7 +52,7 @@ jobs:
           -e MYSQL_USER=admin \
           -e MYSQL_PASSWORD=test1234 \
           -e MYSQL_ROOT_PASSWORD=test1234 \
-          -v $initScript:/docker-entrypoint-initdb.d/init.sql
+          -v $initScript:/docker-entrypoint-initdb.d/init.sql \
           -d \
           mysql
         

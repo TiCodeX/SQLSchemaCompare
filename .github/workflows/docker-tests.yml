@@ -1,8 +1,8 @@
 name: Docker Tests
 
 on:
-#  pull_request:
-#    branches: [ master ]
+  pull_request:
+    branches: [ master ]
   workflow_dispatch:
 
 env:
@@ -10,22 +10,30 @@ env:
 
 jobs:
   docker_tests:
-    if: github.event.pull_request.draft == false
+#    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+#    - name: Set up Docker Buildx
+#      uses: docker/setup-buildx-action@v3
 
-    - name: Build and export to Docker
-      uses: docker/build-push-action@v6
-      with:
-        context: .
-        file: ./SQLSchemaCompare.CLI/Dockerfile
-        tags: ${{ env.TEST_TAG }}
-        load: true
+#    - name: Build and export to Docker
+#      uses: docker/build-push-action@v6
+#      with:
+#        context: .
+#        file: ./SQLSchemaCompare.CLI/Dockerfile
+#        tags: ${{ env.TEST_TAG }}
+#        load: true
 
-    - name: Test
+    - name: Set up MySQL
       run: |
-        docker run --rm ${{ env.TEST_TAG }}          
+        sudo systemctl start mysql.service
+        mysql -u root -p root -e "CREATE DATABASE test1"
+        mysql -u root -p root test1 < SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql
+        mysql -u root -p root -e "CREATE DATABASE test2"
+        mysql -u root -p root test2 < SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql
+
+#    - name: Test
+#      run: |
+#        docker run --rm ${{ env.TEST_TAG }}          

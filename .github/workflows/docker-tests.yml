@@ -25,14 +25,9 @@ jobs:
         echo "USE test2" >> $initScript
         cat SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql >> $initScript
         
-        echo "----------------------------------------------------------"
-        cat $initScript
-        echo "----------------------------------------------------------"
-        
         docker pull mysql
         docker run --rm \
           --name mysql \
-          --add-host host.docker.internal:host-gateway \
           -p 43306:3306 \
           -e MYSQL_USER=admin \
           -e MYSQL_PASSWORD=test1234 \
@@ -40,7 +35,7 @@ jobs:
           -v $initScript:/docker-entrypoint-initdb.d/init.sql \
           -d mysql
         
-        docker exec mysql mysql -h host.docker.internal:43306 -uadmin -ptest1234 -e "SHOW DATABASES"
+        docker exec mysql mysql -uadmin -ptest1234 -e "SHOW DATABASES"
         
         docker stop mysql
         exit 1

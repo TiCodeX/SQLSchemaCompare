@@ -28,37 +28,54 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
-    - name: Set up MySQL
-      run: |
-        sudo systemctl start mysql.service
-        mysql -u root -proot -e "CREATE DATABASE test1"
-        mysql -u root -proot test1 < SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql
-        mysql -u root -proot -e "CREATE DATABASE test2"
-        mysql -u root -proot test2 < SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql
-        mysql -u root -proot test2 -e "ALTER TABLE actor DROP COLUMN first_name"
+#    - name: Set up MySQL
+#      run: |
+#        sudo systemctl start mysql.service
+#        mysql -u root -proot -e "CREATE DATABASE test1"
+#        mysql -u root -proot test1 < SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql
+#        mysql -u root -proot -e "CREATE DATABASE test2"
+#        mysql -u root -proot test2 < SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql
+#        mysql -u root -proot test2 -e "ALTER TABLE actor DROP COLUMN first_name"
 
-    - name: Test
+    - name: Test MySQL
       run: |
+        initScript=$(mktemp)
+        echo "CREATE DATABASE test1" > $initScript
+        echo "CREATE DATABASE test2" > $initScript
+        echo "USE test1" >> $initScript
+        cat SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql >> $initScript
+        echo "USE test2" >> $initScript
+        cat SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql >> $initScript
+        docker pull mysql
+        docker run --rm \
+          --name mysql \
+          -e MYSQL_USER=admin \
+          -e MYSQL_PASSWORD=test1234 \
+          -e MYSQL_ROOT_PASSWORD=test1234 \
+          -v $initScript:/docker-entrypoint-initdb.d/init.sql
+          -d \
+          mysql
+        
         {
           echo '<?xml version="1.0" encoding="utf-8"?>'
           echo '<CompareProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">'
           echo '  <SourceProviderOptions xsi:type="MySqlDatabaseProviderOptions">'
-          echo '    <Hostname>localhost</Hostname>'
+          echo '    <Hostname>mysql</Hostname>'
           echo '    <Port>3306</Port>'
           echo '    <Database>test1</Database>'
-          echo '    <Username>root</Username>'
-          echo '    <Password>cU0DMSYV28eNfr5o54re4SSjnbNYMAHDK7tEfJ5PobI=</Password>'
+          echo '    <Username>admin</Username>'
+          echo '    <Password>lZGUdranPySlPscTnWEj4NruoeFny6XfE69wMTYqA/U=</Password>'
           echo '  </SourceProviderOptions>'
           echo '  <TargetProviderOptions xsi:type="MicrosoftSqlDatabaseProviderOptions">'
-          echo '    <Hostname>localhost</Hostname>'
+          echo '    <Hostname>mysql</Hostname>'
           echo '    <Port>3306</Port>'
           echo '    <Database>test2</Database>'
-          echo '    <Username>root</Username>'
-          echo '    <Password>cU0DMSYV28eNfr5o54re4SSjnbNYMAHDK7tEfJ5PobI=</Password>'
+          echo '    <Username>admin</Username>'
+          echo '    <Password>lZGUdranPySlPscTnWEj4NruoeFny6XfE69wMTYqA/U=</Password>'
           echo '  </TargetProviderOptions>'
           echo '  <Options>'
           echo '  </Options>'
           echo '</CompareProject>'
         } > project.tcxsc
-        docker run --rm --net=host -v $(pwd):/data ${{ env.TEST_TAG }} -p /data/project.tcxsc -o /data/output.sql
+        docker run --rm -v $(pwd):/data ${{ env.TEST_TAG }} -p /data/project.tcxsc -o /data/output.sql
         cat output.sql

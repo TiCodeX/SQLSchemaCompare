@@ -13,6 +13,36 @@ jobs:
 #    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
+    - name: test123
+      run: |
+        initScript=$(mktemp)
+        echo "CREATE DATABASE test1" > $initScript
+        echo "CREATE DATABASE test2" > $initScript
+        echo "USE test1" >> $initScript
+        cat SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql >> $initScript
+        echo "USE test2" >> $initScript
+        cat SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql >> $initScript
+        
+        echo "----------------------------------------------------------"
+        cat $initScript
+        echo "----------------------------------------------------------"
+        
+        docker pull mysql
+        docker run --rm \
+          --name mysql \
+          --add-host host.docker.internal:host-gateway
+          -p 43306:3306 \
+          -e MYSQL_USER=admin \
+          -e MYSQL_PASSWORD=test1234 \
+          -e MYSQL_ROOT_PASSWORD=test1234 \
+          -v $initScript:/docker-entrypoint-initdb.d/init.sql \
+          -d mysql
+        
+        docker exec mysql mysql -h host.docker.internal -p 43306 -uadmin -ptest1234 -e "SHOW DATABASES"
+        
+        docker stop mysql
+        exit 1
+
     - uses: actions/checkout@v4
 
     - name: Set up Docker Buildx

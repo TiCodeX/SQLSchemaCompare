@@ -29,10 +29,10 @@ jobs:
     - name: Set up MySQL
       run: |
         sudo systemctl start mysql.service
-        mysql -u root -p root -e "CREATE DATABASE test1"
-        mysql -u root -p root test1 < SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql
-        mysql -u root -p root -e "CREATE DATABASE test2"
-        mysql -u root -p root test2 < SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql
+        mysql -u root -proot -e "CREATE DATABASE test1"
+        mysql -u root -proot test1 < SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql
+        mysql -u root -proot -e "CREATE DATABASE test2"
+        mysql -u root -proot test2 < SQLSchemaCompare.Test/Datasources/sakila-schema-mysql.sql
 
 #    - name: Test
 #      run: |

@@ -32,7 +32,7 @@ jobs:
         docker pull mysql
         docker run --rm \
           --name mysql \
-          --add-host host.docker.internal:host-gateway
+          --add-host host.docker.internal:host-gateway \
           -p 43306:3306 \
           -e MYSQL_USER=admin \
           -e MYSQL_PASSWORD=test1234 \

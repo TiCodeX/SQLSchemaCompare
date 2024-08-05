@@ -30,7 +30,7 @@ class TaskManager {
                         if ($("#taskFailed").length === 0) {
                             resolve();
                         } else {
-                            reject();
+                            reject(new Error());
                         }
                     } else {
                         setTimeout(() => {

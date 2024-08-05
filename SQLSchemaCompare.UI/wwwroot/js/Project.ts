@@ -129,8 +129,8 @@ class Project {
         if (PageManager.GetOpenPage() === Page.Project) {
             try {
                 await this.Edit();
-            } catch (e) {
-                return Promise.reject();
+            } catch {
+                return Promise.reject(new Error());
             }
         }
 
@@ -215,7 +215,7 @@ class Project {
         return new Promise<ApiResponse<T>>((resolve, reject): void => {
             const data = Utility.SerializeJSON($("#ProjectPage"));
             if (data === undefined) {
-                reject();
+                reject(new Error());
             } else {
                 void Utility.AjaxCall<T>(this.editUrl, HttpMethod.Post, data).then((response): void => {
                     resolve(response);
@@ -349,7 +349,7 @@ class Project {
                                 this.Save(false).then((): void => {
                                     resolve();
                                 }).catch(() => {
-                                    reject();
+                                    reject(new Error());
                                 });
                                 break;
                             case DialogButton.No:
@@ -360,7 +360,7 @@ class Project {
                     });
             } else {
                 DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage ?? "");
-                reject();
+                reject(new Error());
             }
         });
     }

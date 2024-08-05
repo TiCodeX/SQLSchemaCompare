@@ -45,7 +45,7 @@ if (process.argv.length > 1 && process.argv[1] !== undefined) {
         if (stat.isFile() && path.extname(process.argv[1]).toLowerCase() === ".tcxsc") {
             projectToOpen = process.argv[1];
         }
-    } catch (ex) {
+    } catch {
         // Ignore
     }
 }
@@ -107,7 +107,8 @@ electron.app.on("second-instance", (_event, argv) => {
 //#region Start an asynchronous function to delete old log files
 setTimeout(() => {
     try {
-        glob(loggerPath + loggerPattern.replace("yyyy-MM-dd", "*"), (_err, files) => {
+        const loggerPathWithoutExtension = path.join(path.dirname(loggerPath), path.basename(loggerPath, path.extname(loggerPath)));
+        glob(loggerPathWithoutExtension + loggerPattern.replace("yyyy-MM-dd", "*") + path.extname(loggerPath), (_err, files) => {
             files.sort();
             files.reverse();
             files.slice(loggerMaxArchiveFiles).forEach((file: string) => {

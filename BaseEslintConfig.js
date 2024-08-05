@@ -21,6 +21,9 @@ module.exports = {
           tsconfigRootDir: __dirname,
         },
       },
+      rules: {
+        "@typescript-eslint/no-require-imports": "off",
+      },
     };
   },
 };

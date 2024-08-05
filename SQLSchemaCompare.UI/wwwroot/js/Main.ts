@@ -233,7 +233,7 @@ class Main {
         }
         try {
             this.mainSplitter.destroy();
-        } catch (e) {
+        } catch {
             // Ignore
         } finally {
             this.mainSplitter = undefined;

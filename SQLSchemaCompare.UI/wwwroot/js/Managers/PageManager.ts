@@ -117,12 +117,12 @@ class PageManager {
     public static RemoveTooltips(): void {
         try {
             $("div.tooltip").tooltip("hide");
-        } catch (e) {
+        } catch {
             $("div.tooltip").remove();
         }
         try {
             $("div.popover").popover("hide");
-        } catch (e) {
+        } catch {
             $("div.popover").remove();
         }
     }

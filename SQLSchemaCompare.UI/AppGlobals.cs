@@ -35,7 +35,7 @@
 
         /// <inheritdoc/>
         public string LoggerLayout =>
-            "${longdate}|${event-properties:item=EventId_Id}|${uppercase:${level}}|${logger}|${message} ${exception:format=tostring}";
+            "${longdate}|${event-properties:EventId}|${uppercase:${level}}|${logger}|${message} ${exception:format=tostring}";
 
         /// <inheritdoc/>
         public string LoggerFile => Path.Combine(

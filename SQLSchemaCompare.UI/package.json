@@ -4,7 +4,7 @@
   "license": "GPL-3.0-only",
   "scripts": {
     "prelint": "yarn install --frozen-lockfile",
-    "lint": "eslint \"**/*.{ts,tsx}\" --cache",
+    "lint": "eslint . --cache",
     "lint-vs": "yarn lint --quiet --format visualstudio"
   },
   "devDependencies": {

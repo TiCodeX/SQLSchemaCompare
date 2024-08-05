@@ -99,7 +99,7 @@
     "preclean": "yarn install --frozen-lockfile",
     "clean": "shx rm -f app.js app.js.map",
     "prelint": "yarn clean",
-    "lint": "eslint \"**/*.{ts,tsx}\" --cache",
+    "lint": "eslint . --cache",
     "lint-vs": "yarn lint --quiet --format visualstudio",
     "prebuild": "yarn lint",
     "build": "tsc --build",

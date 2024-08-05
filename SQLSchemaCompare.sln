@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 - Solution Items", "00 -
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		BaseTsConfig.json = BaseTsConfig.json
 		CodeAnalysis.ruleset = CodeAnalysis.ruleset
 		CreateInstallerCommon.bat = CreateInstallerCommon.bat
 		CreateInstallerLinux.bat = CreateInstallerLinux.bat

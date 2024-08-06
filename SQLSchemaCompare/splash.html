@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -102,8 +102,8 @@
     </table>
     <script type="text/javascript">
         try {
-            var electron = require("electron");
-            document.getElementById("version").innerHTML = "v" + electron.remote.app.getVersion();
+            var electronRemote = require("@electron/remote");
+            document.getElementById("version").innerHTML = "v" + electronRemote.app.getVersion();
         } catch (e) {
             document.getElementById("version").innerHTML = "v0.0.0";
         }

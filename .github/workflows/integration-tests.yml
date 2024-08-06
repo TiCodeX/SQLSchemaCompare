@@ -12,11 +12,15 @@ jobs:
     env:
       RunDockerTests: true
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -49,11 +53,15 @@ jobs:
     env:
       RunDockerTests: true
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -88,11 +96,15 @@ jobs:
     env:
       RunDockerTests: true
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -129,11 +141,15 @@ jobs:
     env:
       RunDockerTests: true
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
     - name: Restore dependencies
       run: dotnet restore
     - name: Build

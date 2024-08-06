@@ -9,13 +9,17 @@ jobs:
   build_artifacts:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v2
 
     - name: Restore win-x64 dependencies
       run: dotnet restore -r win-x64
@@ -25,12 +29,12 @@ jobs:
       run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r win-x64
       working-directory: SQLSchemaCompare.UI
     - name: Upload SQLSchemaCompare artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: SQLSchemaCompare
         path: SQLSchemaCompare
     - name: Upload win-x64 artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: publish-win
         path: .publish
@@ -43,7 +47,7 @@ jobs:
       run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r linux-x64
       working-directory: SQLSchemaCompare.UI
     - name: Upload linux-x64 artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: publish-linux
         path: .publish
@@ -56,7 +60,7 @@ jobs:
       run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r osx-x64
       working-directory: SQLSchemaCompare.UI
     - name: Upload osx-x64 artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: publish-osx
         path: .publish
@@ -69,16 +73,16 @@ jobs:
         shell: bash
     steps:
     - name: Setup Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
-        node-version: '10.15'
+        node-version: 20
     - name: Download SQLSchemaCompare artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: SQLSchemaCompare
         path: SQLSchemaCompare
     - name: Download publish-win artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: publish-win
         path: .publish
@@ -101,16 +105,16 @@ jobs:
         shell: bash
     steps:
     - name: Setup Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
-        node-version: '10.15'
+        node-version: 20
     - name: Download SQLSchemaCompare artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: SQLSchemaCompare
         path: SQLSchemaCompare
     - name: Download publish-linux artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: publish-linux
         path: .publish
@@ -138,16 +142,16 @@ jobs:
         shell: bash
     steps:
     - name: Setup Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
-        node-version: '10.15'
+        node-version: 20
     - name: Download SQLSchemaCompare artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: SQLSchemaCompare
         path: SQLSchemaCompare
     - name: Download publish-osx artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: publish-osx
         path: .publish
@@ -172,7 +176,7 @@ jobs:
     if: always()
     needs: [installer_win_x64, installer_linux_x64, installer_osx_x64]
     steps:
-    - uses: geekyeggo/delete-artifact@v1
+    - uses: geekyeggo/delete-artifact@v5
       with:
         name: |
           SQLSchemaCompare

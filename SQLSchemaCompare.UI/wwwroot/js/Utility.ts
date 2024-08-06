@@ -1,4 +1,5 @@
-const electron = require("electron") as Electron.AllElectron;
+const electron = (require as NodeRequireFunction)("electron");
+const electronRemote = require("@electron/remote") as ElectronRemote;
 
 /**
  * Contains various utility methods
@@ -33,7 +34,6 @@ class Utility {
 
         // Prevent app zooming
         electron.webFrame.setVisualZoomLevelLimits(1, 1);
-        electron.webFrame.setLayoutZoomLevelLimits(0, 0);
     }
 
     /**
@@ -48,7 +48,7 @@ class Utility {
      * Close the electron window
      */
     public static QuitWindow(): void {
-        electron.remote.getCurrentWindow().close();
+        electronRemote.getCurrentWindow().close();
     }
 
     /**

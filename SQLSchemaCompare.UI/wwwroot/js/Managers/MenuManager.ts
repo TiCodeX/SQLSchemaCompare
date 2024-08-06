@@ -137,7 +137,7 @@ class MenuManager {
                 ],
             },
         ];
-        electron.remote.Menu.setApplicationMenu(electron.remote.Menu.buildFromTemplate(template));
+        electronRemote.Menu.setApplicationMenu(electronRemote.Menu.buildFromTemplate(template));
         //#endregion
 
         //#region Toolbar
@@ -212,7 +212,7 @@ class MenuManager {
      * @param enable Whether to enable or disable the menu items
      */
     private static ToggleMenuItems(items: Array<string>, enable: boolean): void {
-        const menu = electron.remote.Menu.getApplicationMenu();
+        const menu = electronRemote.Menu.getApplicationMenu();
 
         for (const item of items) {
 

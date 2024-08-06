@@ -65,8 +65,8 @@ class DialogManager {
                 }
             }
 
-            void electron.remote.dialog.showMessageBox(
-                electron.remote.getCurrentWindow(),
+            void electronRemote.dialog.showMessageBox(
+                electronRemote.getCurrentWindow(),
                 {
                     type: "question",
                     message: message,

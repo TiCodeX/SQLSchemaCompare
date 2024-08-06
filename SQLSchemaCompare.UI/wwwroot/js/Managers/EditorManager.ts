@@ -84,12 +84,12 @@ class EditorManager {
                     (<monaco.editor.IStandaloneDiffEditor>editor).getModifiedEditor();
             }
 
-            electron.remote.Menu.buildFromTemplate([
+            electronRemote.Menu.buildFromTemplate([
                 {
                     label: Localization.Get("MenuCopy"),
                     accelerator: "CmdOrCtrl+C",
                     click: () => {
-                        electron.remote.clipboard.writeText(currentEditor.getModel().getValueInRange(currentEditor.getSelection()));
+                        electronRemote.clipboard.writeText(currentEditor.getModel().getValueInRange(currentEditor.getSelection()));
                     },
                 },
                 {

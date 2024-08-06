@@ -2,6 +2,7 @@ import childProcess = require("child_process");
 import portfinder = require("detect-port");
 import electron = require("electron");
 import electronWindowState = require("electron-window-state");
+import electronRemote = require("@electron/remote/main");
 import fs = require("fs");
 import glob = require("glob");
 import log4js = require("log4js");
@@ -11,6 +12,7 @@ import path = require("path");
 electron.app.setAppUserModelId("ch.ticodex.sqlschemacompare");
 // Set the productName in the userData path instead of the default application name
 electron.app.setPath("userData", path.join(electron.app.getPath("appData"), "SQL Schema Compare"));
+electronRemote.initialize();
 
 const isDebug = process.defaultApp;
 const initialPort = 25436;
@@ -108,17 +110,17 @@ electron.app.on("second-instance", (_event, argv) => {
 setTimeout(() => {
     try {
         const loggerPathWithoutExtension = path.join(path.dirname(loggerPath), path.basename(loggerPath, path.extname(loggerPath)));
-        glob(loggerPathWithoutExtension + loggerPattern.replace("yyyy-MM-dd", "*") + path.extname(loggerPath), (_err, files) => {
-            files.sort();
-            files.reverse();
-            files.slice(loggerMaxArchiveFiles).forEach((file: string) => {
-                try {
-                    logger.info(`Deleting old archive file: ${file}`);
-                    fs.unlinkSync(file);
-                } catch (e) {
-                    logger.error(`Delete file failed. Error: ${e as string}`);
-                }
-            });
+        const globPattern = loggerPathWithoutExtension + loggerPattern.replace("yyyy-MM-dd", "*") + path.extname(loggerPath);
+        const files = glob.globSync(globPattern, { windowsPathsNoEscape: true });
+        files.sort();
+        files.reverse();
+        files.slice(loggerMaxArchiveFiles).forEach((file: string) => {
+            try {
+                logger.info(`Deleting old archive file: ${file}`);
+                fs.unlinkSync(file);
+            } catch (e) {
+                logger.error(`Delete file failed. Error: ${e as string}`);
+            }
         });
     } catch (ex) {
         logger.log(`Error deleting old log files: ${ex as string}`);
@@ -176,7 +178,7 @@ electron.ipcMain.on("CheckLoadProject", () => {
 
 // Register the renderer callback to open the logs folder
 electron.ipcMain.on("OpenLogsFolder", () => {
-    electron.shell.openItem(path.dirname(loggerPath));
+    void electron.shell.openPath(path.dirname(loggerPath));
 });
 //#endregion
 
@@ -229,11 +231,15 @@ function createMainWindow(): void {
         show: false,
         webPreferences: {
             nodeIntegration: true,
+            contextIsolation: false,
             webviewTag: true,
         },
     });
 
     setEmptyApplicationMenu();
+
+    // Enable electron remote from main window
+    electronRemote.enable(mainWindow.webContents);
 
     /**
      * Let us register listeners on the window, so we can update the state
@@ -332,7 +338,7 @@ function startup(): void {
     }
 
     // Setup request default auth header
-    const filter: Electron.Filter = {
+    const filter: Electron.WebRequestFilter = {
         urls: [
             "http://*/*",
             "https://*/*",
@@ -353,9 +359,14 @@ function startup(): void {
         maximizable: false,
         webPreferences: {
             nodeIntegration: true,
+            contextIsolation: false,
             webviewTag: true,
         },
     });
+
+    // Enable electron remote from splash window
+    electronRemote.enable(splashWindow.webContents);
+
     void splashWindow.loadURL(splashUrl);
     splashWindow.show();
     splashWindow.focus();

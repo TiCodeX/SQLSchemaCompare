@@ -111,18 +111,19 @@
   },
   "postinstall": "electron-builder install-app-deps",
   "devDependencies": {
-    "@eslint/js": "^9.8.0",
+    "@eslint/js": "^9.9.1",
     "@tsconfig/recommended": "^1.0.7",
     "@tsconfig/strictest": "^2.0.5",
     "@types/detect-port": "^1.1.0",
     "electron": "^31.3.1",
     "electron-builder": "^24.13.3",
-    "eslint": "^9.8.0",
+    "eslint": "^9.9.1",
     "eslint-formatter-visualstudio": "^8.40.0",
     "eslint-plugin-only-error": "^1.0.2",
+    "eslint-plugin-sonarjs": "^2.0.1",
     "shx": "^0.3.4",
     "typescript": "^5.5.4",
-    "typescript-eslint": "^8.0.1"
+    "typescript-eslint": "^8.3.0"
   },
   "dependencies": {
     "@electron/remote": "^2.1.2",

@@ -35,7 +35,7 @@ switch (process.platform) {
         servicePath = path.join(path.dirname(process.execPath), "bin", "TiCodeX.SQLSchemaCompare.UI.exe");
 }
 let serviceUrl = `https://127.0.0.1:{port}/?v=${electron.app.getVersion()}`;
-let serviceProcess: childProcess.ChildProcess;
+let serviceProcess: childProcess.ChildProcess | undefined;
 let serviceCommunicationSuccessful = false;
 
 // Read the first argument to get the project file
@@ -93,7 +93,7 @@ const isSecondInstance = !electron.app.requestSingleInstanceLock();
 electron.app.on("second-instance", (_event, argv) => {
     // Someone tried to run a second instance, we should focus our current window
     const currentWindow = mainWindow;
-    if (currentWindow !== undefined && currentWindow !== null) {
+    if (currentWindow !== undefined) {
         if (currentWindow.isMinimized()) {
             currentWindow.restore();
         }
@@ -112,7 +112,7 @@ setTimeout(() => {
         const loggerPathWithoutExtension = path.join(path.dirname(loggerPath), path.basename(loggerPath, path.extname(loggerPath)));
         const globPattern = loggerPathWithoutExtension + loggerPattern.replace("yyyy-MM-dd", "*") + path.extname(loggerPath);
         const files = glob.globSync(globPattern, { windowsPathsNoEscape: true });
-        files.sort();
+        files.sort((a, b) => a.localeCompare(b));
         files.reverse();
         files.slice(loggerMaxArchiveFiles).forEach((file: string) => {
             try {
@@ -273,11 +273,11 @@ function createMainWindow(): void {
                 // Reset the flag and trigger a new load
                 loadFailed = false;
                 if (process.platform !== "linux") {
-                    void mainWindow?.loadURL(serviceUrl);
+                    void mainWindow!.loadURL(serviceUrl);
                 } else {
                     // Add a small delay on linux because the fail event is triggered very fast
                     setTimeout(() => {
-                        void mainWindow?.loadURL(serviceUrl);
+                        void mainWindow!.loadURL(serviceUrl);
                     }, 400);
                 }
             } else {
@@ -310,17 +310,6 @@ function startService(webPort: number): void {
     if (fs.existsSync(servicePath)) {
         logger.info(`Starting service ${servicePath} (${webPort})`);
         serviceProcess = childProcess.spawn(servicePath, [`${webPort}`]);
-        /*
-        serviceProcess.stdout.on("data", data => {
-            console.log("stdout: " + data);
-        });
-        serviceProcess.stderr.on("data", data => {
-            console.log("stderr: " + data);
-        });
-        serviceProcess.on("close", code => {
-            console.log("closing code: " + code);
-        });
-        */
     } else {
         logger.error(`Unable to find executable: ${servicePath}`);
     }
@@ -338,13 +327,7 @@ function startup(): void {
     }
 
     // Setup request default auth header
-    const filter: Electron.WebRequestFilter = {
-        urls: [
-            "http://*/*",
-            "https://*/*",
-        ],
-    };
-    electron.session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+    electron.session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
         details.requestHeaders[authorizationHeaderName] = authorizationHeaderValue;
         callback({ cancel: false, requestHeaders: details.requestHeaders });
     });

@@ -8,14 +8,15 @@
     "lint-vs": "yarn lint --quiet --format visualstudio"
   },
   "devDependencies": {
-    "@eslint/js": "^9.8.0",
+    "@eslint/js": "^9.9.1",
     "@tsconfig/recommended": "^1.0.7",
     "@tsconfig/strictest": "^2.0.5",
     "@types/eslint__js": "^8.42.3",
-    "eslint": "^9.8.0",
+    "eslint": "^9.9.1",
     "eslint-formatter-visualstudio": "^8.40.0",
     "eslint-plugin-only-error": "^1.0.2",
+    "eslint-plugin-sonarjs": "^2.0.1",
     "typescript": "^5.5.4",
-    "typescript-eslint": "^8.0.1"
+    "typescript-eslint": "^8.3.0"
   }
 }

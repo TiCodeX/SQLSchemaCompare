@@ -216,7 +216,7 @@ class MenuManager {
 
         for (const item of items) {
 
-            const menuItem = menu?.getMenuItemById(item) as Electron.MenuItem | null;
+            const menuItem = menu?.getMenuItemById(item);
             if (menuItem !== undefined && menuItem !== null) {
                 menuItem.enabled = enable;
                 continue;

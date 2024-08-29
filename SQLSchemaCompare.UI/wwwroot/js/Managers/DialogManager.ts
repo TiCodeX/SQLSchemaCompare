@@ -92,7 +92,7 @@ class DialogManager {
         return Utility.AjaxGetPage(url).then((result: string): void => {
             $("#myModal .modal-title").html(title);
             $("#myModal .modal-body").html(result);
-            $("#myModal .modal-dialog").css("max-width", maxWidth !== undefined ? maxWidth : "");
+            $("#myModal .modal-dialog").css("max-width", maxWidth ?? "");
             $("#myModal .modal-header > button").css("display", showCloseButton !== undefined && showCloseButton ? "block" : "none");
             $("#myModal").attr("tabindex", showCloseButton !== undefined && showCloseButton ? "-1" : "");
             $("#myModal").modal({

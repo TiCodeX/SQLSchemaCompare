@@ -21,7 +21,7 @@ class Localization {
      * Load the localization
      */
     public static async Load(): Promise<void> {
-        const result = await Utility.AjaxCall<Record<string, string>>("/Index?handler=LoadLocalization", HttpMethod.Get, undefined);
+        const result = await Utility.AjaxCall<Record<string, string>>("/Index?handler=LoadLocalization", HttpMethod.Get);
         if (result.Result) {
             this.dictionary = result.Result;
         }

@@ -20,8 +20,6 @@ class PageManager {
         }
 
         this.RemoveTooltips();
-
-        return Promise.resolve();
     }
 
     /**
@@ -132,11 +130,21 @@ class PageManager {
      */
     private static GetPageUrl(page: Page): string | undefined {
         switch (page) {
-            case Page.Main: return "/Main/MainPageModel";
-            case Page.Welcome: return "/WelcomePageModel";
-            case Page.Project: return "/Project/ProjectPageModel";
-            case Page.TaskStatus: return "/TaskStatusPageModel";
-            default: return undefined;
+            case Page.Main: {
+                return "/Main/MainPageModel";
+            }
+            case Page.Welcome: {
+                return "/WelcomePageModel";
+            }
+            case Page.Project: {
+                return "/Project/ProjectPageModel";
+            }
+            case Page.TaskStatus: {
+                return "/TaskStatusPageModel";
+            }
+            default: {
+                return undefined;
+            }
         }
     }
 }

@@ -121,6 +121,7 @@
     "eslint-formatter-visualstudio": "^8.40.0",
     "eslint-plugin-only-error": "^1.0.2",
     "eslint-plugin-sonarjs": "^2.0.1",
+    "eslint-plugin-unicorn": "^55.0.0",
     "shx": "^0.3.4",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.3.0"

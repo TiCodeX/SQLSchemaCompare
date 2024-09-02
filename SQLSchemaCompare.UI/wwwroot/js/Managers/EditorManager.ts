@@ -73,13 +73,13 @@ class EditorManager {
         editor.setModel(model);
 
         // Register context menu
-        $(`#${domElementId} .monaco-editor .monaco-scrollable-element`).on("contextmenu", (e: JQuery.Event) => {
+        $(`#${domElementId} .monaco-editor .monaco-scrollable-element`).on("contextmenu", (event: JQuery.Event) => {
 
             let currentEditor: monaco.editor.IStandaloneCodeEditor;
             if (type === EditorType.Normal) {
                 currentEditor = <monaco.editor.IStandaloneCodeEditor>editor;
             } else {
-                currentEditor = $(e.currentTarget).parents(".editor").hasClass("original") ?
+                currentEditor = $(event.currentTarget).parents(".editor").hasClass("original") ?
                     (<monaco.editor.IStandaloneDiffEditor>editor).getOriginalEditor() :
                     (<monaco.editor.IStandaloneDiffEditor>editor).getModifiedEditor();
             }
@@ -106,14 +106,14 @@ class EditorManager {
                     label: Localization.Get("MenuFind"),
                     accelerator: "CmdOrCtrl+F",
                     click: () => {
-                        currentEditor.trigger("menu", "actions.find", undefined);
+                        currentEditor.trigger("menu", "actions.find", "");
                     },
                 },
                 {
                     label: Localization.Get("MenuGoToLine"),
                     accelerator: "CmdOrCtrl+G",
                     click: () => {
-                        currentEditor.trigger("menu", "editor.action.gotoLine", undefined);
+                        currentEditor.trigger("menu", "editor.action.gotoLine", "");
                     },
                 },
                 {
@@ -128,11 +128,11 @@ class EditorManager {
                         EditorManager.defaultOptions.lineNumbers = EditorManager.defaultOptions.lineNumbers === "on" ? "off" : "on";
                         EditorManager.defaultOptionsDiff.lineNumbers = EditorManager.defaultOptions.lineNumbers;
                         // Change the option in all active instances
-                        EditorManager.instances.forEach((instance: monaco.editor.IStandaloneCodeEditor | monaco.editor.IStandaloneDiffEditor) => {
+                        for (const instance of EditorManager.instances) {
                             instance.updateOptions({
                                 lineNumbers: EditorManager.defaultOptions.lineNumbers,
                             });
-                        });
+                        }
                     },
                 },
             ]).popup({});
@@ -143,9 +143,9 @@ class EditorManager {
      * Loop the editor instances and remove the old ones
      */
     private static ClearOldInstances(): void {
-        for (let i: number = this.instances.length - 1; i >= 0; i--) {
-            if ($(`div[editorId='${this.instances[i]?.getId()}']`).length === 0) {
-                this.instances.splice(i, 1);
+        for (let index: number = this.instances.length - 1; index >= 0; index--) {
+            if ($(`div[editorId='${this.instances[index]?.getId()}']`).length === 0) {
+                this.instances.splice(index, 1);
             }
         }
     }

@@ -20,7 +20,7 @@ class TaskManager {
         // Disable the menu/toolbar
         MenuManager.ToggleRunningTaskRelatedMenuStatus(false);
 
-        const pollingFunc = (resolve: PromiseResolve<void>, reject: PromiseReject) => {
+        const pollingFunction = (resolve: PromiseResolve<void>, reject: PromiseReject) => {
             void PageManager.LoadPage(Page.TaskStatus, false).then(() => {
                 if ($("#stopPolling").length > 0) {
                     // Enable the menu/toolbar and resolve/reject depending if there are failed tasks
@@ -28,17 +28,17 @@ class TaskManager {
                     if ($("#taskFailed").length === 0) {
                         resolve();
                     } else {
-                        reject(new Error());
+                        reject();
                     }
                 } else {
                     setTimeout(() => {
-                        pollingFunc(resolve, reject);
+                        pollingFunction(resolve, reject);
                     }, this.checkFrequency);
                 }
             });
         };
 
-        return new Promise<void>(pollingFunc);
+        return new Promise<void>(pollingFunction);
     }
 
     /**

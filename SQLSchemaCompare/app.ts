@@ -15,7 +15,7 @@ electron.app.setPath("userData", path.join(electron.app.getPath("appData"), "SQL
 electronRemote.initialize();
 
 const isDebug = process.defaultApp;
-const initialPort = 25436;
+const initialPort = 25_436;
 const splashUrl = `file://${__dirname}/splash.html`;
 const loggerPath = path.join(os.homedir(), ".SQLSchemaCompare", "log", "SQLSchemaCompare.log");
 const loggerPattern = "yyyy-MM-dd-ui";
@@ -25,14 +25,17 @@ const authorizationHeaderName = "CustomAuthToken";
 const authorizationHeaderValue = "d6e9b4c2-25d3-a625-e9a6-2135f3d2f809";
 let servicePath: string;
 switch (process.platform) {
-    case "linux":
+    case "linux": {
         servicePath = path.join(path.dirname(process.execPath), "bin", "TiCodeX.SQLSchemaCompare.UI");
         break;
-    case "darwin":
+    }
+    case "darwin": {
         servicePath = path.join(path.dirname(path.dirname(process.execPath)), "bin", "TiCodeX.SQLSchemaCompare.UI");
         break;
-    default: // Windows
+    }
+    default: { // Windows
         servicePath = path.join(path.dirname(process.execPath), "bin", "TiCodeX.SQLSchemaCompare.UI.exe");
+    }
 }
 let serviceUrl = `https://127.0.0.1:{port}/?v=${electron.app.getVersion()}`;
 let serviceProcess: childProcess.ChildProcess | undefined;
@@ -114,16 +117,16 @@ setTimeout(() => {
         const files = glob.globSync(globPattern, { windowsPathsNoEscape: true });
         files.sort((a, b) => a.localeCompare(b));
         files.reverse();
-        files.slice(loggerMaxArchiveFiles).forEach((file: string) => {
+        for (const file of files.slice(loggerMaxArchiveFiles)) {
             try {
                 logger.info(`Deleting old archive file: ${file}`);
                 fs.unlinkSync(file);
-            } catch (e) {
-                logger.error(`Delete file failed. Error: ${e as string}`);
+            } catch (error) {
+                logger.error(`Delete file failed. Error: ${error as string}`);
             }
-        });
-    } catch (ex) {
-        logger.log(`Error deleting old log files: ${ex as string}`);
+        }
+    } catch (error) {
+        logger.log(`Error deleting old log files: ${error as string}`);
     }
 }, 0);
 //#endregion
@@ -133,23 +136,29 @@ setTimeout(() => {
 electron.ipcMain.on("log", (_event, data: { category: string; level: string; message: string }) => {
     const uiLogger = log4js.getLogger(data.category);
     switch (data.level) {
-        case "debug":
+        case "debug": {
             uiLogger.debug(data.message);
             break;
-        case "info":
+        }
+        case "info": {
             uiLogger.info(data.message);
             break;
-        case "warning":
+        }
+        case "warning": {
             uiLogger.warn(data.message);
             break;
-        case "error":
+        }
+        case "error": {
             uiLogger.error(data.message);
             break;
-        case "critical":
+        }
+        case "critical": {
             uiLogger.fatal(data.message);
             break;
-        default:
+        }
+        default: {
             uiLogger.info(data.message);
+        }
     }
 });
 // Register the renderer callback for opening the main window
@@ -201,6 +210,7 @@ function setEmptyApplicationMenu(): void {
         ]));
     } else {
         // On Windows and Linux remove the menu completely
+        // eslint-disable-next-line unicorn/no-null
         electron.Menu.setApplicationMenu(null);
     }
 }
@@ -272,13 +282,13 @@ function createMainWindow(): void {
             if (retries > 0) {
                 // Reset the flag and trigger a new load
                 loadFailed = false;
-                if (process.platform !== "linux") {
-                    void mainWindow!.loadURL(serviceUrl);
-                } else {
+                if (process.platform === "linux") {
                     // Add a small delay on linux because the fail event is triggered very fast
                     setTimeout(() => {
                         void mainWindow!.loadURL(serviceUrl);
                     }, 400);
+                } else {
+                    void mainWindow!.loadURL(serviceUrl);
                 }
             } else {
                 logger.error(`Unable to contact service (${loadFailedError})`);
@@ -294,7 +304,7 @@ function createMainWindow(): void {
                     electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
                     electron.app.quit();
                 }
-            }, 10000);
+            }, 10_000);
         }
     });
 
@@ -356,11 +366,9 @@ function startup(): void {
     logger.debug("Splashscreen window started");
 
     splashWindow.on("closed", () => {
-        if (!serviceCommunicationSuccessful) {
-            if (mainWindow !== undefined) {
-                mainWindow.destroy();
-                mainWindow = undefined;
-            }
+        if (!serviceCommunicationSuccessful && mainWindow !== undefined) {
+            mainWindow.destroy();
+            mainWindow = undefined;
         }
         splashWindow = undefined;
     });

@@ -18,33 +18,35 @@ $(() => {
 
         void PageManager.LoadPage(Page.Welcome);
 
-        $(document).on("keydown", (e: JQuery.Event): void => {
+        $(document).on("keydown", (event: JQuery.Event): void => {
             const keyUp: number = 38;
             const keyDown: number = 40;
 
-            switch (e.which) {
+            switch (event.which) {
                 case keyUp:
-                case keyDown:
+                case keyDown: {
                     if (PageManager.GetOpenPage() !== Page.Main) {
                         return;
                     }
                     if ($(".tcx-selected-row").length === 0) {
                         return;
                     }
-                    if (e.which === keyUp) {
+                    if (event.which === keyUp) {
                         Main.SelectPrevRow();
                     } else {
                         Main.SelectNextRow();
                     }
                     break;
+                }
 
-                default:
+                default: {
                     // Exit this handler for other keys
                     return;
+                }
             }
 
             // Prevent the default action (scroll / move caret)
-            e.preventDefault();
+            event.preventDefault();
         });
 
         electron.ipcRenderer.on("LoadProject", (_event, projectToLoad) => {

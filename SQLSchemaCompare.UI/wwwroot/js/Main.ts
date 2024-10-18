@@ -131,24 +131,24 @@ class Main {
             return;
         }
 
-        let prevElement: JQuery = selectedElement.prev();
-        if (prevElement.length === 0) {
-            let prevCard: JQuery = selectedElement.parents(".card");
-            while (prevCard.length > 0) {
-                prevCard = prevCard.prev();
-                if (prevCard.length > 0) {
-                    prevElement = prevCard.find("tbody > tr:last");
-                    if (prevElement.length > 0) {
+        let previousElement: JQuery = selectedElement.prev();
+        if (previousElement.length === 0) {
+            let previousCard: JQuery = selectedElement.parents(".card");
+            while (previousCard.length > 0) {
+                previousCard = previousCard.prev();
+                if (previousCard.length > 0) {
+                    previousElement = previousCard.find("tbody > tr:last");
+                    if (previousElement.length > 0) {
                         break;
                     }
                 }
             }
-            if (prevElement.length === 0) {
+            if (previousElement.length === 0) {
                 return;
             }
         }
 
-        this.SelectRow(prevElement);
+        this.SelectRow(previousElement);
         this.ScollToSelectedElement();
     }
 

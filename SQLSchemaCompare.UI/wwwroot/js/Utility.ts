@@ -16,8 +16,8 @@ class Utility {
      */
     public static async ApplicationStartup(): Promise<void> {
         // Disable context menu
-        window.addEventListener("contextmenu", (e) => {
-            e.preventDefault();
+        window.addEventListener("contextmenu", (event) => {
+            event.preventDefault();
         }, false);
 
         // Enable bootstrap tooltips and popovers
@@ -56,7 +56,7 @@ class Utility {
      * @param s The string to test
      */
     public static IsNullOrEmpty(s?: string | null): boolean {
-        return s === null || typeof s === "undefined" || s.length < 1;
+        return s === null || s === undefined || s.length === 0;
     }
 
     /**
@@ -64,7 +64,7 @@ class Utility {
      * @param s The string to test
      */
     public static IsNullOrWhitespace(s?: string | null): boolean {
-        return this.IsNullOrEmpty(s) || (s ?? "").trim().length < 1;
+        return this.IsNullOrEmpty(s) || (s ?? "").trim().length === 0;
     }
 
     /**
@@ -103,7 +103,7 @@ class Utility {
 
                 // Check if there are tabs in order to color based on their content validity
                 let firstTabWithErrorOpened: boolean = false;
-                element.find(".tab-content > .tab-pane").each((_i, item) => {
+                element.find(".tab-content > .tab-pane").each((_index, item) => {
                     const navTab: JQuery = element.find(`.nav-tabs > .nav-item > a[href='#${item.id}']`);
                     navTab.removeClass("text-danger text-success");
                     if ($(item).find("*:invalid").length > 0) {
@@ -118,7 +118,7 @@ class Utility {
                 });
 
                 if (!valid) {
-                    return undefined;
+                    return;
                 }
             }
 
@@ -136,17 +136,20 @@ class Utility {
      * @param data The object data to send when the method is POST
      * @return The ApiResponse
      */
-    public static async AjaxCall<T>(url: string, method: HttpMethod, data?: object): Promise<ApiResponse<T>> {
+    public static async AjaxCall<T>(url: string, method: HttpMethod, data?: object | string | boolean): Promise<ApiResponse<T>> {
         let ajaxMethod: string;
         switch (method) {
-            case HttpMethod.Get:
+            case HttpMethod.Get: {
                 ajaxMethod = "GET";
                 break;
-            case HttpMethod.Post:
+            }
+            case HttpMethod.Post: {
                 ajaxMethod = "POST";
                 break;
-            default:
+            }
+            default: {
                 ajaxMethod = "GET";
+            }
         }
 
         return new Promise<ApiResponse<T>>((resolve): void => {
@@ -156,7 +159,7 @@ class Utility {
                     xhr.setRequestHeader("XSRF-TOKEN", $("input:hidden[name='__RequestVerificationToken']").val() as string);
                 },
                 contentType: "application/json",
-                data: data !== undefined ? JSON.stringify(data) : "",
+                data: data === undefined ? "" : JSON.stringify(data),
                 cache: false,
                 async: true,
                 success: (response: ApiResponse<T>): void => {
@@ -164,7 +167,7 @@ class Utility {
                 },
                 error: (error: JQuery.jqXHR): void => {
                     this.logger.error(`Error executing AjaxCall: ${error.responseText}`);
-                    DialogManager.ShowError("Error", "An unexpected error occured");
+                    DialogManager.ShowErrorModal("Error", "An unexpected error occured");
                 },
             });
         });
@@ -192,7 +195,7 @@ class Utility {
                     resolve(response);
                 },
                 error: (): void => {
-                    DialogManager.ShowError("Error", "An unexpected error occured");
+                    DialogManager.ShowErrorModal("Error", "An unexpected error occured");
                 },
             });
         });

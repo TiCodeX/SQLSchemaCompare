@@ -75,12 +75,12 @@ class Project {
     public static async OpenPage(closePreviousPage: boolean = true): Promise<void> {
         return PageManager.LoadPage(Page.Project, closePreviousPage).then((): void => {
             MenuManager.ToggleProjectRelatedMenuStatus(true);
-            $(".editable-select").on("show.editable-select", (e) => {
-                const list = $(e.target).siblings("ul.es-list");
+            $(".editable-select").on("show.editable-select", (event) => {
+                const list = $(event.target).siblings("ul.es-list");
                 list.empty();
                 list.append("<li class=\"es-visible\" disabled>Loading...</li>");
-                this.LoadDatabaseSelectValues($(e.target).siblings(".input-group-append").find("button"),
-                    (<HTMLInputElement>e.target).name, (<HTMLDivElement>$(e.target).parents(".card")[0]).id);
+                this.LoadDatabaseSelectValues($(event.target).siblings(".input-group-append").find("button"),
+                    (<HTMLInputElement>event.target).name, (<HTMLDivElement>$(event.target).parents(".card")[0]).id);
             });
         });
     }
@@ -114,7 +114,7 @@ class Project {
                 this.filename = undefined;
                 void this.OpenPage(true);
             } else {
-                void this.HandleProjectNeedToBeSavedError(response).then((): void => {
+                void this.HandleErrorProjectNeedToBeSaved(response).then((): void => {
                     this.New(true, databaseType);
                 });
             }
@@ -127,16 +127,12 @@ class Project {
      */
     public static async Save(showDialog: boolean = false): Promise<void> {
         if (PageManager.GetOpenPage() === Page.Project) {
-            try {
-                await this.Edit();
-            } catch {
-                return Promise.reject(new Error());
-            }
+            await this.Edit();
         }
 
         let filename = this.filename;
         if (filename === undefined || showDialog) {
-            filename = (await electronRemote.dialog.showSaveDialog(electronRemote.getCurrentWindow(),
+            ({ filePath: filename } = await electronRemote.dialog.showSaveDialog(electronRemote.getCurrentWindow(),
                 {
                     title: Localization.Get("TitleSaveProject"),
                     buttonLabel: Localization.Get("ButtonSave"),
@@ -146,23 +142,21 @@ class Project {
                             extensions: [this.projectFileExtension],
                         },
                     ],
-                })).filePath;
+                }));
         }
 
         if (Utility.IsNullOrWhitespace(filename)) {
-            return Promise.resolve();
+            return;
         }
 
-        const data: object = <object>JSON.parse(JSON.stringify(filename));
-
-        return Utility.AjaxCall<object>(this.saveUrl, HttpMethod.Post, data).then((response): void => {
+        return Utility.AjaxCall<object>(this.saveUrl, HttpMethod.Post, filename).then((response): void => {
             if (response.Success) {
                 this.filename = filename;
                 this.isDirty = false;
                 MenuManager.ToggleProjectRelatedMenuStatus(true);
-                DialogManager.ShowInformation(Localization.Get("TitleSaveProject"), Localization.Get("MessageProjectSavedSuccessfully"));
+                DialogManager.ShowInfoModal(Localization.Get("TitleSaveProject"), Localization.Get("MessageProjectSavedSuccessfully"));
             } else {
-                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage ?? "");
+                DialogManager.ShowErrorModal(Localization.Get("TitleError"), response.ErrorMessage ?? "");
             }
         });
     }
@@ -175,7 +169,7 @@ class Project {
     public static async Load(ignoreDirty: boolean = false, filename?: string): Promise<void> {
         let file = filename;
         if (file === undefined) {
-            const filenames: Array<string> = (await electronRemote.dialog.showOpenDialog(electronRemote.getCurrentWindow(),
+            const { filePaths: filenames } = await electronRemote.dialog.showOpenDialog(electronRemote.getCurrentWindow(),
                 {
                     title: Localization.Get("TitleOpenProject"),
                     buttonLabel: Localization.Get("ButtonOpen"),
@@ -186,10 +180,10 @@ class Project {
                         },
                     ],
                     properties: ["openFile"],
-                })).filePaths;
+                });
 
-            if (!Array.isArray(filenames) || filenames.length < 1 || Utility.IsNullOrWhitespace(filenames[0])) {
-                return Promise.resolve();
+            if (!Array.isArray(filenames) || filenames.length === 0 || Utility.IsNullOrWhitespace(filenames[0])) {
+                return;
             }
 
             file = filenames[0];
@@ -201,7 +195,7 @@ class Project {
                 this.filename = file;
                 void this.OpenPage(true);
             } else {
-                void this.HandleProjectNeedToBeSavedError(response).then((): void => {
+                void this.HandleErrorProjectNeedToBeSaved(response).then((): void => {
                     void this.Load(true, file);
                 });
             }
@@ -215,7 +209,7 @@ class Project {
         return new Promise<ApiResponse<T>>((resolve, reject): void => {
             const data = Utility.SerializeJSON($("#ProjectPage"));
             if (data === undefined) {
-                reject(new Error());
+                reject(new Error("No data"));
             } else {
                 void Utility.AjaxCall<T>(this.editUrl, HttpMethod.Post, data).then((response): void => {
                     resolve(response);
@@ -229,8 +223,7 @@ class Project {
      * @param ignoreDirty Whether to ignore if the project is dirty or prompt to save
      */
     public static Close(ignoreDirty: boolean): void {
-        const data: object = <object>JSON.parse(JSON.stringify(ignoreDirty));
-        void Utility.AjaxCall<string>(this.closeUrl, HttpMethod.Post, data).then((response) => {
+        void Utility.AjaxCall<string>(this.closeUrl, HttpMethod.Post, ignoreDirty).then((response) => {
             if (response.Success) {
                 this.isDirty = false;
                 this.filename = undefined;
@@ -238,7 +231,7 @@ class Project {
                     MenuManager.ToggleProjectRelatedMenuStatus(false);
                 });
             } else {
-                void this.HandleProjectNeedToBeSavedError(response).then((): void => {
+                void this.HandleErrorProjectNeedToBeSaved(response).then((): void => {
                     this.Close(true);
                 });
             }
@@ -284,7 +277,7 @@ class Project {
                     });
             } else {
                 select.editableSelect("hide");
-                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage ?? "");
+                DialogManager.ShowErrorModal(Localization.Get("TitleError"), response.ErrorMessage ?? "");
             }
             select.removeAttr("disabled");
             button.removeClass("spin").removeAttr("disabled");
@@ -323,9 +316,7 @@ class Project {
      * @param filename The Project file path
      */
     public static RemoveRecentProject(filename: string): void {
-        const data: object = <object>JSON.parse(JSON.stringify(filename));
-
-        void Utility.AjaxCall(this.removeRecentUrl, HttpMethod.Post, data).then((): void => {
+        void Utility.AjaxCall(this.removeRecentUrl, HttpMethod.Post, filename).then((): void => {
             if (PageManager.GetOpenPage() === Page.Welcome) {
                 void PageManager.LoadPage(Page.Welcome);
             }
@@ -336,7 +327,7 @@ class Project {
      * Handle the response with the ProjectNeedToBeSaved error code by prompt the user if wants to save
      * @param response The response to handle
      */
-    public static async HandleProjectNeedToBeSavedError(response: ApiResponse<string>): Promise<void> {
+    public static async HandleErrorProjectNeedToBeSaved(response: ApiResponse<string>): Promise<void> {
         return new Promise<void>((resolve: PromiseResolve<void>, reject: PromiseReject): void => {
             if (response.ErrorCode === ApiErrorCode.ErrorProjectNeedToBeSaved) {
                 void DialogManager.OpenQuestionDialog(
@@ -345,22 +336,24 @@ class Project {
                     [DialogButton.Yes, DialogButton.No, DialogButton.Cancel])
                     .then((answer: DialogButton): void => {
                         switch (answer) {
-                            case DialogButton.Yes:
+                            case DialogButton.Yes: {
                                 this.Save(false).then((): void => {
                                     resolve();
-                                }).catch(() => {
-                                    reject(new Error());
+                                }).catch((error) => {
+                                    reject(new Error(error as string));
                                 });
                                 break;
-                            case DialogButton.No:
+                            }
+                            case DialogButton.No: {
                                 resolve();
                                 break;
+                            }
                             default:
                         }
                     });
             } else {
-                DialogManager.ShowError(Localization.Get("TitleError"), response.ErrorMessage ?? "");
-                reject(new Error());
+                DialogManager.ShowErrorModal(Localization.Get("TitleError"), response.ErrorMessage ?? "");
+                reject(new Error(response.ErrorMessage ?? ""));
             }
         });
     }
@@ -375,7 +368,7 @@ class Project {
         const sourcePort: JQuery = $("input[name='SourcePort']");
         const targetPort: JQuery = $("input[name='TargetPort']");
         switch (select.val()) {
-            case DatabaseType[DatabaseType.MicrosoftSql]:
+            case DatabaseType[DatabaseType.MicrosoftSql]: {
                 useWindowAuthentication.show();
                 useAzureAuthentication.show();
                 this.HandleHostnameOnInput($("input[name='SourceHostname']"), "Source");
@@ -383,27 +376,31 @@ class Project {
                 sourcePort.val($("input[name='DefaultMicrosoftSqlPort']").val() as string);
                 targetPort.val($("input[name='DefaultMicrosoftSqlPort']").val() as string);
                 break;
-            case DatabaseType[DatabaseType.MySql]:
+            }
+            case DatabaseType[DatabaseType.MySql]: {
                 useWindowAuthentication.hide();
                 useAzureAuthentication.hide();
                 $("input[name$='Port']").prop("disabled", false);
                 sourcePort.val($("input[name='DefaultMySqlPort']").val() as string);
                 targetPort.val($("input[name='DefaultMySqlPort']").val() as string);
                 break;
-            case DatabaseType[DatabaseType.PostgreSql]:
+            }
+            case DatabaseType[DatabaseType.PostgreSql]: {
                 useWindowAuthentication.hide();
                 useAzureAuthentication.hide();
                 $("input[name$='Port']").prop("disabled", false);
                 sourcePort.val($("input[name='DefaultPostgreSqlPort']").val() as string);
                 targetPort.val($("input[name='DefaultPostgreSqlPort']").val() as string);
                 break;
-            case DatabaseType[DatabaseType.MariaDb]:
+            }
+            case DatabaseType[DatabaseType.MariaDb]: {
                 useWindowAuthentication.hide();
                 useAzureAuthentication.hide();
                 $("input[name$='Port']").prop("disabled", false);
                 sourcePort.val($("input[name='DefaultMariaDbPort']").val() as string);
                 targetPort.val($("input[name='DefaultMariaDbPort']").val() as string);
                 break;
+            }
             default:
         }
         this.SetDirtyState();
@@ -415,7 +412,7 @@ class Project {
      * @param prefix The page prefix (Source/Target)
      */
     public static HandleHostnameOnInput(input: JQuery, prefix: string): void {
-        const databaseType = parseInt($("[name='DatabaseType']").val() as string, 10);
+        const databaseType = Number.parseInt($("[name='DatabaseType']").val() as string, 10);
         const databaseTypeEnum = DatabaseType[DatabaseType[databaseType] as keyof typeof DatabaseType];
         if (databaseTypeEnum === DatabaseType.MicrosoftSql) {
             $(`input[name='${prefix}Port']`).prop("disabled", (input.val() as string).includes("\\"));
@@ -496,28 +493,28 @@ class Project {
         const checkboxFields: Array<string> = ["SavePassword", "UseWindowsAuthentication", "UseSSL"];
 
         for (const field of inputFields) {
-            const tmpValue: string = <string>$(`input[name='${prefixTo}${field}'`).val();
-            const tmpDisabled: boolean = $(`input[name='${prefixTo}${field}'`).is(":disabled");
+            const value: string = <string>$(`input[name='${prefixTo}${field}'`).val();
+            const disabled: boolean = $(`input[name='${prefixTo}${field}'`).is(":disabled");
 
             $(`input[name='${prefixTo}${field}'`).val($(`input[name='${prefixFrom}${field}'`).val() as string);
             $(`input[name='${prefixTo}${field}'`).prop("disabled", $(`input[name='${prefixFrom}${field}'`).is(":disabled"));
 
             if (direction === SettingsCopyDirection.Exchange) {
-                $(`input[name='${prefixFrom}${field}'`).val(tmpValue);
-                $(`input[name='${prefixFrom}${field}'`).prop("disabled", tmpDisabled);
+                $(`input[name='${prefixFrom}${field}'`).val(value);
+                $(`input[name='${prefixFrom}${field}'`).prop("disabled", disabled);
             }
         }
 
         for (const field of checkboxFields) {
-            const tmpValue: boolean = $(`input[name='${prefixTo}${field}'`).is(":checked");
-            const tmpDisabled: boolean = $(`input[name='${prefixTo}${field}'`).is(":disabled");
+            const value: boolean = $(`input[name='${prefixTo}${field}'`).is(":checked");
+            const disabled: boolean = $(`input[name='${prefixTo}${field}'`).is(":disabled");
 
             $(`input[name='${prefixTo}${field}'`).prop("checked", $(`input[name='${prefixFrom}${field}'`).is(":checked"));
             $(`input[name='${prefixTo}${field}'`).prop("disabled", $(`input[name='${prefixFrom}${field}'`).is(":disabled"));
 
             if (direction === SettingsCopyDirection.Exchange) {
-                $(`input[name='${prefixFrom}${field}'`).prop("checked", tmpValue);
-                $(`input[name='${prefixFrom}${field}'`).prop("disabled", tmpDisabled);
+                $(`input[name='${prefixFrom}${field}'`).prop("checked", value);
+                $(`input[name='${prefixFrom}${field}'`).prop("disabled", disabled);
             }
         }
 
@@ -540,7 +537,7 @@ class Project {
 
         // Get the first column which has the rowspan and reduce the value by 1
         const rowSpanCol: JQuery = trGroupStart.children("td:first");
-        rowSpanCol.attr("rowspan", parseInt(rowSpanCol.attr("rowspan") ?? "", 10) - 1);
+        rowSpanCol.attr("rowspan", Number.parseInt(rowSpanCol.attr("rowspan") ?? "", 10) - 1);
 
         /* If we are removing the first row of the group, it means that there aren't any other clauses
          * so we should also remove the last row of the group which contains the button to
@@ -597,7 +594,7 @@ class Project {
 
             // Get the first column which has the rowspan and increment the value by 1
             const rowSpanCol: JQuery = trGroupStart.children("td:first");
-            rowSpanCol.attr("rowspan", parseInt(rowSpanCol.attr("rowspan") ?? "", 10) + 1);
+            rowSpanCol.attr("rowspan", Number.parseInt(rowSpanCol.attr("rowspan") ?? "", 10) + 1);
 
             // Hide the object type select and add the AND label
             trGroupStartNew.find("select[name='ProjectOptions[Filtering[Clauses[][ObjectType]]']").hide().after("AND");
@@ -611,7 +608,7 @@ class Project {
             // Reset the rowspan on the first column to 1 and write the OR label
             trGroupStartNew.children("td:first").attr("rowspan", "2").text("OR");
             // Increment the group number
-            trGroupStartNew.find("input[name='ProjectOptions[Filtering[Clauses[][Group]]']").val(parseInt(<string>inputGroup.val(), 10) + 1);
+            trGroupStartNew.find("input[name='ProjectOptions[Filtering[Clauses[][Group]]']").val(Number.parseInt(<string>inputGroup.val(), 10) + 1);
             trGroupEnd.clone().insertAfter(trGroupStartNew);
 
             // Show the remove button on the first clause of the first group if it there is only one clause

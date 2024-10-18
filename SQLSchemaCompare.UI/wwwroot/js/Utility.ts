@@ -16,7 +16,7 @@ class Utility {
      */
     public static async ApplicationStartup(): Promise<void> {
         // Disable context menu
-        window.addEventListener("contextmenu", (event) => {
+        globalThis.addEventListener("contextmenu", (event) => {
             event.preventDefault();
         }, false);
 

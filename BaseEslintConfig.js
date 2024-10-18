@@ -24,7 +24,7 @@ module.exports = {
         parser: tseslint.parser,
         parserOptions: {
           project: true,
-          tsconfigRootDir: __dirname,
+          tsconfigRootDir: dir,
         },
       },
       rules: {

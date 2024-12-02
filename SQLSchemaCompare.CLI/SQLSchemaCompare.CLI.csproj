@@ -4,6 +4,7 @@
     <RootNamespace>TiCodeX.SQLSchemaCompare.CLI</RootNamespace>
     <OutputType>Exe</OutputType>
     <PublishDir>..\.publish</PublishDir>
+    <SelfContained>true</SelfContained>
   </PropertyGroup>
 
   <ItemGroup>

@@ -160,6 +160,8 @@ jobs:
         chmod -R a+rwx SQLSchemaCompare/node_modules
         chmod +x .publish/TiCodeX.SQLSchemaCompare.UI
         chmod +x .publish/TiCodeX.SQLSchemaCompare.CLI
+        cd SQLSchemaCompare
+        yarn install --frozen-lockfile
     - name: Create installer
       run: yarn dist-osx-x64
       working-directory: SQLSchemaCompare

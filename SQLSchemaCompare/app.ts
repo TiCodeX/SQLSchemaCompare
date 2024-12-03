@@ -282,8 +282,8 @@ function createMainWindow(): void {
             if (retries > 0) {
                 // Reset the flag and trigger a new load
                 loadFailed = false;
-                if (process.platform === "linux") {
-                    // Add a small delay on linux because the fail event is triggered very fast
+                if (process.platform === "linux" || process.platform === "darwin") {
+                    // Add a small delay on linux and OSX because the fail event is triggered very fast
                     setTimeout(() => {
                         void mainWindow!.loadURL(serviceUrl);
                     }, 400);

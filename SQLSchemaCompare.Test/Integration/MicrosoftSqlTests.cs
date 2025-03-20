@@ -441,6 +441,21 @@
         }
 
         /// <summary>
+        /// Test migration script when target db doesn't have a index with included columns
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetMissingIndexWithIncludedColumns(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP INDEX idx_address_address2_district_postal_code ON customer_data.address");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
         /// Test migration script when target db have an additional index
         /// </summary>
         /// <param name="port">The port of the server</param>
@@ -452,6 +467,21 @@
         {
             var sb = new StringBuilder();
             sb.AppendLine("CREATE INDEX idx_replacement_cost ON inventory.film (replacement_cost)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have an additional index with included columns
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetExtraIndexWithIncludedColumns(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("CREATE INDEX idx_title_release_year_special_features ON inventory.film (title, release_year) INCLUDE (special_features)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 
@@ -484,6 +514,22 @@
             var sb = new StringBuilder();
             sb.AppendLine("DROP INDEX idx_fk_address_id ON business.store");
             sb.AppendLine("CREATE CLUSTERED INDEX idx_fk_address_id ON business.store(manager_staff_id)");
+            this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
+        }
+
+        /// <summary>
+        /// Test migration script when target db have a different index included columns
+        /// </summary>
+        /// <param name="port">The port of the server</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void MigrateMicrosoftSqlDatabaseTargetDifferentIndexIncludedColumns(ushort port)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("DROP INDEX idx_address_address2_district_postal_code ON customer_data.address");
+            sb.AppendLine("CREATE INDEX idx_address_address2_district_postal_code ON customer_data.address(address, address2) INCLUDE(district, postal_code, phone)");
             this.dbFixture.AlterTargetDatabaseExecuteFullAndAllAlterScriptsAndCompare(DatabaseType.MicrosoftSql, sb.ToString(), port);
         }
 

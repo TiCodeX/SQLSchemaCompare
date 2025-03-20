@@ -360,6 +360,12 @@
             }
 
             sb.AppendLine($"INDEX {this.ScriptHelper.ScriptObjectName(index.Name)} ON {this.ScriptHelper.ScriptObjectName(index.TableSchema, index.TableName)}({string.Join(",", columnList)})");
+
+            if (index.IncludedColumns.Any())
+            {
+                sb.AppendLine($"INCLUDE({string.Join(",", index.IncludedColumns.Select(this.ScriptHelper.ScriptObjectName))})");
+            }
+
             if (!string.IsNullOrWhiteSpace(indexMicrosoft.FilterDefinition))
             {
                 sb.AppendLine($"{Indent}WHERE {indexMicrosoft.FilterDefinition}");

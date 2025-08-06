@@ -16,9 +16,10 @@
 
                 if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || DatabaseFixture.ForceDockerTests)
                 {
-                    serverPorts.Add(new object[] { (ushort)28001 }); // Version 2017 Linux
-                    serverPorts.Add(new object[] { (ushort)28002 }); // Version 2019 Linux
-                    serverPorts.Add(new object[] { (ushort)28003 }); // Version 2022 Linux
+                    serverPorts.Add(new object[] { (ushort)28001 }); // Version 2017 Linux (EOL October 2027)
+                    serverPorts.Add(new object[] { (ushort)28002 }); // Version 2019 Linux (EOL January 2030)
+                    serverPorts.Add(new object[] { (ushort)28003 }); // Version 2022 Linux (EOL January 2033)
+                    serverPorts.Add(new object[] { (ushort)28004 }); // Version 2025 Linux
                 }
                 else
                 {

@@ -136,7 +136,7 @@
             db.StoredProcedures.Count.Should().Be(2);
 
             db.DataTypes.Should().NotBeNullOrEmpty();
-            db.DataTypes.Count.Should().Be(37);
+            db.DataTypes.Count(x => x.IsUserDefined).Should().Be(3);
 
             if (db.ServerVersion.Major < 11)
             {

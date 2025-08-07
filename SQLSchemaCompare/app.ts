@@ -373,11 +373,18 @@ function startup(): void {
         splashWindow = undefined;
     });
 
-    portfinder(initialPort, (_errorWebPort, webPort) => {
+    portfinder.detectPort(initialPort, (errorWebPort, webPort) => {
         if (isDebug) {
             // In debug the service always use the initial port and there's no need to start it
             serviceUrl = serviceUrl.replace("{port}", `${initialPort}`);
         } else {
+            if (!webPort) {
+                logger.error(`Unable to find a free port starting from ${initialPort}: ${errorWebPort}`);
+                electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
+                electron.app.quit();
+                return;
+            }
+
             serviceUrl = serviceUrl.replace("{port}", `${webPort}`);
             startService(webPort);
         }

@@ -20,7 +20,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -63,7 +63,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -104,7 +104,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -149,7 +149,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22
     - name: Restore dependencies
       run: dotnet restore
     - name: Build

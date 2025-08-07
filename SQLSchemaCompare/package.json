@@ -17,7 +17,6 @@
     "win": {
       "target": "nsis",
       "artifactName": "SQLSchemaCompare-${version}.${ext}",
-      "publisherName": "TiCodeX",
       "publish": {
         "provider": "generic",
         "url": ""

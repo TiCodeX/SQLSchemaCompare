@@ -4,7 +4,7 @@
     /// Integration tests for MySQL
     /// </summary>
     [SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "Limitation: the rule does not perform cross-procedural analysis")]
-    public class MySqlTests : BaseTests<MySqlTests>, IClassFixture<DatabaseFixtureMySql>
+    public class MySqlTests : BaseTests<MySqlTests>, IClassFixture<DatabaseFixtureMySql>, IIntegrationTests
     {
         /// <summary>
         /// The database fixture
@@ -29,15 +29,12 @@
             this.dbFixture.InitServers(DatabaseFixtureMySql.ServerPorts);
         }
 
-        /// <summary>
-        /// Test the retrieval of database list
-        /// </summary>
-        /// <param name="port">The port of the server</param>
+        /// <inheritdoc/>
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void GetMySqlDatabaseList(ushort port)
+        public void GetDatabaseList(ushort port)
         {
             var mysqldbp = this.dbFixture.GetDatabaseProvider(string.Empty, port);
             var dbList = mysqldbp.GetDatabaseList();
@@ -45,15 +42,12 @@
             dbList.Should().Contain("sakila");
         }
 
-        /// <summary>
-        /// Test the retrieval of the MySQL 'sakila' database
-        /// </summary>
-        /// <param name="port">The port of the server</param>
+        /// <inheritdoc/>
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void GetMySqlSakilaDatabase(ushort port)
+        public void GetDatabase(ushort port)
         {
             var mysqldbp = this.dbFixture.GetDatabaseProvider("sakila", port);
             var db = mysqldbp.GetDatabase(new TaskInfo("test"));
@@ -90,15 +84,12 @@
             db.StoredProcedures.Should().ContainSingle(x => x.Name == "film_in_stock");
         }
 
-        /// <summary>
-        /// Test cloning MySQL 'sakila' database
-        /// </summary>
-        /// <param name="port">The port of the server</param>
+        /// <inheritdoc/>
         [Theory]
         [MemberData(nameof(DatabaseFixtureMySql.ServerPorts), MemberType = typeof(DatabaseFixtureMySql))]
         [IntegrationTest]
         [Category("MySQL")]
-        public void CloneMySqlDatabase(ushort port)
+        public void CloneDatabase(ushort port)
         {
             const string databaseName = "sakila";
             var clonedDatabaseName = DatabaseFixture.GenerateDatabaseName();

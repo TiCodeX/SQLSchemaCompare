@@ -4,7 +4,7 @@
     /// Integration tests for MariaDB
     /// </summary>
     [SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "Limitation: the rule does not perform cross-procedural analysis")]
-    public class MariaDbTests : BaseTests<MariaDbTests>, IClassFixture<DatabaseFixtureMariaDb>
+    public class MariaDbTests : BaseTests<MariaDbTests>, IClassFixture<DatabaseFixtureMariaDb>, IIntegrationTests
     {
         /// <summary>
         /// The database fixture
@@ -29,15 +29,12 @@
             this.dbFixture.InitServers(DatabaseFixtureMariaDb.ServerPorts);
         }
 
-        /// <summary>
-        /// Test the retrieval of database list
-        /// </summary>
-        /// <param name="port">The port of the server</param>
+        /// <inheritdoc/>
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void GetMariaDbDatabaseList(ushort port)
+        public void GetDatabaseList(ushort port)
         {
             var mariadbdbp = this.dbFixture.GetDatabaseProvider(string.Empty, port);
             var dbList = mariadbdbp.GetDatabaseList();
@@ -45,15 +42,12 @@
             dbList.Should().Contain("sakila");
         }
 
-        /// <summary>
-        /// Test the retrieval of the  MariaDB 'sakila' database
-        /// </summary>
-        /// <param name="port">The port of the server</param>
+        /// <inheritdoc/>
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void GetMariaDbSakilaDatabase(ushort port)
+        public void GetDatabase(ushort port)
         {
             var mariadbdbp = this.dbFixture.GetDatabaseProvider("sakila", port);
             var db = mariadbdbp.GetDatabase(new TaskInfo("test"));
@@ -90,15 +84,12 @@
             db.StoredProcedures.Should().ContainSingle(x => x.Name == "film_in_stock");
         }
 
-        /// <summary>
-        /// Test cloning MariaDB 'sakila' database
-        /// </summary>
-        /// <param name="port">The port of the server</param>
+        /// <inheritdoc/>
         [Theory]
         [MemberData(nameof(DatabaseFixtureMariaDb.ServerPorts), MemberType = typeof(DatabaseFixtureMariaDb))]
         [IntegrationTest]
         [Category("MariaDB")]
-        public void CloneMariaDbDatabase(ushort port)
+        public void CloneDatabase(ushort port)
         {
             const string databaseName = "sakila";
             var clonedDatabaseName = DatabaseFixture.GenerateDatabaseName();

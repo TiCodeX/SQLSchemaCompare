@@ -4,7 +4,7 @@
     /// Integration tests for PostgreSQL
     /// </summary>
     [SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "Limitation: the rule does not perform cross-procedural analysis")]
-    public class PostgreSqlTests : BaseTests<PostgreSqlTests>, IClassFixture<DatabaseFixturePostgreSql>
+    public class PostgreSqlTests : BaseTests<PostgreSqlTests>, IClassFixture<DatabaseFixturePostgreSql>, IIntegrationTests
     {
         /// <summary>
         /// The database fixture
@@ -29,10 +29,7 @@
             this.dbFixture.InitServers(DatabaseFixturePostgreSql.ServerPorts);
         }
 
-        /// <summary>
-        /// Test the retrieval of database list
-        /// </summary>
-        /// <param name="port">The port of the server</param>
+        /// <inheritdoc/>
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
@@ -45,15 +42,12 @@
             dbList.Should().Contain("sakila");
         }
 
-        /// <summary>
-        /// Test the retrieval of PostgreSQL 'sakila' database
-        /// </summary>
-        /// <param name="port">The port of the server</param>
+        /// <inheritdoc/>
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
         [Category("PostgreSQL")]
-        public void GetPostgreSqlSakilaDatabase(ushort port)
+        public void GetDatabase(ushort port)
         {
             var pgsqldbp = this.dbFixture.GetDatabaseProvider("sakila", port);
             var db = pgsqldbp.GetDatabase(new TaskInfo("test"));
@@ -91,15 +85,12 @@
             db.StoredProcedures.Should().BeEmpty();
         }
 
-        /// <summary>
-        /// Test cloning PostgreSQL 'sakila' database
-        /// </summary>
-        /// <param name="port">The port of the server</param>
+        /// <inheritdoc/>
         [Theory]
         [MemberData(nameof(DatabaseFixturePostgreSql.ServerPorts), MemberType = typeof(DatabaseFixturePostgreSql))]
         [IntegrationTest]
         [Category("PostgreSQL")]
-        public void ClonePostgreSqlDatabase(ushort port)
+        public void CloneDatabase(ushort port)
         {
             const string databaseName = "sakila";
             var clonedDatabaseName = DatabaseFixture.GenerateDatabaseName();

@@ -4,7 +4,7 @@
     /// Integration tests for Microsoft SQL
     /// </summary>
     [SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "Limitation: the rule does not perform cross-procedural analysis")]
-    public class MicrosoftSqlTests : BaseTests<MicrosoftSqlTests>, IClassFixture<DatabaseFixtureMicrosoftSql>
+    public class MicrosoftSqlTests : BaseTests<MicrosoftSqlTests>, IClassFixture<DatabaseFixtureMicrosoftSql>, IIntegrationTests
     {
         /// <summary>
         /// The database fixture
@@ -29,15 +29,12 @@
             this.dbFixture.InitServers(DatabaseFixtureMicrosoftSql.ServerPorts);
         }
 
-        /// <summary>
-        /// Test the retrieval of database list
-        /// </summary>
-        /// <param name="port">The port of the server</param>
+        /// <inheritdoc/>
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
         [Category("MicrosoftSQL")]
-        public void GetMicrosoftSqlDatabaseList(ushort port)
+        public void GetDatabaseList(ushort port)
         {
             var mssqldbp = this.dbFixture.GetDatabaseProvider(string.Empty, port);
             var dbList = mssqldbp.GetDatabaseList();
@@ -46,15 +43,12 @@
             dbList.Should().Contain("sakila");
         }
 
-        /// <summary>
-        /// Test the retrieval of the sakila database
-        /// </summary>
-        /// <param name="port">The port of the server</param>
+        /// <inheritdoc/>
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
         [Category("MicrosoftSQL")]
-        public void GetMicrosoftSqlSakilaDatabase(ushort port)
+        public void GetDatabase(ushort port)
         {
             var mssqldbp = this.dbFixture.GetDatabaseProvider("sakila", port);
             var db = mssqldbp.GetDatabase(new TaskInfo("test"));
@@ -148,15 +142,12 @@
             }
         }
 
-        /// <summary>
-        /// Test cloning MicrosoftSQL 'sakila' database
-        /// </summary>
-        /// <param name="port">The port of the server</param>
+        /// <inheritdoc/>
         [Theory]
         [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
         [IntegrationTest]
         [Category("MicrosoftSQL")]
-        public void CloneMicrosoftSqlDatabase(ushort port)
+        public void CloneDatabase(ushort port)
         {
             const string databaseName = "sakila";
             var clonedDatabaseName = DatabaseFixture.GenerateDatabaseName();

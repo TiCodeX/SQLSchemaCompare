@@ -29,6 +29,7 @@
                     serverPorts.Add(new object[] { (ushort)26010 }); // Version 15 (EOL November 2027)
                     serverPorts.Add(new object[] { (ushort)26011 }); // Version 16 (EOL November 2028)
                     serverPorts.Add(new object[] { (ushort)26012 }); // Version 17 (EOL November 2029)
+                    serverPorts.Add(new object[] { (ushort)26013 }); // Version 18 (EOL November 2030)
                 }
                 else
                 {

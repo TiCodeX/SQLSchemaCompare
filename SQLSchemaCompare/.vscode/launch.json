@@ -2,7 +2,17 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug Main Process",
+      "name": "Debug Main Process (fnm)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "fnm",
+      "runtimeArgs": [ "exec", "--using", "22", "${workspaceFolder}/node_modules/.bin/electron.cmd" ],
+      "args": [ "." ],
+      "outputCapture": "std"
+    },
+    {
+      "name": "Debug Main Process (node)",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
@@ -10,7 +20,7 @@
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       },
-      "args" : ["."],
+      "args": [ "." ],
       "outputCapture": "std"
     }
   ]

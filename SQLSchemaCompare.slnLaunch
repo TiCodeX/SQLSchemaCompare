@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "Default",
+    "Projects": [
+      {
+        "Path": "SQLSchemaCompare.UI\\SQLSchemaCompare.UI.csproj",
+        "Action": "Start",
+        "DebugTarget": "SQLSchemaCompare.UI"
+      },
+      {
+        "Path": "SQLSchemaCompare\\SQLSchemaCompare.esproj",
+        "Action": "Start",
+        "DebugTarget": "Debug Main Process (fnm)"
+      }
+    ]
+  }
+]

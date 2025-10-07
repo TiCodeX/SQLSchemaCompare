@@ -22,23 +22,24 @@
                     /*serverPorts.Add(new object[] { (ushort)29003 });*/ // Version 10.1 (EOL October 2020)
                     /*serverPorts.Add(new object[] { (ushort)29004 });*/ // Version 10.2 (EOL May 2022)
                     /*serverPorts.Add(new object[] { (ushort)29005 });*/ // Version 10.3 (EOL May 2023)
-                    /*serverPorts.Add(new object[] { (ushort)29006 }); // Version 10.4 (EOL June 2024)*/
-                    /*serverPorts.Add(new object[] { (ushort)29007 }); // Version 10.5 (EOL June 2025)*/
+                    /*serverPorts.Add(new object[] { (ushort)29006 });*/ // Version 10.4 (EOL June 2024)
+                    /*serverPorts.Add(new object[] { (ushort)29007 });*/ // Version 10.5 (EOL June 2025)
                     serverPorts.Add(new object[] { (ushort)29008 }); // Version 10.6 (EOL July 2026)
                     /*serverPorts.Add(new object[] { (ushort)29009 });*/ // Version 10.7 (EOL February 2023)
                     /*serverPorts.Add(new object[] { (ushort)29010 });*/ // Version 10.8 (EOL May 2023)
                     /*serverPorts.Add(new object[] { (ushort)29011 });*/ // Version 10.9 (EOL August 2023)
                     /*serverPorts.Add(new object[] { (ushort)29012 });*/ // Version 10.10 (EOL November 2023)
                     serverPorts.Add(new object[] { (ushort)29013 }); // Version 10.11 (EOL February 2028)
-                    /*serverPorts.Add(new object[] { (ushort)29014 }); // Version 11.0 (EOL June 2024)*/
-                    /*serverPorts.Add(new object[] { (ushort)29015 }); // Version 11.1 (EOL August 2024)*/
-                    /*serverPorts.Add(new object[] { (ushort)29016 }); // Version 11.2 (EOL November 2024)*/
-                    /*serverPorts.Add(new object[] { (ushort)29017 }); // Version 11.3 (EOL May 2024)*/
+                    /*serverPorts.Add(new object[] { (ushort)29014 });*/ // Version 11.0 (EOL June 2024)
+                    /*serverPorts.Add(new object[] { (ushort)29015 });*/ // Version 11.1 (EOL August 2024)
+                    /*serverPorts.Add(new object[] { (ushort)29016 });*/ // Version 11.2 (EOL November 2024)
+                    /*serverPorts.Add(new object[] { (ushort)29017 });*/ // Version 11.3 (EOL May 2024)
                     serverPorts.Add(new object[] { (ushort)29018 }); // Version 11.4 (EOL May 2029)
-                    /*serverPorts.Add(new object[] { (ushort)29019 }); // Version 11.5 (EOL November 2024)*/
-                    /*serverPorts.Add(new object[] { (ushort)29020 }); // Version 11.6 (EOL February 2025)*/
-                    /*serverPorts.Add(new object[] { (ushort)29021 }); // Version 11.7 (EOL May 2025)*/
+                    /*serverPorts.Add(new object[] { (ushort)29019 });*/ // Version 11.5 (EOL November 2024)
+                    /*serverPorts.Add(new object[] { (ushort)29020 });*/ // Version 11.6 (EOL February 2025)
+                    /*serverPorts.Add(new object[] { (ushort)29021 });*/ // Version 11.7 (EOL May 2025)
                     serverPorts.Add(new object[] { (ushort)29022 }); // Version 11.8 (EOL October 2033)
+                    serverPorts.Add(new object[] { (ushort)29023 }); // Version 12 (Preview)
                 }
                 else
                 {

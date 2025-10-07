@@ -819,6 +819,24 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore case sensitive.
+        /// </summary>
+        public static string LabelIgnoreCaseSensitive {
+            get {
+                return ResourceManager.GetString("LabelIgnoreCaseSensitive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore the case sensitivity when comparing the databases..
+        /// </summary>
+        public static string LabelIgnoreCaseSensitiveDescription {
+            get {
+                return ResourceManager.GetString("LabelIgnoreCaseSensitiveDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignore Collation.
         /// </summary>
         public static string LabelIgnoreCollate {

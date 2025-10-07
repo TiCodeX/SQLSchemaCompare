@@ -24,5 +24,10 @@
         /// Gets or sets a value indicating whether to generate update script for new not null columns.
         /// </summary>
         public bool GenerateUpdateScriptForNewNotNullColumns { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to ignore the case sensitive.
+        /// </summary>
+        public bool IgnoreCaseSensitive { get; set; }
     }
 }

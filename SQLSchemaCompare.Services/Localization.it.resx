@@ -856,4 +856,10 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
 
 Invece di aggiungere la colonna come non nullabile, la aggiungerà prima come nullabile, quindi eseguirà un aggiornamento per impostare un valore predefinito e infine modificherà la colonna in modo che non sia nullabile.</value>
   </data>
+  <data name="LabelIgnoreCaseSensitive" xml:space="preserve">
+    <value>Ignora distinzione maiuscole/minuscole</value>
+  </data>
+  <data name="LabelIgnoreCaseSensitiveDescription" xml:space="preserve">
+    <value>Ignorare la distinzione tra maiuscole e minuscole quando si confrontano i database.</value>
+  </data>
 </root>

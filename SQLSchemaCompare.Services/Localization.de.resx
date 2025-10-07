@@ -856,4 +856,10 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
 
 Anstatt die Spalte als NOT NULL hinzuzufügen, wird sie zuerst mit NULL erlauben hinzugefügt. Dann wird ein Update durchgeführt, um einen Standardwert festzulegen, und schließlich wird die Spalte so geändert, dass sie NOT NULL ist.</value>
   </data>
+  <data name="LabelIgnoreCaseSensitive" xml:space="preserve">
+    <value>Groß- und Kleinschreibung ignorieren</value>
+  </data>
+  <data name="LabelIgnoreCaseSensitiveDescription" xml:space="preserve">
+    <value>Ignorieren Sie beim Vergleichen der Datenbanken die Groß- und Kleinschreibung.</value>
+  </data>
 </root>

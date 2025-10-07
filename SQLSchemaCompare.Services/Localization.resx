@@ -865,4 +865,10 @@ This option will ignore the matching and use the same order as when it was creat
 
 Instead of adding the column as not nullable, it will first add it as nullable, then it do an update to set a default value, and finally alter the column to be not nullable.</value>
   </data>
+  <data name="LabelIgnoreCaseSensitive" xml:space="preserve">
+    <value>Ignore case sensitive</value>
+  </data>
+  <data name="LabelIgnoreCaseSensitiveDescription" xml:space="preserve">
+    <value>Ignore the case sensitivity when comparing the databases.</value>
+  </data>
 </root>

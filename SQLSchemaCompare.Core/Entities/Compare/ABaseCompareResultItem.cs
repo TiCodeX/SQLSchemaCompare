@@ -33,6 +33,9 @@
         /// <summary>
         /// Gets a value indicating whether the items are equal
         /// </summary>
-        public bool Equal => this.Scripts.SourceCreateScript == this.Scripts.TargetCreateScript;
+        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
+        /// <returns>Whether the items are equal.</returns>
+        public bool Equal(bool ignoreCase)
+            => string.Equals(this.Scripts.SourceCreateScript, this.Scripts.TargetCreateScript, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
     }
 }

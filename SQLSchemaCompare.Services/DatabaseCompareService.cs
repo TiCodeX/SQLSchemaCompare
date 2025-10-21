@@ -300,13 +300,15 @@
         [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         private void FillCompareResultItems(CompareResult result, CompareResultItems compareResultItems)
         {
-            result.DifferentItems.AddRange(compareResultItems.Schemas.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-            result.DifferentItems.AddRange(compareResultItems.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-            result.DifferentItems.AddRange(compareResultItems.Views.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-            result.DifferentItems.AddRange(compareResultItems.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-            result.DifferentItems.AddRange(compareResultItems.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-            result.DifferentItems.AddRange(compareResultItems.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-            result.DifferentItems.AddRange(compareResultItems.DataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
+            var ignoreCase = this.projectService.Project.Options.Scripting.IgnoreCaseSensitive;
+
+            result.DifferentItems.AddRange(compareResultItems.Schemas.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
+            result.DifferentItems.AddRange(compareResultItems.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
+            result.DifferentItems.AddRange(compareResultItems.Views.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
+            result.DifferentItems.AddRange(compareResultItems.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
+            result.DifferentItems.AddRange(compareResultItems.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
+            result.DifferentItems.AddRange(compareResultItems.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
+            result.DifferentItems.AddRange(compareResultItems.DataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Different items => {result.DifferentItems.Count}");
 
             result.OnlySourceItems.AddRange(compareResultItems.Schemas.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
@@ -327,13 +329,13 @@
             result.OnlyTargetItems.AddRange(compareResultItems.DataTypes.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
             this.logger.LogDebug($"Only Target items => {result.OnlyTargetItems.Count}");
 
-            result.SameItems.AddRange(compareResultItems.Schemas.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-            result.SameItems.AddRange(compareResultItems.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-            result.SameItems.AddRange(compareResultItems.Views.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-            result.SameItems.AddRange(compareResultItems.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-            result.SameItems.AddRange(compareResultItems.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-            result.SameItems.AddRange(compareResultItems.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-            result.SameItems.AddRange(compareResultItems.DataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
+            result.SameItems.AddRange(compareResultItems.Schemas.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
+            result.SameItems.AddRange(compareResultItems.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
+            result.SameItems.AddRange(compareResultItems.Views.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
+            result.SameItems.AddRange(compareResultItems.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
+            result.SameItems.AddRange(compareResultItems.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
+            result.SameItems.AddRange(compareResultItems.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
+            result.SameItems.AddRange(compareResultItems.DataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal(ignoreCase)).OrderBy(x => x.SourceItemName));
             this.logger.LogDebug($"Same items => {result.SameItems.Count}");
         }
 
@@ -346,20 +348,22 @@
         [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         private string GenerateFullAlterScript(IDatabaseScripter scripter, CompareResultItems compareResultItems)
         {
+            var ignoreCase = this.projectService.Project.Options.Scripting.IgnoreCaseSensitive;
+
             // Add items related to tables directly in the different items list only for the alter script generation
             var differentItems = new List<ABaseCompareResultItem>();
-            differentItems.AddRange(compareResultItems.Schemas.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItems.AddRange(compareResultItems.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItems.AddRange(compareResultItems.Views.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItems.AddRange(compareResultItems.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItems.AddRange(compareResultItems.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItems.AddRange(compareResultItems.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItems.AddRange(compareResultItems.DataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItems.AddRange(compareResultItems.Indexes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItems.AddRange(compareResultItems.Constraints.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItems.AddRange(compareResultItems.PrimaryKeys.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItems.AddRange(compareResultItems.ForeignKeys.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
-            differentItems.AddRange(compareResultItems.Triggers.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal));
+            differentItems.AddRange(compareResultItems.Schemas.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)));
+            differentItems.AddRange(compareResultItems.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)));
+            differentItems.AddRange(compareResultItems.Views.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)));
+            differentItems.AddRange(compareResultItems.Functions.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)));
+            differentItems.AddRange(compareResultItems.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)));
+            differentItems.AddRange(compareResultItems.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)));
+            differentItems.AddRange(compareResultItems.DataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)));
+            differentItems.AddRange(compareResultItems.Indexes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)));
+            differentItems.AddRange(compareResultItems.Constraints.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)));
+            differentItems.AddRange(compareResultItems.PrimaryKeys.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)));
+            differentItems.AddRange(compareResultItems.ForeignKeys.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)));
+            differentItems.AddRange(compareResultItems.Triggers.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal(ignoreCase)));
 
             ABaseDb onlySourceDb;
             ABaseDb onlyTargetDb;

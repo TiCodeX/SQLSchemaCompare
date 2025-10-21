@@ -51,6 +51,9 @@
         }
 
         /// <inheritdoc />
+        protected override string SakilaScriptFileName => "sakila-schema-mariadb.sql";
+
+        /// <inheritdoc />
         public override ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, ushort port)
         {
             return new MariaDbDatabaseProviderOptions
@@ -98,16 +101,6 @@
 
                 context.ExecuteNonQuery(!string.IsNullOrWhiteSpace(currentDelimiter) ? query.Replace(currentDelimiter, ";", StringComparison.Ordinal) : query);
             }
-        }
-
-        /// <inheritdoc />
-        public override void CreateSakilaDatabase(string databaseName, ushort port)
-        {
-            this.DropAndCreateDatabase(databaseName, port);
-
-            var sakilaScript = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-mariadb.sql"));
-
-            this.ExecuteScript(sakilaScript, databaseName, port);
         }
 
         /// <inheritdoc />

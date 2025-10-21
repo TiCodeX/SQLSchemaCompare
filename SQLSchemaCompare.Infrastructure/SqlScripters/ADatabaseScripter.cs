@@ -650,7 +650,8 @@
                 return this.GenerateCreateScript(dbObject, includeChildDbObjects);
             }
 
-            if (dbObject.CreateScript == dbObject.MappedDbObject.CreateScript)
+            var stringComparison = this.Options.Scripting.IgnoreCaseSensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            if (string.Equals(dbObject.CreateScript, dbObject.MappedDbObject.CreateScript, stringComparison))
             {
                 return string.Empty;
             }

@@ -117,7 +117,8 @@
                     false,
                     taskInfo =>
                     {
-                        this.databaseMapper.PerformMapping(this.retrievedSourceDatabase, this.retrievedTargetDatabase, null, taskInfo);
+                        var ignoreCase = this.projectService.Project.Options.Scripting.IgnoreCaseSensitive;
+                        this.databaseMapper.PerformMapping(this.retrievedSourceDatabase, this.retrievedTargetDatabase, ignoreCase, taskInfo);
                         return true;
                     }),
                 new TaskWork(

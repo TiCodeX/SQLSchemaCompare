@@ -183,6 +183,46 @@
         }
 
         /// <summary>
+        /// Compares the database ignoring the case sensitivity.
+        /// </summary>
+        /// <param name="port">The port.</param>
+        [Theory]
+        [MemberData(nameof(DatabaseFixtureMicrosoftSql.ServerPorts), MemberType = typeof(DatabaseFixtureMicrosoftSql))]
+        [IntegrationTest]
+        [Category("MicrosoftSQL")]
+        public void CompareDatabaseIgnoreCase(ushort port)
+        {
+            var targetDatabaseName = DatabaseFixture.GenerateDatabaseName();
+            try
+            {
+                this.dbFixture.DropAndCreateDatabase(targetDatabaseName, port);
+                var sakilaScript = this.dbFixture.GetSakilaScript();
+                sakilaScript = sakilaScript.Replace("first_name", "First_Name")
+                                           .Replace("last_name", "Last_Name")
+                                           .Replace("customer_data", "Customer_Data");
+                this.dbFixture.ExecuteScript(sakilaScript, targetDatabaseName, port);
+
+                var projectService = new ProjectService(null, this.LoggerFactory);
+                projectService.NewProject(DatabaseType.MicrosoftSql);
+                projectService.Project.SourceProviderOptions = this.dbFixture.GetDatabaseProviderOptions("sakila", port);
+                projectService.Project.TargetProviderOptions = this.dbFixture.GetDatabaseProviderOptions(targetDatabaseName, port);
+                projectService.Project.Options = this.dbFixture.ProjectOptions;
+                projectService.Project.Options.Scripting.IgnoreCaseSensitive = true;
+                this.dbFixture.PerformCompareAndWaitResult(projectService);
+
+                projectService.Project.Result.DifferentItems.Count.Should().Be(0);
+                projectService.Project.Result.OnlySourceItems.Count.Should().Be(0);
+                projectService.Project.Result.OnlyTargetItems.Count.Should().Be(0);
+                projectService.Project.Result.SameItems.ForEach(x => x.Scripts.AlterScript.Should().BeEmpty());
+                projectService.Project.Result.FullAlterScript.Should().BeEmpty();
+            }
+            finally
+            {
+                this.dbFixture.DropDatabase(targetDatabaseName, port);
+            }
+        }
+
+        /// <summary>
         /// Test migration script when source db is empty (a.k.a. drop whole target)
         /// </summary>
         /// <param name="port">The port of the server</param>

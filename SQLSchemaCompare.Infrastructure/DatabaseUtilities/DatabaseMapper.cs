@@ -6,7 +6,7 @@
     public class DatabaseMapper : IDatabaseMapper
     {
         /// <inheritdoc/>
-        public void PerformMapping(ABaseDb source, ABaseDb target, object mappingTable, TaskInfo taskInfo)
+        public void PerformMapping(ABaseDb source, ABaseDb target, bool ignoreCase, TaskInfo taskInfo)
         {
             if (source == null)
             {
@@ -30,19 +30,21 @@
                 new ObjectMap { ObjectTitle = Localization.StatusMappingSequences, DbObjects = source.Sequences, MappableDbObjects = target.Sequences },
             };
 
-            this.PerformMapping(maps, taskInfo);
+            this.PerformMapping(maps, ignoreCase, taskInfo);
         }
 
         /// <summary>
         /// Perform the mapping
         /// </summary>
         /// <param name="maps">The objects to map</param>
+        /// <param name="ignoreCase">Whether to ignore case sensitivity</param>
         /// <param name="taskInfo">The task info</param>
         [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
-        private void PerformMapping(IReadOnlyCollection<ObjectMap> maps, TaskInfo taskInfo = null)
+        private void PerformMapping(IReadOnlyCollection<ObjectMap> maps, bool ignoreCase, TaskInfo taskInfo = null)
         {
             var i = 1;
             var count = maps.Count;
+            var stringComparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
             // Iterate the linearized db
             foreach (var m in maps)
@@ -54,22 +56,20 @@
 
                 foreach (var sourceObject in m.DbObjects)
                 {
-                    var targetObject = m.MappableDbObjects.FirstOrDefault(x => x.Schema == sourceObject.Schema && x.Name == sourceObject.Name);
+                    var targetObject = m.MappableDbObjects.FirstOrDefault(x => string.Equals(x.Schema, sourceObject.Schema, stringComparison) &&
+                                                                               string.Equals(x.Name, sourceObject.Name, stringComparison));
                     if (targetObject != null)
                     {
-                        sourceObject.Schema = targetObject.Schema;
-                        sourceObject.Name = targetObject.Name;
-
                         sourceObject.MappedDbObject = targetObject;
                         targetObject.MappedDbObject = sourceObject;
 
                         if (sourceObject is ABaseDbTable table)
                         {
-                            this.PerformTableMapping(table);
+                            this.PerformTableMapping(table, ignoreCase);
                         }
                         else if (sourceObject is ABaseDbView view)
                         {
-                            this.PerformViewMapping(view);
+                            this.PerformViewMapping(view, ignoreCase);
                         }
                         else
                         {
@@ -90,7 +90,8 @@
         /// Perform the mapping of the table
         /// </summary>
         /// <param name="sourceTable">The source table</param>
-        private void PerformTableMapping(ABaseDbTable sourceTable)
+        /// <param name="ignoreCase">Whether to ignore case sensitivity</param>
+        private void PerformTableMapping(ABaseDbTable sourceTable, bool ignoreCase)
         {
             var targetTable = sourceTable.MappedDbObject as ABaseDbTable;
             if (targetTable == null)
@@ -109,14 +110,15 @@
                 new ObjectMap { DbObjects = sourceTable.PrimaryKeys, MappableDbObjects = targetTable.PrimaryKeys },
             };
 
-            this.PerformMapping(maps);
+            this.PerformMapping(maps, ignoreCase);
         }
 
         /// <summary>
         /// Perform the mapping of the view
         /// </summary>
         /// <param name="sourceView">The source view</param>
-        private void PerformViewMapping(ABaseDbView sourceView)
+        /// <param name="ignoreCase">Whether to ignore case sensitivity</param>
+        private void PerformViewMapping(ABaseDbView sourceView, bool ignoreCase)
         {
             var targetView = sourceView.MappedDbObject as ABaseDbView;
             if (targetView == null)
@@ -130,7 +132,7 @@
                 new ObjectMap { DbObjects = sourceView.Indexes, MappableDbObjects = targetView.Indexes },
             };
 
-            this.PerformMapping(maps);
+            this.PerformMapping(maps, ignoreCase);
         }
     }
 }

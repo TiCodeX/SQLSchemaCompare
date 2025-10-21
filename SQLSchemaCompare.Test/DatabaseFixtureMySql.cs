@@ -41,6 +41,9 @@
         }
 
         /// <inheritdoc />
+        protected override string SakilaScriptFileName => "sakila-schema-mysql.sql";
+
+        /// <inheritdoc />
         public override ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, ushort port)
         {
             return new MySqlDatabaseProviderOptions
@@ -77,16 +80,6 @@
 
                 context.ExecuteNonQuery(!string.IsNullOrWhiteSpace(currentDelimiter) ? query.Replace(currentDelimiter, ";", StringComparison.Ordinal) : query);
             }
-        }
-
-        /// <inheritdoc />
-        public override void CreateSakilaDatabase(string databaseName, ushort port)
-        {
-            this.DropAndCreateDatabase(databaseName, port);
-
-            var sakilaScript = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-mysql.sql"));
-
-            this.ExecuteScript(sakilaScript, databaseName, port);
         }
 
         /// <inheritdoc />

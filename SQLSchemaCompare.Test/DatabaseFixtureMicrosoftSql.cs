@@ -31,6 +31,9 @@
         }
 
         /// <inheritdoc />
+        protected override string SakilaScriptFileName => "sakila-schema-microsoftsql.sql";
+
+        /// <inheritdoc />
         public override ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, ushort port)
         {
             return new MicrosoftSqlDatabaseProviderOptions
@@ -57,14 +60,6 @@
             {
                 context.ExecuteNonQuery(query);
             }
-        }
-
-        /// <inheritdoc />
-        public override void CreateSakilaDatabase(string databaseName, ushort port)
-        {
-            this.DropAndCreateDatabase(databaseName, port);
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-microsoftsql.sql");
-            this.ExecuteScript(File.ReadAllText(path), databaseName, port);
         }
 
         /// <inheritdoc />

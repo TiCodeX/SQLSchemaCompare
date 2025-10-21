@@ -46,6 +46,11 @@
         protected ILogger Logger { get; private set; }
 
         /// <summary>
+        /// Gets the name of the sakila script file.
+        /// </summary>
+        protected abstract string SakilaScriptFileName { get; }
+
+        /// <summary>
         /// Sets the test output helper
         /// </summary>
         /// <param name="logFactory">The test output helper</param>
@@ -111,6 +116,26 @@
         }
 
         /// <summary>
+        /// Gets the sakila script.
+        /// </summary>
+        /// <returns>The sakila script</returns>
+        public string GetSakilaScript()
+        {
+            return File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Datasources", this.SakilaScriptFileName));
+        }
+
+        /// <summary>
+        /// Creates the sakila database
+        /// </summary>
+        /// <param name="databaseName">Name of the database</param>
+        /// <param name="port">The port to connect to the database</param>
+        public void CreateSakilaDatabase(string databaseName, ushort port)
+        {
+            this.DropAndCreateDatabase(databaseName, port);
+            this.ExecuteScript(this.GetSakilaScript(), databaseName, port);
+        }
+
+        /// <summary>
         /// Executes the SQL script
         /// </summary>
         /// <param name="script">The script to execute</param>
@@ -149,13 +174,6 @@
         /// <param name="port">The port to connect to the database</param>
         /// <returns>The provider options</returns>
         public abstract ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, ushort port);
-
-        /// <summary>
-        /// Creates the sakila database
-        /// </summary>
-        /// <param name="databaseName">Name of the database</param>
-        /// <param name="port">The port to connect to the database</param>
-        public abstract void CreateSakilaDatabase(string databaseName, ushort port);
 
         /// <summary>
         /// Drops the database

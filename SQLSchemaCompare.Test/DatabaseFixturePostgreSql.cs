@@ -41,6 +41,9 @@
         }
 
         /// <inheritdoc />
+        protected override string SakilaScriptFileName => "sakila-schema-postgresql.sql";
+
+        /// <inheritdoc />
         public override ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, ushort port)
         {
             return new PostgreSqlDatabaseProviderOptions
@@ -58,14 +61,6 @@
         {
             using var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.CipherService, (PostgreSqlDatabaseProviderOptions)this.GetDatabaseProviderOptions(databaseName, port));
             context.ExecuteNonQuery(script);
-        }
-
-        /// <inheritdoc />
-        public override void CreateSakilaDatabase(string databaseName, ushort port)
-        {
-            this.DropAndCreateDatabase(databaseName, port);
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-postgresql.sql");
-            this.ExecuteScript(File.ReadAllText(path), databaseName, port);
         }
 
         /// <inheritdoc />

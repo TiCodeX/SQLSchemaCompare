@@ -12,11 +12,15 @@ jobs:
     env:
       RunDockerTests: true
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -27,12 +31,14 @@ jobs:
         docker pull mcr.microsoft.com/mssql/server:2017-latest
         docker pull mcr.microsoft.com/mssql/server:2019-latest
         docker pull mcr.microsoft.com/mssql/server:2022-latest
+        docker pull mcr.microsoft.com/mssql/server:2025-latest
     - name: docker start containers
       shell: bash
       run: |
         docker run --rm --name mssql-linux-2017 -p 28001:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2017-latest
         docker run --rm --name mssql-linux-2019 -p 28002:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2019-latest
         docker run --rm --name mssql-linux-2022 -p 28003:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2022-latest
+        docker run --rm --name mssql-linux-2025 -p 28004:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2025-latest
         sleep 60s
     - name: Test
       run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=MicrosoftSQL"
@@ -49,11 +55,15 @@ jobs:
     env:
       RunDockerTests: true
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -62,16 +72,14 @@ jobs:
       shell: bash
       run: |
         docker pull mysql:8.0
-        docker pull mysql:8.2
-        docker pull mysql:8.3
         docker pull mysql:8.4
+        docker pull mysql:9.4
     - name: docker start containers
       shell: bash
       run: |
         docker run --rm --name mysql-8.0 -p 27004:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.0
-        docker run --rm --name mysql-8.2 -p 27006:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.2
-        docker run --rm --name mysql-8.3 -p 27007:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.3
         docker run --rm --name mysql-8.4 -p 27008:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:8.4
+        docker run --rm --name mysql-9.4 -p 27013:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:9.4
         sleep 60s
     - name: Test
       run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=MySQL"
@@ -88,11 +96,15 @@ jobs:
     env:
       RunDockerTests: true
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -100,19 +112,21 @@ jobs:
     - name: docker pull images
       shell: bash
       run: |
-        docker pull postgres:12-alpine
         docker pull postgres:13-alpine
         docker pull postgres:14-alpine
         docker pull postgres:15-alpine
         docker pull postgres:16-alpine
+        docker pull postgres:17-alpine
+        docker pull postgres:18-alpine
     - name: docker start containers
       shell: bash
       run: |
-        docker run --rm --name postgres-12 -p 26007:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:12-alpine
         docker run --rm --name postgres-13 -p 26008:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:13-alpine
         docker run --rm --name postgres-14 -p 26009:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:14-alpine
         docker run --rm --name postgres-15 -p 26010:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:15-alpine
         docker run --rm --name postgres-16 -p 26011:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:16-alpine
+        docker run --rm --name postgres-17 -p 26012:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:17-alpine
+        docker run --rm --name postgres-18 -p 26013:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:18-alpine
         sleep 60s
     - name: Test
       run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=PostgreSQL"
@@ -129,11 +143,15 @@ jobs:
     env:
       RunDockerTests: true
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -141,27 +159,19 @@ jobs:
     - name: docker pull images
       shell: bash
       run: |
-        docker pull mariadb:10.4
-        docker pull mariadb:10.5
         docker pull mariadb:10.6
         docker pull mariadb:10.11
-        docker pull mariadb:11.0
-        docker pull mariadb:11.1
-        docker pull mariadb:11.2
-        docker pull mariadb:11.3
         docker pull mariadb:11.4
+        docker pull mariadb:11.8
+        docker pull mariadb:12
     - name: docker start containers
       shell: bash
       run: |
-        docker run --rm --name mariadb-10.4 -p 29006:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.4
-        docker run --rm --name mariadb-10.5 -p 29007:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.5
         docker run --rm --name mariadb-10.6 -p 29008:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.6
         docker run --rm --name mariadb-10.11 -p 29013:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:10.11
-        docker run --rm --name mariadb-11.0 -p 29014:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:11.0
-        docker run --rm --name mariadb-11.1 -p 29015:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:11.1
-        docker run --rm --name mariadb-11.2 -p 29016:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:11.2
-        docker run --rm --name mariadb-11.3 -p 29017:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:11.3
         docker run --rm --name mariadb-11.4 -p 29018:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:11.4
+        docker run --rm --name mariadb-11.8 -p 29022:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:11.8
+        docker run --rm --name mariadb-12 -p 29023:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:12
         sleep 60s
     - name: Test
       run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=MariaDB"

@@ -215,8 +215,9 @@
                 {
                     var index = indexGroup.First();
                     index.Database = db;
-                    index.ColumnNames.AddRange(indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
-                    index.ColumnDescending.AddRange(indexGroup.OrderBy(x => x.OrdinalPosition).Select(x => x.IsDescending));
+                    index.ColumnNames.AddRange(indexGroup.Where(x => !x.IsIncluded).OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
+                    index.ColumnDescending.AddRange(indexGroup.Where(x => !x.IsIncluded).OrderBy(x => x.OrdinalPosition).Select(x => x.IsDescending));
+                    index.IncludedColumns.AddRange(indexGroup.Where(x => x.IsIncluded).OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
                     db.Indexes.Add(index);
                 }
             }

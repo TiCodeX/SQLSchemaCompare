@@ -136,6 +136,8 @@ ALTER TABLE customer_data.address ADD CONSTRAINT [DF_address_last_update] DEFAUL
 GO
 CREATE  INDEX idx_fk_city_id ON customer_data.address(city_id)
 GO
+CREATE  INDEX idx_address_address2_district_postal_code ON customer_data.address(address, address2) INCLUDE(district, postal_code)
+GO
 ALTER TABLE customer_data.address WITH NOCHECK ADD  CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES customer_data.city (city_id) ON DELETE NO ACTION ON UPDATE CASCADE
 GO
 ALTER TABLE customer_data.address NOCHECK CONSTRAINT fk_address_city

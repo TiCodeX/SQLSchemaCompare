@@ -2,6 +2,7 @@ import childProcess = require("child_process");
 import portfinder = require("detect-port");
 import electron = require("electron");
 import electronWindowState = require("electron-window-state");
+import electronRemote = require("@electron/remote/main");
 import fs = require("fs");
 import glob = require("glob");
 import log4js = require("log4js");
@@ -11,9 +12,10 @@ import path = require("path");
 electron.app.setAppUserModelId("ch.ticodex.sqlschemacompare");
 // Set the productName in the userData path instead of the default application name
 electron.app.setPath("userData", path.join(electron.app.getPath("appData"), "SQL Schema Compare"));
+electronRemote.initialize();
 
 const isDebug = process.defaultApp;
-const initialPort = 25436;
+const initialPort = 25_436;
 const splashUrl = `file://${__dirname}/splash.html`;
 const loggerPath = path.join(os.homedir(), ".SQLSchemaCompare", "log", "SQLSchemaCompare.log");
 const loggerPattern = "yyyy-MM-dd-ui";
@@ -23,17 +25,20 @@ const authorizationHeaderName = "CustomAuthToken";
 const authorizationHeaderValue = "d6e9b4c2-25d3-a625-e9a6-2135f3d2f809";
 let servicePath: string;
 switch (process.platform) {
-    case "linux":
+    case "linux": {
         servicePath = path.join(path.dirname(process.execPath), "bin", "TiCodeX.SQLSchemaCompare.UI");
         break;
-    case "darwin":
+    }
+    case "darwin": {
         servicePath = path.join(path.dirname(path.dirname(process.execPath)), "bin", "TiCodeX.SQLSchemaCompare.UI");
         break;
-    default: // Windows
+    }
+    default: { // Windows
         servicePath = path.join(path.dirname(process.execPath), "bin", "TiCodeX.SQLSchemaCompare.UI.exe");
+    }
 }
 let serviceUrl = `https://127.0.0.1:{port}/?v=${electron.app.getVersion()}`;
-let serviceProcess: childProcess.ChildProcess;
+let serviceProcess: childProcess.ChildProcess | undefined;
 let serviceCommunicationSuccessful = false;
 
 // Read the first argument to get the project file
@@ -45,7 +50,7 @@ if (process.argv.length > 1 && process.argv[1] !== undefined) {
         if (stat.isFile() && path.extname(process.argv[1]).toLowerCase() === ".tcxsc") {
             projectToOpen = process.argv[1];
         }
-    } catch (ex) {
+    } catch {
         // Ignore
     }
 }
@@ -91,7 +96,7 @@ const isSecondInstance = !electron.app.requestSingleInstanceLock();
 electron.app.on("second-instance", (_event, argv) => {
     // Someone tried to run a second instance, we should focus our current window
     const currentWindow = mainWindow;
-    if (currentWindow !== undefined && currentWindow !== null) {
+    if (currentWindow !== undefined) {
         if (currentWindow.isMinimized()) {
             currentWindow.restore();
         }
@@ -107,20 +112,21 @@ electron.app.on("second-instance", (_event, argv) => {
 //#region Start an asynchronous function to delete old log files
 setTimeout(() => {
     try {
-        glob(loggerPath + loggerPattern.replace("yyyy-MM-dd", "*"), (_err, files) => {
-            files.sort();
-            files.reverse();
-            files.slice(loggerMaxArchiveFiles).forEach((file: string) => {
-                try {
-                    logger.info(`Deleting old archive file: ${file}`);
-                    fs.unlinkSync(file);
-                } catch (e) {
-                    logger.error(`Delete file failed. Error: ${e as string}`);
-                }
-            });
-        });
-    } catch (ex) {
-        logger.log(`Error deleting old log files: ${ex as string}`);
+        const loggerPathWithoutExtension = path.join(path.dirname(loggerPath), path.basename(loggerPath, path.extname(loggerPath)));
+        const globPattern = loggerPathWithoutExtension + loggerPattern.replace("yyyy-MM-dd", "*") + path.extname(loggerPath);
+        const files = glob.globSync(globPattern, { windowsPathsNoEscape: true });
+        files.sort((a, b) => a.localeCompare(b));
+        files.reverse();
+        for (const file of files.slice(loggerMaxArchiveFiles)) {
+            try {
+                logger.info(`Deleting old archive file: ${file}`);
+                fs.unlinkSync(file);
+            } catch (error) {
+                logger.error(`Delete file failed. Error: ${error as string}`);
+            }
+        }
+    } catch (error) {
+        logger.log(`Error deleting old log files: ${error as string}`);
     }
 }, 0);
 //#endregion
@@ -130,23 +136,29 @@ setTimeout(() => {
 electron.ipcMain.on("log", (_event, data: { category: string; level: string; message: string }) => {
     const uiLogger = log4js.getLogger(data.category);
     switch (data.level) {
-        case "debug":
+        case "debug": {
             uiLogger.debug(data.message);
             break;
-        case "info":
+        }
+        case "info": {
             uiLogger.info(data.message);
             break;
-        case "warning":
+        }
+        case "warning": {
             uiLogger.warn(data.message);
             break;
-        case "error":
+        }
+        case "error": {
             uiLogger.error(data.message);
             break;
-        case "critical":
+        }
+        case "critical": {
             uiLogger.fatal(data.message);
             break;
-        default:
+        }
+        default: {
             uiLogger.info(data.message);
+        }
     }
 });
 // Register the renderer callback for opening the main window
@@ -175,7 +187,7 @@ electron.ipcMain.on("CheckLoadProject", () => {
 
 // Register the renderer callback to open the logs folder
 electron.ipcMain.on("OpenLogsFolder", () => {
-    electron.shell.openItem(path.dirname(loggerPath));
+    void electron.shell.openPath(path.dirname(loggerPath));
 });
 //#endregion
 
@@ -198,6 +210,7 @@ function setEmptyApplicationMenu(): void {
         ]));
     } else {
         // On Windows and Linux remove the menu completely
+        // eslint-disable-next-line unicorn/no-null
         electron.Menu.setApplicationMenu(null);
     }
 }
@@ -228,11 +241,15 @@ function createMainWindow(): void {
         show: false,
         webPreferences: {
             nodeIntegration: true,
+            contextIsolation: false,
             webviewTag: true,
         },
     });
 
     setEmptyApplicationMenu();
+
+    // Enable electron remote from main window
+    electronRemote.enable(mainWindow.webContents);
 
     /**
      * Let us register listeners on the window, so we can update the state
@@ -265,13 +282,13 @@ function createMainWindow(): void {
             if (retries > 0) {
                 // Reset the flag and trigger a new load
                 loadFailed = false;
-                if (process.platform !== "linux") {
-                    void mainWindow?.loadURL(serviceUrl);
-                } else {
-                    // Add a small delay on linux because the fail event is triggered very fast
+                if (process.platform === "linux" || process.platform === "darwin") {
+                    // Add a small delay on linux and OSX because the fail event is triggered very fast
                     setTimeout(() => {
-                        void mainWindow?.loadURL(serviceUrl);
+                        void mainWindow!.loadURL(serviceUrl);
                     }, 400);
+                } else {
+                    void mainWindow!.loadURL(serviceUrl);
                 }
             } else {
                 logger.error(`Unable to contact service (${loadFailedError})`);
@@ -287,7 +304,7 @@ function createMainWindow(): void {
                     electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
                     electron.app.quit();
                 }
-            }, 10000);
+            }, 10_000);
         }
     });
 
@@ -303,17 +320,6 @@ function startService(webPort: number): void {
     if (fs.existsSync(servicePath)) {
         logger.info(`Starting service ${servicePath} (${webPort})`);
         serviceProcess = childProcess.spawn(servicePath, [`${webPort}`]);
-        /*
-        serviceProcess.stdout.on("data", data => {
-            console.log("stdout: " + data);
-        });
-        serviceProcess.stderr.on("data", data => {
-            console.log("stderr: " + data);
-        });
-        serviceProcess.on("close", code => {
-            console.log("closing code: " + code);
-        });
-        */
     } else {
         logger.error(`Unable to find executable: ${servicePath}`);
     }
@@ -331,13 +337,7 @@ function startup(): void {
     }
 
     // Setup request default auth header
-    const filter: Electron.Filter = {
-        urls: [
-            "http://*/*",
-            "https://*/*",
-        ],
-    };
-    electron.session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+    electron.session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
         details.requestHeaders[authorizationHeaderName] = authorizationHeaderValue;
         callback({ cancel: false, requestHeaders: details.requestHeaders });
     });
@@ -352,29 +352,39 @@ function startup(): void {
         maximizable: false,
         webPreferences: {
             nodeIntegration: true,
+            contextIsolation: false,
             webviewTag: true,
         },
     });
+
+    // Enable electron remote from splash window
+    electronRemote.enable(splashWindow.webContents);
+
     void splashWindow.loadURL(splashUrl);
     splashWindow.show();
     splashWindow.focus();
     logger.debug("Splashscreen window started");
 
     splashWindow.on("closed", () => {
-        if (!serviceCommunicationSuccessful) {
-            if (mainWindow !== undefined) {
-                mainWindow.destroy();
-                mainWindow = undefined;
-            }
+        if (!serviceCommunicationSuccessful && mainWindow !== undefined) {
+            mainWindow.destroy();
+            mainWindow = undefined;
         }
         splashWindow = undefined;
     });
 
-    portfinder(initialPort, (_errorWebPort, webPort) => {
+    portfinder.detectPort(initialPort, (errorWebPort, webPort) => {
         if (isDebug) {
             // In debug the service always use the initial port and there's no need to start it
             serviceUrl = serviceUrl.replace("{port}", `${initialPort}`);
         } else {
+            if (!webPort) {
+                logger.error(`Unable to find a free port starting from ${initialPort}: ${errorWebPort}`);
+                electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
+                electron.app.quit();
+                return;
+            }
+
             serviceUrl = serviceUrl.replace("{port}", `${webPort}`);
             startService(webPort);
         }

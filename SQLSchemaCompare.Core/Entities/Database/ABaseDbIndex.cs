@@ -15,8 +15,18 @@
         public bool IsDescending { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the index is included.
+        /// </summary>
+        public bool IsIncluded { get; set; }
+
+        /// <summary>
         /// Gets whether the column is descending, sorted like the ColumnNames list
         /// </summary>
         public List<bool> ColumnDescending { get; } = new List<bool>();
+
+        /// <summary>
+        /// Gets the included columns.
+        /// </summary>
+        public List<string> IncludedColumns { get; } = new List<string>();
     }
 }

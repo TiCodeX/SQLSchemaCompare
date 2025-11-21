@@ -20,27 +20,25 @@ class TaskManager {
         // Disable the menu/toolbar
         MenuManager.ToggleRunningTaskRelatedMenuStatus(false);
 
-        return new Promise<void>((resolve: PromiseResolve<void>, reject: PromiseReject): void => {
-
-            const pollingFunc: VoidFunction = (): void => {
-                void PageManager.LoadPage(Page.TaskStatus, false).then(() => {
-                    if ($("#stopPolling").length > 0) {
-                        // Enable the menu/toolbar and resolve/reject depending if there are failed tasks
-                        MenuManager.ToggleRunningTaskRelatedMenuStatus(true);
-                        if ($("#taskFailed").length === 0) {
-                            resolve();
-                        } else {
-                            reject();
-                        }
+        const pollingFunction = (resolve: PromiseResolve<void>, reject: PromiseReject) => {
+            void PageManager.LoadPage(Page.TaskStatus, false).then(() => {
+                if ($("#stopPolling").length > 0) {
+                    // Enable the menu/toolbar and resolve/reject depending if there are failed tasks
+                    MenuManager.ToggleRunningTaskRelatedMenuStatus(true);
+                    if ($("#taskFailed").length === 0) {
+                        resolve();
                     } else {
-                        setTimeout(() => {
-                            pollingFunc();
-                        }, this.checkFrequency);
+                        reject();
                     }
-                });
-            };
-            pollingFunc();
-        });
+                } else {
+                    setTimeout(() => {
+                        pollingFunction(resolve, reject);
+                    }, this.checkFrequency);
+                }
+            });
+        };
+
+        return new Promise<void>(pollingFunction);
     }
 
     /**

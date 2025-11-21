@@ -1,0 +1,10 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "checkJs": false,
+    "allowJs": false,
+    "noEmitOnError": true,
+    "removeComments": true,
+    "exactOptionalPropertyTypes": false
+  }
+}

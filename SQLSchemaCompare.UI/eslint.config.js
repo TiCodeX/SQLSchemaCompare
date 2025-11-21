@@ -1,25 +1,19 @@
-const eslint = require("@eslint/js");
 const tseslint = require("typescript-eslint");
-const pluginOnlyError = require("eslint-plugin-only-error");
+const baseConfig = require("../BaseEslintConfig.js").getBaseConfig(__dirname);
 
 module.exports = tseslint.config(
   {
-    plugins: {
-      pluginOnlyError,
-    },
-  },
-  eslint.configs.recommended,
-  {
-    languageOptions: {
-      parserOptions: {
-        project: true,
-        tsconfigRootDir: __dirname,
-      },
-    },
-    files: ["**/*.ts"],
+    ignores: [
+      "**/wwwroot/**/*.js",
+      "**/wwwroot/lib",
+    ],
   },
   {
-    ignores: ["wwwroot/lib"],
+    ...baseConfig,
+    rules: {
+      ...baseConfig.rules,
+      "sonarjs/new-cap": "off", // Too many changes to fix, is it worth it?
+      "unicorn/filename-case": ["error", { "case": "pascalCase" }],
+    },
   },
-  ...tseslint.configs.recommendedTypeChecked
 );

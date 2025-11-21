@@ -26,14 +26,14 @@ class DialogManager {
     /**
      * Show the error in the modal dialog
      */
-    public static ShowError(title: string, message: string, link?: string, linkText?: string): void {
+    public static ShowErrorModal(title: string, message: string, link?: string, linkText?: string): void {
         this.ShowModal(title === "" ? Localization.Get("TitleError") : title, message, link, linkText);
     }
 
     /**
      * Show the information in the modal dialog
      */
-    public static ShowInformation(title: string, message: string, link?: string, linkText?: string): void {
+    public static ShowInfoModal(title: string, message: string, link?: string, linkText?: string): void {
         this.ShowModal(title, message, link, linkText);
     }
 
@@ -51,22 +51,25 @@ class DialogManager {
             let cancelId: number = buttons.length - 1;
             for (const button of buttons) {
                 switch (button) {
-                    case DialogButton.Yes:
+                    case DialogButton.Yes: {
                         buttonLabels.push(Localization.Get("ButtonYes"));
                         break;
-                    case DialogButton.No:
+                    }
+                    case DialogButton.No: {
                         buttonLabels.push(Localization.Get("ButtonNo"));
                         break;
-                    case DialogButton.Cancel:
+                    }
+                    case DialogButton.Cancel: {
                         buttonLabels.push(Localization.Get("ButtonCancel"));
                         cancelId = buttonLabels.length - 1;
                         break;
+                    }
                     default:
                 }
             }
 
-            void electron.remote.dialog.showMessageBox(
-                electron.remote.getCurrentWindow(),
+            void electronRemote.dialog.showMessageBox(
+                electronRemote.getCurrentWindow(),
                 {
                     type: "question",
                     message: message,
@@ -92,7 +95,7 @@ class DialogManager {
         return Utility.AjaxGetPage(url).then((result: string): void => {
             $("#myModal .modal-title").html(title);
             $("#myModal .modal-body").html(result);
-            $("#myModal .modal-dialog").css("max-width", maxWidth !== undefined ? maxWidth : "");
+            $("#myModal .modal-dialog").css("max-width", maxWidth ?? "");
             $("#myModal .modal-header > button").css("display", showCloseButton !== undefined && showCloseButton ? "block" : "none");
             $("#myModal").attr("tabindex", showCloseButton !== undefined && showCloseButton ? "-1" : "");
             $("#myModal").modal({
@@ -124,12 +127,7 @@ class DialogManager {
         $(this.modalMessageId).html(message);
 
         if (link !== undefined) {
-            if (linkText !== undefined) {
-                $(this.modalLinkId).html(linkText);
-            } else {
-                $(this.modalLinkId).html(link);
-            }
-
+            $(this.modalLinkId).html(linkText ?? link);
             $(this.modalLinkId).on("click", () => {
                 Utility.OpenExternalBrowser(link);
             });

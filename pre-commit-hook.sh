@@ -3,6 +3,7 @@ changedFiles=$(git diff --cached --name-only)
 
 for file in $changedFiles; do
     [ ! -f "$file" ] && continue;
+    [ -z "${file##".dockerignore"}" ] && continue;
     [ -z "${file##".github/"*}" ] && continue;
     [ -z "${file##"images/"*}" ] && continue;
     [ -z "${file##"SQLSchemaCompare.UI/wwwroot/lib/"*}" ] && continue;

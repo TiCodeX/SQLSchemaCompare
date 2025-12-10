@@ -1322,7 +1322,7 @@ CREATE INDEX film_fulltext_idx ON inventory.film USING gist (fulltext);
 -- Name: idx_actor_last_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX idx_actor_last_name ON inventory.actor USING btree (last_name);
+CREATE INDEX idx_actor_last_name ON inventory.actor USING brin (last_name);
 
 
 --
@@ -1483,7 +1483,7 @@ CREATE INDEX idx_fk_store_id ON customer_data.customer USING btree (store_id);
 -- Name: idx_last_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX idx_last_name ON customer_data.customer USING btree (last_name);
+CREATE INDEX idx_last_name ON customer_data.customer USING SPGIST (last_name);
 
 
 --
@@ -1498,6 +1498,13 @@ CREATE INDEX idx_store_id_film_id ON inventory USING btree (store_id, film_id);
 --
 
 CREATE INDEX idx_title ON inventory.film USING btree (title);
+
+
+--
+-- Name: idx_special_features; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_special_features ON inventory.film USING gin (special_features);
 
 
 --

@@ -321,12 +321,12 @@
                     // If not specified it will use the BTREE
                     break;
 
-                case "gist":
-                    sb.Append("USING gist ");
-                    break;
-
                 case "hash":
-                    sb.Append("USING hash ");
+                case "gist":
+                case "spgist":
+                case "gin":
+                case "brin":
+                    sb.Append($"USING {indexPostgreSql.Type} ");
                     break;
 
                 default:

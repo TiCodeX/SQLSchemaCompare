@@ -313,7 +313,7 @@
                 sb.Append("UNIQUE ");
             }
 
-            sb.Append($"INDEX {index.Name} ON {this.ScriptHelper.ScriptObjectName(index.TableSchema, index.TableName)} ");
+            sb.Append($"INDEX {this.ScriptHelper.ScriptObjectName(index.Name)} ON {this.ScriptHelper.ScriptObjectName(index.TableSchema, index.TableName)} ");
 
             switch (indexPostgreSql.Type)
             {

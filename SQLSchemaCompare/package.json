@@ -113,7 +113,7 @@
     "@eslint/js": "^9.39.2",
     "@tsconfig/recommended": "^1.0.13",
     "@tsconfig/strictest": "^2.0.8",
-    "electron": "^37.2.6",
+    "electron": "^39.2.7",
     "electron-builder": "^26.0.12",
     "eslint": "^9.39.2",
     "eslint-formatter-visualstudio": "^9.0.1",

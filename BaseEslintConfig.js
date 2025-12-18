@@ -13,7 +13,7 @@ module.exports = {
         ...tseslint.configs.recommended,
         ...tseslint.configs.recommendedTypeChecked,
         pluginSonarJS.configs.recommended,
-        pluginUnicorn.configs["flat/recommended"],
+        pluginUnicorn.default.configs["flat/recommended"],
       ],
       plugins: {
         pluginOnlyError,

@@ -55,7 +55,7 @@
     "mac": {
       "target": "default",
       "category": "public.app-category.productivity",
-      "artifactName": "SQLSchemaCompare-${version}.${ext}",
+      "artifactName": "SQLSchemaCompare-${version}-${env.ARCH_SUFFIX}.${ext}",
       "publish": {
         "provider": "generic",
         "url": ""
@@ -106,7 +106,7 @@
     "start": "electron .",
     "dist-win-x64": "electron-builder --win --publish always",
     "dist-linux-x64": "electron-builder --linux --publish always",
-    "dist-osx-x64": "electron-builder --mac --publish always"
+    "dist-osx": "electron-builder --mac --publish always"
   },
   "postinstall": "electron-builder install-app-deps",
   "devDependencies": {

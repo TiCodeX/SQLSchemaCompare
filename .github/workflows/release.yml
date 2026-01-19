@@ -62,7 +62,20 @@ jobs:
     - name: Upload osx-x64 artifacts
       uses: actions/upload-artifact@v4.3.5
       with:
-        name: publish-osx
+        name: publish-osx-x64
+        path: .publish
+
+    - name: Restore osx-arm64 dependencies
+      run: dotnet restore -r osx-arm64
+    - name: Build osx-arm64
+      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=osx-arm64
+    - name: Publish osx-arm64
+      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r osx-arm64
+      working-directory: SQLSchemaCompare.UI
+    - name: Upload osx-arm64 artifacts
+      uses: actions/upload-artifact@v4.3.5
+      with:
+        name: publish-osx-arm64
         path: .publish
 
   installer_win_x64:
@@ -134,9 +147,12 @@ jobs:
         file: installer/*.{deb,rpm,tar.gz}
         tag: ${{ github.ref }}
 
-  installer_osx_x64:
+  installer_osx:
     runs-on: macos-latest
     needs: build_artifacts
+    strategy:
+      matrix:
+        arch: [x64, arm64]
     defaults:
       run:
         shell: bash
@@ -150,10 +166,10 @@ jobs:
       with:
         name: SQLSchemaCompare
         path: SQLSchemaCompare
-    - name: Download publish-osx artifact
+    - name: Download publish-osx-${{ matrix.arch }} artifact
       uses: actions/download-artifact@v4
       with:
-        name: publish-osx
+        name: publish-osx-${{ matrix.arch }}
         path: .publish
     - name: Prepare artifacts
       run: |
@@ -163,8 +179,10 @@ jobs:
         cd SQLSchemaCompare
         yarn install --frozen-lockfile
     - name: Create installer
-      run: yarn dist-osx-x64
+      run: yarn dist-osx
       working-directory: SQLSchemaCompare
+      env:
+        ARCH_SUFFIX: ${{ matrix.arch }}
     - name: Upload installer to release
       uses: svenstaro/upload-release-action@v2
       with:
@@ -176,7 +194,7 @@ jobs:
   clean_artifacts:
     runs-on: windows-latest
     if: always()
-    needs: [installer_win_x64, installer_linux_x64, installer_osx_x64]
+    needs: [installer_win_x64, installer_linux_x64, installer_osx]
     steps:
     - uses: geekyeggo/delete-artifact@v5
       with:
@@ -184,4 +202,5 @@ jobs:
           SQLSchemaCompare
           publish-win
           publish-linux
-          publish-osx
+          publish-osx-x64
+          publish-osx-arm64

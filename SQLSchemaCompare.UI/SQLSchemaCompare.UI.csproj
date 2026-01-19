@@ -4,7 +4,7 @@
     <RootNamespace>TiCodeX.SQLSchemaCompare.UI</RootNamespace>
     <TypeScriptToolsVersion>latest</TypeScriptToolsVersion>
     <OutputType>Exe</OutputType>
-    <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;linux-x64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <PublishDir>..\.publish</PublishDir>
     <SelfContained>true</SelfContained>
   </PropertyGroup>

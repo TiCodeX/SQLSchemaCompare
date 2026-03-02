@@ -13,7 +13,7 @@
   "build": {
     "appId": "ch.ticodex.sqlschemacompare",
     "productName": "SQL Schema Compare",
-    "copyright": "Copyright @ 2025 TiCodeX",
+    "copyright": "Copyright @ 2026 TiCodeX",
     "win": {
       "target": "nsis",
       "artifactName": "SQLSchemaCompare-${version}.${ext}",

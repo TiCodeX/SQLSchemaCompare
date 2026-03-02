@@ -108,7 +108,7 @@
                     throw new ArgumentException("Wrong column type");
                 }
 
-                if (col.DataType != mappedCol.DataType)
+                if (col.DataType != mappedCol.DataType || col.CharacterMaxLenght != mappedCol.CharacterMaxLenght)
                 {
                     sb.Append($"ALTER TABLE {this.ScriptHelper.ScriptObjectName(t)} ALTER COLUMN ");
                     sb.AppendLine($"{this.ScriptHelper.ScriptObjectName(col.Name)} TYPE {this.ScriptHelper.ScriptDataType(col)};");

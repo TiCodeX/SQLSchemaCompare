@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <AssemblyName>TiCodeX.SQLSchemaCompare.UI</AssemblyName>
     <RootNamespace>TiCodeX.SQLSchemaCompare.UI</RootNamespace>
@@ -7,6 +7,7 @@
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <PublishDir>..\.publish</PublishDir>
     <SelfContained>true</SelfContained>
+    <CompileTypeScriptDependsOn>YarnLintBuild</CompileTypeScriptDependsOn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,8 +30,6 @@
     <!--Copy wwwroot to output-->
     <Content Update="wwwroot\**" CopyToOutputDirectory="Always" />
     <!--Configure json files as None-->
-    <Content Remove="compilerconfig.json" />
-    <None Include="compilerconfig.json" />
     <!--The tsconfig.json needs to be TypeScriptCompile so that it's used for the compilation -->
     <Content Remove="tsconfig.json" />
     <TypeScriptCompile Include="tsconfig.json" />
@@ -46,15 +45,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BuildWebCompiler2022" Version="1.14.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.6" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.7" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.4.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
-    <PackageReference Include="Neolution.CodeAnalysis" Version="3.0.5">
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
+    <PackageReference Include="Neolution.CodeAnalysis" Version="3.2.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -70,13 +68,10 @@
     <ProjectReference Include="..\SQLSchemaCompare.Infrastructure\SQLSchemaCompare.Infrastructure.csproj" />
   </ItemGroup>
 
-  <Target Name="YarnLint" BeforeTargets="BeforeBuild">
-    <Exec Command="yarn lint-vs" />
-  </Target>
-
-  <Target Name="DeleteJs" BeforeTargets="VsTsc">
-    <Exec Command="del /Q /S wwwroot\js\*.js" />
-    <Exec Command="del /Q /S wwwroot\js\*.js.map" />
+  <Target Name="YarnLintBuild" BeforeTargets="Build">
+    <Exec Command="yarn clean"></Exec>
+    <Exec Command="yarn lint-vs"></Exec>
+    <Exec Command="yarn build"></Exec>
   </Target>
 
   <Target Name="RemovePublishFolder" BeforeTargets="PrepareForPublish">

@@ -153,22 +153,22 @@
             }
             catch (InvalidOperationException ex)
             {
-                this.logger.LogError(ex, $"Error loading project: {req?.Filename}");
+                this.logger.LogError(ex, $"Error loading project: {req.Filename}");
                 return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProjectInvalidProjectFile, this.appGlobals.ProductName) });
             }
             catch (FileNotFoundException ex)
             {
-                this.logger.LogError(ex, $"Error loading project: {req?.Filename}");
+                this.logger.LogError(ex, $"Error loading project: {req.Filename}");
                 return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = Localization.ErrorLoadProjectFileNotFound });
             }
             catch (UnauthorizedAccessException ex)
             {
-                this.logger.LogError(ex, $"Error loading project: {req?.Filename}");
+                this.logger.LogError(ex, $"Error loading project: {req.Filename}");
                 return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = Localization.ErrorLoadProjectUnauthorizedFileAccess });
             }
             catch (IOException ex)
             {
-                this.logger.LogError(ex, $"Error loading project: {req?.Filename}");
+                this.logger.LogError(ex, $"Error loading project: {req.Filename}");
                 return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProjectIOError, ex.Message) });
             }
             catch (Exception ex)

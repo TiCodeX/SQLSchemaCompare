@@ -1,6 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.UI
 {
-    using Microsoft.AspNetCore.Hosting;
     using NLog;
 
     /// <summary>
@@ -21,9 +20,7 @@
             {
                 logger.Info("===============================================================", CultureInfo.InvariantCulture);
                 logger.Info("Starting WebHost Service...", CultureInfo.InvariantCulture);
-                CreateWebHostBuilder(args)
-                    .Build()
-                    .Run();
+                Utility.CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
             {
@@ -37,16 +34,6 @@
                 // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
                 LogManager.Shutdown();
             }
-        }
-
-        /// <summary>
-        /// Create the web host builder
-        /// </summary>
-        /// <param name="args">The args</param>
-        /// <returns>The web host builder</returns>
-        private static IWebHostBuilder CreateWebHostBuilder(string[] args)
-        {
-            return Utility.CreateWebHostBuilder(args);
         }
     }
 }

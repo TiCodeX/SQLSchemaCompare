@@ -18,16 +18,13 @@ jobs:
       uses: actions/setup-node@v6
       with:
         node-version: 22
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v3
 
     - name: Restore win-x64 dependencies
       run: dotnet restore -r win-x64
     - name: Build win-x64
-      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=win-x64
+      run: dotnet build --no-restore SQLSchemaCompare.UI -r win-x64 -c Release
     - name: Publish win-x64
-      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r win-x64
-      working-directory: SQLSchemaCompare.UI
+      run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r win-x64 -c Release
     - name: Upload SQLSchemaCompare artifacts
       uses: actions/upload-artifact@v4.3.5
       with:
@@ -42,10 +39,9 @@ jobs:
     - name: Restore linux-x64 dependencies
       run: dotnet restore -r linux-x64
     - name: Build linux-x64
-      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=linux-x64
+      run: dotnet build --no-restore SQLSchemaCompare.UI -r linux-x64 -c Release
     - name: Publish linux-x64
-      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r linux-x64
-      working-directory: SQLSchemaCompare.UI
+      run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r linux-x64 -c Release
     - name: Upload linux-x64 artifacts
       uses: actions/upload-artifact@v4.3.5
       with:
@@ -55,10 +51,9 @@ jobs:
     - name: Restore osx-x64 dependencies
       run: dotnet restore -r osx-x64
     - name: Build osx-x64
-      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=osx-x64
+      run: dotnet build --no-restore SQLSchemaCompare.UI -r osx-x64 -c Release
     - name: Publish osx-x64
-      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r osx-x64
-      working-directory: SQLSchemaCompare.UI
+      run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r osx-x64 -c Release
     - name: Upload osx-x64 artifacts
       uses: actions/upload-artifact@v4.3.5
       with:
@@ -68,10 +63,9 @@ jobs:
     - name: Restore osx-arm64 dependencies
       run: dotnet restore -r osx-arm64
     - name: Build osx-arm64
-      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release /p:RuntimeIdentifier=osx-arm64
+      run: dotnet build --no-restore SQLSchemaCompare.UI -r osx-arm64 -c Release
     - name: Publish osx-arm64
-      run: dotnet publish SQLSchemaCompare.UI.csproj --no-build --no-restore -c Release -r osx-arm64
-      working-directory: SQLSchemaCompare.UI
+      run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r osx-arm64 -c Release
     - name: Upload osx-arm64 artifacts
       uses: actions/upload-artifact@v4.3.5
       with:

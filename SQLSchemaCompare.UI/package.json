@@ -3,9 +3,16 @@
   "version": "1.0.0",
   "license": "GPL-3.0-only",
   "scripts": {
-    "prelint": "yarn install --frozen-lockfile",
-    "lint": "eslint . --cache",
-    "lint-vs": "yarn lint --quiet --format visualstudio"
+    "check-packages": "yarn install --frozen-lockfile",
+    "preclean": "yarn check-packages",
+    "clean": "shx rm -rf wwwroot/js/**/*.js*",
+    "prelint": "yarn check-packages",
+    "lint": "eslint --cache",
+    "prelint-vs": "yarn check-packages",
+    "lint-vs": "yarn lint --quiet --format visualstudio",
+    "prebuild": "yarn check-packages",
+    "build": "yarn build-scss",
+    "build-scss": "sass --no-source-map wwwroot/css/Index.scss wwwroot/css/Index.css"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
@@ -15,8 +22,10 @@
     "eslint-formatter-visualstudio": "^9.0.1",
     "eslint-plugin-only-error": "^1.0.2",
     "eslint-plugin-sonarjs": "^3.0.5",
-    "eslint-plugin-unicorn": "^62.0.0",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.50.0"
+    "eslint-plugin-unicorn": "^64.0.0",
+    "sass": "^1.99.0",
+    "shx": "^0.4.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.0"
   }
 }

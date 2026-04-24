@@ -8,25 +8,27 @@ on:
 jobs:
   unit_tests:
     if: github.event.pull_request.draft == false
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: '10.0.2xx'
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
-        node-version: 22
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v2
+        node-version: '22'
+        cache: 'yarn'
+        cache-dependency-path: |
+          SQLSchemaCompare/yarn.lock
+          SQLSchemaCompare.UI/yarn.lock
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release
+      run: dotnet build --no-restore -c Release
     - name: Test
-      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter Category!=IntegrationTest
+      run: dotnet test --no-build --no-restore SQLSchemaCompare.Test -c Release --logger trx --filter Category!=IntegrationTest
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/composite@v2
       if: always()

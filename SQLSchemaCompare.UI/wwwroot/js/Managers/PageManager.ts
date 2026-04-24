@@ -72,7 +72,7 @@ class PageManager {
      * @param closePreviousPage Tell if the previous page needs to be closed
      */
     public static async LoadPage(page: Page, closePreviousPage: boolean = true): Promise<void> {
-        return Utility.AjaxGetPage(this.GetPageUrl(page) ?? "").then((result: string): void => {
+        return Utility.AjaxGetPage(this.GetPageUrl(page)).then((result: string): void => {
 
             if (closePreviousPage) {
                 this.pageContainer.children("div:last").remove();
@@ -128,7 +128,7 @@ class PageManager {
     /**
      * Get the page url
      */
-    private static GetPageUrl(page: Page): string | undefined {
+    private static GetPageUrl(page: Page): string {
         switch (page) {
             case Page.Main: {
                 return "/Main/MainPageModel";
@@ -143,7 +143,7 @@ class PageManager {
                 return "/TaskStatusPageModel";
             }
             default: {
-                return undefined;
+                return "";
             }
         }
     }

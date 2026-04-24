@@ -3,7 +3,6 @@
     using System.Reflection;
     using System.Security.Authentication;
     using System.Security.Cryptography.X509Certificates;
-    using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Server.Kestrel.Https;
     using NLog;
@@ -23,35 +22,37 @@
         /// </summary>
         /// <param name="args">The arguments</param>
         /// <returns>The web host builder</returns>
-        internal static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        internal static IHostBuilder CreateHostBuilder(string[] args)
         {
             if (args == null || args.Length < 1 || !int.TryParse(args[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out var webPort))
             {
                 throw new ArgumentException("Wrong command line arguments");
             }
 
-            return WebHost.CreateDefaultBuilder(args)
-                .UseKestrel(options =>
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    options.ListenLocalhost(webPort, listenOptions =>
+                    webBuilder.ConfigureKestrel(options =>
                     {
-                        using (var resourceStream = typeof(Utility).Assembly.GetManifestResourceStream("TiCodeX.SQLSchemaCompare.UI.certificate.pfx"))
-                        using (var memoryStream = new MemoryStream())
+                        options.ListenLocalhost(webPort, listenOptions =>
                         {
+                            using var resourceStream = typeof(Utility).Assembly.GetManifestResourceStream("TiCodeX.SQLSchemaCompare.UI.certificate.pfx");
+                            using var memoryStream = new MemoryStream();
                             resourceStream.CopyTo(memoryStream);
 
                             listenOptions.UseHttps(new HttpsConnectionAdapterOptions
                             {
-                                ServerCertificate = new X509Certificate2(memoryStream.ToArray(), "test1234"),
+                                ServerCertificate = X509CertificateLoader.LoadPkcs12(memoryStream.ToArray(), "test1234"),
                                 SslProtocols = SslProtocols.Tls12,
 
                                 // other settings???
                             });
-                        }
+                        });
                     });
+
+                    webBuilder.UseStartup<WebServerStartup>();
                 })
                 .UseContentRoot(AppContext.BaseDirectory)
-                .UseStartup<WebServerStartup>()
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();
@@ -63,6 +64,7 @@
         /// <summary>
         /// Configures the logger
         /// </summary>
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Will be disposed by NLog")]
         internal static void ConfigureLogger()
         {
             // As we don't have IAppGlobals injected yet, we instantiate it directly

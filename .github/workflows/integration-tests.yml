@@ -12,19 +12,23 @@ jobs:
     env:
       RunDockerTests: true
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: '10.0.2xx'
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
-        node-version: 22
+        node-version: '22'
+        cache: 'yarn'
+        cache-dependency-path: |
+          SQLSchemaCompare/yarn.lock
+          SQLSchemaCompare.UI/yarn.lock
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build SQLSchemaCompare.Test --configuration Release
+      run: dotnet build --no-restore SQLSchemaCompare.Test -c Release
     - name: docker pull images
       shell: bash
       run: |
@@ -41,7 +45,7 @@ jobs:
         docker run --rm --name mssql-linux-2025 -p 28004:1433 -e ACCEPT_EULA=Y -e SA_PASSWORD=Test1234! -d mcr.microsoft.com/mssql/server:2025-latest
         sleep 60s
     - name: Test
-      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=MicrosoftSQL"
+      run: dotnet test --no-build --no-restore SQLSchemaCompare.Test -c Release --logger trx --filter "Category=IntegrationTest&Category=MicrosoftSQL"
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
@@ -55,19 +59,23 @@ jobs:
     env:
       RunDockerTests: true
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: '10.0.2xx'
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
-        node-version: 22
+        node-version: '22'
+        cache: 'yarn'
+        cache-dependency-path: |
+          SQLSchemaCompare/yarn.lock
+          SQLSchemaCompare.UI/yarn.lock
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build SQLSchemaCompare.Test --configuration Release
+      run: dotnet build --no-restore SQLSchemaCompare.Test -c Release
     - name: docker pull images
       shell: bash
       run: |
@@ -82,7 +90,7 @@ jobs:
         docker run --rm --name mysql-9.4 -p 27013:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:9.4
         sleep 60s
     - name: Test
-      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=MySQL"
+      run: dotnet test --no-build --no-restore SQLSchemaCompare.Test -c Release --logger trx --filter "Category=IntegrationTest&Category=MySQL"
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
@@ -96,19 +104,23 @@ jobs:
     env:
       RunDockerTests: true
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: '10.0.2xx'
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
-        node-version: 22
+        node-version: '22'
+        cache: 'yarn'
+        cache-dependency-path: |
+          SQLSchemaCompare/yarn.lock
+          SQLSchemaCompare.UI/yarn.lock
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build SQLSchemaCompare.Test --configuration Release
+      run: dotnet build --no-restore SQLSchemaCompare.Test -c Release
     - name: docker pull images
       shell: bash
       run: |
@@ -129,7 +141,7 @@ jobs:
         docker run --rm --name postgres-18 -p 26013:5432 -e POSTGRES_PASSWORD=test1234 -d postgres:18-alpine
         sleep 60s
     - name: Test
-      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=PostgreSQL"
+      run: dotnet test --no-build --no-restore SQLSchemaCompare.Test -c Release --logger trx --filter "Category=IntegrationTest&Category=PostgreSQL"
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
@@ -143,19 +155,23 @@ jobs:
     env:
       RunDockerTests: true
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: '10.0.2xx'
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
-        node-version: 22
+        node-version: '22'
+        cache: 'yarn'
+        cache-dependency-path: |
+          SQLSchemaCompare/yarn.lock
+          SQLSchemaCompare.UI/yarn.lock
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build SQLSchemaCompare.Test --configuration Release
+      run: dotnet build --no-restore SQLSchemaCompare.Test -c Release
     - name: docker pull images
       shell: bash
       run: |
@@ -174,7 +190,7 @@ jobs:
         docker run --rm --name mariadb-12 -p 29023:3306 -e MYSQL_USER=admin -e MYSQL_PASSWORD=test1234 -e MYSQL_ROOT_PASSWORD=test1234 -d mariadb:12
         sleep 60s
     - name: Test
-      run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter "Category=IntegrationTest&Category=MariaDB"
+      run: dotnet test --no-build --no-restore SQLSchemaCompare.Test -c Release --logger trx --filter "Category=IntegrationTest&Category=MariaDB"
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()

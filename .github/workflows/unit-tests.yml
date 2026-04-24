@@ -14,11 +14,12 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 10.0.2xx
+        dotnet-version: '10.0.2xx'
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
-        node-version: 22
+        node-version: '22'
+        cache: 'yarn'
     - name: Restore dependencies
       run: dotnet restore
     - name: Build

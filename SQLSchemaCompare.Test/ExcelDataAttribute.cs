@@ -47,6 +47,7 @@
                     throw new ArgumentException($"Could not find file at path: {path}");
                 }
 
+                ExcelPackage.License.SetNonCommercialOrganization("TiCodeX");
                 using (var p = new ExcelPackage(new FileInfo(path)))
                 {
                     // Retrieve first Worksheet

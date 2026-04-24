@@ -19,6 +19,9 @@ jobs:
       with:
         node-version: '22'
         cache: 'yarn'
+        cache-dependency-path: |
+          SQLSchemaCompare/yarn.lock
+          SQLSchemaCompare.UI/yarn.lock
 
     - name: Restore win-x64 dependencies
       run: dotnet restore -r win-x64
@@ -85,6 +88,9 @@ jobs:
       with:
         node-version: '22'
         cache: 'yarn'
+        cache-dependency-path: |
+          SQLSchemaCompare/yarn.lock
+          SQLSchemaCompare.UI/yarn.lock
     - name: Download SQLSchemaCompare artifact
       uses: actions/download-artifact@v4
       with:
@@ -118,6 +124,9 @@ jobs:
       with:
         node-version: '22'
         cache: 'yarn'
+        cache-dependency-path: |
+          SQLSchemaCompare/yarn.lock
+          SQLSchemaCompare.UI/yarn.lock
     - name: Download SQLSchemaCompare artifact
       uses: actions/download-artifact@v4
       with:
@@ -159,6 +168,9 @@ jobs:
       with:
         node-version: '22'
         cache: 'yarn'
+        cache-dependency-path: |
+          SQLSchemaCompare/yarn.lock
+          SQLSchemaCompare.UI/yarn.lock
     - name: Download SQLSchemaCompare artifact
       uses: actions/download-artifact@v4
       with:

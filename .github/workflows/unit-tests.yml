@@ -20,6 +20,9 @@ jobs:
       with:
         node-version: '22'
         cache: 'yarn'
+        cache-dependency-path: |
+          SQLSchemaCompare/yarn.lock
+          SQLSchemaCompare.UI/yarn.lock
     - name: Restore dependencies
       run: dotnet restore
     - name: Build

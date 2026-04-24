@@ -19,12 +19,10 @@ jobs:
       uses: actions/setup-node@v6
       with:
         node-version: 22
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v3
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: msbuild SQLSchemaCompare.sln /p:Configuration=Release
+      run: dotnet build --configuration Release
     - name: Test
       run: dotnet test SQLSchemaCompare.Test --no-build --configuration Release --logger trx --filter Category!=IntegrationTest
     - name: Publish Test Results

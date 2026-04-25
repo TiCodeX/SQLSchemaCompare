@@ -6,6 +6,16 @@
     public abstract class ADatabaseProviderOptions
     {
         /// <summary>
+        /// Gets or sets a value indicating whether to use a connection string.
+        /// </summary>
+        public bool UseConnectionString { get; set; }
+
+        /// <summary>
+        /// Gets or sets the connection string.
+        /// </summary>
+        public string ConnectionString { get; set; }
+
+        /// <summary>
         /// Gets or sets the Hostname
         /// </summary>
         public string Hostname { get; set; }

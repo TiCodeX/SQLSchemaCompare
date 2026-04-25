@@ -856,4 +856,7 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
 
 Anstatt die Spalte als NOT NULL hinzuzufügen, wird sie zuerst mit NULL erlauben hinzugefügt. Dann wird ein Update durchgeführt, um einen Standardwert festzulegen, und schließlich wird die Spalte so geändert, dass sie NOT NULL ist.</value>
   </data>
+  <data name="LabelUseConnectionString" xml:space="preserve">
+    <value>Verbindungszeichenfolge verwenden</value>
+  </data>
 </root>

@@ -6,60 +6,60 @@
 @model ToolbarPageModel
 
 <ul class="nav nav-pills tcx-header-left">
-    <li class="nav-item">
-        <button type="button" style="@ButtonStyle.Primary" id="toolbarNewProject"
-                onclick="Project.New();"
-                data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuNewProject">
-            <i class="far fa-file fa-lg"></i>
-        </button>
-    </li>
-    <li class="nav-item">
-        <button type="button" style="@ButtonStyle.Primary" id="toolbarOpenProject"
-                onclick="Project.Load();"
-                data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuOpenProject">
-            <i class="far fa-folder-open fa-lg"></i>
-        </button>
-    </li>
-    <li class="nav-item">
-        <button type="button" style="@ButtonStyle.Primary" id="toolbarSaveProject"
-                onclick="Project.Save();"
-                data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuSaveProject"
-                disabled="@true">
-            <i class="far fa-save fa-lg"></i>
-        </button>
-    </li>
-    <li class="nav-item nav-separator"></li>
-    <li class="nav-item">
-        <button type="button" style="@ButtonStyle.Primary" id="toolbarEditProject"
-                onclick="Project.OpenPage(false);"
-                data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuEditProject"
-                disabled="@true">
-            <i class="far fa-edit fa-lg"></i> @Localization.MenuEditProject
-        </button>
-    </li>
-    <li class="nav-item">
-        <button type="button" style="@ButtonStyle.Primary" id="toolbarPerformCompare"
-                onclick="Project.Compare();"
-                data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuCompare"
-                disabled="@true">
-            <i class="fa fa-sync"></i> @Localization.MenuCompare
-        </button>
-    </li>
-    <li class="nav-item dropdown">
-        <button type="button" style="@ButtonStyle.Primary" id="toolbarGenerateScript"
-                class="dropdown-toggle" data-toggle="dropdown" disabled="@true">
-            <i class="fa fa-file-alt fa-lg"></i> @Localization.MenuGenerateScript
-        </button>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" onclick="Main.ShowFullScript(CompareDirection.Source);">
-                @Localization.MenuFullSourceDatabaseScript
-            </a>
-            <a class="dropdown-item" onclick="Main.ShowFullScript(CompareDirection.Target);">
-                @Localization.MenuFullTargetDatabaseScript
-            </a>
-            <a class="dropdown-item" onclick="Main.ShowFullAlterScript();">
-                @Localization.MenuFullMigrationScript
-            </a>
-        </div>
-    </li>
+  <li class="nav-item">
+    <button type="button" style="@ButtonStyle.Primary" id="toolbarNewProject"
+            onclick="Project.New();"
+            data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuNewProject">
+      <i class="far fa-file fa-lg"></i>
+    </button>
+  </li>
+  <li class="nav-item">
+    <button type="button" style="@ButtonStyle.Primary" id="toolbarOpenProject"
+            onclick="Project.Load();"
+            data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuOpenProject">
+      <i class="far fa-folder-open fa-lg"></i>
+    </button>
+  </li>
+  <li class="nav-item">
+    <button type="button" style="@ButtonStyle.Primary" id="toolbarSaveProject"
+            onclick="Project.Save();"
+            data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuSaveProject"
+            disabled="@true">
+      <i class="far fa-save fa-lg"></i>
+    </button>
+  </li>
+  <li class="nav-item nav-separator"></li>
+  <li class="nav-item">
+    <button type="button" style="@ButtonStyle.Primary" id="toolbarEditProject"
+            onclick="Project.OpenPage(false);"
+            data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuEditProject"
+            disabled="@true">
+      <i class="far fa-edit fa-lg"></i> @Localization.MenuEditProject
+    </button>
+  </li>
+  <li class="nav-item">
+    <button type="button" style="@ButtonStyle.Primary" id="toolbarPerformCompare"
+            onclick="Project.Compare();"
+            data-toggle="tooltip" data-placement="bottom" title="@Localization.MenuCompare"
+            disabled="@true">
+      <i class="fa fa-sync"></i> @Localization.MenuCompare
+    </button>
+  </li>
+  <li class="nav-item dropdown">
+    <button type="button" style="@ButtonStyle.Primary" id="toolbarGenerateScript"
+            class="dropdown-toggle" data-toggle="dropdown" disabled="@true">
+      <i class="fa fa-file-alt fa-lg"></i> @Localization.MenuGenerateScript
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" onclick="Main.ShowFullScript(CompareDirection.Source);">
+        @Localization.MenuFullSourceDatabaseScript
+      </a>
+      <a class="dropdown-item" onclick="Main.ShowFullScript(CompareDirection.Target);">
+        @Localization.MenuFullTargetDatabaseScript
+      </a>
+      <a class="dropdown-item" onclick="Main.ShowFullAlterScript();">
+        @Localization.MenuFullMigrationScript
+      </a>
+    </div>
+  </li>
 </ul>

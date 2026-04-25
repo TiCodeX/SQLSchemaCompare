@@ -3,46 +3,46 @@
 @using Services
 @model ProjectOptions
 @{
-    var options = new List<(string id, string name, string label, bool value, string description)>();
-    options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[IgnoreCollate]]", Localization.LabelIgnoreCollate,
-        Model.Scripting.IgnoreCollate, Localization.LabelIgnoreCollateDescription));
-    options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[OrderColumnAlphabetically]]", Localization.LabelOrderColumnAlphabetically,
-        Model.Scripting.OrderColumnAlphabetically, Localization.LabelOrderColumnAlphabeticallyDescription));
-    options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[IgnoreReferenceTableColumnOrder]]", Localization.LabelIgnoreReferenceTableColumnOrder,
-        Model.Scripting.IgnoreReferenceTableColumnOrder, Localization.LabelIgnoreReferenceTableColumnOrderDescription));
-    options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[GenerateUpdateScriptForNewNotNullColumns]]", Localization.LabelGenerateUpdateScriptForNewNotNullColumns,
-        Model.Scripting.GenerateUpdateScriptForNewNotNullColumns, Localization.LabelGenerateUpdateScriptForNewNotNullColumnsDescription));
+  var options = new List<(string id, string name, string label, bool value, string description)>();
+  options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[IgnoreCollate]]", Localization.LabelIgnoreCollate,
+      Model.Scripting.IgnoreCollate, Localization.LabelIgnoreCollateDescription));
+  options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[OrderColumnAlphabetically]]", Localization.LabelOrderColumnAlphabetically,
+      Model.Scripting.OrderColumnAlphabetically, Localization.LabelOrderColumnAlphabeticallyDescription));
+  options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[IgnoreReferenceTableColumnOrder]]", Localization.LabelIgnoreReferenceTableColumnOrder,
+      Model.Scripting.IgnoreReferenceTableColumnOrder, Localization.LabelIgnoreReferenceTableColumnOrderDescription));
+  options.Add(($"option-{Guid.NewGuid()}", "ProjectOptions[Scripting[GenerateUpdateScriptForNewNotNullColumns]]", Localization.LabelGenerateUpdateScriptForNewNotNullColumns,
+      Model.Scripting.GenerateUpdateScriptForNewNotNullColumns, Localization.LabelGenerateUpdateScriptForNewNotNullColumnsDescription));
 }
 <div class="row">
-    <div class="col-6">
-        @foreach (var option in options)
-        {
-            <div class="form-group row"
-                 onmouseover="Project.HandleOptionOnMouseOver('@option.id')"
-                 onmouseout="Project.HandleOptionOnMouseOut()">
-                <div class="col-9">
-                    <label>@option.label</label>
-                </div>
-                <div class="col-3 text-right">
-                    <label class="tcx-switch">
-                        <input type="checkbox" name="@option.name"
-                               data-value-type="boolean"
-                               checked="@option.value"
-                               onchange="Project.SetDirtyState()">
-                        <span class="tcx-switch-slider"></span>
-                    </label>
-                </div>
-            </div>
-        }
-    </div>
-    <div class="col-6 tcx-project-option-descriptions">
-        @foreach (var option in options)
-        {
-            <div id="@option.id">
-                <strong>@option.label</strong>
-                <br /><br />
-                <label>@option.description</label>
-            </div>
-        }
-    </div>
+  <div class="col-6">
+    @foreach (var option in options)
+    {
+      <div class="form-group row"
+           onmouseover="Project.HandleOptionOnMouseOver('@option.id')"
+           onmouseout="Project.HandleOptionOnMouseOut()">
+        <div class="col-9">
+          <label>@option.label</label>
+        </div>
+        <div class="col-3 text-right">
+          <label class="tcx-switch">
+            <input type="checkbox" name="@option.name"
+                   data-value-type="boolean"
+                   checked="@option.value"
+                   onchange="Project.SetDirtyState()">
+            <span class="tcx-switch-slider"></span>
+          </label>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="col-6 tcx-project-option-descriptions">
+    @foreach (var option in options)
+    {
+      <div id="@option.id">
+        <strong>@option.label</strong>
+        <br /><br />
+        <label>@option.description</label>
+      </div>
+    }
+  </div>
 </div>

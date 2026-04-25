@@ -6,75 +6,72 @@
 @model CompareProject
 
 <div class="row">
-    <div class="col-12">
-        <div class="form-group">
-            <label>@Localization.LabelType</label>
-            @if (Model.EditableDatabaseType)
-            {
-                <select name="DatabaseType" onchange="Project.HandleDatabaseTypeOnChange($(this))" required>
-                    <option value="@DatabaseType.MicrosoftSql.ToString()"
-                            selected="@(Model.SourceProviderOptions is MicrosoftSqlDatabaseProviderOptions)">
-                        Microsoft SQL Server
-                    </option>
-                    <option value="@DatabaseType.MySql.ToString()"
-                            selected="@(Model.SourceProviderOptions is MySqlDatabaseProviderOptions)">
-                        MySQL Server
-                    </option>
-                    <option value="@DatabaseType.PostgreSql.ToString()"
-                            selected="@(Model.SourceProviderOptions is PostgreSqlDatabaseProviderOptions)">
-                        PostgreSQL Server
-                    </option>
-                    <option value="@DatabaseType.MariaDb.ToString()"
-                            selected="@(Model.SourceProviderOptions is MariaDbDatabaseProviderOptions)">
-                        MariaDB Server
-                    </option>
-                </select>
-                <input type="hidden" name="DefaultMicrosoftSqlPort" value="@MicrosoftSqlDatabaseProviderOptions.DefaultPort" />
-                <input type="hidden" name="DefaultMySqlPort" value="@MySqlDatabaseProviderOptions.DefaultPort" />
-                <input type="hidden" name="DefaultPostgreSqlPort" value="@PostgreSqlDatabaseProviderOptions.DefaultPort" />
-                <input type="hidden" name="DefaultMariaDbPort" value="@MariaDbDatabaseProviderOptions.DefaultPort" />
-            }
-            else
-            {
-                switch (Model.SourceProviderOptions)
-                {
-                    case MicrosoftSqlDatabaseProviderOptions _:
-                        <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.MicrosoftSql)" />
-                        <input type="text" disabled="@true" value="Microsoft SQL Server" />
-                        break;
-
-                    case MySqlDatabaseProviderOptions _:
-                        <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.MySql)" />
-                        <input type="text" disabled="@true" value="MySQL Server" />
-                        break;
-
-                    case PostgreSqlDatabaseProviderOptions _:
-                        <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.PostgreSql)" />
-                        <input type="text" disabled="@true" value="PostgreSQL Server" />
-                        break;
-
-                    case MariaDbDatabaseProviderOptions _:
-                        <input type="hidden" name="DatabaseType" value="@((int) DatabaseType.MariaDb)" />
-                        <input type="text" disabled="@true" value="MariaDB Server" />
-                        break;
-                }
-            }
-        </div>
+  <div class="col-12">
+    <div class="form-group">
+      <label>@Localization.LabelType</label>
+      @if (Model.EditableDatabaseType)
+      {
+        <select name="DatabaseType" onchange="Project.HandleDatabaseTypeOnChange($(this))" required>
+          <option value="@DatabaseType.MicrosoftSql.ToString()"
+                  selected="@(Model.SourceProviderOptions is MicrosoftSqlDatabaseProviderOptions)">
+            Microsoft SQL Server
+          </option>
+          <option value="@DatabaseType.MySql.ToString()"
+                  selected="@(Model.SourceProviderOptions is MySqlDatabaseProviderOptions)">
+            MySQL Server
+          </option>
+          <option value="@DatabaseType.PostgreSql.ToString()"
+                  selected="@(Model.SourceProviderOptions is PostgreSqlDatabaseProviderOptions)">
+            PostgreSQL Server
+          </option>
+          <option value="@DatabaseType.MariaDb.ToString()"
+                  selected="@(Model.SourceProviderOptions is MariaDbDatabaseProviderOptions)">
+            MariaDB Server
+          </option>
+        </select>
+        <input type="hidden" name="DefaultMicrosoftSqlPort" value="@MicrosoftSqlDatabaseProviderOptions.DefaultPort" />
+        <input type="hidden" name="DefaultMySqlPort" value="@MySqlDatabaseProviderOptions.DefaultPort" />
+        <input type="hidden" name="DefaultPostgreSqlPort" value="@PostgreSqlDatabaseProviderOptions.DefaultPort" />
+        <input type="hidden" name="DefaultMariaDbPort" value="@MariaDbDatabaseProviderOptions.DefaultPort" />
+      }
+      else
+      {
+        switch (Model.SourceProviderOptions)
+        {
+          case MicrosoftSqlDatabaseProviderOptions _:
+            <input type="hidden" name="DatabaseType" value="@((int)DatabaseType.MicrosoftSql)" />
+            <input type="text" disabled="@true" value="Microsoft SQL Server" />
+            break;
+          case MariaDbDatabaseProviderOptions _:
+            <input type="hidden" name="DatabaseType" value="@((int)DatabaseType.MariaDb)" />
+            <input type="text" disabled="@true" value="MariaDB Server" />
+            break;
+          case MySqlDatabaseProviderOptions _:
+            <input type="hidden" name="DatabaseType" value="@((int)DatabaseType.MySql)" />
+            <input type="text" disabled="@true" value="MySQL Server" />
+            break;
+          case PostgreSqlDatabaseProviderOptions _:
+            <input type="hidden" name="DatabaseType" value="@((int)DatabaseType.PostgreSql)" />
+            <input type="text" disabled="@true" value="PostgreSQL Server" />
+            break;
+        }
+      }
     </div>
+  </div>
 </div>
 <div class="row">
-    <div class="col-6">
-        @await Html.PartialAsync("_DatabaseProviderOptions", Model.SourceProviderOptions, new ViewDataDictionary(this.ViewData)
+  <div class="col-6">
+    @await Html.PartialAsync("_DatabaseProviderOptions", Model.SourceProviderOptions, new ViewDataDictionary(this.ViewData)
         {
             { "Title", Localization.LabelSource },
             { "Prefix", CompareDirection.Source},
         })
-    </div>
-    <div class="col-6">
-        @await Html.PartialAsync("_DatabaseProviderOptions", Model.TargetProviderOptions, new ViewDataDictionary(this.ViewData)
+  </div>
+  <div class="col-6">
+    @await Html.PartialAsync("_DatabaseProviderOptions", Model.TargetProviderOptions, new ViewDataDictionary(this.ViewData)
         {
             { "Title", Localization.LabelTarget },
             { "Prefix", CompareDirection.Target},
         })
-    </div>
+  </div>
 </div>

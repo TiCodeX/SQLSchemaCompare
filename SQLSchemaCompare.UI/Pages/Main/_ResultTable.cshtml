@@ -4,60 +4,67 @@
 @using Services
 @model IReadOnlyCollection<ABaseCompareResultItem>
 @{
-    var divId = Guid.NewGuid();
+  var divId = Guid.NewGuid();
 }
 <div class="card">
-    <div class="card-header" data-toggle="collapse" data-target="#card_@(divId)">
-        <h6 class="mb-0 font-weight-bold">@ViewBag.Title (@Model.Count)</h6>
-    </div>
-    <div id="card_@(divId)" class="card-body p-0 collapse @(ViewBag.Show is bool && ViewBag.Show ? "show" : "")">
-        <table class="table table-compact">
-            <thead class="thead-light">
-                <tr>
-                    <th style="width: 10%">@Localization.LabelType</th>
-                    <th style="width: 45%">@Localization.LabelName (@Localization.LabelSource)</th>
-                    <th style="width: 45%">@Localization.LabelName (@Localization.LabelTarget)</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr id="@item.Id" onclick="Main.SelectRow($(event.target).closest('tr'))">
-                        <td>
-                            @if (item.ItemType == typeof(ABaseDbSchema))
-                            {
-                                <i class="fa fa-fw fa-sitemap"></i> @Localization.LabelSchema
-                            }
-                            else if (item.ItemType == typeof(ABaseDbTable))
-                            {
-                                <i class="fa fa-fw fa-table"></i> @Localization.LabelTable
-                            }
-                            else if (item.ItemType == typeof(ABaseDbView))
-                            {
-                                <i class="fa fa-fw fa-clipboard-list"></i> @Localization.LabelView
-                            }
-                            else if (item.ItemType == typeof(ABaseDbFunction))
-                            {
-                                <i class="fa fa-fw fa-cogs"></i> @Localization.LabelFunction
-                            }
-                            else if (item.ItemType == typeof(ABaseDbStoredProcedure))
-                            {
-                                <i class="fa fa-fw fa-drafting-compass"></i> @Localization.LabelStoredProcedure
-                            }
-                            else if (item.ItemType == typeof(ABaseDbSequence))
-                            {
-                                <i class="fa fa-fw fa-list"></i> @Localization.LabelSequence
-                            }
-                            else if (item.ItemType == typeof(ABaseDbDataType))
-                            {
-                                <i class="fa fa-fw fa-vector-square"></i> @Localization.LabelUserDefinedType
-                            }
-                        </td>
-                        <td>@item.SourceItemName</td>
-                        <td>@item.TargetItemName</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+  <div class="card-header" data-toggle="collapse" data-target="#card_@(divId)">
+    <h6 class="mb-0 font-weight-bold">@ViewBag.Title (@Model.Count)</h6>
+  </div>
+  <div id="card_@(divId)" class="card-body p-0 collapse @(ViewBag.Show is bool && ViewBag.Show ? "show" : "")">
+    <table class="table table-compact">
+      <thead class="thead-light">
+        <tr>
+          <th style="width: 10%">@Localization.LabelType</th>
+          <th style="width: 45%">@Localization.LabelName (@Localization.LabelSource)</th>
+          <th style="width: 45%">@Localization.LabelName (@Localization.LabelTarget)</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var item in Model)
+        {
+          <tr id="@item.Id" onclick="Main.SelectRow($(event.target).closest('tr'))">
+            <td>
+              @if (item.ItemType == typeof(ABaseDbSchema))
+              {
+                <i class="fa fa-fw fa-sitemap"></i>
+                @Localization.LabelSchema
+              }
+              else if (item.ItemType == typeof(ABaseDbTable))
+              {
+                <i class="fa fa-fw fa-table"></i>
+                @Localization.LabelTable
+              }
+              else if (item.ItemType == typeof(ABaseDbView))
+              {
+                <i class="fa fa-fw fa-clipboard-list"></i>
+                @Localization.LabelView
+              }
+              else if (item.ItemType == typeof(ABaseDbFunction))
+              {
+                <i class="fa fa-fw fa-cogs"></i>
+                @Localization.LabelFunction
+              }
+              else if (item.ItemType == typeof(ABaseDbStoredProcedure))
+              {
+                <i class="fa fa-fw fa-drafting-compass"></i>
+                @Localization.LabelStoredProcedure
+              }
+              else if (item.ItemType == typeof(ABaseDbSequence))
+              {
+                <i class="fa fa-fw fa-list"></i>
+                @Localization.LabelSequence
+              }
+              else if (item.ItemType == typeof(ABaseDbDataType))
+              {
+                <i class="fa fa-fw fa-vector-square"></i>
+                @Localization.LabelUserDefinedType
+              }
+            </td>
+            <td>@item.SourceItemName</td>
+            <td>@item.TargetItemName</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 </div>

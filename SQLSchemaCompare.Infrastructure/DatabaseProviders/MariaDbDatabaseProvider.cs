@@ -12,7 +12,7 @@
         /// <param name="cipherService">The injected cipher service</param>
         /// <param name="options">The options to connect to the MariaDB Database</param>
         public MariaDbDatabaseProvider(ILoggerFactory loggerFactory, ICipherService cipherService, MariaDbDatabaseProviderOptions options)
-            : base(loggerFactory, cipherService, new MySqlDatabaseProviderOptions { Hostname = options.Hostname, Port = options.Port, Username = options.Username, Password = options.Password, SavePassword = options.SavePassword, UseSsl = options.UseSsl, Database = options.Database })
+            : base(loggerFactory, cipherService, options)
         {
         }
 

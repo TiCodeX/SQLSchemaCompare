@@ -3,9 +3,7 @@
     /// <summary>
     /// Common EF database context
     /// </summary>
-    /// <typeparam name="TDatabaseProviderOptions">The database provider options type</typeparam>
-    public abstract class ADatabaseContext<TDatabaseProviderOptions> : DbContext
-        where TDatabaseProviderOptions : ADatabaseProviderOptions
+    public abstract class ADatabaseContext : DbContext
     {
         /// <summary>
         /// The logger factory
@@ -13,31 +11,23 @@
         private readonly ILoggerFactory loggerFactory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ADatabaseContext{TDatabaseProviderOptions}"/> class.
+        /// Initializes a new instance of the <see cref="ADatabaseContext"/> class.
         /// </summary>
         /// <param name="loggerFactory">The injected logger factory</param>
-        /// <param name="dbpo">The database provider options</param>
-        protected ADatabaseContext(ILoggerFactory loggerFactory, TDatabaseProviderOptions dbpo)
+        protected ADatabaseContext(ILoggerFactory loggerFactory)
         {
-            if (dbpo == null)
-            {
-                throw new ArgumentNullException(nameof(dbpo));
-            }
-
             this.loggerFactory = loggerFactory;
-            this.Hostname = dbpo.Hostname;
-            this.DatabaseName = dbpo.Database;
         }
 
         /// <summary>
         /// Gets the hostname
         /// </summary>
-        public string Hostname { get; }
+        public string Hostname => this.Database.GetDbConnection().DataSource;
 
         /// <summary>
         /// Gets the database name
         /// </summary>
-        public string DatabaseName { get; }
+        public string DatabaseName => this.Database.GetDbConnection().Database;
 
         /// <summary>
         /// Performs a query

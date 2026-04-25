@@ -407,6 +407,18 @@ class Project {
     }
 
     /**
+     * Handle the onChange event of the UseConnectionString checkbox
+     * @param checkbox The jQuery element of the checkbox
+     * @param prefix The page prefix (Source/Target)
+     */
+    public static HandleUseConnectionStringOnChange(checkbox: JQuery, prefix: string): void {
+        const checked = checkbox.is(":checked");
+        $(`textarea[name='${prefix}ConnectionString']`).closest("fieldset").toggle(checked).prop("disabled", !checked);
+        $(`input[name='${prefix}Hostname']`).closest("fieldset").toggle(!checked).prop("disabled", checked);
+        this.SetDirtyState();
+    }
+
+    /**
      * Handle the onInput event of the Hostname field
      * @param input The jQuery element of the input
      * @param prefix The page prefix (Source/Target)

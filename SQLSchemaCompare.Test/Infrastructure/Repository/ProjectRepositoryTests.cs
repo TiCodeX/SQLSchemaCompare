@@ -91,45 +91,30 @@
         [UnitTest]
         public void Write()
         {
-            const string sourceHostname = "localhost";
-            const string sourceUsername = "admin";
-            const string sourcePassword = "test";
-            const bool sourceSavePassword = true;
-            const string sourceDatabase = "database1";
-            const bool sourceUseWindowsAuthentication = true;
-            const bool sourceUseAzureAuthentication = true;
-            const bool sourceUseSSL = false;
-            const bool sourceIgnoreServerCertificate = true;
-            const string targetHostname = "192.168.1.1";
-            const string targetUsername = "pippo";
-            const string targetPassword = "pluto";
-            const string targetDatabase = "database2";
-            const bool targetSavePassword = false;
-            const bool targetUseSSL = true;
-            const bool targetIgnoreServerCertificate = true;
-
             var compareProject = new CompareProject
             {
                 SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions
                 {
-                    Hostname = sourceHostname,
-                    Database = sourceDatabase,
-                    Username = sourceUsername,
-                    Password = sourcePassword,
-                    SavePassword = sourceSavePassword,
-                    UseWindowsAuthentication = sourceUseWindowsAuthentication,
-                    UseAzureAuthentication = sourceUseAzureAuthentication,
-                    UseSsl = sourceUseSSL,
-                    IgnoreServerCertificate = sourceIgnoreServerCertificate,
+                    UseConnectionString = true,
+                    ConnectionString = Guid.NewGuid().ToString(),
+                    Hostname = Guid.NewGuid().ToString(),
+                    Database = Guid.NewGuid().ToString(),
+                    Username = Guid.NewGuid().ToString(),
+                    Password = Guid.NewGuid().ToString(),
+                    SavePassword = true,
+                    UseWindowsAuthentication = true,
+                    UseAzureAuthentication = true,
+                    UseSsl = true,
+                    IgnoreServerCertificate = true,
                 },
                 TargetProviderOptions = new PostgreSqlDatabaseProviderOptions
                 {
-                    Hostname = targetHostname,
-                    Database = targetDatabase,
-                    Username = targetUsername,
-                    Password = targetPassword,
-                    UseSsl = targetUseSSL,
-                    IgnoreServerCertificate = targetIgnoreServerCertificate,
+                    Hostname = Guid.NewGuid().ToString(),
+                    Database = Guid.NewGuid().ToString(),
+                    Username = Guid.NewGuid().ToString(),
+                    Password = Guid.NewGuid().ToString(),
+                    UseSsl = true,
+                    IgnoreServerCertificate = false,
                 },
                 Options = new ProjectOptions
                 {
@@ -163,43 +148,46 @@
 
                 var xmlFileExpected = $@"<?xml version=""1.0"" encoding=""utf-8""?>
 <CompareProject xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <SourceProviderOptions xsi:type=""MicrosoftSqlDatabaseProviderOptions"">
-    <Hostname>{sourceHostname}</Hostname>
-    <Port>1433</Port>
-    <Database>{sourceDatabase}</Database>
-    <Username>{sourceUsername}</Username>
-    <Password>{sourcePassword}</Password>
-    <SavePassword>{XmlConvert.ToString(sourceSavePassword)}</SavePassword>
-    <UseSSL>{XmlConvert.ToString(sourceUseSSL)}</UseSSL>
-    <IgnoreServerCertificate>{XmlConvert.ToString(sourceIgnoreServerCertificate)}</IgnoreServerCertificate>
-    <UseWindowsAuthentication>{XmlConvert.ToString(sourceUseWindowsAuthentication)}</UseWindowsAuthentication>
-    <UseAzureAuthentication>{XmlConvert.ToString(sourceUseAzureAuthentication)}</UseAzureAuthentication>
+  <SourceProviderOptions xsi:type=""{nameof(MicrosoftSqlDatabaseProviderOptions)}"">
+    <UseConnectionString>{XmlConvert.ToString(compareProject.SourceProviderOptions.UseConnectionString)}</UseConnectionString>
+    <ConnectionString>{compareProject.SourceProviderOptions.ConnectionString}</ConnectionString>
+    <Hostname>{compareProject.SourceProviderOptions.Hostname}</Hostname>
+    <Port>{compareProject.SourceProviderOptions.Port}</Port>
+    <Database>{compareProject.SourceProviderOptions.Database}</Database>
+    <Username>{compareProject.SourceProviderOptions.Username}</Username>
+    <Password>{compareProject.SourceProviderOptions.Password}</Password>
+    <SavePassword>{XmlConvert.ToString(compareProject.SourceProviderOptions.SavePassword)}</SavePassword>
+    <UseSSL>{XmlConvert.ToString(compareProject.SourceProviderOptions.UseSsl)}</UseSSL>
+    <IgnoreServerCertificate>{XmlConvert.ToString(compareProject.SourceProviderOptions.IgnoreServerCertificate)}</IgnoreServerCertificate>
+    <UseWindowsAuthentication>{XmlConvert.ToString(((MicrosoftSqlDatabaseProviderOptions)compareProject.SourceProviderOptions).UseWindowsAuthentication)}</UseWindowsAuthentication>
+    <UseAzureAuthentication>{XmlConvert.ToString(((MicrosoftSqlDatabaseProviderOptions)compareProject.SourceProviderOptions).UseAzureAuthentication)}</UseAzureAuthentication>
   </SourceProviderOptions>
-  <TargetProviderOptions xsi:type=""PostgreSqlDatabaseProviderOptions"">
-    <Hostname>{targetHostname}</Hostname>
+  <TargetProviderOptions xsi:type=""{nameof(PostgreSqlDatabaseProviderOptions)}"">
+    <UseConnectionString>{XmlConvert.ToString(compareProject.TargetProviderOptions.UseConnectionString)}</UseConnectionString>
+    <Hostname>{compareProject.TargetProviderOptions.Hostname}</Hostname>
     <Port>5432</Port>
-    <Database>{targetDatabase}</Database>
-    <Username>{targetUsername}</Username>
-    <SavePassword>{XmlConvert.ToString(targetSavePassword)}</SavePassword>
-    <UseSSL>{XmlConvert.ToString(targetUseSSL)}</UseSSL>
-    <IgnoreServerCertificate>{XmlConvert.ToString(targetIgnoreServerCertificate)}</IgnoreServerCertificate>
+    <Database>{compareProject.TargetProviderOptions.Database}</Database>
+    <Username>{compareProject.TargetProviderOptions.Username}</Username>
+    <SavePassword>{XmlConvert.ToString(compareProject.TargetProviderOptions.SavePassword)}</SavePassword>
+    <UseSSL>{XmlConvert.ToString(compareProject.TargetProviderOptions.UseSsl)}</UseSSL>
+    <IgnoreServerCertificate>{XmlConvert.ToString(compareProject.TargetProviderOptions.IgnoreServerCertificate)}</IgnoreServerCertificate>
   </TargetProviderOptions>
   <Options>
     <Scripting>
-      <IgnoreCollate>true</IgnoreCollate>
-      <OrderColumnAlphabetically>true</OrderColumnAlphabetically>
-      <IgnoreReferenceTableColumnOrder>true</IgnoreReferenceTableColumnOrder>
-      <GenerateUpdateScriptForNewNotNullColumns>true</GenerateUpdateScriptForNewNotNullColumns>
+      <IgnoreCollate>{XmlConvert.ToString(compareProject.Options.Scripting.IgnoreCollate)}</IgnoreCollate>
+      <OrderColumnAlphabetically>{XmlConvert.ToString(compareProject.Options.Scripting.OrderColumnAlphabetically)}</OrderColumnAlphabetically>
+      <IgnoreReferenceTableColumnOrder>{XmlConvert.ToString(compareProject.Options.Scripting.IgnoreReferenceTableColumnOrder)}</IgnoreReferenceTableColumnOrder>
+      <GenerateUpdateScriptForNewNotNullColumns>{XmlConvert.ToString(compareProject.Options.Scripting.GenerateUpdateScriptForNewNotNullColumns)}</GenerateUpdateScriptForNewNotNullColumns>
     </Scripting>
     <Filtering>
-      <Include>false</Include>
+      <Include>{XmlConvert.ToString(compareProject.Options.Filtering.Include)}</Include>
       <Clauses>
         <FilterClause>
-          <Group>0</Group>
+          <Group>{XmlConvert.ToString(compareProject.Options.Filtering.Clauses[0].Group)}</Group>
           <ObjectType xsi:nil=""true"" />
-          <Field>Schema</Field>
-          <Operator>Equals</Operator>
-          <Value>customer_data</Value>
+          <Field>{compareProject.Options.Filtering.Clauses[0].Field}</Field>
+          <Operator>{compareProject.Options.Filtering.Clauses[0].Operator}</Operator>
+          <Value>{compareProject.Options.Filtering.Clauses[0].Value}</Value>
         </FilterClause>
       </Clauses>
     </Filtering>

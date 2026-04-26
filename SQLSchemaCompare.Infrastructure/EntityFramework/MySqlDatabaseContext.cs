@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines the MySql database context
     /// </summary>
-    internal class MySqlDatabaseContext : ADatabaseContext<MySqlDatabaseProviderOptions>
+    internal class MySqlDatabaseContext : ADatabaseContext
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlDatabaseContext"/> class.
@@ -12,17 +12,24 @@
         /// <param name="cipherService">The injected cipher service</param>
         /// <param name="dbpo">The MySql database provider options</param>
         public MySqlDatabaseContext(ILoggerFactory loggerFactory, ICipherService cipherService, MySqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory, dbpo)
+            : base(loggerFactory)
         {
-            var connStr = $"Server={dbpo.Hostname};Port={dbpo.Port};Database={dbpo.Database};User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
+            if (dbpo.UseConnectionString)
+            {
+                this.ConnectionString = dbpo.ConnectionString;
+            }
+            else
+            {
+                var connStr = $"Server={dbpo.Hostname};Port={dbpo.Port};Database={dbpo.Database};User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
 
-            connStr += dbpo.UseSsl
-                ? dbpo.IgnoreServerCertificate
-                    ? "SslMode=Required;"
-                    : "SslMode=VerifyFull;"
-                : "SslMode=None;AllowPublicKeyRetrieval=true;";
+                connStr += dbpo.UseSsl
+                    ? dbpo.IgnoreServerCertificate
+                        ? "SslMode=Required;"
+                        : "SslMode=VerifyFull;"
+                    : "SslMode=None;AllowPublicKeyRetrieval=true;";
 
-            this.ConnectionString = connStr;
+                this.ConnectionString = connStr;
+            }
         }
 
         /// <summary>

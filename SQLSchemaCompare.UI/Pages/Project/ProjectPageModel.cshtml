@@ -4,69 +4,69 @@
 @model ProjectPageModel
 
 <div class="card tcx-project shadow mx-auto needs-validation" id="ProjectPage">
-    <div class="card-body">
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a data-toggle="tab" href="#tabDataSources" class="nav-link active">@Localization.LabelDataSources</a>
-            </li>
-            <li class="nav-item">
-                <a data-toggle="tab" href="#tabOptions" class="nav-link">@Localization.LabelOptions</a>
-            </li>
-            <li class="nav-item">
-                @* The filters table is hidden when it's created and we display it when the tab is clicked because the dialog
+  <div class="card-body">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a data-toggle="tab" href="#tabDataSources" class="nav-link active">@Localization.LabelDataSources</a>
+      </li>
+      <li class="nav-item">
+        <a data-toggle="tab" href="#tabOptions" class="nav-link">@Localization.LabelOptions</a>
+      </li>
+      <li class="nav-item">
+        @* The filters table is hidden when it's created and we display it when the tab is clicked because the dialog
                     computes the height itself and if there are too many clauses it will be too big, there is the max-height attribute
                     on the table but works only after the dialog is created with a certain height *@
-                <a data-toggle="tab" href="#tabFiltering" class="nav-link" onclick="$('#tableFilterClauses').show();">@Localization.LabelFilters</a>
-            </li>
-        </ul>
-        <div class="tab-content p-3 mb-3">
-            <div class="tab-pane active" id="tabDataSources">
-                @await Html.PartialAsync("_DataSourcesTab", Model.Project)
-            </div>
-            <div class="tab-pane" id="tabOptions">
-                @await Html.PartialAsync("_OptionsTab", Model.Project.Options)
-            </div>
-            <div class="tab-pane" id="tabFiltering">
-                @await Html.PartialAsync("_FilteringTab", Model.Project.Options.Filtering)
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col col-39p">
-                <button type="button" style="@ButtonStyle.Primary" onclick="Project.Save();">
-                    <i class="far fa-save fa-lg"></i>  @Localization.MenuSaveProject
-                </button>
-            </div>
-            <div class="col col-22p text-center">
-                <button type="button" style="@ButtonStyle.Secondary"
-                        onclick="Project.CopySettings(SettingsCopyDirection.Left);"
-                        data-toggle="tooltip" data-placement="top" title="@Localization.LabelCopySettingsLeft">
-                    <i class="fa fa-arrow-left"></i>
-                </button>
-                <button type="button" style="@ButtonStyle.Secondary"
-                        onclick="Project.CopySettings(SettingsCopyDirection.Exchange);"
-                        data-toggle="tooltip" data-placement="top" title="@Localization.LabelCopySettingsExchange">
-                    <i class="fa fa-exchange-alt"></i>
-                </button>
-                <button type="button" style="@ButtonStyle.Secondary"
-                        onclick="Project.CopySettings(SettingsCopyDirection.Right);"
-                        data-toggle="tooltip" data-placement="top" title="@Localization.LabelCopySettingsRight">
-                    <i class="fa fa-arrow-right"></i>
-                </button>
-            </div>
-            <div class="col col-39p text-right">
-                @if (Model.Project.Result != null)
-                {
-                    <button style="@ButtonStyle.Secondary" onclick="PageManager.ClosePage()">@Localization.ButtonCancel</button>
-                }
-                else
-                {
-                    <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">@Localization.ButtonCancel</button>
-                }
-                <button style="@ButtonStyle.Primary" onclick="Project.EditAndCompare()">
-                    @Localization.ButtonCompareNow
-                </button>
-            </div>
-        </div>
+        <a data-toggle="tab" href="#tabFiltering" class="nav-link" onclick="$('#tableFilterClauses').show();">@Localization.LabelFilters</a>
+      </li>
+    </ul>
+    <div class="tab-content p-3 mb-3">
+      <div class="tab-pane active" id="tabDataSources">
+        @await Html.PartialAsync("_DataSourcesTab", Model.Project)
+      </div>
+      <div class="tab-pane" id="tabOptions">
+        @await Html.PartialAsync("_OptionsTab", Model.Project.Options)
+      </div>
+      <div class="tab-pane" id="tabFiltering">
+        @await Html.PartialAsync("_FilteringTab", Model.Project.Options.Filtering)
+      </div>
     </div>
+
+    <div class="row">
+      <div class="col col-39p">
+        <button type="button" style="@ButtonStyle.Primary" onclick="Project.Save();">
+          <i class="far fa-save fa-lg"></i>  @Localization.MenuSaveProject
+        </button>
+      </div>
+      <div class="col col-22p text-center">
+        <button type="button" style="@ButtonStyle.Secondary"
+                onclick="Project.CopySettings(SettingsCopyDirection.Left);"
+                data-toggle="tooltip" data-placement="top" title="@Localization.LabelCopySettingsLeft">
+          <i class="fa fa-arrow-left"></i>
+        </button>
+        <button type="button" style="@ButtonStyle.Secondary"
+                onclick="Project.CopySettings(SettingsCopyDirection.Exchange);"
+                data-toggle="tooltip" data-placement="top" title="@Localization.LabelCopySettingsExchange">
+          <i class="fa fa-exchange-alt"></i>
+        </button>
+        <button type="button" style="@ButtonStyle.Secondary"
+                onclick="Project.CopySettings(SettingsCopyDirection.Right);"
+                data-toggle="tooltip" data-placement="top" title="@Localization.LabelCopySettingsRight">
+          <i class="fa fa-arrow-right"></i>
+        </button>
+      </div>
+      <div class="col col-39p text-right">
+        @if (Model.Project.Result != null)
+        {
+          <button style="@ButtonStyle.Secondary" onclick="PageManager.ClosePage()">@Localization.ButtonCancel</button>
+        }
+        else
+        {
+          <button style="@ButtonStyle.Secondary" onclick="Project.Close(true)">@Localization.ButtonCancel</button>
+        }
+        <button style="@ButtonStyle.Primary" onclick="Project.EditAndCompare()">
+          @Localization.ButtonCompareNow
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

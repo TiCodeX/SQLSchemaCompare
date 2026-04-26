@@ -16,6 +16,16 @@
         public DatabaseType DatabaseType { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the source use a connection string.
+        /// </summary>
+        public bool SourceUseConnectionString { get; set; }
+
+        /// <summary>
+        /// Gets or sets the source connection string.
+        /// </summary>
+        public string SourceConnectionString { get; set; }
+
+        /// <summary>
         /// Gets or sets the source hostname
         /// </summary>
         public string SourceHostname { get; set; }
@@ -64,6 +74,16 @@
         /// Gets or sets the source database
         /// </summary>
         public string SourceDatabase { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the target use a connection string.
+        /// </summary>
+        public bool TargetUseConnectionString { get; set; }
+
+        /// <summary>
+        /// Gets or sets the target connection string.
+        /// </summary>
+        public string TargetConnectionString { get; set; }
 
         /// <summary>
         /// Gets or sets the target hostname

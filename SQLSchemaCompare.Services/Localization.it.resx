@@ -856,4 +856,7 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
 
 Invece di aggiungere la colonna come non nullabile, la aggiungerà prima come nullabile, quindi eseguirà un aggiornamento per impostare un valore predefinito e infine modificherà la colonna in modo che non sia nullabile.</value>
   </data>
+  <data name="LabelUseConnectionString" xml:space="preserve">
+    <value>Utilizzare stringa di connessione</value>
+  </data>
 </root>

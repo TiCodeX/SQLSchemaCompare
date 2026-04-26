@@ -3,92 +3,92 @@
 @using Services
 @model MainPageModel
 @{
-    var show = true;
+  var show = true;
 }
 <div id="mainTop" class="tcx-main-top">
-    @if (Model.DifferentItems.Count == 0 && Model.OnlySourceItems.Count == 0 && Model.OnlyTargetItems.Count == 0)
-    {
-        <div class="card">
-            <div class="p-2">
-                <button type="button" class="close" onclick="$(this).closest('.card').fadeOut();">
-                    <span>&times;</span>
-                </button>
-            </div>
-            <div class="text-center mb-4">
-                <span class="fa-stack fa-10x mb-3">
-                    <i class="fas fa-circle fa-stack-2x text-success"></i>
-                    <i class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
-                </span>
-                <h4 class="text-success">@Localization.LabelDatabasesAreIdentical</h4>
-            </div>
-        </div>
-    }
+  @if (Model.DifferentItems.Count == 0 && Model.OnlySourceItems.Count == 0 && Model.OnlyTargetItems.Count == 0)
+  {
+    <div class="card">
+      <div class="p-2">
+        <button type="button" class="close" onclick="$(this).closest('.card').fadeOut();">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="text-center mb-4">
+        <span class="fa-stack fa-10x mb-3">
+          <i class="fas fa-circle fa-stack-2x text-success"></i>
+          <i class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
+        </span>
+        <h4 class="text-success">@Localization.LabelDatabasesAreIdentical</h4>
+      </div>
+    </div>
+  }
 
-    @if (Model.DifferentItems.Count > 0)
-    {
-        @await Html.PartialAsync("_ResultTable", Model.DifferentItems, new ViewDataDictionary(this.ViewData)
+  @if (Model.DifferentItems.Count > 0)
+  {
+    @await Html.PartialAsync("_ResultTable", Model.DifferentItems, new ViewDataDictionary(this.ViewData)
         {
             {"Title", Localization.LabelInBothButDifferent},
             {"Show", show}
         })
-        show = false;
-    }
-    @if (Model.OnlySourceItems.Count > 0)
-    {
-        @await Html.PartialAsync("_ResultTable", Model.OnlySourceItems, new ViewDataDictionary(this.ViewData)
+    show = false;
+  }
+  @if (Model.OnlySourceItems.Count > 0)
+  {
+    @await Html.PartialAsync("_ResultTable", Model.OnlySourceItems, new ViewDataDictionary(this.ViewData)
         {
             {"Title", Localization.LabelOnlyInSource},
             {"Show", show}
         })
-        show = false;
-    }
-    @if (Model.OnlyTargetItems.Count > 0)
-    {
-        @await Html.PartialAsync("_ResultTable", Model.OnlyTargetItems, new ViewDataDictionary(this.ViewData)
+    show = false;
+  }
+  @if (Model.OnlyTargetItems.Count > 0)
+  {
+    @await Html.PartialAsync("_ResultTable", Model.OnlyTargetItems, new ViewDataDictionary(this.ViewData)
         {
             {"Title", Localization.LabelOnlyInTarget},
             {"Show", show}
         })
-        show = false;
-    }
-    @if (Model.SameItems.Count > 0)
-    {
-        @await Html.PartialAsync("_ResultTable", Model.SameItems, new ViewDataDictionary(this.ViewData)
+    show = false;
+  }
+  @if (Model.SameItems.Count > 0)
+  {
+    @await Html.PartialAsync("_ResultTable", Model.SameItems, new ViewDataDictionary(this.ViewData)
         {
             {"Title", Localization.LabelIdentical},
             {"Show", show}
         })
-    }
+  }
 </div>
 
 <div id="mainBottom" class="tcx-main-bottom">
-    <div class="navbar p-0">
-        <ul class="nav nav-tabs col-3 flex-nowrap">
-            <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#sqlDiff">@Localization.LabelSQLView</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#sqlAlterScript">@Localization.LabelMigrationScript</a>
-            </li>
-        </ul>
-        <span class="col-3 tcx-diff-item-name"></span>
-        <ul class="nav nav-pills col-3 justify-content-end pr-0">
-            <li class="nav-item mr-1">
-                <button class="btn-mini" onclick="Main.SelectPrevRow();"><i class="fa fa-arrow-circle-up"></i> @Localization.ButtonPrev</button>
-            </li>
-            <li class="nav-item mr-1">
-                <button class="btn-mini" onclick="Main.SelectNextRow();"><i class="fa fa-arrow-circle-down"></i> @Localization.ButtonNext</button>
-            </li>
-            <li class="nav-item">
-                <button class="btn-mini mr-1" onclick="Main.HideBottomPanel();"><i class="fa fa-times"></i></button>
-            </li>
-        </ul>
-    </div>
+  <div class="navbar p-0">
+    <ul class="nav nav-tabs col-3 flex-nowrap">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#sqlDiff">@Localization.LabelSQLView</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#sqlAlterScript">@Localization.LabelMigrationScript</a>
+      </li>
+    </ul>
+    <span class="col-3 tcx-diff-item-name"></span>
+    <ul class="nav nav-pills col-3 justify-content-end pr-0">
+      <li class="nav-item mr-1">
+        <button class="btn-mini" onclick="Main.SelectPrevRow();"><i class="fa fa-arrow-circle-up"></i> @Localization.ButtonPrev</button>
+      </li>
+      <li class="nav-item mr-1">
+        <button class="btn-mini" onclick="Main.SelectNextRow();"><i class="fa fa-arrow-circle-down"></i> @Localization.ButtonNext</button>
+      </li>
+      <li class="nav-item">
+        <button class="btn-mini mr-1" onclick="Main.HideBottomPanel();"><i class="fa fa-times"></i></button>
+      </li>
+    </ul>
+  </div>
 
-    <div class="tab-content">
-        <div id="sqlDiff" class="tab-pane show active">
-        </div>
-        <div id="sqlAlterScript" class="tab-pane">
-        </div>
+  <div class="tab-content">
+    <div id="sqlDiff" class="tab-pane show active">
     </div>
+    <div id="sqlAlterScript" class="tab-pane">
+    </div>
+  </div>
 </div>

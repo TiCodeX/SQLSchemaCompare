@@ -4,45 +4,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>@Model.Title</title>
-    <link href="~/css/Index.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/lib/jquery/jquery-editable-select.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>@Model.Title</title>
+  <link href="~/css/Index.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+  <link href="~/lib/jquery/jquery-editable-select.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
 </head>
 <body>
-    @Html.AntiForgeryToken()
+  @Html.AntiForgeryToken()
 
-    <div class="container-fluid">
-        <div class="row tcx-row-header d-flex justify-content-between">
-        </div>
-        <div class="row tcx-row-main">
-        </div>
+  <div class="container-fluid">
+    <div class="row tcx-row-header d-flex justify-content-between">
     </div>
-
-    <!-- Modal -->
-    @await Html.PartialAsync("_ModalDialog")
-
-    <div id="myNotification" class="alert alert-warning">
-        <a href="#" class="close ml-3 mt-1" data-dismiss="alert">&times;</a>
-        <span id="myNotificationMessage"></span>
+    <div class="row tcx-row-main">
     </div>
+  </div>
 
-    <div id="myModal" class="modal">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"></h5>
-                    <button type="button" class="close white" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body p-0">
-                </div>
-            </div>
+  <!-- Modal -->
+  @await Html.PartialAsync("_ModalDialog")
+
+  <div id="myNotification" class="alert alert-warning">
+    <a href="#" class="close ml-3 mt-1" data-dismiss="alert">&times;</a>
+    <span id="myNotificationMessage"></span>
+  </div>
+
+  <div id="myModal" class="modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="close white" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+        <div class="modal-body p-0">
+        </div>
+      </div>
     </div>
+  </div>
 
-    @await Html.PartialAsync("_ScriptSetup")
+  @await Html.PartialAsync("_ScriptSetup")
 </body>
 </html>

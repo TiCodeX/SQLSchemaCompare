@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines the PostgresSql database context
     /// </summary>
-    internal class PostgreSqlDatabaseContext : ADatabaseContext<PostgreSqlDatabaseProviderOptions>
+    internal class PostgreSqlDatabaseContext : ADatabaseContext
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDatabaseContext"/> class.
@@ -12,21 +12,28 @@
         /// <param name="cipherService">The injected cipher service</param>
         /// <param name="dbpo">The PostgreSql database provider options</param>
         public PostgreSqlDatabaseContext(ILoggerFactory loggerFactory, ICipherService cipherService, PostgreSqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory, dbpo)
+            : base(loggerFactory)
         {
-            var connStr = $"Server={dbpo.Hostname};Port={dbpo.Port};Database={dbpo.Database};User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
-
-            if (dbpo.UseSsl)
+            if (dbpo.UseConnectionString)
             {
-                connStr += "SSL Mode=Require;";
-
-                if (dbpo.IgnoreServerCertificate)
-                {
-                    connStr += "Trust Server Certificate=true;";
-                }
+                this.ConnectionString = dbpo.ConnectionString;
             }
+            else
+            {
+                var connStr = $"Server={dbpo.Hostname};Port={dbpo.Port};Database={dbpo.Database};User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
 
-            this.ConnectionString = connStr;
+                if (dbpo.UseSsl)
+                {
+                    connStr += "SSL Mode=Require;";
+
+                    if (dbpo.IgnoreServerCertificate)
+                    {
+                        connStr += "Trust Server Certificate=true;";
+                    }
+                }
+
+                this.ConnectionString = connStr;
+            }
         }
 
         /// <summary>

@@ -9,7 +9,7 @@
     [SuppressMessage("Major Code Smell", "S2436:Types and methods should not have too many generic parameters", Justification = "Necessary")]
     public abstract class ADatabaseProvider<TDatabaseProviderOptions, TDatabaseContext, TDatabase> : IDatabaseProvider
         where TDatabaseProviderOptions : ADatabaseProviderOptions
-        where TDatabaseContext : ADatabaseContext<TDatabaseProviderOptions>
+        where TDatabaseContext : ADatabaseContext
         where TDatabase : ABaseDb, new()
     {
         /// <summary>

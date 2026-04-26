@@ -33,12 +33,12 @@
             {
                 case MicrosoftSqlDatabaseProviderOptions microsoftSqlOptions:
                     return new MicrosoftSqlDatabaseProvider(this.loggerFactory, this.cipherService, microsoftSqlOptions);
+                case MariaDbDatabaseProviderOptions mariaDbOptions:
+                    return new MariaDbDatabaseProvider(this.loggerFactory, this.cipherService, mariaDbOptions);
                 case MySqlDatabaseProviderOptions mySqlOptions:
                     return new MySqlDatabaseProvider(this.loggerFactory, this.cipherService, mySqlOptions);
                 case PostgreSqlDatabaseProviderOptions postgreSqlOptions:
                     return new PostgreSqlDatabaseProvider(this.loggerFactory, this.cipherService, postgreSqlOptions);
-                case MariaDbDatabaseProviderOptions mariaDbOptions:
-                    return new MariaDbDatabaseProvider(this.loggerFactory, this.cipherService, mariaDbOptions);
                 default:
                     throw new NotSupportedException("Unknown Database Type");
             }

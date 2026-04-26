@@ -7,121 +7,142 @@
 @inject ICipherService cipherService
 @model ADatabaseProviderOptions
 @{
-    var prefix = ((CompareDirection)ViewBag.Prefix).ToString();
-    var divId = $"{prefix}ProviderOptions";
+  var prefix = ((CompareDirection)ViewBag.Prefix).ToString();
+  var divId = $"{prefix}ProviderOptions";
 }
 <div class="card needs-validation" id="@divId">
-    <input type="hidden" name="Direction" value="@prefix">
-    <div class="card-body pb-0">
-        <h5 class="card-title text-center">@ViewBag.Title</h5>
-        <p class="card-text">
-            <div class="form-group">
-                <label>@Localization.LabelHostname</label>
-                <input type="text" name="@(prefix)Hostname" value="@Model.Hostname"
-                       oninput="Project.HandleHostnameOnInput($(this), '@prefix')" required>
+  <input type="hidden" name="Direction" value="@prefix">
+  <div class="card-body pb-0">
+    <h5 class="card-title text-center">@ViewBag.Title</h5>
+    <p class="card-text">
+      <div class="form-group row">
+        <div class="col-9">
+          <label>@Localization.LabelUseConnectionString</label>
+        </div>
+        <div class="col-3 text-right">
+          <label class="tcx-switch">
+            <input type="checkbox" name="@(prefix)UseConnectionString"
+                   data-value-type="boolean"
+                   checked="@Model.UseConnectionString"
+                   onchange="Project.HandleUseConnectionStringOnChange($(this), '@prefix')">
+            <span class="tcx-switch-slider"></span>
+          </label>
+        </div>
+      </div>
+      <fieldset style="@(Model.UseConnectionString ? string.Empty : "display: none;")" disabled="@(!Model.UseConnectionString)">
+        <div class="form-group">
+          <textarea name="@(prefix)ConnectionString" rows="10" required>@Model.ConnectionString</textarea>
+        </div>
+      </fieldset>
+      <fieldset style="@(Model.UseConnectionString ? "display: none;" : string.Empty)" disabled="@(Model.UseConnectionString)">
+        <div class="form-group">
+          <label>@Localization.LabelHostname</label>
+          <input type="text" name="@(prefix)Hostname" value="@Model.Hostname"
+                 oninput="Project.HandleHostnameOnInput($(this), '@prefix')" required>
+        </div>
+        <div class="form-group">
+          <label>@Localization.LabelPort</label>
+          <input type="number" name="@(prefix)Port" value="@Model.Port"
+                 min="1" max="65535" class="col-4"
+                 disabled="@(Model is MicrosoftSqlDatabaseProviderOptions a && !string.IsNullOrEmpty(a.Hostname) && a.Hostname.Contains('\\'))"
+                 oninput="Project.SetDirtyState()" required>
+        </div>
+        <div class="form-group">
+          <label>@Localization.LabelUsername</label>
+          <input type="text" name="@(prefix)Username" value="@Model.Username"
+                 disabled="@(Model is MicrosoftSqlDatabaseProviderOptions b && (b.UseWindowsAuthentication || b.UseAzureAuthentication))"
+                 oninput="Project.SetDirtyState()" required>
+        </div>
+        <div class="form-group">
+          <label>@Localization.LabelPassword</label>
+          <input type="password" name="@(prefix)Password" value="@cipherService.DecryptString(Model.Password)"
+                 disabled="@(Model is MicrosoftSqlDatabaseProviderOptions c && (c.UseWindowsAuthentication || c.UseAzureAuthentication))"
+                 oninput="Project.SetDirtyState()" required>
+        </div>
+        <div class="form-group row">
+          <div class="col-9">
+            <label>@Localization.LabelSavePassword</label>
+          </div>
+          <div class="col-3 text-right">
+            <label class="tcx-switch">
+              <input type="checkbox" name="@(prefix)SavePassword"
+                     data-value-type="boolean"
+                     checked="@Model.SavePassword"
+                     disabled="@(Model is MicrosoftSqlDatabaseProviderOptions d && (d.UseWindowsAuthentication || d.UseAzureAuthentication))">
+              <span class="tcx-switch-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group row" style="@(Model is MicrosoftSqlDatabaseProviderOptions ? string.Empty : "display: none;")">
+          <div class="col-9">
+            <label>@Localization.LabelUseWindowsAuthentication</label>
+          </div>
+          <div class="col-3 text-right">
+            <label class="tcx-switch">
+              <input type="checkbox" name="@(prefix)UseWindowsAuthentication"
+                     data-value-type="boolean"
+                     checked="@(Model is MicrosoftSqlDatabaseProviderOptions e && e.UseWindowsAuthentication)"
+                     onchange="Project.HandleUseWindowsAuthenticationOnChange($(this), '@prefix')">
+              <span class="tcx-switch-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group row" style="@(Model is MicrosoftSqlDatabaseProviderOptions ? string.Empty : "display: none;")">
+          <div class="col-9">
+            <label>@Localization.LabelUseAzureAuthentication</label>
+          </div>
+          <div class="col-3 text-right">
+            <label class="tcx-switch">
+              <input type="checkbox" name="@(prefix)UseAzureAuthentication"
+                     data-value-type="boolean"
+                     checked="@(Model is MicrosoftSqlDatabaseProviderOptions f && f.UseAzureAuthentication)"
+                     onchange="Project.HandleUseAzureAuthenticationOnChange($(this), '@prefix')">
+              <span class="tcx-switch-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-9">
+            <label>@Localization.LabelUseSSL</label>
+          </div>
+          <div class="col-3 text-right">
+            <label class="tcx-switch">
+              <input type="checkbox" name="@(prefix)UseSSL"
+                     data-value-type="boolean"
+                     checked="@Model.UseSsl"
+                     onchange="Project.HandleUseSSLOnChange($(this), '@prefix')">
+              <span class="tcx-switch-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group row" style="@(Model.UseSsl ? string.Empty : "display: none;")">
+          <div class="col-9">
+            <label>@Localization.LabelIgnoreServerCertificate</label>
+          </div>
+          <div class="col-3 text-right">
+            <label class="tcx-switch">
+              <input type="checkbox" name="@(prefix)IgnoreServerCertificate"
+                     data-value-type="boolean"
+                     checked="@Model.IgnoreServerCertificate"
+                     onchange="Project.SetDirtyState()">
+              <span class="tcx-switch-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group ">
+          <label>@Localization.LabelDatabase</label>
+          <div class="input-group input-group-sm">
+            <select name="@(prefix)Database" class="editable-select" onchange="Project.SetDirtyState()" required>
+              <option value="@Model.Database" selected>@Model.Database</option>
+            </select>
+            <div class="input-group-append">
+              <button style="@ButtonStyle.Primary" onclick="Project.LoadDatabaseSelectValues($(this), '@(prefix)Database', '@divId');">
+                <span class="fa fa-sync-alt"></span>
+              </button>
             </div>
-            <div class="form-group">
-                <label>@Localization.LabelPort</label>
-                <input type="number" name="@(prefix)Port" value="@Model.Port"
-                       min="1" max="65535" class="col-4"
-                       disabled="@(Model is MicrosoftSqlDatabaseProviderOptions a && !string.IsNullOrEmpty(a.Hostname) && a.Hostname.Contains('\\'))"
-                       oninput="Project.SetDirtyState()" required>
-            </div>
-            <div class="form-group">
-                <label>@Localization.LabelUsername</label>
-                <input type="text" name="@(prefix)Username" value="@Model.Username"
-                       disabled="@(Model is MicrosoftSqlDatabaseProviderOptions b && (b.UseWindowsAuthentication || b.UseAzureAuthentication))"
-                       oninput="Project.SetDirtyState()" required>
-            </div>
-            <div class="form-group">
-                <label>@Localization.LabelPassword</label>
-                <input type="password" name="@(prefix)Password" value="@cipherService.DecryptString(Model.Password)"
-                       disabled="@(Model is MicrosoftSqlDatabaseProviderOptions c && (c.UseWindowsAuthentication || c.UseAzureAuthentication))"
-                       oninput="Project.SetDirtyState()" required>
-            </div>
-            <div class="form-group row">
-                <div class="col-9">
-                    <label>@Localization.LabelSavePassword</label>
-                </div>
-                <div class="col-3 text-right">
-                    <label class="tcx-switch">
-                        <input type="checkbox" name="@(prefix)SavePassword"
-                               data-value-type="boolean"
-                               checked="@Model.SavePassword"
-                               disabled="@(Model is MicrosoftSqlDatabaseProviderOptions d && (d.UseWindowsAuthentication || d.UseAzureAuthentication))">
-                        <span class="tcx-switch-slider"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group row" style="@(Model is MicrosoftSqlDatabaseProviderOptions ? string.Empty : "display: none;")">
-                <div class="col-9">
-                    <label>@Localization.LabelUseWindowsAuthentication</label>
-                </div>
-                <div class="col-3 text-right">
-                    <label class="tcx-switch">
-                        <input type="checkbox" name="@(prefix)UseWindowsAuthentication"
-                               data-value-type="boolean"
-                               checked="@(Model is MicrosoftSqlDatabaseProviderOptions e && e.UseWindowsAuthentication)"
-                               onchange="Project.HandleUseWindowsAuthenticationOnChange($(this), '@prefix')">
-                        <span class="tcx-switch-slider"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group row" style="@(Model is MicrosoftSqlDatabaseProviderOptions ? string.Empty : "display: none;")">
-                <div class="col-9">
-                    <label>@Localization.LabelUseAzureAuthentication</label>
-                </div>
-                <div class="col-3 text-right">
-                    <label class="tcx-switch">
-                        <input type="checkbox" name="@(prefix)UseAzureAuthentication"
-                               data-value-type="boolean"
-                               checked="@(Model is MicrosoftSqlDatabaseProviderOptions f && f.UseAzureAuthentication)"
-                               onchange="Project.HandleUseAzureAuthenticationOnChange($(this), '@prefix')">
-                        <span class="tcx-switch-slider"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-9">
-                    <label>@Localization.LabelUseSSL</label>
-                </div>
-                <div class="col-3 text-right">
-                    <label class="tcx-switch">
-                        <input type="checkbox" name="@(prefix)UseSSL"
-                               data-value-type="boolean"
-                               checked="@Model.UseSsl"
-                               onchange="Project.HandleUseSSLOnChange($(this), '@prefix')">
-                        <span class="tcx-switch-slider"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group row" style="@(Model.UseSsl ? string.Empty : "display: none;")">
-                <div class="col-9">
-                    <label>@Localization.LabelIgnoreServerCertificate</label>
-                </div>
-                <div class="col-3 text-right">
-                    <label class="tcx-switch">
-                        <input type="checkbox" name="@(prefix)IgnoreServerCertificate"
-                               data-value-type="boolean"
-                               checked="@Model.IgnoreServerCertificate"
-                               onchange="Project.SetDirtyState()">
-                        <span class="tcx-switch-slider"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group ">
-                <label>@Localization.LabelDatabase</label>
-                <div class="input-group input-group-sm">
-                    <select name="@(prefix)Database" class="editable-select" onchange="Project.SetDirtyState()" required>
-                        <option value="@Model.Database" selected>@Model.Database</option>
-                    </select>
-                    <div class="input-group-append">
-                        <button style="@ButtonStyle.Primary" onclick="Project.LoadDatabaseSelectValues($(this), '@(prefix)Database', '@divId');">
-                            <span class="fa fa-sync-alt"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </p>
-    </div>
+          </div>
+        </div>
+      </fieldset>
+    </p>
+  </div>
 </div>

@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines the MicrosoftSql database context
     /// </summary>
-    internal class MicrosoftSqlDatabaseContext : ADatabaseContext<MicrosoftSqlDatabaseProviderOptions>
+    internal class MicrosoftSqlDatabaseContext : ADatabaseContext
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MicrosoftSqlDatabaseContext"/> class.
@@ -12,47 +12,54 @@
         /// <param name="cipherService">The injected cipher service</param>
         /// <param name="dbpo">The MicrosoftSql database provider options</param>
         public MicrosoftSqlDatabaseContext(ILoggerFactory loggerFactory, ICipherService cipherService, MicrosoftSqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory, dbpo)
+            : base(loggerFactory)
         {
-            var server = dbpo.Hostname;
-            if (!server.Contains('\\', StringComparison.Ordinal))
+            if (dbpo.UseConnectionString)
             {
-                server += $",{dbpo.Port}";
-            }
-
-            var connStr = $"Server={server};Database={dbpo.Database};";
-
-            if (dbpo.UseWindowsAuthentication)
-            {
-                connStr += "Integrated Security=SSPI;";
-            }
-            else if (dbpo.UseAzureAuthentication)
-            {
-                connStr += "Authentication=Active Directory Interactive;";
+                this.ConnectionString = dbpo.ConnectionString;
             }
             else
             {
-                connStr += $"User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
-            }
-
-            // The driver now defaults to secure-by-default options
-            // Ref: https://learn.microsoft.com/en-us/sql/connect/oledb/release-notes-for-oledb-driver-for-sql-server?view=sql-server-ver16#features-added-2
-            if (!dbpo.UseSsl)
-            {
-                connStr += "Encrypt=false;";
-            }
-            else
-            {
-                if (dbpo.IgnoreServerCertificate)
+                var server = dbpo.Hostname;
+                if (!server.Contains('\\', StringComparison.Ordinal))
                 {
-                    connStr += "TrustServerCertificate=True;";
+                    server += $",{dbpo.Port}";
                 }
+
+                var connStr = $"Server={server};Database={dbpo.Database};";
+
+                if (dbpo.UseWindowsAuthentication)
+                {
+                    connStr += "Integrated Security=SSPI;";
+                }
+                else if (dbpo.UseAzureAuthentication)
+                {
+                    connStr += "Authentication=Active Directory Interactive;";
+                }
+                else
+                {
+                    connStr += $"User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
+                }
+
+                // The driver now defaults to secure-by-default options
+                // Ref: https://learn.microsoft.com/en-us/sql/connect/oledb/release-notes-for-oledb-driver-for-sql-server?view=sql-server-ver16#features-added-2
+                if (!dbpo.UseSsl)
+                {
+                    connStr += "Encrypt=false;";
+                }
+                else
+                {
+                    if (dbpo.IgnoreServerCertificate)
+                    {
+                        connStr += "TrustServerCertificate=True;";
+                    }
+                }
+
+                connStr += "Connection Timeout=15;";
+                connStr += "Persist Security Info=False;";
+
+                this.ConnectionString = connStr;
             }
-
-            connStr += "Connection Timeout=15;";
-            connStr += "Persist Security Info=False;";
-
-            this.ConnectionString = connStr;
         }
 
         /// <summary>

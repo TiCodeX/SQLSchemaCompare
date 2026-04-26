@@ -350,6 +350,8 @@
         private ADatabaseProviderOptions GetDatabaseProviderOptions(CompareProjectOptions options, CompareDirection direction)
         {
             var type = options.DatabaseType;
+            var useConnectionString = direction == CompareDirection.Source ? options.SourceUseConnectionString : options.TargetUseConnectionString;
+            var connectionString = direction == CompareDirection.Source ? options.SourceConnectionString : options.TargetConnectionString;
             var hostname = direction == CompareDirection.Source ? options.SourceHostname : options.TargetHostname;
             var port = direction == CompareDirection.Source ? options.SourcePort : options.TargetPort;
             var username = direction == CompareDirection.Source ? options.SourceUsername : options.TargetUsername;
@@ -366,6 +368,8 @@
                 case DatabaseType.MicrosoftSql:
                     return new MicrosoftSqlDatabaseProviderOptions
                     {
+                        UseConnectionString = useConnectionString,
+                        ConnectionString = connectionString,
                         Hostname = hostname,
                         Port = port ?? MicrosoftSqlDatabaseProviderOptions.DefaultPort,
                         Username = username,
@@ -380,6 +384,8 @@
                 case DatabaseType.MySql:
                     return new MySqlDatabaseProviderOptions
                     {
+                        UseConnectionString = useConnectionString,
+                        ConnectionString = connectionString,
                         Hostname = hostname,
                         Port = port ?? MySqlDatabaseProviderOptions.DefaultPort,
                         Username = username,
@@ -392,6 +398,8 @@
                 case DatabaseType.PostgreSql:
                     return new PostgreSqlDatabaseProviderOptions
                     {
+                        UseConnectionString = useConnectionString,
+                        ConnectionString = connectionString,
                         Hostname = hostname,
                         Port = port ?? PostgreSqlDatabaseProviderOptions.DefaultPort,
                         Username = username,
@@ -404,6 +412,8 @@
                 case DatabaseType.MariaDb:
                     return new MariaDbDatabaseProviderOptions
                     {
+                        UseConnectionString = useConnectionString,
+                        ConnectionString = connectionString,
                         Hostname = hostname,
                         Port = port ?? MariaDbDatabaseProviderOptions.DefaultPort,
                         Username = username,

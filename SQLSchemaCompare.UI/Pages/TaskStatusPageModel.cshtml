@@ -5,70 +5,70 @@
 @model TaskStatusPageModel
 
 <div class="tcx-task-status card mx-auto p-3">
-    @foreach (var taskInfo in Model.TaskInfos)
+  @foreach (var taskInfo in Model.TaskInfos)
+  {
+    var titleColor = string.Empty;
+    var borderColor = string.Empty;
+    var exceptionColor = string.Empty;
+    switch (taskInfo.Status)
     {
-        var titleColor = string.Empty;
-        var borderColor = string.Empty;
-        var exceptionColor = string.Empty;
-        switch (taskInfo.Status)
-        {
-            case TaskStatus.Running:
-                titleColor = "text-info";
-                borderColor = "border-info";
-                break;
-            case TaskStatus.RanToCompletion:
-                titleColor = "text-success";
-                borderColor = "border-success";
-                break;
-            case TaskStatus.Faulted:
-                titleColor = "text-danger";
-                borderColor = "border-danger";
-                exceptionColor = "text-danger";
-                break;
-            case TaskStatus.Canceled:
-                break;
-        }
-        <div class="card mb-3 @borderColor">
-            <div class="card-body">
-                <h5 class="card-title @titleColor">@taskInfo.Name</h5>
-                <h6 class="card-subtitle mb-2 text-muted">@taskInfo.Message</h6>
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: @taskInfo.Percentage%;">@taskInfo.Percentage%</div>
-                </div>
-                @if (taskInfo.Exception != null)
-                {
-                    <div class="mt-2 @exceptionColor">
-                        @taskInfo.Exception.Message
-                    </div>
-                }
-            </div>
+      case TaskStatus.Running:
+        titleColor = "text-info";
+        borderColor = "border-info";
+        break;
+      case TaskStatus.RanToCompletion:
+        titleColor = "text-success";
+        borderColor = "border-success";
+        break;
+      case TaskStatus.Faulted:
+        titleColor = "text-danger";
+        borderColor = "border-danger";
+        exceptionColor = "text-danger";
+        break;
+      case TaskStatus.Canceled:
+        break;
+    }
+    <div class="card mb-3 @borderColor">
+      <div class="card-body">
+        <h5 class="card-title @titleColor">@taskInfo.Name</h5>
+        <h6 class="card-subtitle mb-2 text-muted">@taskInfo.Message</h6>
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" style="width: @taskInfo.Percentage%;">@taskInfo.Percentage%</div>
         </div>
-    }
-
-    @if (Model.TaskInfos.All(x => x.Status == TaskStatus.RanToCompletion ||
-                                  x.Status == TaskStatus.Faulted ||
-                                  x.Status == TaskStatus.Canceled))
-    {
-        <span id="stopPolling"></span>
-        if (Model.TaskInfos.Any(x => x.Status == TaskStatus.Faulted ||
-                                     x.Status == TaskStatus.Canceled))
+        @if (taskInfo.Exception != null)
         {
-            <span id="taskFailed"></span>
-
-            <div class="align-self-end mb-3">
-                <button style="@ButtonStyle.Secondary" onclick="PageManager.ClosePage();">@Localization.ButtonClose</button>
-            </div>
+          <div class="mt-2 @exceptionColor">
+            @taskInfo.Exception.Message
+          </div>
         }
-    }
-    else
+      </div>
+    </div>
+  }
+
+  @if (Model.TaskInfos.All(x => x.Status == TaskStatus.RanToCompletion ||
+                                x.Status == TaskStatus.Faulted ||
+                                x.Status == TaskStatus.Canceled))
+  {
+    <span id="stopPolling"></span>
+    if (Model.TaskInfos.Any(x => x.Status == TaskStatus.Faulted ||
+                                 x.Status == TaskStatus.Canceled))
     {
-        <div class="align-self-end mb-3">
-            <button id="btnAbortTask" style="@ButtonStyle.Danger"
-                    onclick="TaskManager.Abort();"
-                    disabled="@Model.TaskInfos.Any(x => x.CancellationToken.IsCancellationRequested)">
-                @Localization.ButtonAbort
-            </button>
-        </div>
+      <span id="taskFailed"></span>
+
+      <div class="align-self-end mb-3">
+        <button style="@ButtonStyle.Secondary" onclick="PageManager.ClosePage();">@Localization.ButtonClose</button>
+      </div>
     }
+  }
+  else
+  {
+    <div class="align-self-end mb-3">
+      <button id="btnAbortTask" style="@ButtonStyle.Danger"
+              onclick="TaskManager.Abort();"
+              disabled="@Model.TaskInfos.Any(x => x.CancellationToken.IsCancellationRequested)">
+        @Localization.ButtonAbort
+      </button>
+    </div>
+  }
 </div>
 

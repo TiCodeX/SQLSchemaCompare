@@ -5,32 +5,32 @@
 @model AboutPageModel
 
 <div class="container tcx-about">
-    <div class="row">
-        <div class="col-8 p-2">
-            <img src="img/ticodex.png" width="200" />
-            <br />
-            <label class="tcx-about-brand">@Model.ProductName</label>
-        </div>
-        <div class="col-4 text-right p-3">
-            <h5>v@(Model.AppVersion)</h5>
-        </div>
+  <div class="row">
+    <div class="col-8 p-2">
+      <img src="img/ticodex.png" width="200" />
+      <br />
+      <label class="tcx-about-brand">@Model.ProductName</label>
     </div>
+    <div class="col-4 text-right p-3">
+      <h5>v@(Model.AppVersion)</h5>
+    </div>
+  </div>
 
-    <div class="row">
-        <div class="col-12 tcx-about-license-info">
-            @Localization.LabelAbout
-            <br />
-            <br />
-            @Localization.LabelWebsite: <a href="#" onclick="Utility.OpenExternalBrowser('https://github.com/TiCodeX/SQLSchemaCompare')">https://github.com/TiCodeX/SQLSchemaCompare</a>
-            <br />
-            @Localization.LabelLicense: <a href="#" onclick="Utility.OpenExternalBrowser('https://choosealicense.com/licenses/gpl-3.0/')">GPL-3.0</a>
-        </div>
+  <div class="row">
+    <div class="col-12 tcx-about-license-info">
+      @Localization.LabelAbout
+      <br />
+      <br />
+      @Localization.LabelWebsite: <a href="#" onclick="Utility.OpenExternalBrowser('https://github.com/TiCodeX/SQLSchemaCompare')">https://github.com/TiCodeX/SQLSchemaCompare</a>
+      <br />
+      @Localization.LabelLicense: <a href="#" onclick="Utility.OpenExternalBrowser('https://choosealicense.com/licenses/gpl-3.0/')">GPL-3.0</a>
     </div>
-    <div class="row">
-        <div class="col-12">
-            <label class="float-right text-right">
-                &copy; @(DateTime.Now.Year) TiCodeX.<br />All rights protected.
-            </label>
-        </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <label class="float-right text-right">
+        &copy; @(DateTime.Now.Year) TiCodeX.<br />All rights protected.
+      </label>
     </div>
+  </div>
 </div>

@@ -23,7 +23,7 @@ module.exports = {
       languageOptions: {
         parser: tseslint.parser,
         parserOptions: {
-          project: true,
+          projectService: true,
           tsconfigRootDir: dir,
         },
       },

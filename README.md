@@ -17,6 +17,9 @@
   <a href="https://github.com/TiCodeX/SQLSchemaCompare/actions/workflows/integration-tests.yml">
     <img src="https://img.shields.io/github/actions/workflow/status/TiCodeX/SQLSchemaCompare/integration-tests.yml?label=integration-tests">
   </a>
+  <a href="https://github.com/TiCodeX/SQLSchemaCompare/actions/workflows/docker-tests.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/TiCodeX/SQLSchemaCompare/docker-tests.yml?label=docker-tests">
+  </a>
 </div>
 
 ## Description

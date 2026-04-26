@@ -1,0 +1,81 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Test1234!
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "Test1234!" -Q "SELECT 1" -C || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+  mssql_init:
+    image: alpine:latest
+    depends_on:
+      mssql:
+        condition: service_healthy
+    volumes:
+      - ./SQLSchemaCompare.Test/Datasources:/scripts
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        apk add --no-cache curl tar bzip2
+
+        curl -L https://github.com/microsoft/go-sqlcmd/releases/download/v1.10.0/sqlcmd-linux-amd64.tar.bz2 | tar -xj -C /usr/local/bin
+
+        sqlcmd -C -S mssql -U sa -P "Test1234!" -Q "DROP DATABASE IF EXISTS sakila_source"
+        sqlcmd -C -S mssql -U sa -P "Test1234!" -Q "CREATE DATABASE sakila_source"
+        sqlcmd -C -S mssql -U sa -P "Test1234!" -d sakila_source -i /scripts/sakila-schema-microsoftsql.sql
+
+        sqlcmd -C -S mssql -U sa -P "Test1234!" -Q "DROP DATABASE IF EXISTS sakila_target"
+        sqlcmd -C -S mssql -U sa -P "Test1234!" -Q "CREATE DATABASE sakila_target"
+        sqlcmd -C -S mssql -U sa -P "Test1234!" -d sakila_target -i /scripts/sakila-schema-microsoftsql.sql
+
+        sqlcmd -C -S mssql -U sa -P "Test1234!" -d sakila_target -Q "ALTER TABLE business.staff DROP COLUMN last_name"
+
+  sql_schema_compare_test:
+    build:
+      context: .
+      dockerfile: ./SQLSchemaCompare.CLI/Dockerfile
+    depends_on:
+      mssql_init:
+        condition: service_completed_successfully
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        projectFile=$(mktemp)
+        {
+          echo '<?xml version="1.0" encoding="utf-8"?>'
+          echo '<CompareProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">'
+          echo '  <SourceProviderOptions xsi:type="MicrosoftSqlDatabaseProviderOptions">'
+          echo '    <UseConnectionString>true</UseConnectionString>'
+          echo '    <ConnectionString>Server=mssql;Database=sakila_source;User ID=sa;Password=Test1234!;TrustServerCertificate=True;</ConnectionString>'
+          echo '  </SourceProviderOptions>'
+          echo '  <TargetProviderOptions xsi:type="MicrosoftSqlDatabaseProviderOptions">'
+          echo '    <UseConnectionString>true</UseConnectionString>'
+          echo '    <ConnectionString>Server=mssql;Database=sakila_target;User ID=sa;Password=Test1234!;TrustServerCertificate=True;</ConnectionString>'
+          echo '  </TargetProviderOptions>'
+          echo '  <Options>'
+          echo '  </Options>'
+          echo '</CompareProject>'
+        } > "$$projectFile"
+
+        outputFile=$(mktemp)
+
+        /app/TiCodeX.SQLSchemaCompare.CLI -p $$projectFile -o $$outputFile
+
+        output=$(cat $$outputFile)
+        expected=$(printf "ALTER TABLE [business].[staff] ADD [last_name] [varchar](45) NOT NULL\nGO")
+
+        if [ "$$output" != "$$expected" ]; then
+          echo "Output does not match expected"
+          echo "Expected:"
+          printf "%s" "$$expected" | hexdump -C
+          echo "Actual:"
+          printf "%s" "$$output" | hexdump -C
+          exit 1
+        fi

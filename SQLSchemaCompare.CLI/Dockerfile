@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/runtime:8.0-alpine AS base
+FROM mcr.microsoft.com/dotnet/runtime:10.0-alpine AS base
 WORKDIR /app
 
 # Install Timezone data
@@ -10,7 +10,7 @@ RUN apk add --update icu-libs
 RUN apk add icu-data-full
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
 
 WORKDIR /src
 
@@ -27,10 +27,10 @@ COPY ["SQLSchemaCompare.Infrastructure/SQLSchemaCompare.Infrastructure.csproj", 
 COPY ["SQLSchemaCompare.CLI/SQLSchemaCompare.CLI.csproj", "SQLSchemaCompare.CLI/"]
 
 # restore the projects (this will be very fast with layer caching if the csproj files haven't changed)
-RUN dotnet restore -r linux-musl-x64 SQLSchemaCompare.Core/SQLSchemaCompare.Core.csproj
-RUN dotnet restore -r linux-musl-x64 SQLSchemaCompare.Services/SQLSchemaCompare.Services.csproj
-RUN dotnet restore -r linux-musl-x64 SQLSchemaCompare.Infrastructure/SQLSchemaCompare.Infrastructure.csproj
-RUN dotnet restore -r linux-musl-x64 SQLSchemaCompare.CLI/SQLSchemaCompare.CLI.csproj
+RUN dotnet restore -r linux-musl-x64 SQLSchemaCompare.Core
+RUN dotnet restore -r linux-musl-x64 SQLSchemaCompare.Services
+RUN dotnet restore -r linux-musl-x64 SQLSchemaCompare.Infrastructure
+RUN dotnet restore -r linux-musl-x64 SQLSchemaCompare.CLI
 
 # Copy the rest of the code (we only copy the necessary files to make good use of layer caching)
 COPY SQLSchemaCompare.Core/ SQLSchemaCompare.Core
@@ -38,12 +38,10 @@ COPY SQLSchemaCompare.Services/ SQLSchemaCompare.Services
 COPY SQLSchemaCompare.Infrastructure/ SQLSchemaCompare.Infrastructure
 COPY SQLSchemaCompare.CLI/ SQLSchemaCompare.CLI
 
-WORKDIR /src/SQLSchemaCompare.CLI
-
-RUN dotnet build --no-restore SQLSchemaCompare.CLI.csproj -c Release
+RUN dotnet build --no-restore SQLSchemaCompare.CLI -c Release
 
 FROM build AS publish
-RUN dotnet publish --no-restore --no-build SQLSchemaCompare.CLI.csproj -c Release -o /app/publish
+RUN dotnet publish --no-restore --no-build SQLSchemaCompare.CLI -c Release -o /app/publish
 
 FROM base AS final
 COPY --from=publish /app/publish .

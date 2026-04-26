@@ -1,0 +1,40 @@
+name: Docker Tests
+
+on:
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  docker_tests:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Prepare test environment
+      run: docker compose up --no-start
+
+    - name: Start test
+      run: |
+        docker compose start
+        docker compose logs --follow sql_schema_compare_test
+
+        # Exit with the same exit code of the service
+        id=$(docker compose ps -a --format "{{.ID}}" sql_schema_compare_test || true)
+        if [ -z "$id" ]; then
+            echo "Unable to get id"
+            exit 1
+        fi
+        exitCode=$(docker inspect --format='{{.State.ExitCode}}' "$id" || true)
+        if [ -z "$exitCode" ]; then
+            echo "Unable to get exitCode"
+            exit 1
+        fi
+        exit $exitCode
+
+    - name: Display other services logs
+      if: always()
+      run: |
+        docker compose logs mssql
+        docker compose logs mssql_init

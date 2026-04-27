@@ -4,22 +4,13 @@
 </p>
 
 <div align="center">
-  <a href="https://github.com/TiCodeX/SQLSchemaCompare/stargazers">
-    <img src="https://img.shields.io/github/stars/TiCodeX/SQLSchemaCompare?style=social">
-  </a>
-  <a href="https://github.com/TiCodeX/SQLSchemaCompare/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/TiCodeX/SQLSchemaCompare"></a>
-  <a href="https://github.com/TiCodeX/SQLSchemaCompare/releases">
-    <img src="https://img.shields.io/github/v/release/TiCodeX/SQLSchemaCompare"></a>
+  <a href="https://github.com/TiCodeX/SQLSchemaCompare/stargazers"><img src="https://img.shields.io/github/stars/TiCodeX/SQLSchemaCompare?style=social"></a>
+  <a href="https://github.com/TiCodeX/SQLSchemaCompare/blob/master/LICENSE"><img src="https://img.shields.io/github/license/TiCodeX/SQLSchemaCompare"></a>
+  <a href="https://github.com/TiCodeX/SQLSchemaCompare/releases"><img src="https://img.shields.io/github/v/release/TiCodeX/SQLSchemaCompare"></a>
   <br/>
-  <a href="https://github.com/TiCodeX/SQLSchemaCompare/actions/workflows/unit-tests.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/TiCodeX/SQLSchemaCompare/unit-tests.yml?label=unit-tests"></a>
-  <a href="https://github.com/TiCodeX/SQLSchemaCompare/actions/workflows/integration-tests.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/TiCodeX/SQLSchemaCompare/integration-tests.yml?label=integration-tests">
-  </a>
-  <a href="https://github.com/TiCodeX/SQLSchemaCompare/actions/workflows/docker-tests.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/TiCodeX/SQLSchemaCompare/docker-tests.yml?label=docker-tests">
-  </a>
+  <a href="https://github.com/TiCodeX/SQLSchemaCompare/actions/workflows/unit-tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/TiCodeX/SQLSchemaCompare/unit-tests.yml?label=unit-tests"></a>
+  <a href="https://github.com/TiCodeX/SQLSchemaCompare/actions/workflows/integration-tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/TiCodeX/SQLSchemaCompare/integration-tests.yml?label=integration-tests"></a>
+  <a href="https://github.com/TiCodeX/SQLSchemaCompare/actions/workflows/docker-tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/TiCodeX/SQLSchemaCompare/docker-tests.yml?label=docker-tests"></a>
 </div>
 
 ## Description

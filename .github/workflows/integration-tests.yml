@@ -7,6 +7,10 @@ on:
     branches: [ master ]
   workflow_dispatch:
 
+permissions:
+  checks: write
+  pull-requests: write
+
 jobs:
   microsoft_sql:
     if: github.event.pull_request.draft == false
@@ -50,9 +54,9 @@ jobs:
       run: dotnet test --no-build --no-restore SQLSchemaCompare.Test -c Release --logger trx --filter "Category=IntegrationTest&Category=MicrosoftSQL"
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()
+      if: (!cancelled())
       with:
-        check_name: "microsoft_sql Test Results"
+        check_name: "MicrosoftSQL Test Results"
         files: SQLSchemaCompare.Test/TestResults/*.trx
 
   my_sql:
@@ -95,9 +99,9 @@ jobs:
       run: dotnet test --no-build --no-restore SQLSchemaCompare.Test -c Release --logger trx --filter "Category=IntegrationTest&Category=MySQL"
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()
+      if: (!cancelled())
       with:
-        check_name: "my_sql Test Results"
+        check_name: "MySQL Test Results"
         files: SQLSchemaCompare.Test/TestResults/*.trx
 
   postgre_sql:
@@ -146,9 +150,9 @@ jobs:
       run: dotnet test --no-build --no-restore SQLSchemaCompare.Test -c Release --logger trx --filter "Category=IntegrationTest&Category=PostgreSQL"
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()
+      if: (!cancelled())
       with:
-        check_name: "postgre_sql Test Results"
+        check_name: "PostgreSQL Test Results"
         files: SQLSchemaCompare.Test/TestResults/*.trx
 
   maria_db:
@@ -195,7 +199,7 @@ jobs:
       run: dotnet test --no-build --no-restore SQLSchemaCompare.Test -c Release --logger trx --filter "Category=IntegrationTest&Category=MariaDB"
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()
+      if: (!cancelled())
       with:
-        check_name: "maria_db Test Results"
+        check_name: "MariaDB Test Results"
         files: SQLSchemaCompare.Test/TestResults/*.trx

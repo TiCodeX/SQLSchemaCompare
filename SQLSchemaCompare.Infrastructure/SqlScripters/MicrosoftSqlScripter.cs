@@ -3,22 +3,18 @@
     /// <summary>
     /// Sql scripter class specific for MicrosoftSql database
     /// </summary>
-    internal class MicrosoftSqlScripter : ADatabaseScripter<MicrosoftSqlScriptHelper>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="MicrosoftSqlScripter"/> class.
+    /// </remarks>
+    /// <param name="logger">The injected logger instance</param>
+    /// <param name="options">The project options</param>
+    internal class MicrosoftSqlScripter(ILogger logger, ProjectOptions options)
+        : ADatabaseScripter<MicrosoftSqlScriptHelper>(logger, options, new MicrosoftSqlScriptHelper(options))
     {
         /// <summary>
         /// The alter regex replacement
         /// </summary>
         private const string AlterRegexReplacement = @"$1ALTER$2$3$4";
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MicrosoftSqlScripter"/> class.
-        /// </summary>
-        /// <param name="logger">The injected logger instance</param>
-        /// <param name="options">The project options</param>
-        public MicrosoftSqlScripter(ILogger logger, ProjectOptions options)
-            : base(logger, options, new MicrosoftSqlScriptHelper(options))
-        {
-        }
 
         /// <inheritdoc/>
         protected override string ScriptCreateSchema(ABaseDbSchema schema)
@@ -83,8 +79,7 @@
         {
             var sb = new StringBuilder();
 
-            var targetTable = t.MappedDbObject as ABaseDbTable;
-            if (targetTable == null)
+            if (t.MappedDbObject is not ABaseDbTable targetTable)
             {
                 throw new ArgumentException($"{nameof(t.MappedDbObject)} is null");
             }
@@ -354,7 +349,10 @@
                 case MicrosoftSqlIndex.IndexType.Spatial:
                     sb.Append("SPATIAL ");
                     break;
-
+                case MicrosoftSqlIndex.IndexType.Heap:
+                case MicrosoftSqlIndex.IndexType.ClusteredColumnstore:
+                case MicrosoftSqlIndex.IndexType.NonclusteredColumnstore:
+                case MicrosoftSqlIndex.IndexType.NonclusteredHash:
                 default:
                     throw new NotSupportedException($"Index of type '{indexMicrosoft.Type}' is not supported");
             }
@@ -555,8 +553,7 @@
         /// <inheritdoc/>
         protected override string ScriptCreateSequence(ABaseDbSequence sequence)
         {
-            var sequenceMicrosoft = sequence as MicrosoftSqlSequence;
-            if (sequenceMicrosoft == null)
+            if (sequence is not MicrosoftSqlSequence sequenceMicrosoft)
             {
                 throw new ArgumentNullException(nameof(sequence));
             }
@@ -591,14 +588,12 @@
         /// <inheritdoc/>
         protected override string ScriptAlterSequence(ABaseDbSequence sourceSequence, ABaseDbSequence targetSequence)
         {
-            var sourceSequenceMicrosoft = sourceSequence as MicrosoftSqlSequence;
-            if (sourceSequenceMicrosoft == null)
+            if (sourceSequence is not MicrosoftSqlSequence sourceSequenceMicrosoft)
             {
                 throw new ArgumentNullException(nameof(sourceSequence));
             }
 
-            var targetSequenceMicrosoft = targetSequence as MicrosoftSqlSequence;
-            if (targetSequenceMicrosoft == null)
+            if (targetSequence is not MicrosoftSqlSequence targetSequenceMicrosoft)
             {
                 throw new ArgumentNullException(nameof(targetSequence));
             }
@@ -668,8 +663,7 @@
                     else
                     {
                         var maxLength = msType.MaxLength;
-                        if (msType.SystemType.Name == "nchar" ||
-                            msType.SystemType.Name == "nvarchar")
+                        if (msType.SystemType.Name is "nchar" or "nvarchar")
                         {
                             maxLength /= 2;
                         }

@@ -43,13 +43,12 @@
                             // Task.WaitAll is not used here because it throws an exception if a Task has been canceled,
                             // instead with WhenAll/ContinueWith it creates an empty task which does nothing but allows
                             // to continue the execution
-                            Task.WhenAll(runningTasks.Select(x => x.Item2).ToArray()).ContinueWith(t => { }, TaskScheduler.Default).Wait();
+                            Task.WhenAll(runningTasks.Select(x => x.Item2)).ContinueWith(t => { }, TaskScheduler.Default).Wait();
                             terminatedTasks.AddRange(runningTasks.Select(x =>
                             {
                                 // If a Task is completed but the TaskInfo status is not a final state, it means that
                                 // the Task is not even started, hence the status should be Canceled
-                                if (x.Item1.Info.Status != TaskStatus.RanToCompletion &&
-                                    x.Item1.Info.Status != TaskStatus.Faulted)
+                                if (x.Item1.Info.Status is not TaskStatus.RanToCompletion and not TaskStatus.Faulted)
                                 {
                                     x.Item1.Info.Status = TaskStatus.Canceled;
                                     x.Item1.Info.Exception = new OperationCanceledException(Localization.ErrorOperationNotExecuted);
@@ -59,8 +58,7 @@
                             }));
                             runningTasks.Clear();
 
-                            if (terminatedTasks.Any(x => x.Info.Status == TaskStatus.Faulted ||
-                                                         x.Info.Status == TaskStatus.Canceled))
+                            if (terminatedTasks.Any(x => x.Info.Status is TaskStatus.Faulted or TaskStatus.Canceled))
                             {
                                 // Put the current task back to the remaining list and set all as not executed
                                 remainingTasks.Enqueue(task);

@@ -71,10 +71,7 @@
             IDatabaseFilter databaseFilter,
             ITaskService taskService)
         {
-            if (loggerFactory == null)
-            {
-                throw new ArgumentNullException(nameof(loggerFactory));
-            }
+            ArgumentNullException.ThrowIfNull(loggerFactory);
 
             this.logger = loggerFactory.CreateLogger(nameof(DatabaseCompareService));
             this.projectService = projectService;
@@ -88,8 +85,8 @@
         /// <inheritdoc />
         public void StartCompare()
         {
-            this.taskService.ExecuteTasks(new List<TaskWork>
-            {
+            this.taskService.ExecuteTasks(
+            [
                 new TaskWork(
                     new TaskInfo(Localization.LabelRetrieveSourceDatabase),
                     true,
@@ -124,7 +121,7 @@
                     new TaskInfo(Localization.LabelDatabaseComparison),
                     false,
                     this.ExecuteDatabaseComparison),
-            });
+            ]);
         }
 
         /// <summary>
@@ -190,10 +187,7 @@
             foreach (var item in dbObjects)
             {
                 item.CreateScript = scripter.GenerateCreateScript(item, true);
-                if (item.MappedDbObject != null)
-                {
-                    item.MappedDbObject.CreateScript = scripter.GenerateCreateScript(item.MappedDbObject, true);
-                }
+                item.MappedDbObject?.CreateScript = scripter.GenerateCreateScript(item.MappedDbObject, true);
             }
         }
 
@@ -215,13 +209,13 @@
                 // Linearize the 2 databases into a single list of all source items and the target items not present in source
                 var maps = new List<ObjectMap>
                 {
-                    new ObjectMap { ObjectTitle = Localization.StatusComparingSchemas, DbObjects = this.retrievedSourceDatabase.Schemas.Concat(this.retrievedTargetDatabase.Schemas.Where(x => x.MappedDbObject == null)) },
-                    new ObjectMap { ObjectTitle = Localization.StatusComparingTables, DbObjects = this.retrievedSourceDatabase.Tables.Concat(this.retrievedTargetDatabase.Tables.Where(x => x.MappedDbObject == null)) },
-                    new ObjectMap { ObjectTitle = Localization.StatusComparingViews, DbObjects = this.retrievedSourceDatabase.Views.Concat(this.retrievedTargetDatabase.Views.Where(x => x.MappedDbObject == null)) },
-                    new ObjectMap { ObjectTitle = Localization.StatusComparingFunctions, DbObjects = this.retrievedSourceDatabase.Functions.Concat(this.retrievedTargetDatabase.Functions.Where(x => x.MappedDbObject == null)) },
-                    new ObjectMap { ObjectTitle = Localization.StatusComparingStoredProcedures, DbObjects = this.retrievedSourceDatabase.StoredProcedures.Concat(this.retrievedTargetDatabase.StoredProcedures.Where(x => x.MappedDbObject == null)) },
-                    new ObjectMap { ObjectTitle = Localization.StatusComparingDataTypes, DbObjects = this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined).Concat(this.retrievedTargetDatabase.DataTypes.Where(x => x.MappedDbObject == null && x.IsUserDefined)) },
-                    new ObjectMap { ObjectTitle = Localization.StatusComparingSequences, DbObjects = this.retrievedSourceDatabase.Sequences.Concat(this.retrievedTargetDatabase.Sequences.Where(x => x.MappedDbObject == null)) },
+                    new() { ObjectTitle = Localization.StatusComparingSchemas, DbObjects = this.retrievedSourceDatabase.Schemas.Concat(this.retrievedTargetDatabase.Schemas.Where(x => x.MappedDbObject == null)) },
+                    new() { ObjectTitle = Localization.StatusComparingTables, DbObjects = this.retrievedSourceDatabase.Tables.Concat(this.retrievedTargetDatabase.Tables.Where(x => x.MappedDbObject == null)) },
+                    new() { ObjectTitle = Localization.StatusComparingViews, DbObjects = this.retrievedSourceDatabase.Views.Concat(this.retrievedTargetDatabase.Views.Where(x => x.MappedDbObject == null)) },
+                    new() { ObjectTitle = Localization.StatusComparingFunctions, DbObjects = this.retrievedSourceDatabase.Functions.Concat(this.retrievedTargetDatabase.Functions.Where(x => x.MappedDbObject == null)) },
+                    new() { ObjectTitle = Localization.StatusComparingStoredProcedures, DbObjects = this.retrievedSourceDatabase.StoredProcedures.Concat(this.retrievedTargetDatabase.StoredProcedures.Where(x => x.MappedDbObject == null)) },
+                    new() { ObjectTitle = Localization.StatusComparingDataTypes, DbObjects = this.retrievedSourceDatabase.DataTypes.Where(x => x.IsUserDefined).Concat(this.retrievedTargetDatabase.DataTypes.Where(x => x.MappedDbObject == null && x.IsUserDefined)) },
+                    new() { ObjectTitle = Localization.StatusComparingSequences, DbObjects = this.retrievedSourceDatabase.Sequences.Concat(this.retrievedTargetDatabase.Sequences.Where(x => x.MappedDbObject == null)) },
                 };
 
                 var totalItems = maps.SelectMany(x => x.DbObjects).Count();
@@ -365,17 +359,17 @@
             ABaseDb onlyTargetDb;
             switch (this.retrievedSourceDatabase)
             {
-                case MicrosoftSqlDb _:
+                case MicrosoftSqlDb:
                     onlySourceDb = new MicrosoftSqlDb();
                     onlyTargetDb = new MicrosoftSqlDb();
                     break;
 
-                case MySqlDb _:
+                case MySqlDb:
                     onlySourceDb = new MySqlDb();
                     onlyTargetDb = new MySqlDb();
                     break;
 
-                case PostgreSqlDb _:
+                case PostgreSqlDb:
                     onlySourceDb = new PostgreSqlDb();
                     onlyTargetDb = new PostgreSqlDb();
                     break;

@@ -3,17 +3,12 @@
     /// <summary>
     /// Script helper class specific for MicrosoftSql database
     /// </summary>
-    public class MicrosoftSqlScriptHelper : AScriptHelper
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="MicrosoftSqlScriptHelper"/> class.
+    /// </remarks>
+    /// <param name="options">The project options</param>
+    public class MicrosoftSqlScriptHelper(ProjectOptions options) : AScriptHelper(options)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MicrosoftSqlScriptHelper"/> class.
-        /// </summary>
-        /// <param name="options">The project options</param>
-        public MicrosoftSqlScriptHelper(ProjectOptions options)
-            : base(options)
-        {
-        }
-
         /// <summary>
         /// Script the foreign key reference action
         /// </summary>
@@ -21,15 +16,14 @@
         /// <returns>The scripted action</returns>
         public static string ScriptForeignKeyAction(MicrosoftSqlForeignKey.ReferentialAction action)
         {
-            switch (action)
+            return action switch
             {
-                case MicrosoftSqlForeignKey.ReferentialAction.NOACTION: return "NO ACTION";
-                case MicrosoftSqlForeignKey.ReferentialAction.CASCADE: return "CASCADE";
-                case MicrosoftSqlForeignKey.ReferentialAction.SETDEFAULT: return "SET DEFAULT";
-                case MicrosoftSqlForeignKey.ReferentialAction.SETNULL: return "SET NULL";
-                default:
-                    throw new ArgumentException($"Invalid referential action: {action}", nameof(action));
-            }
+                MicrosoftSqlForeignKey.ReferentialAction.NOACTION => "NO ACTION",
+                MicrosoftSqlForeignKey.ReferentialAction.CASCADE => "CASCADE",
+                MicrosoftSqlForeignKey.ReferentialAction.SETDEFAULT => "SET DEFAULT",
+                MicrosoftSqlForeignKey.ReferentialAction.SETNULL => "SET NULL",
+                _ => throw new ArgumentException($"Invalid referential action: {action}", nameof(action)),
+            };
         }
 
         /// <inheritdoc/>
@@ -44,10 +38,7 @@
         [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         public override string ScriptColumn(ABaseDbColumn column, bool scriptDefaultConstraint)
         {
-            if (column == null)
-            {
-                throw new ArgumentNullException(nameof(column));
-            }
+            ArgumentNullException.ThrowIfNull(column);
 
             var col = (MicrosoftSqlColumn)column;
 
@@ -108,72 +99,33 @@
         /// <inheritdoc/>
         public override string ScriptColumnDefaultValue(ABaseDbColumn column)
         {
-            if (column == null)
-            {
-                throw new ArgumentNullException(nameof(column));
-            }
+            ArgumentNullException.ThrowIfNull(column);
 
-            switch (column.DataType)
+            return column.DataType switch
             {
                 // Exact numerics
-                case "bigint":
-                case "int":
-                case "smallint":
-                case "tinyint":
-                case "bit":
-                case "smallmoney":
-                case "money":
-                case "numeric":
-                case "decimal":
-                    return "0";
+                "bigint" or "int" or "smallint" or "tinyint" or "bit" or "smallmoney" or "money" or "numeric" or "decimal" => "0",
 
                 // Approximate numerics
-                case "float":
-                case "real":
-                    return "0";
+                "float" or "real" => "0",
 
                 // Date and time
-                case "date":
-                case "datetime":
-                case "datetime2":
-                case "datetimeoffset":
-                case "smalldatetime":
-                case "time":
-                    return "GETUTCDATE()";
+                "date" or "datetime" or "datetime2" or "datetimeoffset" or "smalldatetime" or "time" => "GETUTCDATE()",
 
                 // Character strings
                 // Unicode character strings
-                case "char":
-                case "nchar":
-                case "varchar":
-                case "nvarchar":
-                case "text":
-                case "ntext":
-                    return "''";
+                "char" or "nchar" or "varchar" or "nvarchar" or "text" or "ntext" => "''",
 
                 // Binary strings
-                case "binary":
-                case "varbinary":
-                case "image":
-                    return "0x00";
+                "binary" or "varbinary" or "image" => "0x00",
 
                 // Other data types
-                case "uniqueidentifier":
-                    return "NEWID()";
-                case "xml":
-                    return "''";
-                case "geography":
-                case "geometry":
-                    return "'POINT(0 0)'";
-                case "cursor":
-                case "rowversion":
-                case "hierarchyid":
-                case "sql_variant":
-                    throw new NotSupportedException($"Unknown default value for data type: {column.DataType}");
-
-                default:
-                    throw new ArgumentException($"Unknown data type: {column.DataType}");
-            }
+                "uniqueidentifier" => "NEWID()",
+                "xml" => "''",
+                "geography" or "geometry" => "'POINT(0 0)'",
+                "cursor" or "rowversion" or "hierarchyid" or "sql_variant" => throw new NotSupportedException($"Unknown default value for data type: {column.DataType}"),
+                _ => throw new ArgumentException($"Unknown data type: {column.DataType}"),
+            };
         }
 
         /// <inheritdoc />

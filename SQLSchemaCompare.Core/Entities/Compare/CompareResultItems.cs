@@ -8,61 +8,61 @@
         /// <summary>
         /// Gets the schemas
         /// </summary>
-        public List<CompareResultItem<ABaseDbSchema>> Schemas { get; } = new List<CompareResultItem<ABaseDbSchema>>();
+        public List<CompareResultItem<ABaseDbSchema>> Schemas { get; } = [];
 
         /// <summary>
         /// Gets the tables
         /// </summary>
-        public List<CompareResultItem<ABaseDbTable>> Tables { get; } = new List<CompareResultItem<ABaseDbTable>>();
+        public List<CompareResultItem<ABaseDbTable>> Tables { get; } = [];
 
         /// <summary>
         /// Gets the indexes
         /// </summary>
-        public List<CompareResultItem<ABaseDbIndex>> Indexes { get; } = new List<CompareResultItem<ABaseDbIndex>>();
+        public List<CompareResultItem<ABaseDbIndex>> Indexes { get; } = [];
 
         /// <summary>
         /// Gets the constraints
         /// </summary>
-        public List<CompareResultItem<ABaseDbConstraint>> Constraints { get; } = new List<CompareResultItem<ABaseDbConstraint>>();
+        public List<CompareResultItem<ABaseDbConstraint>> Constraints { get; } = [];
 
         /// <summary>
         /// Gets the primary keys
         /// </summary>
-        public List<CompareResultItem<ABaseDbPrimaryKey>> PrimaryKeys { get; } = new List<CompareResultItem<ABaseDbPrimaryKey>>();
+        public List<CompareResultItem<ABaseDbPrimaryKey>> PrimaryKeys { get; } = [];
 
         /// <summary>
         /// Gets the foreign keys
         /// </summary>
-        public List<CompareResultItem<ABaseDbForeignKey>> ForeignKeys { get; } = new List<CompareResultItem<ABaseDbForeignKey>>();
+        public List<CompareResultItem<ABaseDbForeignKey>> ForeignKeys { get; } = [];
 
         /// <summary>
         /// Gets the triggers
         /// </summary>
-        public List<CompareResultItem<ABaseDbTrigger>> Triggers { get; } = new List<CompareResultItem<ABaseDbTrigger>>();
+        public List<CompareResultItem<ABaseDbTrigger>> Triggers { get; } = [];
 
         /// <summary>
         /// Gets the views
         /// </summary>
-        public List<CompareResultItem<ABaseDbView>> Views { get; } = new List<CompareResultItem<ABaseDbView>>();
+        public List<CompareResultItem<ABaseDbView>> Views { get; } = [];
 
         /// <summary>
         /// Gets the functions
         /// </summary>
-        public List<CompareResultItem<ABaseDbFunction>> Functions { get; } = new List<CompareResultItem<ABaseDbFunction>>();
+        public List<CompareResultItem<ABaseDbFunction>> Functions { get; } = [];
 
         /// <summary>
         /// Gets the stored procedures
         /// </summary>
-        public List<CompareResultItem<ABaseDbStoredProcedure>> StoredProcedures { get; } = new List<CompareResultItem<ABaseDbStoredProcedure>>();
+        public List<CompareResultItem<ABaseDbStoredProcedure>> StoredProcedures { get; } = [];
 
         /// <summary>
         /// Gets the sequences
         /// </summary>
-        public List<CompareResultItem<ABaseDbSequence>> Sequences { get; } = new List<CompareResultItem<ABaseDbSequence>>();
+        public List<CompareResultItem<ABaseDbSequence>> Sequences { get; } = [];
 
         /// <summary>
         /// Gets the data types
         /// </summary>
-        public List<CompareResultItem<ABaseDbDataType>> DataTypes { get; } = new List<CompareResultItem<ABaseDbDataType>>();
+        public List<CompareResultItem<ABaseDbDataType>> DataTypes { get; } = [];
     }
 }

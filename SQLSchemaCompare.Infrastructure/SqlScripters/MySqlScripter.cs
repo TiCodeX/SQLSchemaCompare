@@ -3,18 +3,14 @@
     /// <summary>
     /// Sql scripter class specific for MySql database
     /// </summary>
-    internal class MySqlScripter : ADatabaseScripter<MySqlScriptHelper>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="MySqlScripter"/> class.
+    /// </remarks>
+    /// <param name="logger">The injected logger instance</param>
+    /// <param name="options">The project options</param>
+    internal class MySqlScripter(ILogger logger, ProjectOptions options)
+        : ADatabaseScripter<MySqlScriptHelper>(logger, options, new MySqlScriptHelper(options))
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MySqlScripter"/> class.
-        /// </summary>
-        /// <param name="logger">The injected logger instance</param>
-        /// <param name="options">The project options</param>
-        public MySqlScripter(ILogger logger, ProjectOptions options)
-            : base(logger, options, new MySqlScriptHelper(options))
-        {
-        }
-
         /// <summary>
         /// Gets the functions/stored procedures/triggers delimiter
         /// </summary>
@@ -84,8 +80,7 @@
         {
             var sb = new StringBuilder();
 
-            var targetTable = t.MappedDbObject as ABaseDbTable;
-            if (targetTable == null)
+            if (t.MappedDbObject is not ABaseDbTable targetTable)
             {
                 throw new ArgumentException($"{nameof(t.MappedDbObject)} is null");
             }

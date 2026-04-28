@@ -3,21 +3,16 @@
     /// <summary>
     /// Implementation that provides the mechanism to store and retrieve application settings
     /// </summary>
-    public class AppSettingsRepository : IAppSettingsRepository
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="AppSettingsRepository"/> class.
+    /// </remarks>
+    /// <param name="appGlobals">Injected application global constants</param>
+    public class AppSettingsRepository(IAppGlobals appGlobals) : IAppSettingsRepository
     {
         /// <summary>
         /// The app globals
         /// </summary>
-        private readonly IAppGlobals appGlobals;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AppSettingsRepository"/> class.
-        /// </summary>
-        /// <param name="appGlobals">Injected application global constants</param>
-        public AppSettingsRepository(IAppGlobals appGlobals)
-        {
-            this.appGlobals = appGlobals;
-        }
+        private readonly IAppGlobals appGlobals = appGlobals;
 
         /// <inheritdoc/>
         public void Write(AppSettings appSettings)
@@ -28,10 +23,8 @@
             }
 
             var xml = new XmlSerializer(typeof(AppSettings));
-            using (var f = File.Create(this.appGlobals.AppSettingsFullFilename))
-            {
-                xml.Serialize(f, appSettings);
-            }
+            using var f = File.Create(this.appGlobals.AppSettingsFullFilename);
+            xml.Serialize(f, appSettings);
         }
 
         /// <inheritdoc/>

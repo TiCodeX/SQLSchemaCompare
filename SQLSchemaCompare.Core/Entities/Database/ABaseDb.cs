@@ -23,61 +23,61 @@
         /// <summary>
         /// Gets the database schemas
         /// </summary>
-        public List<ABaseDbSchema> Schemas { get; } = new List<ABaseDbSchema>();
+        public List<ABaseDbSchema> Schemas { get; } = [];
 
         /// <summary>
         /// Gets the database tables
         /// </summary>
-        public List<ABaseDbTable> Tables { get; } = new List<ABaseDbTable>();
+        public List<ABaseDbTable> Tables { get; } = [];
 
         /// <summary>
         /// Gets the database indexes
         /// </summary>
-        public List<ABaseDbIndex> Indexes { get; } = new List<ABaseDbIndex>();
+        public List<ABaseDbIndex> Indexes { get; } = [];
 
         /// <summary>
         /// Gets the database constraints
         /// </summary>
-        public List<ABaseDbConstraint> Constraints { get; } = new List<ABaseDbConstraint>();
+        public List<ABaseDbConstraint> Constraints { get; } = [];
 
         /// <summary>
         /// Gets the database constraints
         /// </summary>
-        public List<ABaseDbPrimaryKey> PrimaryKeys { get; } = new List<ABaseDbPrimaryKey>();
+        public List<ABaseDbPrimaryKey> PrimaryKeys { get; } = [];
 
         /// <summary>
         /// Gets the database foreign keys
         /// </summary>
-        public List<ABaseDbForeignKey> ForeignKeys { get; } = new List<ABaseDbForeignKey>();
+        public List<ABaseDbForeignKey> ForeignKeys { get; } = [];
 
         /// <summary>
         /// Gets the database triggers
         /// </summary>
-        public List<ABaseDbTrigger> Triggers { get; } = new List<ABaseDbTrigger>();
+        public List<ABaseDbTrigger> Triggers { get; } = [];
 
         /// <summary>
         /// Gets the database views
         /// </summary>
-        public List<ABaseDbView> Views { get; } = new List<ABaseDbView>();
+        public List<ABaseDbView> Views { get; } = [];
 
         /// <summary>
         /// Gets the database functions
         /// </summary>
-        public List<ABaseDbFunction> Functions { get; } = new List<ABaseDbFunction>();
+        public List<ABaseDbFunction> Functions { get; } = [];
 
         /// <summary>
         /// Gets the database stored procedures
         /// </summary>
-        public List<ABaseDbStoredProcedure> StoredProcedures { get; } = new List<ABaseDbStoredProcedure>();
+        public List<ABaseDbStoredProcedure> StoredProcedures { get; } = [];
 
         /// <summary>
         /// Gets the database data types
         /// </summary>
-        public List<ABaseDbDataType> DataTypes { get; } = new List<ABaseDbDataType>();
+        public List<ABaseDbDataType> DataTypes { get; } = [];
 
         /// <summary>
         /// Gets the database sequences
         /// </summary>
-        public List<ABaseDbSequence> Sequences { get; } = new List<ABaseDbSequence>();
+        public List<ABaseDbSequence> Sequences { get; } = [];
     }
 }

@@ -3,17 +3,12 @@
     /// <summary>
     /// Information about a Task
     /// </summary>
-    public class TaskInfo
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="TaskInfo"/> class.
+    /// </remarks>
+    /// <param name="name">The name of the Task</param>
+    public class TaskInfo(string name)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TaskInfo"/> class.
-        /// </summary>
-        /// <param name="name">The name of the Task</param>
-        public TaskInfo(string name)
-        {
-            this.Name = name;
-        }
-
         /// <summary>
         /// Gets the id of the Task
         /// </summary>
@@ -22,7 +17,7 @@
         /// <summary>
         /// Gets the name of the Task
         /// </summary>
-        public string Name { get; }
+        public string Name { get; } = name;
 
         /// <summary>
         /// Gets or sets the status of the Task

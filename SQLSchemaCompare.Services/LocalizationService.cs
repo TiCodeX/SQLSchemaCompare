@@ -32,31 +32,20 @@
                 this.customResourceManager = new CustomResourceManager(Localization.ResourceManager);
 
                 var innerField = typeof(Localization).GetField("resourceMan", BindingFlags.NonPublic | BindingFlags.Static);
-                if (innerField != null)
-                {
-                    innerField.SetValue(null, this.customResourceManager);
-                }
+                innerField?.SetValue(null, this.customResourceManager);
             }
         }
 
         /// <inheritdoc />
         public void SetLanguage(Language language)
         {
-            switch (language)
+            Localization.Culture = language switch
             {
-                case Language.English:
-                    Localization.Culture = CultureInfo.GetCultureInfo("en");
-                    break;
-                case Language.German:
-                    Localization.Culture = CultureInfo.GetCultureInfo("de");
-                    break;
-                case Language.Italian:
-                    Localization.Culture = CultureInfo.GetCultureInfo("it");
-                    break;
-                default:
-                    Localization.Culture = CultureInfo.GetCultureInfo("en");
-                    break;
-            }
+                Language.English => CultureInfo.GetCultureInfo("en"),
+                Language.German => CultureInfo.GetCultureInfo("de"),
+                Language.Italian => CultureInfo.GetCultureInfo("it"),
+                _ => CultureInfo.GetCultureInfo("en"),
+            };
         }
 
         /// <inheritdoc />

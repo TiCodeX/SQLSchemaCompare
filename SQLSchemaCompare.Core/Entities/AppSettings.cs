@@ -18,7 +18,7 @@
         /// <summary>
         /// Gets the recently opened projects
         /// </summary>
-        public List<string> RecentProjects { get; } = new List<string>();
+        public List<string> RecentProjects { get; } = [];
 
         /// <summary>
         /// Gets or sets the saved login session

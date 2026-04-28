@@ -3,21 +3,16 @@
     /// <summary>
     /// Common EF database context
     /// </summary>
-    public abstract class ADatabaseContext : DbContext
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ADatabaseContext"/> class.
+    /// </remarks>
+    /// <param name="loggerFactory">The injected logger factory</param>
+    public abstract class ADatabaseContext(ILoggerFactory loggerFactory) : DbContext
     {
         /// <summary>
         /// The logger factory
         /// </summary>
-        private readonly ILoggerFactory loggerFactory;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ADatabaseContext"/> class.
-        /// </summary>
-        /// <param name="loggerFactory">The injected logger factory</param>
-        protected ADatabaseContext(ILoggerFactory loggerFactory)
-        {
-            this.loggerFactory = loggerFactory;
-        }
+        private readonly ILoggerFactory loggerFactory = loggerFactory;
 
         /// <summary>
         /// Gets the hostname
@@ -46,50 +41,48 @@
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
                 command.CommandText = sqlQuery;
 #pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
-                using (var reader = command.ExecuteReader())
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    var t = new T();
+                    var type = t.GetType();
+                    for (var inc = 0; inc < reader.FieldCount; inc++)
                     {
-                        var t = new T();
-                        var type = t.GetType();
-                        for (var inc = 0; inc < reader.FieldCount; inc++)
+                        var columnName = reader.GetName(inc);
+                        var prop = type.GetProperty(columnName);
+                        var value = reader.GetValue(inc);
+                        if (prop != null)
                         {
-                            var columnName = reader.GetName(inc);
-                            var prop = type.GetProperty(columnName);
-                            var value = reader.GetValue(inc);
-                            if (prop != null)
+                            if (prop.PropertyType == typeof(bool) && value is not bool)
                             {
-                                if (prop.PropertyType == typeof(bool) && !(value is bool))
+                                switch (value.ToString())
                                 {
-                                    switch (value.ToString())
-                                    {
-                                        case "1":
-                                            prop.SetValue(t, true, null);
-                                            break;
-                                        case "0":
-                                            prop.SetValue(t, false, null);
-                                            break;
-                                        default:
-                                            throw new WrongTypeException();
-                                    }
+                                    case "1":
+                                        prop.SetValue(t, true, null);
+                                        break;
+                                    case "0":
+                                        prop.SetValue(t, false, null);
+                                        break;
+                                    default:
+                                        throw new WrongTypeException();
                                 }
-                                else if (prop.PropertyType == typeof(long) && (value is decimal))
-                                {
-                                    prop.SetValue(t, decimal.ToInt64((decimal)value));
-                                }
-                                else
-                                {
-                                    prop.SetValue(t, value is DBNull ? null : value, null);
-                                }
+                            }
+                            else if (prop.PropertyType == typeof(long) && (value is decimal))
+                            {
+                                prop.SetValue(t, decimal.ToInt64((decimal)value));
                             }
                             else
                             {
-                                throw new PropertyNotFoundException(type, columnName);
+                                prop.SetValue(t, value is DBNull ? null : value, null);
                             }
                         }
-
-                        result.Add(t);
+                        else
+                        {
+                            throw new PropertyNotFoundException(type, columnName);
+                        }
                     }
+
+                    result.Add(t);
                 }
             }
 
@@ -123,19 +116,17 @@
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
                 command.CommandText = query;
 #pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
-                using (var reader = command.ExecuteReader())
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    try
                     {
-                        try
-                        {
-                            var value = reader.GetValue(columnIndex);
-                            result.Add(value is DBNull ? default : (T)value);
-                        }
-                        catch (IndexOutOfRangeException)
-                        {
-                            result.Add(default);
-                        }
+                        var value = reader.GetValue(columnIndex);
+                        result.Add(value is DBNull ? default : (T)value);
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        result.Add(default);
                     }
                 }
             }
@@ -150,22 +141,17 @@
         public void ExecuteNonQuery(string query)
         {
             this.Database.OpenConnection();
-            using (var command = this.Database.GetDbConnection().CreateCommand())
-            {
+            using var command = this.Database.GetDbConnection().CreateCommand();
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
-                command.CommandText = query;
+            command.CommandText = query;
 #pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
-                command.ExecuteNonQuery();
-            }
+            command.ExecuteNonQuery();
         }
 
         /// <inheritdoc/>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (optionsBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(optionsBuilder));
-            }
+            ArgumentNullException.ThrowIfNull(optionsBuilder);
 
             optionsBuilder.UseLoggerFactory(this.loggerFactory);
         }

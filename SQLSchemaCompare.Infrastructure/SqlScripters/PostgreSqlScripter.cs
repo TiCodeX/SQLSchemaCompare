@@ -3,18 +3,14 @@
     /// <summary>
     /// Sql scripter class specific for PostgreSql database
     /// </summary>
-    internal class PostgreSqlScripter : ADatabaseScripter<PostgreSqlScriptHelper>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="PostgreSqlScripter"/> class.
+    /// </remarks>
+    /// <param name="logger">The injected logger instance</param>
+    /// <param name="options">The project options</param>
+    internal class PostgreSqlScripter(ILogger logger, ProjectOptions options)
+        : ADatabaseScripter<PostgreSqlScriptHelper>(logger, options, new PostgreSqlScriptHelper(options))
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlScripter"/> class.
-        /// </summary>
-        /// <param name="logger">The injected logger instance</param>
-        /// <param name="options">The project options</param>
-        public PostgreSqlScripter(ILogger logger, ProjectOptions options)
-            : base(logger, options, new PostgreSqlScriptHelper(options))
-        {
-        }
-
         /// <inheritdoc/>
         protected override string ScriptCreateSchema(ABaseDbSchema schema)
         {
@@ -42,8 +38,7 @@
         /// <inheritdoc/>
         protected override string ScriptCreateTable(ABaseDbTable table)
         {
-            var tablePostgreSql = table as PostgreSqlTable;
-            if (tablePostgreSql == null)
+            if (table is not PostgreSqlTable tablePostgreSql)
             {
                 throw new ArgumentNullException(nameof(table));
             }
@@ -86,8 +81,7 @@
         {
             var sb = new StringBuilder();
 
-            var targetTable = t.MappedDbObject as ABaseDbTable;
-            if (targetTable == null)
+            if (t.MappedDbObject is not ABaseDbTable targetTable)
             {
                 throw new ArgumentException($"{nameof(t.MappedDbObject)} is null");
             }
@@ -101,9 +95,7 @@
             // Alter columns
             foreach (var c in t.Columns.Where(x => x.MappedDbObject != null && x.CreateScript != x.MappedDbObject.CreateScript))
             {
-                var col = c as PostgreSqlColumn;
-                var mappedCol = c.MappedDbObject as PostgreSqlColumn;
-                if (col == null || mappedCol == null)
+                if (c is not PostgreSqlColumn col || c.MappedDbObject is not PostgreSqlColumn mappedCol)
                 {
                     throw new ArgumentException("Wrong column type");
                 }
@@ -401,7 +393,7 @@
 
             var function = (PostgreSqlFunction)sqlFunction;
 
-            var args = function.AllArgTypes != null ? function.AllArgTypes.ToArray() : function.ArgTypes.ToArray();
+            var args = (function.AllArgTypes ?? function.ArgTypes).ToArray();
 
             sb.Append($"CREATE {(function.IsAggregate ? "AGGREGATE" : "FUNCTION")} {this.ScriptHelper.ScriptObjectName(function)}(");
 
@@ -467,7 +459,7 @@
         protected override string ScriptDropFunction(ABaseDbFunction sqlFunction, IReadOnlyList<ABaseDbDataType> dataTypes)
         {
             var function = (PostgreSqlFunction)sqlFunction;
-            var args = function.AllArgTypes != null ? function.AllArgTypes.ToArray() : function.ArgTypes.ToArray();
+            var args = (function.AllArgTypes ?? function.ArgTypes).ToArray();
 
             var sb = new StringBuilder();
             sb.Append($"DROP {(function.IsAggregate ? "AGGREGATE" : "FUNCTION")} {this.ScriptHelper.ScriptObjectName(sqlFunction)}(");
@@ -551,8 +543,7 @@
         /// <inheritdoc/>
         protected override string ScriptCreateSequence(ABaseDbSequence sequence)
         {
-            var sequencePgsql = sequence as PostgreSqlSequence;
-            if (sequencePgsql == null)
+            if (sequence is not PostgreSqlSequence sequencePgsql)
             {
                 throw new ArgumentNullException(nameof(sequence));
             }
@@ -588,14 +579,12 @@
         [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         protected override string ScriptAlterSequence(ABaseDbSequence sourceSequence, ABaseDbSequence targetSequence)
         {
-            var sourceSequencePostgreSql = sourceSequence as PostgreSqlSequence;
-            if (sourceSequencePostgreSql == null)
+            if (sourceSequence is not PostgreSqlSequence sourceSequencePostgreSql)
             {
                 throw new ArgumentNullException(nameof(sourceSequence));
             }
 
-            var targetSequencePostgreSql = targetSequence as PostgreSqlSequence;
-            if (targetSequencePostgreSql == null)
+            if (targetSequence is not PostgreSqlSequence targetSequencePostgreSql)
             {
                 throw new ArgumentNullException(nameof(targetSequence));
             }
@@ -773,13 +762,13 @@
             var sb = new StringBuilder();
             switch (type)
             {
-                case PostgreSqlDataTypeEnumerated _:
-                case PostgreSqlDataTypeComposite _:
-                case PostgreSqlDataTypeRange _:
+                case PostgreSqlDataTypeEnumerated:
+                case PostgreSqlDataTypeComposite:
+                case PostgreSqlDataTypeRange:
                     sb.AppendLine($"DROP TYPE {this.ScriptHelper.ScriptObjectName(type)};");
                     break;
 
-                case PostgreSqlDataTypeDomain _:
+                case PostgreSqlDataTypeDomain:
                     sb.AppendLine($"DROP DOMAIN {this.ScriptHelper.ScriptObjectName(type)};");
                     break;
                 default:
@@ -818,12 +807,8 @@
                 {
                     List<PostgreSqlTable> GetInheritedTables(PostgreSqlTable t)
                     {
-                        var inheritedTable = tablesPostgreSql.FirstOrDefault(x => x.Schema == t.InheritedTableSchema && x.Name == t.InheritedTableName);
-                        if (inheritedTable == null)
-                        {
-                            throw new KeyNotFoundException($"Unable to find inherited table {this.ScriptHelper.ScriptObjectName(t.InheritedTableSchema, t.InheritedTableName)}");
-                        }
-
+                        var inheritedTable = tablesPostgreSql.FirstOrDefault(x => x.Schema == t.InheritedTableSchema && x.Name == t.InheritedTableName)
+                            ?? throw new KeyNotFoundException($"Unable to find inherited table {this.ScriptHelper.ScriptObjectName(t.InheritedTableSchema, t.InheritedTableName)}");
                         var inheritedTables = new List<PostgreSqlTable>();
                         if (!sortedTables.Contains(inheritedTable))
                         {

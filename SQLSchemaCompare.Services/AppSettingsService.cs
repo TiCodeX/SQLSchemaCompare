@@ -27,10 +27,7 @@
         /// <param name="appSettingsRepository">The injected entity repository</param>
         public AppSettingsService(ILoggerFactory loggerFactory, IAppSettingsRepository appSettingsRepository)
         {
-            if (loggerFactory == null)
-            {
-                throw new ArgumentNullException(nameof(loggerFactory));
-            }
+            ArgumentNullException.ThrowIfNull(loggerFactory);
 
             this.logger = loggerFactory.CreateLogger(nameof(AppSettingsService));
             this.appSettingsRepository = appSettingsRepository;

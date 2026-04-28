@@ -12,10 +12,7 @@
         /// <returns>A reference to this instance</returns>
         public static StringBuilder AppendLineIfNotEmpty(this StringBuilder sb)
         {
-            if (sb == null)
-            {
-                throw new ArgumentNullException(nameof(sb));
-            }
+            ArgumentNullException.ThrowIfNull(sb);
 
             return sb.Length > 0 ? sb.AppendLine() : sb;
         }

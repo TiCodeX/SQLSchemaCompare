@@ -13,6 +13,6 @@
         /// <summary>
         /// Gets the list of filter clauses
         /// </summary>
-        public List<FilterClause> Clauses { get; } = new List<FilterClause>();
+        public List<FilterClause> Clauses { get; } = [];
     }
 }

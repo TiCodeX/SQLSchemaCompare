@@ -3,36 +3,31 @@
     /// <summary>
     /// Retrieves various information from a MySQL Server
     /// </summary>
-    internal class MySqlDatabaseProvider
-        : ADatabaseProvider<MySqlDatabaseProviderOptions, MySqlDatabaseContext, MySqlDb>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="MySqlDatabaseProvider"/> class.
+    /// </remarks>
+    /// <param name="loggerFactory">The injected logger factory</param>
+    /// <param name="cipherService">The injected cipher service</param>
+    /// <param name="options">The options to connect to the MySQL Database</param>
+    internal class MySqlDatabaseProvider(ILoggerFactory loggerFactory, ICipherService cipherService, MySqlDatabaseProviderOptions options)
+        : ADatabaseProvider<MySqlDatabaseProviderOptions, MySqlDatabaseContext, MySqlDb>(
+            loggerFactory,
+            loggerFactory.CreateLogger(nameof(MySqlDatabaseProvider)),
+            cipherService,
+            options)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MySqlDatabaseProvider"/> class.
-        /// </summary>
-        /// <param name="loggerFactory">The injected logger factory</param>
-        /// <param name="cipherService">The injected cipher service</param>
-        /// <param name="options">The options to connect to the MySQL Database</param>
-        public MySqlDatabaseProvider(ILoggerFactory loggerFactory, ICipherService cipherService, MySqlDatabaseProviderOptions options)
-            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MySqlDatabaseProvider)), cipherService, options)
-        {
-        }
-
         /// <inheritdoc />
         public override ABaseDb GetDatabase(TaskInfo taskInfo)
         {
-            using (var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options))
-            {
-                return this.DiscoverDatabase(context, taskInfo);
-            }
+            using var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options);
+            return this.DiscoverDatabase(context, taskInfo);
         }
 
         /// <inheritdoc />
         public override List<string> GetDatabaseList()
         {
-            using (var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options))
-            {
-                return context.QuerySingleColumn<string>("SHOW DATABASES");
-            }
+            using var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options);
+            return context.QuerySingleColumn<string>("SHOW DATABASES");
         }
 
         /// <inheritdoc/>
@@ -45,7 +40,7 @@
         protected override IEnumerable<ABaseDbSchema> GetSchemas(MySqlDatabaseContext context)
         {
             // An empty list is returned because MySQL doesn't have schemas
-            return Enumerable.Empty<ABaseDbSchema>();
+            return [];
         }
 
         /// <inheritdoc />
@@ -129,7 +124,7 @@
             // An empty list is returned because:
             // - CHECK constraints doesn't exist
             // - UNIQUE constraints are the same things as UNIQUE indexes
-            return Enumerable.Empty<ABaseDbConstraint>();
+            return [];
         }
 
         /// <inheritdoc/>
@@ -224,14 +219,14 @@
         protected override IEnumerable<ABaseDbDataType> GetDataTypes(MySqlDatabaseContext context)
         {
             // An empty list is returned because MySQL doesn't have user defined data types
-            return Enumerable.Empty<ABaseDbDataType>();
+            return [];
         }
 
         /// <inheritdoc/>
         protected override IEnumerable<ABaseDbSequence> GetSequences(MySqlDatabaseContext context)
         {
             // An empty list is returned because MySQL doesn't have sequences
-            return Enumerable.Empty<ABaseDbSequence>();
+            return [];
         }
 
         /// <summary>

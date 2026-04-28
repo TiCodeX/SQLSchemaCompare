@@ -3,36 +3,31 @@
     /// <summary>
     /// Retrieves various information from a Microsoft SQL Server
     /// </summary>
-    internal class MicrosoftSqlDatabaseProvider
-        : ADatabaseProvider<MicrosoftSqlDatabaseProviderOptions, MicrosoftSqlDatabaseContext, MicrosoftSqlDb>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="MicrosoftSqlDatabaseProvider"/> class.
+    /// </remarks>
+    /// <param name="loggerFactory">The injected logger factory</param>
+    /// <param name="cipherService">The injected cipher service</param>
+    /// <param name="options">The options to connect to the Microsoft SQL Database</param>
+    internal class MicrosoftSqlDatabaseProvider(ILoggerFactory loggerFactory, ICipherService cipherService, MicrosoftSqlDatabaseProviderOptions options)
+        : ADatabaseProvider<MicrosoftSqlDatabaseProviderOptions, MicrosoftSqlDatabaseContext, MicrosoftSqlDb>(
+            loggerFactory,
+            loggerFactory.CreateLogger(nameof(MicrosoftSqlDatabaseProvider)),
+            cipherService,
+            options)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MicrosoftSqlDatabaseProvider"/> class.
-        /// </summary>
-        /// <param name="loggerFactory">The injected logger factory</param>
-        /// <param name="cipherService">The injected cipher service</param>
-        /// <param name="options">The options to connect to the Microsoft SQL Database</param>
-        public MicrosoftSqlDatabaseProvider(ILoggerFactory loggerFactory, ICipherService cipherService, MicrosoftSqlDatabaseProviderOptions options)
-            : base(loggerFactory, loggerFactory.CreateLogger(nameof(MicrosoftSqlDatabaseProvider)), cipherService, options)
-        {
-        }
-
         /// <inheritdoc/>
         public override ABaseDb GetDatabase(TaskInfo taskInfo)
         {
-            using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options))
-            {
-                return this.DiscoverDatabase(context, taskInfo);
-            }
+            using var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options);
+            return this.DiscoverDatabase(context, taskInfo);
         }
 
         /// <inheritdoc/>
         public override List<string> GetDatabaseList()
         {
-            using (var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options))
-            {
-                return context.QuerySingleColumn<string>("SELECT name FROM sysdatabases");
-            }
+            using var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options);
+            return context.QuerySingleColumn<string>("SELECT name FROM sysdatabases");
         }
 
         /// <inheritdoc/>
@@ -331,7 +326,7 @@
             // Sequences are supported only from MS SQL Server 2012
             if (this.CurrentServerVersion.Major < 11)
             {
-                return Enumerable.Empty<ABaseDbSequence>();
+                return [];
             }
 
             var query = new StringBuilder();

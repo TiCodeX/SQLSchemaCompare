@@ -4,7 +4,13 @@
     /// Implement base database scripting functionality
     /// </summary>
     /// <typeparam name="TScriptHelper">The specific script helper class</typeparam>
-    public abstract class ADatabaseScripter<TScriptHelper> : IDatabaseScripter
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ADatabaseScripter{TScriptHelper}"/> class.
+    /// </remarks>
+    /// <param name="logger">The injected logger</param>
+    /// <param name="options">The project options used during scripting process</param>
+    /// <param name="scriptHelper">The scripting helper</param>
+    public abstract class ADatabaseScripter<TScriptHelper>(ILogger logger, ProjectOptions options, TScriptHelper scriptHelper) : IDatabaseScripter
         where TScriptHelper : AScriptHelper
     {
         /// <summary>
@@ -13,40 +19,24 @@
         protected const string Indent = "    "; // 4 spaces
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ADatabaseScripter{TScriptHelper}"/> class.
-        /// </summary>
-        /// <param name="logger">The injected logger</param>
-        /// <param name="options">The project options used during scripting process</param>
-        /// <param name="scriptHelper">The scripting helper</param>
-        protected ADatabaseScripter(ILogger logger, ProjectOptions options, TScriptHelper scriptHelper)
-        {
-            this.Logger = logger;
-            this.Options = options;
-            this.ScriptHelper = scriptHelper;
-        }
-
-        /// <summary>
         /// Gets the logger
         /// </summary>
-        protected ILogger Logger { get; }
+        protected ILogger Logger { get; } = logger;
 
         /// <summary>
         /// Gets the project options
         /// </summary>
-        protected ProjectOptions Options { get; }
+        protected ProjectOptions Options { get; } = options;
 
         /// <summary>
         /// Gets the scripting helper
         /// </summary>
-        protected TScriptHelper ScriptHelper { get; }
+        protected TScriptHelper ScriptHelper { get; } = scriptHelper;
 
         /// <inheritdoc/>
         public string GenerateObjectName(ABaseDbObject dbObject)
         {
-            if (dbObject == null)
-            {
-                throw new ArgumentNullException(nameof(dbObject));
-            }
+            ArgumentNullException.ThrowIfNull(dbObject);
 
             return this.ScriptHelper.ScriptObjectName(dbObject);
         }
@@ -55,10 +45,7 @@
         [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         public string GenerateFullCreateScript(ABaseDb database)
         {
-            if (database == null)
-            {
-                throw new ArgumentNullException(nameof(database));
-            }
+            ArgumentNullException.ThrowIfNull(database);
 
             var sb = new StringBuilder();
 
@@ -269,10 +256,7 @@
         [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         public string GenerateFullDropScript(ABaseDb database)
         {
-            if (database == null)
-            {
-                throw new ArgumentNullException(nameof(database));
-            }
+            ArgumentNullException.ThrowIfNull(database);
 
             var sb = new StringBuilder();
 
@@ -476,7 +460,7 @@
                         return this.ScriptCreateTable(t);
                     }
 
-                    scriptableObjects.Add(new ObjectMap { DbObjects = new[] { t } });
+                    scriptableObjects.Add(new ObjectMap { DbObjects = [t] });
                     scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = t.PrimaryKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
                     scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelForeignKeys, DbObjects = t.ForeignKeys.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
                     scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelConstraints, DbObjects = t.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
@@ -508,7 +492,7 @@
                         return this.ScriptCreateView(v);
                     }
 
-                    scriptableObjects.Add(new ObjectMap { DbObjects = new[] { v } });
+                    scriptableObjects.Add(new ObjectMap { DbObjects = [v] });
                     scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(v.Indexes) });
 
                     return GenerateObjectMapScript(scriptableObjects, this.GenerateCreateScript);
@@ -578,7 +562,7 @@
                         DbObjects = t.Constraints.OrderBy(x => x.Schema).ThenBy(x => x.Name).Concat(defaultConstraints.OrderBy(x => x.Schema).ThenBy(x => x.Name)),
                     });
                     scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = t.Triggers.OrderBy(x => x.Schema).ThenBy(x => x.Name) });
-                    scriptableObjects.Add(new ObjectMap { DbObjects = new[] { t } });
+                    scriptableObjects.Add(new ObjectMap { DbObjects = [t] });
 
                     var sb = new StringBuilder();
 
@@ -605,7 +589,7 @@
                     }
 
                     scriptableObjects.Add(new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(v.Indexes) });
-                    scriptableObjects.Add(new ObjectMap { DbObjects = new[] { v } });
+                    scriptableObjects.Add(new ObjectMap { DbObjects = [v] });
 
                     return GenerateObjectMapScript(scriptableObjects, this.GenerateDropScript);
 
@@ -635,12 +619,9 @@
         /// <inheritdoc/>
         public string GenerateAlterScript(ABaseDbObject dbObject, bool includeChildDbObjects)
         {
-            if (dbObject == null)
-            {
-                throw new ArgumentNullException(nameof(dbObject));
-            }
+            ArgumentNullException.ThrowIfNull(dbObject);
 
-            if (dbObject.Database.Direction == Core.Enums.CompareDirection.Target)
+            if (dbObject.Database.Direction == CompareDirection.Target)
             {
                 return this.GenerateDropScript(dbObject, includeChildDbObjects);
             }
@@ -655,39 +636,24 @@
                 return string.Empty;
             }
 
-            switch (dbObject)
+            return dbObject switch
             {
-                case ABaseDbSchema s:
-                    return this.ScriptAlterSchema(s);
-
-                case ABaseDbTable t:
-                    return includeChildDbObjects ?
-                        this.ScriptAlterTableAndChildDbObjects(t) :
-                        this.ScriptAlterTable(t);
-
-                case ABaseDbView v:
-                    return this.ScriptAlterView(v, v.MappedDbObject as ABaseDbView);
-                case ABaseDbPrimaryKey pk:
-                    return this.ScriptAlterPrimaryKey(pk, pk.MappedDbObject as ABaseDbPrimaryKey);
-                case ABaseDbIndex i:
-                    return this.ScriptAlterIndex(i, i.MappedDbObject as ABaseDbIndex);
-                case ABaseDbForeignKey fk:
-                    return this.ScriptAlterForeignKey(fk, fk.MappedDbObject as ABaseDbForeignKey);
-                case ABaseDbConstraint c:
-                    return this.ScriptAlterConstraint(c, c.MappedDbObject as ABaseDbConstraint);
-                case ABaseDbFunction f:
-                    return this.ScriptAlterFunction(f, f.MappedDbObject as ABaseDbFunction, f.MappedDbObject?.Database.DataTypes);
-                case ABaseDbSequence s:
-                    return this.ScriptAlterSequence(s, s.MappedDbObject as ABaseDbSequence);
-                case ABaseDbStoredProcedure st:
-                    return this.ScriptAlterStoredProcedure(st, st.MappedDbObject as ABaseDbStoredProcedure);
-                case ABaseDbTrigger tr:
-                    return this.ScriptAlterTrigger(tr, tr.MappedDbObject as ABaseDbTrigger);
-                case ABaseDbDataType dt:
-                    return this.ScriptAlterType(dt, dt.MappedDbObject as ABaseDbDataType, dt.Database.DataTypes);
-                default:
-                    throw new NotSupportedException();
-            }
+                ABaseDbSchema s => this.ScriptAlterSchema(s),
+                ABaseDbTable t => includeChildDbObjects ?
+                                        this.ScriptAlterTableAndChildDbObjects(t) :
+                                        this.ScriptAlterTable(t),
+                ABaseDbView v => this.ScriptAlterView(v, v.MappedDbObject as ABaseDbView),
+                ABaseDbPrimaryKey pk => this.ScriptAlterPrimaryKey(pk, pk.MappedDbObject as ABaseDbPrimaryKey),
+                ABaseDbIndex i => this.ScriptAlterIndex(i, i.MappedDbObject as ABaseDbIndex),
+                ABaseDbForeignKey fk => this.ScriptAlterForeignKey(fk, fk.MappedDbObject as ABaseDbForeignKey),
+                ABaseDbConstraint c => this.ScriptAlterConstraint(c, c.MappedDbObject as ABaseDbConstraint),
+                ABaseDbFunction f => this.ScriptAlterFunction(f, f.MappedDbObject as ABaseDbFunction, f.MappedDbObject?.Database.DataTypes),
+                ABaseDbSequence s => this.ScriptAlterSequence(s, s.MappedDbObject as ABaseDbSequence),
+                ABaseDbStoredProcedure st => this.ScriptAlterStoredProcedure(st, st.MappedDbObject as ABaseDbStoredProcedure),
+                ABaseDbTrigger tr => this.ScriptAlterTrigger(tr, tr.MappedDbObject as ABaseDbTrigger),
+                ABaseDbDataType dt => this.ScriptAlterType(dt, dt.MappedDbObject as ABaseDbDataType, dt.Database.DataTypes),
+                _ => throw new NotSupportedException(),
+            };
         }
 
         /// <summary>
@@ -1016,16 +982,13 @@
         /// <returns>The sorted columns</returns>
         protected IEnumerable<ABaseDbColumn> GetSortedTableColumns(ABaseDbTable table)
         {
-            if (table == null)
-            {
-                throw new ArgumentNullException(nameof(table));
-            }
+            ArgumentNullException.ThrowIfNull(table);
 
             // Order table columns alphabetically or by ordinal position
-            var columns = this.Options.Scripting.OrderColumnAlphabetically ? table.Columns.OrderBy(x => x.Name).ToList() : this.OrderColumnsByOrdinalPosition(table).ToList();
+            var columns = (this.Options.Scripting.OrderColumnAlphabetically ? table.Columns.OrderBy(x => x.Name) : this.OrderColumnsByOrdinalPosition(table)).ToList();
 
             ABaseDbTable referenceTable = null;
-            if (table.Database.Direction != Core.Enums.CompareDirection.Source)
+            if (table.Database.Direction != CompareDirection.Source)
             {
                 referenceTable = table.MappedDbObject as ABaseDbTable;
             }
@@ -1133,21 +1096,21 @@
             var scriptableObjects = new List<ObjectMap>
             {
                 // First drop what is not present anymore
-                new ObjectMap { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = targetTable.PrimaryKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
-                new ObjectMap { ObjectTitle = Localization.LabelForeignKeys, DbObjects = targetTable.ForeignKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
-                new ObjectMap { ObjectTitle = Localization.LabelConstraints, DbObjects = targetTable.Constraints.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
-                new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = targetTable.Triggers.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
-                new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(targetTable.Indexes).Where(x => x.MappedDbObject == null) },
+                new() { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = targetTable.PrimaryKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new() { ObjectTitle = Localization.LabelForeignKeys, DbObjects = targetTable.ForeignKeys.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new() { ObjectTitle = Localization.LabelConstraints, DbObjects = targetTable.Constraints.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new() { ObjectTitle = Localization.LabelTriggers, DbObjects = targetTable.Triggers.Where(x => x.MappedDbObject == null).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new() { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(targetTable.Indexes).Where(x => x.MappedDbObject == null) },
 
                 // Do the changes to the table itself
-                new ObjectMap { DbObjects = new[] { t } },
+                new() { DbObjects = [t] },
 
                 // Finally create/alter the rest
-                new ObjectMap { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = t.PrimaryKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
-                new ObjectMap { ObjectTitle = Localization.LabelForeignKeys, DbObjects = t.ForeignKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
-                new ObjectMap { ObjectTitle = Localization.LabelConstraints, DbObjects = t.Constraints.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
-                new ObjectMap { ObjectTitle = Localization.LabelTriggers, DbObjects = t.Triggers.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
-                new ObjectMap { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(t.Indexes).Where(x => x.CreateScript != x.MappedDbObject?.CreateScript) },
+                new() { ObjectTitle = Localization.LabelPrimaryKeys, DbObjects = t.PrimaryKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new() { ObjectTitle = Localization.LabelForeignKeys, DbObjects = t.ForeignKeys.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new() { ObjectTitle = Localization.LabelConstraints, DbObjects = t.Constraints.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new() { ObjectTitle = Localization.LabelTriggers, DbObjects = t.Triggers.Where(x => x.CreateScript != x.MappedDbObject?.CreateScript).OrderBy(x => x.Schema).ThenBy(x => x.Name) },
+                new() { ObjectTitle = Localization.LabelIndexes, DbObjects = this.GetSortedIndexes(t.Indexes).Where(x => x.CreateScript != x.MappedDbObject?.CreateScript) },
             };
 
             return GenerateObjectMapScript(scriptableObjects, this.GenerateAlterScript);

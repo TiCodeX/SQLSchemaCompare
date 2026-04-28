@@ -16,37 +16,37 @@
         /// <summary>
         /// Gets the database table's columns
         /// </summary>
-        public List<ABaseDbColumn> Columns { get; } = new List<ABaseDbColumn>();
+        public List<ABaseDbColumn> Columns { get; } = [];
 
         /// <summary>
         /// Gets the database table's foreign keys
         /// </summary>
-        public List<ABaseDbForeignKey> ForeignKeys { get; } = new List<ABaseDbForeignKey>();
+        public List<ABaseDbForeignKey> ForeignKeys { get; } = [];
 
         /// <summary>
         /// Gets the foreign keys referencing this table
         /// </summary>
-        public List<ABaseDbForeignKey> ReferencingForeignKeys { get; } = new List<ABaseDbForeignKey>();
+        public List<ABaseDbForeignKey> ReferencingForeignKeys { get; } = [];
 
         /// <summary>
         /// Gets the database table's primary keys
         /// </summary>
-        public List<ABaseDbPrimaryKey> PrimaryKeys { get; } = new List<ABaseDbPrimaryKey>();
+        public List<ABaseDbPrimaryKey> PrimaryKeys { get; } = [];
 
         /// <summary>
         /// Gets the database table's indexes
         /// </summary>
-        public List<ABaseDbIndex> Indexes { get; } = new List<ABaseDbIndex>();
+        public List<ABaseDbIndex> Indexes { get; } = [];
 
         /// <summary>
         /// Gets the database table's constraints
         /// </summary>
-        public List<ABaseDbConstraint> Constraints { get; } = new List<ABaseDbConstraint>();
+        public List<ABaseDbConstraint> Constraints { get; } = [];
 
         /// <summary>
         /// Gets the database's triggers
         /// </summary>
-        public List<ABaseDbTrigger> Triggers { get; } = new List<ABaseDbTrigger>();
+        public List<ABaseDbTrigger> Triggers { get; } = [];
 
         /// <summary>
         /// Gets or sets a value indicating whether the table has a period

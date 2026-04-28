@@ -22,11 +22,11 @@
         /// <summary>
         /// Gets whether the column is descending, sorted like the ColumnNames list
         /// </summary>
-        public List<bool> ColumnDescending { get; } = new List<bool>();
+        public List<bool> ColumnDescending { get; } = [];
 
         /// <summary>
         /// Gets the included columns.
         /// </summary>
-        public List<string> IncludedColumns { get; } = new List<string>();
+        public List<string> IncludedColumns { get; } = [];
     }
 }

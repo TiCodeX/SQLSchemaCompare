@@ -23,21 +23,21 @@
         /// <summary>
         /// Gets the list of different items
         /// </summary>
-        public List<ABaseCompareResultItem> DifferentItems { get; } = new List<ABaseCompareResultItem>();
+        public List<ABaseCompareResultItem> DifferentItems { get; } = [];
 
         /// <summary>
         /// Gets the list of items only on the source
         /// </summary>
-        public List<ABaseCompareResultItem> OnlySourceItems { get; } = new List<ABaseCompareResultItem>();
+        public List<ABaseCompareResultItem> OnlySourceItems { get; } = [];
 
         /// <summary>
         /// Gets the list of items only on the target
         /// </summary>
-        public List<ABaseCompareResultItem> OnlyTargetItems { get; } = new List<ABaseCompareResultItem>();
+        public List<ABaseCompareResultItem> OnlyTargetItems { get; } = [];
 
         /// <summary>
         /// Gets the list of items which are the same in both
         /// </summary>
-        public List<ABaseCompareResultItem> SameItems { get; } = new List<ABaseCompareResultItem>();
+        public List<ABaseCompareResultItem> SameItems { get; } = [];
     }
 }

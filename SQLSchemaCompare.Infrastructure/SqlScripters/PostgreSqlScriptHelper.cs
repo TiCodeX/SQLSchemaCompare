@@ -3,17 +3,12 @@
     /// <summary>
     /// Script helper class specific for PostgreSql database
     /// </summary>
-    public class PostgreSqlScriptHelper : AScriptHelper
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="PostgreSqlScriptHelper"/> class.
+    /// </remarks>
+    /// <param name="options">The project options</param>
+    public class PostgreSqlScriptHelper(ProjectOptions options) : AScriptHelper(options)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlScriptHelper"/> class.
-        /// </summary>
-        /// <param name="options">The project options</param>
-        public PostgreSqlScriptHelper(ProjectOptions options)
-            : base(options)
-        {
-        }
-
         /// <summary>
         /// Scripts the function argument data type
         /// </summary>
@@ -22,12 +17,7 @@
         /// <returns>The scripted function argument data type</returns>
         public static string ScriptFunctionArgumentType(uint argType, IEnumerable<ABaseDbDataType> dataTypes)
         {
-            var type = (PostgreSqlDataType)dataTypes.FirstOrDefault(x => ((PostgreSqlDataType)x).TypeId == argType);
-            if (type == null)
-            {
-                throw new ArgumentException($"Unknown argument data type: {argType}");
-            }
-
+            var type = (PostgreSqlDataType)dataTypes.FirstOrDefault(x => ((PostgreSqlDataType)x).TypeId == argType) ?? throw new ArgumentException($"Unknown argument data type: {argType}");
             if (type.IsArray && type.ArrayType != null)
             {
                 return $"{ScriptDataTypeName(type.ArrayType.Schema.ToUpperInvariant() != "PUBLIC" ? type.ArrayType.Schema + "." + type.ArrayType.Name : type.ArrayType.Name)}[]";
@@ -43,10 +33,7 @@
         /// <returns>The scripted function attributes</returns>
         public static string ScriptFunctionAttributes(PostgreSqlFunction function)
         {
-            if (function == null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
+            ArgumentNullException.ThrowIfNull(function);
 
             var sb = new StringBuilder();
 
@@ -121,17 +108,13 @@
         /// <returns>The scripted match option</returns>
         public static object ScriptForeignKeyMatchOption(string matchOption)
         {
-            switch (matchOption)
+            return matchOption switch
             {
-                case "NONE":
-                    return "MATCH SIMPLE";
-                case "FULL":
-                    return "MATCH FULL";
-                case "PARTIAL":
-                    return "MATCH PARTIAL";
-                default:
-                    throw new ArgumentException($"Unknown foreign key match option: {matchOption}");
-            }
+                "NONE" => "MATCH SIMPLE",
+                "FULL" => "MATCH FULL",
+                "PARTIAL" => "MATCH PARTIAL",
+                _ => throw new ArgumentException($"Unknown foreign key match option: {matchOption}"),
+            };
         }
 
         /// <inheritdoc/>
@@ -145,8 +128,7 @@
         /// <inheritdoc/>
         public override string ScriptColumn(ABaseDbColumn column, bool scriptDefaultConstraint)
         {
-            var col = column as PostgreSqlColumn;
-            if (col == null)
+            if (column is not PostgreSqlColumn col)
             {
                 throw new ArgumentNullException(nameof(column));
             }
@@ -169,125 +151,62 @@
         /// <inheritdoc/>
         public override string ScriptColumnDefaultValue(ABaseDbColumn column)
         {
-            if (column == null)
-            {
-                throw new ArgumentNullException(nameof(column));
-            }
+            ArgumentNullException.ThrowIfNull(column);
 
-            switch (column.DataType)
+            return column.DataType switch
             {
                 // Exact numerics
-                case "smallint":
-                case "integer":
-                case "bigint":
-                case "numeric":
-                case "decimal":
-                    return "0";
+                "smallint" or "integer" or "bigint" or "numeric" or "decimal" => "0",
 
                 // Approximate numerics
-                case "real":
-                case "double precision":
-                    return "0";
+                "real" or "double precision" => "0",
 
                 // Money
-                case "money":
-                    return "0";
+                "money" => "0",
 
                 // Character strings
-                case "character":
-                case "character varying":
-                case "char":
-                case "varchar":
-                case "text":
-                    return "''";
+                "character" or "character varying" or "char" or "varchar" or "text" => "''",
 
                 // Date and time
-                case "date":
-                    return "CURRENT_DATE";
-
-                case "abstime":
-                case "reltime":
-                case "timetz":
-                case "time with time zone":
-                case "time":
-                case "time without time zone":
-                    return "CURRENT_TIME";
-
-                case "timestamptz":
-                case "timestamp with time zone":
-                case "timestamp":
-                case "timestamp without time zone":
-                    return "CURRENT_TIMESTAMP";
-
-                case "interval":
-                case "tinterval":
-                    return "INTERVAL '0'";
+                "date" => "CURRENT_DATE",
+                "abstime" or "reltime" or "timetz" or "time with time zone" or "time" or "time without time zone" => "CURRENT_TIME",
+                "timestamptz" or "timestamp with time zone" or "timestamp" or "timestamp without time zone" => "CURRENT_TIMESTAMP",
+                "interval" or "tinterval" => "INTERVAL '0'",
 
                 // Binary strings
-                case "bit":
-                case "bit varying":
-                    return "B'0'";
-
-                case "bytea":
-                    return "'\\000'";
+                "bit" or "bit varying" => "B'0'",
+                "bytea" => "'\\000'",
 
                 // Boolean
-                case "boolean":
-                    return "false";
+                "boolean" => "false",
 
                 // Network Address
-                case "cidr":
-                case "inet":
-                    return "'0.0.0.0'";
-                case "macaddr":
-                    return "'00:00:00:00:00:00'";
-                case "macaddr8":
-                    return "'00:00:00:00:00:00:00:00'";
+                "cidr" or "inet" => "'0.0.0.0'",
+                "macaddr" => "'00:00:00:00:00:00'",
+                "macaddr8" => "'00:00:00:00:00:00:00:00'",
 
                 // Geometric
-                case "point":
-                    return "'(0,0)'";
-                case "line":
-                    return "'{1,1,0}'";
-                case "lseg":
-                    return "'[(0,0),(0,0)]'";
-                case "box":
-                    return "'((0,0),(0,0))'";
-                case "path":
-                    return "'[(0,0),(0,0)]'";
-                case "polygon":
-                    return "'((0,0),(0,0))'";
-                case "circle":
-                    return "'<(0,0),0>'";
+                "point" => "'(0,0)'",
+                "line" => "'{1,1,0}'",
+                "lseg" => "'[(0,0),(0,0)]'",
+                "box" => "'((0,0),(0,0))'",
+                "path" => "'[(0,0),(0,0)]'",
+                "polygon" => "'((0,0),(0,0))'",
+                "circle" => "'<(0,0),0>'",
 
                 // Range
-                case "int4range":
-                case "int8range":
-                case "numrange":
-                case "tsrange":
-                case "tstzrange":
-                case "daterange":
-                    return "'empty'";
+                "int4range" or "int8range" or "numrange" or "tsrange" or "tstzrange" or "daterange" => "'empty'",
 
                 // User defined types
-                case "USER-DEFINED":
-                    return column.ColumnDefault;
+                "USER-DEFINED" => column.ColumnDefault,
 
                 // Other data types
-                case "json":
-                case "jsonb":
-                    return "'{}'";
-                case "name":
-                case "tsquery":
-                case "tsvector":
-                    return "''";
-                case "uuid":
-                    return $"'{Guid.Empty}'";
-                case "xml":
-                    return "''";
-
-                default: throw new ArgumentException($"Unknown data type: {column.DataType}");
-            }
+                "json" or "jsonb" => "'{}'",
+                "name" or "tsquery" or "tsvector" => "''",
+                "uuid" => $"'{Guid.Empty}'",
+                "xml" => "''",
+                _ => throw new ArgumentException($"Unknown data type: {column.DataType}"),
+            };
         }
 
         /// <inheritdoc />
@@ -305,10 +224,7 @@
         [SuppressMessage("Major Code Smell", "S138:Functions should not have too many lines of code", Justification = "TODO")]
         public string ScriptDataType(PostgreSqlColumn column)
         {
-            if (column == null)
-            {
-                throw new ArgumentNullException(nameof(column));
-            }
+            ArgumentNullException.ThrowIfNull(column);
 
             switch (column.DataType)
             {
@@ -490,7 +406,7 @@
                     // ==> currently will result in "myColumnName varchar[]"
                     if (column.UdtName.StartsWith("_", StringComparison.Ordinal))
                     {
-                        return $"{column.UdtName.Substring(1)}[]";
+                        return $"{column.UdtName[1..]}[]";
                     }
 
                     return $"{column.UdtName}";
@@ -506,34 +422,27 @@
         /// <returns>The scripted data type name</returns>
         private static string ScriptDataTypeName(string dataTypeName)
         {
-            switch (dataTypeName)
+            return dataTypeName switch
             {
-                case "int2": return "smallint";
-                case "int":
-                case "int4": return "integer";
-                case "int8": return "bigint";
-
-                case "serial2": return "smallserial";
-                case "serial4": return "serial";
-                case "serial8": return "bigserial";
-
-                case "float4": return "real";
-                case "float8": return "double precision";
-
-                case "varbit": return "bit varying";
-                case "bool": return "boolean";
-                case "decimal": return "numeric";
-
-                case "char": return "character";
-                case "varchar": return "character varying";
-
-                case "time": return "time without time zone";
-                case "timetz": return "time with time zone";
-                case "timestamp": return "timestamp without time zone";
-                case "timestamptz": return "timestamp with time zone";
-
-                default: return dataTypeName;
-            }
+                "int2" => "smallint",
+                "int" or "int4" => "integer",
+                "int8" => "bigint",
+                "serial2" => "smallserial",
+                "serial4" => "serial",
+                "serial8" => "bigserial",
+                "float4" => "real",
+                "float8" => "double precision",
+                "varbit" => "bit varying",
+                "bool" => "boolean",
+                "decimal" => "numeric",
+                "char" => "character",
+                "varchar" => "character varying",
+                "time" => "time without time zone",
+                "timetz" => "time with time zone",
+                "timestamp" => "timestamp without time zone",
+                "timestamptz" => "timestamp with time zone",
+                _ => dataTypeName,
+            };
         }
     }
 }

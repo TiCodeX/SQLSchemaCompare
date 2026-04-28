@@ -22,10 +22,7 @@
         /// <param name="loggerFactory">The injected logger factory</param>
         public ProjectService(IProjectRepository projectRepository, ILoggerFactory loggerFactory)
         {
-            if (loggerFactory == null)
-            {
-                throw new ArgumentNullException(nameof(loggerFactory));
-            }
+            ArgumentNullException.ThrowIfNull(loggerFactory);
 
             this.logger = loggerFactory.CreateLogger(nameof(ProjectService));
             this.projectRepository = projectRepository;
@@ -37,64 +34,45 @@
         /// <inheritdoc/>
         public bool NewProject(DatabaseType? databaseType)
         {
-            if (databaseType.HasValue)
+            this.Project = databaseType.HasValue ? databaseType.Value switch
             {
-                switch (databaseType.Value)
-                {
-                    case DatabaseType.MicrosoftSql:
-                        this.Project = new CompareProject
-                        {
-                            SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
-                            TargetProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
-                            Options = new ProjectOptions(),
-                            State = ProjectState.New,
-                        };
-                        break;
-                    case DatabaseType.MySql:
-                        this.Project = new CompareProject
-                        {
-                            SourceProviderOptions = new MySqlDatabaseProviderOptions(),
-                            TargetProviderOptions = new MySqlDatabaseProviderOptions(),
-                            Options = new ProjectOptions(),
-                            State = ProjectState.New,
-                        };
-                        break;
-
-                    case DatabaseType.PostgreSql:
-                        this.Project = new CompareProject
-                        {
-                            SourceProviderOptions = new PostgreSqlDatabaseProviderOptions(),
-                            TargetProviderOptions = new PostgreSqlDatabaseProviderOptions(),
-                            Options = new ProjectOptions(),
-                            State = ProjectState.New,
-                        };
-                        break;
-
-                    case DatabaseType.MariaDb:
-                        this.Project = new CompareProject
-                        {
-                            SourceProviderOptions = new MariaDbDatabaseProviderOptions(),
-                            TargetProviderOptions = new MariaDbDatabaseProviderOptions(),
-                            Options = new ProjectOptions(),
-                            State = ProjectState.New,
-                        };
-                        break;
-
-                    default:
-                        throw new NotSupportedException("Unknown Database Type");
-                }
-            }
-            else
-            {
-                this.Project = new CompareProject
+                DatabaseType.MicrosoftSql => new CompareProject
                 {
                     SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
                     TargetProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
                     Options = new ProjectOptions(),
                     State = ProjectState.New,
-                    EditableDatabaseType = true,
-                };
-            }
+                },
+                DatabaseType.MySql => new CompareProject
+                {
+                    SourceProviderOptions = new MySqlDatabaseProviderOptions(),
+                    TargetProviderOptions = new MySqlDatabaseProviderOptions(),
+                    Options = new ProjectOptions(),
+                    State = ProjectState.New,
+                },
+                DatabaseType.PostgreSql => new CompareProject
+                {
+                    SourceProviderOptions = new PostgreSqlDatabaseProviderOptions(),
+                    TargetProviderOptions = new PostgreSqlDatabaseProviderOptions(),
+                    Options = new ProjectOptions(),
+                    State = ProjectState.New,
+                },
+                DatabaseType.MariaDb => new CompareProject
+                {
+                    SourceProviderOptions = new MariaDbDatabaseProviderOptions(),
+                    TargetProviderOptions = new MariaDbDatabaseProviderOptions(),
+                    Options = new ProjectOptions(),
+                    State = ProjectState.New,
+                },
+                _ => throw new NotSupportedException("Unknown Database Type"),
+            } : new CompareProject
+            {
+                SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
+                TargetProviderOptions = new MicrosoftSqlDatabaseProviderOptions(),
+                Options = new ProjectOptions(),
+                State = ProjectState.New,
+                EditableDatabaseType = true,
+            };
 
             return true;
         }
@@ -136,10 +114,7 @@
         /// <inheritdoc/>
         public void SetDirtyState()
         {
-            if (this.Project != null)
-            {
-                this.Project.State = ProjectState.Dirty;
-            }
+            this.Project?.State = ProjectState.Dirty;
         }
 
         /// <inheritdoc/>

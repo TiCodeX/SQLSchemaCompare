@@ -8,15 +8,9 @@
         /// <inheritdoc />
         public void PerformFilter(ABaseDb database, FilteringOptions filteringOptions)
         {
-            if (database == null)
-            {
-                throw new ArgumentNullException(nameof(database));
-            }
+            ArgumentNullException.ThrowIfNull(database);
 
-            if (filteringOptions == null)
-            {
-                throw new ArgumentNullException(nameof(filteringOptions));
-            }
+            ArgumentNullException.ThrowIfNull(filteringOptions);
 
             if (!filteringOptions.Clauses.Any())
             {
@@ -124,37 +118,18 @@
                 foreach (var filterClause in filterClauseGroup)
                 {
                     var objectFieldToCheck = (filterClause.Field == FilterField.Schema ? dbObject.Schema : dbObject.Name) ?? string.Empty;
-
-                    bool objectMatch;
-                    switch (filterClause.Operator)
+                    var objectMatch = filterClause.Operator switch
                     {
-                        case FilterOperator.BeginsWith:
-                            objectMatch = objectFieldToCheck.StartsWith(filterClause.Value, StringComparison.Ordinal);
-                            break;
-                        case FilterOperator.EndsWith:
-                            objectMatch = objectFieldToCheck.EndsWith(filterClause.Value, StringComparison.Ordinal);
-                            break;
-                        case FilterOperator.Contains:
-                            objectMatch = objectFieldToCheck.Contains(filterClause.Value, StringComparison.Ordinal);
-                            break;
-                        case FilterOperator.Equals:
-                            objectMatch = objectFieldToCheck.Equals(filterClause.Value, StringComparison.Ordinal);
-                            break;
-                        case FilterOperator.NotBeginsWith:
-                            objectMatch = !objectFieldToCheck.StartsWith(filterClause.Value, StringComparison.Ordinal);
-                            break;
-                        case FilterOperator.NotEndsWith:
-                            objectMatch = !objectFieldToCheck.EndsWith(filterClause.Value, StringComparison.Ordinal);
-                            break;
-                        case FilterOperator.NotContains:
-                            objectMatch = !objectFieldToCheck.Contains(filterClause.Value, StringComparison.Ordinal);
-                            break;
-                        case FilterOperator.NotEquals:
-                            objectMatch = !objectFieldToCheck.Equals(filterClause.Value, StringComparison.Ordinal);
-                            break;
-                        default:
-                            throw new NotSupportedException("Unknown operator");
-                    }
+                        FilterOperator.BeginsWith => objectFieldToCheck.StartsWith(filterClause.Value, StringComparison.Ordinal),
+                        FilterOperator.EndsWith => objectFieldToCheck.EndsWith(filterClause.Value, StringComparison.Ordinal),
+                        FilterOperator.Contains => objectFieldToCheck.Contains(filterClause.Value, StringComparison.Ordinal),
+                        FilterOperator.Equals => objectFieldToCheck.Equals(filterClause.Value, StringComparison.Ordinal),
+                        FilterOperator.NotBeginsWith => !objectFieldToCheck.StartsWith(filterClause.Value, StringComparison.Ordinal),
+                        FilterOperator.NotEndsWith => !objectFieldToCheck.EndsWith(filterClause.Value, StringComparison.Ordinal),
+                        FilterOperator.NotContains => !objectFieldToCheck.Contains(filterClause.Value, StringComparison.Ordinal),
+                        FilterOperator.NotEquals => !objectFieldToCheck.Equals(filterClause.Value, StringComparison.Ordinal),
+                        _ => throw new NotSupportedException("Unknown operator"),
+                    };
 
                     // If it's the first match inside the group, take the actual value, otherwise perform an AND
                     if (includeObjectGroup == null)

@@ -27,6 +27,6 @@
         /// <summary>
         /// Gets the column names already ordered
         /// </summary>
-        public List<string> ReferencedColumnNames { get; } = new List<string>();
+        public List<string> ReferencedColumnNames { get; } = [];
     }
 }

@@ -6,27 +6,24 @@
     /// <typeparam name="TDatabaseProviderOptions">Concrete type of the database provider options</typeparam>
     /// <typeparam name="TDatabaseContext">Concrete type of the database context</typeparam>
     /// <typeparam name="TDatabase">Concrete type of the database</typeparam>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ADatabaseProvider{TDatabaseProviderOptions, TDatabaseContext, TDatabase}"/> class.
+    /// </remarks>
+    /// <param name="loggerFactory">The injected logger factory used when using DBContext</param>
+    /// <param name="logger">The logger created in the concrete class</param>
+    /// <param name="cipherService">The injected cipher service</param>
+    /// <param name="options">The options to connect to the Database</param>
     [SuppressMessage("Major Code Smell", "S2436:Types and methods should not have too many generic parameters", Justification = "Necessary")]
-    public abstract class ADatabaseProvider<TDatabaseProviderOptions, TDatabaseContext, TDatabase> : IDatabaseProvider
+    public abstract class ADatabaseProvider<TDatabaseProviderOptions, TDatabaseContext, TDatabase>(
+        ILoggerFactory loggerFactory,
+        ILogger logger,
+        ICipherService cipherService,
+        TDatabaseProviderOptions options)
+        : IDatabaseProvider
         where TDatabaseProviderOptions : ADatabaseProviderOptions
         where TDatabaseContext : ADatabaseContext
         where TDatabase : ABaseDb, new()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ADatabaseProvider{TDatabaseProviderOptions, TDatabaseContext, TDatabase}"/> class.
-        /// </summary>
-        /// <param name="loggerFactory">The injected logger factory used when using DBContext</param>
-        /// <param name="logger">The logger created in the concrete class</param>
-        /// <param name="cipherService">The injected cipher service</param>
-        /// <param name="options">The options to connect to the Database</param>
-        protected ADatabaseProvider(ILoggerFactory loggerFactory, ILogger logger, ICipherService cipherService, TDatabaseProviderOptions options)
-        {
-            this.Options = options;
-            this.LoggerFactory = loggerFactory;
-            this.Logger = logger;
-            this.CipherService = cipherService;
-        }
-
         /// <summary>
         /// Gets or sets the current server version
         /// </summary>
@@ -35,22 +32,22 @@
         /// <summary>
         /// Gets the injected logger
         /// </summary>
-        protected ILogger Logger { get; }
+        protected ILogger Logger { get; } = logger;
 
         /// <summary>
         /// Gets the injected logger factory
         /// </summary>
-        protected ILoggerFactory LoggerFactory { get; }
+        protected ILoggerFactory LoggerFactory { get; } = loggerFactory;
 
         /// <summary>
         /// Gets the cipher service
         /// </summary>
-        protected ICipherService CipherService { get; }
+        protected ICipherService CipherService { get; } = cipherService;
 
         /// <summary>
         /// Gets the options to connect to the Database
         /// </summary>
-        protected TDatabaseProviderOptions Options { get; }
+        protected TDatabaseProviderOptions Options { get; } = options;
 
         /// <inheritdoc/>
         public abstract List<string> GetDatabaseList();
@@ -68,15 +65,9 @@
         [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         protected TDatabase DiscoverDatabase(TDatabaseContext context, TaskInfo taskInfo)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
-            if (taskInfo == null)
-            {
-                throw new ArgumentNullException(nameof(taskInfo));
-            }
+            ArgumentNullException.ThrowIfNull(taskInfo);
 
             this.Logger.LogInformation($"DiscoverDatabase started for database '{context.DatabaseName}' on server '{context.Hostname}'");
             var db = new TDatabase { Name = context.DatabaseName };

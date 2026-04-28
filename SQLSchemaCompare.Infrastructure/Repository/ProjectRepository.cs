@@ -16,10 +16,7 @@
         /// <param name="loggerFactory">The injected logger factory</param>
         public ProjectRepository(ILoggerFactory loggerFactory)
         {
-            if (loggerFactory == null)
-            {
-                throw new ArgumentNullException(nameof(loggerFactory));
-            }
+            ArgumentNullException.ThrowIfNull(loggerFactory);
 
             this.logger = loggerFactory.CreateLogger(nameof(ProjectRepository));
         }
@@ -46,10 +43,8 @@
             }
 
             var xml = new XmlSerializer(typeof(CompareProject));
-            using (var f = File.Create(filename))
-            {
-                xml.Serialize(f, project);
-            }
+            using var f = File.Create(filename);
+            xml.Serialize(f, project);
         }
     }
 }

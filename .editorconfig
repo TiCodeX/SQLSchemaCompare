@@ -19,6 +19,8 @@ dotnet_diagnostic.S1694.severity = none
 dotnet_diagnostic.S3358.severity = none
 dotnet_diagnostic.S3956.severity = none
 dotnet_diagnostic.S4049.severity = none
+dotnet_diagnostic.CA1510.severity = error
+dotnet_analyzer_diagnostic.category-Style.severity = error
 
 # Solution Files
 [*.sln]
@@ -62,3 +64,4 @@ end_of_line = lf
 indent_size = 4
 insert_final_newline = true
 charset = utf-8-bom
+#csharp_style_namespace_declarations = file_scoped:error

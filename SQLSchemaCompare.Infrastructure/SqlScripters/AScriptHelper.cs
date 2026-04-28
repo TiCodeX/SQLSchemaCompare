@@ -3,21 +3,16 @@
     /// <summary>
     /// Implement common scripter helper functionality
     /// </summary>
-    public abstract class AScriptHelper
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="AScriptHelper"/> class.
+    /// </remarks>
+    /// <param name="options">The project options</param>
+    public abstract class AScriptHelper(ProjectOptions options)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AScriptHelper"/> class.
-        /// </summary>
-        /// <param name="options">The project options</param>
-        protected AScriptHelper(ProjectOptions options)
-        {
-            this.Options = options;
-        }
-
         /// <summary>
         /// Gets the project options
         /// </summary>
-        protected ProjectOptions Options { get; }
+        protected ProjectOptions Options { get; } = options;
 
         /// <summary>
         /// Script a comment text
@@ -36,10 +31,7 @@
         /// <returns>The normalized database object name</returns>
         public string ScriptObjectName(ABaseDbObject dbObject)
         {
-            if (dbObject == null)
-            {
-                throw new ArgumentNullException(nameof(dbObject));
-            }
+            ArgumentNullException.ThrowIfNull(dbObject);
 
             return this.ScriptObjectName(dbObject.Schema, dbObject.Name);
         }

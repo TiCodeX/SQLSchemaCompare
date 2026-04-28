@@ -6,22 +6,16 @@
     /// Custom wrapper to properly handle the localization
     /// </summary>
     /// <seealso cref="System.Resources.ResourceManager" />
-    public class CustomResourceManager : ResourceManager
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="CustomResourceManager"/> class
+    /// </remarks>
+    /// <param name="originalResourceManager">The original ResourceManager</param>
+    public class CustomResourceManager(ResourceManager originalResourceManager) : ResourceManager(typeof(Localization))
     {
         /// <summary>
         /// The original resource manager
         /// </summary>
-        private readonly ResourceManager originalResourceManager;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CustomResourceManager"/> class
-        /// </summary>
-        /// <param name="originalResourceManager">The original ResourceManager</param>
-        public CustomResourceManager(ResourceManager originalResourceManager)
-            : base(typeof(Localization))
-        {
-            this.originalResourceManager = originalResourceManager;
-        }
+        private readonly ResourceManager originalResourceManager = originalResourceManager;
 
         /// <summary>
         /// Gets the ResourceSet of a specific language

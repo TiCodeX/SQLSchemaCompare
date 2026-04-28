@@ -3,35 +3,32 @@
     /// <summary>
     /// Retrieves various information from a PostgreSQL Server
     /// </summary>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="PostgreSqlDatabaseProvider"/> class.
+    /// </remarks>
+    /// <param name="loggerFactory">The injected logger factory</param>
+    /// <param name="cipherService">The injected cipher service</param>
+    /// <param name="options">The options to connect to the PostgreSQL Database</param>
     [SuppressMessage("Minor Code Smell", "S1192:String literals should not be duplicated", Justification = "Necessary in SQL code")]
-    internal class PostgreSqlDatabaseProvider
-        : ADatabaseProvider<PostgreSqlDatabaseProviderOptions, PostgreSqlDatabaseContext, PostgreSqlDb>
+    internal class PostgreSqlDatabaseProvider(ILoggerFactory loggerFactory, ICipherService cipherService, PostgreSqlDatabaseProviderOptions options)
+        : ADatabaseProvider<PostgreSqlDatabaseProviderOptions, PostgreSqlDatabaseContext, PostgreSqlDb>(
+            loggerFactory,
+            loggerFactory.CreateLogger(nameof(PostgreSqlDatabaseProvider)),
+            cipherService,
+            options)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlDatabaseProvider"/> class.
-        /// </summary>
-        /// <param name="loggerFactory">The injected logger factory</param>
-        /// <param name="cipherService">The injected cipher service</param>
-        /// <param name="options">The options to connect to the PostgreSQL Database</param>
-        public PostgreSqlDatabaseProvider(ILoggerFactory loggerFactory, ICipherService cipherService, PostgreSqlDatabaseProviderOptions options)
-            : base(loggerFactory, loggerFactory.CreateLogger(nameof(PostgreSqlDatabaseProvider)), cipherService, options)
-        {
-        }
-
         /// <inheritdoc />
         public override ABaseDb GetDatabase(TaskInfo taskInfo)
         {
-            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options))
-            {
-                return this.DiscoverDatabase(context, taskInfo);
-            }
+            using var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.CipherService, this.Options);
+            return this.DiscoverDatabase(context, taskInfo);
         }
 
         /// <inheritdoc />
         public override List<string> GetDatabaseList()
         {
             // Copy the connection options to set the always existing postgres database
-            var options = new PostgreSqlDatabaseProviderOptions
+            var optionsCopy = new PostgreSqlDatabaseProviderOptions
             {
                 Hostname = this.Options.Hostname,
                 Port = this.Options.Port,
@@ -41,10 +38,8 @@
                 UseSsl = this.Options.UseSsl,
             };
 
-            using (var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.CipherService, options))
-            {
-                return context.QuerySingleColumn<string>("SELECT datname FROM pg_catalog.pg_database WHERE datistemplate = FALSE");
-            }
+            using var context = new PostgreSqlDatabaseContext(this.LoggerFactory, this.CipherService, optionsCopy);
+            return context.QuerySingleColumn<string>("SELECT datname FROM pg_catalog.pg_database WHERE datistemplate = FALSE");
         }
 
         /// <inheritdoc/>
@@ -310,7 +305,7 @@
         protected override IEnumerable<ABaseDbStoredProcedure> GetStoredProcedures(PostgreSqlDatabaseContext context)
         {
             // In PostgreSql Stored Procedures doesn't exists. Therefore we will return an empty list.
-            return Enumerable.Empty<ABaseDbStoredProcedure>();
+            return [];
         }
 
         /// <inheritdoc/>

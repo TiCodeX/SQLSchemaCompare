@@ -3,19 +3,15 @@
     /// <summary>
     /// Retrieves various information from a MariaDB Server
     /// </summary>
-    internal class MariaDbDatabaseProvider : MySqlDatabaseProvider
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="MariaDbDatabaseProvider"/> class.
+    /// </remarks>
+    /// <param name="loggerFactory">The injected logger factory</param>
+    /// <param name="cipherService">The injected cipher service</param>
+    /// <param name="options">The options to connect to the MariaDB Database</param>
+    internal class MariaDbDatabaseProvider(ILoggerFactory loggerFactory, ICipherService cipherService, MariaDbDatabaseProviderOptions options)
+        : MySqlDatabaseProvider(loggerFactory, cipherService, options)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MariaDbDatabaseProvider"/> class.
-        /// </summary>
-        /// <param name="loggerFactory">The injected logger factory</param>
-        /// <param name="cipherService">The injected cipher service</param>
-        /// <param name="options">The options to connect to the MariaDB Database</param>
-        public MariaDbDatabaseProvider(ILoggerFactory loggerFactory, ICipherService cipherService, MariaDbDatabaseProviderOptions options)
-            : base(loggerFactory, cipherService, options)
-        {
-        }
-
         /// <inheritdoc/>
         protected override string GetServerVersion(MySqlDatabaseContext context)
         {

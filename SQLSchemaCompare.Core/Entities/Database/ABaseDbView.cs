@@ -16,6 +16,6 @@
         /// <summary>
         /// Gets the database view's indexes
         /// </summary>
-        public List<ABaseDbIndex> Indexes { get; } = new List<ABaseDbIndex>();
+        public List<ABaseDbIndex> Indexes { get; } = [];
     }
 }

@@ -41,7 +41,7 @@
         /// <summary>
         /// Gets the column names already ordered
         /// </summary>
-        public List<string> ColumnNames { get; } = new List<string>();
+        public List<string> ColumnNames { get; } = [];
 
         /// <summary>
         /// Gets or sets the constraint type

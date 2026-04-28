@@ -37,15 +37,9 @@
         /// <param name="appGlobals">The injected application global constants</param>
         public RequestValidatorMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, IOptions<RequestValidatorSettings> options, IAppGlobals appGlobals)
         {
-            if (loggerFactory == null)
-            {
-                throw new ArgumentNullException(nameof(loggerFactory));
-            }
+            ArgumentNullException.ThrowIfNull(loggerFactory);
 
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
+            ArgumentNullException.ThrowIfNull(options);
 
             this.next = next;
             this.logger = loggerFactory.CreateLogger(nameof(RequestValidatorMiddleware));
@@ -60,10 +54,7 @@
         /// <returns>The next task</returns>
         public Task InvokeAsync(HttpContext context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
             return InvokeAsyncInternal(context);
 

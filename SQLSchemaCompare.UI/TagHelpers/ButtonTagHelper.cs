@@ -35,15 +35,9 @@
         /// <inheritdoc />
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
-            if (output == null)
-            {
-                throw new ArgumentNullException(nameof(output));
-            }
+            ArgumentNullException.ThrowIfNull(output);
 
             output.Attributes.SetAttribute("type", "button");
 
@@ -86,6 +80,7 @@
                 case ButtonStyle.TcxHighlight:
                     className.Add($"btn-{outline}tcx-highlight");
                     break;
+                case ButtonStyle.Basic:
                 default:
                     // Do nothing
                     break;
@@ -99,6 +94,7 @@
                 case ButtonSize.Large:
                     className.Add("btn-lg");
                     break;
+                case ButtonSize.Default:
                 default:
                     // Do nothing
                     break;
@@ -112,6 +108,7 @@
                 case ButtonState.Disabled:
                     output.Attributes.SetAttribute("disabled", null);
                     break;
+                case ButtonState.Default:
                 default:
                     // Do nothing
                     break;

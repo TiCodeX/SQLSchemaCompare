@@ -59,10 +59,7 @@
             IAppGlobals appGlobals,
             ICipherService cipherService)
         {
-            if (loggerFactory == null)
-            {
-                throw new ArgumentNullException(nameof(loggerFactory));
-            }
+            ArgumentNullException.ThrowIfNull(loggerFactory);
 
             this.logger = loggerFactory.CreateLogger(nameof(ProjectPageModel));
             this.appSettingsService = appSettingsService;
@@ -100,10 +97,7 @@
         {
             try
             {
-                if (req == null)
-                {
-                    throw new ArgumentNullException(nameof(req));
-                }
+                ArgumentNullException.ThrowIfNull(req);
 
                 if (this.projectService.NeedSave() && !req.IgnoreDirty)
                 {
@@ -139,10 +133,7 @@
         {
             try
             {
-                if (req == null)
-                {
-                    throw new ArgumentNullException(nameof(req));
-                }
+                ArgumentNullException.ThrowIfNull(req);
 
                 if (this.projectService.NeedSave() && !req.IgnoreDirty)
                 {
@@ -249,10 +240,7 @@
         /// <returns>The ApiResponse in JSON</returns>
         public ActionResult OnPostEditProject([FromBody] CompareProjectOptions options)
         {
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
+            ArgumentNullException.ThrowIfNull(options);
 
             this.projectService.Project.SourceProviderOptions = this.GetDatabaseProviderOptions(options, CompareDirection.Source);
             this.projectService.Project.TargetProviderOptions = this.GetDatabaseProviderOptions(options, CompareDirection.Target);
@@ -310,10 +298,7 @@
         {
             try
             {
-                if (options == null)
-                {
-                    throw new ArgumentNullException(nameof(options));
-                }
+                ArgumentNullException.ThrowIfNull(options);
 
                 return new JsonResult(new ApiResponse<List<string>>
                 {

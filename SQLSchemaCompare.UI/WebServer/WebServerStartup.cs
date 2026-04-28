@@ -9,7 +9,11 @@
     /// <summary>
     /// WebServer configuration class used during the startup
     /// </summary>
-    public class WebServerStartup
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="WebServerStartup"/> class.
+    /// </remarks>
+    /// <param name="configuration">The WebHost configuration</param>
+    public class WebServerStartup(IConfiguration configuration)
     {
         /// <summary>
         /// The allowed request guid
@@ -17,18 +21,9 @@
         private const string AllowedRequestGuid = "d6e9b4c2-25d3-a625-e9a6-2135f3d2f809";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebServerStartup"/> class.
-        /// </summary>
-        /// <param name="configuration">The WebHost configuration</param>
-        public WebServerStartup(IConfiguration configuration)
-        {
-            this.Configuration = configuration;
-        }
-
-        /// <summary>
         /// Gets the WebHost configuration
         /// </summary>
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; } = configuration;
 
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
@@ -93,25 +88,13 @@
             IAppSettingsService appSettingsService,
             ILoggerFactory loggerFactory)
         {
-            if (appGlobals == null)
-            {
-                throw new ArgumentNullException(nameof(appGlobals));
-            }
+            ArgumentNullException.ThrowIfNull(appGlobals);
 
-            if (localizationService == null)
-            {
-                throw new ArgumentNullException(nameof(localizationService));
-            }
+            ArgumentNullException.ThrowIfNull(localizationService);
 
-            if (appSettingsService == null)
-            {
-                throw new ArgumentNullException(nameof(appSettingsService));
-            }
+            ArgumentNullException.ThrowIfNull(appSettingsService);
 
-            if (loggerFactory == null)
-            {
-                throw new ArgumentNullException(nameof(loggerFactory));
-            }
+            ArgumentNullException.ThrowIfNull(loggerFactory);
 
             var logger = loggerFactory.CreateLogger(nameof(WebServerStartup));
 

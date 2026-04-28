@@ -3,22 +3,12 @@
     /// <summary>
     /// PageModel for the Error page
     /// </summary>
-    public class ErrorPage : PageModel
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ErrorPage"/> class
+    /// </remarks>
+    /// <param name="appGlobals">The application globals</param>
+    public class ErrorPage(IAppGlobals appGlobals) : PageModel
     {
-        /// <summary>
-        /// The app globals
-        /// </summary>
-        private readonly IAppGlobals appGlobals;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ErrorPage"/> class
-        /// </summary>
-        /// <param name="appGlobals">The application globals</param>
-        public ErrorPage(IAppGlobals appGlobals)
-        {
-            this.appGlobals = appGlobals;
-        }
-
         /// <summary>
         /// Gets or sets the title of the page
         /// </summary>
@@ -29,7 +19,7 @@
         /// </summary>
         public void OnGet()
         {
-            this.Title = $"{this.appGlobals.ProductName} - {this.appGlobals.CompanyName}";
+            this.Title = $"{appGlobals.ProductName} - {appGlobals.CompanyName}";
         }
     }
 }

@@ -12,19 +12,6 @@
         public string ProductName => "SQL Schema Compare";
 
         /// <inheritdoc/>
-        public bool IsDevelopment
-        {
-            get
-            {
-#if DEBUG
-                return true;
-#else
-                return false;
-#endif
-            }
-        }
-
-        /// <inheritdoc/>
         public string AuthorizationHeaderName => "CustomAuthToken";
 
         /// <inheritdoc/>

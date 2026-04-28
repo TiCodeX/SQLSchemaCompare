@@ -15,22 +15,13 @@
         /// <inheritdoc />
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
-            if (output == null)
-            {
-                throw new ArgumentNullException(nameof(output));
-            }
+            ArgumentNullException.ThrowIfNull(output);
 
             var className = new HashSet<string>();
 
-            if (output.Attributes["class"] != null)
-            {
-                output.Attributes["class"].Value.ToString().Trim().Split(' ').ToList().ForEach(x => className.Add(x));
-            }
+            output.Attributes["class"]?.Value.ToString().Trim().Split(' ').ToList().ForEach(x => className.Add(x));
 
             className.Add("form-control");
             className.Add("form-control-sm");

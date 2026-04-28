@@ -3,22 +3,12 @@
     /// <summary>
     /// PageModel of the TaskStatus page
     /// </summary>
-    public class TaskStatusPageModel : PageModel
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="TaskStatusPageModel"/> class.
+    /// </remarks>
+    /// <param name="taskService">The injected task service</param>
+    public class TaskStatusPageModel(ITaskService taskService) : PageModel
     {
-        /// <summary>
-        /// The task service
-        /// </summary>
-        private readonly ITaskService taskService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TaskStatusPageModel"/> class.
-        /// </summary>
-        /// <param name="taskService">The injected task service</param>
-        public TaskStatusPageModel(ITaskService taskService)
-        {
-            this.taskService = taskService;
-        }
-
         /// <summary>
         /// Gets or sets the current list of TaskInfo
         /// </summary>
@@ -29,7 +19,7 @@
         /// </summary>
         public void OnGet()
         {
-            this.TaskInfos = this.taskService.CurrentTaskInfos;
+            this.TaskInfos = taskService.CurrentTaskInfos;
         }
 
         /// <summary>
@@ -38,7 +28,7 @@
         /// <returns>The resulting json</returns>
         public IActionResult OnGetAbortTask()
         {
-            this.taskService.Abort();
+            taskService.Abort();
             return new JsonResult(new ApiResponse());
         }
     }

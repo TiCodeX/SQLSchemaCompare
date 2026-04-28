@@ -3,22 +3,12 @@
     /// <summary>
     /// PageModel of the SqlScript page
     /// </summary>
-    public class SqlScriptPageModel : PageModel
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="SqlScriptPageModel"/> class.
+    /// </remarks>
+    /// <param name="projectService">The injected project service</param>
+    public class SqlScriptPageModel(IProjectService projectService) : PageModel
     {
-        /// <summary>
-        /// The project service
-        /// </summary>
-        private readonly IProjectService projectService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SqlScriptPageModel"/> class.
-        /// </summary>
-        /// <param name="projectService">The injected project service</param>
-        public SqlScriptPageModel(IProjectService projectService)
-        {
-            this.projectService = projectService;
-        }
-
         /// <summary>
         /// Get the full script
         /// </summary>
@@ -29,8 +19,8 @@
             return new JsonResult(new ApiResponse<string>
             {
                 Result = direction == CompareDirection.Source
-                    ? this.projectService.Project.Result.SourceFullScript
-                    : this.projectService.Project.Result.TargetFullScript,
+                    ? projectService.Project.Result.SourceFullScript
+                    : projectService.Project.Result.TargetFullScript,
             });
         }
 
@@ -42,7 +32,7 @@
         {
             return new JsonResult(new ApiResponse<string>
             {
-                Result = this.projectService.Project.Result.FullAlterScript,
+                Result = projectService.Project.Result.FullAlterScript,
             });
         }
     }

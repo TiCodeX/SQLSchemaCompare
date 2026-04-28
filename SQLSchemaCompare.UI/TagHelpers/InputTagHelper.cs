@@ -27,22 +27,13 @@
         /// <inheritdoc />
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
-            if (output == null)
-            {
-                throw new ArgumentNullException(nameof(output));
-            }
+            ArgumentNullException.ThrowIfNull(output);
 
             var className = new HashSet<string>();
 
-            if (output.Attributes["class"] != null)
-            {
-                output.Attributes["class"].Value.ToString().Trim().Split(' ').ToList().ForEach(x => className.Add(x));
-            }
+            output.Attributes["class"]?.Value.ToString().Trim().Split(' ').ToList().ForEach(x => className.Add(x));
 
             if (output.Attributes["type"] == null || output.Attributes["type"].Value.ToString().ToUpperInvariant() != "HIDDEN")
             {
@@ -57,8 +48,7 @@
                 output.Attributes.SetAttribute("disabled", "disabled");
             }
 
-            if (output.Attributes["type"] != null &&
-                output.Attributes["type"].Value.ToString().ToUpperInvariant() == "CHECKBOX" &&
+            if (output.Attributes["type"]?.Value.ToString().ToUpperInvariant() == "CHECKBOX" &&
                 this.Checked)
             {
                 output.Attributes.SetAttribute("checked", "checked");

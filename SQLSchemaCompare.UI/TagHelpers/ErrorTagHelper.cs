@@ -30,15 +30,9 @@
         /// <inheritdoc />
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
-            if (output == null)
-            {
-                throw new ArgumentNullException(nameof(output));
-            }
+            ArgumentNullException.ThrowIfNull(output);
 
             output.TagName = "input";
             output.Attributes.SetAttribute("class", "page-error");

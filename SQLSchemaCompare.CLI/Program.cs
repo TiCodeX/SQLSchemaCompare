@@ -66,18 +66,14 @@
             var databaseCompareService = scope.Resolve<IDatabaseCompareService>();
             databaseCompareService.StartCompare();
 
-            while (!taskService.CurrentTaskInfos.All(x => x.Status == TaskStatus.RanToCompletion ||
-                                                          x.Status == TaskStatus.Faulted ||
-                                                          x.Status == TaskStatus.Canceled))
+            while (!taskService.CurrentTaskInfos.All(x => x.Status is TaskStatus.RanToCompletion or TaskStatus.Faulted or TaskStatus.Canceled))
             {
                 Thread.Sleep(200);
             }
 
-            if (taskService.CurrentTaskInfos.Any(x => x.Status == TaskStatus.Faulted ||
-                                                      x.Status == TaskStatus.Canceled))
+            if (taskService.CurrentTaskInfos.Any(x => x.Status is TaskStatus.Faulted or TaskStatus.Canceled))
             {
-                var exception = taskService.CurrentTaskInfos.FirstOrDefault(x => x.Status == TaskStatus.Faulted ||
-                                                                                 x.Status == TaskStatus.Canceled)?.Exception;
+                var exception = taskService.CurrentTaskInfos.FirstOrDefault(x => x.Status is TaskStatus.Faulted or TaskStatus.Canceled)?.Exception;
                 if (exception != null)
                 {
                     throw exception;

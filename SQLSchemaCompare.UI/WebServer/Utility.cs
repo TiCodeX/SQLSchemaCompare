@@ -86,26 +86,19 @@
             InternalLogger.LogLevel = NLog.LogLevel.Info;
 
             // Configure the targets to write to
-            var fileTarget = new FileTarget("File")
+            config.AddTarget(new FileTarget("File")
             {
                 Layout = appGlobals.LoggerLayout,
                 FileName = appGlobals.LoggerFile,
                 MaxArchiveFiles = appGlobals.LoggerMaxArchiveFiles,
-            };
-            config.AddTarget(fileTarget);
-
-            if (appGlobals.IsDevelopment)
+            });
+            config.AddTarget(new ColoredConsoleTarget("Console")
             {
-                // Configure the console/debugger logger only for development
-                var consoleTarget = new ColoredConsoleTarget("Console")
-                {
-                    Layout = appGlobals.LoggerLayout,
-                };
-                config.AddTarget(consoleTarget);
+                Layout = appGlobals.LoggerLayout,
+            });
 
-                // Set the NLog internal logger to log into the console
-                InternalLogger.LogToConsole = true;
-            }
+            // Set the NLog internal logger to log into the console
+            InternalLogger.LogToConsole = true;
 
             // Configure the logging rule to log everything into all targets
             var allRule = new LoggingRule
@@ -136,35 +129,17 @@
             }
 
             var logConfig = LogManager.Configuration.LoggingRules.FirstOrDefault(x => x.LoggerNamePattern == "*");
-
-            NLog.LogLevel nlogLevel;
-            switch (logLevel)
+            var nlogLevel = logLevel switch
             {
-                case LogLevel.Trace:
-                    nlogLevel = NLog.LogLevel.Trace;
-                    break;
-                case LogLevel.Debug:
-                    nlogLevel = NLog.LogLevel.Debug;
-                    break;
-                case LogLevel.Info:
-                    nlogLevel = NLog.LogLevel.Info;
-                    break;
-                case LogLevel.Warning:
-                    nlogLevel = NLog.LogLevel.Warn;
-                    break;
-                case LogLevel.Error:
-                    nlogLevel = NLog.LogLevel.Error;
-                    break;
-                case LogLevel.Critical:
-                    nlogLevel = NLog.LogLevel.Fatal;
-                    break;
-                case LogLevel.None:
-                    nlogLevel = NLog.LogLevel.Off;
-                    break;
-                default:
-                    throw new NotSupportedException("Unknown log level");
-            }
-
+                LogLevel.Trace => NLog.LogLevel.Trace,
+                LogLevel.Debug => NLog.LogLevel.Debug,
+                LogLevel.Info => NLog.LogLevel.Info,
+                LogLevel.Warning => NLog.LogLevel.Warn,
+                LogLevel.Error => NLog.LogLevel.Error,
+                LogLevel.Critical => NLog.LogLevel.Fatal,
+                LogLevel.None => NLog.LogLevel.Off,
+                _ => throw new NotSupportedException("Unknown log level"),
+            };
             logConfig?.SetLoggingLevels(nlogLevel, NLog.LogLevel.Fatal);
 
             // Trigger the reconfiguration

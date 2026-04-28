@@ -16,11 +16,6 @@
         string ProductName { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the solution configuration is in Debug
-        /// </summary>
-        bool IsDevelopment { get; }
-
-        /// <summary>
         /// Gets the header attribute name for the authentication
         /// </summary>
         string AuthorizationHeaderName { get; }

@@ -22,10 +22,7 @@
         /// <param name="projectService">The injected project service</param>
         public MainPageModel(ILoggerFactory loggerFactory, IProjectService projectService)
         {
-            if (loggerFactory == null)
-            {
-                throw new ArgumentNullException(nameof(loggerFactory));
-            }
+            ArgumentNullException.ThrowIfNull(loggerFactory);
 
             this.logger = loggerFactory.CreateLogger(nameof(MainPageModel));
             this.projectService = projectService;

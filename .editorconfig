@@ -14,6 +14,7 @@ insert_final_newline = false
 trim_trailing_whitespace = true
 
 # Neolution.CodeAnalysis rules
+dotnet_diagnostic.S1121.severity = none
 dotnet_diagnostic.S1200.severity = none
 dotnet_diagnostic.S1694.severity = none
 dotnet_diagnostic.S3358.severity = none

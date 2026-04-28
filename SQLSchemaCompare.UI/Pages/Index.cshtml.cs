@@ -3,29 +3,13 @@
     /// <summary>
     /// PageModel of the Index page
     /// </summary>
-    public class Index : PageModel
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="Index"/> class.
+    /// </remarks>
+    /// <param name="appGlobals">The injected app globals</param>
+    /// <param name="localizationService">The injected LocalizationService</param>
+    public class Index(IAppGlobals appGlobals, ILocalizationService localizationService) : PageModel
     {
-        /// <summary>
-        /// The app globals
-        /// </summary>
-        private readonly IAppGlobals appGlobals;
-
-        /// <summary>
-        /// The localization service
-        /// </summary>
-        private readonly ILocalizationService localizationService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Index"/> class.
-        /// </summary>
-        /// <param name="appGlobals">The injected app globals</param>
-        /// <param name="localizationService">The injected LocalizationService</param>
-        public Index(IAppGlobals appGlobals, ILocalizationService localizationService)
-        {
-            this.appGlobals = appGlobals;
-            this.localizationService = localizationService;
-        }
-
         /// <summary>
         /// Gets or sets the title of the page
         /// </summary>
@@ -39,7 +23,7 @@
         {
             return new JsonResult(new ApiResponse<Dictionary<string, string>>
             {
-                Result = this.localizationService.GetLocalizationDictionary(),
+                Result = localizationService.GetLocalizationDictionary(),
             });
         }
 
@@ -50,10 +34,10 @@
         /// <returns>The page</returns>
         public IActionResult OnGet(string v)
         {
-            this.Title = $"{this.appGlobals.ProductName} - {this.appGlobals.CompanyName}";
+            this.Title = $"{appGlobals.ProductName} - {appGlobals.CompanyName}";
 
             // Set application version
-            this.appGlobals.AppVersion = v;
+            appGlobals.AppVersion = v;
             return this.Page();
         }
     }

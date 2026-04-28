@@ -38,10 +38,7 @@
             IProjectService projectService,
             ILocalizationService localizationService)
         {
-            if (loggerFactory == null)
-            {
-                throw new ArgumentNullException(nameof(loggerFactory));
-            }
+            ArgumentNullException.ThrowIfNull(loggerFactory);
 
             this.logger = loggerFactory.CreateLogger(nameof(SettingsPageModel));
             this.appSettingsService = appSettingsService;
@@ -75,10 +72,7 @@
         /// <returns>The ApiResponse in JSON</returns>
         public ActionResult OnPostSave([FromBody] AppSettings settings)
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
+            ArgumentNullException.ThrowIfNull(settings);
 
             this.logger.LogDebug("Saving settings...");
             this.logger.LogDebug($"LogLevel => {settings.LogLevel}");

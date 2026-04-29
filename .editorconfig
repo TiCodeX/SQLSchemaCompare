@@ -22,6 +22,7 @@ dotnet_diagnostic.S3956.severity = none
 dotnet_diagnostic.S4049.severity = none
 dotnet_diagnostic.CA1510.severity = error
 dotnet_analyzer_diagnostic.category-Style.severity = error
+csharp_style_namespace_declarations = file_scoped:error
 
 # Solution Files
 [*.sln]

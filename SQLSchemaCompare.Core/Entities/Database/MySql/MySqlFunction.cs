@@ -1,16 +1,15 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.MySql;
+
+/// <summary>
+/// Specific MySql function definition
+/// </summary>
+public class MySqlFunction : ABaseDbFunction
 {
     /// <summary>
-    /// Specific MySql function definition
+    /// Initializes a new instance of the <see cref="MySqlFunction"/> class
     /// </summary>
-    public class MySqlFunction : ABaseDbFunction
+    public MySqlFunction()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MySqlFunction"/> class
-        /// </summary>
-        public MySqlFunction()
-        {
-            this.AlterScriptSupported = false;
-        }
+        this.AlterScriptSupported = false;
     }
 }

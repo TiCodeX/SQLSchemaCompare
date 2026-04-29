@@ -1,103 +1,102 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Test
+﻿namespace TiCodeX.SQLSchemaCompare.Test;
+
+/// <summary>
+/// Creates the sakila database for the tests
+/// </summary>
+public class DatabaseFixtureMySql : DatabaseFixture
 {
     /// <summary>
-    /// Creates the sakila database for the tests
+    /// Gets the list of MySQL server ports
     /// </summary>
-    public class DatabaseFixtureMySql : DatabaseFixture
+    [SuppressMessage("Code Smell", "S125:Sections of code should not be commented out", Justification = "Historical reference")]
+    public static IEnumerable<object[]> ServerPorts
     {
-        /// <summary>
-        /// Gets the list of MySQL server ports
-        /// </summary>
-        [SuppressMessage("Code Smell", "S125:Sections of code should not be commented out", Justification = "Historical reference")]
-        public static IEnumerable<object[]> ServerPorts
+        get
         {
-            get
+            var serverPorts = new List<ushort>();
+
+            if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || ForceDockerTests)
             {
-                var serverPorts = new List<ushort>();
-
-                if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || ForceDockerTests)
-                {
-                    //serverPorts.Add(27001); // Version 5.5 (EOL December 2018)
-                    //serverPorts.Add(27002); // Version 5.6 (EOL February 2021)
-                    //serverPorts.Add(27003); // Version 5.7 (EOL October 2023)
-                    serverPorts.Add(27004); // Version 8.0 (EOL April 2026)
-                    //serverPorts.Add(27005); // Version 8.1 (EOL October 2023)
-                    //serverPorts.Add(27006); // Version 8.2 (EOL December 2023)
-                    //serverPorts.Add(27007); // Version 8.3 (EOL April 2024)
-                    serverPorts.Add(27008); // Version 8.4 (EOL April 2032)
-                    //serverPorts.Add(27009); // Version 9.0 (EOL October 2024)
-                    //serverPorts.Add(27010); // Version 9.1 (EOL January 2025)
-                    //serverPorts.Add(27011); // Version 9.2 (EOL April 2025)
-                    //serverPorts.Add(27012); // Version 9.3 (EOL July 2025)
-                    serverPorts.Add(27013); // Version 9.4
-                }
-                else
-                {
-                    serverPorts.Add(3306); // Local server
-                }
-
-                return serverPorts.Select(x => new object[] { x });
+                //serverPorts.Add(27001); // Version 5.5 (EOL December 2018)
+                //serverPorts.Add(27002); // Version 5.6 (EOL February 2021)
+                //serverPorts.Add(27003); // Version 5.7 (EOL October 2023)
+                serverPorts.Add(27004); // Version 8.0 (EOL April 2026)
+                //serverPorts.Add(27005); // Version 8.1 (EOL October 2023)
+                //serverPorts.Add(27006); // Version 8.2 (EOL December 2023)
+                //serverPorts.Add(27007); // Version 8.3 (EOL April 2024)
+                serverPorts.Add(27008); // Version 8.4 (EOL April 2032)
+                //serverPorts.Add(27009); // Version 9.0 (EOL October 2024)
+                //serverPorts.Add(27010); // Version 9.1 (EOL January 2025)
+                //serverPorts.Add(27011); // Version 9.2 (EOL April 2025)
+                //serverPorts.Add(27012); // Version 9.3 (EOL July 2025)
+                serverPorts.Add(27013); // Version 9.4
             }
-        }
-
-        /// <inheritdoc />
-        public override ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, ushort port)
-        {
-            return new MySqlDatabaseProviderOptions
+            else
             {
-                Hostname = "localhost",
-                Database = databaseName,
-                Username = "root",
-                Password = this.CipherService.EncryptString("test1234"),
-                UseSsl = false,
-                Port = port,
-            };
-        }
-
-        /// <inheritdoc/>
-        public override void ExecuteScriptCore(string script, string databaseName, ushort port)
-        {
-            ArgumentNullException.ThrowIfNull(script);
-
-            using var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, (MySqlDatabaseProviderOptions)this.GetDatabaseProviderOptions(databaseName, port));
-            context.Database.OpenConnection();
-
-            var queries = Regex.Split(script, "^(DELIMITER .*)$", RegexOptions.Multiline);
-            var currentDelimiter = string.Empty;
-            foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
-            {
-                if (query.StartsWith("DELIMITER", StringComparison.Ordinal))
-                {
-                    currentDelimiter = query[9..].Trim();
-                    continue;
-                }
-
-                context.ExecuteNonQuery(!string.IsNullOrWhiteSpace(currentDelimiter) ? query.Replace(currentDelimiter, ";", StringComparison.Ordinal) : query);
+                serverPorts.Add(3306); // Local server
             }
-        }
 
-        /// <inheritdoc />
-        public override void CreateSakilaDatabase(string databaseName, ushort port)
+            return serverPorts.Select(x => new object[] { x });
+        }
+    }
+
+    /// <inheritdoc />
+    public override ADatabaseProviderOptions GetDatabaseProviderOptions(string databaseName, ushort port)
+    {
+        return new MySqlDatabaseProviderOptions
         {
-            this.DropAndCreateDatabase(databaseName, port);
+            Hostname = "localhost",
+            Database = databaseName,
+            Username = "root",
+            Password = this.CipherService.EncryptString("test1234"),
+            UseSsl = false,
+            Port = port,
+        };
+    }
 
-            var sakilaScript = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-mysql.sql"));
+    /// <inheritdoc/>
+    public override void ExecuteScriptCore(string script, string databaseName, ushort port)
+    {
+        ArgumentNullException.ThrowIfNull(script);
 
-            this.ExecuteScript(sakilaScript, databaseName, port);
-        }
+        using var context = new MySqlDatabaseContext(this.LoggerFactory, this.CipherService, (MySqlDatabaseProviderOptions)this.GetDatabaseProviderOptions(databaseName, port));
+        context.Database.OpenConnection();
 
-        /// <inheritdoc />
-        public override void DropDatabase(string databaseName, ushort port)
+        var queries = Regex.Split(script, "^(DELIMITER .*)$", RegexOptions.Multiline);
+        var currentDelimiter = string.Empty;
+        foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
         {
-            this.ExecuteScript($"DROP SCHEMA IF EXISTS `{databaseName}`;", string.Empty, port);
-        }
+            if (query.StartsWith("DELIMITER", StringComparison.Ordinal))
+            {
+                currentDelimiter = query[9..].Trim();
+                continue;
+            }
 
-        /// <inheritdoc />
-        public override void DropAndCreateDatabase(string databaseName, ushort port)
-        {
-            this.DropDatabase(databaseName, port);
-
-            this.ExecuteScript($"CREATE SCHEMA `{databaseName}`;", string.Empty, port);
+            context.ExecuteNonQuery(!string.IsNullOrWhiteSpace(currentDelimiter) ? query.Replace(currentDelimiter, ";", StringComparison.Ordinal) : query);
         }
+    }
+
+    /// <inheritdoc />
+    public override void CreateSakilaDatabase(string databaseName, ushort port)
+    {
+        this.DropAndCreateDatabase(databaseName, port);
+
+        var sakilaScript = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Datasources", "sakila-schema-mysql.sql"));
+
+        this.ExecuteScript(sakilaScript, databaseName, port);
+    }
+
+    /// <inheritdoc />
+    public override void DropDatabase(string databaseName, ushort port)
+    {
+        this.ExecuteScript($"DROP SCHEMA IF EXISTS `{databaseName}`;", string.Empty, port);
+    }
+
+    /// <inheritdoc />
+    public override void DropAndCreateDatabase(string databaseName, ushort port)
+    {
+        this.DropDatabase(databaseName, port);
+
+        this.ExecuteScript($"CREATE SCHEMA `{databaseName}`;", string.Empty, port);
     }
 }

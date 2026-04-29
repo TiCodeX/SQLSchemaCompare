@@ -1,22 +1,21 @@
-﻿namespace TiCodeX.SQLSchemaCompare.UI.Extensions
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Extensions;
+
+using Microsoft.AspNetCore.Builder;
+
+/// <summary>
+/// Defines the RequestValidator extension of the IApplicationBuilder
+/// </summary>
+public static class RequestValidatorExtensions
 {
-    using Microsoft.AspNetCore.Builder;
-
     /// <summary>
-    /// Defines the RequestValidator extension of the IApplicationBuilder
+    /// Add the RequestValidator middleware to the application's request pipeline
     /// </summary>
-    public static class RequestValidatorExtensions
+    /// <param name="app">The IApplicationBuilder instance</param>
+    /// <returns>The same IApplicationBuilder instance</returns>
+    public static IApplicationBuilder UseRequestValidator(this IApplicationBuilder app)
     {
-        /// <summary>
-        /// Add the RequestValidator middleware to the application's request pipeline
-        /// </summary>
-        /// <param name="app">The IApplicationBuilder instance</param>
-        /// <returns>The same IApplicationBuilder instance</returns>
-        public static IApplicationBuilder UseRequestValidator(this IApplicationBuilder app)
-        {
-            app.UseMiddleware<RequestValidatorMiddleware>();
+        app.UseMiddleware<RequestValidatorMiddleware>();
 
-            return app;
-        }
+        return app;
     }
 }

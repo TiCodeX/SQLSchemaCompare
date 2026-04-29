@@ -1,72 +1,71 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Services
+﻿namespace TiCodeX.SQLSchemaCompare.Services;
+
+using System.Collections;
+using System.Reflection;
+
+/// <summary>
+/// Provides the mechanisms to handle various languages
+/// </summary>
+/// <seealso cref="System.Resources.ResourceManager" />
+public class LocalizationService : ILocalizationService
 {
-    using System.Collections;
-    using System.Reflection;
+    /// <summary>
+    /// The custom resource manager
+    /// </summary>
+    private readonly CustomResourceManager customResourceManager;
 
     /// <summary>
-    /// Provides the mechanisms to handle various languages
+    /// Initializes a new instance of the <see cref="LocalizationService"/> class
     /// </summary>
-    /// <seealso cref="System.Resources.ResourceManager" />
-    public class LocalizationService : ILocalizationService
+    [SuppressMessage("Major Code Smell", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields", Justification = "Necessary")]
+    public LocalizationService()
     {
-        /// <summary>
-        /// The custom resource manager
-        /// </summary>
-        private readonly CustomResourceManager customResourceManager;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LocalizationService"/> class
-        /// </summary>
-        [SuppressMessage("Major Code Smell", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields", Justification = "Necessary")]
-        public LocalizationService()
+        // Prevent multiple initializations
+        if (Localization.ResourceManager is CustomResourceManager customResMgr)
         {
-            // Prevent multiple initializations
-            if (Localization.ResourceManager is CustomResourceManager customResMgr)
-            {
-                this.customResourceManager = customResMgr;
-            }
-            else
-            {
-                // Save the original ResourceManager in the Localization resource file
-                // and replace it with the CustomResourceManager
-                this.customResourceManager = new CustomResourceManager(Localization.ResourceManager);
-
-                var innerField = typeof(Localization).GetField("resourceMan", BindingFlags.NonPublic | BindingFlags.Static);
-                innerField?.SetValue(null, this.customResourceManager);
-            }
+            this.customResourceManager = customResMgr;
         }
-
-        /// <inheritdoc />
-        public void SetLanguage(Language language)
+        else
         {
-            Localization.Culture = language switch
-            {
-                Language.English => CultureInfo.GetCultureInfo("en"),
-                Language.German => CultureInfo.GetCultureInfo("de"),
-                Language.Italian => CultureInfo.GetCultureInfo("it"),
-                _ => CultureInfo.GetCultureInfo("en"),
-            };
-        }
+            // Save the original ResourceManager in the Localization resource file
+            // and replace it with the CustomResourceManager
+            this.customResourceManager = new CustomResourceManager(Localization.ResourceManager);
 
-        /// <inheritdoc />
-        public Dictionary<string, string> GetLocalizationDictionary()
-        {
-            return this.customResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en"))
-                .OfType<DictionaryEntry>().ToDictionary(
-                    x => x.Key.ToString(),
-                    x => Localization.ResourceManager.GetString(x.Key.ToString(), Localization.Culture));
+            var innerField = typeof(Localization).GetField("resourceMan", BindingFlags.NonPublic | BindingFlags.Static);
+            innerField?.SetValue(null, this.customResourceManager);
         }
+    }
 
-        /// <inheritdoc />
-        public string GetString(string token)
+    /// <inheritdoc />
+    public void SetLanguage(Language language)
+    {
+        Localization.Culture = language switch
         {
-            return this.GetString(token, Localization.Culture);
-        }
+            Language.English => CultureInfo.GetCultureInfo("en"),
+            Language.German => CultureInfo.GetCultureInfo("de"),
+            Language.Italian => CultureInfo.GetCultureInfo("it"),
+            _ => CultureInfo.GetCultureInfo("en"),
+        };
+    }
 
-        /// <inheritdoc />
-        public string GetString(string token, CultureInfo culture)
-        {
-            return this.customResourceManager.GetString(token, culture);
-        }
+    /// <inheritdoc />
+    public Dictionary<string, string> GetLocalizationDictionary()
+    {
+        return this.customResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en"))
+            .OfType<DictionaryEntry>().ToDictionary(
+                x => x.Key.ToString(),
+                x => Localization.ResourceManager.GetString(x.Key.ToString(), Localization.Culture));
+    }
+
+    /// <inheritdoc />
+    public string GetString(string token)
+    {
+        return this.GetString(token, Localization.Culture);
+    }
+
+    /// <inheritdoc />
+    public string GetString(string token, CultureInfo culture)
+    {
+        return this.customResourceManager.GetString(token, culture);
     }
 }

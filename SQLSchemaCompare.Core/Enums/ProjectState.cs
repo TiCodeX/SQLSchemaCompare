@@ -1,23 +1,22 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Enums
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Enums;
+
+/// <summary>
+/// List of possible project status
+/// </summary>
+public enum ProjectState
 {
     /// <summary>
-    /// List of possible project status
+    /// The project is new
     /// </summary>
-    public enum ProjectState
-    {
-        /// <summary>
-        /// The project is new
-        /// </summary>
-        New = 0,
+    New = 0,
 
-        /// <summary>
-        /// The project is dirty
-        /// </summary>
-        Dirty = 1,
+    /// <summary>
+    /// The project is dirty
+    /// </summary>
+    Dirty = 1,
 
-        /// <summary>
-        /// The project has been saved
-        /// </summary>
-        Saved = 2,
-    }
+    /// <summary>
+    /// The project has been saved
+    /// </summary>
+    Saved = 2,
 }

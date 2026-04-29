@@ -1,18 +1,17 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Project
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Project;
+
+/// <summary>
+/// The filtering options for the project
+/// </summary>
+public class FilteringOptions
 {
     /// <summary>
-    /// The filtering options for the project
+    /// Gets or sets a value indicating whether to consider the clauses as include or exclude
     /// </summary>
-    public class FilteringOptions
-    {
-        /// <summary>
-        /// Gets or sets a value indicating whether to consider the clauses as include or exclude
-        /// </summary>
-        public bool Include { get; set; }
+    public bool Include { get; set; }
 
-        /// <summary>
-        /// Gets the list of filter clauses
-        /// </summary>
-        public List<FilterClause> Clauses { get; } = [];
-    }
+    /// <summary>
+    /// Gets the list of filter clauses
+    /// </summary>
+    public List<FilterClause> Clauses { get; } = [];
 }

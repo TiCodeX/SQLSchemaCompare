@@ -1,28 +1,27 @@
-﻿namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers
+﻿namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers;
+
+using Microsoft.AspNetCore.Razor.TagHelpers;
+
+/// <summary>
+/// TagHelper for option
+/// </summary>
+public class OptionTagHelper : TagHelper
 {
-    using Microsoft.AspNetCore.Razor.TagHelpers;
-
     /// <summary>
-    /// TagHelper for option
+    /// Gets or sets a value indicating whether this <see cref="OptionTagHelper"/> is selected
     /// </summary>
-    public class OptionTagHelper : TagHelper
+    public bool Selected { get; set; }
+
+    /// <inheritdoc />
+    public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="OptionTagHelper"/> is selected
-        /// </summary>
-        public bool Selected { get; set; }
+        ArgumentNullException.ThrowIfNull(context);
 
-        /// <inheritdoc />
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        ArgumentNullException.ThrowIfNull(output);
+
+        if (this.Selected)
         {
-            ArgumentNullException.ThrowIfNull(context);
-
-            ArgumentNullException.ThrowIfNull(output);
-
-            if (this.Selected)
-            {
-                output.Attributes.SetAttribute("selected", "selected");
-            }
+            output.Attributes.SetAttribute("selected", "selected");
         }
     }
 }

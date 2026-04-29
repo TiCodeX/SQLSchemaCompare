@@ -1,56 +1,55 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+
+/// <summary>
+/// Provides generic information for database constraint classes
+/// </summary>
+public class ABaseDbConstraint : ABaseDbObject
 {
     /// <summary>
-    /// Provides generic information for database constraint classes
+    /// Initializes a new instance of the <see cref="ABaseDbConstraint"/> class
     /// </summary>
-    public class ABaseDbConstraint : ABaseDbObject
+    public ABaseDbConstraint()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ABaseDbConstraint"/> class
-        /// </summary>
-        public ABaseDbConstraint()
-        {
-            this.AlterScriptSupported = false;
-        }
-
-        /// <inheritdoc />
-        public override DatabaseObjectType ObjectType { get; } = DatabaseObjectType.Constraint;
-
-        /// <summary>
-        /// Gets or sets the table schema
-        /// </summary>
-        public string TableSchema { get; set; }
-
-        /// <summary>
-        /// Gets or sets the table name
-        /// </summary>
-        public string TableName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the column name
-        /// </summary>
-        /// <remarks>Used only by the DatabaseProvider to group the constraints and fill the ColumnNames list</remarks>
-        public string ColumnName { get; set; }
-
-        /// <summary>
-        /// Gets or sets ordinal position
-        /// </summary>
-        /// <remarks>Used only by the DatabaseProvider to group the constraints and fill the ColumnNames list</remarks>
-        public long OrdinalPosition { get; set; }
-
-        /// <summary>
-        /// Gets the column names already ordered
-        /// </summary>
-        public List<string> ColumnNames { get; } = [];
-
-        /// <summary>
-        /// Gets or sets the constraint type
-        /// </summary>
-        public string ConstraintType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the constraint definition
-        /// </summary>
-        public string Definition { get; set; }
+        this.AlterScriptSupported = false;
     }
+
+    /// <inheritdoc />
+    public override DatabaseObjectType ObjectType { get; } = DatabaseObjectType.Constraint;
+
+    /// <summary>
+    /// Gets or sets the table schema
+    /// </summary>
+    public string TableSchema { get; set; }
+
+    /// <summary>
+    /// Gets or sets the table name
+    /// </summary>
+    public string TableName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the column name
+    /// </summary>
+    /// <remarks>Used only by the DatabaseProvider to group the constraints and fill the ColumnNames list</remarks>
+    public string ColumnName { get; set; }
+
+    /// <summary>
+    /// Gets or sets ordinal position
+    /// </summary>
+    /// <remarks>Used only by the DatabaseProvider to group the constraints and fill the ColumnNames list</remarks>
+    public long OrdinalPosition { get; set; }
+
+    /// <summary>
+    /// Gets the column names already ordered
+    /// </summary>
+    public List<string> ColumnNames { get; } = [];
+
+    /// <summary>
+    /// Gets or sets the constraint type
+    /// </summary>
+    public string ConstraintType { get; set; }
+
+    /// <summary>
+    /// Gets or sets the constraint definition
+    /// </summary>
+    public string Definition { get; set; }
 }

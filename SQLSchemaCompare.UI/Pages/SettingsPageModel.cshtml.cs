@@ -1,100 +1,99 @@
-﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Pages;
+
+/// <summary>
+/// PageModel of the settings page
+/// </summary>
+public class SettingsPageModel : PageModel
 {
     /// <summary>
-    /// PageModel of the settings page
+    /// The logger
     /// </summary>
-    public class SettingsPageModel : PageModel
+    private readonly ILogger logger;
+
+    /// <summary>
+    /// The app settings service
+    /// </summary>
+    private readonly IAppSettingsService appSettingsService;
+
+    /// <summary>
+    /// The project service
+    /// </summary>
+    private readonly IProjectService projectService;
+
+    /// <summary>
+    /// The localization service
+    /// </summary>
+    private readonly ILocalizationService localizationService;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SettingsPageModel"/> class.
+    /// </summary>
+    /// <param name="loggerFactory">The injected logger factory</param>
+    /// <param name="appSettingsService">The injected app settings service</param>
+    /// <param name="projectService">The injected project service</param>
+    /// <param name="localizationService">The injected LocalizationService</param>
+    public SettingsPageModel(
+        ILoggerFactory loggerFactory,
+        IAppSettingsService appSettingsService,
+        IProjectService projectService,
+        ILocalizationService localizationService)
     {
-        /// <summary>
-        /// The logger
-        /// </summary>
-        private readonly ILogger logger;
+        ArgumentNullException.ThrowIfNull(loggerFactory);
 
-        /// <summary>
-        /// The app settings service
-        /// </summary>
-        private readonly IAppSettingsService appSettingsService;
+        this.logger = loggerFactory.CreateLogger(nameof(SettingsPageModel));
+        this.appSettingsService = appSettingsService;
+        this.projectService = projectService;
+        this.localizationService = localizationService;
+    }
 
-        /// <summary>
-        /// The project service
-        /// </summary>
-        private readonly IProjectService projectService;
+    /// <summary>
+    /// Gets the current project
+    /// </summary>
+    public CompareProject Project { get; internal set; }
 
-        /// <summary>
-        /// The localization service
-        /// </summary>
-        private readonly ILocalizationService localizationService;
+    /// <summary>
+    /// Gets the settings
+    /// </summary>
+    public AppSettings Settings { get; internal set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SettingsPageModel"/> class.
-        /// </summary>
-        /// <param name="loggerFactory">The injected logger factory</param>
-        /// <param name="appSettingsService">The injected app settings service</param>
-        /// <param name="projectService">The injected project service</param>
-        /// <param name="localizationService">The injected LocalizationService</param>
-        public SettingsPageModel(
-            ILoggerFactory loggerFactory,
-            IAppSettingsService appSettingsService,
-            IProjectService projectService,
-            ILocalizationService localizationService)
+    /// <summary>
+    /// Get the settings page
+    /// </summary>
+    public void OnGet()
+    {
+        this.Project = this.projectService.Project;
+        this.Settings = this.appSettingsService.GetAppSettings();
+    }
+
+    /// <summary>
+    /// Save the settings
+    /// </summary>
+    /// <param name="settings">The settings to save</param>
+    /// <returns>The ApiResponse in JSON</returns>
+    public ActionResult OnPostSave([FromBody] AppSettings settings)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+
+        this.logger.LogDebug("Saving settings...");
+        this.logger.LogDebug($"LogLevel => {settings.LogLevel}");
+        this.logger.LogDebug($"Language => {settings.Language}");
+
+        var currentSettings = this.appSettingsService.GetAppSettings();
+
+        if (currentSettings.Language != settings.Language)
         {
-            ArgumentNullException.ThrowIfNull(loggerFactory);
-
-            this.logger = loggerFactory.CreateLogger(nameof(SettingsPageModel));
-            this.appSettingsService = appSettingsService;
-            this.projectService = projectService;
-            this.localizationService = localizationService;
+            this.localizationService.SetLanguage(settings.Language);
+            currentSettings.Language = settings.Language;
         }
 
-        /// <summary>
-        /// Gets the current project
-        /// </summary>
-        public CompareProject Project { get; internal set; }
-
-        /// <summary>
-        /// Gets the settings
-        /// </summary>
-        public AppSettings Settings { get; internal set; }
-
-        /// <summary>
-        /// Get the settings page
-        /// </summary>
-        public void OnGet()
+        if (currentSettings.LogLevel != settings.LogLevel)
         {
-            this.Project = this.projectService.Project;
-            this.Settings = this.appSettingsService.GetAppSettings();
+            Utility.SetLoggingLevel(settings.LogLevel);
+            currentSettings.LogLevel = settings.LogLevel;
         }
 
-        /// <summary>
-        /// Save the settings
-        /// </summary>
-        /// <param name="settings">The settings to save</param>
-        /// <returns>The ApiResponse in JSON</returns>
-        public ActionResult OnPostSave([FromBody] AppSettings settings)
-        {
-            ArgumentNullException.ThrowIfNull(settings);
+        this.appSettingsService.SaveAppSettings();
 
-            this.logger.LogDebug("Saving settings...");
-            this.logger.LogDebug($"LogLevel => {settings.LogLevel}");
-            this.logger.LogDebug($"Language => {settings.Language}");
-
-            var currentSettings = this.appSettingsService.GetAppSettings();
-
-            if (currentSettings.Language != settings.Language)
-            {
-                this.localizationService.SetLanguage(settings.Language);
-                currentSettings.Language = settings.Language;
-            }
-
-            if (currentSettings.LogLevel != settings.LogLevel)
-            {
-                Utility.SetLoggingLevel(settings.LogLevel);
-                currentSettings.LogLevel = settings.LogLevel;
-            }
-
-            this.appSettingsService.SaveAppSettings();
-
-            return new JsonResult(new ApiResponse());
-        }
+        return new JsonResult(new ApiResponse());
     }
 }

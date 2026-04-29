@@ -1,23 +1,22 @@
-﻿namespace TiCodeX.SQLSchemaCompare.UI.Enums
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Enums;
+
+/// <summary>
+/// List of possible states of a button
+/// </summary>
+public enum ButtonState
 {
     /// <summary>
-    /// List of possible states of a button
+    /// Normal button
     /// </summary>
-    public enum ButtonState
-    {
-        /// <summary>
-        /// Normal button
-        /// </summary>
-        Default,
+    Default,
 
-        /// <summary>
-        /// Makes the button appear pressed
-        /// </summary>
-        Active,
+    /// <summary>
+    /// Makes the button appear pressed
+    /// </summary>
+    Active,
 
-        /// <summary>
-        /// Makes the button unclickable
-        /// </summary>
-        Disabled,
-    }
+    /// <summary>
+    /// Makes the button unclickable
+    /// </summary>
+    Disabled,
 }

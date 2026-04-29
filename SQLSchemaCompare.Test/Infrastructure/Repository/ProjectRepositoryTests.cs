@@ -1,33 +1,33 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository
+﻿namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.Repository;
+
+/// <summary>
+/// Test class for the ProjectRepository
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="ProjectRepositoryTests"/> class.
+/// </remarks>
+/// <param name="output">The test output helper</param>
+public class ProjectRepositoryTests(ITestOutputHelper output) : BaseTests<ProjectRepositoryTests>(output)
 {
     /// <summary>
-    /// Test class for the ProjectRepository
+    /// Test the read functionality
     /// </summary>
-    /// <remarks>
-    /// Initializes a new instance of the <see cref="ProjectRepositoryTests"/> class.
-    /// </remarks>
-    /// <param name="output">The test output helper</param>
-    public class ProjectRepositoryTests(ITestOutputHelper output) : BaseTests<ProjectRepositoryTests>(output)
+    [Fact]
+    [UnitTest]
+    public void Read()
     {
-        /// <summary>
-        /// Test the read functionality
-        /// </summary>
-        [Fact]
-        [UnitTest]
-        public void Read()
-        {
-            var projectRepository = new ProjectRepository(this.LoggerFactory);
+        var projectRepository = new ProjectRepository(this.LoggerFactory);
 
-            const string sourceHostname = "localhost";
-            const string sourceUsername = "admin";
-            const string sourcePassword = "test";
-            const string sourceDatabase = "database1";
-            const string targetHostname = "192.168.1.1";
-            const string targetUsername = "pippo";
-            const string targetPassword = "pluto";
-            const string targetDatabase = "database2";
+        const string sourceHostname = "localhost";
+        const string sourceUsername = "admin";
+        const string sourcePassword = "test";
+        const string sourceDatabase = "database1";
+        const string targetHostname = "192.168.1.1";
+        const string targetUsername = "pippo";
+        const string targetPassword = "pluto";
+        const string targetDatabase = "database2";
 
-            var xmlFile = $@"<?xml version=""1.0""?>
+        var xmlFile = $@"<?xml version=""1.0""?>
 <CompareProject xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <SourceProviderOptions xsi:type=""MicrosoftSqlDatabaseProviderOptions"">
     <Hostname>{sourceHostname}</Hostname>
@@ -45,103 +45,103 @@
 </CompareProject>
 ";
 
-            var filename = Path.GetTempFileName();
+        var filename = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(filename, xmlFile);
+
+            var project = projectRepository.Read(filename);
+
+            project.Should().NotBeNull();
+
+            project.SourceProviderOptions.Should().BeOfType<MicrosoftSqlDatabaseProviderOptions>();
+            project.SourceProviderOptions.Hostname.Should().Be(sourceHostname);
+            project.SourceProviderOptions.Username.Should().Be(sourceUsername);
+            project.SourceProviderOptions.Password.Should().Be(sourcePassword);
+            project.SourceProviderOptions.Database.Should().Be(sourceDatabase);
+
+            project.TargetProviderOptions.Should().BeOfType<PostgreSqlDatabaseProviderOptions>();
+            project.TargetProviderOptions.Hostname.Should().Be(targetHostname);
+            project.TargetProviderOptions.Username.Should().Be(targetUsername);
+            project.TargetProviderOptions.Password.Should().Be(targetPassword);
+            project.TargetProviderOptions.Database.Should().Be(targetDatabase);
+        }
+        finally
+        {
             try
             {
-                File.WriteAllText(filename, xmlFile);
-
-                var project = projectRepository.Read(filename);
-
-                project.Should().NotBeNull();
-
-                project.SourceProviderOptions.Should().BeOfType<MicrosoftSqlDatabaseProviderOptions>();
-                project.SourceProviderOptions.Hostname.Should().Be(sourceHostname);
-                project.SourceProviderOptions.Username.Should().Be(sourceUsername);
-                project.SourceProviderOptions.Password.Should().Be(sourcePassword);
-                project.SourceProviderOptions.Database.Should().Be(sourceDatabase);
-
-                project.TargetProviderOptions.Should().BeOfType<PostgreSqlDatabaseProviderOptions>();
-                project.TargetProviderOptions.Hostname.Should().Be(targetHostname);
-                project.TargetProviderOptions.Username.Should().Be(targetUsername);
-                project.TargetProviderOptions.Password.Should().Be(targetPassword);
-                project.TargetProviderOptions.Database.Should().Be(targetDatabase);
+                File.Delete(filename);
             }
-            finally
+            catch
             {
-                try
-                {
-                    File.Delete(filename);
-                }
-                catch
-                {
-                    // Do nothing
-                }
+                // Do nothing
             }
         }
+    }
 
-        /// <summary>
-        /// The the write functionality
-        /// </summary>
-        [Fact]
-        [UnitTest]
-        public void Write()
+    /// <summary>
+    /// The the write functionality
+    /// </summary>
+    [Fact]
+    [UnitTest]
+    public void Write()
+    {
+        var compareProject = new CompareProject
         {
-            var compareProject = new CompareProject
+            SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions
             {
-                SourceProviderOptions = new MicrosoftSqlDatabaseProviderOptions
-                {
-                    UseConnectionString = true,
-                    ConnectionString = Guid.NewGuid().ToString(),
-                    Hostname = Guid.NewGuid().ToString(),
-                    Database = Guid.NewGuid().ToString(),
-                    Username = Guid.NewGuid().ToString(),
-                    Password = Guid.NewGuid().ToString(),
-                    SavePassword = true,
-                    UseWindowsAuthentication = true,
-                    UseAzureAuthentication = true,
-                    UseSsl = true,
-                    IgnoreServerCertificate = true,
-                },
-                TargetProviderOptions = new PostgreSqlDatabaseProviderOptions
-                {
-                    Hostname = Guid.NewGuid().ToString(),
-                    Database = Guid.NewGuid().ToString(),
-                    Username = Guid.NewGuid().ToString(),
-                    Password = Guid.NewGuid().ToString(),
-                    UseSsl = true,
-                    IgnoreServerCertificate = false,
-                },
-                Options = new ProjectOptions
-                {
-                    Scripting = new ScriptingOptions
-                    {
-                        IgnoreCollate = true,
-                        OrderColumnAlphabetically = true,
-                        IgnoreReferenceTableColumnOrder = true,
-                        GenerateUpdateScriptForNewNotNullColumns = true,
-                    },
-                    Filtering = new FilteringOptions
-                    {
-                        Include = false,
-                    },
-                },
-            };
-            compareProject.Options.Filtering.Clauses.Add(new FilterClause
+                UseConnectionString = true,
+                ConnectionString = Guid.NewGuid().ToString(),
+                Hostname = Guid.NewGuid().ToString(),
+                Database = Guid.NewGuid().ToString(),
+                Username = Guid.NewGuid().ToString(),
+                Password = Guid.NewGuid().ToString(),
+                SavePassword = true,
+                UseWindowsAuthentication = true,
+                UseAzureAuthentication = true,
+                UseSsl = true,
+                IgnoreServerCertificate = true,
+            },
+            TargetProviderOptions = new PostgreSqlDatabaseProviderOptions
             {
-                Group = 0,
-                Field = FilterField.Schema,
-                Operator = FilterOperator.Equals,
-                Value = "customer_data",
-            });
-
-            var filename = Path.GetTempFileName();
-            try
+                Hostname = Guid.NewGuid().ToString(),
+                Database = Guid.NewGuid().ToString(),
+                Username = Guid.NewGuid().ToString(),
+                Password = Guid.NewGuid().ToString(),
+                UseSsl = true,
+                IgnoreServerCertificate = false,
+            },
+            Options = new ProjectOptions
             {
-                new ProjectRepository(this.LoggerFactory).Write(compareProject, filename);
+                Scripting = new ScriptingOptions
+                {
+                    IgnoreCollate = true,
+                    OrderColumnAlphabetically = true,
+                    IgnoreReferenceTableColumnOrder = true,
+                    GenerateUpdateScriptForNewNotNullColumns = true,
+                },
+                Filtering = new FilteringOptions
+                {
+                    Include = false,
+                },
+            },
+        };
+        compareProject.Options.Filtering.Clauses.Add(new FilterClause
+        {
+            Group = 0,
+            Field = FilterField.Schema,
+            Operator = FilterOperator.Equals,
+            Value = "customer_data",
+        });
 
-                var xmlFile = File.ReadAllText(filename);
+        var filename = Path.GetTempFileName();
+        try
+        {
+            new ProjectRepository(this.LoggerFactory).Write(compareProject, filename);
 
-                var xmlFileExpected = $@"<?xml version=""1.0"" encoding=""utf-8""?>
+            var xmlFile = File.ReadAllText(filename);
+
+            var xmlFileExpected = $@"<?xml version=""1.0"" encoding=""utf-8""?>
 <CompareProject xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <SourceProviderOptions xsi:type=""{nameof(MicrosoftSqlDatabaseProviderOptions)}"">
     <UseConnectionString>{XmlConvert.ToString(compareProject.SourceProviderOptions.UseConnectionString)}</UseConnectionString>
@@ -189,22 +189,21 @@
   </Options>
 </CompareProject>";
 
-                // Remove line-endings for comparison
-                xmlFile = Regex.Replace(xmlFile, "\\r|\\n", string.Empty);
-                xmlFileExpected = Regex.Replace(xmlFileExpected, "\\r|\\n", string.Empty);
+            // Remove line-endings for comparison
+            xmlFile = Regex.Replace(xmlFile, "\\r|\\n", string.Empty);
+            xmlFileExpected = Regex.Replace(xmlFileExpected, "\\r|\\n", string.Empty);
 
-                xmlFile.Should().Be(xmlFileExpected);
-            }
-            finally
+            xmlFile.Should().Be(xmlFileExpected);
+        }
+        finally
+        {
+            try
             {
-                try
-                {
-                    File.Delete(filename);
-                }
-                catch
-                {
-                    // Do nothing
-                }
+                File.Delete(filename);
+            }
+            catch
+            {
+                // Do nothing
             }
         }
     }

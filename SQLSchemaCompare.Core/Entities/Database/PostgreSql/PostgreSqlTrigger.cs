@@ -1,16 +1,15 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+
+/// <summary>
+/// Specific PostgreSql trigger definition
+/// </summary>
+public class PostgreSqlTrigger : ABaseDbTrigger
 {
     /// <summary>
-    /// Specific PostgreSql trigger definition
+    /// Initializes a new instance of the <see cref="PostgreSqlTrigger"/> class
     /// </summary>
-    public class PostgreSqlTrigger : ABaseDbTrigger
+    public PostgreSqlTrigger()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlTrigger"/> class
-        /// </summary>
-        public PostgreSqlTrigger()
-        {
-            this.AlterScriptSupported = false;
-        }
+        this.AlterScriptSupported = false;
     }
 }

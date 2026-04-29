@@ -5,17 +5,12 @@
     /// <summary>
     /// Test class for the AppSettingsRepository
     /// </summary>
-    public class AppSettingsRepositoryTests : BaseTests<AppSettingsRepositoryTests>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="AppSettingsRepositoryTests"/> class.
+    /// </remarks>
+    /// <param name="output">The test output helper</param>
+    public class AppSettingsRepositoryTests(ITestOutputHelper output) : BaseTests<AppSettingsRepositoryTests>(output)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AppSettingsRepositoryTests"/> class.
-        /// </summary>
-        /// <param name="output">The test output helper</param>
-        public AppSettingsRepositoryTests(ITestOutputHelper output)
-            : base(output)
-        {
-        }
-
         /// <summary>
         /// Test the read functionality
         /// </summary>
@@ -113,11 +108,6 @@
             /// Gets the product name
             /// </summary>
             public string ProductName => throw new System.NotSupportedException();
-
-            /// <summary>
-            /// Gets a value indicating whether is development
-            /// </summary>
-            public bool IsDevelopment => throw new System.NotSupportedException();
 
             /// <summary>
             /// Gets the authoritation header name

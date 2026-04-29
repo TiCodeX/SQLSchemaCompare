@@ -13,30 +13,30 @@
         {
             get
             {
-                var serverPorts = new List<object[]>();
+                var serverPorts = new List<ushort>();
 
-                if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || DatabaseFixture.ForceDockerTests)
+                if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || ForceDockerTests)
                 {
-                    /*serverPorts.Add(new object[] { (ushort)26001 });*/ // Version 9.3 (EOL November 2018)
-                    /*serverPorts.Add(new object[] { (ushort)26002 });*/ // Version 9.4 (EOL February 2020)
-                    /*serverPorts.Add(new object[] { (ushort)26003 });*/ // Version 9.5 (EOL February 2021)
-                    /*serverPorts.Add(new object[] { (ushort)26004 });*/ // Version 9.6 (EOL November 2021)
-                    /*serverPorts.Add(new object[] { (ushort)26005 });*/ // Version 10 (EOL November 2022)
-                    /*serverPorts.Add(new object[] { (ushort)26006 });*/ // Version 11 (EOL November 2023)
-                    /*serverPorts.Add(new object[] { (ushort)26007 }); // Version 12 (EOL November 2024)*/
-                    serverPorts.Add(new object[] { (ushort)26008 }); // Version 13 (EOL November 2025)
-                    serverPorts.Add(new object[] { (ushort)26009 }); // Version 14 (EOL November 2026)
-                    serverPorts.Add(new object[] { (ushort)26010 }); // Version 15 (EOL November 2027)
-                    serverPorts.Add(new object[] { (ushort)26011 }); // Version 16 (EOL November 2028)
-                    serverPorts.Add(new object[] { (ushort)26012 }); // Version 17 (EOL November 2029)
-                    serverPorts.Add(new object[] { (ushort)26013 }); // Version 18 (EOL November 2030)
+                    //serverPorts.Add(26001); // Version 9.3 (EOL November 2018)
+                    //serverPorts.Add(26002); // Version 9.4 (EOL February 2020)
+                    //serverPorts.Add(26003); // Version 9.5 (EOL February 2021)
+                    //serverPorts.Add(26004); // Version 9.6 (EOL November 2021)
+                    //serverPorts.Add(26005); // Version 10 (EOL November 2022)
+                    //serverPorts.Add(26006); // Version 11 (EOL November 2023)
+                    //serverPorts.Add(26007); // Version 12 (EOL November 2024)
+                    serverPorts.Add(26008); // Version 13 (EOL November 2025)
+                    serverPorts.Add(26009); // Version 14 (EOL November 2026)
+                    serverPorts.Add(26010); // Version 15 (EOL November 2027)
+                    serverPorts.Add(26011); // Version 16 (EOL November 2028)
+                    serverPorts.Add(26012); // Version 17 (EOL November 2029)
+                    serverPorts.Add(26013); // Version 18 (EOL November 2030)
                 }
                 else
                 {
-                    serverPorts.Add(new object[] { (ushort)5432 }); // Local server
+                    serverPorts.Add(5432); // Local server
                 }
 
-                return serverPorts;
+                return serverPorts.Select(x => new object[] { x });
             }
         }
 

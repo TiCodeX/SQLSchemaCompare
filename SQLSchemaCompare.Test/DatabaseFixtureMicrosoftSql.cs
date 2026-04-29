@@ -12,21 +12,21 @@
         {
             get
             {
-                var serverPorts = new List<object[]>();
+                var serverPorts = new List<ushort>();
 
-                if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || DatabaseFixture.ForceDockerTests)
+                if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || ForceDockerTests)
                 {
-                    serverPorts.Add(new object[] { (ushort)28001 }); // Version 2017 Linux (EOL October 2027)
-                    serverPorts.Add(new object[] { (ushort)28002 }); // Version 2019 Linux (EOL January 2030)
-                    serverPorts.Add(new object[] { (ushort)28003 }); // Version 2022 Linux (EOL January 2033)
-                    serverPorts.Add(new object[] { (ushort)28004 }); // Version 2025 Linux
+                    serverPorts.Add(28001); // Version 2017 Linux (EOL October 2027)
+                    serverPorts.Add(28002); // Version 2019 Linux (EOL January 2030)
+                    serverPorts.Add(28003); // Version 2022 Linux (EOL January 2033)
+                    serverPorts.Add(28004); // Version 2025 Linux
                 }
                 else
                 {
-                    serverPorts.Add(new object[] { (ushort)1433 }); // Local server
+                    serverPorts.Add(1433); // Local server
                 }
 
-                return serverPorts;
+                return serverPorts.Select(x => new object[] { x });
             }
         }
 
@@ -46,13 +46,10 @@
         /// <inheritdoc />
         public override void ExecuteScriptCore(string script, string databaseName, ushort port)
         {
-            if (script == null)
-            {
-                throw new ArgumentNullException(nameof(script));
-            }
+            ArgumentNullException.ThrowIfNull(script);
 
             using var context = new MicrosoftSqlDatabaseContext(this.LoggerFactory, this.CipherService, (MicrosoftSqlDatabaseProviderOptions)this.GetDatabaseProviderOptions(databaseName, port));
-            var queries = script.Split(new[] { "GO\r\n", "GO\n" }, StringSplitOptions.None);
+            var queries = script.Split(["GO\r\n", "GO\n"], StringSplitOptions.None);
             foreach (var query in queries.Where(x => !string.IsNullOrWhiteSpace(x)))
             {
                 context.ExecuteNonQuery(query);

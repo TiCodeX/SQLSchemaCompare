@@ -19,12 +19,7 @@
         public MariaDbTests(ITestOutputHelper output, DatabaseFixtureMariaDb dbFixture)
             : base(output)
         {
-            if (dbFixture == null)
-            {
-                throw new ArgumentNullException(nameof(dbFixture));
-            }
-
-            this.dbFixture = dbFixture;
+            this.dbFixture = dbFixture ?? throw new ArgumentNullException(nameof(dbFixture));
             this.dbFixture.SetLoggerFactory(this.LoggerFactory);
             this.dbFixture.InitServers(DatabaseFixtureMariaDb.ServerPorts);
         }

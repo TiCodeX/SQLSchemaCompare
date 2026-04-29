@@ -3,17 +3,12 @@
     /// <summary>
     /// Test class for the ProjectRepository
     /// </summary>
-    public class ProjectRepositoryTests : BaseTests<ProjectRepositoryTests>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ProjectRepositoryTests"/> class.
+    /// </remarks>
+    /// <param name="output">The test output helper</param>
+    public class ProjectRepositoryTests(ITestOutputHelper output) : BaseTests<ProjectRepositoryTests>(output)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ProjectRepositoryTests"/> class.
-        /// </summary>
-        /// <param name="output">The test output helper</param>
-        public ProjectRepositoryTests(ITestOutputHelper output)
-            : base(output)
-        {
-        }
-
         /// <summary>
         /// Test the read functionality
         /// </summary>

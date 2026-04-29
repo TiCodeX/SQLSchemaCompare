@@ -19,12 +19,7 @@
         public PostgreSqlTests(ITestOutputHelper output, DatabaseFixturePostgreSql dbFixture)
             : base(output)
         {
-            if (dbFixture == null)
-            {
-                throw new ArgumentNullException(nameof(dbFixture));
-            }
-
-            this.dbFixture = dbFixture;
+            this.dbFixture = dbFixture ?? throw new ArgumentNullException(nameof(dbFixture));
             this.dbFixture.SetLoggerFactory(this.LoggerFactory);
             this.dbFixture.InitServers(DatabaseFixturePostgreSql.ServerPorts);
         }

@@ -5,22 +5,16 @@
     /// <summary>
     /// Test class for the CipherService
     /// </summary>
-    public class CipherServiceTests : BaseTests<CipherServiceTests>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="CipherServiceTests"/> class
+    /// </remarks>
+    /// <param name="output">The test output helper</param>
+    public class CipherServiceTests(ITestOutputHelper output) : BaseTests<CipherServiceTests>(output)
     {
         /// <summary>
         /// The cipher service
         /// </summary>
-        private readonly ICipherService cipherService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CipherServiceTests"/> class
-        /// </summary>
-        /// <param name="output">The test output helper</param>
-        public CipherServiceTests(ITestOutputHelper output)
-            : base(output)
-        {
-            this.cipherService = new CipherService();
-        }
+        private readonly ICipherService cipherService = new CipherService();
 
         /// <summary>
         /// Test encrypting and decrypting multiple random strings

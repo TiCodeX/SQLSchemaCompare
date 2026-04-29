@@ -3,17 +3,12 @@
     /// <summary>
     /// Test class for the abstract class ADatabaseScripter
     /// </summary>
-    public class ADatabaseScripterTests : BaseTests<ADatabaseScripterTests>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ADatabaseScripterTests"/> class.
+    /// </remarks>
+    /// <param name="output">The test output helper</param>
+    public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatabaseScripterTests>(output)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ADatabaseScripterTests"/> class.
-        /// </summary>
-        /// <param name="output">The test output helper</param>
-        public ADatabaseScripterTests(ITestOutputHelper output)
-            : base(output)
-        {
-        }
-
         /// <summary>
         /// Test for the GetSortedTableColumns when options specify for alphabetical order
         /// </summary>
@@ -31,7 +26,7 @@
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            table.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Source };
+            table.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Source };
 
             var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
             columns.Select(x => x.Name).Should().ContainInOrder("a", "b", "c", "d", "e");
@@ -54,7 +49,7 @@
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            table.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Source };
+            table.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Source };
 
             var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
             columns.Select(x => x.Name).Should().ContainInOrder("b", "e", "a", "d", "c");
@@ -77,7 +72,7 @@
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 0 });
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 4 });
 
-            refTable.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Source };
+            refTable.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Source };
 
             var table = new MicrosoftSqlTable();
             table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
@@ -86,7 +81,7 @@
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            table.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Target };
+            table.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Target };
             table.MappedDbObject = refTable;
 
             var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
@@ -110,7 +105,7 @@
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 0 });
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 4 });
 
-            refTable.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Source };
+            refTable.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Source };
 
             var table = new MicrosoftSqlTable();
             table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
@@ -119,7 +114,7 @@
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            table.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Target };
+            table.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Target };
             table.MappedDbObject = refTable;
 
             var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
@@ -143,7 +138,7 @@
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 0 });
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 4 });
 
-            refTable.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Source };
+            refTable.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Source };
 
             var table = new MicrosoftSqlTable();
             table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
@@ -152,7 +147,7 @@
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            table.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Target };
+            table.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Target };
             table.MappedDbObject = refTable;
 
             var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
@@ -176,7 +171,7 @@
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 0 });
             refTable.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 4 });
 
-            refTable.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Source };
+            refTable.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Source };
 
             var table = new MicrosoftSqlTable();
             table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
@@ -185,7 +180,7 @@
             table.Columns.Add(new MicrosoftSqlColumn { Name = "c", OrdinalPosition = 4 });
             table.Columns.Add(new MicrosoftSqlColumn { Name = "d", OrdinalPosition = 3 });
 
-            table.Database = new MicrosoftSqlDb() { Direction = SQLSchemaCompare.Core.Enums.CompareDirection.Target };
+            table.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Target };
             table.MappedDbObject = refTable;
 
             var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
@@ -238,8 +233,8 @@
             sortedTables.Select(x => x.Name).Should().ContainInOrder("c", "a", "b", "d", "e");
 
             // More complicated test (based on https://qt-wiki-uploads.s3.amazonaws.com/images/4/4c/Beginner-Class-Hierarchy.jpg)
-            tables = new List<ABaseDbTable>
-            {
+            tables =
+            [
                 new PostgreSqlTable { Name = "Object" },
                 new PostgreSqlTable { Name = "Thread", InheritedTableName = "Object" },
                 new PostgreSqlTable { Name = "Widget", InheritedTableName = "Object" },
@@ -253,8 +248,8 @@
                 new PostgreSqlTable { Name = "AbstractScrollArea", InheritedTableName = "Frame" },
                 new PostgreSqlTable { Name = "GraphicsView", InheritedTableName = "AbstractScrollArea" },
                 new PostgreSqlTable { Name = "TextEdit", InheritedTableName = "AbstractScrollArea" },
-            };
-            tables = tables.OrderBy(a => Guid.NewGuid()).ToList();
+            ];
+            tables = [.. tables.OrderBy(a => Guid.NewGuid())];
 
             sortedTables = (List<PostgreSqlTable>)exposedScripter.GetSortedTables(tables, false);
             sortedTables.Select(x => x.Name).Should().ContainInOrder("Object", "Widget", "AbstractButton", "Frame", "AbstractScrollArea", "CheckBox", "GraphicsView", "Label", "ProgressBar", "PushButton", "RadioButton", "TextEdit", "Thread");

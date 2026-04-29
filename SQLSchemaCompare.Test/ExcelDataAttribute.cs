@@ -7,31 +7,23 @@
     /// <summary>
     /// Provides an excel data source for a data theory
     /// </summary>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ExcelDataAttribute"/> class.
+    /// </remarks>
+    /// <param name="filePath">The path of the excel file</param>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public sealed class ExcelDataAttribute : DataAttribute
+    public sealed class ExcelDataAttribute(string filePath) : DataAttribute
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExcelDataAttribute"/> class.
-        /// </summary>
-        /// <param name="filePath">The path of the excel file</param>
-        public ExcelDataAttribute(string filePath)
-        {
-            this.FilePath = filePath;
-        }
-
         /// <summary>
         /// Gets the path of the excel file
         /// </summary>
-        public string FilePath { get; }
+        public string FilePath { get; } = filePath;
 
         /// <inheritdoc/>
         [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
-            if (testMethod == null)
-            {
-                throw new ArgumentNullException(nameof(testMethod));
-            }
+            ArgumentNullException.ThrowIfNull(testMethod);
 
             return GetDataInternal(testMethod);
 
@@ -48,50 +40,48 @@
                 }
 
                 ExcelPackage.License.SetNonCommercialOrganization("TiCodeX");
-                using (var p = new ExcelPackage(new FileInfo(path)))
+                using var p = new ExcelPackage(new FileInfo(path));
+                // Retrieve first Worksheet
+                var ws = p.Workbook.Worksheets.First();
+
+                // Read the first Row for the column names and place into a list so that
+                // it can be used as reference to properties
+                var columnNames = new Dictionary<string, int>();
+                var colPosition = 0;
+                foreach (var cell in ws.Cells[1, 1, 1, ws.Dimension.Columns])
                 {
-                    // Retrieve first Worksheet
-                    var ws = p.Workbook.Worksheets.First();
+                    columnNames.Add(cell.Value.ToString().ToUpperInvariant(), colPosition++);
+                }
 
-                    // Read the first Row for the column names and place into a list so that
-                    // it can be used as reference to properties
-                    var columnNames = new Dictionary<string, int>();
-                    var colPosition = 0;
-                    foreach (var cell in ws.Cells[1, 1, 1, ws.Dimension.Columns])
+                // Loop through the rows of the excel sheet
+                for (var rowNum = 2; rowNum <= ws.Dimension.End.Row; rowNum++)
+                {
+                    var wsRow = ws.Cells[rowNum, 1, rowNum, ws.Cells.Count()];
+
+                    var objArr = new List<object>();
+                    foreach (var parameterInfo in testMethod.GetParameters())
                     {
-                        columnNames.Add(cell.Value.ToString().ToUpperInvariant(), colPosition++);
-                    }
-
-                    // Loop through the rows of the excel sheet
-                    for (var rowNum = 2; rowNum <= ws.Dimension.End.Row; rowNum++)
-                    {
-                        var wsRow = ws.Cells[rowNum, 1, rowNum, ws.Cells.Count()];
-
-                        var objArr = new List<object>();
-                        foreach (var parameterInfo in testMethod.GetParameters())
+                        if (IsSimpleType(parameterInfo.ParameterType))
                         {
-                            if (IsSimpleType(parameterInfo.ParameterType))
+                            if (!columnNames.TryGetValue(
+                                $"{parameterInfo.Name}".ToUpperInvariant(),
+                                out var position))
                             {
-                                if (!columnNames.TryGetValue(
-                                    $"{parameterInfo.Name}".ToUpperInvariant(),
-                                    out var position))
-                                {
-                                    throw new KeyNotFoundException($"Could not find column with header: {parameterInfo.Name}");
-                                }
-
-                                objArr.Add(ConvertParameter(parameterInfo.ParameterType, wsRow[rowNum, position + 1].Value));
+                                throw new KeyNotFoundException($"Could not find column with header: {parameterInfo.Name}");
                             }
-                            else
-                            {
-                                var obj = Activator.CreateInstance(parameterInfo.ParameterType);
-                                objArr.Add(obj);
 
-                                this.RecursiveSetProperty(columnNames, wsRow, rowNum, parameterInfo.Name, obj);
-                            }
+                            objArr.Add(ConvertParameter(parameterInfo.ParameterType, wsRow[rowNum, position + 1].Value));
                         }
+                        else
+                        {
+                            var obj = Activator.CreateInstance(parameterInfo.ParameterType);
+                            objArr.Add(obj);
 
-                        yield return objArr.ToArray();
+                            this.RecursiveSetProperty(columnNames, wsRow, rowNum, parameterInfo.Name, obj);
+                        }
                     }
+
+                    yield return objArr.ToArray();
                 }
             }
         }

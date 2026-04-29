@@ -4,27 +4,21 @@
     /// Base class for every test
     /// </summary>
     /// <typeparam name="T">Type for the initialization of the Logger</typeparam>
-    public abstract class BaseTests<T> : IDisposable
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="BaseTests{T}"/> class.
+    /// </remarks>
+    /// <param name="output">The test output helper</param>
+    public abstract class BaseTests<T>(ITestOutputHelper output) : IDisposable
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BaseTests{T}"/> class.
-        /// </summary>
-        /// <param name="output">The test output helper</param>
-        protected BaseTests(ITestOutputHelper output)
-        {
-            this.Logger = new XunitLogger(typeof(T).Name, output);
-            this.LoggerFactory = new XunitLoggerFactory(output);
-        }
-
         /// <summary>
         /// Gets the Logger
         /// </summary>
-        protected XunitLogger Logger { get; }
+        protected XunitLogger Logger { get; } = new XunitLogger(typeof(T).Name, output);
 
         /// <summary>
         /// Gets the LoggerFactory
         /// </summary>
-        protected XunitLoggerFactory LoggerFactory { get; }
+        protected XunitLoggerFactory LoggerFactory { get; } = new XunitLoggerFactory(output);
 
         /// <inheritdoc />
         public void Dispose()

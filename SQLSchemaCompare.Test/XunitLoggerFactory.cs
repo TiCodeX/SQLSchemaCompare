@@ -3,21 +3,16 @@
     /// <summary>
     /// Implementation of the ILoggerFactory interface that uses the Xunit log system to write
     /// </summary>
-    public sealed class XunitLoggerFactory : ILoggerFactory
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="XunitLoggerFactory"/> class.
+    /// </remarks>
+    /// <param name="output">The Xunit logger</param>
+    public sealed class XunitLoggerFactory(ITestOutputHelper output) : ILoggerFactory
     {
         /// <summary>
         /// The output
         /// </summary>
-        private readonly ITestOutputHelper output;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XunitLoggerFactory"/> class.
-        /// </summary>
-        /// <param name="output">The Xunit logger</param>
-        public XunitLoggerFactory(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
+        private readonly ITestOutputHelper output = output;
 
         /// <inheritdoc/>
         public void AddProvider(ILoggerProvider provider)

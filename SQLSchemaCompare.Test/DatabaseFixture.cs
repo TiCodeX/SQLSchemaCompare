@@ -51,12 +51,7 @@
         /// <param name="logFactory">The test output helper</param>
         public void SetLoggerFactory(ILoggerFactory logFactory)
         {
-            if (logFactory == null)
-            {
-                throw new ArgumentNullException(nameof(logFactory));
-            }
-
-            this.LoggerFactory = logFactory;
+            this.LoggerFactory = logFactory ?? throw new ArgumentNullException(nameof(logFactory));
             this.Logger = logFactory.CreateLogger(nameof(DatabaseFixture));
         }
 
@@ -66,10 +61,7 @@
         /// <param name="serverPorts">The server ports</param>
         public void InitServers(IEnumerable<object[]> serverPorts)
         {
-            if (serverPorts == null)
-            {
-                throw new ArgumentNullException(nameof(serverPorts));
-            }
+            ArgumentNullException.ThrowIfNull(serverPorts);
 
             if (this.serversInitialized)
             {
@@ -244,6 +236,9 @@
                     // TODO: cast to specific PostgreSQL data types
                     sequenceType = typeof(PostgreSqlSequence);
                     break;
+
+                default:
+                    throw new NotSupportedException($"Database type {type} is not supported");
             }
 
             var schemas = sourceDb.Schemas.OrderBy(x => x.Name);
@@ -406,18 +401,14 @@
                 taskService);
             dbCompareService.StartCompare();
 
-            while (!taskService.CurrentTaskInfos.All(x => x.Status == TaskStatus.RanToCompletion ||
-                                                          x.Status == TaskStatus.Faulted ||
-                                                          x.Status == TaskStatus.Canceled))
+            while (!taskService.CurrentTaskInfos.All(x => x.Status is TaskStatus.RanToCompletion or TaskStatus.Faulted or TaskStatus.Canceled))
             {
                 Thread.Sleep(200);
             }
 
-            if (taskService.CurrentTaskInfos.Any(x => x.Status == TaskStatus.Faulted ||
-                                                      x.Status == TaskStatus.Canceled))
+            if (taskService.CurrentTaskInfos.Any(x => x.Status is TaskStatus.Faulted or TaskStatus.Canceled))
             {
-                var exception = taskService.CurrentTaskInfos.FirstOrDefault(x => x.Status == TaskStatus.Faulted ||
-                                                                                 x.Status == TaskStatus.Canceled)?.Exception;
+                var exception = taskService.CurrentTaskInfos.FirstOrDefault(x => x.Status is TaskStatus.Faulted or TaskStatus.Canceled)?.Exception;
                 if (exception != null)
                 {
                     throw exception;
@@ -517,6 +508,9 @@
                         postgreSqlScript.AppendLine(script);
                         this.ExecuteScript(postgreSqlScript.ToString(), targetDatabaseName, port);
                         break;
+
+                    default:
+                        throw new NotSupportedException($"Database type {databaseType} is not supported");
                 }
             }
 

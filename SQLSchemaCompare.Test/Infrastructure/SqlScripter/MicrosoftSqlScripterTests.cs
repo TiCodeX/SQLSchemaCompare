@@ -3,17 +3,12 @@
     /// <summary>
     /// Test class for the MicrosoftSqlScripter
     /// </summary>
-    public class MicrosoftSqlScripterTests : BaseTests<MicrosoftSqlScripterTests>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="MicrosoftSqlScripterTests"/> class.
+    /// </remarks>
+    /// <param name="output">The test output helper</param>
+    public class MicrosoftSqlScripterTests(ITestOutputHelper output) : BaseTests<MicrosoftSqlScripterTests>(output)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MicrosoftSqlScripterTests"/> class.
-        /// </summary>
-        /// <param name="output">The test output helper</param>
-        public MicrosoftSqlScripterTests(ITestOutputHelper output)
-            : base(output)
-        {
-        }
-
         /// <summary>
         /// Test for the script column function
         /// </summary>
@@ -40,10 +35,7 @@
         [ExcelData(@"Datasources/ScriptMicrosoftSqlDataTypeTest.xlsx")]
         public void ScriptDataType(ProjectOptions options, MicrosoftSqlDataType dataType, string expectedResult)
         {
-            if (dataType == null)
-            {
-                throw new ArgumentNullException(nameof(dataType));
-            }
+            ArgumentNullException.ThrowIfNull(dataType);
 
             var scripter = new MicrosoftSqlScripter(this.Logger, options);
             dataType.Database = new MicrosoftSqlDb();

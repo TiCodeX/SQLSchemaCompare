@@ -3,17 +3,12 @@
     /// <summary>
     /// Test class for the PropertyNotFoundException class
     /// </summary>
-    public class PropertyNotFoundExceptionTest : BaseTests<PropertyNotFoundExceptionTest>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="PropertyNotFoundExceptionTest"/> class.
+    /// </remarks>
+    /// <param name="output">The test output helper</param>
+    public class PropertyNotFoundExceptionTest(ITestOutputHelper output) : BaseTests<PropertyNotFoundExceptionTest>(output)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyNotFoundExceptionTest"/> class.
-        /// </summary>
-        /// <param name="output">The test output helper</param>
-        public PropertyNotFoundExceptionTest(ITestOutputHelper output)
-            : base(output)
-        {
-        }
-
         /// <summary>
         /// Test the retrieval of database list with all the databases
         /// </summary>

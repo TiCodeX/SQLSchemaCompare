@@ -5,38 +5,29 @@
     /// <summary>
     /// Implementation of the ILogger interface that uses the Xunit log system to write
     /// </summary>
-    public sealed class XunitLogger : ILogger, IDisposable
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="XunitLogger"/> class.
+    /// </remarks>
+    /// <param name="name">The logger name</param>
+    /// <param name="output">The Xunit logger</param>
+    public sealed class XunitLogger(string name, ITestOutputHelper output) : ILogger, IDisposable
     {
         /// <summary>
         /// The name
         /// </summary>
-        private readonly string name;
+        private readonly string name = name;
 
         /// <summary>
         /// The output
         /// </summary>
-        private readonly ITestOutputHelper output;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XunitLogger"/> class.
-        /// </summary>
-        /// <param name="name">The logger name</param>
-        /// <param name="output">The Xunit logger</param>
-        public XunitLogger(string name, ITestOutputHelper output)
-        {
-            this.name = name;
-            this.output = output;
-        }
+        private readonly ITestOutputHelper output = output;
 
         /// <inheritdoc/>
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            if (formatter == null)
-            {
-                throw new ArgumentNullException(nameof(formatter));
-            }
+            ArgumentNullException.ThrowIfNull(formatter);
 
-            this.output?.WriteLine($"[{logLevel.ToString()}] [{eventId.ToString()}] [{this.name}]: " + formatter(state, exception));
+            this.output?.WriteLine($"[{logLevel}] [{eventId}] [{this.name}]: " + formatter(state, exception));
         }
 
         /// <inheritdoc/>

@@ -19,12 +19,7 @@
         public MicrosoftSqlTests(ITestOutputHelper output, DatabaseFixtureMicrosoftSql dbFixture)
             : base(output)
         {
-            if (dbFixture == null)
-            {
-                throw new ArgumentNullException(nameof(dbFixture));
-            }
-
-            this.dbFixture = dbFixture;
+            this.dbFixture = dbFixture ?? throw new ArgumentNullException(nameof(dbFixture));
             this.dbFixture.SetLoggerFactory(this.LoggerFactory);
             this.dbFixture.InitServers(DatabaseFixtureMicrosoftSql.ServerPorts);
         }

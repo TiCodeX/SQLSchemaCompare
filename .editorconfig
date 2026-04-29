@@ -34,20 +34,15 @@ indent_style = tab
 indent_size = 2
 
 # Configuration Files
-[*.{json,xml,yml,config,props,targets,nuspec,resx,ruleset,js}]
+[*.{json,xml,yml,config,props,targets,nuspec,resx,ruleset}]
 indent_size = 2
-
-# .NET Config Files
-[*.{config}]
-indent_size = 4
-charset = utf-8-bom
 
 # Markdown Files
 [*.md]
 trim_trailing_whitespace = false
 
 # Web Files
-[*.{htm,html,ts,css,scss,less}]
+[*.{htm,html,css,scss,less}]
 indent_size = 4
 insert_final_newline = true
 
@@ -66,4 +61,8 @@ end_of_line = lf
 indent_size = 4
 insert_final_newline = true
 charset = utf-8-bom
-#csharp_style_namespace_declarations = file_scoped:error
+
+# Typescript/Javascript Files
+[*.{ts,js}]
+indent_size = 2
+insert_final_newline = true

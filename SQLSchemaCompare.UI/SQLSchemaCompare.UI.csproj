@@ -65,8 +65,6 @@
   </ItemGroup>
 
   <Target Name="YarnLintBuild" BeforeTargets="Build">
-    <Exec Command="yarn clean"></Exec>
-    <Exec Command="yarn lint-vs"></Exec>
     <Exec Command="yarn build"></Exec>
   </Target>
 

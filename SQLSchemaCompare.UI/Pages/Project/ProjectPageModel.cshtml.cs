@@ -164,7 +164,7 @@
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"Error loading project: {req?.Filename}");
+                this.logger.LogError(ex, $"Error loading project: {req.Filename}");
                 return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProject, ex.Message) });
             }
 

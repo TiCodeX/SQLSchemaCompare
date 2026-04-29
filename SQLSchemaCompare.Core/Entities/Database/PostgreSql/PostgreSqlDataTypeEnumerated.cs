@@ -1,13 +1,12 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+
+/// <summary>
+/// Specific PostgreSql Enum data type definition
+/// </summary>
+public class PostgreSqlDataTypeEnumerated : PostgreSqlDataType
 {
     /// <summary>
-    /// Specific PostgreSql Enum data type definition
+    /// Gets or sets the labels
     /// </summary>
-    public class PostgreSqlDataTypeEnumerated : PostgreSqlDataType
-    {
-        /// <summary>
-        /// Gets or sets the labels
-        /// </summary>
-        public IEnumerable<string> Labels { get; set; }
-    }
+    public IEnumerable<string> Labels { get; set; }
 }

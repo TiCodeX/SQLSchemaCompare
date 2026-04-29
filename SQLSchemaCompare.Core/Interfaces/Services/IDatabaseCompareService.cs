@@ -1,13 +1,12 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Services
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
+/// <summary>
+/// Defines a class that provides the mechanisms to compare two database instances
+/// </summary>
+public interface IDatabaseCompareService
 {
     /// <summary>
-    /// Defines a class that provides the mechanisms to compare two database instances
+    /// Compares two databases
     /// </summary>
-    public interface IDatabaseCompareService
-    {
-        /// <summary>
-        /// Compares two databases
-        /// </summary>
-        void StartCompare();
-    }
+    void StartCompare();
 }

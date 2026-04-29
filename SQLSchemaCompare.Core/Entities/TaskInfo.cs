@@ -1,62 +1,56 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities;
+
+/// <summary>
+/// Information about a Task
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="TaskInfo"/> class.
+/// </remarks>
+/// <param name="name">The name of the Task</param>
+public class TaskInfo(string name)
 {
     /// <summary>
-    /// Information about a Task
+    /// Gets the id of the Task
     /// </summary>
-    public class TaskInfo
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TaskInfo"/> class.
-        /// </summary>
-        /// <param name="name">The name of the Task</param>
-        public TaskInfo(string name)
-        {
-            this.Name = name;
-        }
+    public Guid Id { get; } = Guid.NewGuid();
 
-        /// <summary>
-        /// Gets the id of the Task
-        /// </summary>
-        public Guid Id { get; } = Guid.NewGuid();
+    /// <summary>
+    /// Gets the name of the Task
+    /// </summary>
+    public string Name { get; } = name;
 
-        /// <summary>
-        /// Gets the name of the Task
-        /// </summary>
-        public string Name { get; }
+    /// <summary>
+    /// Gets or sets the status of the Task
+    /// </summary>
+    public TaskStatus Status { get; set; } = TaskStatus.Created;
 
-        /// <summary>
-        /// Gets or sets the status of the Task
-        /// </summary>
-        public TaskStatus Status { get; set; } = TaskStatus.Created;
+    /// <summary>
+    /// Gets or sets the message of the Task
+    /// </summary>
+    public string Message { get; set; }
 
-        /// <summary>
-        /// Gets or sets the message of the Task
-        /// </summary>
-        public string Message { get; set; }
+    /// <summary>
+    /// Gets or sets the percentage of the Task
+    /// </summary>
+    public short Percentage { get; set; }
 
-        /// <summary>
-        /// Gets or sets the percentage of the Task
-        /// </summary>
-        public short Percentage { get; set; }
+    /// <summary>
+    /// Gets the time when the Task started
+    /// </summary>
+    public DateTime StartTime { get; } = DateTime.Now;
 
-        /// <summary>
-        /// Gets the time when the Task started
-        /// </summary>
-        public DateTime StartTime { get; } = DateTime.Now;
+    /// <summary>
+    /// Gets or sets the time when the Task is finished
+    /// </summary>
+    public DateTime CompleteTime { get; set; }
 
-        /// <summary>
-        /// Gets or sets the time when the Task is finished
-        /// </summary>
-        public DateTime CompleteTime { get; set; }
+    /// <summary>
+    /// Gets or sets the cancellation token
+    /// </summary>
+    public CancellationToken CancellationToken { get; set; }
 
-        /// <summary>
-        /// Gets or sets the cancellation token
-        /// </summary>
-        public CancellationToken CancellationToken { get; set; }
-
-        /// <summary>
-        /// Gets or sets the exception in case of faulted task
-        /// </summary>
-        public Exception Exception { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the exception in case of faulted task
+    /// </summary>
+    public Exception Exception { get; set; }
 }

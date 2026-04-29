@@ -1,77 +1,76 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
+
+/// <summary>
+/// Defines the MicrosoftSql database context
+/// </summary>
+internal class MicrosoftSqlDatabaseContext : ADatabaseContext
 {
     /// <summary>
-    /// Defines the MicrosoftSql database context
+    /// Initializes a new instance of the <see cref="MicrosoftSqlDatabaseContext"/> class.
     /// </summary>
-    internal class MicrosoftSqlDatabaseContext : ADatabaseContext
+    /// <param name="loggerFactory">The injected logger factory</param>
+    /// <param name="cipherService">The injected cipher service</param>
+    /// <param name="dbpo">The MicrosoftSql database provider options</param>
+    public MicrosoftSqlDatabaseContext(ILoggerFactory loggerFactory, ICipherService cipherService, MicrosoftSqlDatabaseProviderOptions dbpo)
+        : base(loggerFactory)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MicrosoftSqlDatabaseContext"/> class.
-        /// </summary>
-        /// <param name="loggerFactory">The injected logger factory</param>
-        /// <param name="cipherService">The injected cipher service</param>
-        /// <param name="dbpo">The MicrosoftSql database provider options</param>
-        public MicrosoftSqlDatabaseContext(ILoggerFactory loggerFactory, ICipherService cipherService, MicrosoftSqlDatabaseProviderOptions dbpo)
-            : base(loggerFactory)
+        if (dbpo.UseConnectionString)
         {
-            if (dbpo.UseConnectionString)
+            this.ConnectionString = dbpo.ConnectionString;
+        }
+        else
+        {
+            var server = dbpo.Hostname;
+            if (!server.Contains('\\', StringComparison.Ordinal))
             {
-                this.ConnectionString = dbpo.ConnectionString;
+                server += $",{dbpo.Port}";
+            }
+
+            var connStr = $"Server={server};Database={dbpo.Database};";
+
+            if (dbpo.UseWindowsAuthentication)
+            {
+                connStr += "Integrated Security=SSPI;";
+            }
+            else if (dbpo.UseAzureAuthentication)
+            {
+                connStr += "Authentication=Active Directory Interactive;";
             }
             else
             {
-                var server = dbpo.Hostname;
-                if (!server.Contains('\\', StringComparison.Ordinal))
-                {
-                    server += $",{dbpo.Port}";
-                }
-
-                var connStr = $"Server={server};Database={dbpo.Database};";
-
-                if (dbpo.UseWindowsAuthentication)
-                {
-                    connStr += "Integrated Security=SSPI;";
-                }
-                else if (dbpo.UseAzureAuthentication)
-                {
-                    connStr += "Authentication=Active Directory Interactive;";
-                }
-                else
-                {
-                    connStr += $"User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
-                }
-
-                // The driver now defaults to secure-by-default options
-                // Ref: https://learn.microsoft.com/en-us/sql/connect/oledb/release-notes-for-oledb-driver-for-sql-server?view=sql-server-ver16#features-added-2
-                if (!dbpo.UseSsl)
-                {
-                    connStr += "Encrypt=false;";
-                }
-                else
-                {
-                    if (dbpo.IgnoreServerCertificate)
-                    {
-                        connStr += "TrustServerCertificate=True;";
-                    }
-                }
-
-                connStr += "Connection Timeout=15;";
-                connStr += "Persist Security Info=False;";
-
-                this.ConnectionString = connStr;
+                connStr += $"User Id={dbpo.Username};Password={cipherService.DecryptString(dbpo.Password)};";
             }
-        }
 
-        /// <summary>
-        /// Gets the string used for the connection
-        /// </summary>
-        private string ConnectionString { get; }
+            // The driver now defaults to secure-by-default options
+            // Ref: https://learn.microsoft.com/en-us/sql/connect/oledb/release-notes-for-oledb-driver-for-sql-server?view=sql-server-ver16#features-added-2
+            if (!dbpo.UseSsl)
+            {
+                connStr += "Encrypt=false;";
+            }
+            else
+            {
+                if (dbpo.IgnoreServerCertificate)
+                {
+                    connStr += "TrustServerCertificate=True;";
+                }
+            }
 
-        /// <inheritdoc/>
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer(this.ConnectionString);
+            connStr += "Connection Timeout=15;";
+            connStr += "Persist Security Info=False;";
+
+            this.ConnectionString = connStr;
         }
+    }
+
+    /// <summary>
+    /// Gets the string used for the connection
+    /// </summary>
+    private string ConnectionString { get; }
+
+    /// <inheritdoc/>
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+        optionsBuilder.UseSqlServer(this.ConnectionString);
     }
 }

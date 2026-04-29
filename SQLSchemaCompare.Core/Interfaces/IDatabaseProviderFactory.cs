@@ -1,15 +1,14 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces;
+
+/// <summary>
+/// Defines a class that creates a database provider
+/// </summary>
+public interface IDatabaseProviderFactory
 {
     /// <summary>
-    /// Defines a class that creates a database provider
+    /// Creates the database providers depending on the options
     /// </summary>
-    public interface IDatabaseProviderFactory
-    {
-        /// <summary>
-        /// Creates the database providers depending on the options
-        /// </summary>
-        /// <param name="dbpo">The database provider options</param>
-        /// <returns>The specific database provider</returns>
-        IDatabaseProvider Create(ADatabaseProviderOptions dbpo);
-    }
+    /// <param name="dbpo">The database provider options</param>
+    /// <returns>The specific database provider</returns>
+    IDatabaseProvider Create(ADatabaseProviderOptions dbpo);
 }

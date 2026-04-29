@@ -1,39 +1,38 @@
-﻿namespace TiCodeX.SQLSchemaCompare.UI
+﻿namespace TiCodeX.SQLSchemaCompare.UI;
+
+using NLog;
+
+/// <summary>
+/// SQLSchemaCompare UI application, providing the WebServer
+/// </summary>
+public static class Program
 {
-    using NLog;
-
     /// <summary>
-    /// SQLSchemaCompare UI application, providing the WebServer
+    /// Entry point of the SQLSchemaCompare UI application
     /// </summary>
-    public static class Program
+    /// <param name="args">The command line arguments</param>
+    public static void Main(string[] args)
     {
-        /// <summary>
-        /// Entry point of the SQLSchemaCompare UI application
-        /// </summary>
-        /// <param name="args">The command line arguments</param>
-        public static void Main(string[] args)
+        Utility.ConfigureLogger();
+
+        var logger = LogManager.GetLogger(nameof(Program));
+        try
         {
-            Utility.ConfigureLogger();
+            logger.Info("===============================================================", CultureInfo.InvariantCulture);
+            logger.Info("Starting WebHost Service...", CultureInfo.InvariantCulture);
+            Utility.CreateHostBuilder(args).Build().Run();
+        }
+        catch (Exception ex)
+        {
+            // NLog: catch setup errors
+            logger.Error(ex, "Stopped program because of exception");
+        }
+        finally
+        {
+            logger.Debug("Closing Application...", CultureInfo.InvariantCulture);
 
-            var logger = LogManager.GetLogger(nameof(Program));
-            try
-            {
-                logger.Info("===============================================================", CultureInfo.InvariantCulture);
-                logger.Info("Starting WebHost Service...", CultureInfo.InvariantCulture);
-                Utility.CreateHostBuilder(args).Build().Run();
-            }
-            catch (Exception ex)
-            {
-                // NLog: catch setup errors
-                logger.Error(ex, "Stopped program because of exception");
-            }
-            finally
-            {
-                logger.Debug("Closing Application...", CultureInfo.InvariantCulture);
-
-                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-                LogManager.Shutdown();
-            }
+            // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+            LogManager.Shutdown();
         }
     }
 }

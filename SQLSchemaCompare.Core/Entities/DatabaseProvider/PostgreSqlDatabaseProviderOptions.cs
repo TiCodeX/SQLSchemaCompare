@@ -1,21 +1,20 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.DatabaseProvider;
+
+/// <summary>
+/// Provides the options to connect to a PostgreSQL Server
+/// </summary>
+public class PostgreSqlDatabaseProviderOptions : ADatabaseProviderOptions
 {
     /// <summary>
-    /// Provides the options to connect to a PostgreSQL Server
+    /// The default port
     /// </summary>
-    public class PostgreSqlDatabaseProviderOptions : ADatabaseProviderOptions
-    {
-        /// <summary>
-        /// The default port
-        /// </summary>
-        public static readonly ushort DefaultPort = 5432;
+    public static readonly ushort DefaultPort = 5432;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlDatabaseProviderOptions"/> class
-        /// </summary>
-        public PostgreSqlDatabaseProviderOptions()
-        {
-            this.Port = DefaultPort;
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PostgreSqlDatabaseProviderOptions"/> class
+    /// </summary>
+    public PostgreSqlDatabaseProviderOptions()
+    {
+        this.Port = DefaultPort;
     }
 }

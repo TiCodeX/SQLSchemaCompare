@@ -1,23 +1,19 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Extensions
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Extensions;
+
+/// <summary>
+/// The StringBuilder extensions
+/// </summary>
+public static class StringBuilderExtensions
 {
     /// <summary>
-    /// The StringBuilder extensions
+    /// Appends the default line terminator if it's not empty.
     /// </summary>
-    public static class StringBuilderExtensions
+    /// <param name="sb">The StringBuilder.</param>
+    /// <returns>A reference to this instance</returns>
+    public static StringBuilder AppendLineIfNotEmpty(this StringBuilder sb)
     {
-        /// <summary>
-        /// Appends the default line terminator if it's not empty.
-        /// </summary>
-        /// <param name="sb">The StringBuilder.</param>
-        /// <returns>A reference to this instance</returns>
-        public static StringBuilder AppendLineIfNotEmpty(this StringBuilder sb)
-        {
-            if (sb == null)
-            {
-                throw new ArgumentNullException(nameof(sb));
-            }
+        ArgumentNullException.ThrowIfNull(sb);
 
-            return sb.Length > 0 ? sb.AppendLine() : sb;
-        }
+        return sb.Length > 0 ? sb.AppendLine() : sb;
     }
 }

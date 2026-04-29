@@ -1,26 +1,25 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database;
+
+/// <summary>
+/// Provides generic information for database triggers
+/// </summary>
+public class ABaseDbTrigger : ABaseDbObject
 {
+    /// <inheritdoc />
+    public override DatabaseObjectType ObjectType { get; } = DatabaseObjectType.Trigger;
+
     /// <summary>
-    /// Provides generic information for database triggers
+    /// Gets or sets the table schema
     /// </summary>
-    public class ABaseDbTrigger : ABaseDbObject
-    {
-        /// <inheritdoc />
-        public override DatabaseObjectType ObjectType { get; } = DatabaseObjectType.Trigger;
+    public string TableSchema { get; set; }
 
-        /// <summary>
-        /// Gets or sets the table schema
-        /// </summary>
-        public string TableSchema { get; set; }
+    /// <summary>
+    /// Gets or sets the table name
+    /// </summary>
+    public string TableName { get; set; }
 
-        /// <summary>
-        /// Gets or sets the table name
-        /// </summary>
-        public string TableName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the database trigger definition script
-        /// </summary>
-        public string Definition { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the database trigger definition script
+    /// </summary>
+    public string Definition { get; set; }
 }

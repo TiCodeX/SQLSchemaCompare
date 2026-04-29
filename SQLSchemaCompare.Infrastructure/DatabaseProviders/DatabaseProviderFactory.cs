@@ -1,47 +1,35 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders;
+
+/// <summary>
+/// Implementation that creates a database provider
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="DatabaseProviderFactory"/> class.
+/// </remarks>
+/// <param name="loggerFactory">The injected logger factory</param>
+/// <param name="cipherService">The injected cipher service</param>
+public class DatabaseProviderFactory(ILoggerFactory loggerFactory, ICipherService cipherService) : IDatabaseProviderFactory
 {
     /// <summary>
-    /// Implementation that creates a database provider
+    /// The logger factory
     /// </summary>
-    public class DatabaseProviderFactory : IDatabaseProviderFactory
+    private readonly ILoggerFactory loggerFactory = loggerFactory;
+
+    /// <summary>
+    /// The cipher service
+    /// </summary>
+    private readonly ICipherService cipherService = cipherService;
+
+    /// <inheritdoc/>
+    public IDatabaseProvider Create(ADatabaseProviderOptions dbpo)
     {
-        /// <summary>
-        /// The logger factory
-        /// </summary>
-        private readonly ILoggerFactory loggerFactory;
-
-        /// <summary>
-        /// The cipher service
-        /// </summary>
-        private readonly ICipherService cipherService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DatabaseProviderFactory"/> class.
-        /// </summary>
-        /// <param name="loggerFactory">The injected logger factory</param>
-        /// <param name="cipherService">The injected cipher service</param>
-        public DatabaseProviderFactory(ILoggerFactory loggerFactory, ICipherService cipherService)
+        return dbpo switch
         {
-            this.loggerFactory = loggerFactory;
-            this.cipherService = cipherService;
-        }
-
-        /// <inheritdoc/>
-        public IDatabaseProvider Create(ADatabaseProviderOptions dbpo)
-        {
-            switch (dbpo)
-            {
-                case MicrosoftSqlDatabaseProviderOptions microsoftSqlOptions:
-                    return new MicrosoftSqlDatabaseProvider(this.loggerFactory, this.cipherService, microsoftSqlOptions);
-                case MariaDbDatabaseProviderOptions mariaDbOptions:
-                    return new MariaDbDatabaseProvider(this.loggerFactory, this.cipherService, mariaDbOptions);
-                case MySqlDatabaseProviderOptions mySqlOptions:
-                    return new MySqlDatabaseProvider(this.loggerFactory, this.cipherService, mySqlOptions);
-                case PostgreSqlDatabaseProviderOptions postgreSqlOptions:
-                    return new PostgreSqlDatabaseProvider(this.loggerFactory, this.cipherService, postgreSqlOptions);
-                default:
-                    throw new NotSupportedException("Unknown Database Type");
-            }
-        }
+            MicrosoftSqlDatabaseProviderOptions microsoftSqlOptions => new MicrosoftSqlDatabaseProvider(this.loggerFactory, this.cipherService, microsoftSqlOptions),
+            MariaDbDatabaseProviderOptions mariaDbOptions => new MariaDbDatabaseProvider(this.loggerFactory, this.cipherService, mariaDbOptions),
+            MySqlDatabaseProviderOptions mySqlOptions => new MySqlDatabaseProvider(this.loggerFactory, this.cipherService, mySqlOptions),
+            PostgreSqlDatabaseProviderOptions postgreSqlOptions => new PostgreSqlDatabaseProvider(this.loggerFactory, this.cipherService, postgreSqlOptions),
+            _ => throw new NotSupportedException("Unknown Database Type"),
+        };
     }
 }

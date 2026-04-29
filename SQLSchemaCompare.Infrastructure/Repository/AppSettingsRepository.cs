@@ -1,53 +1,45 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.Repository
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.Repository;
+
+/// <summary>
+/// Implementation that provides the mechanism to store and retrieve application settings
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="AppSettingsRepository"/> class.
+/// </remarks>
+/// <param name="appGlobals">Injected application global constants</param>
+public class AppSettingsRepository(IAppGlobals appGlobals) : IAppSettingsRepository
 {
     /// <summary>
-    /// Implementation that provides the mechanism to store and retrieve application settings
+    /// The app globals
     /// </summary>
-    public class AppSettingsRepository : IAppSettingsRepository
+    private readonly IAppGlobals appGlobals = appGlobals;
+
+    /// <inheritdoc/>
+    public void Write(AppSettings appSettings)
     {
-        /// <summary>
-        /// The app globals
-        /// </summary>
-        private readonly IAppGlobals appGlobals;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AppSettingsRepository"/> class.
-        /// </summary>
-        /// <param name="appGlobals">Injected application global constants</param>
-        public AppSettingsRepository(IAppGlobals appGlobals)
+        if (!Directory.Exists(Path.GetDirectoryName(this.appGlobals.AppSettingsFullFilename)))
         {
-            this.appGlobals = appGlobals;
+            Directory.CreateDirectory(Path.GetDirectoryName(this.appGlobals.AppSettingsFullFilename) ?? throw new InvalidOperationException());
         }
 
-        /// <inheritdoc/>
-        public void Write(AppSettings appSettings)
-        {
-            if (!Directory.Exists(Path.GetDirectoryName(this.appGlobals.AppSettingsFullFilename)))
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(this.appGlobals.AppSettingsFullFilename) ?? throw new InvalidOperationException());
-            }
+        var xml = new XmlSerializer(typeof(AppSettings));
+        using var f = File.Create(this.appGlobals.AppSettingsFullFilename);
+        xml.Serialize(f, appSettings);
+    }
 
-            var xml = new XmlSerializer(typeof(AppSettings));
-            using (var f = File.Create(this.appGlobals.AppSettingsFullFilename))
-            {
-                xml.Serialize(f, appSettings);
-            }
+    /// <inheritdoc/>
+    public AppSettings Read()
+    {
+        if (!File.Exists(this.appGlobals.AppSettingsFullFilename))
+        {
+            var appSettings = new AppSettings();
+            this.Write(appSettings);
+            return appSettings;
         }
 
-        /// <inheritdoc/>
-        public AppSettings Read()
-        {
-            if (!File.Exists(this.appGlobals.AppSettingsFullFilename))
-            {
-                var appSettings = new AppSettings();
-                this.Write(appSettings);
-                return appSettings;
-            }
-
-            var xml = new XmlSerializer(typeof(AppSettings));
-            using var f = File.OpenRead(this.appGlobals.AppSettingsFullFilename);
-            using var r = XmlReader.Create(f);
-            return xml.Deserialize(r) as AppSettings;
-        }
+        var xml = new XmlSerializer(typeof(AppSettings));
+        using var f = File.OpenRead(this.appGlobals.AppSettingsFullFilename);
+        using var r = XmlReader.Create(f);
+        return xml.Deserialize(r) as AppSettings;
     }
 }

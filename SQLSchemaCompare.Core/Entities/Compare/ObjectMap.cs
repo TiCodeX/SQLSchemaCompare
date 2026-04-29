@@ -1,23 +1,22 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Compare
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Compare;
+
+/// <summary>
+/// Structure class useful for mapping objects
+/// </summary>
+public class ObjectMap
 {
     /// <summary>
-    /// Structure class useful for mapping objects
+    /// Gets or sets a generic title for the objects list
     /// </summary>
-    public class ObjectMap
-    {
-        /// <summary>
-        /// Gets or sets a generic title for the objects list
-        /// </summary>
-        public string ObjectTitle { get; set; }
+    public string ObjectTitle { get; set; }
 
-        /// <summary>
-        /// Gets or sets the database objects
-        /// </summary>
-        public IEnumerable<ABaseDbObject> DbObjects { get; set; }
+    /// <summary>
+    /// Gets or sets the database objects
+    /// </summary>
+    public IEnumerable<ABaseDbObject> DbObjects { get; set; }
 
-        /// <summary>
-        /// Gets or sets the mappable database objects
-        /// </summary>
-        public IEnumerable<ABaseDbObject> MappableDbObjects { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the mappable database objects
+    /// </summary>
+    public IEnumerable<ABaseDbObject> MappableDbObjects { get; set; }
 }

@@ -1,28 +1,27 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Enums
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Enums;
+
+/// <summary>
+/// List of possible sources for retrieving database data
+/// </summary>
+public enum DatabaseType
 {
     /// <summary>
-    /// List of possible sources for retrieving database data
+    /// Microsoft SQL Server
     /// </summary>
-    public enum DatabaseType
-    {
-        /// <summary>
-        /// Microsoft SQL Server
-        /// </summary>
-        MicrosoftSql = 0,
+    MicrosoftSql = 0,
 
-        /// <summary>
-        /// MySQL
-        /// </summary>
-        MySql = 1,
+    /// <summary>
+    /// MySQL
+    /// </summary>
+    MySql = 1,
 
-        /// <summary>
-        /// PostgreSQL
-        /// </summary>
-        PostgreSql = 2,
+    /// <summary>
+    /// PostgreSQL
+    /// </summary>
+    PostgreSql = 2,
 
-        /// <summary>
-        /// MariaDB
-        /// </summary>
-        MariaDb = 3,
-    }
+    /// <summary>
+    /// MariaDB
+    /// </summary>
+    MariaDb = 3,
 }

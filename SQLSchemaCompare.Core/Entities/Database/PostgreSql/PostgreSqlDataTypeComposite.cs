@@ -1,18 +1,17 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Entities.Database.PostgreSql;
+
+/// <summary>
+/// Specific PostgreSql Composite data type definition
+/// </summary>
+public class PostgreSqlDataTypeComposite : PostgreSqlDataType
 {
     /// <summary>
-    /// Specific PostgreSql Composite data type definition
+    /// Gets or sets the attribute names
     /// </summary>
-    public class PostgreSqlDataTypeComposite : PostgreSqlDataType
-    {
-        /// <summary>
-        /// Gets or sets the attribute names
-        /// </summary>
-        public IEnumerable<string> AttributeNames { get; set; }
+    public IEnumerable<string> AttributeNames { get; set; }
 
-        /// <summary>
-        /// Gets or sets the attribute type ids
-        /// </summary>
-        public IEnumerable<uint> AttributeTypeIds { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the attribute type ids
+    /// </summary>
+    public IEnumerable<uint> AttributeTypeIds { get; set; }
 }

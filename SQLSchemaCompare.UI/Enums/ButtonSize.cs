@@ -1,23 +1,22 @@
-﻿namespace TiCodeX.SQLSchemaCompare.UI.Enums
+﻿namespace TiCodeX.SQLSchemaCompare.UI.Enums;
+
+/// <summary>
+/// List of possible button sizes
+/// </summary>
+public enum ButtonSize
 {
     /// <summary>
-    /// List of possible button sizes
+    /// Default size
     /// </summary>
-    public enum ButtonSize
-    {
-        /// <summary>
-        /// Default size
-        /// </summary>
-        Default,
+    Default,
 
-        /// <summary>
-        /// Small size
-        /// </summary>
-        Small,
+    /// <summary>
+    /// Small size
+    /// </summary>
+    Small,
 
-        /// <summary>
-        /// Large size
-        /// </summary>
-        Large,
-    }
+    /// <summary>
+    /// Large size
+    /// </summary>
+    Large,
 }

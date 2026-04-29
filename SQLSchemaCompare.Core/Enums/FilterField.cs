@@ -1,18 +1,17 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Enums
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Enums;
+
+/// <summary>
+/// List of possible fields to filter
+/// </summary>
+public enum FilterField
 {
     /// <summary>
-    /// List of possible fields to filter
+    /// Filter the schema
     /// </summary>
-    public enum FilterField
-    {
-        /// <summary>
-        /// Filter the schema
-        /// </summary>
-        Schema = 0,
+    Schema = 0,
 
-        /// <summary>
-        /// Filter the object name
-        /// </summary>
-        Name = 1,
-    }
+    /// <summary>
+    /// Filter the object name
+    /// </summary>
+    Name = 1,
 }

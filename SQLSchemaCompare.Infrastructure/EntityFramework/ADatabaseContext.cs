@@ -1,173 +1,158 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework;
+
+/// <summary>
+/// Common EF database context
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="ADatabaseContext"/> class.
+/// </remarks>
+/// <param name="loggerFactory">The injected logger factory</param>
+public abstract class ADatabaseContext(ILoggerFactory loggerFactory) : DbContext
 {
     /// <summary>
-    /// Common EF database context
+    /// The logger factory
     /// </summary>
-    public abstract class ADatabaseContext : DbContext
+    private readonly ILoggerFactory loggerFactory = loggerFactory;
+
+    /// <summary>
+    /// Gets the hostname
+    /// </summary>
+    public string Hostname => this.Database.GetDbConnection().DataSource;
+
+    /// <summary>
+    /// Gets the database name
+    /// </summary>
+    public string DatabaseName => this.Database.GetDbConnection().Database;
+
+    /// <summary>
+    /// Performs a query
+    /// </summary>
+    /// <typeparam name="T">The type of the result</typeparam>
+    /// <param name="sqlQuery">The SQL query</param>
+    /// <returns>The list of specified type</returns>
+    [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
+    public List<T> Query<T>(string sqlQuery)
+        where T : new()
     {
-        /// <summary>
-        /// The logger factory
-        /// </summary>
-        private readonly ILoggerFactory loggerFactory;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ADatabaseContext"/> class.
-        /// </summary>
-        /// <param name="loggerFactory">The injected logger factory</param>
-        protected ADatabaseContext(ILoggerFactory loggerFactory)
+        var result = new List<T>();
+        this.Database.OpenConnection();
+        using (var command = this.Database.GetDbConnection().CreateCommand())
         {
-            this.loggerFactory = loggerFactory;
-        }
-
-        /// <summary>
-        /// Gets the hostname
-        /// </summary>
-        public string Hostname => this.Database.GetDbConnection().DataSource;
-
-        /// <summary>
-        /// Gets the database name
-        /// </summary>
-        public string DatabaseName => this.Database.GetDbConnection().Database;
-
-        /// <summary>
-        /// Performs a query
-        /// </summary>
-        /// <typeparam name="T">The type of the result</typeparam>
-        /// <param name="sqlQuery">The SQL query</param>
-        /// <returns>The list of specified type</returns>
-        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
-        public List<T> Query<T>(string sqlQuery)
-            where T : new()
-        {
-            var result = new List<T>();
-            this.Database.OpenConnection();
-            using (var command = this.Database.GetDbConnection().CreateCommand())
-            {
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
-                command.CommandText = sqlQuery;
+            command.CommandText = sqlQuery;
 #pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
-                using (var reader = command.ExecuteReader())
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var t = new T();
+                var type = t.GetType();
+                for (var inc = 0; inc < reader.FieldCount; inc++)
                 {
-                    while (reader.Read())
+                    var columnName = reader.GetName(inc);
+                    var prop = type.GetProperty(columnName);
+                    var value = reader.GetValue(inc);
+                    if (prop != null)
                     {
-                        var t = new T();
-                        var type = t.GetType();
-                        for (var inc = 0; inc < reader.FieldCount; inc++)
+                        if (prop.PropertyType == typeof(bool) && value is not bool)
                         {
-                            var columnName = reader.GetName(inc);
-                            var prop = type.GetProperty(columnName);
-                            var value = reader.GetValue(inc);
-                            if (prop != null)
+                            switch (value.ToString())
                             {
-                                if (prop.PropertyType == typeof(bool) && !(value is bool))
-                                {
-                                    switch (value.ToString())
-                                    {
-                                        case "1":
-                                            prop.SetValue(t, true, null);
-                                            break;
-                                        case "0":
-                                            prop.SetValue(t, false, null);
-                                            break;
-                                        default:
-                                            throw new WrongTypeException();
-                                    }
-                                }
-                                else if (prop.PropertyType == typeof(long) && (value is decimal))
-                                {
-                                    prop.SetValue(t, decimal.ToInt64((decimal)value));
-                                }
-                                else
-                                {
-                                    prop.SetValue(t, value is DBNull ? null : value, null);
-                                }
-                            }
-                            else
-                            {
-                                throw new PropertyNotFoundException(type, columnName);
+                                case "1":
+                                    prop.SetValue(t, true, null);
+                                    break;
+                                case "0":
+                                    prop.SetValue(t, false, null);
+                                    break;
+                                default:
+                                    throw new WrongTypeException();
                             }
                         }
-
-                        result.Add(t);
+                        else if (prop.PropertyType == typeof(long) && (value is decimal))
+                        {
+                            prop.SetValue(t, decimal.ToInt64((decimal)value));
+                        }
+                        else
+                        {
+                            prop.SetValue(t, value is DBNull ? null : value, null);
+                        }
                     }
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Performs a query
-        /// </summary>
-        /// <typeparam name="T">The type of the result</typeparam>
-        /// <param name="query">The SQL query</param>
-        /// <returns>The list of the requested column</returns>
-        public List<T> QuerySingleColumn<T>(string query)
-        {
-            return this.QuerySingleColumn<T>(query, 0);
-        }
-
-        /// <summary>
-        /// Performs a query
-        /// </summary>
-        /// <typeparam name="T">The type of the result</typeparam>
-        /// <param name="query">The SQL query</param>
-        /// <param name="columnIndex">The desired column</param>
-        /// <returns>The list of the requested column</returns>
-        public List<T> QuerySingleColumn<T>(string query, int columnIndex)
-        {
-            var result = new List<T>();
-            this.Database.OpenConnection();
-            using (var command = this.Database.GetDbConnection().CreateCommand())
-            {
-#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
-                command.CommandText = query;
-#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
+                    else
                     {
-                        try
-                        {
-                            var value = reader.GetValue(columnIndex);
-                            result.Add(value is DBNull ? default : (T)value);
-                        }
-                        catch (IndexOutOfRangeException)
-                        {
-                            result.Add(default);
-                        }
+                        throw new PropertyNotFoundException(type, columnName);
                     }
                 }
-            }
 
-            return result;
+                result.Add(t);
+            }
         }
 
-        /// <summary>
-        /// Performs a non query command
-        /// </summary>
-        /// <param name="query">The SQL query</param>
-        public void ExecuteNonQuery(string query)
+        return result;
+    }
+
+    /// <summary>
+    /// Performs a query
+    /// </summary>
+    /// <typeparam name="T">The type of the result</typeparam>
+    /// <param name="query">The SQL query</param>
+    /// <returns>The list of the requested column</returns>
+    public List<T> QuerySingleColumn<T>(string query)
+    {
+        return this.QuerySingleColumn<T>(query, 0);
+    }
+
+    /// <summary>
+    /// Performs a query
+    /// </summary>
+    /// <typeparam name="T">The type of the result</typeparam>
+    /// <param name="query">The SQL query</param>
+    /// <param name="columnIndex">The desired column</param>
+    /// <returns>The list of the requested column</returns>
+    public List<T> QuerySingleColumn<T>(string query, int columnIndex)
+    {
+        var result = new List<T>();
+        this.Database.OpenConnection();
+        using (var command = this.Database.GetDbConnection().CreateCommand())
         {
-            this.Database.OpenConnection();
-            using (var command = this.Database.GetDbConnection().CreateCommand())
-            {
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
-                command.CommandText = query;
+            command.CommandText = query;
 #pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
-                command.ExecuteNonQuery();
-            }
-        }
-
-        /// <inheritdoc/>
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (optionsBuilder == null)
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
             {
-                throw new ArgumentNullException(nameof(optionsBuilder));
+                try
+                {
+                    var value = reader.GetValue(columnIndex);
+                    result.Add(value is DBNull ? default : (T)value);
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    result.Add(default);
+                }
             }
-
-            optionsBuilder.UseLoggerFactory(this.loggerFactory);
         }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Performs a non query command
+    /// </summary>
+    /// <param name="query">The SQL query</param>
+    public void ExecuteNonQuery(string query)
+    {
+        this.Database.OpenConnection();
+        using var command = this.Database.GetDbConnection().CreateCommand();
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
+        command.CommandText = query;
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
+        command.ExecuteNonQuery();
+    }
+
+    /// <inheritdoc/>
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        ArgumentNullException.ThrowIfNull(optionsBuilder);
+
+        optionsBuilder.UseLoggerFactory(this.loggerFactory);
     }
 }

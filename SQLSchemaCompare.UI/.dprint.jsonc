@@ -1,0 +1,6 @@
+{
+  "extends": "../.dprint.jsonc",
+  "excludes": [
+    "wwwroot/lib/**"
+  ]
+}

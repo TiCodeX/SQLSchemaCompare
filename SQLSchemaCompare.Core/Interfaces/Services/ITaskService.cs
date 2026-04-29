@@ -1,27 +1,26 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Services
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Interfaces.Services;
+
+using System.Collections.ObjectModel;
+
+/// <summary>
+/// Defines a class that provides the mechanisms to handle asynchronous Tasks.
+/// </summary>
+public interface ITaskService
 {
-    using System.Collections.ObjectModel;
+    /// <summary>
+    /// Gets the information about the current Task
+    /// </summary>
+    /// <returns>The updated Task information</returns>
+    ReadOnlyCollection<TaskInfo> CurrentTaskInfos { get; }
 
     /// <summary>
-    /// Defines a class that provides the mechanisms to handle asynchronous Tasks.
+    /// Perform the execution of the Tasks
     /// </summary>
-    public interface ITaskService
-    {
-        /// <summary>
-        /// Gets the information about the current Task
-        /// </summary>
-        /// <returns>The updated Task information</returns>
-        ReadOnlyCollection<TaskInfo> CurrentTaskInfos { get; }
+    /// <param name="tasks">The list of Tasks to be executed</param>
+    void ExecuteTasks(List<TaskWork> tasks);
 
-        /// <summary>
-        /// Perform the execution of the Tasks
-        /// </summary>
-        /// <param name="tasks">The list of Tasks to be executed</param>
-        void ExecuteTasks(List<TaskWork> tasks);
-
-        /// <summary>
-        /// Aborts the current Task
-        /// </summary>
-        void Abort();
-    }
+    /// <summary>
+    /// Aborts the current Task
+    /// </summary>
+    void Abort();
 }

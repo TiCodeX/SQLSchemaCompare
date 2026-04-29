@@ -1,47 +1,46 @@
-﻿namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers
+﻿namespace TiCodeX.SQLSchemaCompare.UI.TagHelpers;
+
+using Microsoft.AspNetCore.Razor.TagHelpers;
+
+/// <summary>
+/// TagHelper for textarea
+/// </summary>
+[HtmlTargetElement("textarea", TagStructure = TagStructure.NormalOrSelfClosing)]
+public class TextareaTagHelper : TagHelper
 {
-    using Microsoft.AspNetCore.Razor.TagHelpers;
+    /// <summary>
+    /// Gets or sets a value indicating whether this <see cref="TextareaTagHelper"/> is disabled
+    /// </summary>
+    public bool Disabled { get; set; }
 
     /// <summary>
-    /// TagHelper for textarea
+    /// Gets or sets a value indicating whether this <see cref="TextareaTagHelper"/> is required
     /// </summary>
-    [HtmlTargetElement("textarea", TagStructure = TagStructure.NormalOrSelfClosing)]
-    public class TextareaTagHelper : TagHelper
+    public bool Required { get; set; }
+
+    /// <inheritdoc />
+    public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="TextareaTagHelper"/> is disabled
-        /// </summary>
-        public bool Disabled { get; set; }
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(output);
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="TextareaTagHelper"/> is required
-        /// </summary>
-        public bool Required { get; set; }
+        var className = new HashSet<string>();
 
-        /// <inheritdoc />
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        output.Attributes["class"]?.Value.ToString().Trim().Split(' ').ToList().ForEach(x => className.Add(x));
+
+        className.Add("form-control");
+        className.Add("form-control-sm");
+
+        output.Attributes.SetAttribute("class", string.Join(" ", className));
+
+        if (this.Disabled)
         {
-            ArgumentNullException.ThrowIfNull(context);
-            ArgumentNullException.ThrowIfNull(output);
+            output.Attributes.SetAttribute("disabled", "disabled");
+        }
 
-            var className = new HashSet<string>();
-
-            output.Attributes["class"]?.Value.ToString().Trim().Split(' ').ToList().ForEach(x => className.Add(x));
-
-            className.Add("form-control");
-            className.Add("form-control-sm");
-
-            output.Attributes.SetAttribute("class", string.Join(" ", className));
-
-            if (this.Disabled)
-            {
-                output.Attributes.SetAttribute("disabled", "disabled");
-            }
-
-            if (this.Required)
-            {
-                output.Attributes.SetAttribute("required", "required");
-            }
+        if (this.Required)
+        {
+            output.Attributes.SetAttribute("required", "required");
         }
     }
 }

@@ -1,23 +1,22 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Core.Enums
+﻿namespace TiCodeX.SQLSchemaCompare.Core.Enums;
+
+/// <summary>
+/// List of available languages
+/// </summary>
+public enum Language
 {
     /// <summary>
-    /// List of available languages
+    /// The English (Default)
     /// </summary>
-    public enum Language
-    {
-        /// <summary>
-        /// The English (Default)
-        /// </summary>
-        English = 0,
+    English = 0,
 
-        /// <summary>
-        /// The German
-        /// </summary>
-        German = 1,
+    /// <summary>
+    /// The German
+    /// </summary>
+    German = 1,
 
-        /// <summary>
-        /// The Italian
-        /// </summary>
-        Italian = 2,
-    }
+    /// <summary>
+    /// The Italian
+    /// </summary>
+    Italian = 2,
 }

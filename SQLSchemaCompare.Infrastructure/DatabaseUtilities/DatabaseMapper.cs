@@ -1,136 +1,121 @@
-﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities
+﻿namespace TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities;
+
+/// <summary>
+/// Implements the database mapper functionality
+/// </summary>
+public class DatabaseMapper : IDatabaseMapper
 {
-    /// <summary>
-    /// Implements the database mapper functionality
-    /// </summary>
-    public class DatabaseMapper : IDatabaseMapper
+    /// <inheritdoc/>
+    public void PerformMapping(ABaseDb source, ABaseDb target, object mappingTable, TaskInfo taskInfo)
     {
-        /// <inheritdoc/>
-        public void PerformMapping(ABaseDb source, ABaseDb target, object mappingTable, TaskInfo taskInfo)
+        ArgumentNullException.ThrowIfNull(source);
+
+        ArgumentNullException.ThrowIfNull(target);
+
+        // Linearize the 2 databases for mapping
+        var maps = new List<ObjectMap>
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
+            new() { ObjectTitle = Localization.StatusMappingSchemas, DbObjects = source.Schemas, MappableDbObjects = target.Schemas },
+            new() { ObjectTitle = Localization.StatusMappingTables, DbObjects = source.Tables, MappableDbObjects = target.Tables },
+            new() { ObjectTitle = Localization.StatusMappingViews, DbObjects = source.Views, MappableDbObjects = target.Views },
+            new() { ObjectTitle = Localization.StatusMappingFunctions, DbObjects = source.Functions, MappableDbObjects = target.Functions },
+            new() { ObjectTitle = Localization.StatusMappingStoredProcedures, DbObjects = source.StoredProcedures, MappableDbObjects = target.StoredProcedures },
+            new() { ObjectTitle = Localization.StatusMappingDataTypes, DbObjects = source.DataTypes, MappableDbObjects = target.DataTypes },
+            new() { ObjectTitle = Localization.StatusMappingSequences, DbObjects = source.Sequences, MappableDbObjects = target.Sequences },
+        };
 
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
+        this.PerformMapping(maps, taskInfo);
+    }
 
-            // Linearize the 2 databases for mapping
-            var maps = new List<ObjectMap>
-            {
-                new ObjectMap { ObjectTitle = Localization.StatusMappingSchemas, DbObjects = source.Schemas, MappableDbObjects = target.Schemas },
-                new ObjectMap { ObjectTitle = Localization.StatusMappingTables, DbObjects = source.Tables, MappableDbObjects = target.Tables },
-                new ObjectMap { ObjectTitle = Localization.StatusMappingViews, DbObjects = source.Views, MappableDbObjects = target.Views },
-                new ObjectMap { ObjectTitle = Localization.StatusMappingFunctions, DbObjects = source.Functions, MappableDbObjects = target.Functions },
-                new ObjectMap { ObjectTitle = Localization.StatusMappingStoredProcedures, DbObjects = source.StoredProcedures, MappableDbObjects = target.StoredProcedures },
-                new ObjectMap { ObjectTitle = Localization.StatusMappingDataTypes, DbObjects = source.DataTypes, MappableDbObjects = target.DataTypes },
-                new ObjectMap { ObjectTitle = Localization.StatusMappingSequences, DbObjects = source.Sequences, MappableDbObjects = target.Sequences },
-            };
+    /// <summary>
+    /// Perform the mapping
+    /// </summary>
+    /// <param name="maps">The objects to map</param>
+    /// <param name="taskInfo">The task info</param>
+    [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
+    private void PerformMapping(IReadOnlyCollection<ObjectMap> maps, TaskInfo taskInfo = null)
+    {
+        var i = 1;
+        var count = maps.Count;
 
-            this.PerformMapping(maps, taskInfo);
-        }
-
-        /// <summary>
-        /// Perform the mapping
-        /// </summary>
-        /// <param name="maps">The objects to map</param>
-        /// <param name="taskInfo">The task info</param>
-        [SuppressMessage("Critical Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "TODO")]
-        private void PerformMapping(IReadOnlyCollection<ObjectMap> maps, TaskInfo taskInfo = null)
+        // Iterate the linearized db
+        foreach (var m in maps)
         {
-            var i = 1;
-            var count = maps.Count;
+            taskInfo?.Message = m.ObjectTitle;
 
-            // Iterate the linearized db
-            foreach (var m in maps)
+            foreach (var sourceObject in m.DbObjects)
             {
-                if (taskInfo != null)
+                var targetObject = m.MappableDbObjects.FirstOrDefault(x => x.Schema == sourceObject.Schema && x.Name == sourceObject.Name);
+                if (targetObject != null)
                 {
-                    taskInfo.Message = m.ObjectTitle;
-                }
+                    sourceObject.Schema = targetObject.Schema;
+                    sourceObject.Name = targetObject.Name;
 
-                foreach (var sourceObject in m.DbObjects)
-                {
-                    var targetObject = m.MappableDbObjects.FirstOrDefault(x => x.Schema == sourceObject.Schema && x.Name == sourceObject.Name);
-                    if (targetObject != null)
+                    sourceObject.MappedDbObject = targetObject;
+                    targetObject.MappedDbObject = sourceObject;
+
+                    if (sourceObject is ABaseDbTable table)
                     {
-                        sourceObject.Schema = targetObject.Schema;
-                        sourceObject.Name = targetObject.Name;
-
-                        sourceObject.MappedDbObject = targetObject;
-                        targetObject.MappedDbObject = sourceObject;
-
-                        if (sourceObject is ABaseDbTable table)
-                        {
-                            this.PerformTableMapping(table);
-                        }
-                        else if (sourceObject is ABaseDbView view)
-                        {
-                            this.PerformViewMapping(view);
-                        }
-                        else
-                        {
-                            // Do nothing
-                        }
+                        this.PerformTableMapping(table);
+                    }
+                    else if (sourceObject is ABaseDbView view)
+                    {
+                        this.PerformViewMapping(view);
+                    }
+                    else
+                    {
+                        // Do nothing
                     }
                 }
-
-                if (taskInfo != null)
-                {
-                    taskInfo.CancellationToken.ThrowIfCancellationRequested();
-                    taskInfo.Percentage = (short)(100 * i++ / count);
-                }
             }
-        }
 
-        /// <summary>
-        /// Perform the mapping of the table
-        /// </summary>
-        /// <param name="sourceTable">The source table</param>
-        private void PerformTableMapping(ABaseDbTable sourceTable)
+            taskInfo?.CancellationToken.ThrowIfCancellationRequested();
+            taskInfo?.Percentage = (short)(100 * i++ / count);
+        }
+    }
+
+    /// <summary>
+    /// Perform the mapping of the table
+    /// </summary>
+    /// <param name="sourceTable">The source table</param>
+    private void PerformTableMapping(ABaseDbTable sourceTable)
+    {
+        if (sourceTable.MappedDbObject is not ABaseDbTable targetTable)
         {
-            var targetTable = sourceTable.MappedDbObject as ABaseDbTable;
-            if (targetTable == null)
-            {
-                throw new ArgumentException($"{nameof(sourceTable.MappedDbObject)} is null");
-            }
-
-            // Linearize the 2 tables for mapping
-            var maps = new List<ObjectMap>
-            {
-                new ObjectMap { DbObjects = sourceTable.Columns, MappableDbObjects = targetTable.Columns },
-                new ObjectMap { DbObjects = sourceTable.Indexes, MappableDbObjects = targetTable.Indexes },
-                new ObjectMap { DbObjects = sourceTable.ForeignKeys, MappableDbObjects = targetTable.ForeignKeys },
-                new ObjectMap { DbObjects = sourceTable.Constraints, MappableDbObjects = targetTable.Constraints },
-                new ObjectMap { DbObjects = sourceTable.Triggers, MappableDbObjects = targetTable.Triggers },
-                new ObjectMap { DbObjects = sourceTable.PrimaryKeys, MappableDbObjects = targetTable.PrimaryKeys },
-            };
-
-            this.PerformMapping(maps);
+            throw new ArgumentException($"{nameof(sourceTable.MappedDbObject)} is null");
         }
 
-        /// <summary>
-        /// Perform the mapping of the view
-        /// </summary>
-        /// <param name="sourceView">The source view</param>
-        private void PerformViewMapping(ABaseDbView sourceView)
+        // Linearize the 2 tables for mapping
+        var maps = new List<ObjectMap>
         {
-            var targetView = sourceView.MappedDbObject as ABaseDbView;
-            if (targetView == null)
-            {
-                throw new ArgumentException($"{nameof(sourceView.MappedDbObject)} is null");
-            }
+            new() { DbObjects = sourceTable.Columns, MappableDbObjects = targetTable.Columns },
+            new() { DbObjects = sourceTable.Indexes, MappableDbObjects = targetTable.Indexes },
+            new() { DbObjects = sourceTable.ForeignKeys, MappableDbObjects = targetTable.ForeignKeys },
+            new() { DbObjects = sourceTable.Constraints, MappableDbObjects = targetTable.Constraints },
+            new() { DbObjects = sourceTable.Triggers, MappableDbObjects = targetTable.Triggers },
+            new() { DbObjects = sourceTable.PrimaryKeys, MappableDbObjects = targetTable.PrimaryKeys },
+        };
 
-            // Linearize the 2 views for mapping
-            var maps = new List<ObjectMap>
-            {
-                new ObjectMap { DbObjects = sourceView.Indexes, MappableDbObjects = targetView.Indexes },
-            };
+        this.PerformMapping(maps);
+    }
 
-            this.PerformMapping(maps);
+    /// <summary>
+    /// Perform the mapping of the view
+    /// </summary>
+    /// <param name="sourceView">The source view</param>
+    private void PerformViewMapping(ABaseDbView sourceView)
+    {
+        if (sourceView.MappedDbObject is not ABaseDbView targetView)
+        {
+            throw new ArgumentException($"{nameof(sourceView.MappedDbObject)} is null");
         }
+
+        // Linearize the 2 views for mapping
+        var maps = new List<ObjectMap>
+        {
+            new() { DbObjects = sourceView.Indexes, MappableDbObjects = targetView.Indexes },
+        };
+
+        this.PerformMapping(maps);
     }
 }

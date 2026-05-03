@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*.*.*'
+  workflow_dispatch:
 
 jobs:
   build_artifacts:
@@ -30,12 +31,12 @@ jobs:
     - name: Publish win-x64
       run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r win-x64 -c Release
     - name: Upload SQLSchemaCompare artifacts
-      uses: actions/upload-artifact@v4.3.5
+      uses: actions/upload-artifact@v7
       with:
         name: SQLSchemaCompare
         path: SQLSchemaCompare
     - name: Upload win-x64 artifacts
-      uses: actions/upload-artifact@v4.3.5
+      uses: actions/upload-artifact@v7
       with:
         name: publish-win
         path: .publish
@@ -47,7 +48,7 @@ jobs:
     - name: Publish linux-x64
       run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r linux-x64 -c Release
     - name: Upload linux-x64 artifacts
-      uses: actions/upload-artifact@v4.3.5
+      uses: actions/upload-artifact@v7
       with:
         name: publish-linux
         path: .publish
@@ -59,7 +60,7 @@ jobs:
     - name: Publish osx-x64
       run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r osx-x64 -c Release
     - name: Upload osx-x64 artifacts
-      uses: actions/upload-artifact@v4.3.5
+      uses: actions/upload-artifact@v7
       with:
         name: publish-osx-x64
         path: .publish
@@ -71,7 +72,7 @@ jobs:
     - name: Publish osx-arm64
       run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r osx-arm64 -c Release
     - name: Upload osx-arm64 artifacts
-      uses: actions/upload-artifact@v4.3.5
+      uses: actions/upload-artifact@v7
       with:
         name: publish-osx-arm64
         path: .publish
@@ -105,12 +106,20 @@ jobs:
       run: yarn dist-win-x64
       working-directory: SQLSchemaCompare
     - name: Upload installer to release
+      if: github.event_name == 'push'
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file_glob: true
         file: installer/*.exe
         tag: ${{ github.ref }}
+    - name: Upload installer to artifacts
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/upload-artifact@v7
+      with:
+        name: installer-win-x64
+        path: installer/*.exe
+        retention-days: 7
 
   installer_linux_x64:
     runs-on: ubuntu-latest
@@ -146,12 +155,20 @@ jobs:
       run: yarn dist-linux-x64
       working-directory: SQLSchemaCompare
     - name: Upload installer to release
+      if: github.event_name == 'push'
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file_glob: true
         file: installer/*.{deb,rpm,tar.gz}
         tag: ${{ github.ref }}
+    - name: Upload installer to artifacts
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/upload-artifact@v7
+      with:
+        name: installer-linux-x64
+        path: installer/*.{deb,rpm,tar.gz}
+        retention-days: 7
 
   installer_osx:
     runs-on: macos-latest
@@ -194,12 +211,20 @@ jobs:
       env:
         ARCH_SUFFIX: ${{ matrix.arch }}
     - name: Upload installer to release
+      if: github.event_name == 'push'
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file_glob: true
         file: installer/*.dmg
         tag: ${{ github.ref }}
+    - name: Upload installer to artifacts
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/upload-artifact@v7
+      with:
+        name: installer-osx-${{ matrix.arch }}
+        path: installer/*.dmg
+        retention-days: 7
 
   clean_artifacts:
     runs-on: windows-latest
@@ -227,6 +252,7 @@ jobs:
         tags: |
           type=semver,pattern={{version}}
     - name: Login to Docker Hub
+      if: github.event_name == 'push'
       uses: docker/login-action@v4
       with:
         username: ${{ vars.DOCKERHUB_USERNAME }}
@@ -240,4 +266,12 @@ jobs:
         file: ./SQLSchemaCompare.CLI/Dockerfile
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        push: true
+        push: ${{ github.event_name == 'push' }}
+        outputs: ${{ github.event_name == 'workflow_dispatch' && 'type=docker,dest=/tmp/docker.tar' || '' }}
+    - name: Upload docker to artifacts
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/upload-artifact@v7
+      with:
+        name: docker
+        path: /tmp/docker.tar
+        retention-days: 7

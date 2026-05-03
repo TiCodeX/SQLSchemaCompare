@@ -56,6 +56,7 @@
       "target": "default",
       "category": "public.app-category.productivity",
       "artifactName": "SQLSchemaCompare-${version}-${env.ARCH_SUFFIX}.${ext}",
+      "identity": "-",
       "publish": {
         "provider": "generic",
         "url": ""

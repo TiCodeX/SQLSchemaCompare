@@ -35,6 +35,8 @@ jobs:
       with:
         name: publish-win
         path: .publish
+        if-no-files-found: 'error'
+        include-hidden-files: true
 
     - name: Restore linux-x64 dependencies
       run: dotnet restore -r linux-x64
@@ -47,6 +49,8 @@ jobs:
       with:
         name: publish-linux
         path: .publish
+        if-no-files-found: 'error'
+        include-hidden-files: true
 
     - name: Restore osx-x64 dependencies
       run: dotnet restore -r osx-x64
@@ -59,6 +63,8 @@ jobs:
       with:
         name: publish-osx-x64
         path: .publish
+        if-no-files-found: 'error'
+        include-hidden-files: true
 
     - name: Restore osx-arm64 dependencies
       run: dotnet restore -r osx-arm64
@@ -71,6 +77,8 @@ jobs:
       with:
         name: publish-osx-arm64
         path: .publish
+        if-no-files-found: 'error'
+        include-hidden-files: true
 
   installer_win_x64:
     runs-on: windows-latest
@@ -111,6 +119,7 @@ jobs:
         name: installer-win-x64
         path: installer/*.exe
         retention-days: 7
+        if-no-files-found: 'error'
 
   installer_linux_x64:
     runs-on: ubuntu-latest
@@ -156,6 +165,7 @@ jobs:
         name: installer-linux-x64
         path: installer/*.{deb,rpm,tar.gz}
         retention-days: 7
+        if-no-files-found: 'error'
 
   installer_osx:
     runs-on: macos-latest
@@ -208,6 +218,7 @@ jobs:
         name: installer-osx-${{ matrix.arch }}
         path: installer/*.dmg
         retention-days: 7
+        if-no-files-found: 'error'
 
   clean_artifacts:
     runs-on: windows-latest
@@ -257,3 +268,4 @@ jobs:
         name: docker
         path: /tmp/docker.tar
         retention-days: 7
+        if-no-files-found: 'error'

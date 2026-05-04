@@ -30,11 +30,6 @@ jobs:
       run: dotnet build --no-restore SQLSchemaCompare.UI -r win-x64 -c Release
     - name: Publish win-x64
       run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r win-x64 -c Release
-    - name: Upload SQLSchemaCompare artifacts
-      uses: actions/upload-artifact@v7
-      with:
-        name: SQLSchemaCompare
-        path: SQLSchemaCompare
     - name: Upload win-x64 artifacts
       uses: actions/upload-artifact@v7
       with:
@@ -84,6 +79,7 @@ jobs:
       run:
         shell: bash
     steps:
+    - uses: actions/checkout@v6
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
@@ -92,11 +88,6 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
-    - name: Download SQLSchemaCompare artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: SQLSchemaCompare
-        path: SQLSchemaCompare
     - name: Download publish-win artifact
       uses: actions/download-artifact@v4
       with:
@@ -128,6 +119,7 @@ jobs:
       run:
         shell: bash
     steps:
+    - uses: actions/checkout@v6
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
@@ -136,11 +128,6 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
-    - name: Download SQLSchemaCompare artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: SQLSchemaCompare
-        path: SQLSchemaCompare
     - name: Download publish-linux artifact
       uses: actions/download-artifact@v4
       with:
@@ -180,6 +167,7 @@ jobs:
       run:
         shell: bash
     steps:
+    - uses: actions/checkout@v6
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
@@ -188,11 +176,6 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
-    - name: Download SQLSchemaCompare artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: SQLSchemaCompare
-        path: SQLSchemaCompare
     - name: Download publish-osx-${{ matrix.arch }} artifact
       uses: actions/download-artifact@v4
       with:
@@ -234,7 +217,6 @@ jobs:
     - uses: geekyeggo/delete-artifact@v5
       with:
         name: |
-          SQLSchemaCompare
           publish-win
           publish-linux
           publish-osx-x64

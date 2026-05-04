@@ -97,7 +97,7 @@ jobs:
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
     - name: Download publish-win artifact
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: publish-win
         path: .publish
@@ -138,13 +138,12 @@ jobs:
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
     - name: Download publish-linux artifact
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: publish-linux
         path: .publish
     - name: Prepare artifacts
       run: |
-        chmod -R a+rwx SQLSchemaCompare/node_modules
         chmod +x .publish/TiCodeX.SQLSchemaCompare.UI
         chmod +x .publish/TiCodeX.SQLSchemaCompare.CLI
     - name: Create installer
@@ -163,7 +162,10 @@ jobs:
       uses: actions/upload-artifact@v7
       with:
         name: installer-linux-x64
-        path: installer/*.{deb,rpm,tar.gz}
+        path: |
+          installer/*.deb
+          installer/*.rpm
+          installer/*.tar.gz
         retention-days: 7
         if-no-files-found: 'error'
 
@@ -187,17 +189,14 @@ jobs:
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
     - name: Download publish-osx-${{ matrix.arch }} artifact
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: publish-osx-${{ matrix.arch }}
         path: .publish
     - name: Prepare artifacts
       run: |
-        chmod -R a+rwx SQLSchemaCompare/node_modules
         chmod +x .publish/TiCodeX.SQLSchemaCompare.UI
         chmod +x .publish/TiCodeX.SQLSchemaCompare.CLI
-        cd SQLSchemaCompare
-        yarn install --frozen-lockfile
     - name: Create installer
       run: yarn dist-osx
       working-directory: SQLSchemaCompare

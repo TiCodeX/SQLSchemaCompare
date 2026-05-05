@@ -82,12 +82,6 @@
         "filter": [
           "**/*"
         ]
-      },
-      {
-        "from": "../",
-        "filter": [
-          "LICENSE"
-        ]
       }
     ],
     "directories": {
@@ -108,9 +102,9 @@
     "prebuild-vs": "yarn lint-vs",
     "build-vs": "tsc --build",
     "start": "electron .",
-    "dist-win-x64": "electron-builder --win --publish always",
-    "dist-linux-x64": "electron-builder --linux --publish always",
-    "dist-osx": "electron-builder --mac --publish always"
+    "dist-win-x64": "yarn build && electron-builder --win --publish always",
+    "dist-linux-x64": "yarn build && electron-builder --linux --publish always",
+    "dist-osx": "yarn build && electron-builder --mac --publish always"
   },
   "postinstall": "electron-builder install-app-deps",
   "devDependencies": {

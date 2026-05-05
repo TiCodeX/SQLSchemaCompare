@@ -44,6 +44,7 @@
     <Using Include="TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseProviders" />
     <Using Include="TiCodeX.SQLSchemaCompare.Infrastructure.DatabaseUtilities" />
     <Using Include="TiCodeX.SQLSchemaCompare.Infrastructure.EntityFramework" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Infrastructure.Extensions" />
     <Using Include="TiCodeX.SQLSchemaCompare.Infrastructure.Repository" />
     <Using Include="TiCodeX.SQLSchemaCompare.Infrastructure.SqlScripters" />
   </ItemGroup>

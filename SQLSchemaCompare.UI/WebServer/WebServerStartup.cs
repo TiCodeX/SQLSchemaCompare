@@ -50,27 +50,8 @@ public class WebServerStartup(IConfiguration configuration)
         services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
         services.AddSingleton<IAppGlobals, AppGlobals>();
-        services.AddSingleton<ILocalizationService, LocalizationService>();
-        services.AddSingleton<IAppSettingsService, AppSettingsService>();
-        services.AddSingleton<IProjectService, ProjectService>();
-        services.AddSingleton<ITaskService, TaskService>();
-        services.AddSingleton<ICipherService, CipherService>();
 
-        // Repository
-        services.AddTransient<IAppSettingsRepository, AppSettingsRepository>();
-        services.AddTransient<IProjectRepository, ProjectRepository>();
-
-        // Service
-        services.AddTransient<IDatabaseService, DatabaseService>();
-        services.AddTransient<IDatabaseCompareService, DatabaseCompareService>();
-
-        // Factory
-        services.AddTransient<IDatabaseProviderFactory, DatabaseProviderFactory>();
-        services.AddTransient<IDatabaseScripterFactory, DatabaseScripterFactory>();
-
-        // Utilities
-        services.AddTransient<IDatabaseMapper, DatabaseMapper>();
-        services.AddTransient<IDatabaseFilter, DatabaseFilter>();
+        services.RegisterServices();
     }
 
     /// <summary>

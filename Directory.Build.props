@@ -1,6 +1,8 @@
 <Project>
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <Product>SQL Schema Compare</Product>
+    <Description>https://github.com/TiCodeX/SQLSchemaCompare</Description>
     <Authors>TiCodeX</Authors>
     <Version>2026.3.1</Version>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>

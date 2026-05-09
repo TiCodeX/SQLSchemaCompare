@@ -59,9 +59,8 @@ public static class CompareCommand
                 return rootCommand.Parse("--help").Invoke();
             }
 
-            // Re-invoke with 'compare' prepended so the compare subcommand handles parsing
-            var runArgs = new[] { "compare" }.Concat(p.UnmatchedTokens).ToArray();
-            return rootCommand.Parse(runArgs).Invoke();
+            // Re-invoke with 'compare' prepended
+            return rootCommand.Parse(["compare", ..p.UnmatchedTokens]).Invoke();
         });
     }
 

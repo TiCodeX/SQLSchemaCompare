@@ -1,6 +1,7 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.CLI;
 
 using System.CommandLine;
+using System.CommandLine.Help;
 using Microsoft.Extensions.DependencyInjection;
 using TiCodeX.SQLSchemaCompare.CLI.Commands;
 
@@ -23,14 +24,15 @@ public static class Program
         var rootCommand = new RootCommand("The SQL Schema Compare command-line tool.");
 
         rootCommand.AddCompareCommand(serviceProvider);
-        rootCommand.AddInfoCommand(serviceProvider);
 
         // Default: when no subcommand is specified, behave as 'compare'
         rootCommand.SetDefaultCompareAction();
 
-        int result = rootCommand.Parse(args).Invoke();
-        Console.ReadKey();
+        rootCommand.Options.OfType<HelpOption>().ToList().ForEach(option =>
+        {
+            option.Action = new CustomHelpAction((HelpAction)option.Action);
+        });
 
-        return result;
+        return rootCommand.Parse(args).Invoke();
     }
 }

@@ -19,9 +19,13 @@ public static class Program
     {
         using var serviceProvider = new ServiceCollection()
             .RegisterServices()
+            .AddLogging()
             .BuildServiceProvider(true);
 
-        var rootCommand = new RootCommand("The SQL Schema Compare command-line tool.");
+        var rootCommand = new RootCommand("The SQL Schema Compare command-line tool.")
+        {
+            TreatUnmatchedTokensAsErrors = false,
+        };
 
         rootCommand.AddCompareCommand(serviceProvider);
 

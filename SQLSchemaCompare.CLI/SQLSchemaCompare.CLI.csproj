@@ -8,12 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="9.1.0" />
-    <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Neolution.CodeAnalysis" Version="3.2.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Spectre.Console" Version="0.55.2" />
+    <PackageReference Include="System.CommandLine" Version="2.0.7" />
   </ItemGroup>
 
   <ItemGroup>

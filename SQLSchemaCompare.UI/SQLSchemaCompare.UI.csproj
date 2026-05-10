@@ -58,6 +58,7 @@
     </PackageReference>
     <PackageReference Include="NLog" Version="6.1.2" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="6.1.2" />
+  <PackageReference Include="NuGet.Protocol" Version="6.12.5" />
   </ItemGroup>
 
   <ItemGroup>

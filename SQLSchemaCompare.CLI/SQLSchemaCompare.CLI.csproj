@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>TiCodeX.SQLSchemaCompare.CLI</AssemblyName>
     <RootNamespace>TiCodeX.SQLSchemaCompare.CLI</RootNamespace>
@@ -8,12 +8,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="Spectre.Console" />
+    <Using Include="Spectre.Console.Cli" />
+    <Using Include="Spectre.Console.Cli.Extensions.DependencyInjection" />
+    <Using Include="Spectre.Console.Cli.Help" />
+    <Using Include="Spectre.Console.Rendering" />
+    <Using Include="System.ComponentModel" />
+    <Using Include="TiCodeX.SQLSchemaCompare.CLI.Commands" />
+    <Using Include="TiCodeX.SQLSchemaCompare.CLI.Utils" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Neolution.CodeAnalysis" Version="3.2.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Spectre.Console" Version="0.55.2" />
-    <PackageReference Include="System.CommandLine" Version="2.0.7" />
+    <PackageReference Include="Spectre.Console.Cli" Version="0.55.0" />
+    <PackageReference Include="Spectre.Console.Cli.Extensions.DependencyInjection" Version="0.24.0" />
   </ItemGroup>
 
   <ItemGroup>

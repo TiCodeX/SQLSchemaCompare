@@ -1,10 +1,5 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.CLI;
 
-using System.CommandLine;
-using System.CommandLine.Help;
-using Microsoft.Extensions.DependencyInjection;
-using TiCodeX.SQLSchemaCompare.CLI.Commands;
-
 /// <summary>
 /// SQLSchemaCompare CLI application
 /// </summary>
@@ -17,26 +12,45 @@ public static class Program
     /// <returns>The exit code</returns>
     public static int Main(string[] args)
     {
-        using var serviceProvider = new ServiceCollection()
+        var services = new ServiceCollection()
             .RegisterServices()
-            .AddLogging()
-            .BuildServiceProvider(true);
+            .AddLogging();
 
-        var rootCommand = new RootCommand("The SQL Schema Compare command-line tool.")
+        using var registrar = new DependencyInjectionRegistrar(services);
+
+        var app = new CommandApp(registrar);
+
+        app.Configure(config =>
         {
-            TreatUnmatchedTokensAsErrors = false,
-        };
+            config.PropagateExceptions();
+            config.UseStrictParsing();
+            config.SetHelpProvider(new CustomHelpProvider(config.Settings));
 
-        rootCommand.AddCompareCommand(serviceProvider);
-
-        // Default: when no subcommand is specified, behave as 'compare'
-        rootCommand.SetDefaultCompareAction();
-
-        rootCommand.Options.OfType<HelpOption>().ToList().ForEach(option =>
-        {
-            option.Action = new CustomHelpAction((HelpAction)option.Action);
+            config.AddCommand<CompareCommand>("compare").WithDescription("Compare two databases.");
         });
 
-        return rootCommand.Parse(args).Invoke();
+        // When no command is specified, behave as 'compare'
+        if (args?.Length > 0 &&
+            args[0].StartsWith('-') &&
+            args[0] != "-?" &&
+            args[0] != "-h" &&
+            args[0] != "--help")
+        {
+            args = ["compare", .. args];
+        }
+
+        try
+        {
+            return app.Run(args);
+        }
+        catch (ShowHelpException)
+        {
+            return app.Run([.. args, "--help"]);
+        }
+        catch (CommandAppException ex)
+        {
+            AnsiConsole.MarkupLine($"[red]Error:[/] {ex.Message}");
+            return 1;
+        }
     }
 }

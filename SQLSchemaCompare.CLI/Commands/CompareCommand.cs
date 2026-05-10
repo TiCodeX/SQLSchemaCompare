@@ -1,5 +1,7 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.CLI.Commands;
 
+using System.Reflection;
+
 /// <summary>
 /// The compare command
 /// </summary>
@@ -48,7 +50,7 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
     /// <summary>
     /// The options for the compare command
     /// </summary>
-    public class Options : CommandSettings
+    internal sealed class Options : CommandSettings
     {
         /// <summary>
         /// Gets the project file.
@@ -116,23 +118,23 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
             {
                 if (!hasDatabaseType)
                 {
-                    missingOptions.Add("--type");
+                    missingOptions.Add(GetLongName(nameof(this.DatabaseType)));
                 }
 
                 if (!hasSourceConnectionString)
                 {
-                    missingOptions.Add("--source");
+                    missingOptions.Add(GetLongName(nameof(this.SourceConnectionString)));
                 }
 
                 if (!hasTargetConnectionString)
                 {
-                    missingOptions.Add("--target");
+                    missingOptions.Add(GetLongName(nameof(this.TargetConnectionString)));
                 }
             }
 
             if (!hasOutputFile)
             {
-                missingOptions.Add("--output");
+                missingOptions.Add(GetLongName(nameof(this.OutputFile)));
             }
 
             if (missingOptions.Count > 0)
@@ -141,6 +143,13 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
             }
 
             return ValidationResult.Success();
+
+            static string GetLongName(string propertyName)
+            {
+                var propertyInfo = typeof(Options).GetProperty(propertyName);
+                var commandOption = propertyInfo.GetCustomAttribute<CommandOptionAttribute>();
+                return $"--{commandOption.LongNames[0]}";
+            }
         }
     }
 }

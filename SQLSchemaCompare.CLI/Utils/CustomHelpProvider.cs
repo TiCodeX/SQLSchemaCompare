@@ -70,13 +70,15 @@ internal class CustomHelpProvider(ICommandAppSettings settings) : HelpProvider(s
                 var shortNames = param.CommandOption.ShortNames.Select(s => $"-{s}");
                 var longNames = param.CommandOption.LongNames.Select(l => $"--{l}");
                 var aliases = string.Join(", ", shortNames.Concat(longNames));
+
+                var propertyType = Nullable.GetUnderlyingType(param.PropertyInfo.PropertyType) ?? param.PropertyInfo.PropertyType;
                 if (!string.IsNullOrWhiteSpace(param.CommandOption.ValueName))
                 {
                     aliases += $" <{param.CommandOption.ValueName}>";
                 }
-                else if (param.PropertyInfo.PropertyType.IsEnum)
+                else if (propertyType.IsEnum)
                 {
-                    aliases += $" <{string.Join("|", Enum.GetNames(param.PropertyInfo.PropertyType))}>";
+                    aliases += $" <{string.Join("|", Enum.GetNames(propertyType))}>";
                 }
                 else
                 {

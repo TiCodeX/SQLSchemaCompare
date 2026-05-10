@@ -9,7 +9,18 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
     /// <inheritdoc/>
     protected override int Execute(CommandContext context, Options options, CancellationToken cancellationToken)
     {
-        projectService.LoadProject(options.ProjectFile);
+        if (!string.IsNullOrWhiteSpace(options.ProjectFile))
+        {
+            projectService.LoadProject(options.ProjectFile);
+        }
+        else
+        {
+            projectService.NewProject(options.DatabaseType);
+            projectService.Project.SourceProviderOptions.UseConnectionString = true;
+            projectService.Project.SourceProviderOptions.ConnectionString = options.SourceConnectionString;
+            projectService.Project.TargetProviderOptions.UseConnectionString = true;
+            projectService.Project.TargetProviderOptions.ConnectionString = options.TargetConnectionString;
+        }
 
         databaseCompareService.StartCompare();
 
@@ -53,7 +64,7 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
         [OptionGroup("Inline options")]
         [CommandOption("--type")]
         [Description("The database type")]
-        public DatabaseType? DatabaseType { get; init; }
+        public DatabaseType DatabaseType { get; init; } = (DatabaseType)(-1);
 
         /// <summary>
         /// Gets the source connection string.
@@ -82,19 +93,51 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
         /// <inheritdoc/>
         public override ValidationResult Validate()
         {
-            bool hasProject = !string.IsNullOrWhiteSpace(this.ProjectFile);
-            bool hasInline = this.DatabaseType != null ||
-                             !string.IsNullOrWhiteSpace(this.SourceConnectionString) ||
-                             !string.IsNullOrWhiteSpace(this.TargetConnectionString);
+            var hasProject = !string.IsNullOrWhiteSpace(this.ProjectFile);
+            var hasDatabaseType = this.DatabaseType != (DatabaseType)(-1);
+            var hasSourceConnectionString = !string.IsNullOrWhiteSpace(this.SourceConnectionString);
+            var hasTargetConnectionString = !string.IsNullOrWhiteSpace(this.TargetConnectionString);
+            var hasInlineOptions = hasDatabaseType || hasSourceConnectionString || hasTargetConnectionString;
+            var hasOutputFile = !string.IsNullOrWhiteSpace(this.OutputFile);
 
-            if (!hasProject && !hasInline)
+            if (!hasProject && !hasInlineOptions)
             {
                 throw new ShowHelpException();
             }
 
-            if (hasProject && hasInline)
+            if (hasProject && hasInlineOptions)
             {
                 return ValidationResult.Error("Specify either the project file options or the inline options, not both.");
+            }
+
+            var missingOptions = new List<string>();
+
+            if (hasInlineOptions)
+            {
+                if (!hasDatabaseType)
+                {
+                    missingOptions.Add("--type");
+                }
+
+                if (!hasSourceConnectionString)
+                {
+                    missingOptions.Add("--source");
+                }
+
+                if (!hasTargetConnectionString)
+                {
+                    missingOptions.Add("--target");
+                }
+            }
+
+            if (!hasOutputFile)
+            {
+                missingOptions.Add("--output");
+            }
+
+            if (missingOptions.Count > 0)
+            {
+                return ValidationResult.Error($"Missing required options: {string.Join(", ", missingOptions)}");
             }
 
             return ValidationResult.Success();

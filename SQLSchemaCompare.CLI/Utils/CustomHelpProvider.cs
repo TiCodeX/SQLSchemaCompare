@@ -72,13 +72,13 @@ internal class CustomHelpProvider(ICommandAppSettings settings) : HelpProvider(s
                 var aliases = string.Join(", ", shortNames.Concat(longNames));
 
                 var propertyType = Nullable.GetUnderlyingType(param.PropertyInfo.PropertyType) ?? param.PropertyInfo.PropertyType;
-                if (!string.IsNullOrWhiteSpace(param.CommandOption.ValueName))
-                {
-                    aliases += $" <{param.CommandOption.ValueName}>";
-                }
-                else if (propertyType.IsEnum)
+                if (propertyType.IsEnum)
                 {
                     aliases += $" <{string.Join("|", Enum.GetNames(propertyType))}>";
+                }
+                else if (!string.IsNullOrWhiteSpace(param.CommandOption.ValueName))
+                {
+                    aliases += $" <{param.CommandOption.ValueName}>";
                 }
                 else
                 {

@@ -56,7 +56,7 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
         /// Gets the project file.
         /// </summary>
         [OptionGroup("Project file options")]
-        [CommandOption("-p|--project <FILEPATH>")]
+        [CommandOption("-p|--project <FILE_PATH>")]
         [Description("The project file (.tcxsc)")]
         public string ProjectFile { get; init; }
 
@@ -88,7 +88,7 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
         /// Gets the output file.
         /// </summary>
         [OptionGroup("Common options")]
-        [CommandOption("-o|--output <FILEPATH>")]
+        [CommandOption("-o|--output <FILE_PATH>")]
         [Description("The output file")]
         public string OutputFile { get; init; }
 

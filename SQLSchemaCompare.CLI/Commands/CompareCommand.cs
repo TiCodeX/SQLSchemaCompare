@@ -1,83 +1,29 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.CLI.Commands;
 
-using System.CommandLine;
-using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 /// <summary>
 /// The compare command
 /// </summary>
-public static class CompareCommand
+internal class CompareCommand(IProjectService projectService, ITaskService taskService, IDatabaseCompareService databaseCompareService)
+    : Command<CompareCommand.Options>
 {
-    /// <summary>
-    /// Adds the compare command.
-    /// </summary>
-    /// <param name="parent">The parent.</param>
-    /// <param name="serviceProvider">The service provider.</param>
-    public static void AddCompareCommand(this RootCommand parent, IServiceProvider serviceProvider)
+    /// <inheritdoc/>
+    protected override int Execute(CommandContext context, Options options, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(parent);
-
-        var compareCmd = new Command("compare", "Compare two databases.");
-        parent.Subcommands.Add(compareCmd);
-
-        var projectFileOption = new Option<string>("--project", "-p")
+        if (!string.IsNullOrWhiteSpace(options.ProjectFile))
         {
-            Description = "The project file",
-            Arity = ArgumentArity.ExactlyOne,
-        };
-
-        var outputFileOption = new Option<string>("--output", "-o")
+            projectService.LoadProject(options.ProjectFile);
+        }
+        else
         {
-            Description = "The output file",
-            Arity = ArgumentArity.ExactlyOne,
-        };
+            projectService.NewProject(options.DatabaseType);
+            projectService.Project.SourceProviderOptions.UseConnectionString = true;
+            projectService.Project.SourceProviderOptions.ConnectionString = options.SourceConnectionString;
+            projectService.Project.TargetProviderOptions.UseConnectionString = true;
+            projectService.Project.TargetProviderOptions.ConnectionString = options.TargetConnectionString;
+        }
 
-        compareCmd.Options.Add(projectFileOption);
-        compareCmd.Options.Add(outputFileOption);
-
-        compareCmd.SetAction(p =>
-        {
-            var options = new Options(
-                p.GetValue(projectFileOption),
-                p.GetValue(outputFileOption));
-
-            return Execute(options, serviceProvider);
-        });
-    }
-
-    /// <summary>
-    /// Sets the default compare action.
-    /// </summary>
-    /// <param name="rootCommand">The root command.</param>
-    public static void SetDefaultCompareAction(this RootCommand rootCommand)
-    {
-        rootCommand.SetAction(p =>
-        {
-            // With no args and no piped input, show help instead of invoking 'compare'
-            if (p.UnmatchedTokens.Count == 0 && !Console.IsInputRedirected)
-            {
-                return rootCommand.Parse("--help").Invoke();
-            }
-
-            // Re-invoke with 'compare' prepended
-            return rootCommand.Parse(["compare", ..p.UnmatchedTokens]).Invoke();
-        });
-    }
-
-    /// <summary>
-    /// Executes the command.
-    /// </summary>
-    /// <param name="options">The options.</param>
-    /// <param name="serviceProvider">The service provider.</param>
-    /// <returns>The exit code</returns>
-    private static int Execute(Options options, IServiceProvider serviceProvider)
-    {
-        var projectService = serviceProvider.GetRequiredService<IProjectService>();
-        projectService.LoadProject(options.ProjectFile);
-
-        var taskService = serviceProvider.GetRequiredService<ITaskService>();
-
-        var databaseCompareService = serviceProvider.GetRequiredService<IDatabaseCompareService>();
         databaseCompareService.StartCompare();
 
         while (!taskService.CurrentTaskInfos.All(x => x.Status is TaskStatus.RanToCompletion or TaskStatus.Faulted or TaskStatus.Canceled))
@@ -104,7 +50,106 @@ public static class CompareCommand
     /// <summary>
     /// The options for the compare command
     /// </summary>
-    private sealed record Options(
-        string ProjectFile,
-        string OutputFile);
+    internal sealed class Options : CommandSettings
+    {
+        /// <summary>
+        /// Gets the project file.
+        /// </summary>
+        [OptionGroup("Project file options")]
+        [CommandOption("-p|--project <FILE_PATH>")]
+        [Description("The project file (.tcxsc)")]
+        public string ProjectFile { get; init; }
+
+        /// <summary>
+        /// Gets the type of the database.
+        /// </summary>
+        [OptionGroup("Inline options")]
+        [CommandOption("--type <TYPE>")]
+        [Description("The database type")]
+        public DatabaseType DatabaseType { get; init; } = (DatabaseType)(-1);
+
+        /// <summary>
+        /// Gets the source connection string.
+        /// </summary>
+        [OptionGroup("Inline options")]
+        [CommandOption("--source <CONNECTION_STRING>")]
+        [Description("The source connection string")]
+        public string SourceConnectionString { get; init; }
+
+        /// <summary>
+        /// Gets the target connection string.
+        /// </summary>
+        [OptionGroup("Inline options")]
+        [CommandOption("--target <CONNECTION_STRING>")]
+        [Description("The target connection string")]
+        public string TargetConnectionString { get; init; }
+
+        /// <summary>
+        /// Gets the output file.
+        /// </summary>
+        [OptionGroup("Common options")]
+        [CommandOption("-o|--output <FILE_PATH>")]
+        [Description("The output file")]
+        public string OutputFile { get; init; }
+
+        /// <inheritdoc/>
+        public override ValidationResult Validate()
+        {
+            var hasProject = !string.IsNullOrWhiteSpace(this.ProjectFile);
+            var hasDatabaseType = this.DatabaseType != (DatabaseType)(-1);
+            var hasSourceConnectionString = !string.IsNullOrWhiteSpace(this.SourceConnectionString);
+            var hasTargetConnectionString = !string.IsNullOrWhiteSpace(this.TargetConnectionString);
+            var hasInlineOptions = hasDatabaseType || hasSourceConnectionString || hasTargetConnectionString;
+            var hasOutputFile = !string.IsNullOrWhiteSpace(this.OutputFile);
+
+            if (!hasProject && !hasInlineOptions)
+            {
+                throw new ShowHelpException();
+            }
+
+            if (hasProject && hasInlineOptions)
+            {
+                return ValidationResult.Error("Specify either the project file options or the inline options, not both.");
+            }
+
+            var missingOptions = new List<string>();
+
+            if (hasInlineOptions)
+            {
+                if (!hasDatabaseType)
+                {
+                    missingOptions.Add(GetLongName(nameof(this.DatabaseType)));
+                }
+
+                if (!hasSourceConnectionString)
+                {
+                    missingOptions.Add(GetLongName(nameof(this.SourceConnectionString)));
+                }
+
+                if (!hasTargetConnectionString)
+                {
+                    missingOptions.Add(GetLongName(nameof(this.TargetConnectionString)));
+                }
+            }
+
+            if (!hasOutputFile)
+            {
+                missingOptions.Add(GetLongName(nameof(this.OutputFile)));
+            }
+
+            if (missingOptions.Count > 0)
+            {
+                return ValidationResult.Error($"Missing required options: {string.Join(", ", missingOptions)}");
+            }
+
+            return ValidationResult.Success();
+
+            static string GetLongName(string propertyName)
+            {
+                var propertyInfo = typeof(Options).GetProperty(propertyName);
+                var commandOption = propertyInfo.GetCustomAttribute<CommandOptionAttribute>();
+                return $"--{commandOption.LongNames[0]}";
+            }
+        }
+    }
 }

@@ -25,7 +25,7 @@ jobs:
           SQLSchemaCompare.UI/yarn.lock
 
     - name: Restore win-x64 dependencies
-      run: dotnet restore -r win-x64
+      run: dotnet restore --locked-mode -r win-x64
     - name: Build win-x64
       run: dotnet build --no-restore SQLSchemaCompare.UI -r win-x64 -c Release
     - name: Publish win-x64
@@ -39,7 +39,7 @@ jobs:
         include-hidden-files: true
 
     - name: Restore linux-x64 dependencies
-      run: dotnet restore -r linux-x64
+      run: dotnet restore --locked-mode -r linux-x64
     - name: Build linux-x64
       run: dotnet build --no-restore SQLSchemaCompare.UI -r linux-x64 -c Release
     - name: Publish linux-x64
@@ -53,7 +53,7 @@ jobs:
         include-hidden-files: true
 
     - name: Restore osx-x64 dependencies
-      run: dotnet restore -r osx-x64
+      run: dotnet restore --locked-mode -r osx-x64
     - name: Build osx-x64
       run: dotnet build --no-restore SQLSchemaCompare.UI -r osx-x64 -c Release
     - name: Publish osx-x64
@@ -67,7 +67,7 @@ jobs:
         include-hidden-files: true
 
     - name: Restore osx-arm64 dependencies
-      run: dotnet restore -r osx-arm64
+      run: dotnet restore --locked-mode -r osx-arm64
     - name: Build osx-arm64
       run: dotnet build --no-restore SQLSchemaCompare.UI -r osx-arm64 -c Release
     - name: Publish osx-arm64

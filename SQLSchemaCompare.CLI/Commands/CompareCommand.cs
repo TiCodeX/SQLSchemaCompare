@@ -72,7 +72,7 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
         /// Gets the source connection string.
         /// </summary>
         [OptionGroup("Inline options")]
-        [CommandOption("--source <CONNECTION STRING>")]
+        [CommandOption("--source <CONNECTION_STRING>")]
         [Description("The source connection string")]
         public string SourceConnectionString { get; init; }
 
@@ -80,7 +80,7 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
         /// Gets the target connection string.
         /// </summary>
         [OptionGroup("Inline options")]
-        [CommandOption("--target <CONNECTION STRING>")]
+        [CommandOption("--target <CONNECTION_STRING>")]
         [Description("The target connection string")]
         public string TargetConnectionString { get; init; }
 

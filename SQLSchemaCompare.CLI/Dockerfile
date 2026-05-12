@@ -27,10 +27,10 @@ COPY ["SQLSchemaCompare.Infrastructure/SQLSchemaCompare.Infrastructure.csproj", 
 COPY ["SQLSchemaCompare.CLI/SQLSchemaCompare.CLI.csproj", "SQLSchemaCompare.CLI/"]
 
 # restore the projects (this will be very fast with layer caching if the csproj files haven't changed)
-RUN dotnet restore -r linux-musl-x64 SQLSchemaCompare.Core
-RUN dotnet restore -r linux-musl-x64 SQLSchemaCompare.Services
-RUN dotnet restore -r linux-musl-x64 SQLSchemaCompare.Infrastructure
-RUN dotnet restore -r linux-musl-x64 SQLSchemaCompare.CLI
+RUN dotnet restore --locked-mode -r linux-musl-x64 SQLSchemaCompare.Core
+RUN dotnet restore --locked-mode -r linux-musl-x64 SQLSchemaCompare.Services
+RUN dotnet restore --locked-mode -r linux-musl-x64 SQLSchemaCompare.Infrastructure
+RUN dotnet restore --locked-mode -r linux-musl-x64 SQLSchemaCompare.CLI
 
 # Copy the rest of the code (we only copy the necessary files to make good use of layer caching)
 COPY SQLSchemaCompare.Core/ SQLSchemaCompare.Core

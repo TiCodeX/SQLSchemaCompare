@@ -64,7 +64,7 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
         /// Gets the type of the database.
         /// </summary>
         [OptionGroup("Inline options")]
-        [CommandOption("--type")]
+        [CommandOption("--type <TYPE>")]
         [Description("The database type")]
         public DatabaseType DatabaseType { get; init; } = (DatabaseType)(-1);
 

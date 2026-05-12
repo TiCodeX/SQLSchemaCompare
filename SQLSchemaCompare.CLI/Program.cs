@@ -29,7 +29,7 @@ public static class Program
             config.AddCommand<CompareCommand>("compare").WithDescription("Compare two databases.");
         });
 
-        // When no command is specified, behave as 'compare'
+        // When options are provided without a command name, default to 'compare'
         if (args?.Length > 0 &&
             args[0].StartsWith('-') &&
             args[0] != "-?" &&

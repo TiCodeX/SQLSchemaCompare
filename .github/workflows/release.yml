@@ -271,7 +271,7 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         push: ${{ github.event_name == 'push' }}
-        outputs: ${{ github.event_name == 'workflow_dispatch' && 'type=docker,dest=/tmp/docker.tar' || '' }}
+        outputs: ${{ github.event_name == 'workflow_dispatch' && 'type=oci,dest=/tmp/docker.tar' || '' }}
     - name: Upload docker to artifacts
       if: github.event_name == 'workflow_dispatch'
       uses: actions/upload-artifact@v7

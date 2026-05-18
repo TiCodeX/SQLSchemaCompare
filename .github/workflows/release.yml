@@ -23,9 +23,9 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
+    - name: Restore dependencies
+      run: dotnet restore --locked-mode
 
-    - name: Restore win-x64 dependencies
-      run: dotnet restore --locked-mode -r win-x64
     - name: Build win-x64
       run: dotnet build --no-restore SQLSchemaCompare.UI -r win-x64 -c Release
     - name: Publish win-x64
@@ -38,8 +38,6 @@ jobs:
         if-no-files-found: 'error'
         include-hidden-files: true
 
-    - name: Restore linux-x64 dependencies
-      run: dotnet restore --locked-mode -r linux-x64
     - name: Build linux-x64
       run: dotnet build --no-restore SQLSchemaCompare.UI -r linux-x64 -c Release
     - name: Publish linux-x64
@@ -52,8 +50,6 @@ jobs:
         if-no-files-found: 'error'
         include-hidden-files: true
 
-    - name: Restore osx-x64 dependencies
-      run: dotnet restore --locked-mode -r osx-x64
     - name: Build osx-x64
       run: dotnet build --no-restore SQLSchemaCompare.UI -r osx-x64 -c Release
     - name: Publish osx-x64
@@ -66,8 +62,6 @@ jobs:
         if-no-files-found: 'error'
         include-hidden-files: true
 
-    - name: Restore osx-arm64 dependencies
-      run: dotnet restore --locked-mode -r osx-arm64
     - name: Build osx-arm64
       run: dotnet build --no-restore SQLSchemaCompare.UI -r osx-arm64 -c Release
     - name: Publish osx-arm64
@@ -258,8 +252,6 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v4
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v4
     - name: Build and push
@@ -267,7 +259,6 @@ jobs:
       with:
         context: .
         file: ./SQLSchemaCompare.CLI/Dockerfile
-        platforms: linux/amd64,linux/arm64
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         push: ${{ github.event_name == 'push' }}

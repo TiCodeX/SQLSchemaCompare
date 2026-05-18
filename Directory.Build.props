@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <RuntimeIdentifiers>win-x64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;linux-x64;linux-musl-x64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <Product>SQL Schema Compare</Product>
     <Description>https://github.com/TiCodeX/SQLSchemaCompare</Description>
     <Authors>TiCodeX</Authors>

@@ -39,7 +39,11 @@ public class DatabaseFixtureMariaDb : DatabaseFixture
                 //serverPorts.Add(29020); // Version 11.6 (EOL February 2025)
                 //serverPorts.Add(29021); // Version 11.7 (EOL May 2025)
                 serverPorts.Add(29022); // Version 11.8 (EOL October 2033)
-                serverPorts.Add(29023); // Version 12 (Preview)
+                //serverPorts.Add(29023); // Version 12.0 (EOL November 2025)
+                //serverPorts.Add(29024); // Version 12.1 (EOL February 2026)
+                //serverPorts.Add(29025); // Version 12.2 (EOL May 2026)
+                //serverPorts.Add(29026); // Version 12.3 (EOL June 2029)
+                //serverPorts.Add(29027); // Version 13.0 (Preview)
             }
             else
             {

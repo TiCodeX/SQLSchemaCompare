@@ -7,230 +7,230 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_artifacts:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v6
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v5
-      with:
-        dotnet-version: '10.0.2xx'
-    - name: Setup Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '22'
-        cache: 'yarn'
-        cache-dependency-path: |
-          SQLSchemaCompare/yarn.lock
-          SQLSchemaCompare.UI/yarn.lock
-
-    - name: Restore win-x64 dependencies
-      run: dotnet restore --locked-mode -r win-x64
-    - name: Build win-x64
-      run: dotnet build --no-restore SQLSchemaCompare.UI -r win-x64 -c Release
-    - name: Publish win-x64
-      run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r win-x64 -c Release
-    - name: Upload win-x64 artifacts
-      uses: actions/upload-artifact@v7
-      with:
-        name: publish-win
-        path: .publish
-        if-no-files-found: 'error'
-        include-hidden-files: true
-
-    - name: Restore linux-x64 dependencies
-      run: dotnet restore --locked-mode -r linux-x64
-    - name: Build linux-x64
-      run: dotnet build --no-restore SQLSchemaCompare.UI -r linux-x64 -c Release
-    - name: Publish linux-x64
-      run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r linux-x64 -c Release
-    - name: Upload linux-x64 artifacts
-      uses: actions/upload-artifact@v7
-      with:
-        name: publish-linux
-        path: .publish
-        if-no-files-found: 'error'
-        include-hidden-files: true
-
-    - name: Restore osx-x64 dependencies
-      run: dotnet restore --locked-mode -r osx-x64
-    - name: Build osx-x64
-      run: dotnet build --no-restore SQLSchemaCompare.UI -r osx-x64 -c Release
-    - name: Publish osx-x64
-      run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r osx-x64 -c Release
-    - name: Upload osx-x64 artifacts
-      uses: actions/upload-artifact@v7
-      with:
-        name: publish-osx-x64
-        path: .publish
-        if-no-files-found: 'error'
-        include-hidden-files: true
-
-    - name: Restore osx-arm64 dependencies
-      run: dotnet restore --locked-mode -r osx-arm64
-    - name: Build osx-arm64
-      run: dotnet build --no-restore SQLSchemaCompare.UI -r osx-arm64 -c Release
-    - name: Publish osx-arm64
-      run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r osx-arm64 -c Release
-    - name: Upload osx-arm64 artifacts
-      uses: actions/upload-artifact@v7
-      with:
-        name: publish-osx-arm64
-        path: .publish
-        if-no-files-found: 'error'
-        include-hidden-files: true
-
-  installer_win_x64:
-    runs-on: windows-latest
-    needs: build_artifacts
-    defaults:
-      run:
-        shell: bash
-    steps:
-    - uses: actions/checkout@v6
-    - name: Setup Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '22'
-        cache: 'yarn'
-        cache-dependency-path: |
-          SQLSchemaCompare/yarn.lock
-          SQLSchemaCompare.UI/yarn.lock
-    - name: Download publish-win artifact
-      uses: actions/download-artifact@v8
-      with:
-        name: publish-win
-        path: .publish
-    - name: Create installer
-      run: yarn dist-win-x64
-      working-directory: SQLSchemaCompare
-    - name: Upload installer to release
-      if: github.event_name == 'push'
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file_glob: true
-        file: installer/*.exe
-        tag: ${{ github.ref }}
-    - name: Upload installer to artifacts
-      if: github.event_name == 'workflow_dispatch'
-      uses: actions/upload-artifact@v7
-      with:
-        name: installer-win-x64
-        path: installer/*.exe
-        retention-days: 7
-        if-no-files-found: 'error'
-
-  installer_linux_x64:
-    runs-on: ubuntu-latest
-    needs: build_artifacts
-    defaults:
-      run:
-        shell: bash
-    steps:
-    - uses: actions/checkout@v6
-    - name: Setup Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '22'
-        cache: 'yarn'
-        cache-dependency-path: |
-          SQLSchemaCompare/yarn.lock
-          SQLSchemaCompare.UI/yarn.lock
-    - name: Download publish-linux artifact
-      uses: actions/download-artifact@v8
-      with:
-        name: publish-linux
-        path: .publish
-    - name: Prepare artifacts
-      run: |
-        chmod +x .publish/TiCodeX.SQLSchemaCompare.UI
-        chmod +x .publish/TiCodeX.SQLSchemaCompare.CLI
-    - name: Create installer
-      run: yarn dist-linux-x64
-      working-directory: SQLSchemaCompare
-    - name: Upload installer to release
-      if: github.event_name == 'push'
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file_glob: true
-        file: installer/*.{deb,rpm,tar.gz}
-        tag: ${{ github.ref }}
-    - name: Upload installer to artifacts
-      if: github.event_name == 'workflow_dispatch'
-      uses: actions/upload-artifact@v7
-      with:
-        name: installer-linux-x64
-        path: |
-          installer/*.deb
-          installer/*.rpm
-          installer/*.tar.gz
-        retention-days: 7
-        if-no-files-found: 'error'
-
-  installer_osx:
-    runs-on: macos-latest
-    needs: build_artifacts
-    strategy:
-      matrix:
-        arch: [x64, arm64]
-    defaults:
-      run:
-        shell: bash
-    steps:
-    - uses: actions/checkout@v6
-    - name: Setup Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '22'
-        cache: 'yarn'
-        cache-dependency-path: |
-          SQLSchemaCompare/yarn.lock
-          SQLSchemaCompare.UI/yarn.lock
-    - name: Download publish-osx-${{ matrix.arch }} artifact
-      uses: actions/download-artifact@v8
-      with:
-        name: publish-osx-${{ matrix.arch }}
-        path: .publish
-    - name: Prepare artifacts
-      run: |
-        chmod +x .publish/TiCodeX.SQLSchemaCompare.UI
-        chmod +x .publish/TiCodeX.SQLSchemaCompare.CLI
-    - name: Create installer
-      run: yarn dist-osx
-      working-directory: SQLSchemaCompare
-      env:
-        ARCH_SUFFIX: ${{ matrix.arch }}
-    - name: Upload installer to release
-      if: github.event_name == 'push'
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file_glob: true
-        file: installer/*.dmg
-        tag: ${{ github.ref }}
-    - name: Upload installer to artifacts
-      if: github.event_name == 'workflow_dispatch'
-      uses: actions/upload-artifact@v7
-      with:
-        name: installer-osx-${{ matrix.arch }}
-        path: installer/*.dmg
-        retention-days: 7
-        if-no-files-found: 'error'
-
-  clean_artifacts:
-    runs-on: windows-latest
-    if: always()
-    needs: [installer_win_x64, installer_linux_x64, installer_osx]
-    steps:
-    - uses: geekyeggo/delete-artifact@v5
-      with:
-        name: |
-          publish-win
-          publish-linux
-          publish-osx-x64
-          publish-osx-arm64
+#  build_artifacts:
+#    runs-on: windows-latest
+#    steps:
+#    - uses: actions/checkout@v6
+#    - name: Setup .NET
+#      uses: actions/setup-dotnet@v5
+#      with:
+#        dotnet-version: '10.0.2xx'
+#    - name: Setup Node.js
+#      uses: actions/setup-node@v6
+#      with:
+#        node-version: '22'
+#        cache: 'yarn'
+#        cache-dependency-path: |
+#          SQLSchemaCompare/yarn.lock
+#          SQLSchemaCompare.UI/yarn.lock
+#
+#    - name: Restore win-x64 dependencies
+#      run: dotnet restore --locked-mode -r win-x64
+#    - name: Build win-x64
+#      run: dotnet build --no-restore SQLSchemaCompare.UI -r win-x64 -c Release
+#    - name: Publish win-x64
+#      run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r win-x64 -c Release
+#    - name: Upload win-x64 artifacts
+#      uses: actions/upload-artifact@v7
+#      with:
+#        name: publish-win
+#        path: .publish
+#        if-no-files-found: 'error'
+#        include-hidden-files: true
+#
+#    - name: Restore linux-x64 dependencies
+#      run: dotnet restore --locked-mode -r linux-x64
+#    - name: Build linux-x64
+#      run: dotnet build --no-restore SQLSchemaCompare.UI -r linux-x64 -c Release
+#    - name: Publish linux-x64
+#      run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r linux-x64 -c Release
+#    - name: Upload linux-x64 artifacts
+#      uses: actions/upload-artifact@v7
+#      with:
+#        name: publish-linux
+#        path: .publish
+#        if-no-files-found: 'error'
+#        include-hidden-files: true
+#
+#    - name: Restore osx-x64 dependencies
+#      run: dotnet restore --locked-mode -r osx-x64
+#    - name: Build osx-x64
+#      run: dotnet build --no-restore SQLSchemaCompare.UI -r osx-x64 -c Release
+#    - name: Publish osx-x64
+#      run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r osx-x64 -c Release
+#    - name: Upload osx-x64 artifacts
+#      uses: actions/upload-artifact@v7
+#      with:
+#        name: publish-osx-x64
+#        path: .publish
+#        if-no-files-found: 'error'
+#        include-hidden-files: true
+#
+#    - name: Restore osx-arm64 dependencies
+#      run: dotnet restore --locked-mode -r osx-arm64
+#    - name: Build osx-arm64
+#      run: dotnet build --no-restore SQLSchemaCompare.UI -r osx-arm64 -c Release
+#    - name: Publish osx-arm64
+#      run: dotnet publish --no-build --no-restore SQLSchemaCompare.UI -r osx-arm64 -c Release
+#    - name: Upload osx-arm64 artifacts
+#      uses: actions/upload-artifact@v7
+#      with:
+#        name: publish-osx-arm64
+#        path: .publish
+#        if-no-files-found: 'error'
+#        include-hidden-files: true
+#
+#  installer_win_x64:
+#    runs-on: windows-latest
+#    needs: build_artifacts
+#    defaults:
+#      run:
+#        shell: bash
+#    steps:
+#    - uses: actions/checkout@v6
+#    - name: Setup Node.js
+#      uses: actions/setup-node@v6
+#      with:
+#        node-version: '22'
+#        cache: 'yarn'
+#        cache-dependency-path: |
+#          SQLSchemaCompare/yarn.lock
+#          SQLSchemaCompare.UI/yarn.lock
+#    - name: Download publish-win artifact
+#      uses: actions/download-artifact@v8
+#      with:
+#        name: publish-win
+#        path: .publish
+#    - name: Create installer
+#      run: yarn dist-win-x64
+#      working-directory: SQLSchemaCompare
+#    - name: Upload installer to release
+#      if: github.event_name == 'push'
+#      uses: svenstaro/upload-release-action@v2
+#      with:
+#        repo_token: ${{ secrets.GITHUB_TOKEN }}
+#        file_glob: true
+#        file: installer/*.exe
+#        tag: ${{ github.ref }}
+#    - name: Upload installer to artifacts
+#      if: github.event_name == 'workflow_dispatch'
+#      uses: actions/upload-artifact@v7
+#      with:
+#        name: installer-win-x64
+#        path: installer/*.exe
+#        retention-days: 7
+#        if-no-files-found: 'error'
+#
+#  installer_linux_x64:
+#    runs-on: ubuntu-latest
+#    needs: build_artifacts
+#    defaults:
+#      run:
+#        shell: bash
+#    steps:
+#    - uses: actions/checkout@v6
+#    - name: Setup Node.js
+#      uses: actions/setup-node@v6
+#      with:
+#        node-version: '22'
+#        cache: 'yarn'
+#        cache-dependency-path: |
+#          SQLSchemaCompare/yarn.lock
+#          SQLSchemaCompare.UI/yarn.lock
+#    - name: Download publish-linux artifact
+#      uses: actions/download-artifact@v8
+#      with:
+#        name: publish-linux
+#        path: .publish
+#    - name: Prepare artifacts
+#      run: |
+#        chmod +x .publish/TiCodeX.SQLSchemaCompare.UI
+#        chmod +x .publish/TiCodeX.SQLSchemaCompare.CLI
+#    - name: Create installer
+#      run: yarn dist-linux-x64
+#      working-directory: SQLSchemaCompare
+#    - name: Upload installer to release
+#      if: github.event_name == 'push'
+#      uses: svenstaro/upload-release-action@v2
+#      with:
+#        repo_token: ${{ secrets.GITHUB_TOKEN }}
+#        file_glob: true
+#        file: installer/*.{deb,rpm,tar.gz}
+#        tag: ${{ github.ref }}
+#    - name: Upload installer to artifacts
+#      if: github.event_name == 'workflow_dispatch'
+#      uses: actions/upload-artifact@v7
+#      with:
+#        name: installer-linux-x64
+#        path: |
+#          installer/*.deb
+#          installer/*.rpm
+#          installer/*.tar.gz
+#        retention-days: 7
+#        if-no-files-found: 'error'
+#
+#  installer_osx:
+#    runs-on: macos-latest
+#    needs: build_artifacts
+#    strategy:
+#      matrix:
+#        arch: [x64, arm64]
+#    defaults:
+#      run:
+#        shell: bash
+#    steps:
+#    - uses: actions/checkout@v6
+#    - name: Setup Node.js
+#      uses: actions/setup-node@v6
+#      with:
+#        node-version: '22'
+#        cache: 'yarn'
+#        cache-dependency-path: |
+#          SQLSchemaCompare/yarn.lock
+#          SQLSchemaCompare.UI/yarn.lock
+#    - name: Download publish-osx-${{ matrix.arch }} artifact
+#      uses: actions/download-artifact@v8
+#      with:
+#        name: publish-osx-${{ matrix.arch }}
+#        path: .publish
+#    - name: Prepare artifacts
+#      run: |
+#        chmod +x .publish/TiCodeX.SQLSchemaCompare.UI
+#        chmod +x .publish/TiCodeX.SQLSchemaCompare.CLI
+#    - name: Create installer
+#      run: yarn dist-osx
+#      working-directory: SQLSchemaCompare
+#      env:
+#        ARCH_SUFFIX: ${{ matrix.arch }}
+#    - name: Upload installer to release
+#      if: github.event_name == 'push'
+#      uses: svenstaro/upload-release-action@v2
+#      with:
+#        repo_token: ${{ secrets.GITHUB_TOKEN }}
+#        file_glob: true
+#        file: installer/*.dmg
+#        tag: ${{ github.ref }}
+#    - name: Upload installer to artifacts
+#      if: github.event_name == 'workflow_dispatch'
+#      uses: actions/upload-artifact@v7
+#      with:
+#        name: installer-osx-${{ matrix.arch }}
+#        path: installer/*.dmg
+#        retention-days: 7
+#        if-no-files-found: 'error'
+#
+#  clean_artifacts:
+#    runs-on: windows-latest
+#    if: always()
+#    needs: [installer_win_x64, installer_linux_x64, installer_osx]
+#    steps:
+#    - uses: geekyeggo/delete-artifact@v5
+#      with:
+#        name: |
+#          publish-win
+#          publish-linux
+#          publish-osx-x64
+#          publish-osx-arm64
 
   docker_image:
     runs-on: ubuntu-latest
@@ -240,15 +240,24 @@ jobs:
       id: meta
       uses: docker/metadata-action@v6
       with:
-        images: ${{ vars.DOCKERHUB_USERNAME }}/sqlschemacompare
+        images: |
+          ${{ vars.DOCKERHUB_USERNAME }}/sqlschemacompare
+          ghcr.io/${{ github.repository }}
         tags: |
-          type=semver,pattern={{version}}
+          type=semver,pattern={{version}},value=1.0.0-test
     - name: Login to Docker Hub
-      if: github.event_name == 'push'
+#      if: github.event_name == 'push'
       uses: docker/login-action@v4
       with:
         username: ${{ vars.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
+    - name: Login to GitHub Container Registry
+#      if: github.event_name == 'push'
+      uses: docker/login-action@v4
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v4
     - name: Build and push
@@ -258,13 +267,14 @@ jobs:
         file: ./SQLSchemaCompare.CLI/Dockerfile
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        push: ${{ github.event_name == 'push' }}
-        outputs: ${{ github.event_name == 'workflow_dispatch' && 'type=docker,dest=/tmp/docker.tar' || '' }}
-    - name: Upload docker to artifacts
-      if: github.event_name == 'workflow_dispatch'
-      uses: actions/upload-artifact@v7
-      with:
-        name: docker
-        path: /tmp/docker.tar
-        retention-days: 7
-        if-no-files-found: 'error'
+#        push: ${{ github.event_name == 'push' }}
+        push: true
+#        outputs: ${{ github.event_name == 'workflow_dispatch' && 'type=docker,dest=/tmp/docker.tar' || '' }}
+#    - name: Upload docker to artifacts
+#      if: github.event_name == 'workflow_dispatch'
+#      uses: actions/upload-artifact@v7
+#      with:
+#        name: docker
+#        path: /tmp/docker.tar
+#        retention-days: 7
+#        if-no-files-found: 'error'

@@ -47,6 +47,8 @@ services:
     command:
       - |
         set -e
+        expected=$(printf "ALTER TABLE [business].[staff] ADD [last_name] [varchar](45) NOT NULL\nGO")
+
         projectFile=$(mktemp)
         {
           echo '<?xml version="1.0" encoding="utf-8"?>'
@@ -69,7 +71,6 @@ services:
         /app/TiCodeX.SQLSchemaCompare.CLI -p $$projectFile -o $$outputFile
 
         output=$(cat $$outputFile)
-        expected=$(printf "ALTER TABLE [business].[staff] ADD [last_name] [varchar](45) NOT NULL\nGO")
 
         if [ "$$output" != "$$expected" ]; then
           echo "Output does not match expected"
@@ -79,3 +80,23 @@ services:
           printf "%s" "$$output" | hexdump -C
           exit 1
         fi
+
+        outputFile=$(mktemp)
+
+        /app/TiCodeX.SQLSchemaCompare.CLI \
+          --type MicrosoftSql \
+          --source 'Server=mssql;Database=sakila_source;User ID=sa;Password=Test1234!;TrustServerCertificate=True;' \
+          --target 'Server=mssql;Database=sakila_target;User ID=sa;Password=Test1234!;TrustServerCertificate=True;' \
+          -o $$outputFile
+
+        output=$(cat $$outputFile)
+
+        if [ "$$output" != "$$expected" ]; then
+          echo "Output does not match expected"
+          echo "Expected:"
+          printf "%s" "$$expected" | hexdump -C
+          echo "Actual:"
+          printf "%s" "$$output" | hexdump -C
+          exit 1
+        fi
+

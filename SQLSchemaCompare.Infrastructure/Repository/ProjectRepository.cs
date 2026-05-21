@@ -24,7 +24,7 @@ public class ProjectRepository : IProjectRepository
     /// <inheritdoc />
     public CompareProject Read(string filename)
     {
-        this.logger.LogInformation($"Reading project file: {filename}");
+        this.logger.LogInformation("Reading project file: {Filename}", filename);
         var xml = new XmlSerializer(typeof(CompareProject));
         using var f = File.OpenRead(filename);
         using var r = XmlReader.Create(f);
@@ -34,11 +34,11 @@ public class ProjectRepository : IProjectRepository
     /// <inheritdoc />
     public void Write(CompareProject project, string filename)
     {
-        this.logger.LogInformation($"Writing project file: {filename}");
+        this.logger.LogInformation("Writing project file: {Filename}", filename);
 
         if (!Directory.Exists(Path.GetDirectoryName(filename)))
         {
-            this.logger.LogInformation($"Creating folder: {Path.GetDirectoryName(filename)}");
+            this.logger.LogInformation("Creating folder: {FolderName}", Path.GetDirectoryName(filename));
             Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? throw new InvalidOperationException());
         }
 

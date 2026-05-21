@@ -70,7 +70,7 @@ public class RequestValidatorMiddleware
             }
             else
             {
-                this.logger.LogError($"Request refused. Token:{authToken}; UserAgent:{userAgent}");
+                this.logger.LogError("Request refused. Token:{Token}; UserAgent:{UserAgent}", authToken, userAgent);
                 context.Response.Body = new MemoryStream(0);
             }
         }

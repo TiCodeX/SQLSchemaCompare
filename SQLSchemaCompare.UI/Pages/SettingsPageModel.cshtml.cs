@@ -75,8 +75,8 @@ public class SettingsPageModel : PageModel
         ArgumentNullException.ThrowIfNull(settings);
 
         this.logger.LogDebug("Saving settings...");
-        this.logger.LogDebug($"LogLevel => {settings.LogLevel}");
-        this.logger.LogDebug($"Language => {settings.Language}");
+        this.logger.LogDebug("LogLevel => {LogLevel}", settings.LogLevel);
+        this.logger.LogDebug("Language => {Language}", settings.Language);
 
         var currentSettings = this.appSettingsService.GetAppSettings();
 

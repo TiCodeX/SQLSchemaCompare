@@ -142,30 +142,22 @@ public class ProjectPageModel : PageModel
 
             this.projectService.LoadProject(req.Filename);
         }
-        catch (InvalidOperationException ex)
-        {
-            this.logger.LogError(ex, $"Error loading project: {req.Filename}");
-            return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProjectInvalidProjectFile, this.appGlobals.ProductName) });
-        }
-        catch (FileNotFoundException ex)
-        {
-            this.logger.LogError(ex, $"Error loading project: {req.Filename}");
-            return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = Localization.ErrorLoadProjectFileNotFound });
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            this.logger.LogError(ex, $"Error loading project: {req.Filename}");
-            return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = Localization.ErrorLoadProjectUnauthorizedFileAccess });
-        }
-        catch (IOException ex)
-        {
-            this.logger.LogError(ex, $"Error loading project: {req.Filename}");
-            return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProjectIOError, ex.Message) });
-        }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, $"Error loading project: {req.Filename}");
-            return new JsonResult(new ApiResponse { Success = false, ErrorCode = EErrorCode.ErrorCannotLoadProject, ErrorMessage = string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProject, ex.Message) });
+            this.logger.LogError(ex, "Error loading project: {Filename}", req.Filename);
+            return new JsonResult(new ApiResponse
+            {
+                Success = false,
+                ErrorCode = EErrorCode.ErrorCannotLoadProject,
+                ErrorMessage = ex switch
+                {
+                    InvalidOperationException => string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProjectInvalidProjectFile, this.appGlobals.ProductName),
+                    FileNotFoundException => Localization.ErrorLoadProjectFileNotFound,
+                    UnauthorizedAccessException => Localization.ErrorLoadProjectUnauthorizedFileAccess,
+                    IOException => string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProjectIOError, ex.Message),
+                    _ => string.Format(CultureInfo.InvariantCulture, Localization.ErrorLoadProject, ex.Message),
+                },
+            });
         }
 
         var appSettings = this.appSettingsService.GetAppSettings();
@@ -409,7 +401,7 @@ public class ProjectPageModel : PageModel
                     Database = database,
                 };
             default:
-                this.logger.LogError($"Unknown Database type: {type}");
+                this.logger.LogError("Unknown Database type: {DatabaseType}", type);
                 throw new ArgumentException("Unknown Database type");
         }
     }

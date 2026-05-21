@@ -69,7 +69,7 @@ public abstract class ADatabaseProvider<TDatabaseProviderOptions, TDatabaseConte
 
         ArgumentNullException.ThrowIfNull(taskInfo);
 
-        this.Logger.LogInformation($"DiscoverDatabase started for database '{context.DatabaseName}' on server '{context.Hostname}'");
+        this.Logger.LogInformation("DiscoverDatabase started for database '{DatabaseName}' on server '{Hostname}'", context.DatabaseName, context.Hostname);
         var db = new TDatabase { Name = context.DatabaseName };
 
         var columns = new List<ABaseDbColumn>();
@@ -96,7 +96,7 @@ public abstract class ADatabaseProvider<TDatabaseProviderOptions, TDatabaseConte
         {
             taskInfo.Percentage = 8;
             var version = this.GetServerVersion(context);
-            this.Logger.LogInformation($"Server '{context.Hostname}' version: {version}");
+            this.Logger.LogInformation("Server '{Hostname}' version: {Version}", context.Hostname, version);
             if (Version.TryParse(version, out var result))
             {
                 this.CurrentServerVersion = db.ServerVersion = result;

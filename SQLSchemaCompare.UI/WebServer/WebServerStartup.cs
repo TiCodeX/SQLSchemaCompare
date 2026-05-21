@@ -84,8 +84,8 @@ public class WebServerStartup(IConfiguration configuration)
         localizationService.SetLanguage(appSettings.Language);
 
         logger.LogDebug("Configuring WebHost...");
-        logger.LogDebug($"LogLevel => {appSettings.LogLevel}");
-        logger.LogDebug($"Language => {appSettings.Language}");
+        logger.LogDebug("LogLevel => {LogLevel}", appSettings.LogLevel);
+        logger.LogDebug("Language => {Language}", appSettings.Language);
 
         app.UseStaticFiles();
         app.UseExceptionHandler("/ErrorPage");

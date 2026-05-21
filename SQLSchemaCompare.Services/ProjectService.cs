@@ -106,7 +106,7 @@ public class ProjectService : IProjectService
         }
         catch (Exception ex)
         {
-            this.logger.LogError($"Load project error: {ex}");
+            this.logger.LogError(ex, "Error loading project from file: {Filename}", filename);
             throw;
         }
     }

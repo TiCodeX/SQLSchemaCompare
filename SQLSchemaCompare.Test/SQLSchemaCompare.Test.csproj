@@ -18,10 +18,10 @@
     <PackageReference Include="EPPlus" Version="8.5.4" />
     <PackageReference Include="ExposedObject" Version="2.2.0" />
     <PackageReference Include="FluentAssertions" Version="8.10.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.8" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="Neolution.CodeAnalysis.TestsRuleset" Version="3.2.2">
+    <PackageReference Include="Neolution.CodeAnalysis.TestsRuleset" Version="3.3.0-beta.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

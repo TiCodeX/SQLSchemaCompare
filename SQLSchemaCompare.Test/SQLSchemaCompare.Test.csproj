@@ -1,7 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>TiCodeX.SQLSchemaCompare.Test</AssemblyName>
     <RootNamespace>TiCodeX.SQLSchemaCompare.Test</RootNamespace>
+    <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -9,9 +10,9 @@
     <Using Include="ExposedObject" />
     <Using Include="FluentAssertions" />
     <Using Include="Xunit" />
-    <Using Include="Xunit.Abstractions" />
-    <Using Include="Xunit.Categories" />
     <Using Include="Xunit.Sdk" />
+    <Using Include="Xunit.v3" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Test.Attributes" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,12 +26,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.categories" Version="3.0.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 

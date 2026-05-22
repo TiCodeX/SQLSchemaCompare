@@ -70,7 +70,10 @@ public class RequestValidatorMiddleware
             }
             else
             {
-                this.logger.LogError("Request refused. Token:{Token}; UserAgent:{UserAgent}", authToken, userAgent);
+                string sanitizedAuthToken = (authToken ?? string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
+                string sanitizedUserAgent = (userAgent ?? string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
+
+                this.logger.LogError("Request refused. Token:{Token}; UserAgent:{UserAgent}", sanitizedAuthToken, sanitizedUserAgent);
                 context.Response.Body = new MemoryStream(0);
             }
         }

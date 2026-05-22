@@ -1,7 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>TiCodeX.SQLSchemaCompare.Test</AssemblyName>
     <RootNamespace>TiCodeX.SQLSchemaCompare.Test</RootNamespace>
+    <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -9,29 +10,26 @@
     <Using Include="ExposedObject" />
     <Using Include="FluentAssertions" />
     <Using Include="Xunit" />
-    <Using Include="Xunit.Abstractions" />
-    <Using Include="Xunit.Categories" />
     <Using Include="Xunit.Sdk" />
+    <Using Include="Xunit.v3" />
+    <Using Include="TiCodeX.SQLSchemaCompare.Test.Attributes" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="8.5.4" />
     <PackageReference Include="ExposedObject" Version="2.2.0" />
     <PackageReference Include="FluentAssertions" Version="8.10.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.7" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="Neolution.CodeAnalysis.TestsRuleset" Version="3.2.2">
+    <PackageReference Include="Neolution.CodeAnalysis.TestsRuleset" Version="3.3.0-beta.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.categories" Version="3.0.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
   </ItemGroup>
 
   <ItemGroup>

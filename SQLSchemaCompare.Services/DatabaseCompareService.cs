@@ -280,8 +280,7 @@ public class DatabaseCompareService : IDatabaseCompareService
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex.Message);
-            this.logger.LogError(ex.StackTrace);
+            this.logger.LogError(ex, "Error comparing databases");
             throw;
         }
     }
@@ -301,7 +300,7 @@ public class DatabaseCompareService : IDatabaseCompareService
         result.DifferentItems.AddRange(compareResultItems.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
         result.DifferentItems.AddRange(compareResultItems.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
         result.DifferentItems.AddRange(compareResultItems.DataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && !x.Equal).OrderBy(x => x.SourceItemName));
-        this.logger.LogDebug($"Different items => {result.DifferentItems.Count}");
+        this.logger.LogDebug("Different items => {Count}", result.DifferentItems.Count);
 
         result.OnlySourceItems.AddRange(compareResultItems.Schemas.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
         result.OnlySourceItems.AddRange(compareResultItems.Tables.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
@@ -310,7 +309,7 @@ public class DatabaseCompareService : IDatabaseCompareService
         result.OnlySourceItems.AddRange(compareResultItems.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
         result.OnlySourceItems.AddRange(compareResultItems.Sequences.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
         result.OnlySourceItems.AddRange(compareResultItems.DataTypes.Where(x => x.SourceItem != null && x.TargetItem == null).OrderBy(x => x.SourceItemName));
-        this.logger.LogDebug($"Only Source items => {result.OnlySourceItems.Count}");
+        this.logger.LogDebug("Only Source items => {Count}", result.OnlySourceItems.Count);
 
         result.OnlyTargetItems.AddRange(compareResultItems.Schemas.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
         result.OnlyTargetItems.AddRange(compareResultItems.Tables.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
@@ -319,7 +318,7 @@ public class DatabaseCompareService : IDatabaseCompareService
         result.OnlyTargetItems.AddRange(compareResultItems.StoredProcedures.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
         result.OnlyTargetItems.AddRange(compareResultItems.Sequences.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
         result.OnlyTargetItems.AddRange(compareResultItems.DataTypes.Where(x => x.TargetItem != null && x.SourceItem == null).OrderBy(x => x.TargetItemName));
-        this.logger.LogDebug($"Only Target items => {result.OnlyTargetItems.Count}");
+        this.logger.LogDebug("Only Target items => {Count}", result.OnlyTargetItems.Count);
 
         result.SameItems.AddRange(compareResultItems.Schemas.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
         result.SameItems.AddRange(compareResultItems.Tables.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
@@ -328,7 +327,7 @@ public class DatabaseCompareService : IDatabaseCompareService
         result.SameItems.AddRange(compareResultItems.StoredProcedures.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
         result.SameItems.AddRange(compareResultItems.Sequences.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
         result.SameItems.AddRange(compareResultItems.DataTypes.Where(x => x.SourceItem != null && x.TargetItem != null && x.Equal).OrderBy(x => x.SourceItemName));
-        this.logger.LogDebug($"Same items => {result.SameItems.Count}");
+        this.logger.LogDebug("Same items => {Count}", result.SameItems.Count);
     }
 
     /// <summary>

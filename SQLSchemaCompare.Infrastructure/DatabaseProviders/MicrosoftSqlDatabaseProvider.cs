@@ -299,7 +299,7 @@ internal class MicrosoftSqlDatabaseProvider(ILoggerFactory loggerFactory, ICiphe
         {
             if (type.IsTableType)
             {
-                this.Logger.LogError($"Unsupported User-Defined Table Type: {type.Name}");
+                this.Logger.LogError("Unsupported User-Defined Table Type: {TypeName}", type.Name);
                 continue;
             }
 
@@ -309,7 +309,7 @@ internal class MicrosoftSqlDatabaseProvider(ILoggerFactory loggerFactory, ICiphe
 
                 if (type.SystemType == null)
                 {
-                    this.Logger.LogError($"Unable to find corresponding system type for '{type.Name}'");
+                    this.Logger.LogError("Unable to find corresponding system type for '{TypeName}'", type.Name);
                     continue;
                 }
             }

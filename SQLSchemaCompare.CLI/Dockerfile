@@ -1,13 +1,14 @@
 FROM mcr.microsoft.com/dotnet/runtime:10.0-alpine AS base
 WORKDIR /app
 
-# Install Timezone data
-RUN apk add --update tzdata
+# Install dependencies
+RUN apk add --no-cache \
+    tzdata \
+    icu-libs \
+    icu-data-full \
+    krb5-libs
 
 # Workaround Unhandled exception. System.NotSupportedException: Globalization Invariant Mode is not supported.
-# https://github.com/dotnet/SqlClient/issues/220
-RUN apk add --update icu-libs
-RUN apk add icu-data-full
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build

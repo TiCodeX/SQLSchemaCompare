@@ -27,11 +27,11 @@ In addition, Azure SQL and MS-SQL on Amazon RDS is supported.
 - Localized in English, German and Italian
 
 ### Supported Databases
-- Support for MS-SQL Server 2008 and higher
+- Support for MS-SQL Server
 - Support for Azure SQL Database
-- Support for PostgreSQL 9 and higher
-- Support for MySQL 5.6 and higher
-- Support for MariaDB 5.5 and higher
+- Support for PostgreSQL
+- Support for MySQL
+- Support for MariaDB
 
 ### Features
 - Compare changes between two SQL Database schemas (as example from development to test to production)

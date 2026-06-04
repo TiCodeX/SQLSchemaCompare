@@ -20,7 +20,7 @@ public class DatabaseFixtureMySql : DatabaseFixture
                 //serverPorts.Add(27001); // Version 5.5 (EOL December 2018)
                 //serverPorts.Add(27002); // Version 5.6 (EOL February 2021)
                 //serverPorts.Add(27003); // Version 5.7 (EOL October 2023)
-                serverPorts.Add(27004); // Version 8.0 (EOL April 2026)
+                //serverPorts.Add(27004); // Version 8.0 (EOL April 2026)
                 //serverPorts.Add(27005); // Version 8.1 (EOL October 2023)
                 //serverPorts.Add(27006); // Version 8.2 (EOL December 2023)
                 //serverPorts.Add(27007); // Version 8.3 (EOL April 2024)
@@ -29,7 +29,10 @@ public class DatabaseFixtureMySql : DatabaseFixture
                 //serverPorts.Add(27010); // Version 9.1 (EOL January 2025)
                 //serverPorts.Add(27011); // Version 9.2 (EOL April 2025)
                 //serverPorts.Add(27012); // Version 9.3 (EOL July 2025)
-                serverPorts.Add(27013); // Version 9.4
+                //serverPorts.Add(27013); // Version 9.4 (EOL October 2025)
+                //serverPorts.Add(27014); // Version 9.5 (EOL January 2026)
+                //serverPorts.Add(27015); // Version 9.6 (EOL April 2026)
+                serverPorts.Add(27016); // Version 9.7 (EOL April 2034)
             }
             else
             {

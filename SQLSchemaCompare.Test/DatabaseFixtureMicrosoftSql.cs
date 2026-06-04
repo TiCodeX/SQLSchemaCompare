@@ -16,10 +16,15 @@ public class DatabaseFixtureMicrosoftSql : DatabaseFixture
 
             if (Environment.GetEnvironmentVariable("RunDockerTests")?.ToUpperInvariant() == "TRUE" || ForceDockerTests)
             {
-                serverPorts.Add(28001); // Version 2017 Linux (EOL October 2027)
-                serverPorts.Add(28002); // Version 2019 Linux (EOL January 2030)
-                serverPorts.Add(28003); // Version 2022 Linux (EOL January 2033)
-                serverPorts.Add(28004); // Version 2025 Linux
+                // Version 2005 (EOL April 2016)
+                // Version 2008 (EOL July 2019)
+                // Version 2012 (EOL July 2022)
+                // Version 2014 (EOL July 2024)
+                // Version 2016 (EOL July 2026)
+                serverPorts.Add(28001); // Version 2017 (EOL October 2027)
+                serverPorts.Add(28002); // Version 2019 (EOL January 2030)
+                serverPorts.Add(28003); // Version 2022 (EOL January 2033)
+                serverPorts.Add(28004); // Version 2025 (EOL January 2036)
             }
             else
             {

@@ -24,7 +24,7 @@ public class DatabaseFixturePostgreSql : DatabaseFixture
                 //serverPorts.Add(26005); // Version 10 (EOL November 2022)
                 //serverPorts.Add(26006); // Version 11 (EOL November 2023)
                 //serverPorts.Add(26007); // Version 12 (EOL November 2024)
-                serverPorts.Add(26008); // Version 13 (EOL November 2025)
+                //serverPorts.Add(26008); // Version 13 (EOL November 2025)
                 serverPorts.Add(26009); // Version 14 (EOL November 2026)
                 serverPorts.Add(26010); // Version 15 (EOL November 2027)
                 serverPorts.Add(26011); // Version 16 (EOL November 2028)

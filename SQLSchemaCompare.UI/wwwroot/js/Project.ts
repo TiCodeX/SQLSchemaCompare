@@ -502,33 +502,13 @@ class Project {
     const prefixFrom: string = direction === SettingsCopyDirection.Left ? "Target" : "Source";
     const prefixTo: string = direction === SettingsCopyDirection.Left ? "Source" : "Target";
 
-    const inputFields: Array<string> = ["Hostname", "Port", "Username", "Password", "Database"];
-    const checkboxFields: Array<string> = ["SavePassword", "UseWindowsAuthentication", "UseSSL"];
+    const inputFields = ["Hostname", "Port", "Username", "Password", "Database"];
+    const textareaFields = ["ConnectionString"];
+    const checkboxFields = ["UseConnectionString", "SavePassword", "UseWindowsAuthentication", "UseSSL"];
 
-    for (const field of inputFields) {
-      const value: string = <string>$(`input[name='${prefixTo}${field}'`).val();
-      const disabled: boolean = $(`input[name='${prefixTo}${field}'`).is(":disabled");
-
-      $(`input[name='${prefixTo}${field}'`).val($(`input[name='${prefixFrom}${field}'`).val() as string);
-      $(`input[name='${prefixTo}${field}'`).prop("disabled", $(`input[name='${prefixFrom}${field}'`).is(":disabled"));
-
-      if (direction === SettingsCopyDirection.Exchange) {
-        $(`input[name='${prefixFrom}${field}'`).val(value);
-        $(`input[name='${prefixFrom}${field}'`).prop("disabled", disabled);
-      }
-    }
-
-    for (const field of checkboxFields) {
-      const value: boolean = $(`input[name='${prefixTo}${field}'`).is(":checked");
-      const disabled: boolean = $(`input[name='${prefixTo}${field}'`).is(":disabled");
-
-      $(`input[name='${prefixTo}${field}'`).prop("checked", $(`input[name='${prefixFrom}${field}'`).is(":checked"));
-      $(`input[name='${prefixTo}${field}'`).prop("disabled", $(`input[name='${prefixFrom}${field}'`).is(":disabled"));
-
-      if (direction === SettingsCopyDirection.Exchange) {
-        $(`input[name='${prefixFrom}${field}'`).prop("checked", value);
-        $(`input[name='${prefixFrom}${field}'`).prop("disabled", disabled);
-      }
+    for (const field of [...inputFields, ...textareaFields, ...checkboxFields]) {
+      const htmlTag = textareaFields.filter(x => x === field).length === 1 ? "textarea" : "input";
+      this.CopyField(field, htmlTag, prefixFrom, prefixTo, direction);
     }
 
     this.SetDirtyState();
@@ -640,5 +620,68 @@ class Project {
 
     // Reset the form validation
     $("div.tcx-project").removeClass("was-validated");
+  }
+
+  /**
+   * Copy the value and disabled state of a field from one prefix to another
+   * @param field The field name without the prefix
+   * @param htmlTag The HTML tag of the field (input or textarea)
+   * @param prefixFrom The prefix to copy from (Source or Target)
+   * @param prefixTo The prefix to copy to (Source or Target)
+   * @param direction The direction to copy the options
+   */
+  private static CopyField(
+    field: string,
+    htmlTag: string,
+    prefixFrom: string,
+    prefixTo: string,
+    direction: SettingsCopyDirection,
+  ): void {
+    const inputFieldFrom = $(`${htmlTag}[name='${prefixFrom}${field}'`);
+    const inputFieldTo = $(`${htmlTag}[name='${prefixTo}${field}'`);
+
+    // Temporarily enable the fieldsets to get the proper disabled info on the fields
+    const fieldsetFrom = inputFieldFrom.closest("fieldset");
+    const fieldsetTo = inputFieldTo.closest("fieldset");
+    const fieldsetFromIsDisabled = fieldsetFrom.is(":disabled");
+    const fieldsetToIsDisabled = fieldsetTo.is(":disabled");
+    fieldsetFrom.prop("disabled", false);
+    fieldsetTo.prop("disabled", false);
+
+    const isCheckbox = inputFieldTo.is(":checkbox");
+    const value = isCheckbox ? inputFieldTo.is(":checked") : inputFieldTo.val();
+    const disabled = inputFieldTo.is(":disabled");
+
+    if (isCheckbox) {
+      inputFieldTo.prop("checked", inputFieldFrom.is(":checked"));
+    } else {
+      inputFieldTo.val(inputFieldFrom.val() as string);
+    }
+    inputFieldTo.prop("disabled", inputFieldFrom.is(":disabled"));
+
+    if (direction === SettingsCopyDirection.Exchange) {
+      if (isCheckbox) {
+        inputFieldFrom.prop("checked", value);
+      } else {
+        inputFieldFrom.val(value as string);
+      }
+      inputFieldFrom.prop("disabled", disabled);
+    }
+
+    fieldsetFrom.prop("disabled", fieldsetFromIsDisabled);
+    fieldsetTo.prop("disabled", fieldsetToIsDisabled);
+
+    switch (field) {
+      case "UseConnectionString": {
+        this.HandleUseConnectionStringOnChange(inputFieldFrom, prefixFrom);
+        this.HandleUseConnectionStringOnChange(inputFieldTo, prefixTo);
+        break;
+      }
+      case "UseSSL": {
+        this.HandleUseSSLOnChange(inputFieldFrom, prefixFrom);
+        this.HandleUseSSLOnChange(inputFieldTo, prefixTo);
+        break;
+      }
+    }
   }
 }

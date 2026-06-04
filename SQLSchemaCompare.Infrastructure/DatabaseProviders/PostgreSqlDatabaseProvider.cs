@@ -289,14 +289,17 @@ internal class PostgreSqlDatabaseProvider(ILoggerFactory loggerFactory, ICipherS
 
         if (this.CurrentServerVersion.Major >= 11)
         {
-            query.AppendLine("WHERE (lower(n.nspname) NOT LIKE 'pg_%' AND lower(n.nspname) != 'information_schema' AND p.prokind != 'a' AND upper(l.lanname) != 'INTERNAL') OR");
-            query.AppendLine("      (lower(n.nspname) NOT LIKE 'pg_%' AND lower(n.nspname) != 'information_schema' AND p.prokind = 'a')");
+            query.AppendLine("WHERE ((lower(n.nspname) NOT LIKE 'pg_%' AND lower(n.nspname) != 'information_schema' AND p.prokind != 'a' AND upper(l.lanname) != 'INTERNAL') OR");
+            query.AppendLine("       (lower(n.nspname) NOT LIKE 'pg_%' AND lower(n.nspname) != 'information_schema' AND p.prokind = 'a'))");
         }
         else
         {
-            query.AppendLine("WHERE (lower(n.nspname) NOT LIKE 'pg_%' AND lower(n.nspname) != 'information_schema' AND p.proisagg = 'false' AND upper(l.lanname) != 'INTERNAL') OR");
-            query.AppendLine("      (lower(n.nspname) NOT LIKE 'pg_%' AND lower(n.nspname) != 'information_schema' AND p.proisagg = 'true')");
+            query.AppendLine("WHERE ((lower(n.nspname) NOT LIKE 'pg_%' AND lower(n.nspname) != 'information_schema' AND p.proisagg = 'false' AND upper(l.lanname) != 'INTERNAL') OR");
+            query.AppendLine("       (lower(n.nspname) NOT LIKE 'pg_%' AND lower(n.nspname) != 'information_schema' AND p.proisagg = 'true'))");
         }
+
+        // Exclude functions that belong to extensions
+        query.AppendLine("      AND NOT EXISTS (SELECT 1 FROM pg_catalog.pg_depend d WHERE d.objid = p.oid AND d.classid = 'pg_proc'::regclass AND d.deptype = 'e')");
 
         return context.Query<PostgreSqlFunction>(query.ToString());
     }

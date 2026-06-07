@@ -84,7 +84,11 @@ class Main {
     if (Utility.IsNullOrWhitespace(targetItem)) {
       targetItem = Localization.Get("LabelDoesNotExist");
     }
-    $(".tcx-diff-item-name").html(`${sourceItem} <span class='fa fa-long-arrow-alt-right'></span> ${targetItem}`);
+    const diffItemName = $(".tcx-diff-item-name");
+    diffItemName.empty();
+    diffItemName.append(document.createTextNode(sourceItem));
+    diffItemName.append($("<span>").addClass("fa fa-long-arrow-alt-right mx-1"));
+    diffItemName.append(document.createTextNode(targetItem));
 
     void Utility.AjaxCall<CompareResultItemScripts>(this.resultItemScriptsUrl + rowId, HttpMethod.Get).then((response): void => {
       EditorManager.CreateEditor(EditorType.Diff, "sqlDiff", {

@@ -86,9 +86,9 @@ class Main {
     }
     const diffItemName = $(".tcx-diff-item-name");
     diffItemName.empty();
-    diffItemName.append(document.createTextNode(`${sourceItem} `));
-    diffItemName.append($("<span>").addClass("fa fa-long-arrow-alt-right"));
-    diffItemName.append(document.createTextNode(` ${targetItem}`));
+    diffItemName.append(document.createTextNode(sourceItem));
+    diffItemName.append($("<span>").addClass("fa fa-long-arrow-alt-right mx-1"));
+    diffItemName.append(document.createTextNode(targetItem));
 
     void Utility.AjaxCall<CompareResultItemScripts>(this.resultItemScriptsUrl + rowId, HttpMethod.Get).then((response): void => {
       EditorManager.CreateEditor(EditorType.Diff, "sqlDiff", {

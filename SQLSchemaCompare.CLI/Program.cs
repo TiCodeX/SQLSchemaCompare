@@ -27,6 +27,7 @@ public static class Program
             config.SetHelpProvider(new CustomHelpProvider(config.Settings));
 
             config.AddCommand<CompareCommand>("compare").WithDescription("Compare two databases.");
+            config.AddCommand<MonitorCommand>("monitor").WithDescription("Monitor database changes.");
         });
 
         // When options are provided without a command name, default to 'compare'

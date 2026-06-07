@@ -276,7 +276,7 @@ public class ProjectPageModel : PageModel
     /// <returns>The ApiResponse in JSON</returns>
     public ActionResult OnGetStartCompare()
     {
-        this.databaseCompareService.StartCompare();
+        this.databaseCompareService.StartCompare(false);
 
         return new JsonResult(new ApiResponse());
     }

@@ -385,7 +385,7 @@
           "Microsoft.AspNet.WebApi.Client": "[6.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[10.0.9, )",
           "Newtonsoft.Json": "[13.0.4, )",
-          "TiCodeX.SQLSchemaCompare.Core": "[2026.5.1, )"
+          "TiCodeX.SQLSchemaCompare.Core": "[2026.6.1, )"
         }
       }
     },

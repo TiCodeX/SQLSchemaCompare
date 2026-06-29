@@ -340,7 +340,7 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "[10.0.9, )",
           "Microting.EntityFrameworkCore.MySql": "[10.0.9, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.2, )",
-          "TiCodeX.SQLSchemaCompare.Services": "[2026.5.1, )"
+          "TiCodeX.SQLSchemaCompare.Services": "[2026.6.1, )"
         }
       },
       "TiCodeX.SQLSchemaCompare.Services": {
@@ -348,7 +348,7 @@
         "dependencies": {
           "Microsoft.AspNet.WebApi.Client": "[6.0.0, )",
           "Newtonsoft.Json": "[13.0.4, )",
-          "TiCodeX.SQLSchemaCompare.Core": "[2026.5.1, )"
+          "TiCodeX.SQLSchemaCompare.Core": "[2026.6.1, )"
         }
       }
     },

@@ -5,7 +5,7 @@
     <Product>SQL Schema Compare</Product>
     <Description>https://github.com/TiCodeX/SQLSchemaCompare</Description>
     <Authors>TiCodeX</Authors>
-    <Version>2026.5.1</Version>
+    <Version>2026.6.1</Version>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <ImplicitUsings>enable</ImplicitUsings>

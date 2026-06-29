@@ -16,10 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="8.5.4" />
+    <PackageReference Include="EPPlus" Version="8.6.1" />
     <PackageReference Include="ExposedObject" Version="2.2.0" />
     <PackageReference Include="FluentAssertions" Version="8.10.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Neolution.CodeAnalysis.TestsRuleset" Version="3.3.0-beta.2">
       <PrivateAssets>all</PrivateAssets>

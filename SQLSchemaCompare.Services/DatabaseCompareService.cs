@@ -98,16 +98,22 @@ public class DatabaseCompareService : IDatabaseCompareService
                     this.databaseFilter.PerformFilter(this.retrievedSourceDatabase, this.projectService.Project.Options.Filtering);
                     return true;
                 }),
-            waitBeforeRetrieveTargetDatabase ? new(
+        };
+
+        if (waitBeforeRetrieveTargetDatabase)
+        {
+            tasks.Add(new(
                 new TaskInfo(string.Empty),
                 runInParallel: false,
                 taskInfo =>
                 {
-                    this.logger.LogInformation("Database retrieved, press any key to continue...");
-                    Console.ReadKey();
+                    this.logger.LogInformation("Make any database changes and press any key to compare...");
+                    Console.ReadKey(true);
                     return true;
-                }) : null,
-            new(
+                }));
+        }
+
+        tasks.Add(new(
                 new TaskInfo(Localization.LabelRetrieveTargetDatabase),
                 runInParallel: !waitBeforeRetrieveTargetDatabase,
                 taskInfo =>
@@ -117,21 +123,22 @@ public class DatabaseCompareService : IDatabaseCompareService
                     this.retrievedTargetDatabase.Direction = CompareDirection.Target;
                     this.databaseFilter.PerformFilter(this.retrievedTargetDatabase, this.projectService.Project.Options.Filtering);
                     return true;
-                }),
-            new(
+                }));
+
+        tasks.Add(new(
                 new TaskInfo(Localization.LabelMappingDatabaseObjects),
                 runInParallel: false,
                 taskInfo =>
                 {
                     this.databaseMapper.PerformMapping(this.retrievedSourceDatabase, this.retrievedTargetDatabase, null, taskInfo);
                     return true;
-                }),
-            new(
+                }));
+        tasks.Add(new(
                 new TaskInfo(Localization.LabelDatabaseComparison),
                 runInParallel: false,
-                this.ExecuteDatabaseComparison),
-        };
-        this.taskService.ExecuteTasks([.. tasks.Where(x => x != null)]);
+                this.ExecuteDatabaseComparison));
+
+        this.taskService.ExecuteTasks(tasks);
     }
 
     /// <summary>
@@ -211,6 +218,8 @@ public class DatabaseCompareService : IDatabaseCompareService
     {
         try
         {
+            this.logger.LogInformation("Comparing...");
+
             var processedItems = 1;
             var scripter = this.databaseScripterFactory.Create(
                 this.retrievedSourceDatabase,

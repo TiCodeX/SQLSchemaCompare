@@ -3,13 +3,12 @@
 /// <summary>
 /// Implements the database mapper functionality
 /// </summary>
-public class DatabaseMapper : IDatabaseMapper
+public class DatabaseMapper(ILogger<DatabaseMapper> logger) : IDatabaseMapper
 {
     /// <inheritdoc/>
     public void PerformMapping(ABaseDb source, ABaseDb target, object mappingTable, TaskInfo taskInfo)
     {
         ArgumentNullException.ThrowIfNull(source);
-
         ArgumentNullException.ThrowIfNull(target);
 
         // Linearize the 2 databases for mapping
@@ -24,6 +23,7 @@ public class DatabaseMapper : IDatabaseMapper
             new() { ObjectTitle = Localization.StatusMappingSequences, DbObjects = source.Sequences, MappableDbObjects = target.Sequences },
         };
 
+        logger.LogInformation("Mapping source and target database objects...");
         this.PerformMapping(maps, taskInfo);
     }
 

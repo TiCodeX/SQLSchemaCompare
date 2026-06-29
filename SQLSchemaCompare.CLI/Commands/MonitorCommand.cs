@@ -5,7 +5,7 @@ using System.Reflection;
 /// <summary>
 /// The monitor command
 /// </summary>
-internal class MonitorCommand(IProjectService projectService, ITaskService taskService, IDatabaseCompareService databaseCompareService)
+internal class MonitorCommand(IProjectService projectService, ITaskService taskService, IDatabaseCompareService databaseCompareService, ILogger<MonitorCommand> logger)
     : Command<MonitorCommand.Options>
 {
     /// <inheritdoc/>
@@ -36,6 +36,7 @@ internal class MonitorCommand(IProjectService projectService, ITaskService taskS
         }
 
         File.WriteAllText(options.OutputFile, projectService.Project.Result.FullAlterScript);
+        logger.LogInformation("Compare completed successfully. Output written to {OutputFile}", options.OutputFile);
 
         return 0;
     }

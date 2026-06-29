@@ -14,7 +14,10 @@ public static class Program
     {
         var services = new ServiceCollection()
             .RegisterServices()
-            .AddLogging();
+            .AddLogging(builder =>
+            {
+                builder.AddConsole();
+            });
 
         using var registrar = new DependencyInjectionRegistrar(services);
 

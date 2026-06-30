@@ -3,28 +3,21 @@
 using System.Reflection;
 
 /// <summary>
-/// The compare command
+/// The monitor command
 /// </summary>
-internal class CompareCommand(IProjectService projectService, ITaskService taskService, IDatabaseCompareService databaseCompareService)
-    : Command<CompareCommand.Options>
+internal class MonitorCommand(IProjectService projectService, ITaskService taskService, IDatabaseCompareService databaseCompareService, ILogger<MonitorCommand> logger)
+    : Command<MonitorCommand.Options>
 {
     /// <inheritdoc/>
     protected override int Execute(CommandContext context, Options options, CancellationToken cancellationToken)
     {
-        if (!string.IsNullOrWhiteSpace(options.ProjectFile))
-        {
-            projectService.LoadProject(options.ProjectFile);
-        }
-        else
-        {
-            projectService.NewProject(options.DatabaseType);
-            projectService.Project.SourceProviderOptions.UseConnectionString = true;
-            projectService.Project.SourceProviderOptions.ConnectionString = options.SourceConnectionString;
-            projectService.Project.TargetProviderOptions.UseConnectionString = true;
-            projectService.Project.TargetProviderOptions.ConnectionString = options.TargetConnectionString;
-        }
+        projectService.NewProject(options.DatabaseType);
+        projectService.Project.SourceProviderOptions.UseConnectionString = true;
+        projectService.Project.SourceProviderOptions.ConnectionString = options.ConnectionString;
+        projectService.Project.TargetProviderOptions.UseConnectionString = true;
+        projectService.Project.TargetProviderOptions.ConnectionString = options.ConnectionString;
 
-        databaseCompareService.StartCompare(false);
+        databaseCompareService.StartCompare(true);
 
         while (!taskService.CurrentTaskInfos.All(x => x.Status is TaskStatus.RanToCompletion or TaskStatus.Faulted or TaskStatus.Canceled))
         {
@@ -43,6 +36,7 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
         }
 
         File.WriteAllText(options.OutputFile, projectService.Project.Result.FullAlterScript);
+        logger.LogInformation("Compare completed successfully. Output written to {OutputFile}", options.OutputFile);
 
         return 0;
     }
@@ -53,14 +47,6 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
     internal sealed class Options : CommandSettings
     {
         /// <summary>
-        /// Gets the project file.
-        /// </summary>
-        [OptionGroup("Project file options")]
-        [CommandOption("-p|--project <FILE_PATH>")]
-        [Description("The project file (.tcxsc)")]
-        public string ProjectFile { get; init; }
-
-        /// <summary>
         /// Gets the type of the database.
         /// </summary>
         [OptionGroup("Inline options")]
@@ -69,20 +55,12 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
         public DatabaseType DatabaseType { get; init; } = (DatabaseType)(-1);
 
         /// <summary>
-        /// Gets the source connection string.
+        /// Gets the connection string.
         /// </summary>
         [OptionGroup("Inline options")]
-        [CommandOption("--source <CONNECTION_STRING>")]
-        [Description("The source connection string")]
-        public string SourceConnectionString { get; init; }
-
-        /// <summary>
-        /// Gets the target connection string.
-        /// </summary>
-        [OptionGroup("Inline options")]
-        [CommandOption("--target <CONNECTION_STRING>")]
-        [Description("The target connection string")]
-        public string TargetConnectionString { get; init; }
+        [CommandOption("--connection <CONNECTION_STRING>")]
+        [Description("The connection string")]
+        public string ConnectionString { get; init; }
 
         /// <summary>
         /// Gets the output file.
@@ -95,41 +73,25 @@ internal class CompareCommand(IProjectService projectService, ITaskService taskS
         /// <inheritdoc/>
         public override ValidationResult Validate()
         {
-            var hasProject = !string.IsNullOrWhiteSpace(this.ProjectFile);
             var hasDatabaseType = this.DatabaseType != (DatabaseType)(-1);
-            var hasSourceConnectionString = !string.IsNullOrWhiteSpace(this.SourceConnectionString);
-            var hasTargetConnectionString = !string.IsNullOrWhiteSpace(this.TargetConnectionString);
-            var hasInlineOptions = hasDatabaseType || hasSourceConnectionString || hasTargetConnectionString;
+            var hasConnectionString = !string.IsNullOrWhiteSpace(this.ConnectionString);
             var hasOutputFile = !string.IsNullOrWhiteSpace(this.OutputFile);
 
-            if (!hasProject && !hasInlineOptions)
+            if (!hasDatabaseType && !hasConnectionString && !hasOutputFile)
             {
                 throw new ShowHelpException();
             }
 
-            if (hasProject && hasInlineOptions)
-            {
-                return ValidationResult.Error("Specify either the project file options or the inline options, not both.");
-            }
-
             var missingOptions = new List<string>();
 
-            if (hasInlineOptions)
+            if (!hasDatabaseType)
             {
-                if (!hasDatabaseType)
-                {
-                    missingOptions.Add(GetLongName(nameof(this.DatabaseType)));
-                }
+                missingOptions.Add(GetLongName(nameof(this.DatabaseType)));
+            }
 
-                if (!hasSourceConnectionString)
-                {
-                    missingOptions.Add(GetLongName(nameof(this.SourceConnectionString)));
-                }
-
-                if (!hasTargetConnectionString)
-                {
-                    missingOptions.Add(GetLongName(nameof(this.TargetConnectionString)));
-                }
+            if (!hasConnectionString)
+            {
+                missingOptions.Add(GetLongName(nameof(this.ConnectionString)));
             }
 
             if (!hasOutputFile)

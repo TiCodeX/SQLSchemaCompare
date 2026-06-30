@@ -8,5 +8,6 @@ public interface IDatabaseCompareService
     /// <summary>
     /// Compares two databases
     /// </summary>
-    void StartCompare();
+    /// <param name="waitBeforeRetrieveTargetDatabase">Indicates whether to wait before retrieving the target database</param>
+    void StartCompare(bool waitBeforeRetrieveTargetDatabase);
 }

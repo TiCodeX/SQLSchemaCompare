@@ -396,10 +396,10 @@ public abstract class DatabaseFixture : IDisposable
             projectService,
             new DatabaseService(new DatabaseProviderFactory(this.LoggerFactory, new CipherService())),
             new DatabaseScripterFactory(this.LoggerFactory),
-            new DatabaseMapper(),
+            new DatabaseMapper(this.LoggerFactory.CreateLogger<DatabaseMapper>()),
             new DatabaseFilter(),
             taskService);
-        dbCompareService.StartCompare();
+        dbCompareService.StartCompare(false);
 
         while (!taskService.CurrentTaskInfos.All(x => x.Status is TaskStatus.RanToCompletion or TaskStatus.Faulted or TaskStatus.Canceled))
         {

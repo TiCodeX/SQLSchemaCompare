@@ -200,6 +200,9 @@ public class PostgreSqlScriptHelper(ProjectOptions options) : AScriptHelper(opti
             // User defined types
             "USER-DEFINED" => column.ColumnDefault,
 
+            // Arrays
+            "ARRAY" => "'{}'",
+
             // Other data types
             "json" or "jsonb" => "'{}'",
             "name" or "tsquery" or "tsvector" => "''",

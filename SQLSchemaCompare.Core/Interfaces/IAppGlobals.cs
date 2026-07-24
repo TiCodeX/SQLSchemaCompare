@@ -16,11 +16,6 @@ public interface IAppGlobals
     string ProductName { get; }
 
     /// <summary>
-    /// Gets the header attribute name for the authentication
-    /// </summary>
-    string AuthorizationHeaderName { get; }
-
-    /// <summary>
     /// Gets the full filename of the application settings file
     /// </summary>
     string AppSettingsFullFilename { get; }
@@ -39,16 +34,6 @@ public interface IAppGlobals
     /// Gets the logger maximum archive files
     /// </summary>
     int LoggerMaxArchiveFiles { get; }
-
-    /// <summary>
-    /// Gets the application id used during electron login. The same application id is expected in the redirect response.
-    /// </summary>
-    string ElectronAuthAppId { get; }
-
-    /// <summary>
-    /// Gets the product code used to identify subscriptions
-    /// </summary>
-    string ProductCode { get; }
 
     /// <summary>
     /// Gets or sets the application version

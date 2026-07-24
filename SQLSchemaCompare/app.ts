@@ -210,6 +210,7 @@ function setEmptyApplicationMenu(): void {
     ]));
   } else {
     // On Windows and Linux remove the menu completely
+    // eslint-disable-next-line unicorn/no-null
     electron.Menu.setApplicationMenu(null);
   }
 }

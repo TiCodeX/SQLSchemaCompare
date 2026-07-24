@@ -110,11 +110,6 @@ public class AppSettingsRepositoryTests(ITestOutputHelper output) : BaseTests<Ap
         public string ProductName => throw new System.NotSupportedException();
 
         /// <summary>
-        /// Gets the authoritation header name
-        /// </summary>
-        public string AuthorizationHeaderName => throw new System.NotSupportedException();
-
-        /// <summary>
         /// Gets the app settings full filename
         /// </summary>
         public string AppSettingsFullFilename => TempSettingFile;
@@ -133,16 +128,6 @@ public class AppSettingsRepositoryTests(ITestOutputHelper output) : BaseTests<Ap
         /// Gets the logger max archive files
         /// </summary>
         public int LoggerMaxArchiveFiles => throw new System.NotSupportedException();
-
-        /// <summary>
-        /// Gets the electron auth app id
-        /// </summary>
-        public string ElectronAuthAppId => throw new System.NotSupportedException();
-
-        /// <summary>
-        /// Gets the product code
-        /// </summary>
-        public string ProductCode => throw new System.NotSupportedException();
 
         /// <summary>
         /// Gets or sets the app version

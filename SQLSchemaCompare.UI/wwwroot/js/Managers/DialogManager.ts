@@ -44,42 +44,40 @@ class DialogManager {
    * @param buttons The button choices
    */
   public static async OpenQuestionDialog(title: string, message: string, buttons: Array<DialogButton>): Promise<DialogButton> {
-    return new Promise<DialogButton>((resolve): void => {
-      const buttonLabels: Array<string> = [];
-      let cancelId: number = buttons.length - 1;
-      for (const button of buttons) {
-        switch (button) {
-          case DialogButton.Yes: {
-            buttonLabels.push(Localization.Get("ButtonYes"));
-            break;
-          }
-          case DialogButton.No: {
-            buttonLabels.push(Localization.Get("ButtonNo"));
-            break;
-          }
-          case DialogButton.Cancel: {
-            buttonLabels.push(Localization.Get("ButtonCancel"));
-            cancelId = buttonLabels.length - 1;
-            break;
-          }
-          default:
+    const buttonLabels: Array<string> = [];
+    let cancelId: number = buttons.length - 1;
+    for (const button of buttons) {
+      switch (button) {
+        case DialogButton.Yes: {
+          buttonLabels.push(Localization.Get("ButtonYes"));
+          break;
         }
+        case DialogButton.No: {
+          buttonLabels.push(Localization.Get("ButtonNo"));
+          break;
+        }
+        case DialogButton.Cancel: {
+          buttonLabels.push(Localization.Get("ButtonCancel"));
+          cancelId = buttonLabels.length - 1;
+          break;
+        }
+        default:
       }
+    }
 
-      void electronRemote?.dialog.showMessageBox(
-        electronRemote.getCurrentWindow(),
-        {
-          type: "question",
-          message: message,
-          buttons: buttonLabels,
-          cancelId: cancelId,
-          noLink: true,
-          title: title,
-        },
-      ).then((value: Electron.MessageBoxReturnValue) => {
-        resolve(value.response);
-      });
-    });
+    const returnValue = await electronRemote?.dialog.showMessageBox(
+      electronRemote.getCurrentWindow(),
+      {
+        type: "question",
+        message: message,
+        buttons: buttonLabels,
+        cancelId: cancelId,
+        noLink: true,
+        title: title,
+      },
+    );
+
+    return returnValue?.response ?? DialogButton.Cancel;
   }
 
   /**

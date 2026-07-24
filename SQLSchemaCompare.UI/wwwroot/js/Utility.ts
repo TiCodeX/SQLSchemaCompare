@@ -1,5 +1,5 @@
-const electron = typeof require === "undefined" ? null : (require as NodeRequireFunction)("electron");
-const electronRemote = typeof require === "undefined" ? null : require("@electron/remote") as ElectronRemote;
+const electron = typeof require === "undefined" ? undefined : (require as NodeRequireFunction)("electron");
+const electronRemote = typeof require === "undefined" ? undefined : require("@electron/remote") as ElectronRemote;
 
 /**
  * Contains various utility methods
@@ -41,7 +41,13 @@ class Utility {
    * @param url The url to be opened in external browser
    */
   public static OpenExternalBrowser(url: string): void {
-    void electron?.shell.openExternal(url);
+    if (electron) {
+      electron.shell.openExternal(url).catch(() => {
+        window.open(url, "_blank")?.focus();
+      });
+    } else {
+      window.open(url, "_blank")?.focus();
+    }
   }
 
   /**

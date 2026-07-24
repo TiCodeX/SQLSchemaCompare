@@ -135,7 +135,7 @@ class Project {
     }
 
     let filename = this.filename;
-    if (electronRemote !== null && (filename === undefined || showDialog)) {
+    if (electronRemote && (filename === undefined || showDialog)) {
       ({ filePath: filename } = await electronRemote.dialog.showSaveDialog(electronRemote.getCurrentWindow(), {
         title: Localization.Get("TitleSaveProject"),
         buttonLabel: Localization.Get("ButtonSave"),
@@ -170,7 +170,7 @@ class Project {
    */
   public static async Load(ignoreDirty: boolean = false, filename?: string): Promise<void> {
     let file = filename;
-    if (electronRemote !== null && file === undefined) {
+    if (electronRemote && file === undefined) {
       const { filePaths: filenames } = await electronRemote.dialog.showOpenDialog(electronRemote.getCurrentWindow(), {
         title: Localization.Get("TitleOpenProject"),
         buttonLabel: Localization.Get("ButtonOpen"),

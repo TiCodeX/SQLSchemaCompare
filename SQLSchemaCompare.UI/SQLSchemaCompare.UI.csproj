@@ -13,8 +13,6 @@
     <Using Include="Microsoft.AspNetCore.Mvc" />
     <Using Include="Microsoft.AspNetCore.Mvc.RazorPages" />
     <Using Include="TiCodeX.SQLSchemaCompare.UI.Enums" />
-    <Using Include="TiCodeX.SQLSchemaCompare.UI.Extensions" />
-    <Using Include="TiCodeX.SQLSchemaCompare.UI.Middlewares" />
     <Using Include="TiCodeX.SQLSchemaCompare.UI.Models" />
     <Using Include="TiCodeX.SQLSchemaCompare.UI.Models.Project" />
     <Using Include="TiCodeX.SQLSchemaCompare.UI.WebServer" />

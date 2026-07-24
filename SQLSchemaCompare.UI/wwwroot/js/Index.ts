@@ -49,12 +49,12 @@ $(() => {
       event.preventDefault();
     });
 
-    electron.ipcRenderer.on("LoadProject", (_event, projectToLoad) => {
+    electron?.ipcRenderer.on("LoadProject", (_event, projectToLoad) => {
       void Project.Load(false, projectToLoad as string);
     });
 
-    electron.ipcRenderer.send("CheckLoadProject");
+    electron?.ipcRenderer.send("CheckLoadProject");
 
-    electron.ipcRenderer.send("OpenMainWindow");
+    electron?.ipcRenderer.send("OpenMainWindow");
   });
 });

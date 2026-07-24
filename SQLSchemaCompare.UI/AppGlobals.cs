@@ -12,9 +12,6 @@ internal class AppGlobals : IAppGlobals
     public string ProductName => "SQL Schema Compare";
 
     /// <inheritdoc/>
-    public string AuthorizationHeaderName => "CustomAuthToken";
-
-    /// <inheritdoc/>
     public string AppSettingsFullFilename => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
         ".SQLSchemaCompare",
@@ -33,12 +30,6 @@ internal class AppGlobals : IAppGlobals
 
     /// <inheritdoc/>
     public int LoggerMaxArchiveFiles => 9;
-
-    /// <inheritdoc/>
-    public string ElectronAuthAppId => "queieimiugrepqueieimiucrap";
-
-    /// <inheritdoc/>
-    public string ProductCode => "SQLCMP";
 
     /// <inheritdoc/>
     public string AppVersion { get; set; }

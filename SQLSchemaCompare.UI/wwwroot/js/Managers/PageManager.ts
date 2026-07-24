@@ -72,39 +72,39 @@ class PageManager {
    * @param closePreviousPage Tell if the previous page needs to be closed
    */
   public static async LoadPage(page: Page, closePreviousPage: boolean = true): Promise<void> {
-    return Utility.AjaxGetPage(this.GetPageUrl(page)).then((result: string): void => {
-      if (closePreviousPage) {
-        this.pageContainer.children("div:last").remove();
-      }
+    const result = await Utility.AjaxGetPage(this.GetPageUrl(page));
 
-      // Remove all the divs with the page attribute like the page we are opening
-      this.pageContainer.children(`div[page=${page}]`).remove();
-      // Hide all the remaining div
-      this.pageContainer.children("div").addClass("d-none");
-      this.RemoveTooltips();
+    if (closePreviousPage) {
+      this.pageContainer.children("div:last").remove();
+    }
 
-      const newPageDiv: JQuery = $("<div />");
-      newPageDiv.appendTo(this.pageContainer);
-      newPageDiv.attr("page", page);
-      newPageDiv.addClass("col-12 p-0");
-      if (page === Page.Main) {
-        newPageDiv.addClass("tcx-main-page");
-      } else {
-        newPageDiv.addClass("my-auto");
-      }
-      newPageDiv.html(result);
+    // Remove all the divs with the page attribute like the page we are opening
+    this.pageContainer.children(`div[page=${page}]`).remove();
+    // Hide all the remaining div
+    this.pageContainer.children("div").addClass("d-none");
+    this.RemoveTooltips();
 
-      // Activate the editable selects in the new page
-      $(".editable-select", newPageDiv).editableSelect({
-        filter: false,
-        effects: "fade",
-        duration: "fast",
-      });
+    const newPageDiv: JQuery = $("<div />");
+    newPageDiv.appendTo(this.pageContainer);
+    newPageDiv.attr("page", page);
+    newPageDiv.addClass("col-12 p-0");
+    if (page === Page.Main) {
+      newPageDiv.addClass("tcx-main-page");
+    } else {
+      newPageDiv.addClass("my-auto");
+    }
+    newPageDiv.html(result);
 
-      // Fix tabs height
-      $(".tab-pane", newPageDiv).matchHeight({
-        byRow: false,
-      });
+    // Activate the editable selects in the new page
+    $(".editable-select", newPageDiv).editableSelect({
+      filter: false,
+      effects: "fade",
+      duration: "fast",
+    });
+
+    // Fix tabs height
+    $(".tab-pane", newPageDiv).matchHeight({
+      byRow: false,
     });
   }
 

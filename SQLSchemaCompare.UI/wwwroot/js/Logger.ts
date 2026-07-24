@@ -63,6 +63,10 @@ class Logger {
    * @param message The log message
    */
   private log(level: string, message: string): void {
-    electron.ipcRenderer.send("log", { category: this.category, level: level, message: message });
+    if (electron) {
+      electron.ipcRenderer.send("log", { category: this.category, level: level, message: message });
+    } else {
+      console.log(`[${level.toUpperCase()}] [${this.category}] ${message}`);
+    }
   }
 }

@@ -1,5 +1,5 @@
-const electron = (require as NodeRequireFunction)("electron");
-const electronRemote = require("@electron/remote") as ElectronRemote;
+const electron = typeof require === "undefined" ? undefined : (require as NodeRequireFunction)("electron");
+const electronRemote = typeof require === "undefined" ? undefined : require("@electron/remote") as ElectronRemote;
 
 /**
  * Contains various utility methods
@@ -18,7 +18,7 @@ class Utility {
     // Disable context menu
     globalThis.addEventListener("contextmenu", event => {
       event.preventDefault();
-    }, false);
+    }, { capture: false });
 
     // Enable bootstrap tooltips and popovers
     $(document).tooltip({ selector: "[data-toggle='tooltip']" });
@@ -33,7 +33,7 @@ class Utility {
     await Localization.Load();
 
     // Prevent app zooming
-    electron.webFrame.setVisualZoomLevelLimits(1, 1);
+    electron?.webFrame.setVisualZoomLevelLimits(1, 1);
   }
 
   /**
@@ -41,14 +41,20 @@ class Utility {
    * @param url The url to be opened in external browser
    */
   public static OpenExternalBrowser(url: string): void {
-    void electron.shell.openExternal(url);
+    if (electron) {
+      electron.shell.openExternal(url).catch(() => {
+        window.open(url, "_blank")?.focus();
+      });
+    } else {
+      window.open(url, "_blank")?.focus();
+    }
   }
 
   /**
    * Close the electron window
    */
   public static QuitWindow(): void {
-    electronRemote.getCurrentWindow().close();
+    electronRemote?.getCurrentWindow().close();
   }
 
   /**

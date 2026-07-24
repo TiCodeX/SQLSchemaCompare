@@ -37,7 +37,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" style="@ButtonStyle.Primary" data-dismiss="modal" onclick="electron.remote.getCurrentWindow().close();">@Localization.ButtonQuit</button>
+          <button type="button" style="@ButtonStyle.Primary" data-dismiss="modal" onclick="electron?.remote.getCurrentWindow().close();">@Localization.ButtonQuit</button>
         </div>
       </div>
     </div>
@@ -53,6 +53,6 @@
   <script src="~/lib/popperjs/popper.min.js"></script>
   <script src="~/lib/bootstrap/bootstrap.min.js"></script>
 
-  <script>var electron = require("electron");</script>
+  <script>var electron = typeof require === "undefined" ? undefined : require("electron");</script>
 </body>
 </html>

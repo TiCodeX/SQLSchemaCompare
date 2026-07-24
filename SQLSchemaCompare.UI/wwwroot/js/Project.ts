@@ -73,18 +73,17 @@ class Project {
    * @param closePreviousPage Tell if the previous page needs to be closed
    */
   public static async OpenPage(closePreviousPage: boolean = true): Promise<void> {
-    return PageManager.LoadPage(Page.Project, closePreviousPage).then((): void => {
-      MenuManager.ToggleProjectRelatedMenuStatus(true);
-      $(".editable-select").on("show.editable-select", event => {
-        const list = $(event.target).siblings("ul.es-list");
-        list.empty();
-        list.append("<li class=\"es-visible\" disabled>Loading...</li>");
-        this.LoadDatabaseSelectValues(
-          $(event.target).siblings(".input-group-append").find("button"),
-          (<HTMLInputElement>event.target).name,
-          (<HTMLDivElement>$(event.target).parents(".card")[0]).id,
-        );
-      });
+    await PageManager.LoadPage(Page.Project, closePreviousPage);
+    MenuManager.ToggleProjectRelatedMenuStatus(true);
+    $(".editable-select").on("show.editable-select", event => {
+      const list = $(event.target).siblings("ul.es-list");
+      list.empty();
+      list.append("<li class=\"es-visible\" disabled>Loading...</li>");
+      this.LoadDatabaseSelectValues(
+        $(event.target).siblings(".input-group-append").find("button"),
+        (<HTMLInputElement>event.target).name,
+        (<HTMLDivElement>$(event.target).parents(".card")[0]).id,
+      );
     });
   }
 
@@ -92,13 +91,15 @@ class Project {
    * Set the current project to dirty
    */
   public static SetDirtyState(): void {
-    if (!this.isDirty) {
-      this.isDirty = true;
-
-      void Utility.AjaxCall(this.dirtyUrl, HttpMethod.Post).then(() => {
-        MenuManager.ToggleProjectRelatedMenuStatus(true);
-      });
+    if (this.isDirty) {
+      return;
     }
+
+    this.isDirty = true;
+
+    void Utility.AjaxCall(this.dirtyUrl, HttpMethod.Post).then(() => {
+      MenuManager.ToggleProjectRelatedMenuStatus(true);
+    });
   }
 
   /**
@@ -134,7 +135,7 @@ class Project {
     }
 
     let filename = this.filename;
-    if (filename === undefined || showDialog) {
+    if (electronRemote && (filename === undefined || showDialog)) {
       ({ filePath: filename } = await electronRemote.dialog.showSaveDialog(electronRemote.getCurrentWindow(), {
         title: Localization.Get("TitleSaveProject"),
         buttonLabel: Localization.Get("ButtonSave"),
@@ -151,16 +152,15 @@ class Project {
       return;
     }
 
-    return Utility.AjaxCall<object>(this.saveUrl, HttpMethod.Post, filename).then((response): void => {
-      if (response.Success) {
-        this.filename = filename;
-        this.isDirty = false;
-        MenuManager.ToggleProjectRelatedMenuStatus(true);
-        DialogManager.ShowInfoModal(Localization.Get("TitleSaveProject"), Localization.Get("MessageProjectSavedSuccessfully"));
-      } else {
-        DialogManager.ShowErrorModal(Localization.Get("TitleError"), response.ErrorMessage ?? "");
-      }
-    });
+    const response = await Utility.AjaxCall<object>(this.saveUrl, HttpMethod.Post, filename);
+    if (response.Success) {
+      this.filename = filename;
+      this.isDirty = false;
+      MenuManager.ToggleProjectRelatedMenuStatus(true);
+      DialogManager.ShowInfoModal(Localization.Get("TitleSaveProject"), Localization.Get("MessageProjectSavedSuccessfully"));
+    } else {
+      DialogManager.ShowErrorModal(Localization.Get("TitleError"), response.ErrorMessage ?? "");
+    }
   }
 
   /**
@@ -170,7 +170,7 @@ class Project {
    */
   public static async Load(ignoreDirty: boolean = false, filename?: string): Promise<void> {
     let file = filename;
-    if (file === undefined) {
+    if (electronRemote && file === undefined) {
       const { filePaths: filenames } = await electronRemote.dialog.showOpenDialog(electronRemote.getCurrentWindow(), {
         title: Localization.Get("TitleOpenProject"),
         buttonLabel: Localization.Get("ButtonOpen"),
@@ -190,17 +190,16 @@ class Project {
       file = filenames[0];
     }
 
-    return Utility.AjaxCall<string>(this.loadUrl, HttpMethod.Post, { IgnoreDirty: ignoreDirty, Filename: file }).then((response): void => {
-      if (response.Success) {
-        this.isDirty = false;
-        this.filename = file;
-        void this.OpenPage(true);
-      } else {
-        void this.HandleErrorProjectNeedToBeSaved(response).then((): void => {
-          void this.Load(true, file);
-        });
-      }
-    });
+    const response = await Utility.AjaxCall<string>(this.loadUrl, HttpMethod.Post, { IgnoreDirty: ignoreDirty, Filename: file });
+    if (response.Success) {
+      this.isDirty = false;
+      this.filename = file;
+      void this.OpenPage(true);
+    } else {
+      void this.HandleErrorProjectNeedToBeSaved(response).then((): void => {
+        void this.Load(true, file);
+      });
+    }
   }
 
   /**
@@ -335,14 +334,15 @@ class Project {
           Localization.Get("MessageDoYouWantToSaveProjectChanges"),
           [DialogButton.Yes, DialogButton.No, DialogButton.Cancel],
         )
-          .then((answer: DialogButton): void => {
+          .then(async (answer: DialogButton): Promise<void> => {
             switch (answer) {
               case DialogButton.Yes: {
-                this.Save(false).then((): void => {
+                try {
+                  await this.Save(false);
                   resolve();
-                }).catch(error => {
+                } catch (error) {
                   reject(new Error(error as string));
-                });
+                }
                 break;
               }
               case DialogButton.No: {
@@ -425,7 +425,7 @@ class Project {
    * @param prefix The page prefix (Source/Target)
    */
   public static HandleHostnameOnInput(input: JQuery, prefix: string): void {
-    const databaseType = Number.parseInt($("[name='DatabaseType']").val() as string, 10);
+    const databaseType = Math.trunc(Number($("[name='DatabaseType']").val()));
     const databaseTypeEnum = DatabaseType[DatabaseType[databaseType] as keyof typeof DatabaseType];
     if (databaseTypeEnum === DatabaseType.MicrosoftSql) {
       $(`input[name='${prefix}Port']`).prop("disabled", (input.val() as string).includes("\\"));
@@ -530,7 +530,7 @@ class Project {
 
     // Get the first column which has the rowspan and reduce the value by 1
     const rowSpanCol: JQuery = trGroupStart.children("td:first");
-    rowSpanCol.attr("rowspan", Number.parseInt(rowSpanCol.attr("rowspan") ?? "", 10) - 1);
+    rowSpanCol.attr("rowspan", Math.trunc(Number(rowSpanCol.attr("rowspan") ?? "")) - 1);
 
     /* If we are removing the first row of the group, it means that there aren't any other clauses
          * so we should also remove the last row of the group which contains the button to
@@ -587,7 +587,7 @@ class Project {
 
       // Get the first column which has the rowspan and increment the value by 1
       const rowSpanCol: JQuery = trGroupStart.children("td:first");
-      rowSpanCol.attr("rowspan", Number.parseInt(rowSpanCol.attr("rowspan") ?? "", 10) + 1);
+      rowSpanCol.attr("rowspan", Math.trunc(Number(rowSpanCol.attr("rowspan") ?? "")) + 1);
 
       // Hide the object type select and add the AND label
       trGroupStartNew.find("select[name='ProjectOptions[Filtering[Clauses[][ObjectType]]']").hide().after("AND");
@@ -601,7 +601,7 @@ class Project {
       trGroupStartNew.children("td:first").attr("rowspan", "2").text("OR");
       // Increment the group number
       trGroupStartNew.find("input[name='ProjectOptions[Filtering[Clauses[][Group]]']").val(
-        Number.parseInt(<string>inputGroup.val(), 10) + 1,
+        Math.trunc(Number(inputGroup.val())) + 1,
       );
       trGroupEnd.clone().insertAfter(trGroupStartNew);
 

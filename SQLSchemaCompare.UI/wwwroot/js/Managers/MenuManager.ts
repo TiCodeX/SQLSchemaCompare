@@ -8,7 +8,7 @@ class MenuManager {
    */
   public static async CreateMenu(): Promise<void> {
     // #region Electron Menu
-    const template: Array<Electron.MenuItemConstructorOptions> = [
+    electronRemote?.Menu.setApplicationMenu(electronRemote.Menu.buildFromTemplate([
       {
         label: Localization.Get("MenuFile"),
         submenu: [
@@ -25,9 +25,7 @@ class MenuManager {
             label: `${Localization.Get("MenuOpenProject")}...`,
             accelerator: "CmdOrCtrl+O",
             click: () => {
-              Project.Load().catch((): void => {
-                // Do nothing
-              });
+              void Project.Load();
             },
           },
           {
@@ -35,7 +33,7 @@ class MenuManager {
           },
           {
             id: "menuSaveProject",
-            label: `${Localization.Get("MenuSaveProject")}`,
+            label: Localization.Get("MenuSaveProject"),
             accelerator: "CmdOrCtrl+S",
             enabled: false,
             click: () => {
@@ -110,7 +108,7 @@ class MenuManager {
             id: "menuOpenLogsFolder",
             label: `${Localization.Get("MenuOpenLogsFolder")}...`,
             click: () => {
-              electron.ipcRenderer.send("OpenLogsFolder");
+              electron?.ipcRenderer.send("OpenLogsFolder");
             },
           },
           {
@@ -136,15 +134,12 @@ class MenuManager {
           },
         ],
       },
-    ];
-    electronRemote.Menu.setApplicationMenu(electronRemote.Menu.buildFromTemplate(template));
+    ]));
     // #endregion
 
     // #region Toolbar
 
-    await Utility.AjaxGetPage("/ToolbarPageModel").then((result: string): void => {
-      $(".tcx-row-header").html(result);
-    });
+    $(".tcx-row-header").html(await Utility.AjaxGetPage("/ToolbarPageModel"));
 
     // #endregion
 
@@ -212,7 +207,7 @@ class MenuManager {
    * @param enable Whether to enable or disable the menu items
    */
   private static ToggleMenuItems(items: Array<string>, enable: boolean): void {
-    const menu = electronRemote.Menu.getApplicationMenu();
+    const menu = electronRemote?.Menu.getApplicationMenu();
 
     for (const item of items) {
       const menuItem = menu?.getMenuItemById(item);

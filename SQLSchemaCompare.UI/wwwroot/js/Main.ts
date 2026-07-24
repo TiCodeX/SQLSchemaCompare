@@ -203,7 +203,7 @@ class Main {
    */
   public static ShowFullAlterScript(): void {
     void DialogManager.OpenModalDialog(Localization.Get("MenuFullMigrationScript"), this.sqlScriptUrl).then((): void => {
-      void Utility.AjaxCall<string>(`${this.fullSqlAlterScriptUrl}`, HttpMethod.Get).then((response): void => {
+      void Utility.AjaxCall<string>(this.fullSqlAlterScriptUrl, HttpMethod.Get).then((response): void => {
         EditorManager.CreateEditor(EditorType.Normal, "sqlEditor", monaco.editor.createModel(response.Result ?? "", "sql"));
       });
     });

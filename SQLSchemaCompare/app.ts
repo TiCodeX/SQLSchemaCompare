@@ -21,8 +21,6 @@ const loggerPath = path.join(os.homedir(), ".SQLSchemaCompare", "log", "SQLSchem
 const loggerPattern = "yyyy-MM-dd-ui";
 const loggerLayout = "%d{yyyy-MM-dd hh:mm:ss.SSS}|%z|%p|%c|%m";
 const loggerMaxArchiveFiles = 9;
-const authorizationHeaderName = "CustomAuthToken";
-const authorizationHeaderValue = "d6e9b4c2-25d3-a625-e9a6-2135f3d2f809";
 let servicePath: string;
 switch (process.platform) {
   case "linux": {
@@ -179,10 +177,12 @@ electron.ipcMain.on("OpenMainWindow", () => {
 
 // Register the renderer callback to check if need to load a project
 electron.ipcMain.on("CheckLoadProject", () => {
-  if (projectToOpen !== undefined && mainWindow !== undefined) {
-    mainWindow.webContents.send("LoadProject", projectToOpen);
-    projectToOpen = undefined;
+  if (projectToOpen === undefined || mainWindow === undefined) {
+    return;
   }
+
+  mainWindow.webContents.send("LoadProject", projectToOpen);
+  projectToOpen = undefined;
 });
 
 // Register the renderer callback to open the logs folder
@@ -299,11 +299,13 @@ function createMainWindow(): void {
       logger.info("Application started successfully");
 
       setTimeout(() => {
-        if (!serviceCommunicationSuccessful) {
-          logger.error("Service unable to contact main application");
-          electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
-          electron.app.quit();
+        if (serviceCommunicationSuccessful) {
+          return;
         }
+
+        logger.error("Service unable to contact main application");
+        electron.dialog.showErrorBox("SQL Schema Compare - Error", "An unexpected error has occurred");
+        electron.app.quit();
       }, 10_000);
     }
   });
@@ -319,7 +321,7 @@ function createMainWindow(): void {
 function startService(webPort: number): void {
   if (fs.existsSync(servicePath)) {
     logger.info(`Starting service ${servicePath} (${webPort})`);
-    serviceProcess = childProcess.spawn(servicePath, [`${webPort}`]);
+    serviceProcess = childProcess.spawn(servicePath, [String(webPort)]);
   } else {
     logger.error(`Unable to find executable: ${servicePath}`);
   }
@@ -335,12 +337,6 @@ function startup(): void {
 
     return;
   }
-
-  // Setup request default auth header
-  electron.session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-    details.requestHeaders[authorizationHeaderName] = authorizationHeaderValue;
-    callback({ cancel: false, requestHeaders: details.requestHeaders });
-  });
 
   splashWindow = new electron.BrowserWindow({
     width: 640,
@@ -376,7 +372,7 @@ function startup(): void {
   portfinder.detectPort(initialPort, (errorWebPort, webPort) => {
     if (isDebug) {
       // In debug the service always use the initial port and there's no need to start it
-      serviceUrl = serviceUrl.replace("{port}", `${initialPort}`);
+      serviceUrl = serviceUrl.replace("{port}", String(initialPort));
     } else {
       if (!webPort) {
         logger.error(`Unable to find a free port starting from ${initialPort}: ${errorWebPort}`);
@@ -385,7 +381,7 @@ function startup(): void {
         return;
       }
 
-      serviceUrl = serviceUrl.replace("{port}", `${webPort}`);
+      serviceUrl = serviceUrl.replace("{port}", String(webPort));
       startService(webPort);
     }
 

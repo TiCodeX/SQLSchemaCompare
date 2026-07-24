@@ -81,7 +81,7 @@ class EditorManager {
           (<monaco.editor.IStandaloneDiffEditor>editor).getModifiedEditor();
       }
 
-      electronRemote.Menu.buildFromTemplate([
+      electronRemote?.Menu.buildFromTemplate([
         {
           label: Localization.Get("MenuCopy"),
           accelerator: "CmdOrCtrl+C",

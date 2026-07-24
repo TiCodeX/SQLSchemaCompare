@@ -66,7 +66,7 @@ class DialogManager {
         }
       }
 
-      void electronRemote.dialog.showMessageBox(
+      void electronRemote?.dialog.showMessageBox(
         electronRemote.getCurrentWindow(),
         {
           type: "question",
@@ -90,21 +90,19 @@ class DialogManager {
    * @param showCloseButton Whether to show the close button
    */
   public static async OpenModalDialog(title: string, url: string, maxWidth?: string, showCloseButton?: boolean): Promise<void> {
-    return Utility.AjaxGetPage(url).then((result: string): void => {
-      $("#myModal .modal-title").html(title);
-      $("#myModal .modal-body").html(result);
-      $("#myModal .modal-dialog").css("max-width", maxWidth ?? "");
-      $("#myModal .modal-header > button").css("display", showCloseButton !== undefined && showCloseButton ? "block" : "none");
-      $("#myModal").attr("tabindex", showCloseButton !== undefined && showCloseButton ? "-1" : "");
-      $("#myModal").modal({
-        keyboard: showCloseButton !== undefined && showCloseButton,
-        backdrop: "static",
-        show: true,
-      });
-      // Fix tabs height
-      $("#myModal .tab-pane").matchHeight({
-        byRow: false,
-      });
+    $("#myModal .modal-title").html(title);
+    $("#myModal .modal-body").html(await Utility.AjaxGetPage(url));
+    $("#myModal .modal-dialog").css("max-width", maxWidth ?? "");
+    $("#myModal .modal-header > button").css("display", showCloseButton !== undefined && showCloseButton ? "block" : "none");
+    $("#myModal").attr("tabindex", showCloseButton !== undefined && showCloseButton ? "-1" : "");
+    $("#myModal").modal({
+      keyboard: showCloseButton !== undefined && showCloseButton,
+      backdrop: "static",
+      show: true,
+    });
+    // Fix tabs height
+    $("#myModal .tab-pane").matchHeight({
+      byRow: false,
     });
   }
 

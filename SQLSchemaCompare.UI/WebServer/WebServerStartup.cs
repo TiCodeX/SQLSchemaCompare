@@ -16,11 +16,6 @@ using Newtonsoft.Json.Serialization;
 public class WebServerStartup(IConfiguration configuration)
 {
     /// <summary>
-    /// The allowed request guid
-    /// </summary>
-    private const string AllowedRequestGuid = "d6e9b4c2-25d3-a625-e9a6-2135f3d2f809";
-
-    /// <summary>
     /// Gets the WebHost configuration
     /// </summary>
     public IConfiguration Configuration { get; } = configuration;
@@ -34,10 +29,6 @@ public class WebServerStartup(IConfiguration configuration)
         services.Configure<MvcOptions>(options =>
         {
             options.Filters.Add(new RequireHttpsAttribute());
-        });
-        services.Configure<RequestValidatorSettings>(options =>
-        {
-            options.AllowedRequestGuid = AllowedRequestGuid;
         });
 
         services.AddRazorPages().AddNewtonsoftJson(options =>
@@ -89,7 +80,6 @@ public class WebServerStartup(IConfiguration configuration)
 
         app.UseStaticFiles();
         app.UseExceptionHandler("/ErrorPage");
-        app.UseRequestValidator();
         app.UseRouting();
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>

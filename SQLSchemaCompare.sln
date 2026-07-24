@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 - Solution Items", "00 -
 		.dprint.jsonc = .dprint.jsonc
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		.nvmrc = .nvmrc
 		BaseEslintConfig.js = BaseEslintConfig.js
 		BaseTsConfig.json = BaseTsConfig.json
 		CodeAnalysis.ruleset = CodeAnalysis.ruleset

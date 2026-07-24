@@ -26,27 +26,7 @@ enum ApiErrorCode {
   /**
    * Unexpected error
    */
-  ErrorUnexpected = 1020,
-
-  /**
-   * The application need to be updated
-   */
-  ErrorApplicationUpdateNeeded = 1021,
-
-  /**
-   * The account has no subscription
-   */
-  ErrorNoSubscriptionAvailable = 3002,
-
-  /**
-   * The trial subscription is expired
-   */
-  ErrorTrialSubscriptionExpired = 3003,
-
-  /**
-   * The subscription is expired
-   */
-  ErrorSubscriptionExpired = 3004,
+  ErrorUnexpected = 3005,
 
   /**
    * The project need to be saved

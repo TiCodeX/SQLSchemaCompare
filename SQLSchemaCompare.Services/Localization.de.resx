@@ -177,32 +177,11 @@
   <data name="MenuSettings" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
-  <data name="ErrorAccountLocked" xml:space="preserve">
-    <value>Ihr Konto ist gesperrt</value>
-  </data>
-  <data name="TitleLoginError" xml:space="preserve">
-    <value>Login-Fehler</value>
-  </data>
-  <data name="NotificationNewVersionAvailable" xml:space="preserve">
-    <value>Neue Version verfügbar!</value>
-  </data>
   <data name="ButtonClose" xml:space="preserve">
     <value>Schliessen</value>
   </data>
   <data name="ButtonQuit" xml:space="preserve">
     <value>Beenden</value>
-  </data>
-  <data name="NotificationUpdateReadyToBeInstalled" xml:space="preserve">
-    <value>Die neue version v{0} ist verfügbar und kann installiert werden.</value>
-  </data>
-  <data name="NotificationNewVersionAvailableMessage" xml:space="preserve">
-    <value>Die neue Version v{0} wurde veröffentlicht. Bitte besuchen Sie die TiCodeX-Website, um sie herunterzuladen.</value>
-  </data>
-  <data name="ButtonUpdateAndRestart" xml:space="preserve">
-    <value>Aktualisieren und neu starten</value>
-  </data>
-  <data name="MenuSignOut" xml:space="preserve">
-    <value>Abmelden</value>
   </data>
   <data name="LabelSavePassword" xml:space="preserve">
     <value>Kennwort speichern</value>
@@ -327,44 +306,11 @@
   <data name="ErrorGeneric" xml:space="preserve">
     <value>Es ist ein Fehler aufgetreten</value>
   </data>
-  <data name="ErrorInvalidUsernameOrPassword" xml:space="preserve">
-    <value>Nutzername oder Kennwort ungültig</value>
-  </data>
   <data name="LabelSequence" xml:space="preserve">
     <value>Reihenfolge</value>
   </data>
   <data name="LabelLogLevel" xml:space="preserve">
     <value>Loglevel</value>
-  </data>
-  <data name="ErrorEmailNotSpecified" xml:space="preserve">
-    <value>Email wurde nicht angegeben</value>
-  </data>
-  <data name="ErrorEmailNotVerified" xml:space="preserve">
-    <value>Email wurde noch nicht verifiziert</value>
-  </data>
-  <data name="ErrorLoginVerificationFailed" xml:space="preserve">
-    <value>Verifizierung fehlgeschlagen</value>
-  </data>
-  <data name="ErrorNoSubscriptionAvailable" xml:space="preserve">
-    <value>Kein aktives Abonnement gefunden</value>
-  </data>
-  <data name="ErrorPasswordNotSpecified" xml:space="preserve">
-    <value>Kennwort wurde nicht angegeben</value>
-  </data>
-  <data name="ErrorProductIsMissing" xml:space="preserve">
-    <value>Produkt fehlt</value>
-  </data>
-  <data name="ErrorSessionExpired" xml:space="preserve">
-    <value>Ihre Sitzung ist abgelaufen</value>
-  </data>
-  <data name="ErrorSubscriptionExpired" xml:space="preserve">
-    <value>Das aktuelle Abonnement ist verfallen</value>
-  </data>
-  <data name="ErrorTrialSubscriptionExpired" xml:space="preserve">
-    <value>Die Probezeit ist abgelaufen</value>
-  </data>
-  <data name="ErrorCannotContactTiCodeXWebsite" xml:space="preserve">
-    <value>Verbindung mit den TiCodeX Servern nicht möglich:</value>
   </data>
   <data name="ButtonPrev" xml:space="preserve">
     <value>Zurück</value>
@@ -374,9 +320,6 @@
   </data>
   <data name="ErrorLoadProject" xml:space="preserve">
     <value>Datei kann nicht geöffnet werden: {0}</value>
-  </data>
-  <data name="ErrorApplicationUpdateNeeded" xml:space="preserve">
-    <value>Es ist eine neue Version von {0} verfügbar. Bitte aktualisieren.</value>
   </data>
   <data name="ErrorCannotCloseProject" xml:space="preserve">
     <value>Projekt kann nicht geschlossen werden</value>
@@ -407,9 +350,6 @@
   </data>
   <data name="ErrorOperationNotExecuted" xml:space="preserve">
     <value>Der Vorgang wurde nicht ausgeführt</value>
-  </data>
-  <data name="ErrorUnableToReadAppSettings" xml:space="preserve">
-    <value>Die Einstellungen {0} konnten nicht von {1} geladen werden</value>
   </data>
   <data name="LabelDatabaseComparison" xml:space="preserve">
     <value>Datenbankvergleich</value>
@@ -465,23 +405,14 @@
   <data name="MenuGenerateScript" xml:space="preserve">
     <value>Skript erstellen</value>
   </data>
-  <data name="MenuManageProfile" xml:space="preserve">
-    <value>Profil verwalten</value>
-  </data>
   <data name="MenuOpenLogsFolder" xml:space="preserve">
     <value>Logverzeichnis öffnen</value>
   </data>
   <data name="MessageConfirmAbortOperation" xml:space="preserve">
     <value>Soll der Vorgang wirklich abgebrochen werden?</value>
   </data>
-  <data name="MessageDownloadLatestVersion" xml:space="preserve">
-    <value>Neueste Version herunterladen</value>
-  </data>
   <data name="MessageDoYouWantToSaveProjectChanges" xml:space="preserve">
     <value>Sollen die Änderungen vom geöffneten Projekt gespeichert werden?</value>
-  </data>
-  <data name="MessageGetASubscription" xml:space="preserve">
-    <value>Abonnement kaufen</value>
   </data>
   <data name="MessageProjectSavedSuccessfully" xml:space="preserve">
     <value>Das Projekt wurde gespeichert.</value>
@@ -650,9 +581,6 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="LabelEnabled" xml:space="preserve">
     <value>Aktiviert</value>
   </data>
-  <data name="LabelAutoRenewal" xml:space="preserve">
-    <value>Automatische Erneuerung</value>
-  </data>
   <data name="LabelDisabled" xml:space="preserve">
     <value>Deaktiviert</value>
   </data>
@@ -662,62 +590,17 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="LabelLicense" xml:space="preserve">
     <value>Lizenz</value>
   </data>
-  <data name="LabelMonthlyPayment" xml:space="preserve">
-    <value>Monatliche Zahlung</value>
-  </data>
-  <data name="LabelRemainingDays" xml:space="preserve">
-    <value>Verbleibende Tage</value>
-  </data>
   <data name="LabelRenewalDate" xml:space="preserve">
     <value>Erneuerungsdatum</value>
-  </data>
-  <data name="LabelSubscription" xml:space="preserve">
-    <value>Abonnement</value>
-  </data>
-  <data name="LabelSubscriptionPlan" xml:space="preserve">
-    <value>Plan</value>
-  </data>
-  <data name="LabelSubscriptionPro" xml:space="preserve">
-    <value>Professional</value>
-  </data>
-  <data name="LabelSubscriptionTrial" xml:space="preserve">
-    <value>Trial</value>
-  </data>
-  <data name="LabelYearlyPayment" xml:space="preserve">
-    <value>Jährliche Zahlung</value>
   </data>
   <data name="StatusRetrievingPrimaryKeys" xml:space="preserve">
     <value>Lese Primärschlüssel...</value>
   </data>
-  <data name="MenuContactSupport" xml:space="preserve">
-    <value>Support kontaktieren (support@ticodex.com)</value>
-  </data>
-  <data name="TitleFeedbackSent" xml:space="preserve">
-    <value>Rückmeldung versendet</value>
-  </data>
-  <data name="MessageThanksForFeedback" xml:space="preserve">
-    <value>Besten Dank für deine Rückmeldung!</value>
-  </data>
-  <data name="ErrorCannotSendFeedback" xml:space="preserve">
-    <value>Rückmeldung kann nicht versendet werden</value>
-  </data>
   <data name="ErrorInvalidFeedback" xml:space="preserve">
     <value>Der Kommentar ist nicht gültig</value>
   </data>
-  <data name="ErrorNoFeedbackSpecified" xml:space="preserve">
-    <value>Es wurde weder ein Bewertung noch ein Kommentar erfasst</value>
-  </data>
-  <data name="LabelRating" xml:space="preserve">
-    <value>Bewertung:</value>
-  </data>
   <data name="LabelComment" xml:space="preserve">
     <value>Kommentar:</value>
-  </data>
-  <data name="ButtonSendFeedback" xml:space="preserve">
-    <value>Rückmeldung versenden</value>
-  </data>
-  <data name="ErrorCommentMustBe2500Max" xml:space="preserve">
-    <value>Der Kommentar darf nicht mehr als 2500 Zeichen beinhalten</value>
   </data>
   <data name="LabelSchema" xml:space="preserve">
     <value>Schema</value>
@@ -809,17 +692,8 @@ Diese Option ignoriert die Zuweisung und verwendet die selbe Reienfolge in welch
   <data name="LabelDatabasesAreIdentical" xml:space="preserve">
     <value>Datenbanken sind identisch</value>
   </data>
-  <data name="ButtonDownload" xml:space="preserve">
-    <value>Herunterladen</value>
-  </data>
   <data name="LabelNewMariaDbProject" xml:space="preserve">
     <value>Neues MariaDB Projekt</value>
-  </data>
-  <data name="LabelPerpetualPayment" xml:space="preserve">
-    <value>Ewig</value>
-  </data>
-  <data name="LabelUpgradesUntil" xml:space="preserve">
-    <value>Upgrades bis</value>
   </data>
   <data name="LabelIgnoreServerCertificate" xml:space="preserve">
     <value>Serverzertifikat ignorieren</value>

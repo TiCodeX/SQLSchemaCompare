@@ -240,38 +240,11 @@
   <data name="ErrorGeneric" xml:space="preserve">
     <value>Si è verificato un errore</value>
   </data>
-  <data name="ErrorInvalidUsernameOrPassword" xml:space="preserve">
-    <value>Nome utente o password non valida</value>
-  </data>
-  <data name="ErrorAccountLocked" xml:space="preserve">
-    <value>Account bloccato</value>
-  </data>
-  <data name="ErrorSessionExpired" xml:space="preserve">
-    <value>La sessione è scaduta</value>
-  </data>
-  <data name="NotificationNewVersionAvailable" xml:space="preserve">
-    <value>Nuova versione disponibile!</value>
-  </data>
   <data name="ButtonClose" xml:space="preserve">
     <value>Chiudi</value>
   </data>
   <data name="ButtonQuit" xml:space="preserve">
     <value>Esci</value>
-  </data>
-  <data name="NotificationUpdateReadyToBeInstalled" xml:space="preserve">
-    <value>La nuova versione v{0} è disponibile e pronta per essere installata.</value>
-  </data>
-  <data name="NotificationNewVersionAvailableMessage" xml:space="preserve">
-    <value>La nuova versione v{0} è stata rilasciata, si prega di visitare il sito web TiCodeX per scaricarla.</value>
-  </data>
-  <data name="ButtonUpdateAndRestart" xml:space="preserve">
-    <value>Aggiorna e riavvia</value>
-  </data>
-  <data name="MenuSignOut" xml:space="preserve">
-    <value>Disconnetti</value>
-  </data>
-  <data name="MenuManageProfile" xml:space="preserve">
-    <value>Gestisci profilo</value>
   </data>
   <data name="LabelSavePassword" xml:space="preserve">
     <value>Salva password</value>
@@ -357,27 +330,6 @@
   <data name="LabelIgnoreReferenceTableColumnOrder" xml:space="preserve">
     <value>Ignora ordine dei campi della tabella di origine</value>
   </data>
-  <data name="ErrorEmailNotSpecified" xml:space="preserve">
-    <value>E-mail non specificato</value>
-  </data>
-  <data name="ErrorEmailNotVerified" xml:space="preserve">
-    <value>E-mail non verificato</value>
-  </data>
-  <data name="ErrorLoginVerificationFailed" xml:space="preserve">
-    <value>Verifica del login fallita</value>
-  </data>
-  <data name="ErrorNoSubscriptionAvailable" xml:space="preserve">
-    <value>Nessun piano di abbonamento è stato trovato</value>
-  </data>
-  <data name="ErrorPasswordNotSpecified" xml:space="preserve">
-    <value>Password non specificata</value>
-  </data>
-  <data name="ErrorApplicationUpdateNeeded" xml:space="preserve">
-    <value>Una nuova versione di {0} è disponibile. Per favore aggiornare.</value>
-  </data>
-  <data name="ErrorCannotContactTiCodeXWebsite" xml:space="preserve">
-    <value>Impossibile contattare il sito web TiCodeX:</value>
-  </data>
   <data name="ErrorCannotCloseProject" xml:space="preserve">
     <value>Impossibile chiudere il progetto</value>
   </data>
@@ -402,38 +354,17 @@
   <data name="ErrorOperationNotExecuted" xml:space="preserve">
     <value>L'operazione non è stata eseguita</value>
   </data>
-  <data name="ErrorProductIsMissing" xml:space="preserve">
-    <value>Prodotto mancante</value>
-  </data>
-  <data name="ErrorSubscriptionExpired" xml:space="preserve">
-    <value>L'abbonamento corrente è scaduto</value>
-  </data>
-  <data name="ErrorTrialSubscriptionExpired" xml:space="preserve">
-    <value>L'abbonamento di prova è scaduto</value>
-  </data>
   <data name="MenuOpenLogsFolder" xml:space="preserve">
     <value>Apri cartella dei log</value>
   </data>
   <data name="LabelLogLevel" xml:space="preserve">
     <value>Livello di log</value>
   </data>
-  <data name="MessageDownloadLatestVersion" xml:space="preserve">
-    <value>Scarica l'ultima versione</value>
-  </data>
-  <data name="MessageGetASubscription" xml:space="preserve">
-    <value>Ottieni un abbonamento</value>
-  </data>
-  <data name="TitleLoginError" xml:space="preserve">
-    <value>Errore di accesso</value>
-  </data>
   <data name="ErrorLoadProjectInvalidProjectFile" xml:space="preserve">
     <value>Impossibile caricare il file di progetto {0}: formato non valido.</value>
   </data>
   <data name="ErrorLoadProjectIOError" xml:space="preserve">
     <value>Impossibile caricare il file di progetto perché si è verificato un errore durante la lettura del file: {0}</value>
-  </data>
-  <data name="ErrorUnableToReadAppSettings" xml:space="preserve">
-    <value>Impossibile caricare le impostazioni di {0} da {1}</value>
   </data>
   <data name="LabelDoesNotExist" xml:space="preserve">
     <value>Non presente</value>
@@ -647,27 +578,6 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="ButtonOk" xml:space="preserve">
     <value>Ok</value>
   </data>
-  <data name="LabelAutoRenewal" xml:space="preserve">
-    <value>Rinnovo automatico</value>
-  </data>
-  <data name="LabelMonthlyPayment" xml:space="preserve">
-    <value>Pagamento mensile</value>
-  </data>
-  <data name="LabelYearlyPayment" xml:space="preserve">
-    <value>Pagamento annuale</value>
-  </data>
-  <data name="LabelSubscriptionPro" xml:space="preserve">
-    <value>Professional</value>
-  </data>
-  <data name="LabelSubscriptionTrial" xml:space="preserve">
-    <value>Prova gratuita</value>
-  </data>
-  <data name="LabelSubscriptionPlan" xml:space="preserve">
-    <value>Abbonamento</value>
-  </data>
-  <data name="LabelSubscription" xml:space="preserve">
-    <value>Licenza</value>
-  </data>
   <data name="LabelEnabled" xml:space="preserve">
     <value>Abilitato</value>
   </data>
@@ -680,44 +590,17 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelExpirationDate" xml:space="preserve">
     <value>Data di scadenza</value>
   </data>
-  <data name="LabelRemainingDays" xml:space="preserve">
-    <value>Giorni rimanenti</value>
-  </data>
   <data name="LabelLicense" xml:space="preserve">
     <value>Licenza</value>
   </data>
   <data name="StatusRetrievingPrimaryKeys" xml:space="preserve">
     <value>Lettura delle Chiavi Primarie in corso...</value>
   </data>
-  <data name="MenuContactSupport" xml:space="preserve">
-    <value>Contatta il supporto (support@ticodex.com)</value>
-  </data>
-  <data name="TitleFeedbackSent" xml:space="preserve">
-    <value>Commento spedito</value>
-  </data>
-  <data name="MessageThanksForFeedback" xml:space="preserve">
-    <value>Grazie per il tuo commento!</value>
-  </data>
-  <data name="ErrorCannotSendFeedback" xml:space="preserve">
-    <value>Impossibile mandare il commento</value>
-  </data>
   <data name="ErrorInvalidFeedback" xml:space="preserve">
     <value>Il commento non è valido</value>
   </data>
-  <data name="ErrorNoFeedbackSpecified" xml:space="preserve">
-    <value>Non è stato specificato né una valutazione né un commento</value>
-  </data>
-  <data name="LabelRating" xml:space="preserve">
-    <value>Valutazione:</value>
-  </data>
   <data name="LabelComment" xml:space="preserve">
     <value>Commento:</value>
-  </data>
-  <data name="ButtonSendFeedback" xml:space="preserve">
-    <value>Spedisci commento</value>
-  </data>
-  <data name="ErrorCommentMustBe2500Max" xml:space="preserve">
-    <value>Il commento non può essere più lungo di 2500 caratteri</value>
   </data>
   <data name="StatusRetrievingSchemas" xml:space="preserve">
     <value>Lettura degli Schemi in corso...</value>
@@ -809,17 +692,8 @@ Questa opzione ignorerà la corrispondenza e utilizzerà lo stesso ordine di qua
   <data name="LabelDatabasesAreIdentical" xml:space="preserve">
     <value>I database sono identici</value>
   </data>
-  <data name="ButtonDownload" xml:space="preserve">
-    <value>Scarica</value>
-  </data>
   <data name="LabelNewMariaDbProject" xml:space="preserve">
     <value>Nuovo Progetto MariaDB</value>
-  </data>
-  <data name="LabelPerpetualPayment" xml:space="preserve">
-    <value>Perpetua</value>
-  </data>
-  <data name="LabelUpgradesUntil" xml:space="preserve">
-    <value>Upgrades fino</value>
   </data>
   <data name="LabelIgnoreServerCertificate" xml:space="preserve">
     <value>Ignora Certificato Server</value>

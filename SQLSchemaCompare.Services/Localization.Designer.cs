@@ -97,15 +97,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download.
-        /// </summary>
-        public static string ButtonDownload {
-            get {
-                return ResourceManager.GetString("ButtonDownload", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to New Project.
         /// </summary>
         public static string ButtonNewProject {
@@ -187,24 +178,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Send feedback.
-        /// </summary>
-        public static string ButtonSendFeedback {
-            get {
-                return ResourceManager.GetString("ButtonSendFeedback", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update and restart.
-        /// </summary>
-        public static string ButtonUpdateAndRestart {
-            get {
-                return ResourceManager.GetString("ButtonUpdateAndRestart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Yes.
         /// </summary>
         public static string ButtonYes {
@@ -214,38 +187,11 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account is locked.
-        /// </summary>
-        public static string ErrorAccountLocked {
-            get {
-                return ResourceManager.GetString("ErrorAccountLocked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A newer version of {0} is available. Please update it..
-        /// </summary>
-        public static string ErrorApplicationUpdateNeeded {
-            get {
-                return ResourceManager.GetString("ErrorApplicationUpdateNeeded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unable to close the project.
         /// </summary>
         public static string ErrorCannotCloseProject {
             get {
                 return ResourceManager.GetString("ErrorCannotCloseProject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to contact TiCodeX website:.
-        /// </summary>
-        public static string ErrorCannotContactTiCodeXWebsite {
-            get {
-                return ResourceManager.GetString("ErrorCannotContactTiCodeXWebsite", resourceCulture);
             }
         }
         
@@ -264,42 +210,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string ErrorCannotSaveProject {
             get {
                 return ResourceManager.GetString("ErrorCannotSaveProject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to send the feedback.
-        /// </summary>
-        public static string ErrorCannotSendFeedback {
-            get {
-                return ResourceManager.GetString("ErrorCannotSendFeedback", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Comment cannot exceed 2500 characters.
-        /// </summary>
-        public static string ErrorCommentMustBe2500Max {
-            get {
-                return ResourceManager.GetString("ErrorCommentMustBe2500Max", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to E-mail not specified.
-        /// </summary>
-        public static string ErrorEmailNotSpecified {
-            get {
-                return ResourceManager.GetString("ErrorEmailNotSpecified", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to E-mail not verified.
-        /// </summary>
-        public static string ErrorEmailNotVerified {
-            get {
-                return ResourceManager.GetString("ErrorEmailNotVerified", resourceCulture);
             }
         }
         
@@ -327,15 +237,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string ErrorInvalidFeedback {
             get {
                 return ResourceManager.GetString("ErrorInvalidFeedback", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid username or password.
-        /// </summary>
-        public static string ErrorInvalidUsernameOrPassword {
-            get {
-                return ResourceManager.GetString("ErrorInvalidUsernameOrPassword", resourceCulture);
             }
         }
         
@@ -385,33 +286,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to verify login.
-        /// </summary>
-        public static string ErrorLoginVerificationFailed {
-            get {
-                return ResourceManager.GetString("ErrorLoginVerificationFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Neither a rating or a comment has been specified.
-        /// </summary>
-        public static string ErrorNoFeedbackSpecified {
-            get {
-                return ResourceManager.GetString("ErrorNoFeedbackSpecified", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No subscription plan has been found.
-        /// </summary>
-        public static string ErrorNoSubscriptionAvailable {
-            get {
-                return ResourceManager.GetString("ErrorNoSubscriptionAvailable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The operation was canceled.
         /// </summary>
         public static string ErrorOperationCanceled {
@@ -426,60 +300,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string ErrorOperationNotExecuted {
             get {
                 return ResourceManager.GetString("ErrorOperationNotExecuted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Password not specified.
-        /// </summary>
-        public static string ErrorPasswordNotSpecified {
-            get {
-                return ResourceManager.GetString("ErrorPasswordNotSpecified", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Product is missing.
-        /// </summary>
-        public static string ErrorProductIsMissing {
-            get {
-                return ResourceManager.GetString("ErrorProductIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The session has expired.
-        /// </summary>
-        public static string ErrorSessionExpired {
-            get {
-                return ResourceManager.GetString("ErrorSessionExpired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The current subscription has expired.
-        /// </summary>
-        public static string ErrorSubscriptionExpired {
-            get {
-                return ResourceManager.GetString("ErrorSubscriptionExpired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The current trial subscription has expired.
-        /// </summary>
-        public static string ErrorTrialSubscriptionExpired {
-            get {
-                return ResourceManager.GetString("ErrorTrialSubscriptionExpired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to load {0} settings from {1}.
-        /// </summary>
-        public static string ErrorUnableToReadAppSettings {
-            get {
-                return ResourceManager.GetString("ErrorUnableToReadAppSettings", resourceCulture);
             }
         }
         
@@ -516,15 +336,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelAllObjects {
             get {
                 return ResourceManager.GetString("LabelAllObjects", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Automatic renewal.
-        /// </summary>
-        public static string LabelAutoRenewal {
-            get {
-                return ResourceManager.GetString("LabelAutoRenewal", resourceCulture);
             }
         }
         
@@ -947,15 +758,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Monthly payment.
-        /// </summary>
-        public static string LabelMonthlyPayment {
-            get {
-                return ResourceManager.GetString("LabelMonthlyPayment", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string LabelName {
@@ -1145,15 +947,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Perpetual.
-        /// </summary>
-        public static string LabelPerpetualPayment {
-            get {
-                return ResourceManager.GetString("LabelPerpetualPayment", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Port.
         /// </summary>
         public static string LabelPort {
@@ -1190,15 +983,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rating:.
-        /// </summary>
-        public static string LabelRating {
-            get {
-                return ResourceManager.GetString("LabelRating", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Recent Projects.
         /// </summary>
         public static string LabelRecentProjects {
@@ -1213,15 +997,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelReferencingForeignKeys {
             get {
                 return ResourceManager.GetString("LabelReferencingForeignKeys", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remaining days.
-        /// </summary>
-        public static string LabelRemainingDays {
-            get {
-                return ResourceManager.GetString("LabelRemainingDays", resourceCulture);
             }
         }
         
@@ -1343,42 +1118,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Subscription.
-        /// </summary>
-        public static string LabelSubscription {
-            get {
-                return ResourceManager.GetString("LabelSubscription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Plan.
-        /// </summary>
-        public static string LabelSubscriptionPlan {
-            get {
-                return ResourceManager.GetString("LabelSubscriptionPlan", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Professional.
-        /// </summary>
-        public static string LabelSubscriptionPro {
-            get {
-                return ResourceManager.GetString("LabelSubscriptionPro", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Trial.
-        /// </summary>
-        public static string LabelSubscriptionTrial {
-            get {
-                return ResourceManager.GetString("LabelSubscriptionTrial", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Table.
         /// </summary>
         public static string LabelTable {
@@ -1429,15 +1168,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string LabelType {
             get {
                 return ResourceManager.GetString("LabelType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Upgrades until.
-        /// </summary>
-        public static string LabelUpgradesUntil {
-            get {
-                return ResourceManager.GetString("LabelUpgradesUntil", resourceCulture);
             }
         }
         
@@ -1541,15 +1271,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Yearly payment.
-        /// </summary>
-        public static string LabelYearlyPayment {
-            get {
-                return ResourceManager.GetString("LabelYearlyPayment", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to About....
         /// </summary>
         public static string MenuAbout {
@@ -1573,15 +1294,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string MenuCompare {
             get {
                 return ResourceManager.GetString("MenuCompare", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Contact support (support@ticodex.com).
-        /// </summary>
-        public static string MenuContactSupport {
-            get {
-                return ResourceManager.GetString("MenuContactSupport", resourceCulture);
             }
         }
         
@@ -1703,15 +1415,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage profile.
-        /// </summary>
-        public static string MenuManageProfile {
-            get {
-                return ResourceManager.GetString("MenuManageProfile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to New Project.
         /// </summary>
         public static string MenuNewProject {
@@ -1793,29 +1496,11 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign out.
-        /// </summary>
-        public static string MenuSignOut {
-            get {
-                return ResourceManager.GetString("MenuSignOut", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to abort the operation?.
         /// </summary>
         public static string MessageConfirmAbortOperation {
             get {
                 return ResourceManager.GetString("MessageConfirmAbortOperation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Download latest version.
-        /// </summary>
-        public static string MessageDownloadLatestVersion {
-            get {
-                return ResourceManager.GetString("MessageDownloadLatestVersion", resourceCulture);
             }
         }
         
@@ -1829,56 +1514,11 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get a subscription.
-        /// </summary>
-        public static string MessageGetASubscription {
-            get {
-                return ResourceManager.GetString("MessageGetASubscription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The project has been saved..
         /// </summary>
         public static string MessageProjectSavedSuccessfully {
             get {
                 return ResourceManager.GetString("MessageProjectSavedSuccessfully", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Thank you for your feedback!.
-        /// </summary>
-        public static string MessageThanksForFeedback {
-            get {
-                return ResourceManager.GetString("MessageThanksForFeedback", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New version available!.
-        /// </summary>
-        public static string NotificationNewVersionAvailable {
-            get {
-                return ResourceManager.GetString("NotificationNewVersionAvailable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The new version v{0} has been released, please visit the TiCodeX website to download it..
-        /// </summary>
-        public static string NotificationNewVersionAvailableMessage {
-            get {
-                return ResourceManager.GetString("NotificationNewVersionAvailableMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The new version v{0} is available and ready to be installed..
-        /// </summary>
-        public static string NotificationUpdateReadyToBeInstalled {
-            get {
-                return ResourceManager.GetString("NotificationUpdateReadyToBeInstalled", resourceCulture);
             }
         }
         
@@ -2230,24 +1870,6 @@ namespace TiCodeX.SQLSchemaCompare.Services {
         public static string TitleError {
             get {
                 return ResourceManager.GetString("TitleError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Feedback sent.
-        /// </summary>
-        public static string TitleFeedbackSent {
-            get {
-                return ResourceManager.GetString("TitleFeedbackSent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Login error.
-        /// </summary>
-        public static string TitleLoginError {
-            get {
-                return ResourceManager.GetString("TitleLoginError", resourceCulture);
             }
         }
         

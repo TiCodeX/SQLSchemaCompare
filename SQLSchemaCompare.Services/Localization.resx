@@ -253,60 +253,14 @@
   <data name="ErrorGeneric" xml:space="preserve">
     <value>An error occurred</value>
   </data>
-  <data name="ErrorInvalidUsernameOrPassword" xml:space="preserve">
-    <value>Invalid username or password</value>
-  </data>
   <data name="LabelSequence" xml:space="preserve">
     <value>Sequence</value>
   </data>
   <data name="LabelLogLevel" xml:space="preserve">
     <value>Logging level</value>
   </data>
-  <data name="ErrorAccountLocked" xml:space="preserve">
-    <value>Account is locked</value>
-  </data>
-  <data name="ErrorEmailNotSpecified" xml:space="preserve">
-    <value>E-mail not specified</value>
-  </data>
-  <data name="ErrorEmailNotVerified" xml:space="preserve">
-    <value>E-mail not verified</value>
-  </data>
-  <data name="ErrorLoginVerificationFailed" xml:space="preserve">
-    <value>Failed to verify login</value>
-  </data>
-  <data name="ErrorNoSubscriptionAvailable" xml:space="preserve">
-    <value>No subscription plan has been found</value>
-  </data>
-  <data name="ErrorPasswordNotSpecified" xml:space="preserve">
-    <value>Password not specified</value>
-  </data>
-  <data name="ErrorProductIsMissing" xml:space="preserve">
-    <value>Product is missing</value>
-  </data>
-  <data name="ErrorSessionExpired" xml:space="preserve">
-    <value>The session has expired</value>
-  </data>
-  <data name="ErrorSubscriptionExpired" xml:space="preserve">
-    <value>The current subscription has expired</value>
-  </data>
-  <data name="ErrorTrialSubscriptionExpired" xml:space="preserve">
-    <value>The current trial subscription has expired</value>
-  </data>
-  <data name="ErrorCannotContactTiCodeXWebsite" xml:space="preserve">
-    <value>Unable to contact TiCodeX website:</value>
-  </data>
-  <data name="TitleLoginError" xml:space="preserve">
-    <value>Login error</value>
-  </data>
   <data name="LabelUserDefinedType" xml:space="preserve">
     <value>User-Defined Data Type</value>
-  </data>
-  <data name="NotificationUpdateReadyToBeInstalled" xml:space="preserve">
-    <value>The new version v{0} is available and ready to be installed.</value>
-    <comment>{0}: The application version</comment>
-  </data>
-  <data name="NotificationNewVersionAvailable" xml:space="preserve">
-    <value>New version available!</value>
   </data>
   <data name="ButtonClose" xml:space="preserve">
     <value>Close</value>
@@ -340,17 +294,6 @@
   </data>
   <data name="TitleError" xml:space="preserve">
     <value>Error</value>
-  </data>
-  <data name="NotificationNewVersionAvailableMessage" xml:space="preserve">
-    <value>The new version v{0} has been released, please visit the TiCodeX website to download it.</value>
-    <comment>{0}: The application version</comment>
-  </data>
-  <data name="ButtonUpdateAndRestart" xml:space="preserve">
-    <value>Update and restart</value>
-  </data>
-  <data name="ErrorUnableToReadAppSettings" xml:space="preserve">
-    <value>Unable to load {0} settings from {1}</value>
-    <comment>{0}: The application name; {1}: The settings file full path</comment>
   </data>
   <data name="ErrorCannotSaveProject" xml:space="preserve">
     <value>Unable to save the project: {0}</value>
@@ -456,22 +399,6 @@ This option will ignore the matching and use the same order as when it was creat
   </data>
   <data name="LabelSavePassword" xml:space="preserve">
     <value>Save password</value>
-  </data>
-  <data name="ErrorApplicationUpdateNeeded" xml:space="preserve">
-    <value>A newer version of {0} is available. Please update it.</value>
-    <comment>{0}: The application name</comment>
-  </data>
-  <data name="MessageDownloadLatestVersion" xml:space="preserve">
-    <value>Download latest version</value>
-  </data>
-  <data name="MessageGetASubscription" xml:space="preserve">
-    <value>Get a subscription</value>
-  </data>
-  <data name="MenuManageProfile" xml:space="preserve">
-    <value>Manage profile</value>
-  </data>
-  <data name="MenuSignOut" xml:space="preserve">
-    <value>Sign out</value>
   </data>
   <data name="ButtonAbort" xml:space="preserve">
     <value>Abort</value>
@@ -659,27 +586,6 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelLicense" xml:space="preserve">
     <value>License</value>
   </data>
-  <data name="LabelSubscription" xml:space="preserve">
-    <value>Subscription</value>
-  </data>
-  <data name="LabelSubscriptionTrial" xml:space="preserve">
-    <value>Trial</value>
-  </data>
-  <data name="LabelSubscriptionPro" xml:space="preserve">
-    <value>Professional</value>
-  </data>
-  <data name="LabelSubscriptionPlan" xml:space="preserve">
-    <value>Plan</value>
-  </data>
-  <data name="LabelMonthlyPayment" xml:space="preserve">
-    <value>Monthly payment</value>
-  </data>
-  <data name="LabelYearlyPayment" xml:space="preserve">
-    <value>Yearly payment</value>
-  </data>
-  <data name="LabelAutoRenewal" xml:space="preserve">
-    <value>Automatic renewal</value>
-  </data>
   <data name="LabelEnabled" xml:space="preserve">
     <value>Enabled</value>
   </data>
@@ -692,41 +598,14 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelExpirationDate" xml:space="preserve">
     <value>Expiration date</value>
   </data>
-  <data name="LabelRemainingDays" xml:space="preserve">
-    <value>Remaining days</value>
-  </data>
   <data name="StatusRetrievingPrimaryKeys" xml:space="preserve">
     <value>Retrieving Primary Keys...</value>
-  </data>
-  <data name="MenuContactSupport" xml:space="preserve">
-    <value>Contact support (support@ticodex.com)</value>
-  </data>
-  <data name="TitleFeedbackSent" xml:space="preserve">
-    <value>Feedback sent</value>
-  </data>
-  <data name="MessageThanksForFeedback" xml:space="preserve">
-    <value>Thank you for your feedback!</value>
-  </data>
-  <data name="ErrorCannotSendFeedback" xml:space="preserve">
-    <value>Unable to send the feedback</value>
   </data>
   <data name="ErrorInvalidFeedback" xml:space="preserve">
     <value>The feedback is invalid</value>
   </data>
-  <data name="ErrorNoFeedbackSpecified" xml:space="preserve">
-    <value>Neither a rating or a comment has been specified</value>
-  </data>
-  <data name="LabelRating" xml:space="preserve">
-    <value>Rating:</value>
-  </data>
   <data name="LabelComment" xml:space="preserve">
     <value>Comment:</value>
-  </data>
-  <data name="ButtonSendFeedback" xml:space="preserve">
-    <value>Send feedback</value>
-  </data>
-  <data name="ErrorCommentMustBe2500Max" xml:space="preserve">
-    <value>Comment cannot exceed 2500 characters</value>
   </data>
   <data name="StatusRetrievingSchemas" xml:space="preserve">
     <value>Retrieving Schemas...</value>
@@ -818,17 +697,8 @@ This option will ignore the matching and use the same order as when it was creat
   <data name="LabelDatabasesAreIdentical" xml:space="preserve">
     <value>The databases are identical</value>
   </data>
-  <data name="ButtonDownload" xml:space="preserve">
-    <value>Download</value>
-  </data>
   <data name="LabelNewMariaDbProject" xml:space="preserve">
     <value>New MariaDB Project</value>
-  </data>
-  <data name="LabelPerpetualPayment" xml:space="preserve">
-    <value>Perpetual</value>
-  </data>
-  <data name="LabelUpgradesUntil" xml:space="preserve">
-    <value>Upgrades until</value>
   </data>
   <data name="LabelIgnoreServerCertificate" xml:space="preserve">
     <value>Ignore Server Certificate</value>

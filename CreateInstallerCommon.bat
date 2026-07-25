@@ -34,7 +34,7 @@ echo      ^|  _______________________^|_
 echo       \_/_________________________/
 echo.
 
-dotnet restore -r %targetdotnet%
+dotnet restore --locked-mode
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 
 dotnet build --no-restore SQLSchemaCompare.UI -r %targetdotnet% -c %configuration%

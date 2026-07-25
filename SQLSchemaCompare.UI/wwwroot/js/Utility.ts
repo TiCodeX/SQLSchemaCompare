@@ -42,9 +42,7 @@ class Utility {
    */
   public static OpenExternalBrowser(url: string): void {
     if (electron) {
-      electron.shell.openExternal(url).catch(() => {
-        window.open(url, "_blank")?.focus();
-      });
+      void electron.shell.openExternal(url);
     } else {
       window.open(url, "_blank")?.focus();
     }

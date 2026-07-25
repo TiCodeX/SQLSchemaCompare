@@ -12,8 +12,10 @@ module.exports = tseslint.config(
     ...baseConfig,
     rules: {
       ...baseConfig.rules,
-      "sonarjs/new-cap": "off", // Too many changes to fix, is it worth it?
-      "unicorn/filename-case": ["error", { case: "pascalCase" }],
+      "unicorn/filename-case": ["error", {
+        case: "pascalCase",
+        checkDirectories: false,
+      }],
     },
   },
 );

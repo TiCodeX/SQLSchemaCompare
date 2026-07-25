@@ -114,6 +114,7 @@
     "@eslint/js": "^10.0.1",
     "@tsconfig/recommended": "^1.0.13",
     "@tsconfig/strictest": "^2.0.8",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "dprint": "^0.55.2",
     "electron": "^43.2.0",
     "electron-builder": "^26.15.7",
@@ -123,7 +124,7 @@
     "eslint-plugin-sonarjs": "^4.2.0",
     "eslint-plugin-unicorn": "^72.0.0",
     "shx": "^0.4.0",
-    "typescript": "^6.0.3",
+    "typescript": "npm:@typescript/typescript6@^6.0.3",
     "typescript-eslint": "^8.65.0"
   },
   "dependencies": {

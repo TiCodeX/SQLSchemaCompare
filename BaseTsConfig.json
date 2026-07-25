@@ -1,6 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    "target": "ES2022",
     "checkJs": false,
     "allowJs": false,
     "noEmitOnError": true,

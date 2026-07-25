@@ -48,7 +48,7 @@
   </ItemGroup>
 
   <Target Name="YarnLintBuild" BeforeTargets="CurrentFilesForStaticWebAssets;BeforeBuild;BeforeRebuild">
-    <Exec Command="yarn build"></Exec>
+    <Exec Command="yarn build-vs"></Exec>
     <ItemGroup>
       <Content Include="wwwroot\**\*.js" Exclude="@(Content)">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>

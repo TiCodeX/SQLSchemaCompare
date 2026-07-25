@@ -13,7 +13,7 @@ module.exports = {
         ...tseslint.configs.recommended,
         ...tseslint.configs.recommendedTypeChecked,
         pluginSonarJS.configs.recommended,
-        pluginUnicorn.default.configs["flat/recommended"],
+        pluginUnicorn.default.configs.unopinionated,
       ],
       plugins: {
         pluginOnlyError,
@@ -29,7 +29,6 @@ module.exports = {
       },
       rules: {
         "@typescript-eslint/no-require-imports": "off",
-        "sonarjs/sonar-no-fallthrough": "off", // Rule crashes on eslint 9.x
         "unicorn/prefer-module": "off", // Electron uses CommonJS
       },
     };

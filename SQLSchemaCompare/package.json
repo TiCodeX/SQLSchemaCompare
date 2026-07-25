@@ -15,6 +15,7 @@
     "productName": "SQL Schema Compare",
     "copyright": "Copyright @ 2026 TiCodeX",
     "win": {
+      "icon": "build/icon.ico",
       "target": "nsis",
       "artifactName": "SQLSchemaCompare-${version}.${ext}",
       "publish": {
@@ -38,6 +39,7 @@
       "include": "installer.nsh"
     },
     "linux": {
+      "icon": "build/icon.png",
       "target": [
         "deb",
         "rpm",
@@ -53,6 +55,7 @@
       }
     },
     "mac": {
+      "icon": "build/icon.icns",
       "target": "default",
       "category": "public.app-category.productivity",
       "artifactName": "SQLSchemaCompare-${version}-${env.ARCH_SUFFIX}.${ext}",
@@ -108,20 +111,20 @@
   },
   "postinstall": "electron-builder install-app-deps",
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^10.0.1",
     "@tsconfig/recommended": "^1.0.13",
     "@tsconfig/strictest": "^2.0.8",
-    "dprint": "^0.54.0",
-    "electron": "^41.3.0",
-    "electron-builder": "^26.8.1",
-    "eslint": "^9.39.2",
+    "dprint": "^0.55.2",
+    "electron": "^43.2.0",
+    "electron-builder": "^26.15.7",
+    "eslint": "^10.8.0",
     "eslint-formatter-visualstudio": "^9.0.1",
     "eslint-plugin-only-error": "^1.0.2",
-    "eslint-plugin-sonarjs": "^3.0.5",
-    "eslint-plugin-unicorn": "^64.0.0",
+    "eslint-plugin-sonarjs": "^4.2.0",
+    "eslint-plugin-unicorn": "^72.0.0",
     "shx": "^0.4.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.0"
+    "typescript-eslint": "^8.65.0"
   },
   "dependencies": {
     "@electron/remote": "^2.1.3",

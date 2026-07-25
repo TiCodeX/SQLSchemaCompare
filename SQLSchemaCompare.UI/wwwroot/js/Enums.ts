@@ -130,7 +130,6 @@ enum DatabaseType {
   /**
    * MariaDB
    */
-  // eslint-disable-next-line unicorn/prevent-abbreviations
   MariaDb = 3,
 }
 

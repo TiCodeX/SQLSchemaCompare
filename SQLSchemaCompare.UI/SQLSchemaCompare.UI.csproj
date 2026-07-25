@@ -2,11 +2,9 @@
   <PropertyGroup>
     <AssemblyName>TiCodeX.SQLSchemaCompare.UI</AssemblyName>
     <RootNamespace>TiCodeX.SQLSchemaCompare.UI</RootNamespace>
-    <TypeScriptToolsVersion>latest</TypeScriptToolsVersion>
     <OutputType>Exe</OutputType>
     <PublishDir>..\.publish</PublishDir>
     <SelfContained>true</SelfContained>
-    <CompileTypeScriptDependsOn>YarnLintBuild</CompileTypeScriptDependsOn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,15 +22,9 @@
     <Content Remove="dist\**" />
     <EmbeddedResource Remove="dist\**" />
     <None Remove="dist\**" />
-    <!--Copy wwwroot to output-->
+    <!--Copy wwwroot to output, except ts files-->
     <Content Update="wwwroot\**" CopyToOutputDirectory="Always" />
-    <!--Configure json files as None-->
-    <!--The tsconfig.json needs to be TypeScriptCompile so that it's used for the compilation -->
-    <Content Remove="tsconfig.json" />
-    <TypeScriptCompile Include="tsconfig.json" />
-    <!--Configure all TypeScript files to be compiled-->
-    <Content Remove="wwwroot\**\*.ts" />
-    <TypeScriptCompile Include="wwwroot\**\*.ts" />
+    <Content Update="wwwroot\**\*.ts" CopyToOutputDirectory="Never" PublishState="Exclude" />
     <!--Configure all Bootstrap scss files as None-->
     <Content Remove="wwwroot\lib\bootstrap\**\*.scss" />
     <None Include="wwwroot\lib\bootstrap\**\*.scss" />
@@ -43,10 +35,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.10" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="6.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Neolution.CodeAnalysis" Version="3.3.0-beta.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -59,8 +47,19 @@
     <ProjectReference Include="..\SQLSchemaCompare.Infrastructure\SQLSchemaCompare.Infrastructure.csproj" />
   </ItemGroup>
 
-  <Target Name="YarnLintBuild" BeforeTargets="Build">
+  <Target Name="YarnLintBuild" BeforeTargets="CurrentFilesForStaticWebAssets;BeforeBuild;BeforeRebuild">
     <Exec Command="yarn build"></Exec>
+    <ItemGroup>
+      <Content Include="wwwroot\**\*.js" Exclude="@(Content)">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="wwwroot\**\*.js.gz" Exclude="@(Content)">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="wwwroot\**\*.css" Exclude="@(Content)">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
   </Target>
 
   <Target Name="RemovePublishFolder" BeforeTargets="PrepareForPublish">

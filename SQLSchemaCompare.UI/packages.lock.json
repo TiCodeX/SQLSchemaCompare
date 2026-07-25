@@ -13,12 +13,6 @@
           "Newtonsoft.Json.Bson": "1.0.2"
         }
       },
-      "Microsoft.TypeScript.MSBuild": {
-        "type": "Direct",
-        "requested": "[6.0.3, )",
-        "resolved": "6.0.3",
-        "contentHash": "fLWI9KZPIwXxY3/Bh/oK97m9GeTKatE2U86b+/+S40A6VYMgwk4N0rdrqa2bqav3e9ABM7UfPQlDBxj6ixVynQ=="
-      },
       "Neolution.CodeAnalysis": {
         "type": "Direct",
         "requested": "[3.3.0-beta.2, )",

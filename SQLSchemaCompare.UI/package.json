@@ -12,15 +12,17 @@
     "prelint-vs": "yarn prelint",
     "lint-vs": "yarn eslint --quiet --format visualstudio && yarn dprint-check",
     "prebuild": "yarn lint",
-    "build": "yarn build-scss",
+    "build": "yarn build-scss && yarn build-ts",
     "prebuild-vs": "yarn lint-vs",
-    "build-vs": "yarn build-scss",
+    "build-vs": "yarn build-scss && yarn build-ts",
+    "build-ts": "tsc --build",
     "build-scss": "sass --quiet --no-source-map wwwroot/css/Index.scss wwwroot/css/Index.css"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@tsconfig/recommended": "^1.0.13",
     "@tsconfig/strictest": "^2.0.8",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "dprint": "^0.55.2",
     "eslint": "^10.8.0",
     "eslint-formatter-visualstudio": "^9.0.1",
@@ -29,7 +31,7 @@
     "eslint-plugin-unicorn": "^72.0.0",
     "sass": "^1.102.0",
     "shx": "^0.4.0",
-    "typescript": "^6.0.3",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.65.0"
   }
 }

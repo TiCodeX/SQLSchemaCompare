@@ -50,6 +50,25 @@ In addition, Azure SQL and MS-SQL on Amazon RDS is supported.
   <img src="./images/sqlcompare-screenshot3.png" width="200">
 </p>
 
+## Troubleshooting
+
+### An unexpected error has occurred
+<p>
+ <img src="./images/sqlcompare-macos-issue.png" width="200">
+</p>
+
+If you see this message on macOS, it means your system is configured to block unsigned applications. 
+
+Since SQL Schema Compare is not yet a signed application, macOS will prevent it from running by default.
+
+To fix this, open your Terminal and run the following command:
+
+```console
+xattr -cr /Applications/SQL\ Schema\ Compare.app
+```
+
+> **Note:** If you installed the app in a different directory, adjust the path accordingly.
+
 ## License
 
 [GPL-3.0](https://choosealicense.com/licenses/gpl-3.0/)

@@ -62,6 +62,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{3D383B1E-D7C4-4915-9D43-6A064B3ACA2D}"
 	ProjectSection(SolutionItems) = preProject
+		images\sqlcompare-macos-issue.png = images\sqlcompare-macos-issue.png
 		images\sqlcompare-screenshot1.png = images\sqlcompare-screenshot1.png
 		images\sqlcompare-screenshot2.png = images\sqlcompare-screenshot2.png
 		images\sqlcompare-screenshot3.png = images\sqlcompare-screenshot3.png

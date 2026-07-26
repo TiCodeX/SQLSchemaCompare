@@ -22,17 +22,20 @@ jobs:
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '10.0.3xx'
+    - run: corepack enable
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
         node-version: '22'
         cache: 'yarn'
-        corepack: true
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
     - name: Restore dependencies
-      run: dotnet restore --locked-mode
+      run: |
+        yarn --cwd SQLSchemaCompare install --immutable
+        yarn --cwd SQLSchemaCompare.UI install --immutable
+        dotnet restore --locked-mode
     - name: Build
       run: dotnet build --no-restore -c Release
     - name: Test

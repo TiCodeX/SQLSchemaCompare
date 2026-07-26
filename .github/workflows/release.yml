@@ -24,6 +24,7 @@ jobs:
       with:
         node-version: '22'
         cache: 'yarn'
+        corepack: true
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
@@ -91,6 +92,7 @@ jobs:
       with:
         node-version: '22'
         cache: 'yarn'
+        corepack: true
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
@@ -132,6 +134,7 @@ jobs:
       with:
         node-version: '22'
         cache: 'yarn'
+        corepack: true
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
@@ -183,6 +186,7 @@ jobs:
       with:
         node-version: '22'
         cache: 'yarn'
+        corepack: true
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock

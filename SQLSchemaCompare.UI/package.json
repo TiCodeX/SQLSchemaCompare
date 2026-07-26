@@ -34,5 +34,6 @@
     "shx": "^0.4.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.65.0"
-  }
+  },
+  "packageManager": "yarn@4.17.1"
 }

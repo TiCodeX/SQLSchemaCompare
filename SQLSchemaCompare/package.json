@@ -133,5 +133,6 @@
     "electron-window-state": "^5.0.3",
     "glob": "^13.0.6",
     "log4js": "^6.1.0"
-  }
+  },
+  "packageManager": "yarn@4.17.1"
 }

@@ -27,6 +27,7 @@ jobs:
       with:
         node-version: '22'
         cache: 'yarn'
+        corepack: true
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
@@ -34,8 +35,6 @@ jobs:
       run: dotnet restore --locked-mode
     - name: Build
       run: dotnet build --no-restore -c Release
-      env:
-        YARN_CACHE_FOLDER: ${{ github.workspace }}/.yarn-cache-${{ github.run_id }}
     - name: Test
       run: dotnet test --no-build --no-restore SQLSchemaCompare.Test -c Release --logger trx --filter Category!=IntegrationTest
     - name: Publish Test Results

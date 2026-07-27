@@ -19,6 +19,9 @@ jobs:
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '10.0.3xx'
+    - run: |
+        npm install -g corepack --force
+        corepack enable
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
@@ -27,7 +30,6 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
-    - run: corepack enable
     - name: Restore npm dependencies (SQLSchemaCompare)
       run: yarn install --immutable
       working-directory: SQLSchemaCompare
@@ -93,6 +95,9 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@v6
+    - run: |
+        npm install -g corepack --force
+        corepack enable
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
@@ -101,7 +106,6 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
-    - run: corepack enable
     - name: Restore npm dependencies (SQLSchemaCompare)
       run: yarn install --immutable
     - name: Download publish-win artifact
@@ -137,6 +141,9 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@v6
+    - run: |
+        npm install -g corepack --force
+        corepack enable
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
@@ -145,7 +152,6 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
-    - run: corepack enable
     - name: Restore npm dependencies (SQLSchemaCompare)
       run: yarn install --immutable
     - name: Download publish-linux artifact
@@ -191,6 +197,9 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@v6
+    - run: |
+        npm install -g corepack --force
+        corepack enable
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
@@ -199,7 +208,6 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
-    - run: corepack enable
     - name: Restore npm dependencies (SQLSchemaCompare)
       run: yarn install --immutable
     - name: Download publish-osx-${{ matrix.arch }} artifact

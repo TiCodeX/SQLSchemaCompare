@@ -4,7 +4,7 @@
   "license": "GPL-3.0-only",
   "private": true,
   "scripts": {
-    "clean": "shx rm -rf wwwroot/js/**/*.js*",
+    "clean": "shx rm -rf \"wwwroot/js/**/*.js*\"",
     "dprint-check": "yarn dprint check --list-different",
     "eslint": "eslint --cache",
     "prelint": "yarn clean",

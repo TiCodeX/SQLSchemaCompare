@@ -108,6 +108,7 @@ jobs:
           SQLSchemaCompare.UI/yarn.lock
     - name: Restore npm dependencies (SQLSchemaCompare)
       run: yarn install --immutable
+      working-directory: SQLSchemaCompare
     - name: Download publish-win artifact
       uses: actions/download-artifact@v8
       with:
@@ -154,6 +155,7 @@ jobs:
           SQLSchemaCompare.UI/yarn.lock
     - name: Restore npm dependencies (SQLSchemaCompare)
       run: yarn install --immutable
+      working-directory: SQLSchemaCompare
     - name: Download publish-linux artifact
       uses: actions/download-artifact@v8
       with:
@@ -210,6 +212,7 @@ jobs:
           SQLSchemaCompare.UI/yarn.lock
     - name: Restore npm dependencies (SQLSchemaCompare)
       run: yarn install --immutable
+      working-directory: SQLSchemaCompare
     - name: Download publish-osx-${{ matrix.arch }} artifact
       uses: actions/download-artifact@v8
       with:

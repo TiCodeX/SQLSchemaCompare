@@ -28,11 +28,14 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
-    - name: Restore dependencies
-      run: |
-        yarn --cwd SQLSchemaCompare install --immutable
-        yarn --cwd SQLSchemaCompare.UI install --immutable
-        dotnet restore --locked-mode
+    - name: Restore npm dependencies (SQLSchemaCompare)
+      run: yarn install --immutable
+      working-directory: SQLSchemaCompare
+    - name: Restore npm dependencies (SQLSchemaCompare.UI)
+      run: yarn install --immutable
+      working-directory: SQLSchemaCompare.UI
+    - name: Restore .NET dependencies
+      run: dotnet restore --locked-mode
 
     - name: Build win-x64
       run: dotnet build --no-restore SQLSchemaCompare.UI -r win-x64 -c Release
@@ -99,8 +102,8 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
-    - name: Restore dependencies
-      run: yarn --cwd SQLSchemaCompare install --immutable
+    - name: Restore npm dependencies (SQLSchemaCompare)
+      run: yarn install --immutable
     - name: Download publish-win artifact
       uses: actions/download-artifact@v8
       with:
@@ -143,8 +146,8 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
-    - name: Restore dependencies
-      run: yarn --cwd SQLSchemaCompare install --immutable
+    - name: Restore npm dependencies (SQLSchemaCompare)
+      run: yarn install --immutable
     - name: Download publish-linux artifact
       uses: actions/download-artifact@v8
       with:
@@ -197,8 +200,8 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
-    - name: Restore dependencies
-      run: yarn --cwd SQLSchemaCompare install --immutable
+    - name: Restore npm dependencies (SQLSchemaCompare)
+      run: yarn install --immutable
     - name: Download publish-osx-${{ matrix.arch }} artifact
       uses: actions/download-artifact@v8
       with:

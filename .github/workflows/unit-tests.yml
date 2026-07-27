@@ -31,11 +31,14 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
-    - name: Restore dependencies
-      run: |
-        yarn --cwd SQLSchemaCompare install --immutable
-        yarn --cwd SQLSchemaCompare.UI install --immutable
-        dotnet restore --locked-mode
+    - name: Restore npm dependencies (SQLSchemaCompare)
+      run: yarn install --immutable
+      working-directory: SQLSchemaCompare
+    - name: Restore npm dependencies (SQLSchemaCompare.UI)
+      run: yarn install --immutable
+      working-directory: SQLSchemaCompare.UI
+    - name: Restore .NET dependencies
+      run: dotnet restore --locked-mode
     - name: Build
       run: dotnet build --no-restore -c Release
     - name: Test

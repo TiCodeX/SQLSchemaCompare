@@ -24,14 +24,6 @@ jobs:
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '10.0.3xx'
-    - name: Setup Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '22'
-        cache: 'yarn'
-        cache-dependency-path: |
-          SQLSchemaCompare/yarn.lock
-          SQLSchemaCompare.UI/yarn.lock
     - name: Restore dependencies
       run: dotnet restore --locked-mode
     - name: Build
@@ -71,14 +63,6 @@ jobs:
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '10.0.3xx'
-    - name: Setup Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '22'
-        cache: 'yarn'
-        cache-dependency-path: |
-          SQLSchemaCompare/yarn.lock
-          SQLSchemaCompare.UI/yarn.lock
     - name: Restore dependencies
       run: dotnet restore --locked-mode
     - name: Build
@@ -114,14 +98,6 @@ jobs:
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '10.0.3xx'
-    - name: Setup Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '22'
-        cache: 'yarn'
-        cache-dependency-path: |
-          SQLSchemaCompare/yarn.lock
-          SQLSchemaCompare.UI/yarn.lock
     - name: Restore dependencies
       run: dotnet restore --locked-mode
     - name: Build
@@ -163,14 +139,6 @@ jobs:
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '10.0.3xx'
-    - name: Setup Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '22'
-        cache: 'yarn'
-        cache-dependency-path: |
-          SQLSchemaCompare/yarn.lock
-          SQLSchemaCompare.UI/yarn.lock
     - name: Restore dependencies
       run: dotnet restore --locked-mode
     - name: Build

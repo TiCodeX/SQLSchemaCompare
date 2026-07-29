@@ -1,6 +1,6 @@
 {
   "name": "sqlschemacompare",
-  "version": "2026.6.1",
+  "version": "2026.7.1",
   "license": "GPL-3.0-only",
   "description": "The Swiss Army Knife of Database Schema Comparison for Microsoft SQL, mySQL and PostgreSQL which runs on Windows, Linux and macOS systems.",
   "main": "app.js",
@@ -92,18 +92,17 @@
     }
   },
   "scripts": {
-    "preclean": "yarn install --frozen-lockfile",
     "clean": "shx rm -f app.js app.js.map",
     "dprint-check": "yarn dprint check --list-different",
     "eslint": "eslint --cache",
     "prelint": "yarn clean",
-    "lint": "yarn eslint && yarn dprint-check",
+    "lint": "yarn prelint && yarn eslint && yarn dprint-check",
     "prelint-vs": "yarn prelint",
-    "lint-vs": "yarn eslint --quiet --format visualstudio && yarn dprint-check",
+    "lint-vs": "yarn prelint-vs && yarn eslint --quiet --format visualstudio && yarn dprint-check",
     "prebuild": "yarn lint",
-    "build": "tsc --build",
+    "build": "yarn prebuild && tsc --build",
     "prebuild-vs": "yarn lint-vs",
-    "build-vs": "tsc --build",
+    "build-vs": "yarn prebuild-vs && tsc --build",
     "start": "electron .",
     "dist-win-x64": "yarn build && electron-builder --win --publish always",
     "dist-linux-x64": "yarn build && electron-builder --linux --publish always",
@@ -114,6 +113,7 @@
     "@eslint/js": "^10.0.1",
     "@tsconfig/recommended": "^1.0.13",
     "@tsconfig/strictest": "^2.0.8",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "dprint": "^0.55.2",
     "electron": "^43.2.0",
     "electron-builder": "^26.15.7",
@@ -123,7 +123,7 @@
     "eslint-plugin-sonarjs": "^4.2.0",
     "eslint-plugin-unicorn": "^72.0.0",
     "shx": "^0.4.0",
-    "typescript": "^6.0.3",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.65.0"
   },
   "dependencies": {
@@ -132,5 +132,6 @@
     "electron-window-state": "^5.0.3",
     "glob": "^13.0.6",
     "log4js": "^6.1.0"
-  }
+  },
+  "packageManager": "yarn@4.17.1"
 }

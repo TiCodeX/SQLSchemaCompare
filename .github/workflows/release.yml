@@ -19,6 +19,9 @@ jobs:
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '10.0.3xx'
+    - run: |
+        npm install -g corepack --force
+        corepack enable
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
@@ -27,7 +30,13 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
-    - name: Restore dependencies
+    - name: Restore npm dependencies (SQLSchemaCompare)
+      run: yarn install --immutable
+      working-directory: SQLSchemaCompare
+    - name: Restore npm dependencies (SQLSchemaCompare.UI)
+      run: yarn install --immutable
+      working-directory: SQLSchemaCompare.UI
+    - name: Restore .NET dependencies
       run: dotnet restore --locked-mode
 
     - name: Build win-x64
@@ -86,6 +95,9 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@v6
+    - run: |
+        npm install -g corepack --force
+        corepack enable
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
@@ -94,6 +106,9 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
+    - name: Restore npm dependencies (SQLSchemaCompare)
+      run: yarn install --immutable
+      working-directory: SQLSchemaCompare
     - name: Download publish-win artifact
       uses: actions/download-artifact@v8
       with:
@@ -127,6 +142,9 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@v6
+    - run: |
+        npm install -g corepack --force
+        corepack enable
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
@@ -135,6 +153,9 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
+    - name: Restore npm dependencies (SQLSchemaCompare)
+      run: yarn install --immutable
+      working-directory: SQLSchemaCompare
     - name: Download publish-linux artifact
       uses: actions/download-artifact@v8
       with:
@@ -178,6 +199,9 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@v6
+    - run: |
+        npm install -g corepack --force
+        corepack enable
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
@@ -186,6 +210,9 @@ jobs:
         cache-dependency-path: |
           SQLSchemaCompare/yarn.lock
           SQLSchemaCompare.UI/yarn.lock
+    - name: Restore npm dependencies (SQLSchemaCompare)
+      run: yarn install --immutable
+      working-directory: SQLSchemaCompare
     - name: Download publish-osx-${{ matrix.arch }} artifact
       uses: actions/download-artifact@v8
       with:

@@ -402,6 +402,15 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+# Yarn
+**/.pnp.*
+**/.yarn/*
+**/!.yarn/patches
+**/!.yarn/plugins
+**/!.yarn/releases
+**/!.yarn/sdks
+**/!.yarn/versions
+
 ################################################################################
 ## Content of the Visual Studio .gitignore from GitHub goes above this line.  ##
 ## https://github.com/github/gitignore/blob/main/VisualStudio.gitignore       ##

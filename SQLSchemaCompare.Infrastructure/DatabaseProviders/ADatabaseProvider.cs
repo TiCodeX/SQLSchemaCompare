@@ -208,6 +208,7 @@ public abstract class ADatabaseProvider<TDatabaseProviderOptions, TDatabaseConte
                 index.Database = db;
                 index.ColumnNames.AddRange(indexGroup.Where(x => !x.IsIncluded).OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
                 index.ColumnDescending.AddRange(indexGroup.Where(x => !x.IsIncluded).OrderBy(x => x.OrdinalPosition).Select(x => x.IsDescending));
+                index.ColumnPrefixLengths.AddRange(indexGroup.Where(x => !x.IsIncluded).OrderBy(x => x.OrdinalPosition).Select(x => x.PrefixLength));
                 index.IncludedColumns.AddRange(indexGroup.Where(x => x.IsIncluded).OrderBy(x => x.OrdinalPosition).Select(x => x.ColumnName));
                 db.Indexes.Add(index);
             }

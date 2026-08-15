@@ -15,6 +15,11 @@ public class ABaseDbIndex : ABaseDbConstraint
     public bool IsDescending { get; set; }
 
     /// <summary>
+    /// Gets or sets the length of the prefix.
+    /// </summary>
+    public long? PrefixLength { get; set; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether the index is included.
     /// </summary>
     public bool IsIncluded { get; set; }
@@ -23,6 +28,11 @@ public class ABaseDbIndex : ABaseDbConstraint
     /// Gets whether the column is descending, sorted like the ColumnNames list
     /// </summary>
     public List<bool> ColumnDescending { get; } = [];
+
+    /// <summary>
+    /// Gets the column prefix lengths.
+    /// </summary>
+    public List<long?> ColumnPrefixLengths { get; } = [];
 
     /// <summary>
     /// Gets the included columns.

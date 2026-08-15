@@ -137,7 +137,8 @@ internal class MySqlDatabaseProvider(ILoggerFactory loggerFactory, ICipherServic
         query.AppendLine("       CAST(s.SEQ_IN_INDEX AS SIGNED) AS 'OrdinalPosition',");
         query.AppendLine("       CASE WHEN s.COLLATION = 'D' THEN TRUE ELSE FALSE END as 'IsDescending',");
         query.AppendLine("       s.INDEX_TYPE AS 'IndexType',");
-        query.AppendLine("       COALESCE(tc.CONSTRAINT_TYPE, 'INDEX') AS 'ConstraintType'");
+        query.AppendLine("       COALESCE(tc.CONSTRAINT_TYPE, 'INDEX') AS 'ConstraintType',");
+        query.AppendLine("       s.SUB_PART AS 'PrefixLength'");
         query.AppendLine("FROM INFORMATION_SCHEMA.STATISTICS s");
         query.AppendLine("LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc");
         query.AppendLine("  ON tc.table_name = s.table_name AND tc.table_schema = s.table_schema AND tc.constraint_name = s.index_name");

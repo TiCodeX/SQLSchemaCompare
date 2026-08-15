@@ -291,12 +291,19 @@ internal class MySqlScripter(ILogger logger, ProjectOptions options)
         var scriptOrder = index.ColumnDescending.Any(x => x);
         var columnList = index.ColumnNames.Select((x, i) =>
         {
-            if (scriptOrder)
+            var column = $"{this.ScriptHelper.ScriptObjectName(x)}";
+
+            if (indexMySql.IndexType == "BTREE" && index.ColumnPrefixLengths[i] != null)
             {
-                return $"{this.ScriptHelper.ScriptObjectName(x)} {(index.ColumnDescending[i] ? "DESC" : "ASC")}";
+                column += $"({index.ColumnPrefixLengths[i]})";
             }
 
-            return $"{this.ScriptHelper.ScriptObjectName(x)}";
+            if (scriptOrder)
+            {
+                column += $" {(index.ColumnDescending[i] ? "DESC" : "ASC")}";
+            }
+
+            return column;
         });
 
         sb.Append("CREATE ");

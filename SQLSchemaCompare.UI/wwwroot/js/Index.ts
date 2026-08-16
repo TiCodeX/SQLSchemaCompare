@@ -4,7 +4,7 @@ $(() => {
   void Utility.ApplicationStartup().then(() => {
     // Configure the monaco editor loader
     amdRequire.config({
-      baseUrl: "lib/monaco-editor",
+      baseUrl: "lib/monaco-editor/min",
     });
 
     // Preload the monaco-editor

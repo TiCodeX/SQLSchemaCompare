@@ -52,10 +52,6 @@ $fa-font-size-base: $font-size-base;
         }
     }
 }
-
-.monaco-editor.vs {
-    max-height: 0px; // Fix autoresize on focus
-}
 /*#endregion*/
 
 /*#region Toolbar */

@@ -352,7 +352,7 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "[10.0.10, )",
-          "TiCodeX.SQLSchemaCompare.Core": "[2026.7.1, )"
+          "TiCodeX.SQLSchemaCompare.Core": "[2026.8.1, )"
         }
       }
     },

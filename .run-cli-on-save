@@ -1,0 +1,7 @@
+[Config]
+WorkingDir={SolutionDir}
+Debug=true
+
+[PostSave]
+Commands=cmd={SolutionDir}/Scripts/RunDprint.vbs args={File}
+IncludeExtensions=.tsx|.ts|.js

@@ -14,13 +14,27 @@
 @* Monaco uses a custom amd loader that overrides node's require. *@
 @* Keep a reference to node's require (if exists) so we can restore it after executing the amd loader file. *@
 <script type="text/javascript">
-  var nodeRequire = typeof require !== "undefined" ? require : null;
+  window.tempNode = {
+    require: window.require,
+    module: window.module,
+    exports: window.exports,
+    process: window.process
+  };
+
+  delete window.require;
+  delete window.module;
+  delete window.exports;
+  delete window.process;
 </script>
-<script src="~/lib/monaco-editor/vs/loader.js"></script>
+<script src="~/lib/monaco-editor/min/vs/loader.js"></script>
 @* Save Monaco's amd require and restore Node's require (or undefined if doesn't exist) *@
 <script type="text/javascript">
   var amdRequire = require;
-  require = nodeRequire !== null ? nodeRequire : undefined;
+  window.require = window.tempNode.require;
+  window.module = window.tempNode.module;
+  window.exports = window.tempNode.exports;
+  window.process = window.tempNode.process;
+  delete window.tempNode;
 </script>
 
 @* SQLSchemaCompare scripts *@

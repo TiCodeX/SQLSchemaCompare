@@ -310,13 +310,13 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "[10.0.10, )",
           "Microting.EntityFrameworkCore.MySql": "[10.0.10, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )",
-          "TiCodeX.SQLSchemaCompare.Services": "[2026.7.1, )"
+          "TiCodeX.SQLSchemaCompare.Services": "[2026.8.1, )"
         }
       },
       "TiCodeX.SQLSchemaCompare.Services": {
         "type": "Project",
         "dependencies": {
-          "TiCodeX.SQLSchemaCompare.Core": "[2026.7.1, )"
+          "TiCodeX.SQLSchemaCompare.Core": "[2026.8.1, )"
         }
       }
     },

@@ -14,15 +14,15 @@ class EditorManager {
     links: false,
     contextmenu: false,
     quickSuggestions: false,
-    autoClosingBrackets: false,
+    autoClosingBrackets: "never",
     lineNumbers: "on",
     selectionHighlight: false,
-    occurrencesHighlight: false,
+    occurrencesHighlight: "off",
     folding: false,
     minimap: {
       enabled: false,
     },
-    matchBrackets: false,
+    matchBrackets: "never",
     scrollbar: {
       vertical: "visible",
     },
@@ -57,9 +57,18 @@ class EditorManager {
     // And clear the old instances
     this.ClearOldInstances();
 
-    const editor: monaco.editor.IStandaloneCodeEditor | monaco.editor.IStandaloneDiffEditor = type === EditorType.Normal ?
-      monaco.editor.create(domElement.get(0), this.defaultOptions) :
-      monaco.editor.createDiffEditor(domElement.get(0), this.defaultOptionsDiff);
+    const innerEditorId = domElementId + "_inner";
+    domElement.append(`<div id="${innerEditorId}" style="width: 100%; height: 100%;"></div>`);
+    const innerEditor = document.getElementById(innerEditorId);
+
+    let editor: monaco.editor.IStandaloneCodeEditor | monaco.editor.IStandaloneDiffEditor;
+    if (type === EditorType.Normal) {
+      editor = monaco.editor.create(innerEditor!, this.defaultOptions);
+      editor.setModel(model as monaco.editor.ITextModel);
+    } else {
+      editor = monaco.editor.createDiffEditor(innerEditor!, this.defaultOptionsDiff);
+      editor.setModel(model as monaco.editor.IDiffEditorModel);
+    }
 
     $(`#${domElementId}`).attr("editorId", editor.getId());
 
@@ -67,8 +76,6 @@ class EditorManager {
 
     // Disable the command palette
     editor.addCommand(monaco.KeyCode.F1, (): void => {/* Do nothing */}, "");
-
-    editor.setModel(model);
 
     // Register context menu
     $(`#${domElementId} .monaco-editor .monaco-scrollable-element`).on("contextmenu", (event: JQuery.Event) => {
@@ -86,14 +93,17 @@ class EditorManager {
           label: Localization.Get("MenuCopy"),
           accelerator: "CmdOrCtrl+C",
           click: () => {
-            electronRemote.clipboard.writeText(currentEditor.getModel().getValueInRange(currentEditor.getSelection()));
+            const selection = currentEditor.getSelection();
+            if (selection && !selection.isEmpty()) {
+              electronRemote.clipboard.writeText(currentEditor.getModel()?.getValueInRange(selection) ?? "");
+            }
           },
         },
         {
           label: Localization.Get("MenuSelectAll"),
           accelerator: "CmdOrCtrl+A",
           click: () => {
-            currentEditor.setSelection(currentEditor.getModel().getFullModelRange());
+            currentEditor.setSelection(currentEditor.getModel()?.getFullModelRange() ?? new monaco.Range(1, 1, 1, 1));
           },
         },
         {

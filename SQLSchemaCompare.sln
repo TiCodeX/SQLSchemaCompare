@@ -15,20 +15,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 - Solution Items", "00 -
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		.nvmrc = .nvmrc
+		.run-cli-on-save = .run-cli-on-save
 		BaseEslintConfig.js = BaseEslintConfig.js
 		BaseTsConfig.json = BaseTsConfig.json
 		CodeAnalysis.ruleset = CodeAnalysis.ruleset
-		CreateInstallerCommon.bat = CreateInstallerCommon.bat
-		CreateInstallerLinux.bat = CreateInstallerLinux.bat
-		CreateInstallerOSX.bat = CreateInstallerOSX.bat
-		CreateInstallerWin.bat = CreateInstallerWin.bat
 		Directory.Build.props = Directory.Build.props
 		docker-compose.yml = docker-compose.yml
 		global.json = global.json
 		LICENSE = LICENSE
-		pre-commit-hook.sh = pre-commit-hook.sh
 		README.md = README.md
-		RunTests.bat = RunTests.bat
 		SonarLint.xml = SonarLint.xml
 	EndProjectSection
 EndProject
@@ -66,6 +61,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{3D383B
 		images\sqlcompare-screenshot1.png = images\sqlcompare-screenshot1.png
 		images\sqlcompare-screenshot2.png = images\sqlcompare-screenshot2.png
 		images\sqlcompare-screenshot3.png = images\sqlcompare-screenshot3.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B53C4C2D-E862-4240-945C-E042BEBD7819}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\CreateInstallerCommon.bat = Scripts\CreateInstallerCommon.bat
+		Scripts\CreateInstallerLinux.bat = Scripts\CreateInstallerLinux.bat
+		Scripts\CreateInstallerOSX.bat = Scripts\CreateInstallerOSX.bat
+		Scripts\CreateInstallerWin.bat = Scripts\CreateInstallerWin.bat
+		Scripts\pre-commit-hook.sh = Scripts\pre-commit-hook.sh
+		Scripts\RunDprint.bat = Scripts\RunDprint.bat
+		Scripts\RunDprint.vbs = Scripts\RunDprint.vbs
+		Scripts\RunTests.bat = Scripts\RunTests.bat
 	EndProjectSection
 EndProject
 Global
@@ -119,6 +126,7 @@ Global
 		{F5A2A400-C955-4D11-8436-2D26A2C195C0} = {EB87FDBE-CC7F-4AD6-BD06-1425586DEEDD}
 		{C4B2019D-D746-49D3-A248-3E3C602BCFA4} = {F5A2A400-C955-4D11-8436-2D26A2C195C0}
 		{3D383B1E-D7C4-4915-9D43-6A064B3ACA2D} = {EB87FDBE-CC7F-4AD6-BD06-1425586DEEDD}
+		{B53C4C2D-E862-4240-945C-E042BEBD7819} = {EB87FDBE-CC7F-4AD6-BD06-1425586DEEDD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C1C5D5BC-124E-4706-BF7E-E08EA154F827}

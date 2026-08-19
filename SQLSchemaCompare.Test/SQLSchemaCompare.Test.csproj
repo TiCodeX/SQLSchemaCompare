@@ -4,10 +4,11 @@
     <RootNamespace>TiCodeX.SQLSchemaCompare.Test</RootNamespace>
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="ExposedObject" />
     <Using Include="FluentAssertions" />
     <Using Include="Xunit" />
     <Using Include="Xunit.Sdk" />
@@ -17,19 +18,14 @@
 
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="8.6.3" />
-    <PackageReference Include="ExposedObject" Version="2.2.0" />
     <PackageReference Include="FluentAssertions" Version="8.10.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.10.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Neolution.CodeAnalysis.TestsRuleset" Version="3.3.0-beta.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="xunit.v3" Version="3.2.2" />
+    <PackageReference Include="xunit.v3" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>

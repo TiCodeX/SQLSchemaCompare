@@ -1,15 +1,12 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.DatabaseUtilities;
 
+using System.Runtime.CompilerServices;
+
 /// <summary>
 /// Test class for the DatabaseFilter
 /// </summary>
 public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
 {
-    /// <summary>
-    /// The exposed filter
-    /// </summary>
-    private readonly dynamic exposedFilter;
-
     /// <summary>
     /// The test item
     /// </summary>
@@ -22,7 +19,6 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
     public DatabaseFilterTests(ITestOutputHelper output)
         : base(output)
     {
-        this.exposedFilter = Exposed.From(typeof(DatabaseFilter));
         this.testItem = new ABaseDbIndex
         {
             Schema = "schema1",
@@ -118,7 +114,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "sch",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -133,7 +129,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "blabla",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
     }
 
     /// <summary>
@@ -156,7 +152,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "ema1",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -171,7 +167,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "ema2",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
     }
 
     /// <summary>
@@ -194,7 +190,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "schema1",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -209,7 +205,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "schema2",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
     }
 
     /// <summary>
@@ -232,7 +228,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "chem",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -247,7 +243,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "test",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
     }
 
     /// <summary>
@@ -270,7 +266,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "blabla",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -285,7 +281,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "sch",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
     }
 
     /// <summary>
@@ -308,7 +304,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "ema2",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -323,7 +319,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "ema1",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
     }
 
     /// <summary>
@@ -346,7 +342,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "schema2",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -361,7 +357,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "schema1",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
     }
 
     /// <summary>
@@ -384,7 +380,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "test",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -399,7 +395,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "chem",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
     }
 
     /// <summary>
@@ -422,7 +418,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "sch",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -437,7 +433,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "blabla",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
     }
 
     /// <summary>
@@ -460,7 +456,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "ema1",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -475,7 +471,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "ema2",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
     }
 
     /// <summary>
@@ -498,7 +494,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "schema1",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -513,7 +509,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "schema2",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
     }
 
     /// <summary>
@@ -536,7 +532,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "chem",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -551,7 +547,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "test",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
     }
 
     /// <summary>
@@ -574,7 +570,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "blabla",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -589,7 +585,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "sch",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
     }
 
     /// <summary>
@@ -612,7 +608,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "ema2",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -627,7 +623,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "ema1",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
     }
 
     /// <summary>
@@ -650,7 +646,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "schema2",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -665,7 +661,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "schema1",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
     }
 
     /// <summary>
@@ -688,7 +684,7 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "test",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeFalse();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeFalse();
 
         // Negative match
         filteringOptions = new FilteringOptions
@@ -703,6 +699,16 @@ public class DatabaseFilterTests : BaseTests<DatabaseFilterTests>
             Value = "chem",
         });
 
-        ((bool)this.exposedFilter.FilterIncludeObject(this.testItem, filteringOptions)).Should().BeTrue();
+        CallFilterIncludeObject(null, this.testItem, filteringOptions).Should().BeTrue();
     }
+
+    /// <summary>
+    /// Calls the filter include object.
+    /// </summary>
+    /// <param name="filter">The filter.</param>
+    /// <param name="dbObject">The database object</param>
+    /// <param name="filteringOptions">The filtering options</param>
+    /// <returns>Whether to include the object</returns>
+    [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "FilterIncludeObject")]
+    private static extern bool CallFilterIncludeObject(DatabaseFilter filter, ABaseDbObject dbObject, FilteringOptions filteringOptions);
 }

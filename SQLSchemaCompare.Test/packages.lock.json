@@ -16,12 +16,6 @@
           "System.Security.Cryptography.Xml": "10.0.10"
         }
       },
-      "ExposedObject": {
-        "type": "Direct",
-        "requested": "[2.2.0, )",
-        "resolved": "2.2.0",
-        "contentHash": "YIRgcIAVJ5VKavBW1VidPNoU5a5VAfCdJLcHuaA3JGJIBjKqyOjdkPkc7zPPTKl4XKOQTsT7yR5dtP552nk+vg=="
-      },
       "FluentAssertions": {
         "type": "Direct",
         "requested": "[8.10.0, )",

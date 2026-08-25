@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="ExposedObject" />
     <Using Include="FluentAssertions" />
     <Using Include="Xunit" />
     <Using Include="Xunit.Sdk" />
@@ -17,7 +16,6 @@
 
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="8.6.3" />
-    <PackageReference Include="ExposedObject" Version="2.2.0" />
     <PackageReference Include="FluentAssertions" Version="8.10.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
     <PackageReference Include="Moq" Version="4.20.72" />

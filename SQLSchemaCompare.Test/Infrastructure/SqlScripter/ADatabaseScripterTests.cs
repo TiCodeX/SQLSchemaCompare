@@ -1,5 +1,7 @@
 ﻿namespace TiCodeX.SQLSchemaCompare.Test.Infrastructure.SqlScripter;
 
+using System.Runtime.CompilerServices;
+
 /// <summary>
 /// Test class for the abstract class ADatabaseScripter
 /// </summary>
@@ -17,7 +19,6 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
     public void GetSortedTableColumnsAlphabetically()
     {
         var scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions { Scripting = new ScriptingOptions { OrderColumnAlphabetically = true } });
-        var exposedScripter = Exposed.From(scripter);
 
         var table = new MicrosoftSqlTable();
         table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
@@ -28,7 +29,7 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
 
         table.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Source };
 
-        var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
+        var columns = ScripterAccessorHelper<MicrosoftSqlScriptHelper>.CallGetSortedTableColumns(scripter, table);
         columns.Select(x => x.Name).Should().ContainInOrder("a", "b", "c", "d", "e");
     }
 
@@ -40,7 +41,6 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
     public void GetSortedTableColumnsByOrdinalPosition()
     {
         var scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions { Scripting = new ScriptingOptions { OrderColumnAlphabetically = false } });
-        var exposedScripter = Exposed.From(scripter);
 
         var table = new MicrosoftSqlTable();
         table.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
@@ -51,7 +51,7 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
 
         table.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Source };
 
-        var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
+        var columns = ScripterAccessorHelper<MicrosoftSqlScriptHelper>.CallGetSortedTableColumns(scripter, table);
         columns.Select(x => x.Name).Should().ContainInOrder("b", "e", "a", "d", "c");
     }
 
@@ -63,7 +63,6 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
     public void GetSortedTableColumnsWithReferenceTableAlphabetically()
     {
         var scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions { Scripting = new ScriptingOptions { OrderColumnAlphabetically = true } });
-        var exposedScripter = Exposed.From(scripter);
 
         var refTable = new MicrosoftSqlTable();
         refTable.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
@@ -84,7 +83,7 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
         table.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Target };
         table.MappedDbObject = refTable;
 
-        var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
+        var columns = ScripterAccessorHelper<MicrosoftSqlScriptHelper>.CallGetSortedTableColumns(scripter, table);
         columns.Select(x => x.Name).Should().ContainInOrder("c", "d", "e", "a", "b");
     }
 
@@ -96,7 +95,6 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
     public void GetSortedTableColumnsWithReferenceTableByOrdinalPosition()
     {
         var scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions { Scripting = new ScriptingOptions { OrderColumnAlphabetically = false } });
-        var exposedScripter = Exposed.From(scripter);
 
         var refTable = new MicrosoftSqlTable();
         refTable.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
@@ -117,7 +115,7 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
         table.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Target };
         table.MappedDbObject = refTable;
 
-        var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
+        var columns = ScripterAccessorHelper<MicrosoftSqlScriptHelper>.CallGetSortedTableColumns(scripter, table);
         columns.Select(x => x.Name).Should().ContainInOrder("c", "e", "d", "b", "a");
     }
 
@@ -129,7 +127,6 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
     public void GetSortedTableColumnsWithReferenceTableByOrdinalPositionIgnoreReference()
     {
         var scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions { Scripting = new ScriptingOptions { OrderColumnAlphabetically = false, IgnoreReferenceTableColumnOrder = true } });
-        var exposedScripter = Exposed.From(scripter);
 
         var refTable = new MicrosoftSqlTable();
         refTable.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
@@ -150,7 +147,7 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
         table.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Target };
         table.MappedDbObject = refTable;
 
-        var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
+        var columns = ScripterAccessorHelper<MicrosoftSqlScriptHelper>.CallGetSortedTableColumns(scripter, table);
         columns.Select(x => x.Name).Should().ContainInOrder("b", "e", "a", "d", "c");
     }
 
@@ -162,7 +159,6 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
     public void GetSortedTableColumnsWithReferenceTableAlphabeticallyIgnoreReference()
     {
         var scripter = new MicrosoftSqlScripter(this.Logger, new ProjectOptions { Scripting = new ScriptingOptions { OrderColumnAlphabetically = true, IgnoreReferenceTableColumnOrder = true } });
-        var exposedScripter = Exposed.From(scripter);
 
         var refTable = new MicrosoftSqlTable();
         refTable.Columns.Add(new MicrosoftSqlColumn { Name = "e", OrdinalPosition = 1 });
@@ -183,7 +179,7 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
         table.Database = new MicrosoftSqlDb() { Direction = CompareDirection.Target };
         table.MappedDbObject = refTable;
 
-        var columns = (IEnumerable<ABaseDbColumn>)exposedScripter.GetSortedTableColumns(table);
+        var columns = ScripterAccessorHelper<MicrosoftSqlScriptHelper>.CallGetSortedTableColumns(scripter, table);
         columns.Select(x => x.Name).Should().ContainInOrder("a", "b", "c", "d", "e");
     }
 
@@ -195,7 +191,6 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
     public void GetSortedTablesAlphabetically()
     {
         var scripter = new PostgreSqlScripter(this.Logger, new ProjectOptions());
-        var exposedScripter = Exposed.From(scripter);
 
         var tables = new List<ABaseDbTable>
         {
@@ -206,7 +201,7 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
             new PostgreSqlTable { Name = "c" },
         };
 
-        var sortedTables = (List<PostgreSqlTable>)exposedScripter.GetSortedTables(tables, false);
+        var sortedTables = CallGetSortedTables(scripter, tables, false);
         sortedTables.Select(x => x.Name).Should().ContainInOrder("a", "b", "c", "d", "e");
     }
 
@@ -218,7 +213,6 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
     public void GetSortedTablesWithInheritance()
     {
         var scripter = new PostgreSqlScripter(this.Logger, new ProjectOptions());
-        var exposedScripter = Exposed.From(scripter);
 
         var tables = new List<ABaseDbTable>
         {
@@ -229,7 +223,7 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
             new PostgreSqlTable { Name = "c" },
         };
 
-        var sortedTables = (List<PostgreSqlTable>)exposedScripter.GetSortedTables(tables, false);
+        var sortedTables = CallGetSortedTables(scripter, tables, false);
         sortedTables.Select(x => x.Name).Should().ContainInOrder("c", "a", "b", "d", "e");
 
         // More complicated test (based on https://qt-wiki-uploads.s3.amazonaws.com/images/4/4c/Beginner-Class-Hierarchy.jpg)
@@ -251,7 +245,34 @@ public class ADatabaseScripterTests(ITestOutputHelper output) : BaseTests<ADatab
         ];
         tables = [.. tables.OrderBy(a => Guid.NewGuid())];
 
-        sortedTables = (List<PostgreSqlTable>)exposedScripter.GetSortedTables(tables, false);
+        sortedTables = CallGetSortedTables(scripter, tables, false);
         sortedTables.Select(x => x.Name).Should().ContainInOrder("Object", "Widget", "AbstractButton", "Frame", "AbstractScrollArea", "CheckBox", "GraphicsView", "Label", "ProgressBar", "PushButton", "RadioButton", "TextEdit", "Thread");
+    }
+
+    /// <summary>
+    /// Calls the get sorted tables.
+    /// </summary>
+    /// <param name="scripter">The scripter.</param>
+    /// <param name="tables">The tables</param>
+    /// <param name="dropOrder">Whether to sort the tables for dropping them</param>
+    /// <returns>The sorted tables</returns>
+    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "GetSortedTables")]
+    private static extern IEnumerable<ABaseDbTable> CallGetSortedTables(PostgreSqlScripter scripter, List<ABaseDbTable> tables, bool dropOrder);
+
+    /// <summary>
+    /// The ScripterAccessorHelper class is a helper class that provides access to the private methods of the ADatabaseScripter class.
+    /// </summary>
+    /// <typeparam name="TScriptHelper">The type of the script helper.</typeparam>
+    private static class ScripterAccessorHelper<TScriptHelper>
+        where TScriptHelper : AScriptHelper
+    {
+        /// <summary>
+        /// Calls the get sorted tables.
+        /// </summary>
+        /// <param name="scripter">The scripter.</param>
+        /// <param name="table">The table with columns to script</param>
+        /// <returns>The sorted columns</returns>
+        [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "GetSortedTableColumns")]
+        public static extern IEnumerable<ABaseDbColumn> CallGetSortedTableColumns(ADatabaseScripter<TScriptHelper> scripter, ABaseDbTable table);
     }
 }

@@ -50,7 +50,7 @@ jobs:
       if: (!cancelled())
       with:
         check_name: "MicrosoftSQL Test Results"
-        files: SQLSchemaCompare.Test/TestResults/*.trx
+        files: "**/*.trx"
 
   my_sql:
     if: github.event.pull_request.draft == false
@@ -85,7 +85,7 @@ jobs:
       if: (!cancelled())
       with:
         check_name: "MySQL Test Results"
-        files: SQLSchemaCompare.Test/TestResults/*.trx
+        files: "**/*.trx"
 
   postgre_sql:
     if: github.event.pull_request.draft == false
@@ -126,7 +126,7 @@ jobs:
       if: (!cancelled())
       with:
         check_name: "PostgreSQL Test Results"
-        files: SQLSchemaCompare.Test/TestResults/*.trx
+        files: "**/*.trx"
 
   maria_db:
     if: github.event.pull_request.draft == false
@@ -169,4 +169,4 @@ jobs:
       if: (!cancelled())
       with:
         check_name: "MariaDB Test Results"
-        files: SQLSchemaCompare.Test/TestResults/*.trx
+        files: "**/*.trx"

@@ -50,4 +50,4 @@ jobs:
       if: (!cancelled())
       with:
         check_name: "Unit Test Results"
-        files: SQLSchemaCompare.Test/TestResults/*.trx
+        files: "**/*.trx"

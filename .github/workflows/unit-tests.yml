@@ -44,7 +44,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore -c Release
     - name: Test
-      run: dotnet test --no-build --no-restore SQLSchemaCompare.Test -c Release --logger trx --filter Category!=IntegrationTest
+      run: dotnet test --no-build --no-restore SQLSchemaCompare.Test -c Release --report-xunit-trx --filter "Category!=IntegrationTest"
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: (!cancelled())

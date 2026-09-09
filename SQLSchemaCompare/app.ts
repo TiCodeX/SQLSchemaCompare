@@ -87,6 +87,12 @@ log4js.configure({
 
 const logger = log4js.getLogger("electron");
 logger.info(`Starting SQL Schema Compare v${electron.app.getVersion()}`);
+logger.debug(`Node.js: ${process.versions.node}`);
+logger.debug(`Electron: ${process.versions.electron}`);
+logger.debug(`Chromium: ${process.versions.chrome}`);
+logger.debug(`V8 Engine: ${process.versions.v8}`);
+logger.debug(`OS Platform: ${process.platform} ${process.arch}`);
+logger.debug(`OS Version: ${process.getSystemVersion()}`);
 
 // #region Check Single Instance
 // If it's not able to get the lock it means that another instance already have it

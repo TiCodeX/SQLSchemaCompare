@@ -7,7 +7,7 @@
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "fnm",
-      "runtimeArgs": [ "exec", "--using", "22", "${workspaceFolder}/node_modules/.bin/electron.cmd" ],
+      "runtimeArgs": [ "exec", "--using", "${workspaceFolder}/../.nvmrc", "${workspaceFolder}/node_modules/.bin/electron.cmd" ],
       "args": [ "." ],
       "outputCapture": "std"
     },

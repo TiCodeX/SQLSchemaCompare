@@ -115,7 +115,7 @@
     "@tsconfig/strictest": "^2.0.8",
     "@typescript/native": "npm:typescript@^7.0.2",
     "dprint": "^0.55.2",
-    "electron": "^43.2.0",
+    "electron": "^43.5.0",
     "electron-builder": "^26.15.7",
     "eslint": "^10.8.0",
     "eslint-formatter-visualstudio": "^9.0.1",
